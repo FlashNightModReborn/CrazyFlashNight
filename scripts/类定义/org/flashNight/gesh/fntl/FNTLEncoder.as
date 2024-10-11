@@ -1,14 +1,15 @@
 ﻿import org.flashNight.gesh.object.*;
 import org.flashNight.gesh.string.*;
 import org.flashNight.gesh.fntl.*;
+import org.flashNight.naki.Sort.QuickSort;
 
 /**
- * TOMLEncoder class upgraded to support FNTL (FlashNight Text Language).
+ * FNTLEncoder class upgraded to support FNTL (FlashNight Text Language).
  * Enhancements include:
  * - Full UTF-8 support for keys and values
  * - Extended escape sequences handling, including \UXXXXXXXX
  * - Enhanced date-time encoding with fractional seconds and time zone support
- * - Optimized key sorting using QuickSort
+ * - Optimized key sorting using custom QuickSort (adaptiveSort)
  * - Caching for table headers and table array headers
  * - Improved error handling with localized messages
  * - Logging warnings for internal keys
@@ -60,7 +61,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
 
             // 获取并排序键
             var keys:Array = this.getKeys(currentObject);
-            keys = this.quickSort(keys);
+            keys = QuickSort.adaptiveSort(keys, this.compareKeys);
 
             // 处理当前对象的每个键值对
             for (var keyIndex:Number = 0; keyIndex < keys.length; keyIndex++) {
@@ -105,6 +106,22 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
     }
 
     /**
+     * 比较键的函数，用于排序
+     * @param a 第一个键
+     * @param b 第二个键
+     * @return 比较结果
+     */
+    private function compareKeys(a:String, b:String):Number {
+        if (a < b) {
+            return -1;
+        } else if (a > b) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * 判断值是否为数组
      * @param value 要判断的值
      * @return 是否为数组
@@ -142,7 +159,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         }
         for (var i:Number = 0; i < arr.length; i++) {
             var element:Object = arr[i];
-            if (typeof(element) != "object" || element == null || element instanceof Date || this.isArray(element)) {
+            if (typeof(element) != "object" || element == null || this.isArray(element) || element instanceof Date) {
                 return false; // 仅当所有元素都是非 null 的对象且不是 Date 或数组时，才认为是表格数组
             }
         }
@@ -156,15 +173,11 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      */
     private function buildTableHeader(path:Array):String {
         var key:String = path.join(".");
-
-        // Use hasOwnProperty or check if the key is undefined
         if (!this.tableHeaderCache.hasOwnProperty(key)) {
             this.tableHeaderCache[key] = "[" + key + "]";
         }
-
         return this.tableHeaderCache[key];
     }
-
 
     /**
      * 构建表格数组头
@@ -173,15 +186,11 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      */
     private function buildTableArrayHeader(path:Array):String {
         var key:String = path.join(".");
-
-        // Use hasOwnProperty or check if the key is undefined
         if (!this.tableArrayHeaderCache.hasOwnProperty(key)) {
             this.tableArrayHeaderCache[key] = "[[" + key + "]]";
         }
-
         return this.tableArrayHeaderCache[key];
     }
-
 
     /**
      * 编码数组
@@ -217,7 +226,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
     private function encodeInlineTable(table:Object):String {
         var result:Array = ["{ "];
         var keys:Array = this.getKeys(table);
-        keys = this.quickSort(keys);
+        keys = QuickSort.adaptiveSort(keys, this.compareKeys);
         var first:Boolean = true;
         for (var keyIndex:Number = 0; keyIndex < keys.length; keyIndex++) {
             var key:String = keys[keyIndex];
@@ -369,7 +378,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         var milliseconds:Number = date.getMilliseconds();
         var fractional:String = milliseconds > 0 ? "." + this.padZeroFraction(milliseconds) : "";
         
-        // 默认时区为 UTC
+        // 默认时区为 UTC，您可以根据需要扩展时区支持
         var timezoneSuffix:String = "Z"; // TODO: 根据需要调整时区支持
         
         return year + "-" + month + "-" + day + "T" + hours + ":" + minutes + ":" + seconds + fractional + timezoneSuffix;
@@ -407,35 +416,6 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
     }
 
     /**
-     * 排序键数组，使用 QuickSort
-     * @param keys 键数组
-     * @return 排序后的键数组
-     */
-    private function quickSort(array:Array):Array {
-        if (array.length <= 1) {
-            return array;
-        }
-        
-        var pivot = array.pop();  // Remove and store the last element as the pivot
-        var left:Array = [];
-        var right:Array = [];
-        
-        // Use a standard for loop to iterate through the array
-        for (var i:Number = 0; i < array.length; i++) {
-            var element = array[i];  // Access the element
-            if (element < pivot) {
-                left.push(element);  // Add to left array if smaller than pivot
-            } else {
-                right.push(element); // Add to right array if greater or equal to pivot
-            }
-        }
-        
-        // Recursively sort and concatenate the arrays
-        return this.quickSort(left).concat([pivot], this.quickSort(right));
-    }
-
-
-    /**
      * 判断是否为内部键（如 __dictUID）
      * @param key 键名
      * @return 是否为内部键
@@ -445,21 +425,14 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
     }
 
     /**
-     * 比较和排序键数组的辅助方法已替换为 QuickSort
+     * 编码键数组，使用自定义 QuickSort 的 adaptiveSort 方法
+     * 已在 encode 和 encodeInlineTable 方法中使用
      */
 
-    /**
-     * 其他辅助方法（如 encodeInlineTable, encodeArray）已在上文定义
-     * 以及方法已被修改以支持新的功能
-     */
+    // 移除了内部 quickSort 方法，因为我们使用外部的 QuickSort 类
 
     // 示例：如何进一步模块化代码
-    // 你可以创建辅助类或方法来处理特定的编码任务
+    // 您可以创建辅助类或方法来处理特定的编码任务
     // 例如，一个专门用于编码字符串的辅助类
     // 这里保持在同一类中以简化实现
-
-    /**
-     * 缓存表格头和表格数组头以优化性能
-     * 已在 buildTableHeader 和 buildTableArrayHeader 方法中实现
-     */
 }

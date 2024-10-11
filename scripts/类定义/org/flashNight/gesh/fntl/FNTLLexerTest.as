@@ -49,7 +49,11 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
 
         for (var i:Number = 0; i < FNTLSamples.length; i++) {
             var FNTLText:String = FNTLSamples[i].text;
+            var expectedTokens:Array = FNTLSamples[i].expectedTokens;
+            var description:String = FNTLSamples[i].description;
+
             trace("\n--- Running Lexer Test Case " + (i + 1) + " ---");
+            trace("Description: " + description);
 
             var lexer:FNTLLexer = new FNTLLexer(FNTLText);
             var tokens:Array = [];
@@ -61,8 +65,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
             }
 
             // Validate tokens if expected tokens are provided
-            if (FNTLSamples[i].expectedTokens !== null) {
-                var expectedTokens:Array = FNTLSamples[i].expectedTokens;
+            if (expectedTokens !== null) {
                 var comparisonResult:Boolean = this.compareTokenArrays(tokens, expectedTokens);
                 if (comparisonResult) {
                     trace("Lexer Test Case " + (i + 1) + ": Passed.");
@@ -88,7 +91,11 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
 
         for (var i:Number = 0; i < FNTLSamples.length; i++) {
             var FNTLText:String = FNTLSamples[i].text;
+            var expected:Object = FNTLSamples[i].expected;
+            var description:String = FNTLSamples[i].description;
+
             trace("\n--- Running Parser Test Case " + (i + 1) + " ---");
+            trace("Description: " + description);
 
             var lexer:FNTLLexer = new FNTLLexer(FNTLText);
             var tokens:Array = [];
@@ -112,7 +119,6 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
             }
 
             // Compare the parsed result with expected output
-            var expected:Object = FNTLSamples[i].expected;
             var comparisonResult:Boolean = this.compareResults(result, expected, 0);
             if (comparisonResult) {
                 trace("Parser Test Case " + (i + 1) + ": Passed.");
@@ -134,8 +140,10 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         for (var i:Number = 0; i < testCases.length; i++) {
             var testObj:Object = testCases[i].input;
             var expected:String = testCases[i].expected;
+            var description:String = testCases[i].description;
 
             trace("\n--- Running Encoder Test Case " + (i + 1) + " ---");
+            trace("Description: " + description);
 
             // Encode the object into FNTL/FNTL
             var encoder:FNTLEncoder = new FNTLEncoder();
@@ -164,223 +172,183 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         // Test case 1: Basic FNTL structure
         var testCase1:Object = new Object();
         testCase1.text = 'title = "My Game" # Comment\n' +
-                         'isActive = true\n' +
-                         'max_score = 1000\n' +
-                         'average_score = 89.95\n' +
-                         'launch_time = 2024-10-09T08:30:00Z\n' +
-                         'items = ["sword", "shield", "potion"]\n' +
-                         'description = """This is a multiline string.\nIt has multiple lines."""\n';
+                        'isActive = true\n' +
+                        'max_score = 1000\n' +
+                        'average_score = 89.95\n' +
+                        'launch_time = 2024-10-09T08:30:00Z\n' +
+                        'items = ["sword", "shield", "potion"]\n' +
+                        'description = """This is a multiline string.\nIt has multiple lines."""\n';
         testCase1.expectedTokens = null; // Optional: Define expected tokens for this test
+        testCase1.description = "Basic FNTL structure with various data types and a multiline string.";
         cases.push(testCase1);
 
         // Test case 2: Boolean values
         var testCase2:Object = new Object();
         testCase2.text = 'boolean_true = true\nboolean_false = false\n';
         testCase2.expectedTokens = null;
+        testCase2.description = "Testing boolean values: true and false.";
         cases.push(testCase2);
 
         // Test case 3: Numbers
         var testCase3:Object = new Object();
         testCase3.text = 'integer = 42\nnegative_integer = -42\nfloat = 3.14\nnegative_float = -3.14\n';
         testCase3.expectedTokens = null;
+        testCase3.description = "Testing integer and float numbers, including negative values.";
         cases.push(testCase3);
 
         // Test case 4: Empty values
         var testCase4:Object = new Object();
         testCase4.text = 'empty_string = ""\nempty_array = []\nnull_value = null\n';
         testCase4.expectedTokens = null;
+        testCase4.description = "Testing empty string, empty array, and null value.";
         cases.push(testCase4);
 
         // Test case 5: Date and time
         var testCase5:Object = new Object();
         testCase5.text = 'date_time = 2024-10-09T08:30:00Z\n';
         testCase5.expectedTokens = null;
+        testCase5.description = "Testing date and time in ISO8601 format.";
         cases.push(testCase5);
 
         // Test case 6: Nested tables
         var testCase6:Object = new Object();
         testCase6.text = '[server]\n' +
-                         'ip = "192.168.1.1"\n' +
-                         '[server.database]\n' +
-                         'type = "PostgreSQL"\n' +
-                         'ports = [5432, 5433, 5434]\n' +
-                         '[server.database.settings]\n' +
-                         'enabled = true\n';
+                        'ip = "192.168.1.1"\n' +
+                        '[server.database]\n' +
+                        'type = "PostgreSQL"\n' +
+                        'ports = [5432, 5433, 5434]\n' +
+                        '[server.database.settings]\n' +
+                        'enabled = true\n';
         testCase6.expectedTokens = null;
+        testCase6.description = "Testing nested tables with multiple levels.";
         cases.push(testCase6);
 
         // Test case 7: Table arrays
         var testCase7:Object = new Object();
         testCase7.text = '[[products]]\n' +
-                         'name = "Hammer"\n' +
-                         'sku = 738594937\n' +
-                         '[[products]]\n' +
-                         'name = "Nail"\n' +
-                         'sku = 284758393\n';
+                        'name = "Hammer"\n' +
+                        'sku = 738594937\n' +
+                        '[[products]]\n' +
+                        'name = "Nail"\n' +
+                        'sku = 284758393\n';
         testCase7.expectedTokens = null;
+        testCase7.description = "Testing table arrays with multiple entries.";
         cases.push(testCase7);
 
         // Test case 8: Complex nested tables and table arrays
         var testCase8:Object = new Object();
         testCase8.text = 'title = "FNTL Example"\n' +
-                         'owner = { name = "Tom", dob = 1979-05-27 }\n' +
-                         '[[products]]\n' +
-                         'name = "Hammer"\n' +
-                         'sku = 738594937\n' +
-                         '[[products]]\n' +
-                         'name = "Nail"\n' +
-                         'sku = 284758393\n' +
-                         '[database]\n' +
-                         'server = "192.168.1.1"\n' +
-                         'ports = [8001, 8001, 8002]\n' +
-                         'connection_max = 5000\n' +
-                         'enabled = true\n';
+                        'owner = { name = "Tom", dob = 1979-05-27 }\n' +
+                        '[[products]]\n' +
+                        'name = "Hammer"\n' +
+                        'sku = 738594937\n' +
+                        '[[products]]\n' +
+                        'name = "Nail"\n' +
+                        'sku = 284758393\n' +
+                        '[database]\n' +
+                        'server = "192.168.1.1"\n' +
+                        'ports = [8001, 8001, 8002]\n' +
+                        'connection_max = 5000\n' +
+                        'enabled = true\n';
         testCase8.expectedTokens = null;
+        testCase8.description = "Testing complex nested tables and table arrays.";
         cases.push(testCase8);
 
         // Test case 9: Unicode characters
         var testCase9:Object = new Object();
         testCase9.text = 'greeting = "こんにちは"\nemoji = "😊"\n';
         testCase9.expectedTokens = null;
+        testCase9.description = "Testing Unicode characters and emojis.";
         cases.push(testCase9);
 
         // Test case 10: Escape characters
         var testCase10:Object = new Object();
         testCase10.text = 'escaped_newline = "Line1\\nLine2"\nescaped_quote = "He said, \\"Hello!\\""\n';
         testCase10.expectedTokens = null;
+        testCase10.description = "Testing escape characters in strings.";
         cases.push(testCase10);
 
         // Test case 11: Mixed complex structures
         var testCase11:Object = new Object();
         testCase11.text = '[server]\n' +
-                          'host = "localhost"\n' +
-                          'ports = [8000, 8001, 8002]\n' +
-                          'connection_max = 5000\n' +
-                          'enabled = true\n' +
-                          '[[owners]]\n' +
-                          'name = "Alice"\n' +
-                          'dob = "1990-01-01"\n' +
-                          '[[owners]]\n' +
-                          'name = "Bob"\n' +
-                          'dob = "1985-05-12"\n' +
-                          '[database]\n' +
-                          'server = "192.168.1.100"\n' +
-                          'ports = [3306]\n' +
-                          'connection_max = 10000\n' +
-                          'enabled = false\n' +
-                          '[[users]]\n' +
-                          'name = "user1"\n' +
-                          'active = true\n' +
-                          '[[users]]\n' +
-                          'name = "user2"\n' +
-                          'active = false\n';
+                        'host = "localhost"\n' +
+                        'ports = [8000, 8001, 8002]\n' +
+                        'connection_max = 5000\n' +
+                        'enabled = true\n' +
+                        '[[owners]]\n' +
+                        'name = "Alice"\n' +
+                        'dob = "1990-01-01"\n' +
+                        '[[owners]]\n' +
+                        'name = "Bob"\n' +
+                        'dob = "1985-05-12"\n' +
+                        '[database]\n' +
+                        'server = "192.168.1.100"\n' +
+                        'ports = [3306]\n' +
+                        'connection_max = 10000\n' +
+                        'enabled = false\n' +
+                        '[[users]]\n' +
+                        'name = "user1"\n' +
+                        'active = true\n' +
+                        '[[users]]\n' +
+                        'name = "user2"\n' +
+                        'active = false\n';
         testCase11.expectedTokens = null;
+        testCase11.description = "Testing mixed complex structures with multiple table arrays.";
         cases.push(testCase11);
 
         // Test case 12: Special number formats
         var testCase12:Object = new Object();
         testCase12.text = 'special_float_1 = nan\nspecial_float_2 = inf\nspecial_float_3 = -inf\n';
         testCase12.expectedTokens = null;
+        testCase12.description = "Testing special floating-point values: NaN, Infinity, -Infinity.";
         cases.push(testCase12);
 
         // Test case 13: Malformed FNTL (missing equals)
         var testCase13:Object = new Object();
         testCase13.text = 'invalid_line "No equals sign"\n';
         testCase13.expectedTokens = null;
+        testCase13.description = "Testing malformed FNTL input with missing equals sign.";
         cases.push(testCase13);
 
         // Test case 14: Unclosed string
         var testCase14:Object = new Object();
         testCase14.text = 'unclosed_string = "This string never ends...\n';
         testCase14.expectedTokens = null;
+        testCase14.description = "Testing malformed FNTL input with unclosed string.";
         cases.push(testCase14);
 
         // Test case 15: Invalid date-time format
         var testCase15:Object = new Object();
         testCase15.text = 'invalid_date = 2024-13-40T25:61:61Z\n';
         testCase15.expectedTokens = null;
+        testCase15.description = "Testing malformed FNTL input with invalid date-time format.";
         cases.push(testCase15);
 
         // Test case 16: Nested arrays
         var testCase16:Object = new Object();
         testCase16.text = 'nested_arrays = [[1, 2], [3, 4], [5, 6]]\n';
         testCase16.expectedTokens = null;
+        testCase16.description = "Testing nested arrays within FNTL.";
         cases.push(testCase16);
 
         // Test case 17: Project-specific sample with Unicode and complex structures
         var testCase17:Object = new Object();
         testCase17.text = 'task_chains_progress = { 主线 = "1" }\n' +
-                          'task_history = [0]\n' +
-                          'tasks_finished = { 0 = 1 }\n' +
-                          'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
-                          '"上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]]], "测试"],\n' +
-                          '商城已购买物品 = []\n' +
-                          '战宠 = [[]]\n' +
-                          '[[tasks_to_do]]\n' +
-                          'id = 1\n' +
-                          '[tasks_to_do.requirements]\n' +
-                          'items = []\n' +
-                          '[[tasks_to_do.requirements.stages]]\n' +
-                          'difficulty = "简单"\n' +
-                          'name = "测试任务"\n';
-        // Building expected object manually
-        var expected17:Object = new Object();
-
-        // task_chains_progress
-        expected17.task_chains_progress = new Object();
-        expected17.task_chains_progress["主线"] = "1";
-
-        // task_history
-        var taskHistory:Array = new Array();
-        taskHistory.push(0);
-        expected17.task_history = taskHistory;
-
-        // tasks_finished
-        expected17.tasks_finished = new Object();
-        expected17.tasks_finished["0"] = 1;
-
-        // test
-        var testArray:Array = new Array();
-        var innerArray1:Array = new Array("fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000);
-        var nestedKeyBindings:Array = new Array(
-            new Array("上键", "上键", 87),
-            new Array("下键", "下键", 83),
-            new Array("左键", "左键", 65),
-            new Array("右键", "右键", 68)
-        );
-        innerArray1.push(nestedKeyBindings);
-        testArray.push(innerArray1);
-        testArray.push("测试");
-        expected17.test = testArray;
-
-        // 商城已购买物品
-        expected17["商城已购买物品"] = new Array();
-
-        // 战宠
-        var 战宠Array:Array = new Array();
-        战宠Array.push(new Array());
-        expected17["战宠"] = 战宠Array;
-
-        // tasks_to_do
-        var tasksToDo:Array = new Array();
-        var taskToDo:Object = new Object();
-        taskToDo.id = 1;
-
-        var requirements:Object = new Object();
-        requirements.items = new Array();
-
-        var stages:Array = new Array();
-        var stage:Object = new Object();
-        stage.difficulty = "简单";
-        stage.name = "测试任务";
-        stages.push(stage);
-        requirements.stages = stages;
-
-        taskToDo.requirements = requirements;
-        tasksToDo.push(taskToDo);
-        expected17.tasks_to_do = tasksToDo;
-
-        testCase17.expected = expected17;
+                        'task_history = [0]\n' +
+                        'tasks_finished = { 0 = 1 }\n' +
+                        'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
+                        '"上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]]], "测试"],\n' +
+                        '商城已购买物品 = []\n' +
+                        '战宠 = [[]]\n' +
+                        '[[tasks_to_do]]\n' +
+                        'id = 1\n' +
+                        '[tasks_to_do.requirements]\n' +
+                        'items = []\n' +
+                        '[[tasks_to_do.requirements.stages]]\n' +
+                        'difficulty = "简单"\n' +
+                        'name = "测试任务"\n';
+        testCase17.expectedTokens = null;
+        testCase17.description = "Project-specific test case with Unicode characters and complex nested structures.";
         cases.push(testCase17);
 
         return cases;
@@ -401,6 +369,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         expected18.owner.name = "Tom";
         expected18.owner.dob = "1979-05-27";
         testCase18.expected = expected18;
+        testCase18.description = "Testing inline table parsing with simple key-value pairs.";
         cases.push(testCase18);
 
         var testCase19:Object = new Object();
@@ -411,6 +380,8 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         expected19.settings.theme.color = "blue";
         expected19.settings.theme.font = "Arial";
         expected19.settings.notifications = true;
+        testCase19.expected = expected19;
+        testCase19.description = "Testing nested inline tables within inline tables.";
         cases.push(testCase19);
 
         return cases;
@@ -438,6 +409,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
                               'launch_time = 2024-10-09T08:30:00Z\n' +
                               'max_score = 1000\n' +
                               'title = "My Game"\n';
+        testCase1.description = "Encoding a simple object with various data types.";
         cases.push(testCase1);
 
         // Test case 2: Boolean values
@@ -447,6 +419,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase2.input.boolean_false = false;
         testCase2.expected = 'boolean_false = false\n' +
                               'boolean_true = true\n';
+        testCase2.description = "Encoding boolean values: true and false.";
         cases.push(testCase2);
 
         // Test case 3: Numbers
@@ -460,6 +433,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
                               'integer = 42\n' +
                               'negative_float = -3.14\n' +
                               'negative_integer = -42\n';
+        testCase3.description = "Encoding integer and float numbers, including negative values.";
         cases.push(testCase3);
 
         // Test case 4: Empty values
@@ -471,6 +445,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase4.expected = 'empty_array = []\n' +
                               'empty_string = ""\n' +
                               'null_value = null\n';
+        testCase4.description = "Encoding empty string, empty array, and null value.";
         cases.push(testCase4);
 
         // Test case 5: Date and time
@@ -478,6 +453,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase5.input = new Object();
         testCase5.input.date_time = "2024-10-09T08:30:00Z";
         testCase5.expected = 'date_time = 2024-10-09T08:30:00Z\n';
+        testCase5.description = "Encoding date and time in ISO8601 format.";
         cases.push(testCase5);
 
         // Test case 6: Nested tables
@@ -497,6 +473,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
                               'type = "PostgreSQL"\n' +
                               '[server.database.settings]\n' +
                               'enabled = true\n';
+        testCase6.description = "Encoding nested tables with multiple levels.";
         cases.push(testCase6);
 
         // Test case 7: Table arrays
@@ -520,6 +497,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
                               '[[products]]\n' +
                               'name = "Nail"\n' +
                               'sku = 284758393\n';
+        testCase7.description = "Encoding table arrays with multiple entries.";
         cases.push(testCase7);
 
         // Test case 8: Complex nested tables and table arrays
@@ -549,19 +527,22 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase8.input.database.connection_max = 5000;
         testCase8.input.database.enabled = true;
 
-        testCase8.expected = 'owner = { dob = "1979-05-27", name = "Tom" }\n' +
-                              'title = "FNTL Example"\n' +
+        testCase8.expected = '[owner]\n' +
+                              'dob = "1979-05-27"\n' +
+                              'name = "Tom"\n' +
+                              '[database]\n' +
+                              'connection_max = 5000\n' +
+                              'enabled = true\n' +
+                              'ports = [8001, 8001, 8002]\n' +
+                              'server = "192.168.1.1"\n' +
                               '[[products]]\n' +
                               'name = "Hammer"\n' +
                               'sku = 738594937\n' +
                               '[[products]]\n' +
                               'name = "Nail"\n' +
                               'sku = 284758393\n' +
-                              '[database]\n' +
-                              'connection_max = 5000\n' +
-                              'enabled = true\n' +
-                              'ports = [8001, 8001, 8002]\n' +
-                              'server = "192.168.1.1"\n';
+                              'title = "FNTL Example"\n';
+        testCase8.description = "Encoding complex nested tables and table arrays.";
         cases.push(testCase8);
 
         // Test case 9: Unicode characters
@@ -571,6 +552,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase9.input.emoji = "😊";
         testCase9.expected = 'emoji = "😊"\n' +
                               'greeting = "こんにちは"\n';
+        testCase9.description = "Encoding Unicode characters and emojis.";
         cases.push(testCase9);
 
         // Test case 10: Escape characters
@@ -580,6 +562,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase10.input.escaped_quote = 'He said, "Hello!"';
         testCase10.expected = 'escaped_newline = """Line1\nLine2"""\n' +
                               'escaped_quote = "He said, \\"Hello!\\""\n';
+        testCase10.description = "Encoding strings with escape characters.";
         cases.push(testCase10);
 
         // Test case 11: Mixed complex structures
@@ -624,28 +607,29 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         user2.active = false;
         testCase11.input.users.push(user2);
 
-        testCase11.expected = '[[users]]\n' +
-                               'active = true\n' +
-                               'name = "user1"\n' +
-                               '[[users]]\n' +
-                               'active = false\n' +
-                               'name = "user2"\n' +
-                               '[server]\n' +
+        testCase11.expected = '[server]\n' +
                                'connection_max = 5000\n' +
                                'enabled = true\n' +
                                'host = "localhost"\n' +
                                'ports = [8000, 8001, 8002]\n' +
+                               '[database]\n' +
+                               'connection_max = 10000\n' +
+                               'enabled = false\n' +
+                               'ports = [3306]\n' +
+                               'server = "192.168.1.100"\n' +
                                '[[owners]]\n' +
                                'dob = "1990-01-01"\n' +
                                'name = "Alice"\n' +
                                '[[owners]]\n' +
                                'dob = "1985-05-12"\n' +
                                'name = "Bob"\n' +
-                               '[database]\n' +
-                               'connection_max = 10000\n' +
-                               'enabled = false\n' +
-                               'ports = [3306]\n' +
-                               'server = "192.168.1.100"\n';
+                               '[[users]]\n' +
+                               'active = true\n' +
+                               'name = "user1"\n' +
+                               '[[users]]\n' +
+                               'active = false\n' +
+                               'name = "user2"\n';
+        testCase11.description = "Encoding mixed complex structures with multiple table arrays.";
         cases.push(testCase11);
 
         // Test case 12: Special number formats
@@ -657,6 +641,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase12.expected = 'special_float_1 = nan\n' +
                               'special_float_2 = inf\n' +
                               'special_float_3 = -inf\n';
+        testCase12.description = "Encoding special floating-point values: NaN, Infinity, -Infinity.";
         cases.push(testCase12);
 
         // Test case 13: Malformed FNTL (missing equals)
@@ -664,6 +649,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase13.input = new Object();
         testCase13.input.invalid_line = "No equals sign";
         testCase13.expected = null; // Encoder should skip or handle invalid entries
+        testCase13.description = "Encoding malformed FNTL input with missing equals sign.";
         cases.push(testCase13);
 
         // Test case 14: Malformed or unclosed string (simulated)
@@ -671,6 +657,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase14.input = new Object();
         testCase14.input.unclosed_string = "This string never ends...";
         testCase14.expected = null; // Expected output is null because the parser should flag this as an error
+        testCase14.description = "Encoding malformed FNTL input with unclosed string.";
         cases.push(testCase14);
 
         // Test case 15: Invalid date-time format
@@ -678,6 +665,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase15.input = new Object();
         testCase15.input.invalid_date = "2024-13-40T25:61:61Z";
         testCase15.expected = null; // Encoder should handle invalid dates or escape
+        testCase15.description = "Encoding malformed FNTL input with invalid date-time format.";
         cases.push(testCase15);
 
         // Test case 16: Nested arrays
@@ -689,89 +677,27 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         var nestedArrays:Array = new Array(nestedArray1, nestedArray2, nestedArray3);
         testCase16.input.nested_arrays = nestedArrays;
         testCase16.expected = 'nested_arrays = [[1, 2], [3, 4], [5, 6]]\n';
+        testCase16.description = "Encoding nested arrays within FNTL.";
         cases.push(testCase16);
 
         // Test case 17: Project-specific sample with Unicode and complex structures
         var testCase17:Object = new Object();
-        testCase17.input = new Object();
-        testCase17.input.task_chains_progress = new Object();
-        testCase17.input.task_chains_progress["主线"] = "1";
-
-        var taskHistory:Array = new Array();
-        taskHistory.push(0);
-        testCase17.input.task_history = taskHistory;
-
-        testCase17.input.tasks_finished = new Object();
-        testCase17.input.tasks_finished["0"] = 1;
-
-        var testArray:Array = new Array();
-        var innerArray1:Array = new Array("fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000);
-        var nestedKeyBindings:Array = new Array(
-            new Array("上键", "上键", 87),
-            new Array("下键", "下键", 83),
-            new Array("左键", "左键", 65),
-            new Array("右键", "右键", 68)
-        );
-        innerArray1.push(nestedKeyBindings);
-        testArray.push(innerArray1);
-        testArray.push("测试");
-        testCase17.input.test = testArray;
-
-        testCase17.input["商城已购买物品"] = new Array();
-        testCase17.input["战宠"] = new Array(new Array());
-
-        var tasksToDo:Array = new Array();
-        var taskToDo:Object = new Object();
-        taskToDo.id = 1;
-
-        var requirements:Object = new Object();
-        requirements.items = new Array();
-
-        var stages:Array = new Array();
-        var stage:Object = new Object();
-        stage.difficulty = "简单";
-        stage.name = "测试任务";
-        stages.push(stage);
-
-        requirements.stages = stages;
-        taskToDo.requirements = requirements;
-        tasksToDo.push(taskToDo);
-
-        testCase17.input.tasks_to_do = tasksToDo;
-
-        // Building expected object manually
-        var expected17:Object = new Object();
-        expected17.task_chains_progress = new Object();
-        expected17.task_chains_progress["主线"] = "1";
-
-        expected17.task_history = new Array(0);
-
-        expected17.tasks_finished = new Object();
-        expected17.tasks_finished["0"] = 1;
-
-        expected17.test = new Array();
-        var testNested:Array = new Array("fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, nestedKeyBindings);
-        expected17.test.push(testNested);
-        expected17.test.push("测试");
-
-        expected17["商城已购买物品"] = new Array();
-        expected17["战宠"] = new Array(new Array());
-
-        expected17.tasks_to_do = new Array();
-        var expectedTaskToDo:Object = new Object();
-        expectedTaskToDo.id = 1;
-
-        expectedTaskToDo.requirements = new Object();
-        expectedTaskToDo.requirements.items = new Array();
-
-        var expectedStage:Object = new Object();
-        expectedStage.difficulty = "简单";
-        expectedStage.name = "测试任务";
-        expectedTaskToDo.requirements.stages = new Array(expectedStage);
-
-        expected17.tasks_to_do.push(expectedTaskToDo);
-
-        testCase17.expected = expected17;
+        testCase17.text = 'task_chains_progress = { 主线 = "1" }\n' +
+                        'task_history = [0]\n' +
+                        'tasks_finished = { 0 = 1 }\n' +
+                        'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
+                        '"上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]]], "测试"],\n' +
+                        '商城已购买物品 = []\n' +
+                        '战宠 = [[]]\n' +
+                        '[[tasks_to_do]]\n' +
+                        'id = 1\n' +
+                        '[tasks_to_do.requirements]\n' +
+                        'items = []\n' +
+                        '[[tasks_to_do.requirements.stages]]\n' +
+                        'difficulty = "简单"\n' +
+                        'name = "测试任务"\n';
+        testCase17.expectedTokens = null;
+        testCase17.description = "Encoding project-specific FNTL with Unicode characters and complex nested structures.";
         cases.push(testCase17);
 
         return cases;
@@ -926,6 +852,9 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
                     nestingLevel++;
                 } else if (c == "}" || c == "]") {
                     nestingLevel--;
+                    if (nestingLevel < 0) {
+                        throw new Error("内联表格中的括号不匹配");
+                    }
                 }
                 currentPair += c;
             }
@@ -937,4 +866,5 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
 
         return pairs;
     }
+
 }

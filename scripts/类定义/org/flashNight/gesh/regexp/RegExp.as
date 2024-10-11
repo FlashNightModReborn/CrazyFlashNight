@@ -770,3 +770,68 @@ class org.flashNight.gesh.regexp.RegExp
 
 // trace("测试55：正则表达式 /\\./ 匹配 'a'");
 // trace(regex55.test("a")); // 预期输出 false
+
+/*
+
+import org.flashNight.gesh.regexp.RegExp;
+
+// 测试简单正则表达式
+var regex1:RegExp = new RegExp("a*b", "");
+trace("测试1：正则表达式 /a*b/ 匹配 'aaab' -> " + regex1.test("aaab")); // 预期 true
+
+var regex2:RegExp = new RegExp("(abc)+", "");
+trace("测试2：正则表达式 /(abc)+/ 匹配 'abcabc' -> " + regex2.test("abcabc")); // 预期 true
+
+var regex3:RegExp = new RegExp("[a-z]{3}", "");
+trace("测试3：正则表达式 /[a-z]{3}/ 匹配 'abc' -> " + regex3.test("abc")); // 预期 true
+
+var regex4:RegExp = new RegExp("a|b", "");
+trace("测试4：正则表达式 /a|b/ 匹配 'a' -> " + regex4.test("a")); // 预期 true
+trace("测试4：正则表达式 /a|b/ 匹配 'b' -> " + regex4.test("b")); // 预期 true
+
+var regex5:RegExp = new RegExp("a+", "");
+trace("测试5：正则表达式 /a+/ 匹配 'aa' -> " + regex5.test("aa")); // 预期 true
+
+var regex6:RegExp = new RegExp("a+", "");
+trace("测试6：正则表达式 /a+/ 匹配 '' -> " + regex6.test("")); // 预期 false
+
+var regex7:RegExp = new RegExp("(a)(b)(c)", "");
+var result:Array = regex7.exec("abc");
+if (result != null) {
+    trace("测试7：正则表达式 /(a)(b)(c)/ 匹配 'abc'");
+    trace("匹配结果：" + result[0]); // 输出 'abc'
+    trace("捕获组1：" + result[1]); // 输出 'a'
+    trace("捕获组2：" + result[2]); // 输出 'b'
+    trace("捕获组3：" + result[3]); // 输出 'c'
+} else {
+    trace("测试7失败：未匹配");
+}
+
+// 测试 numberRegExp
+var numberRegExp:RegExp = new RegExp("^-?\\d+(\\.\\d+)?([eE][+-]?\\d+)?$", "");
+trace("测试8：正则表达式 numberRegExp 匹配 '123' -> " + numberRegExp.test("123")); // 预期 true
+trace("测试8：正则表达式 numberRegExp 匹配 '-123.45' -> " + numberRegExp.test("-123.45")); // 预期 true
+trace("测试8：正则表达式 numberRegExp 匹配 '1e10' -> " + numberRegExp.test("1e10")); // 预期 true
+trace("测试8：正则表达式 numberRegExp 匹配 '12a' -> " + numberRegExp.test("12a")); // 预期 false
+
+// 测试 dateTimeRegExp
+var dateTimeRegExp:RegExp = new RegExp("^\\d{4}-\\d{2}-\\d{2}[Tt ][0-2]\\d:[0-5]\\d:[0-5]\\d(\\.\\d+)?([Zz]|([+-][0-2]\\d:[0-5]\\d))?$", "");
+trace("测试9：正则表达式 dateTimeRegExp 匹配 '2024-10-09T08:30:00Z' -> " + dateTimeRegExp.test("2024-10-09T08:30:00Z")); // 预期 true
+trace("测试9：正则表达式 dateTimeRegExp 匹配 '2024-10-09 08:30:00+02:00' -> " + dateTimeRegExp.test("2024-10-09 08:30:00+02:00")); // 预期 true
+trace("测试9：正则表达式 dateTimeRegExp 匹配 '2024-13-40T25:61:61Z' -> " + dateTimeRegExp.test("2024-13-40T25:61:61Z")); // 预期 false
+
+// 测试 booleanRegExp
+var booleanRegExp:RegExp = new RegExp("^(true|false)$", "i");
+trace("测试10：正则表达式 booleanRegExp 匹配 'true' -> " + booleanRegExp.test("true")); // 预期 true
+trace("测试10：正则表达式 booleanRegExp 匹配 'FALSE' -> " + booleanRegExp.test("FALSE")); // 预期 true
+trace("测试10：正则表达式 booleanRegExp 匹配 'yes' -> " + booleanRegExp.test("yes")); // 预期 false
+
+// 测试 specialFloatRegExp
+var specialFloatRegExp:RegExp = new RegExp("^(nan|inf|-inf)$", "i");
+trace("测试11：正则表达式 specialFloatRegExp 匹配 'NaN' -> " + specialFloatRegExp.test("NaN")); // 预期 true
+trace("测试11：正则表达式 specialFloatRegExp 匹配 'inf' -> " + specialFloatRegExp.test("inf")); // 预期 true
+trace("测试11：正则表达式 specialFloatRegExp 匹配 '-INF' -> " + specialFloatRegExp.test("-INF")); // 预期 true
+trace("测试11：正则表达式 specialFloatRegExp 匹配 '1.23' -> " + specialFloatRegExp.test("1.23")); // 预期 false
+
+
+*/
