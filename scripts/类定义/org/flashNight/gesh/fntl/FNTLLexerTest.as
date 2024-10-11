@@ -45,7 +45,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     /**
      * Tests the FNTLLexer by tokenizing FNTL/FNTL inputs and validating tokens.
      */
-    private function testLexer():Void {
+    public function testLexer():Void {
         var FNTLSamples:Array = this.getLexerTestCases();
 
         for (var i:Number = 0; i < FNTLSamples.length; i++) {
@@ -87,7 +87,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     /**
      * Tests the FNTLParser by parsing tokenized FNTL/FNTL inputs and validating output objects.
      */
-    private function testParser():Void {
+    public function testParser():Void {
         var FNTLSamples:Array = this.getParserTestCases();
 
         for (var i:Number = 0; i < FNTLSamples.length; i++) {
@@ -135,7 +135,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     /**
      * Tests the FNTLEncoder by encoding objects into FNTL/FNTL strings and validating outputs.
      */
-    private function testFNTLEncoder():Void {
+    public function testFNTLEncoder():Void {
         var testCases:Array = this.getEncoderTestCases();
 
         for (var i:Number = 0; i < testCases.length; i++) {
