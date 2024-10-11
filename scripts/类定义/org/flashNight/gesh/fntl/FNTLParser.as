@@ -19,14 +19,39 @@ class org.flashNight.gesh.fntl.FNTLParser {
     private var hasErrorFlag:Boolean;
     private var text:String;
 
-    // 使用 FNTLLexer 的静态正则表达式
     private function isAlpha(c:String):Boolean {
-        return FNTLLexer.alphaRegex.test(c); // 通过 FNTLLexer 访问 alphaRegex
+        var code:Number = c.charCodeAt(0);
+        // 检查ASCII字母
+        if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+            return true;
+        }
+        // 检查扩展拉丁字母
+        if (code >= 0x00C0 && code <= 0x017F) {
+            return true;
+        }
+        // 检查中文字符
+        if (code >= 0x4E00 && code <= 0x9FFF) {
+            return true;
+        }
+        // 可根据需要添加更多范围
+        return false;
     }
 
+
     private function isAlphaNumeric(c:String):Boolean {
-        return FNTLLexer.alphaNumericRegex.test(c); // 通过 FNTLLexer 访问 alphaNumericRegex
+        var code:Number = c.charCodeAt(0);
+        // 检查数字
+        if (code >= 48 && code <= 57) {
+            return true;
+        }
+        // 检查下划线
+        if (code == 95) {
+            return true;
+        }
+        // 使用 isAlpha 方法
+        return isAlpha(c);
     }
+
 
     /**
      * 解析 Token 列表并构建 FNTL 对象。
@@ -216,9 +241,8 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @return 解析后的内联表格对象或 undefined（如果有错误）。
      */
     private function parseInlineTable(tableStr:String):Object {
-        var table:Object = new Object();
         var lexer:FNTLLexer = new FNTLLexer(tableStr);
-        var tokens:Array = new Array();
+        var tokens:Array = [];
         var tok:Object;
 
         while ((tok = lexer.getNextToken()) != null) {

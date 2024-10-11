@@ -56,12 +56,37 @@ class org.flashNight.gesh.fntl.FNTLLexer {
     }
 
     private function isAlpha(c:String):Boolean {
-        return FNTLLexer.alphaRegex.test(c);
+        var code:Number = c.charCodeAt(0);
+        // 检查ASCII字母
+        if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+            return true;
+        }
+        // 检查扩展拉丁字母
+        if (code >= 0x00C0 && code <= 0x017F) {
+            return true;
+        }
+        // 检查中文字符
+        if (code >= 0x4E00 && code <= 0x9FFF) {
+            return true;
+        }
+        // 可根据需要添加更多范围
+        return false;
     }
 
     private function isAlphaNumeric(c:String):Boolean {
-        return FNTLLexer.alphaNumericRegex.test(c);
+        var code:Number = c.charCodeAt(0);
+        // 检查数字
+        if (code >= 48 && code <= 57) {
+            return true;
+        }
+        // 检查下划线
+        if (code == 95) {
+            return true;
+        }
+        // 使用 isAlpha 方法
+        return isAlpha(c);
     }
+
 
     private function parseDateTime(dateTimeStr:String):String {
         if (!FNTLLexer.dateTimeRegExp.test(dateTimeStr)) {
@@ -193,11 +218,11 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 return token;
             } 
             // 识别数字或日期时间
-            else if (this.isDigit(this.currentChar) || (this.currentChar == "-" && this.inValue)) {
+            else if (this.isDigit(this.currentChar) || this.currentChar == "-") {
                 token = this.readNumberOrDate();
                 this.inValue = false;
                 return token;
-            } 
+            }
             else {
                 this.error("未知的标记类型: '" + this.currentChar + "'", this.currentLine, this.currentColumn);
                 this.nextChar();
@@ -249,14 +274,20 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         while (true) {
             // 检查字符串结束条件
             if (isMultiline) {
-                if (this.currentChar == quoteType && this.peek() == quoteType && this.peekAhead(2) == quoteType) {
+                if (this.currentChar == quoteType && this.peek() == quoteType && this.peekAhead(1) == quoteType) {
+                    // 跳过结束引号
+                    this.nextChar();
+                    this.nextChar();
+                    this.nextChar();
                     break;
                 }
             } else {
                 if (this.currentChar == quoteType) {
+                    this.nextChar(); // 跳过结束引号
                     break;
                 }
             }
+
 
             if (this.currentChar == null) {
                 this.error("未关闭的字符串", tokenLine, tokenColumn);

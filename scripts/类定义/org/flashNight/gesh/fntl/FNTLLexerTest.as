@@ -1,6 +1,7 @@
 ﻿import org.flashNight.gesh.fntl.*;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.string.StringUtils;
+import org.flashNight.naki.Sort.QuickSort;
 
 /**
  * FNTLLexerTest class upgraded to support FNTL (FlashNight Text Language).
@@ -682,21 +683,59 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
 
         // Test case 17: Project-specific sample with Unicode and complex structures
         var testCase17:Object = new Object();
-        testCase17.text = 'task_chains_progress = { 主线 = "1" }\n' +
-                        'task_history = [0]\n' +
-                        'tasks_finished = { 0 = 1 }\n' +
-                        'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
-                        '"上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]]], "测试"],\n' +
-                        '商城已购买物品 = []\n' +
-                        '战宠 = [[]]\n' +
-                        '[[tasks_to_do]]\n' +
-                        'id = 1\n' +
-                        '[tasks_to_do.requirements]\n' +
-                        'items = []\n' +
-                        '[[tasks_to_do.requirements.stages]]\n' +
-                        'difficulty = "简单"\n' +
-                        'name = "测试任务"\n';
-        testCase17.expectedTokens = null;
+        testCase17.input = new Object();
+        testCase17.input.task_chains_progress = new Object();
+        testCase17.input.task_chains_progress["主线"] = "1";
+
+        testCase17.input.task_history = [0];
+
+        testCase17.input.tasks_finished = new Object();
+        testCase17.input.tasks_finished["0"] = 1; // Manually adding the key-value pair
+
+        testCase17.input.test = [
+            ["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [
+                ["上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]
+            ]],
+            "测试"
+        ];
+
+        testCase17.input.商城已购买物品 = new Array();
+        testCase17.input.战宠 = new Array(new Array());
+        testCase17.input.tasks_to_do = new Array();
+
+        var task_to_do1:Object = new Object();
+        task_to_do1.id = 1;
+        task_to_do1.requirements = new Object();
+        task_to_do1.requirements.items = new Array();
+        task_to_do1.requirements.stages = new Array();
+
+        var stage1:Object = new Object();
+        stage1.difficulty = "简单";
+        stage1.name = "测试任务";
+        task_to_do1.requirements.stages.push(stage1);
+
+        testCase17.input.tasks_to_do.push(task_to_do1);
+
+        testCase17.expected = '[task_chains_progress]\n' +
+                               '主线 = "1"\n' +
+                               '[tasks_finished]\n' +
+                               '0 = 1\n' +
+                               '[task_history]\n' +
+                               '0 = 0\n' +
+                               '[[tasks_to_do]]\n' +
+                               'id = 1\n' +
+                               '[tasks_to_do.requirements]\n' +
+                               'items = []\n' +
+                               '[tasks_to_do.requirements.stages]\n' +
+                               'difficulty = "简单"\n' +
+                               'name = "测试任务"\n' +
+                               '[[tasks_to_do.requirements.stages]]\n' +
+                               'difficulty = "简单"\n' +
+                               'name = "测试任务"\n' +
+                               'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
+                               '"上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]]], "测试"]]\n' +
+                               '商城已购买物品 = []\n' +
+                               '战宠 = [[]]\n';
         testCase17.description = "Encoding project-specific FNTL with Unicode characters and complex nested structures.";
         cases.push(testCase17);
 
@@ -729,21 +768,59 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     }
 
     /**
-     * Compares two FNTL/FNTL output strings for equality.
+     * Compares two FNTL/FNTL output strings for semantic equality by parsing and comparing objects.
      * @param actual The encoded FNTL/FNTL string.
      * @param expected The expected FNTL/FNTL string.
-     * @return True if strings match, else false.
+     * @return True if semantic content matches, else false.
      */
     private function compareFNTLOutputs(actual:String, expected:String):Boolean {
-        var cleanedActual:String = this.trimTrailingNewlines(actual);
-        var cleanedExpected:String = this.trimTrailingNewlines(expected);
+        if (expected === null) {
+            if (actual === null || StringUtils.trim(actual) === "") {
+                trace("编码输出与预期结果匹配。");
+                return true;
+            } else {
+                trace("编码输出不匹配！\n预期:\nnull\n实际:\n" + actual);
+                return false;
+            }
+        }
 
-        if (cleanedActual != cleanedExpected) {
-            trace("编码输出不匹配！\n预期:\n" + cleanedExpected + "\n实际:\n" + cleanedActual);
+        // Parse actual FNTL string
+        var lexerActual:FNTLLexer = new FNTLLexer(actual);
+        var tokensActual:Array = [];
+        var token:Object;
+        while ((token = lexerActual.getNextToken()) != null) {
+            tokensActual.push(token);
+        }
+        var parserActual:FNTLParser = new FNTLParser(tokensActual, actual);
+        var parsedActual:Object = parserActual.parse();
+
+        if (parserActual.hasError()) {
+            trace("编码输出解析失败: " + actual);
             return false;
-        } else {
+        }
+
+        // Parse expected FNTL string
+        var lexerExpected:FNTLLexer = new FNTLLexer(expected);
+        var tokensExpected:Array = [];
+        while ((token = lexerExpected.getNextToken()) != null) {
+            tokensExpected.push(token);
+        }
+        var parserExpected:FNTLParser = new FNTLParser(tokensExpected, expected);
+        var parsedExpected:Object = parserExpected.parse();
+
+        if (parserExpected.hasError()) {
+            trace("预期编码输出解析失败: " + expected);
+            return false;
+        }
+
+        // Compare parsed objects
+        var comparisonResult:Boolean = this.compareResults(parsedActual, parsedExpected, 0);
+        if (comparisonResult) {
             trace("编码输出与预期结果匹配。");
             return true;
+        } else {
+            trace("编码输出不匹配！\n预期:\n" + expected + "\n实际:\n" + actual);
+            return false;
         }
     }
 
@@ -797,6 +874,13 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
                 }
                 if (!this.compareResults(actual[key], expected[key], depth + 1)) {
                     trace("键 '" + key + "' 的值不匹配。");
+                    return false;
+                }
+            }
+            // Check for extra keys in actual
+            for (var actualKey:String in actual) {
+                if (expected[actualKey] === undefined) {
+                    trace("额外的键: " + actualKey);
                     return false;
                 }
             }

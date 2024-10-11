@@ -83,16 +83,10 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                         result.push(key + " = " + encodedArray);
                     }
                 } else if (typeof(value) == "object" && value != null && !(value instanceof Date)) {
-                    if (this.isInlineTable(value) && path.length == 0) {
-                        // 仅在顶层允许内联表格
-                        var encodedInline:String = this.encodeInlineTable(value);
-                        result.push(key + " = " + encodedInline);
-                    } else {
-                        // 将嵌套对象作为独立表格处理
-                        var newPath:Array = path.concat([key]);
-                        stack.push({ object: value, path: newPath, depth: depth + 1, isArrayElement: false });
-                        continue; // 不在当前表格中编码此键
-                    }
+                    // 将嵌套对象作为独立表格处理
+                    var newPath:Array = path.concat([key]);
+                    stack.push({ object: value, path: newPath, depth: depth + 1, isArrayElement: false });
+                    continue; // 不在当前表格中编码此键
                 } else {
                     // 普通键值对处理，不添加缩进
                     var encodedValue:String = this.encodeValue(value);
@@ -249,7 +243,12 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      */
     private function encodeValue(value):String {
         if (typeof(value) == "string") {
-            return this.encodeString(String(value));
+            // Check if the string is a date-time format
+            if (isDateTimeString(value)) {
+                return this.encodeDateTimeString(value);
+            } else {
+                return this.encodeString(String(value));
+            }
         } else if (typeof(value) == "number") {
             return this.encodeFloat(value);
         } else if (typeof(value) == "boolean") {
@@ -260,11 +259,37 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             if (this.isArray(value)) {
                 return this.encodeArray(value, false);
             } else {
-                // 对于嵌套对象，应已作为独立表格处理，这里不需要编码为内联表格
+                // For nested objects, handled separately
                 return "";
             }
         } else {
             return value != null ? String(value) : "null";
+        }
+    }
+
+    /**
+     * 判断字符串是否为日期时间格式
+     * @param value 字符串
+     * @return 是否为日期时间格式
+     */
+    private function isDateTimeString(value:String):Boolean {
+        var dateTimeRegExp:RegExp = new RegExp("^\\d{4}-\\d{2}-\\d{2}[Tt ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([Zz]|[+-]\\d{2}:\\d{2})?$");
+        return dateTimeRegExp.test(value);
+    }
+
+    /**
+     * 编码日期时间字符串，返回不带引号的字符串
+     * @param value 字符串
+     * @return TOML/FNTL 格式的日期时间字符串
+     */
+    private function encodeDateTimeString(value:String):String {
+        // Validate date-time string
+        var dateTimeRegExp:RegExp = new RegExp("^\\d{4}-\\d{2}-\\d{2}[Tt ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([Zz]|[+-]\\d{2}:\\d{2})?$");
+        if (dateTimeRegExp.test(value)) {
+            return value;
+        } else {
+            // Not a valid date-time string, treat as regular string
+            return this.encodeString(value);
         }
     }
 
@@ -336,15 +361,6 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
     }
 
     /**
-     * 辅助函数：在小于10的数值前添加前导零
-     * @param value 数值
-     * @return 格式化后的字符串
-     */
-    private function padZero(value:Number):String {
-        return value < 10 ? "0" + value : String(value);
-    }
-
-    /**
      * 辅助函数：在16进制字符串前添加前导零以达到指定长度
      * @param hex 16进制字符串
      * @param length 目标长度
@@ -378,10 +394,23 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         var milliseconds:Number = date.getMilliseconds();
         var fractional:String = milliseconds > 0 ? "." + this.padZeroFraction(milliseconds) : "";
         
-        // 默认时区为 UTC，您可以根据需要扩展时区支持
-        var timezoneSuffix:String = "Z"; // TODO: 根据需要调整时区支持
+        // 获取时区信息（假设为本地时区，转换为 ISO8601 格式）
+        var timezoneOffset:Number = -date.getTimezoneOffset(); // 分钟为单位
+        var tzSign:String = timezoneOffset >= 0 ? "+" : "-";
+        var tzHours:Number = Math.floor(Math.abs(timezoneOffset) / 60);
+        var tzMinutes:Number = Math.abs(timezoneOffset) % 60;
+        var timezoneSuffix:String = tzSign + this.padZero(tzHours) + ":" + this.padZero(tzMinutes);
         
         return year + "-" + month + "-" + day + "T" + hours + ":" + minutes + ":" + seconds + fractional + timezoneSuffix;
+    }
+
+    /**
+     * 辅助函数：在小于10的数值前添加前导零
+     * @param value 数值
+     * @return 格式化后的字符串
+     */
+    private function padZero(value:Number):String {
+        return value < 10 ? "0" + value : String(value);
     }
 
     /**
@@ -428,11 +457,48 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      * 编码键数组，使用自定义 QuickSort 的 adaptiveSort 方法
      * 已在 encode 和 encodeInlineTable 方法中使用
      */
-
     // 移除了内部 quickSort 方法，因为我们使用外部的 QuickSort 类
 
-    // 示例：如何进一步模块化代码
-    // 您可以创建辅助类或方法来处理特定的编码任务
-    // 例如，一个专门用于编码字符串的辅助类
-    // 这里保持在同一类中以简化实现
+    /**
+     * 编码内联表格字符串为对象
+     * @param tableStr 内联表格字符串
+     * @return 解析后的内联表格对象
+     */
+    private function parseInlineTable(tableStr:String):Object {
+        var table:Object = new Object();
+        var lexer:FNTLLexer = new FNTLLexer(tableStr);
+        var tokens:Array = new Array();
+        var tok:Object;
+        while ((tok = lexer.getNextToken()) != null) {
+            tokens.push(tok);
+        }
+        var parser:FNTLParser = new FNTLParser(tokens, tableStr);
+        var parsedTable:Object = parser.parse();
+        if (parser.hasError()) {
+            this.error("内联表格解析失败: " + tableStr, {line: 0, column: 0});
+            return undefined;
+        }
+        return parsedTable;
+    }
+
+    /**
+     * 处理解析错误，通过设置错误标志并记录错误信息。
+     * @param message 错误消息。
+     * @param token 相关的 Token 对象，用于定位错误位置。
+     */
+    private function error(message:String, token:Object):Void {
+        var lineInfo:String = "行: " + (token.line != undefined ? token.line : "?") + ", 列: " + (token.column != undefined ? token.column : "?");
+        trace("错误: " + message + " 在 " + lineInfo);
+        // 可以根据需要抛出异常或记录错误标志
+    }
+
+    /**
+     * 获取对象的所有键，支持忽略内部键
+     * @param obj 对象
+     * @return 键数组
+     */
+    private function getSortedKeys(obj:Object):Array {
+        var keys:Array = this.getKeys(obj);
+        return QuickSort.adaptiveSort(keys, this.compareKeys);
+    }
 }
