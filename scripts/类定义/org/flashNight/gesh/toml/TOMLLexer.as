@@ -472,7 +472,7 @@ class org.flashNight.gesh.toml.TOMLLexer {
         }
     }
 
-
+    
 
     // 检查字符是否为字母
     private function isAlpha(c:String):Boolean {
