@@ -1,4 +1,4 @@
-﻿import org.flashNight.gesh.regexp.RegExp; // 确保您有自定义的 RegExp 类，或使用 AS2 的原生 RegExp（如果可用）
+﻿import org.flashNight.gesh.regexp.RegExp;
 import org.flashNight.gesh.fntl.FNTLLexer; // 确保 Lexer 类路径正确
 import org.flashNight.gesh.string.StringUtils;
 

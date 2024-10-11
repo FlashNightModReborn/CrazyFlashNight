@@ -952,3 +952,13 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     }
 
 }
+
+
+/*
+
+var test:org.flashNight.gesh.fntl.FNTLLexerTest = new org.flashNight.gesh.fntl.FNTLLexerTest();
+
+// 调用测试方法，运行所有测试用例
+test.runAllTests();
+
+*/

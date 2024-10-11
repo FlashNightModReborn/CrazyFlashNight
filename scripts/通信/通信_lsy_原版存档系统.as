@@ -191,41 +191,42 @@ _root.读取数据库存盘 = function()
 
 _root.本地存盘 = function() {
     var mysave = SharedObject.getLocal("crazyflasher7_saves");
-   /*
+   
     // Store the actual game data in the SharedObject
     mysave.data[存盘名] = _root.mydata;
     mysave.flush();  // Save the data to disk
     
-   
-    // Convert the saved object to JSON format for testing and display purposes
-    var json = ObjectUtil.toTOML(mysave.data);  // Serialize saved data to JSON
+   if(_root.调试模式 === true)
+   {
+      // Convert the saved object to JSON format for testing and display purposes
+      var json = ObjectUtil.toFNTL(mysave.data);  // Serialize saved data to JSON
 
-    // Step 1: Create a text field for displaying the JSON data
-    if (!_root.saveDataField) {
-        _root.createTextField("saveDataField", 9999, 10, 50, 380, 180);
-        _root.saveDataField.border = true;
-        _root.saveDataField.multiline = true;
-        _root.saveDataField.wordWrap = true;
-        _root.saveDataField.text = "Game data (in JSON format) will be shown here...";
-    }
+      // Step 1: Create a text field for displaying the JSON data
+      if (!_root.saveDataField) {
+         _root.createTextField("saveDataField", 9999, 10, 50, 380, 180);
+         _root.saveDataField.border = true;
+         _root.saveDataField.multiline = true;
+         _root.saveDataField.wordWrap = true;
+         _root.saveDataField.text = "Game data (in JSON format) will be shown here...";
+      }
 
-    // Step 2: Create a button for manually saving data
-    if (!_root.saveButton) {
-        _root.createTextField("saveButton", 9998, 400, 50, 100, 25);
-        _root.saveButton.border = true;
-        _root.saveButton.background = true;
-        _root.saveButton.backgroundColor = 0xCCCCCC;
-        _root.saveButton.text = "Save Data";
-        _root.saveButton.selectable = false;
-        _root.saveButton.onRelease = function() {
-            _root.本地存盘();  // Trigger the save function and display the JSON
-        };
-    }
+      // Step 2: Create a button for manually saving data
+      if (!_root.saveButton) {
+         _root.createTextField("saveButton", 9998, 400, 50, 100, 25);
+         _root.saveButton.border = true;
+         _root.saveButton.background = true;
+         _root.saveButton.backgroundColor = 0xCCCCCC;
+         _root.saveButton.text = "Save Data";
+         _root.saveButton.selectable = false;
+         _root.saveButton.onRelease = function() {
+               _root.本地存盘();  // Trigger the save function and display the JSON
+         };
+      }
 
-    // Display the JSON data in the text field for easy copy-paste testing
-    */
-    _root.saveDataField.text = json;  // Display the JSON string in the text field
-    
+      // Display the JSON data in the text field for easy copy-paste testing
+      
+      _root.saveDataField.text = json;  // Display the JSON string in the text field
+   }
 };
 
 

@@ -1,0 +1,47 @@
+# 基础信息
+游戏名称 = "FlashNight"
+玩家 = { 名字 = "李雷", 最高分 = 4500 }
+
+# 键位绑定（简化）
+键位绑定 = [
+  ["上键", "上键", 87],
+  ["下键", "下键", 83],
+  ["功能键A", "A键", 74],
+  ["攻击模式-空手", "键1", 49]
+]
+
+# 物品信息（精简至代表性数据）
+物品栏 = [
+  ["苍面银牙", 1, 0],
+  ["轻量化量子能量枪", 1, 1],
+  ["XM1014", 1, 1],
+  ["普通hp药剂", 3, 0]
+]
+
+# 任务进度
+[[tasks_to_do]]
+id = 77
+[tasks_to_do.requirements]
+items = []
+[[tasks_to_do.requirements.stages]]
+difficulty = "简单"
+name = "深入禁区"
+
+[[tasks_to_do]]
+id = 1
+[tasks_to_do.requirements]
+items = []
+[[tasks_to_do.requirements.stages]]
+difficulty = "简单"
+name = "新手练习场"
+
+[tasks_finished]
+0 = 1
+
+# 宠物与战宠（简化）
+战宠 = [[], [], []]
+宠物领养限制 = 5
+
+# 表示已完成的任务链
+[task_chains_progress]
+主线 = "77"

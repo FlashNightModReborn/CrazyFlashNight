@@ -2,7 +2,7 @@
 import org.flashNight.gesh.string.*;
 import org.flashNight.gesh.fntl.*;
 import org.flashNight.naki.Sort.QuickSort;
-
+import org.flashNight.gesh.regexp.RegExp;
 /**
  * FNTLEncoder class upgraded to support FNTL (FlashNight Text Language).
  * Enhancements include:

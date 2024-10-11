@@ -3,6 +3,7 @@ import org.flashNight.naki.Sort.InsertionSort;
 import JSON;
 import Base64;
 import org.flashNight.gesh.toml.*;
+import org.flashNight.gesh.fntl.*;
 import org.flashNight.naki.DataStructures.Dictionary;
 
 class org.flashNight.gesh.object.ObjectUtil {
@@ -415,6 +416,55 @@ class org.flashNight.gesh.object.ObjectUtil {
     }
 
     /**
+     * 将对象序列化为 FNTL 字符串。
+     * @param obj 要序列化的对象。
+     * @param pretty 是否格式化输出。
+     * @return String FNTL 字符串，或 null 解析失败。
+     */
+    public static function toFNTL(obj:Object, pretty:Boolean):String {
+        var encoder:FNTLEncoder = new FNTLEncoder();
+        try {
+            return encoder.encode(obj, pretty); // 序列化对象为 FNTL 字符串
+        } catch (e:Object) {
+            trace("ObjectUtil.toFNTL: 无法序列化对象为FNTL字符串 - " + e.message);
+            return null; // 处理异常并返回 null
+        }
+    }
+
+    /**
+     * 将 FNTL 字符串解析为对象。
+     * @param fntl FNTL 字符串。
+     * @return Object 解析后的对象，或 null 解析失败。
+     */
+    public static function fromFNTL(fntl:String):Object {
+        var lexer:FNTLLexer = new FNTLLexer(fntl);
+        var tokens:Array = [];
+        var token:Object;
+
+        try {
+            // 获取所有 tokens
+            while ((token = lexer.getNextToken()) != null) {
+                tokens.push(token);
+            }
+
+            // 解析 tokens
+            var parser:FNTLParser = new FNTLParser(tokens);
+            var result:Object = parser.parse();
+
+            if (parser.hasError()) {
+                trace("ObjectUtil.fromFNTL: 解析 FNTL 字符串时发生错误");
+                return null; // 返回 null 以处理解析错误
+            }
+            
+            return result; // 返回解析后的对象
+        } catch (e:Object) {
+            trace("ObjectUtil.fromFNTL: 无法解析 FNTL 字符串 - " + e.message);
+            return null; // 处理异常并返回 null
+        }
+    }
+
+
+    /**
      * 将对象序列化为 TOML 字符串。
      * @param obj 要序列化的对象。
      * @param pretty 是否格式化输出。
@@ -435,32 +485,32 @@ class org.flashNight.gesh.object.ObjectUtil {
      * @param toml TOML 字符串。
      * @return Object 解析后的对象，或 null 解析失败。
      */
-        public static function fromTOML(toml:String):Object {
-            var lexer:TOMLLexer = new TOMLLexer(toml);
-            var tokens:Array = [];
-            var token:Object;
+    public static function fromTOML(toml:String):Object {
+        var lexer:TOMLLexer = new TOMLLexer(toml);
+        var tokens:Array = [];
+        var token:Object;
 
-            try {
-                // 获取所有 tokens
-                while ((token = lexer.getNextToken()) != null) {
-                    tokens.push(token);
-                }
-
-                // 解析 tokens
-                var parser:TOMLParser = new TOMLParser(tokens);
-                var result:Object = parser.parse();
-
-                if (parser.hasError()) {
-                    trace("ObjectUtil.fromTOML: 解析 TOML 字符串时发生错误");
-                    return null; // 返回 null 以处理解析错误
-                }
-                
-                return result; // 返回解析后的对象
-            } catch (e:Object) {
-                trace("ObjectUtil.fromTOML: 无法解析 TOML 字符串 - " + e.message);
-                return null; // 处理异常并返回 null
+        try {
+            // 获取所有 tokens
+            while ((token = lexer.getNextToken()) != null) {
+                tokens.push(token);
             }
+
+            // 解析 tokens
+            var parser:TOMLParser = new TOMLParser(tokens);
+            var result:Object = parser.parse();
+
+            if (parser.hasError()) {
+                trace("ObjectUtil.fromTOML: 解析 TOML 字符串时发生错误");
+                return null; // 返回 null 以处理解析错误
+            }
+            
+            return result; // 返回解析后的对象
+        } catch (e:Object) {
+            trace("ObjectUtil.fromTOML: 无法解析 TOML 字符串 - " + e.message);
+            return null; // 处理异常并返回 null
         }
+    }
 
     /**
      * 将对象序列化为压缩后的 Base64 编码字符串。
