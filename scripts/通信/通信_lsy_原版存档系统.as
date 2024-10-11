@@ -198,16 +198,16 @@ _root.本地存盘 = function() {
     
    if(_root.调试模式 === true)
    {
-      // Convert the saved object to JSON format for testing and display purposes
-      var json = ObjectUtil.toFNTL(mysave.data);  // Serialize saved data to JSON
+      // Convert the saved object to FNTL format for testing and display purposes
+      var FNTL = ObjectUtil.toFNTL(mysave.data);  // Serialize saved data to FNTL
 
-      // Step 1: Create a text field for displaying the JSON data
+      // Step 1: Create a text field for displaying the FNTL data
       if (!_root.saveDataField) {
          _root.createTextField("saveDataField", 9999, 10, 50, 380, 180);
          _root.saveDataField.border = true;
          _root.saveDataField.multiline = true;
          _root.saveDataField.wordWrap = true;
-         _root.saveDataField.text = "Game data (in JSON format) will be shown here...";
+         _root.saveDataField.text = "Game data (in FNTL format) will be shown here...";
       }
 
       // Step 2: Create a button for manually saving data
@@ -219,13 +219,13 @@ _root.本地存盘 = function() {
          _root.saveButton.text = "Save Data";
          _root.saveButton.selectable = false;
          _root.saveButton.onRelease = function() {
-               _root.本地存盘();  // Trigger the save function and display the JSON
+               _root.本地存盘();  // Trigger the save function and display the FNTL
          };
       }
 
-      // Display the JSON data in the text field for easy copy-paste testing
+      // Display the FNTL data in the text field for easy copy-paste testing
       
-      _root.saveDataField.text = json;  // Display the JSON string in the text field
+      _root.saveDataField.text = FNTL;  // Display the FNTL string in the text field
    }
 };
 
