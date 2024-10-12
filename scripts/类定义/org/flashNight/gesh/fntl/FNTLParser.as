@@ -1,5 +1,5 @@
 ﻿import org.flashNight.gesh.regexp.RegExp;
-import org.flashNight.gesh.fntl.FNTLLexer; // 确保 Lexer 类路径正确
+import org.flashNight.gesh.fntl.FNTLLexer; // Ensure Lexer class path is correct
 import org.flashNight.gesh.string.StringUtils;
 import org.flashNight.gesh.object.ObjectUtil;
 
@@ -21,59 +21,69 @@ class org.flashNight.gesh.fntl.FNTLParser {
     private var hasErrorFlag:Boolean;
     private var text:String;
     
-    // 日志输出开关
+    // Log output toggle
     private var debug:Boolean;
 
     /**
-     * 构造函数
-     * @param tokens 要解析的 Token 列表。
-     * @param text 原始文本。
-     * @param debugFlag 可选参数，设置日志输出开关（默认为 false）。
+     * Constructor
+     * @param tokens The list of tokens to parse.
+     * @param text The original text.
+     * @param debugFlag Optional parameter to set the debug flag (default is false).
      */
     public function FNTLParser(tokens:Array, text:String, debugFlag:Boolean) {
         this.tokens = tokens;
         this.text = text;
         this.position = 0;
-        this.current = null;
         this.root = new Object();
         this.hasErrorFlag = false;
         this.debug = debugFlag;
         
-        // 初始化 this.current 为 this.root
+        // Initialize this.current to this.root
         this.current = this.root;
         
         if (this.debug) {
-            trace("FNTLParser 初始化。总 Token 数: " + this.tokens.length);
+            trace("FNTLParser Initialized. Total Tokens: " + this.tokens.length);
         }
     }
 
     /**
-     * 解析 Token 列表并构建 FNTL 对象。
-     * @return 解析后的 FNTL 对象。
+     * Parses the list of tokens and constructs the FNTL object.
+     * @return The parsed FNTL object.
      */
     public function parse():Object {
         if (this.debug) {
-            trace("开始解析 FNTL 文本。");
+            trace("Starting to parse FNTL text.");
         }
+
+        var tempRoot:Object = new Object(); // Use a temporary object for parsing
+        var originalRoot:Object = this.root; // Save the original root object
+        this.root = tempRoot; // Temporarily point root to tempRoot
+        this.current = this.root; // Reset current context
+
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
             if (this.debug) {
-                trace("当前 Token[" + this.position + "]: Type = " + token.type + ", Value = " + token.value);
+                trace("Current Token[" + this.position + "]: Type = " + token.type + ", Value = " + token.value);
             }
 
             switch (token.type) {
                 case "KEY":
                     if (!this.handleKeyValuePair()) {
-                        // 如果在处理键值对时发生错误，停止解析
+                        // Error occurred, restore original root and return null
                         if (this.debug) {
-                            trace("处理键值对时发生错误，停止解析。");
+                            trace("Error occurred while handling key-value pair. Stopping parsing.");
                         }
+                        this.root = originalRoot;
                         return null;
                     }
                     break;
                 case "LBRACKET":
-                    // 处理表头和表数组
+                    // Handle table headers and table arrays
                     if (!this.handleTable()) {
+                        if (this.debug) {
+                            trace("Error occurred while handling table. Stopping parsing.");
+                        }
+                        this.root = originalRoot;
                         return null;
                     }
                     break;
@@ -82,9 +92,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
                     this.position++;
                     break;
                 case "NEWLINE":
-                    // 跳过 NEWLINE token
+                    // Skip NEWLINE tokens
                     if (this.debug) {
-                        trace("跳过 NEWLINE token。");
+                        trace("Skipping NEWLINE token.");
                     }
                     this.position++;
                     break;
@@ -95,7 +105,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 case "COLON":
                 case "LBRACE":
                 case "RBRACE":
-                    // 这些 Token 类型应该在处理上下文时被解析，若出现在此处则为语法错误
+                    // These token types should be handled in context; encountering them here is an error
                     this.error("Unexpected token: " + token.type, token);
                     this.position++;
                     break;
@@ -107,43 +117,45 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
             if (this.hasErrorFlag) {
                 if (this.debug) {
-                    trace("检测到错误标志，停止解析。");
+                    trace("Error flag detected. Stopping parsing.");
                 }
-                break; // 如果发生关键错误，停止解析
+                this.root = originalRoot;
+                return null; // Critical error occurred, return null
             }
         }
+
         if (this.debug) {
-            trace("解析完成。构建的对象: " + ObjectUtil.toString(this.root));
+            trace("Parsing completed. Constructed Object: " + ObjectUtil.toString(this.root));
         }
         return this.root;
     }
 
 
     /**
-     * 处理表头和表数组
-     * @return 如果成功处理返回 true，否则返回 false。
+     * Handles table headers and table arrays.
+     * @return Returns true if successfully handled, false otherwise.
      */
     private function handleTable():Boolean {
         var startToken:Object = this.tokens[this.position];
         var isArray:Boolean = false;
         var tableNameTokens:Array = [];
-        this.position++; // 跳过第一个 '['
+        this.position++; // Skip the first '['
 
-        // 检查是否为表数组
+        // Check if it's a table array by looking for a second '['
         if (this.position < this.tokens.length && this.tokens[this.position].type == "LBRACKET") {
             isArray = true;
-            this.position++; // 跳过第二个 '['
+            this.position++; // Skip the second '['
         }
 
-        // 收集表名的 Token
+        // Collect table name tokens until ']' is encountered
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
             if (token.type == "RBRACKET") {
-                // 如果是表数组，还需要检查第二个 ']'
+                // If it's a table array, ensure there are two closing ']'
                 if (isArray && this.position + 1 < this.tokens.length && this.tokens[this.position + 1].type == "RBRACKET") {
-                    this.position += 2; // 跳过两个 ']'
+                    this.position += 2; // Skip both ']'
                 } else {
-                    this.position++; // 跳过 ']'
+                    this.position++; // Skip single ']'
                 }
                 break;
             } else {
@@ -152,7 +164,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
             }
         }
 
-        // 构建表名
+        // Construct table name by concatenating token values with dots
         var tableName:String = "";
         for (var i:Number = 0; i < tableNameTokens.length; i++) {
             tableName += tableNameTokens[i].value;
@@ -160,9 +172,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         if (this.debug) {
             if (isArray) {
-                trace("处理表数组: " + tableName);
+                trace("Handling table array: " + tableName);
             } else {
-                trace("处理表头: " + tableName);
+                trace("Handling table header: " + tableName);
             }
         }
 
@@ -176,16 +188,16 @@ class org.flashNight.gesh.fntl.FNTLParser {
     }
 
     /**
-     * 检查解析器是否遇到错误。
-     * @return 如果存在错误则为 true，否则为 false。
+     * Checks if the parser has encountered an error.
+     * @return Returns true if an error has been encountered, false otherwise.
      */
     public function hasError():Boolean {
         return this.hasErrorFlag;
     }
 
     /**
-     * 处理一个键值对 Token。
-     * @return 如果成功处理则返回 true，否则返回 false。
+     * Handles a key-value pair token.
+     * @return Returns true if successfully handled, false otherwise.
      */
     private function handleKeyValuePair():Boolean {
         var keyToken:Object = this.tokens[this.position];
@@ -193,35 +205,42 @@ class org.flashNight.gesh.fntl.FNTLParser {
         this.position++;
 
         if (this.debug) {
-            trace("处理键值对，键: " + key);
+            trace("Handling key-value pair, Key: " + key);
         }
 
-        // 检查是否有 EQUALS Token
+        // Check for EQUALS token
         if (this.position >= this.tokens.length || this.tokens[this.position].type != "EQUALS") {
             this.error("Expected '=' after key '" + key + "'", keyToken);
-            return false;
+            // Skip to next meaningful token (e.g., NEWLINE)
+            this.skipToNextMeaningfulToken();
+            return true; // Continue parsing subsequent content
         }
-        this.position++; // 跳过 EQUALS Token
+        this.position++; // Skip EQUALS token
 
         if (this.position >= this.tokens.length) {
             this.error("Missing value for key '" + key + "'", keyToken);
-            return false;
+            return true; // Continue parsing subsequent content
         }
 
         var value:Object = this.parseValue();
 
-        // 检查是否发生错误
-        if (this.hasErrorFlag) {
-            return false; // 发生错误，停止解析
+        // Check if an error occurred during value parsing
+        if (value === undefined || this.hasErrorFlag) {
+            // Skip to next meaningful token
+            this.skipToNextMeaningfulToken();
+            return true; // Continue parsing subsequent content
         }
 
         if (this.debug) {
-            trace("解析键值对，键: " + key + ", 值: " + ObjectUtil.toString(value));
+            trace("Parsed key-value pair, Key: " + key + ", Value: " + ObjectUtil.toString(value));
         }
 
-        if (value !== undefined) { // 仅在成功解析值时设置键值
+        if (value !== undefined) { // Only set the key-value if value was successfully parsed
             if (this.current[key] !== undefined) {
                 this.error("Duplicate key '" + key + "'", keyToken);
+                // Skip to next meaningful token
+                this.skipToNextMeaningfulToken();
+                return true; // Continue parsing subsequent content
             } else {
                 this.current[key] = value;
             }
@@ -229,18 +248,49 @@ class org.flashNight.gesh.fntl.FNTLParser {
         return true;
     }
 
+    /**
+     * Skips to the next meaningful token (e.g., NEWLINE).
+     */
+    private function skipToNextMeaningfulToken():Void {
+        while (this.position < this.tokens.length) {
+            var token:Object = this.tokens[this.position];
+            if (token.type == "NEWLINE") {
+                this.position++;
+                break;
+            }
+            this.position++;
+        }
+    }
 
     /**
-     * 解析一个值，从当前 position 开始。
-     * @return 解析后的值对象。
+     * Parses a value starting from the current position.
+     * @return The parsed value object.
      */
     private function parseValue():Object {
         var token:Object = this.tokens[this.position];
         if (this.debug) {
-            trace("解析值，Token Type: " + token.type + ", Value: " + token.value);
+            trace("Parsing value, Token Type: " + token.type + ", Value: " + token.value);
         }
 
-        // 处理浮点数：INTEGER DOT INTEGER
+        // Handle basic string
+        if (token.type == "STRING") {
+            var strValue:String = token.value;
+            // Check for unclosed strings by looking for newline characters
+            if (strValue.indexOf("\n") != -1) {
+                this.error("Unclosed string", token);
+                return undefined;
+            }
+            this.position++;
+            return strValue;
+        }
+
+        // Handle multiline strings
+        if (token.type == "MULTILINE_STRING") {
+            this.position++;
+            return token.value;
+        }
+
+        // Handle floating numbers: INTEGER DOT INTEGER
         if (token.type == "INTEGER") {
             if (this.position + 2 < this.tokens.length &&
                 this.tokens[this.position + 1].type == "DOT" &&
@@ -252,7 +302,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
                 var floatStr:String = integerPart + dot + fractionalPart;
                 var floatVal:Number = Number(floatStr);
-                this.position += 3; // 跳过 INTEGER, DOT, INTEGER
+                this.position += 3; // Skip INTEGER, DOT, INTEGER
 
                 if (isNaN(floatVal)) {
                     this.error("Invalid float value: " + floatStr, token);
@@ -260,14 +310,14 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 }
 
                 if (this.debug) {
-                    trace("解析浮点数值: " + floatVal);
+                    trace("Parsed float value: " + floatVal);
                 }
 
                 return floatVal;
             }
         }
 
-        // 处理负浮点数：'-' FLOAT
+        // Handle negative floating numbers: '-' FLOAT
         if (token.type == "INTEGER" && token.value == "-") {
             if (this.position + 1 < this.tokens.length &&
                 this.tokens[this.position + 1].type == "FLOAT") {
@@ -288,21 +338,18 @@ class org.flashNight.gesh.fntl.FNTLParser {
                         break;
                 }
 
-                this.position += 2; // 跳过 '-' 和 FLOAT
+                this.position += 2; // Skip '-' and FLOAT
 
                 if (this.debug) {
-                    trace("解析负浮点数值: " + negativeFloat);
+                    trace("Parsed negative float value: " + negativeFloat);
                 }
 
                 return negativeFloat;
             }
         }
 
-        // 处理其他类型
+        // Handle other types
         switch(token.type) {
-            case "STRING":
-                this.position++;
-                return token.value;
             case "INTEGER":
                 this.position++;
                 return Number(token.value);
@@ -329,15 +376,15 @@ class org.flashNight.gesh.fntl.FNTLParser {
     }
 
     /**
-     * 解析特殊浮点数值（NaN, Infinity, -Infinity）。
-     * @param value 字符串表示。
-     * @return 对应的 AS2 数字。
+     * Parses special floating point numbers (NaN, Infinity, -Infinity).
+     * @param value The string representation.
+     * @return The corresponding AS2 number.
      */
     private function parseSpecialFloat(value:String):Object {
         if (this.debug) {
-            trace("解析特殊浮点数值: " + value);
+            trace("Parsing special float value: " + value);
         }
-        switch (value.toLowerCase()) {
+        switch(value.toLowerCase()) {
             case "nan":
                 return Number.NaN;
             case "inf":
@@ -350,57 +397,95 @@ class org.flashNight.gesh.fntl.FNTLParser {
     }
 
     /**
-     * 解析日期时间字符串并返回 ISO8601 格式。
-     * @param dateTimeStr 日期时间字符串。
-     * @return 格式化后的 ISO8601 日期时间字符串或 null（如果解析失败）。
+     * Parses a datetime string and returns it in ISO8601 format.
+     * @param dateTimeStr The datetime string.
+     * @return The formatted ISO8601 datetime string or null (if parsing fails).
      */
     private function parseDateTime(dateTimeStr:String):String {
         if (this.debug) {
-            trace("解析日期时间字符串: " + dateTimeStr);
+            trace("Parsing datetime string: " + dateTimeStr);
         }
-        // 使用 FNTLLexer 中定义的 dateTimeRegExp
-        if (!FNTLLexer.dateTimeRegExp.test(dateTimeStr)) {
+        // Use FNTLLexer's defined dateTimeRegExp
+        var regex:RegExp = FNTLLexer.dateTimeRegExp;
+        if (!regex.test(dateTimeStr)) {
             this.error("Invalid datetime format: " + dateTimeStr, {line: 0, column: 0});
             return null;
         }
 
-        // 直接返回日期时间字符串，保留分数秒和时区信息
+        // Use exec to extract components
+        var components:Array = regex.exec(dateTimeStr);
+        if (components == null) {
+            this.error("Invalid datetime format: " + dateTimeStr, {line: 0, column: 0});
+            return null;
+        }
+
+        // Adjust indices based on your regex's capturing groups
+        // Example regex: /^(\d{4})-(\d{2})-(\d{2})[Tt ](\d{2}):(\d{2}):(\d{2})(\.\d+)?([Zz]|[+-]\d{2}:\d{2})?$/
+        var year:Number = Number(components[1]);
+        var month:Number = Number(components[2]);
+        var day:Number = Number(components[3]);
+        var hour:Number = Number(components[4]);
+        var minute:Number = Number(components[5]);
+        var second:Number = Number(components[6]);
+        // var fractional:Number = components[7] ? Number(components[7]) : 0;
+        // var timezone:String = components[8] ? components[8] : "Z";
+
+        // Validate each component's range
+        if (month < 1 || month > 12) {
+            this.error("Invalid month in datetime: " + dateTimeStr, {line: 0, column: 0});
+            return null;
+        }
+
+        if (day < 1 || day > 31) { // Simplistic check; could be improved based on month
+            this.error("Invalid day in datetime: " + dateTimeStr, {line: 0, column: 0});
+            return null;
+        }
+
+        if (hour < 0 || hour > 23) {
+            this.error("Invalid hour in datetime: " + dateTimeStr, {line: 0, column: 0});
+            return null;
+        }
+
+        if (minute < 0 || minute > 59) {
+            this.error("Invalid minute in datetime: " + dateTimeStr, {line: 0, column: 0});
+            return null;
+        }
+
+        if (second < 0 || second > 59) {
+            this.error("Invalid second in datetime: " + dateTimeStr, {line: 0, column: 0});
+            return null;
+        }
+
+        // If all components are valid, return the datetime string
         return dateTimeStr;
     }
 
     /**
-     * 解析数组，从当前 position 开始。
-     * @return 解析后的数组或 null（如果有错误）。
+     * Parses an array starting from the current position.
+     * @return The parsed array or null (if an error occurs).
      */
     private function parseArray():Array {
         if (this.debug) {
-            trace("开始解析数组。");
+            trace("Starting to parse array.");
         }
         var array:Array = new Array();
-        this.position++; // 跳过 '['
+        this.position++; // Skip '['
 
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
 
             if (token.type == "RBRACKET") {
-                this.position++; // 跳过 ']'
+                this.position++; // Skip ']'
                 break;
-            } else if (token.type == "COMMA") {
-                this.position++; // 跳过逗号
-                continue;
-            } else if (token.type == "NEWLINE") {
-                // 跳过 NEWLINE token
-                if (this.debug) {
-                    trace("跳过数组中的 NEWLINE token。");
-                }
-                this.position++;
+            } else if (token.type == "COMMA" || token.type == "NEWLINE") {
+                this.position++; // Skip commas and newlines
                 continue;
             } else {
                 var value:Object = this.parseValue();
                 if (value !== undefined) {
                     array.push(value);
                     if (this.debug) {
-                        trace("数组元素: " + ObjectUtil.toString(value));
+                        trace("Array element: " + ObjectUtil.toString(value));
                     }
                 } else {
                     this.error("Failed to parse array element", token);
@@ -413,35 +498,35 @@ class org.flashNight.gesh.fntl.FNTLParser {
     }
 
     /**
-     * 解析内联表格，从当前 position 开始。
-     * @return 解析后的内联表格对象或 undefined（如果有错误）。
+     * Parses an inline table starting from the current position.
+     * @return The parsed inline table object or undefined (if an error occurs).
      */
     private function parseInlineTable():Object {
         if (this.debug) {
-            trace("开始解析内联表格。");
+            trace("Starting to parse inline table.");
         }
         var table:Object = new Object();
-        this.position++; // 跳过 '{'
+        this.position++; // Skip '{'
 
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
 
             if (token.type == "RBRACE") {
-                this.position++; // 跳过 '}'
+                this.position++; // Skip '}'
                 break;
             } else if (token.type == "COMMA") {
-                this.position++; // 跳过逗号
+                this.position++; // Skip comma
                 continue;
-            } else if (token.type == "KEY" || token.type == "INTEGER") { // 允许 KEY 和 INTEGER 类型的键
-                var key:String = token.value.toString(); // 将键转换为字符串
+            } else if (token.type == "KEY" || token.type == "INTEGER") { // Allow KEY and INTEGER types as keys
+                var key:String = token.value.toString(); // Convert key to string
                 this.position++;
 
-                // 检查 '='
+                // Check for '='
                 if (this.position >= this.tokens.length || this.tokens[this.position].type != "EQUALS") {
                     this.error("Expected '=' after key '" + key + "'", token);
                     return undefined;
                 }
-                this.position++; // 跳过 '='
+                this.position++; // Skip '='
 
                 var value:Object = this.parseValue();
                 if (value !== undefined) {
@@ -451,16 +536,23 @@ class org.flashNight.gesh.fntl.FNTLParser {
                     }
                     table[key] = value;
                     if (this.debug) {
-                        trace("内联表格键值对: " + key + " = " + ObjectUtil.toString(value));
+                        trace("Inline table key-value pair: " + key + " = " + ObjectUtil.toString(value));
                     }
                 } else {
                     this.error("Failed to parse value for key '" + key + "' in inline table", token);
                     return undefined;
                 }
+            } else if (token.type == "MULTILINE_STRING") {
+                // Allow multiline strings within inline tables
+                var multilineKey:String = token.value;
+                this.position++;
+                // According to FNTL syntax, inline table keys must be string keys, already handled above
+                this.error("Unexpected MULTILINE_STRING in inline table", token);
+                return undefined;
             } else if (token.type == "NEWLINE") {
-                // 跳过 NEWLINE token
+                // Skip NEWLINE tokens within inline tables
                 if (this.debug) {
-                    trace("跳过内联表格中的 NEWLINE token。");
+                    trace("Skipping NEWLINE token within inline table.");
                 }
                 this.position++;
                 continue;
@@ -474,23 +566,43 @@ class org.flashNight.gesh.fntl.FNTLParser {
     }
 
     /**
-     * 处理表格头 Token，更新当前上下文。
-     * 支持嵌套的表格路径。
-     * @param tableName 表格名。
+     * Handles table header tokens, updating the current context.
+     * Supports nested table paths, correctly navigating through arrays and objects.
+     * @param tableName The name of the table.
      */
     private function handleTableHeader(tableName:String):Void {
         if (this.debug) {
-            trace("处理表格头: " + tableName);
+            trace("Handling table header: " + tableName);
         }
         var path:Array = tableName.split(".");
         var current:Object = this.root;
 
         for (var i:Number = 0; i < path.length; i++) {
             var part:String = path[i];
+
+            // If current is an array, reference the last element
+            if (current instanceof Array) {
+                if (current.length == 0) {
+                    // Push a new table into the array
+                    var newObj:Object = new Object();
+                    current.push(newObj);
+                    current = newObj;
+                    if (this.debug) {
+                        trace("Added new table to array.");
+                    }
+                } else {
+                    current = current[current.length - 1];
+                    if (this.debug) {
+                        trace("Referencing last table in array.");
+                    }
+                }
+            }
+
+            // Ensure the current path segment is an object
             if (current[part] == undefined || current[part] == null) {
                 current[part] = new Object();
                 if (this.debug) {
-                    trace("创建新表格: " + part);
+                    trace("Created new table: " + part);
                 }
             } else if (!(current[part] instanceof Object)) {
                 this.error("Key conflict: Cannot convert non-table type to table '" + part + "'", {line: 0, column: 0});
@@ -500,17 +612,18 @@ class org.flashNight.gesh.fntl.FNTLParser {
         }
         this.current = current;
         if (this.debug) {
-            trace("当前上下文更新到: " + tableName);
+            trace("Current context updated to: " + tableName);
         }
     }
 
     /**
-    * 处理表格数组 Token，向数组中添加新的表格。
-    * @param arrayName 表格数组名。
+    * Handles table array tokens by adding new tables to the array.
+    * Correctly navigates through paths that include arrays and objects.
+    * @param arrayName The name of the table array.
     */
     private function handleTableArray(arrayName:String):Void {
         if (this.debug) {
-            trace("处理表格数组: " + arrayName);
+            trace("Handling table array: " + arrayName);
         }
         var path:Array = arrayName.split(".");
         var current:Object = this.root;
@@ -518,62 +631,62 @@ class org.flashNight.gesh.fntl.FNTLParser {
         for (var i:Number = 0; i < path.length; i++) {
             var part:String = path[i];
             if (i < path.length - 1) {
-                // 处理中间部分，确保它是一个数组，并指向最后一个元素
-                if (!(current[part] instanceof Array)) {
-                    current[part] = new Array();
-                    if (this.debug) {
-                        trace("创建新表格数组: " + part);
+                if (current[part] instanceof Array) {
+                    if (current[part].length == 0) {
+                        var newObj:Object = new Object();
+                        current[part].push(newObj);
+                        current = newObj;
+                        if (this.debug) {
+                            trace("Added new table to array '" + part + "'.");
+                        }
+                    } else {
+                        current = current[part][current[part].length - 1];
+                        if (this.debug) {
+                            trace("Referencing last table in array '" + part + "'.");
+                        }
                     }
-                }
-                if (current[part].length == 0) {
-                    var nestedTable:Object = new Object();
-                    current[part].push(nestedTable);
-                    if (this.debug) {
-                        trace("向表格数组 '" + part + "' 添加新表格。");
-                    }
-                    current = nestedTable;
+                } else if (current[part] instanceof Object) {
+                    current = current[part];
                 } else {
-                    current = current[part][current[part].length - 1];
+                    current[part] = new Object();
+                    current = current[part];
                     if (this.debug) {
-                        trace("当前表格数组 '" + part + "' 的最新表格。");
+                        trace("Created new table: " + part);
                     }
                 }
             } else {
-                // 处理最后一部分，确保它是一个数组，并添加新表格
                 if (!(current[part] instanceof Array)) {
                     current[part] = new Array();
                     if (this.debug) {
-                        trace("创建新表格数组: " + part);
+                        trace("Created new table array: " + part);
                     }
                 }
                 var newTable:Object = new Object();
                 current[part].push(newTable);
                 if (this.debug) {
-                    trace("向表格数组 '" + part + "' 添加新表格。");
+                    trace("Added new table to table array '" + part + "'.");
                 }
                 current = newTable;
             }
         }
         this.current = current;
         if (this.debug) {
-            trace("当前上下文更新到: " + arrayName);
+            trace("Current context updated to: " + arrayName);
         }
     }
 
-
-
     /**
-     * 处理内联表格 Token，将其解析并合并到当前上下文。
-     * @param inlineTableStr 内联表格字符串。
+     * Handles inline table tokens by parsing and merging them into the current context.
+     * @param inlineTableStr The inline table string.
      */
     private function handleInlineTable(inlineTableStr:String):Void {
         if (this.debug) {
-            trace("处理内联表格: " + inlineTableStr);
+            trace("Handling inline table: " + inlineTableStr);
         }
         var inlineTable:Object = this.parseInlineTable();
         if (inlineTable === undefined) {
             if (this.debug) {
-                trace("内联表格解析失败: " + inlineTableStr);
+                trace("Failed to parse inline table: " + inlineTableStr);
             }
             return;
         }
@@ -583,23 +696,23 @@ class org.flashNight.gesh.fntl.FNTLParser {
             } else {
                 this.current[key] = inlineTable[key];
                 if (this.debug) {
-                    trace("将内联表格的键值对添加到当前上下文: " + key + " = " + ObjectUtil.toString(inlineTable[key]));
+                    trace("Added inline table key-value pair to current context: " + key + " = " + ObjectUtil.toString(inlineTable[key]));
                 }
             }
         }
     }
 
     /**
-     * 处理解析错误，通过设置错误标志并记录错误信息。
-     * @param message 错误消息。
-     * @param token 相关的 Token 对象，用于定位错误位置。
+     * Handles parsing errors by setting the error flag and logging the error message.
+     * @param message The error message.
+     * @param token The relevant token object for error location.
      */
     private function error(message:String, token:Object):Void {
-        var lineInfo:String = "行: " + (token.line != undefined ? token.line : "?") + ", 列: " + (token.column != undefined ? token.column : "?");
-        trace("错误: " + message + " 在 " + lineInfo);
+        var lineInfo:String = "Line: " + (token.line != undefined ? token.line : "?") + ", Column: " + (token.column != undefined ? token.column : "?");
+        trace("Error: " + message + " at " + lineInfo);
         this.hasErrorFlag = true;
         if (this.debug) {
-            trace("当前解析位置: " + this.position + "/" + this.tokens.length);
+            trace("Current parsing position: " + this.position + "/" + this.tokens.length);
         }
     }
 }
