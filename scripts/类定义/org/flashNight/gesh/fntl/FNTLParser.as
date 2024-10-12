@@ -118,6 +118,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
         return this.root;
     }
 
+
     /**
      * 处理表头和表数组
      * @return 如果成功处理返回 true，否则返回 false。
@@ -209,6 +210,11 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         var value:Object = this.parseValue();
 
+        // 检查是否发生错误
+        if (this.hasErrorFlag) {
+            return false; // 发生错误，停止解析
+        }
+
         if (this.debug) {
             trace("解析键值对，键: " + key + ", 值: " + ObjectUtil.toString(value));
         }
@@ -222,6 +228,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
         }
         return true;
     }
+
 
     /**
      * 解析一个值，从当前 position 开始。

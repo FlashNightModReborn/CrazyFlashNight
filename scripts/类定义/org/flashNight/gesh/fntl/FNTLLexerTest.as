@@ -441,7 +441,198 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         ];
         testCase18.description = "测试嵌套数组中包含内联表。";
         cases.push(testCase18);
-        
+
+
+        // ==========================
+        // 注释测试
+        // ==========================
+        // Test case 19: Single line comment at the beginning
+        var testCase19:Object = new Object();
+        testCase19.text = '# This is a comment\n' +
+                        'title = "My Game"\n';
+        testCase19.expectedTokens = null;
+        testCase19.description = "测试行首注释。";
+        cases.push(testCase19);
+
+        // Test case 20: Inline comment after a key-value pair
+        var testCase20:Object = new Object();
+        testCase20.text = 'version = 1.0 # 游戏版本\n' +
+                        'debug = false\n';
+        testCase20.expectedTokens = null;
+        testCase20.description = "测试键值对后有行内注释。";
+        cases.push(testCase20);
+
+        // Test case 21: Comment with Unicode characters
+        var testCase21:Object = new Object();
+        testCase21.text = '# 这是一个注释\n' +
+                        'enabled = true\n';
+        testCase21.expectedTokens = null;
+        testCase21.description = "测试包含Unicode字符的注释。";
+        cases.push(testCase21);
+
+        // ==========================
+        // 键名多样性测试
+        // ==========================
+        // Test case 22: Keys with Unicode characters (non-Chinese)
+        var testCase22:Object = new Object();
+        testCase22.text = 'ключ = "значение"\n' + // Russian for "key = value"
+                        'キー = "値"\n'; // Japanese for "key = value"
+        testCase22.expectedTokens = null;
+        testCase22.description = "测试包含不同Unicode字符的键名。";
+        cases.push(testCase22);
+
+        // Test case 23: Keys with numbers and underscores
+        var testCase23:Object = new Object();
+        testCase23.text = 'player_1 = "Alice"\n' +
+                        'player2 = "Bob"\n';
+        testCase23.expectedTokens = null;
+        testCase23.description = "测试包含数字和下划线的键名。";
+        cases.push(testCase23);
+
+        // Test case 24: Keys starting with numbers
+        var testCase24:Object = new Object();
+        testCase24.text = '123start = "Invalid"\n' + // Depending on FNTL spec, may or may not be allowed
+                        'valid_key = "Valid"\n';
+        testCase24.expectedTokens = null;
+        testCase24.description = "测试以数字开头的键名。";
+        cases.push(testCase24);
+
+        // Test case 25: Keys with special characters (if supported)
+        var testCase25:Object = new Object();
+        testCase25.text = 'user-name = "Charlie"\n' +
+                        'database.type = "PostgreSQL"\n';
+        testCase25.expectedTokens = null;
+        testCase25.description = "测试包含特殊字符的键名。";
+        cases.push(testCase25);
+
+        // ==========================
+        // 转义字符测试
+        // ==========================
+        // Test case 26: Unicode escape sequences in strings
+        var testCase26:Object = new Object();
+        testCase26.text = 'unicode_test = "\\u4F60\\u597D"\n'; // "你好" in Unicode
+        testCase26.expectedTokens = null;
+        testCase26.description = "测试字符串中的Unicode转义序列。";
+        cases.push(testCase26);
+
+        // Test case 27: Escaped backslashes and quotes
+        var testCase27:Object = new Object();
+        testCase27.text = 'path = "C:\\\\Program Files\\\\Game"\n' +
+                        'quote = "She said, \\"Hello!\\""\n';
+        testCase27.expectedTokens = null;
+        testCase27.description = "测试字符串中的反斜杠和双引号转义。";
+        cases.push(testCase27);
+
+        // Test case 28: Invalid escape sequence
+        var testCase28:Object = new Object();
+        testCase28.text = 'invalid_escape = "This is invalid: \\x"\n';
+        testCase28.expectedTokens = null;
+        testCase28.description = "测试字符串中的无效转义序列。";
+        cases.push(testCase28);
+
+        // ==========================
+        // 内联表的复杂性测试
+        // ==========================
+        // Test case 29: Nested inline tables
+        var testCase29:Object = new Object();
+        testCase29.text = 'complex_inline = { key1 = { subkey = "value" }, key2 = [1, 2, 3] }\n';
+        testCase29.expectedTokens = null;
+        testCase29.description = "测试内联表中嵌套内联表和数组。";
+        cases.push(testCase29);
+
+        // Test case 30: Inline table with mixed types
+        var testCase30:Object = new Object();
+        testCase30.text = 'mixed_inline = { name = "Dave", scores = [100, 200], active = true }\n';
+        testCase30.expectedTokens = null;
+        testCase30.description = "测试内联表中包含不同类型的值。";
+        cases.push(testCase30);
+
+        // ==========================
+        // 空结构测试
+        // ==========================
+        // Test case 31: Empty array
+        var testCase31:Object = new Object();
+        testCase31.text = 'empty_array = []\n';
+        testCase31.expectedTokens = null;
+        testCase31.description = "测试空数组。";
+        cases.push(testCase31);
+
+        // Test case 32: Empty table
+        var testCase32:Object = new Object();
+        testCase32.text = '[empty_table]\n';
+        testCase32.expectedTokens = null;
+        testCase32.description = "测试空表。";
+        cases.push(testCase32);
+
+        // Test case 33: Empty inline table
+        var testCase33:Object = new Object();
+        testCase33.text = 'empty_inline = {}\n';
+        testCase33.expectedTokens = null;
+        testCase33.description = "测试空内联表。";
+        cases.push(testCase33);
+
+        // ==========================
+        // 混合类型数组测试
+        // ==========================
+        // Test case 34: Mixed type array
+        var testCase34:Object = new Object();
+        testCase34.text = 'mixed_array = [1, "two", true, 4.0]\n';
+        testCase34.expectedTokens = null;
+        testCase34.description = "测试包含不同类型元素的数组。";
+        cases.push(testCase34);
+
+        // ==========================
+        // 边界条件测试
+        // ==========================
+        // Test case 35: Extremely long key and value
+        var testCase35:Object = new Object();
+        var longKey:String = repeatString("a", 1024);
+        var longValue:String = repeatString("b", 4096);
+
+        testCase35.text = longKey + ' = "' + longValue + '"\n';
+        testCase35.expectedTokens = null;
+        testCase35.description = "测试极长的键名和键值。";
+        cases.push(testCase35);
+
+        // Test case 36: Deeply nested tables
+        var testCase36:Object = new Object();
+        testCase36.text = '[a.b.c.d.e.f.g.h.i.j]\n' +
+                        'value = "deep"\n';
+        testCase36.expectedTokens = null;
+        testCase36.description = "测试多级嵌套表。";
+        cases.push(testCase36);
+
+        // ==========================
+        // 错误情况测试
+        // ==========================
+        // Test case 37: Missing value in key-value pair
+        var testCase37:Object = new Object();
+        testCase37.text = 'incomplete_pair = \n';
+        testCase37.expectedTokens = null;
+        testCase37.description = "测试键值对中缺少值的情况。";
+        cases.push(testCase37);
+
+        // Test case 38: Unclosed inline table
+        var testCase38:Object = new Object();
+        testCase38.text = 'bad_inline = { name = "Eve", score = 300\n';
+        testCase38.expectedTokens = null;
+        testCase38.description = "测试内联表未闭合的错误输入。";
+        cases.push(testCase38);
+
+        // Test case 39: Unclosed array
+        var testCase39:Object = new Object();
+        testCase39.text = 'bad_array = [1, 2, 3\n';
+        testCase39.expectedTokens = null;
+        testCase39.description = "测试数组未闭合的错误输入。";
+        cases.push(testCase39);
+
+        // Test case 40: Invalid date-time
+        var testCase40:Object = new Object();
+        testCase40.text = 'bad_datetime = 2023-02-30T25:61:61Z\n';
+        testCase40.expectedTokens = null;
+        testCase40.description = "测试无效日期时间格式的错误输入。";
+        cases.push(testCase40);
+
         return cases;
     }
 
@@ -1304,5 +1495,20 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
 
         return pairs;
     }
+
+    /**
+    * Utility function to repeat a string.
+    * @param str The string to repeat.
+    * @param count The number of times to repeat the string.
+    * @return A new string with the original string repeated 'count' times.
+    */
+    private function repeatString(str:String, count:Number):String {
+        var result:String = "";
+        for (var i:Number = 0; i < count; i++) {
+            result += str;
+        }
+        return result;
+    }
+
 
 }
