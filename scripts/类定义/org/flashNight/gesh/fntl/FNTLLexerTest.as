@@ -637,9 +637,9 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     }
 
     /**
-     * Retrieves test cases for the FNTLParser.
-     * Each test case includes FNTL text and the expected parsed object.
-     */
+    * Retrieves test cases for the FNTLParser.
+    * Each test case includes FNTL text and the expected parsed object.
+    */
     private function getParserTestCases():Array {
         var cases:Array = new Array();
 
@@ -850,7 +850,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         var testCase13:Object = new Object();
         testCase13.text = 'invalid_line "No equals sign"\n';
 
-        // 预期解析错误，解析器应返回 null，因为缺少等号
+        // Expected to fail: parser should return null due to missing equals sign
         var expected13:Object = null;
         testCase13.expected = expected13;
         testCase13.description = "解析缺少等号的错误输入。";
@@ -861,8 +861,8 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         var testCase14:Object = new Object();
         testCase14.text = 'unclosed_string = "This string never ends...\n';
 
-        // 预期结果为 null 或者不包含 'unclosed_string' 键
-        var expected14:Object = null; // 解析器在错误时返回 null
+        // Expected to fail: parser should return null due to unclosed string
+        var expected14:Object = null; // Parser should return null on error
         testCase14.expected = expected14;
         testCase14.description = "解析未闭合字符串的错误输入。";
         cases.push(testCase14);
@@ -870,9 +870,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         // Test case 15: Invalid date-time format
         var testCase15:Object = new Object();
         testCase15.text = 'invalid_date = 2024-13-40T25:61:61Z\n';
-        var expected15:Object = {
-            invalid_date: "2024-13-40T25:61:61Z" // Depending on parser's handling
-        };
+        var expected15:Object = null; // Parser should fail due to invalid datetime
         testCase15.expected = expected15;
         testCase15.description = "解析无效日期时间格式的错误输入。";
         cases.push(testCase15);
@@ -899,22 +897,22 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
 
         var expected16:Object = new Object();
 
-        // 设置 task_chains_progress
+        // Setting task_chains_progress
         expected16.task_chains_progress = new Object();
         expected16.task_chains_progress["主线"] = "1";
 
-        // 设置 task_history
+        // Setting task_history
         expected16.task_history = new Array();
         expected16.task_history.push(0);
 
-        // 设置 tasks_finished
+        // Setting tasks_finished
         expected16.tasks_finished = new Object();
         expected16.tasks_finished["0"] = 1;
 
-        // 设置 test 数组
+        // Setting test array
         expected16.test = new Array();
 
-        // 创建嵌套数组
+        // Creating nested array
         var testItem1:Array = new Array();
         testItem1.push("fs");
         testItem1.push("男");
@@ -927,58 +925,143 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testItem1.push(50000);
         testItem1.push(500000);
 
-        // 创建内部的按键数组
+        // Creating internal keys array
         var keys:Array = new Array();
         keys.push(new Array("上键", "上键", 87));
         keys.push(new Array("下键", "下键", 83));
         keys.push(new Array("左键", "左键", 65));
         keys.push(new Array("右键", "右键", 68));
 
-        // 将按键数组添加到 testItem1
+        // Adding keys array to testItem1
         testItem1.push(keys);
 
-        // 将 testItem1 添加到 expected16.test
+        // Adding testItem1 to expected16.test
         expected16.test.push(testItem1);
 
-        // 添加 "测试" 字符串
+        // Adding "测试" string
         expected16.test.push("测试");
 
-        // 设置商城已购买物品和战宠数组
+        // Setting 商城已购买物品 and 战宠 arrays
         expected16["商城已购买物品"] = new Array();
         expected16["战宠"] = new Array();
         expected16["战宠"].push(new Array());
 
-        // 设置 tasks_to_do 数组
+        // Setting tasks_to_do array
         expected16.tasks_to_do = new Array();
 
-        // 创建第一个任务对象
+        // Creating first task object
         var task1:Object = new Object();
         task1.id = 1;
 
-        // 设置 requirements 对象
+        // Setting requirements object
         task1.requirements = new Object();
-        task1.requirements.items = new Array(); // 空数组
+        task1.requirements.items = new Array(); // Empty array
 
-        // 设置 stages 数组
+        // Setting stages array
         task1.requirements.stages = new Array();
 
-        // 创建第一个 stage 对象
+        // Creating first stage object
         var stage1:Object = new Object();
         stage1.difficulty = "简单";
         stage1.name = "测试任务";
 
-        // 将 stage1 添加到 stages 数组
+        // Adding stage1 to stages array
         task1.requirements.stages.push(stage1);
 
-        // 将 task1 添加到 tasks_to_do 数组
+        // Adding task1 to tasks_to_do array
         expected16.tasks_to_do.push(task1);
 
         testCase16.expected = expected16;
         testCase16.description = "解析项目特定的复杂结构，包括Unicode字符和嵌套表数组。";
         cases.push(testCase16);
 
+        // ==========================
+        // 新增测试用例
+        // ==========================
+        // Test case 17: Duplicate keys in the same table
+        var testCase17:Object = new Object();
+        testCase17.text = '[player]\n' +
+                        'name = "Alice"\n' +
+                        'name = "Bob"\n';
+        var expected17:Object = null; // Expected to fail due to duplicate keys
+        testCase17.expected = expected17;
+        testCase17.description = "解析同一表中重复的键。";
+        cases.push(testCase17);
+
+        // Test case 18: Empty FNTL input
+        var testCase18:Object = new Object();
+        testCase18.text = '';
+        var expected18:Object = {}; // Expected to return an empty object
+        testCase18.expected = expected18;
+        testCase18.description = "解析空的FNTL输入。";
+        cases.push(testCase18);
+
+        // Test case 19: Array with missing commas
+        var testCase19:Object = new Object();
+        testCase19.text = 'numbers = [1 2 3]\n'; // Missing commas between numbers
+        var expected19:Object = null; // Expected to fail due to missing commas
+        testCase19.expected = expected19;
+        testCase19.description = "解析数组中缺少逗号的错误输入。";
+        cases.push(testCase19);
+
+        // Test case 20: Inline tables inside arrays
+        var testCase20:Object = new Object();
+        testCase20.text = 'users = [ { name = "Alice", age = 30 }, { name = "Bob", age = 25 } ]\n';
+        var expected20:Object = {
+            users: [
+                { name: "Alice", age: 30 },
+                { name: "Bob", age: 25 }
+            ]
+        };
+        testCase20.expected = expected20;
+        testCase20.description = "解析数组中的内联表。";
+        cases.push(testCase20);
+
+        // Test case 21: Tables with keys containing spaces
+        var testCase21:Object = new Object();
+        testCase21.text = '[user details]\n' +
+                        'first name = "Charlie"\n' +
+                        'last name = "Delta"\n';
+        var expected21:Object = null; // Expected to fail if spaces in keys are not allowed
+        testCase21.expected = expected21;
+        testCase21.description = "解析包含空格的键的表。";
+        cases.push(testCase21);
+
+        // Test case 22: Deeply nested tables and arrays
+        var testCase22:Object = new Object();
+        testCase22.text = '[a.b.c.d]\n' +
+                        'value = "Deep"\n' +
+                        '[[a.b.c.d.array]]\n' +
+                        'item = 1\n' +
+                        '[[a.b.c.d.array]]\n' +
+                        'item = 2\n' +
+                        '[[a.b.c.d.array]]\n' +
+                        'item = 3\n';
+        var expected22:Object = null; // Expected to pass if nesting is handled correctly
+        // Assuming the parser can handle deep nesting, otherwise set to null for expected failure
+        expected22 = {
+            a: {
+                b: {
+                    c: {
+                        d: {
+                            value: "Deep",
+                            array: [
+                                { item: 1 },
+                                { item: 2 },
+                                { item: 3 }
+                            ]
+                        }
+                    }
+                }
+            }
+        };
+        testCase22.expected = expected22;
+        testCase22.description = "解析深度嵌套的表和数组结构。";
+        cases.push(testCase22);
+
         return cases;
-    }
+}
+
 
     /**
      * Retrieves test cases for the FNTLEncoder.
