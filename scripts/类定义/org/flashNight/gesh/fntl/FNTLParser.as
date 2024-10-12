@@ -498,9 +498,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
     }
 
     /**
-     * 处理表格数组 Token，向数组中添加新的表格。
-     * @param arrayName 表格数组名。
-     */
+    * 处理表格数组 Token，向数组中添加新的表格。
+    * @param arrayName 表格数组名。
+    */
     private function handleTableArray(arrayName:String):Void {
         if (this.debug) {
             trace("处理表格数组: " + arrayName);
@@ -510,7 +510,29 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         for (var i:Number = 0; i < path.length; i++) {
             var part:String = path[i];
-            if (i == path.length - 1) {
+            if (i < path.length - 1) {
+                // 处理中间部分，确保它是一个数组，并指向最后一个元素
+                if (!(current[part] instanceof Array)) {
+                    current[part] = new Array();
+                    if (this.debug) {
+                        trace("创建新表格数组: " + part);
+                    }
+                }
+                if (current[part].length == 0) {
+                    var nestedTable:Object = new Object();
+                    current[part].push(nestedTable);
+                    if (this.debug) {
+                        trace("向表格数组 '" + part + "' 添加新表格。");
+                    }
+                    current = nestedTable;
+                } else {
+                    current = current[part][current[part].length - 1];
+                    if (this.debug) {
+                        trace("当前表格数组 '" + part + "' 的最新表格。");
+                    }
+                }
+            } else {
+                // 处理最后一部分，确保它是一个数组，并添加新表格
                 if (!(current[part] instanceof Array)) {
                     current[part] = new Array();
                     if (this.debug) {
@@ -523,36 +545,15 @@ class org.flashNight.gesh.fntl.FNTLParser {
                     trace("向表格数组 '" + part + "' 添加新表格。");
                 }
                 current = newTable;
-            } else {
-                if (current[part] == undefined || current[part] == null) {
-                    current[part] = new Object();
-                    if (this.debug) {
-                        trace("创建新表格: " + part);
-                    }
-                } else if (current[part] instanceof Array) {
-                    if (current[part].length == 0) {
-                        var nestedTable:Object = new Object();
-                        current[part].push(nestedTable);
-                        if (this.debug) {
-                            trace("向空表格数组 '" + part + "' 添加新表格。");
-                        }
-                        current = nestedTable;
-                    } else {
-                        current = current[part][current[part].length - 1];
-                        if (this.debug) {
-                            trace("当前表格数组 '" + part + "' 的最新表格。");
-                        }
-                    }
-                } else {
-                    current = current[part];
-                    if (this.debug) {
-                        trace("进入表格: " + part);
-                    }
-                }
             }
         }
         this.current = current;
+        if (this.debug) {
+            trace("当前上下文更新到: " + arrayName);
+        }
     }
+
+
 
     /**
      * 处理内联表格 Token，将其解析并合并到当前上下文。

@@ -128,26 +128,42 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
             var parser:FNTLParser = new FNTLParser(tokens, FNTLText, this.debug); // 启用调试日志
             var result:Object = parser.parse();
 
-            // Check for parsing errors
+            // 检查是否发生解析错误
             if (parser.hasError()) {
-                trace("Parser Test Case " + (i + 1) + ": Failed with parsing errors.");
-                this.failedTests++;
+                if (expected == null) {
+                    // 解析错误是预期结果
+                    trace("Parser Test Case " + (i + 1) + ": Passed (expected failure).");
+                    this.passedTests++;
+                } else {
+                    trace("Parser Test Case " + (i + 1) + ": Failed with parsing errors.");
+                    this.failedTests++;
+                }
                 this.totalTests++;
                 continue;
             }
 
-            // Compare the parsed result with expected output
-            var comparisonResult:Boolean = this.compareResults(result, expected, 0);
-            if (comparisonResult) {
+            // 对比解析结果与预期
+            if (expected == null && result == null) {
                 trace("Parser Test Case " + (i + 1) + ": Passed.");
                 this.passedTests++;
-            } else {
-                trace("Parser Test Case " + (i + 1) + ": Failed.");
+            } else if (expected == null && result != null) {
+                trace("Parser Test Case " + (i + 1) + ": Failed (expected null, got non-null).");
                 this.failedTests++;
+            } else {
+                // 进行正常结果对比
+                var comparisonResult:Boolean = this.compareResults(result, expected, 0);
+                if (comparisonResult) {
+                    trace("Parser Test Case " + (i + 1) + ": Passed.");
+                    this.passedTests++;
+                } else {
+                    trace("Parser Test Case " + (i + 1) + ": Failed.");
+                    this.failedTests++;
+                }
             }
             this.totalTests++;
         }
     }
+
 
     /**
      * Tests the FNTLEncoder by encoding objects into FNTL strings and validating outputs.
@@ -559,13 +575,17 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
                 {
                     name: "Server1",
                     ip: "10.0.0.1",
-                    database: {
-                        type: "MySQL",
-                        port: 3306,
-                        settings: {
-                            enabled: true
+                    database: [
+                        {
+                            type: "MySQL",
+                            port: 3306,
+                            settings: [
+                                {
+                                    enabled: true
+                                }
+                            ]
                         }
-                    }
+                    ]
                 }
             ]
         };
@@ -639,8 +659,8 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         var testCase13:Object = new Object();
         testCase13.text = 'invalid_line "No equals sign"\n';
 
-        // 更新预期结果为解析器返回的结果 (如果需要)
-        var expected13:Object = null; // 解析器在错误时返回 null
+        // 预期解析错误，解析器应返回 null，因为缺少等号
+        var expected13:Object = null;
         testCase13.expected = expected13;
         testCase13.description = "解析缺少等号的错误输入。";
         cases.push(testCase13);
