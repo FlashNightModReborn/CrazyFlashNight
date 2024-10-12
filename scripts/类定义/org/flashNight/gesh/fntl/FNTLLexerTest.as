@@ -24,16 +24,27 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
 
     /**
      * Runs all the test cases for FNTLLexer, FNTLParser, and FNTLEncoder.
+     * Allows selective testing based on test type.
+     * @param testType Optional parameter to specify which tests to run: "lexer", "parser", "encoder", or "all".
      */
-    public function runAllTests():Void {
+    public function runAllTests(testType:String):Void {
         trace("=== Running FNTLLexer Tests ===");
-        this.testLexer();
+
+        testType = testType!= null? testType.toLowerCase() : "all";
+
+        if (testType == "lexer" || testType == "all") {
+            this.testLexer();
+        }
 
         trace("\n=== Running FNTLParser Tests ===");
-        this.testParser();
+        if (testType == "parser" || testType == "all") {
+            this.testParser();
+        }
 
         trace("\n=== Running FNTLEncoder Tests ===");
-        this.testFNTLEncoder();
+        if (testType == "encoder" || testType == "all") {
+            this.testFNTLEncoder();
+        }
 
         // Summary of test results
         trace("\n=== Test Summary ===");
@@ -43,15 +54,16 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     }
 
     /**
-     * Tests the FNTLLexer by tokenizing FNTL/FNTL inputs and validating tokens.
+     * Tests the FNTLLexer by tokenizing FNTL inputs and validating tokens.
      */
     public function testLexer():Void {
-        var FNTLSamples:Array = this.getLexerTestCases();
+        var lexerTestCases:Array = this.getLexerTestCases();
 
-        for (var i:Number = 0; i < FNTLSamples.length; i++) {
-            var FNTLText:String = FNTLSamples[i].text;
-            var expectedTokens:Array = FNTLSamples[i].expectedTokens;
-            var description:String = FNTLSamples[i].description;
+        for (var i:Number = 0; i < lexerTestCases.length; i++) {
+            var testCase:Object = lexerTestCases[i];
+            var FNTLText:String = testCase.text;
+            var expectedTokens:Array = testCase.expectedTokens;
+            var description:String = testCase.description;
 
             trace("\n--- Running Lexer Test Case " + (i + 1) + " ---");
             trace("Description: " + description);
@@ -85,15 +97,16 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     }
 
     /**
-     * Tests the FNTLParser by parsing tokenized FNTL/FNTL inputs and validating output objects.
+     * Tests the FNTLParser by parsing tokenized FNTL inputs and validating output objects.
      */
     public function testParser():Void {
-        var FNTLSamples:Array = this.getParserTestCases();
+        var parserTestCases:Array = this.getParserTestCases();
 
-        for (var i:Number = 0; i < FNTLSamples.length; i++) {
-            var FNTLText:String = FNTLSamples[i].text;
-            var expected:Object = FNTLSamples[i].expected;
-            var description:String = FNTLSamples[i].description;
+        for (var i:Number = 0; i < parserTestCases.length; i++) {
+            var testCase:Object = parserTestCases[i];
+            var FNTLText:String = testCase.text;
+            var expected:Object = testCase.expected;
+            var description:String = testCase.description;
 
             trace("\n--- Running Parser Test Case " + (i + 1) + " ---");
             trace("Description: " + description);
@@ -133,24 +146,25 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     }
 
     /**
-     * Tests the FNTLEncoder by encoding objects into FNTL/FNTL strings and validating outputs.
+     * Tests the FNTLEncoder by encoding objects into FNTL strings and validating outputs.
      */
     public function testFNTLEncoder():Void {
-        var testCases:Array = this.getEncoderTestCases();
+        var encoderTestCases:Array = this.getEncoderTestCases();
 
-        for (var i:Number = 0; i < testCases.length; i++) {
-            var testObj:Object = testCases[i].input;
-            var expected:String = testCases[i].expected;
-            var description:String = testCases[i].description;
+        for (var i:Number = 0; i < encoderTestCases.length; i++) {
+            var testCase:Object = encoderTestCases[i];
+            var testObj:Object = testCase.input;
+            var expected:String = testCase.expected;
+            var description:String = testCase.description;
 
             trace("\n--- Running Encoder Test Case " + (i + 1) + " ---");
             trace("Description: " + description);
 
-            // Encode the object into FNTL/FNTL
+            // Encode the object into FNTL
             var encoder:FNTLEncoder = new FNTLEncoder();
             var FNTLOutput:String = encoder.encode(testObj, true); // true for pretty formatting
 
-            // Compare the encoded output with expected FNTL/FNTL string
+            // Compare the encoded output with expected FNTL string
             var comparisonResult:Boolean = this.compareFNTLOutputs(FNTLOutput, expected);
             if (comparisonResult) {
                 trace("Encoder Test Case " + (i + 1) + ": Passed.");
@@ -170,171 +184,166 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     private function getLexerTestCases():Array {
         var cases:Array = new Array();
 
-        // Test case 1: Basic FNTL structure
+        // ==========================
+        // 基础键值对测试
+        // ==========================
+        // Test case 1: Basic key-value pairs
         var testCase1:Object = new Object();
-        testCase1.text = 'title = "My Game" # Comment\n' +
+        testCase1.text = 'title = "My Game"\n' +
                         'isActive = true\n' +
                         'max_score = 1000\n' +
-                        'average_score = 89.95\n' +
-                        'launch_time = 2024-10-09T08:30:00Z\n' +
-                        'items = ["sword", "shield", "potion"]\n' +
-                        'description = """This is a multiline string.\nIt has multiple lines."""\n';
-        testCase1.expectedTokens = null; // Optional: Define expected tokens for this test
-        testCase1.description = "Basic FNTL structure with various data types and a multiline string.";
+                        'average_score = 89.95\n';
+        testCase1.expectedTokens = null; // Optional
+        testCase1.description = "基础键值对测试，包括字符串、布尔值和数字。";
         cases.push(testCase1);
 
-        // Test case 2: Boolean values
+        // ==========================
+        // 多行字符串测试
+        // ==========================
+        // Test case 2: Multiline string
         var testCase2:Object = new Object();
-        testCase2.text = 'boolean_true = true\nboolean_false = false\n';
+        testCase2.text = 'description = """This is a multiline string.\nIt spans multiple lines."""\n';
         testCase2.expectedTokens = null;
-        testCase2.description = "Testing boolean values: true and false.";
+        testCase2.description = "测试多行字符串。";
         cases.push(testCase2);
 
-        // Test case 3: Numbers
+        // ==========================
+        // 数组测试
+        // ==========================
+        // Test case 3: Simple array
         var testCase3:Object = new Object();
-        testCase3.text = 'integer = 42\nnegative_integer = -42\nfloat = 3.14\nnegative_float = -3.14\n';
+        testCase3.text = 'items = ["sword", "shield", "potion"]\n';
         testCase3.expectedTokens = null;
-        testCase3.description = "Testing integer and float numbers, including negative values.";
+        testCase3.description = "测试简单数组。";
         cases.push(testCase3);
 
-        // Test case 4: Empty values
+        // Test case 4: Nested arrays
         var testCase4:Object = new Object();
-        testCase4.text = 'empty_string = ""\nempty_array = []\nnull_value = null\n';
+        testCase4.text = 'nested_arrays = [[1, 2], [3, 4], [5, 6]]\n';
         testCase4.expectedTokens = null;
-        testCase4.description = "Testing empty string, empty array, and null value.";
+        testCase4.description = "测试嵌套数组。";
         cases.push(testCase4);
 
-        // Test case 5: Date and time
+        // ==========================
+        // 表测试
+        // ==========================
+        // Test case 5: Basic table
         var testCase5:Object = new Object();
-        testCase5.text = 'date_time = 2024-10-09T08:30:00Z\n';
+        testCase5.text = '[server]\n' +
+                        'ip = "192.168.1.1"\n' +
+                        'port = 8080\n';
         testCase5.expectedTokens = null;
-        testCase5.description = "Testing date and time in ISO8601 format.";
+        testCase5.description = "测试基本表结构。";
         cases.push(testCase5);
 
         // Test case 6: Nested tables
         var testCase6:Object = new Object();
-        testCase6.text = '[server]\n' +
-                        'ip = "192.168.1.1"\n' +
-                        '[server.database]\n' +
-                        'type = "PostgreSQL"\n' +
-                        'ports = [5432, 5433, 5434]\n' +
-                        '[server.database.settings]\n' +
-                        'enabled = true\n';
+        testCase6.text = '[database.connection]\n' +
+                        'server = "localhost"\n' +
+                        'port = 5432\n';
         testCase6.expectedTokens = null;
-        testCase6.description = "Testing nested tables with multiple levels.";
+        testCase6.description = "测试嵌套表结构。";
         cases.push(testCase6);
 
-        // Test case 7: Table arrays
+        // ==========================
+        // 表数组测试
+        // ==========================
+        // Test case 7: Simple table array
         var testCase7:Object = new Object();
-        testCase7.text = '[[products]]\n' +
-                        'name = "Hammer"\n' +
-                        'sku = 738594937\n' +
-                        '[[products]]\n' +
-                        'name = "Nail"\n' +
-                        'sku = 284758393\n';
+        testCase7.text = '[[monsters]]\n' +
+                        'name = "Goblin"\n' +
+                        'level = 5\n' +
+                        '[[monsters]]\n' +
+                        'name = "Dragon"\n' +
+                        'level = 50\n';
         testCase7.expectedTokens = null;
-        testCase7.description = "Testing table arrays with multiple entries.";
+        testCase7.description = "测试简单的表数组。";
         cases.push(testCase7);
 
-        // Test case 8: Complex nested tables and table arrays
+        // Test case 8: Nested table arrays
         var testCase8:Object = new Object();
-        testCase8.text = 'title = "FNTL Example"\n' +
-                        'owner = { name = "Tom", dob = 1979-05-27 }\n' +
-                        '[[products]]\n' +
-                        'name = "Hammer"\n' +
-                        'sku = 738594937\n' +
-                        '[[products]]\n' +
-                        'name = "Nail"\n' +
-                        'sku = 284758393\n' +
-                        '[database]\n' +
-                        'server = "192.168.1.1"\n' +
-                        'ports = [8001, 8001, 8002]\n' +
-                        'connection_max = 5000\n' +
+        testCase8.text = '[[servers]]\n' +
+                        'name = "Server1"\n' +
+                        'ip = "10.0.0.1"\n' +
+                        '[[servers.database]]\n' +
+                        'type = "MySQL"\n' +
+                        'port = 3306\n' +
+                        '[[servers.database.settings]]\n' +
                         'enabled = true\n';
         testCase8.expectedTokens = null;
-        testCase8.description = "Testing complex nested tables and table arrays.";
+        testCase8.description = "测试嵌套的表数组。";
         cases.push(testCase8);
 
-        // Test case 9: Unicode characters
+        // ==========================
+        // 内联表测试
+        // ==========================
+        // Test case 9: Inline table
         var testCase9:Object = new Object();
-        testCase9.text = 'greeting = "こんにちは"\nemoji = "😊"\n';
+        testCase9.text = 'player = { name = "Alice", score = 2500 }\n';
         testCase9.expectedTokens = null;
-        testCase9.description = "Testing Unicode characters and emojis.";
+        testCase9.description = "测试内联表。";
         cases.push(testCase9);
 
-        // Test case 10: Escape characters
+        // ==========================
+        // Unicode和Emoji测试
+        // ==========================
+        // Test case 10: Unicode characters and emojis
         var testCase10:Object = new Object();
-        testCase10.text = 'escaped_newline = "Line1\\nLine2"\nescaped_quote = "He said, \\"Hello!\\""\n';
+        testCase10.text = 'greeting = "こんにちは"\nemoji = "😊"\n';
         testCase10.expectedTokens = null;
-        testCase10.description = "Testing escape characters in strings.";
+        testCase10.description = "测试Unicode字符和Emoji。";
         cases.push(testCase10);
 
-        // Test case 11: Mixed complex structures
+        // ==========================
+        // 转义字符测试
+        // ==========================
+        // Test case 11: Escape characters in strings
         var testCase11:Object = new Object();
-        testCase11.text = '[server]\n' +
-                        'host = "localhost"\n' +
-                        'ports = [8000, 8001, 8002]\n' +
-                        'connection_max = 5000\n' +
-                        'enabled = true\n' +
-                        '[[owners]]\n' +
-                        'name = "Alice"\n' +
-                        'dob = "1990-01-01"\n' +
-                        '[[owners]]\n' +
-                        'name = "Bob"\n' +
-                        'dob = "1985-05-12"\n' +
-                        '[database]\n' +
-                        'server = "192.168.1.100"\n' +
-                        'ports = [3306]\n' +
-                        'connection_max = 10000\n' +
-                        'enabled = false\n' +
-                        '[[users]]\n' +
-                        'name = "user1"\n' +
-                        'active = true\n' +
-                        '[[users]]\n' +
-                        'name = "user2"\n' +
-                        'active = false\n';
+        testCase11.text = 'escaped_newline = "Line1\\nLine2"\nescaped_quote = "He said, \\"Hello!\\""\n';
         testCase11.expectedTokens = null;
-        testCase11.description = "Testing mixed complex structures with multiple table arrays.";
+        testCase11.description = "测试字符串中的转义字符。";
         cases.push(testCase11);
 
-        // Test case 12: Special number formats
+        // ==========================
+        // 特殊数字格式测试
+        // ==========================
+        // Test case 12: Special floating-point values
         var testCase12:Object = new Object();
         testCase12.text = 'special_float_1 = nan\nspecial_float_2 = inf\nspecial_float_3 = -inf\n';
         testCase12.expectedTokens = null;
-        testCase12.description = "Testing special floating-point values: NaN, Infinity, -Infinity.";
+        testCase12.description = "测试特殊浮点数值：NaN、Infinity、-Infinity。";
         cases.push(testCase12);
 
-        // Test case 13: Malformed FNTL (missing equals)
+        // ==========================
+        // 错误输入测试
+        // ==========================
+        // Test case 13: Missing equals sign
         var testCase13:Object = new Object();
         testCase13.text = 'invalid_line "No equals sign"\n';
         testCase13.expectedTokens = null;
-        testCase13.description = "Testing malformed FNTL input with missing equals sign.";
+        testCase13.description = "测试缺少等号的错误输入。";
         cases.push(testCase13);
 
         // Test case 14: Unclosed string
         var testCase14:Object = new Object();
         testCase14.text = 'unclosed_string = "This string never ends...\n';
         testCase14.expectedTokens = null;
-        testCase14.description = "Testing malformed FNTL input with unclosed string.";
+        testCase14.description = "测试未闭合字符串的错误输入。";
         cases.push(testCase14);
 
         // Test case 15: Invalid date-time format
         var testCase15:Object = new Object();
         testCase15.text = 'invalid_date = 2024-13-40T25:61:61Z\n';
         testCase15.expectedTokens = null;
-        testCase15.description = "Testing malformed FNTL input with invalid date-time format.";
+        testCase15.description = "测试无效日期时间格式的错误输入。";
         cases.push(testCase15);
 
-        // Test case 16: Nested arrays
+        // ==========================
+        // 项目特定的复杂结构测试
+        // ==========================
+        // Test case 16: Project-specific complex structure
         var testCase16:Object = new Object();
-        testCase16.text = 'nested_arrays = [[1, 2], [3, 4], [5, 6]]\n';
-        testCase16.expectedTokens = null;
-        testCase16.description = "Testing nested arrays within FNTL.";
-        cases.push(testCase16);
-
-        // Test case 17: Project-specific sample with Unicode and complex structures
-        var testCase17:Object = new Object();
-        testCase17.text = 'task_chains_progress = { 主线 = "1" }\n' +
+        testCase16.text = 'task_chains_progress = { 主线 = "1" }\n' +
                         'task_history = [0]\n' +
                         'tasks_finished = { 0 = 1 }\n' +
                         'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
@@ -348,396 +357,668 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
                         '[[tasks_to_do.requirements.stages]]\n' +
                         'difficulty = "简单"\n' +
                         'name = "测试任务"\n';
-        testCase17.expectedTokens = null;
-        testCase17.description = "Project-specific test case with Unicode characters and complex nested structures.";
-        cases.push(testCase17);
+        testCase16.expectedTokens = null;
+        testCase16.description = "项目特定的复杂结构测试，包括Unicode字符和嵌套表数组。";
+        cases.push(testCase16);
 
         return cases;
     }
 
     /**
      * Retrieves test cases for the FNTLParser.
-     * Each test case includes FNTL/FNTL text and the expected parsed object.
+     * Each test case includes FNTL text and the expected parsed object.
      */
     private function getParserTestCases():Array {
-        var cases:Array = this.getLexerTestCases();
+        var cases:Array = new Array();
 
-        // Adding additional Parser-specific test cases
-        var testCase18:Object = new Object();
-        testCase18.text = 'owner = { name = "Tom", dob = 1979-05-27 }\n';
-        var expected18:Object = new Object();
-        expected18.owner = new Object();
-        expected18.owner.name = "Tom";
-        expected18.owner.dob = "1979-05-27";
-        testCase18.expected = expected18;
-        testCase18.description = "Testing inline table parsing with simple key-value pairs.";
-        cases.push(testCase18);
+        // ==========================
+        // 基础键值对解析测试
+        // ==========================
+        // Test case 1: Basic key-value pairs
+        var testCase1:Object = new Object();
+        testCase1.text = 'title = "My Game"\n' +
+                        'isActive = true\n' +
+                        'max_score = 1000\n' +
+                        'average_score = 89.95\n';
+        var expected1:Object = {
+            title: "My Game",
+            isActive: true,
+            max_score: 1000,
+            average_score: 89.95
+        };
+        testCase1.expected = expected1;
+        testCase1.description = "解析基础键值对，包括字符串、布尔值和数字。";
+        cases.push(testCase1);
 
-        var testCase19:Object = new Object();
-        testCase19.text = 'settings = { theme = { color = "blue", font = "Arial" }, notifications = true }\n';
-        var expected19:Object = new Object();
-        expected19.settings = new Object();
-        expected19.settings.theme = new Object();
-        expected19.settings.theme.color = "blue";
-        expected19.settings.theme.font = "Arial";
-        expected19.settings.notifications = true;
-        testCase19.expected = expected19;
-        testCase19.description = "Testing nested inline tables within inline tables.";
-        cases.push(testCase19);
+        // Test case 2: Multiline string
+        var testCase2:Object = new Object();
+        testCase2.text = 'description = """This is a multiline string.\nIt spans multiple lines."""\n';
+        var expected2:Object = {
+            description: "This is a multiline string.\nIt spans multiple lines."
+        };
+        testCase2.expected = expected2;
+        testCase2.description = "解析多行字符串。";
+        cases.push(testCase2);
+
+        // ==========================
+        // 数组解析测试
+        // ==========================
+        // Test case 3: Simple array
+        var testCase3:Object = new Object();
+        testCase3.text = 'items = ["sword", "shield", "potion"]\n';
+        var expected3:Object = {
+            items: ["sword", "shield", "potion"]
+        };
+        testCase3.expected = expected3;
+        testCase3.description = "解析简单数组。";
+        cases.push(testCase3);
+
+        // Test case 4: Nested arrays
+        var testCase4:Object = new Object();
+        testCase4.text = 'nested_arrays = [[1, 2], [3, 4], [5, 6]]\n';
+        var expected4:Object = {
+            nested_arrays: [[1, 2], [3, 4], [5, 6]]
+        };
+        testCase4.expected = expected4;
+        testCase4.description = "解析嵌套数组。";
+        cases.push(testCase4);
+
+        // ==========================
+        // 表解析测试
+        // ==========================
+        // Test case 5: Basic table
+        var testCase5:Object = new Object();
+        testCase5.text = '[server]\n' +
+                        'ip = "192.168.1.1"\n' +
+                        'port = 8080\n';
+        var expected5:Object = {
+            server: {
+                ip: "192.168.1.1",
+                port: 8080
+            }
+        };
+        testCase5.expected = expected5;
+        testCase5.description = "解析基本表结构。";
+        cases.push(testCase5);
+
+        // Test case 6: Nested tables
+        var testCase6:Object = new Object();
+        testCase6.text = '[database.connection]\n' +
+                        'server = "localhost"\n' +
+                        'port = 5432\n';
+        var expected6:Object = {
+            database: {
+                connection: {
+                    server: "localhost",
+                    port: 5432
+                }
+            }
+        };
+        testCase6.expected = expected6;
+        testCase6.description = "解析嵌套表结构。";
+        cases.push(testCase6);
+
+        // ==========================
+        // 表数组解析测试
+        // ==========================
+        // Test case 7: Simple table array
+        var testCase7:Object = new Object();
+        testCase7.text = '[[monsters]]\n' +
+                        'name = "Goblin"\n' +
+                        'level = 5\n' +
+                        '[[monsters]]\n' +
+                        'name = "Dragon"\n' +
+                        'level = 50\n';
+        var expected7:Object = {
+            monsters: [
+                { name: "Goblin", level: 5 },
+                { name: "Dragon", level: 50 }
+            ]
+        };
+        testCase7.expected = expected7;
+        testCase7.description = "解析简单的表数组。";
+        cases.push(testCase7);
+
+        // Test case 8: Nested table arrays
+        var testCase8:Object = new Object();
+        testCase8.text = '[[servers]]\n' +
+                        'name = "Server1"\n' +
+                        'ip = "10.0.0.1"\n' +
+                        '[[servers.database]]\n' +
+                        'type = "MySQL"\n' +
+                        'port = 3306\n' +
+                        '[[servers.database.settings]]\n' +
+                        'enabled = true\n';
+        var expected8:Object = {
+            servers: [
+                {
+                    name: "Server1",
+                    ip: "10.0.0.1",
+                    database: {
+                        type: "MySQL",
+                        port: 3306,
+                        settings: {
+                            enabled: true
+                        }
+                    }
+                }
+            ]
+        };
+        testCase8.expected = expected8;
+        testCase8.description = "解析嵌套的表数组。";
+        cases.push(testCase8);
+
+        // ==========================
+        // 内联表解析测试
+        // ==========================
+        // Test case 9: Inline table
+        var testCase9:Object = new Object();
+        testCase9.text = 'player = { name = "Alice", score = 2500 }\n';
+        var expected9:Object = {
+            player: {
+                name: "Alice",
+                score: 2500
+            }
+        };
+        testCase9.expected = expected9;
+        testCase9.description = "解析内联表。";
+        cases.push(testCase9);
+
+        // ==========================
+        // Unicode和Emoji解析测试
+        // ==========================
+        // Test case 10: Unicode characters and emojis
+        var testCase10:Object = new Object();
+        testCase10.text = 'greeting = "こんにちは"\nemoji = "😊"\n';
+        var expected10:Object = {
+            greeting: "こんにちは",
+            emoji: "😊"
+        };
+        testCase10.expected = expected10;
+        testCase10.description = "解析Unicode字符和Emoji。";
+        cases.push(testCase10);
+
+        // ==========================
+        // 转义字符解析测试
+        // ==========================
+        // Test case 11: Escape characters in strings
+        var testCase11:Object = new Object();
+        testCase11.text = 'escaped_newline = "Line1\\nLine2"\nescaped_quote = "He said, \\"Hello!\\""\n';
+        var expected11:Object = {
+            escaped_newline: "Line1\nLine2",
+            escaped_quote: 'He said, "Hello!"'
+        };
+        testCase11.expected = expected11;
+        testCase11.description = "解析字符串中的转义字符。";
+        cases.push(testCase11);
+
+        // ==========================
+        // 特殊数字格式解析测试
+        // ==========================
+        // Test case 12: Special floating-point values
+        var testCase12:Object = new Object();
+        testCase12.text = 'special_float_1 = nan\nspecial_float_2 = inf\nspecial_float_3 = -inf\n';
+        var expected12:Object = {
+            special_float_1: NaN,
+            special_float_2: Infinity,
+            special_float_3: -Infinity
+        };
+        testCase12.expected = expected12;
+        testCase12.description = "解析特殊浮点数值：NaN、Infinity、-Infinity。";
+        cases.push(testCase12);
+
+        // ==========================
+        // 错误输入解析测试
+        // ==========================
+        // Test case 13: Missing equals sign
+        var testCase13:Object = new Object();
+        testCase13.text = 'invalid_line "No equals sign"\n';
+        var expected13:Object = {}; // Expecting no valid key-value pairs
+        testCase13.expected = expected13;
+        testCase13.description = "解析缺少等号的错误输入。";
+        cases.push(testCase13);
+
+        // Test case 14: Unclosed string
+        var testCase14:Object = new Object();
+        testCase14.text = 'unclosed_string = "This string never ends...\n';
+        var expected14:Object = {}; // Expecting no valid key-value pairs due to error
+        testCase14.expected = expected14;
+        testCase14.description = "解析未闭合字符串的错误输入。";
+        cases.push(testCase14);
+
+        // Test case 15: Invalid date-time format
+        var testCase15:Object = new Object();
+        testCase15.text = 'invalid_date = 2024-13-40T25:61:61Z\n';
+        var expected15:Object = {
+            invalid_date: "2024-13-40T25:61:61Z" // Depending on parser's handling
+        };
+        testCase15.expected = expected15;
+        testCase15.description = "解析无效日期时间格式的错误输入。";
+        cases.push(testCase15);
+
+        // ==========================
+        // 项目特定的复杂结构解析测试
+        // ==========================
+        // Test case 16: Project-specific complex structure
+        var testCase16:Object = new Object();
+        testCase16.text = 'task_chains_progress = { 主线 = "1" }\n' +
+                        'task_history = [0]\n' +
+                        'tasks_finished = { 0 = 1 }\n' +
+                        'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
+                        '"上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]]], "测试"],\n' +
+                        '商城已购买物品 = []\n' +
+                        '战宠 = [[]]\n' +
+                        '[[tasks_to_do]]\n' +
+                        'id = 1\n' +
+                        '[tasks_to_do.requirements]\n' +
+                        'items = []\n' +
+                        '[[tasks_to_do.requirements.stages]]\n' +
+                        'difficulty = "简单"\n' +
+                        'name = "测试任务"\n';
+
+        var expected16:Object = new Object();
+
+        // 设置 task_chains_progress
+        expected16.task_chains_progress = new Object();
+        expected16.task_chains_progress["主线"] = "1";
+
+        // 设置 task_history
+        expected16.task_history = new Array();
+        expected16.task_history.push(0);
+
+        // 设置 tasks_finished
+        expected16.tasks_finished = new Object();
+        expected16.tasks_finished["0"] = 1;
+
+        // 设置 test 数组
+        expected16.test = new Array();
+
+        // 创建嵌套数组
+        var testItem1:Array = new Array();
+        testItem1.push("fs");
+        testItem1.push("男");
+        testItem1.push(1000);
+        testItem1.push(50);
+        testItem1.push(1000000);
+        testItem1.push(175);
+        testItem1.push(300);
+        testItem1.push("新手");
+        testItem1.push(50000);
+        testItem1.push(500000);
+
+        // 创建内部的按键数组
+        var keys:Array = new Array();
+        keys.push(new Array("上键", "上键", 87));
+        keys.push(new Array("下键", "下键", 83));
+        keys.push(new Array("左键", "左键", 65));
+        keys.push(new Array("右键", "右键", 68));
+
+        // 将按键数组添加到 testItem1
+        testItem1.push(keys);
+
+        // 将 testItem1 添加到 expected16.test
+        expected16.test.push(testItem1);
+
+        // 添加 "测试" 字符串
+        expected16.test.push("测试");
+
+        // 设置商城已购买物品和战宠数组
+        expected16["商城已购买物品"] = new Array();
+        expected16["战宠"] = new Array();
+        expected16["战宠"].push(new Array());
+
+        // 设置 tasks_to_do 数组
+        expected16.tasks_to_do = new Array();
+
+        // 创建第一个任务对象
+        var task1:Object = new Object();
+        task1.id = 1;
+
+        // 设置 requirements 对象
+        task1.requirements = new Object();
+        task1.requirements.items = new Array(); // 空数组
+
+        // 设置 stages 数组
+        task1.requirements.stages = new Array();
+
+        // 创建第一个 stage 对象
+        var stage1:Object = new Object();
+        stage1.difficulty = "简单";
+        stage1.name = "测试任务";
+
+        // 将 stage1 添加到 stages 数组
+        task1.requirements.stages.push(stage1);
+
+        // 将 task1 添加到 tasks_to_do 数组
+        expected16.tasks_to_do.push(task1);
+
+        testCase16.expected = expected16;
+        testCase16.description = "解析项目特定的复杂结构，包括Unicode字符和嵌套表数组。";
+        cases.push(testCase16);
 
         return cases;
     }
 
     /**
      * Retrieves test cases for the FNTLEncoder.
-     * Each test case includes an input object and the expected FNTL/FNTL string.
+     * Each test case includes an input object and the expected FNTL string.
      */
     private function getEncoderTestCases():Array {
         var cases:Array = new Array();
 
-        // Test case 1: Simple object
+        // ==========================
+        // 基础键值对编码测试
+        // ==========================
+        // Test case 1: Basic key-value pairs
         var testCase1:Object = new Object();
-        testCase1.input = new Object();
-        testCase1.input.title = "My Game";
-        testCase1.input.isActive = true;
-        testCase1.input.max_score = 1000;
-        testCase1.input.average_score = 89.95;
-        testCase1.input.launch_time = "2024-10-09T08:30:00Z";
-        testCase1.input.items = new Array("sword", "shield", "potion");
+        testCase1.input = {
+            title: "My Game",
+            isActive: true,
+            max_score: 1000,
+            average_score: 89.95
+        };
         testCase1.expected = 'average_score = 89.95\n' +
                               'isActive = true\n' +
-                              'items = ["sword", "shield", "potion"]\n' +
-                              'launch_time = 2024-10-09T08:30:00Z\n' +
                               'max_score = 1000\n' +
                               'title = "My Game"\n';
-        testCase1.description = "Encoding a simple object with various data types.";
+        testCase1.description = "编码基础键值对，包括字符串、布尔值和数字。";
         cases.push(testCase1);
 
-        // Test case 2: Boolean values
+        // ==========================
+        // 多行字符串编码测试
+        // ==========================
+        // Test case 2: Multiline string
         var testCase2:Object = new Object();
-        testCase2.input = new Object();
-        testCase2.input.boolean_true = true;
-        testCase2.input.boolean_false = false;
-        testCase2.expected = 'boolean_false = false\n' +
-                              'boolean_true = true\n';
-        testCase2.description = "Encoding boolean values: true and false.";
+        testCase2.input = {
+            description: "This is a multiline string.\nIt spans multiple lines."
+        };
+        testCase2.expected = 'description = """This is a multiline string.\nIt spans multiple lines."""\n';
+        testCase2.description = "编码多行字符串。";
         cases.push(testCase2);
 
-        // Test case 3: Numbers
+        // ==========================
+        // 数组编码测试
+        // ==========================
+        // Test case 3: Simple array
         var testCase3:Object = new Object();
-        testCase3.input = new Object();
-        testCase3.input.integer = 42;
-        testCase3.input.negative_integer = -42;
-        testCase3.input.float = 3.14;
-        testCase3.input.negative_float = -3.14;
-        testCase3.expected = 'float = 3.14\n' +
-                              'integer = 42\n' +
-                              'negative_float = -3.14\n' +
-                              'negative_integer = -42\n';
-        testCase3.description = "Encoding integer and float numbers, including negative values.";
+        testCase3.input = {
+            items: ["sword", "shield", "potion"]
+        };
+        testCase3.expected = 'items = ["sword", "shield", "potion"]\n';
+        testCase3.description = "编码简单数组。";
         cases.push(testCase3);
 
-        // Test case 4: Empty values
+        // Test case 4: Nested arrays
         var testCase4:Object = new Object();
-        testCase4.input = new Object();
-        testCase4.input.empty_string = "";
-        testCase4.input.empty_array = new Array();
-        testCase4.input.null_value = null;
-        testCase4.expected = 'empty_array = []\n' +
-                              'empty_string = ""\n' +
-                              'null_value = null\n';
-        testCase4.description = "Encoding empty string, empty array, and null value.";
+        testCase4.input = {
+            nested_arrays: [[1, 2], [3, 4], [5, 6]]
+        };
+        testCase4.expected = 'nested_arrays = [[1, 2], [3, 4], [5, 6]]\n';
+        testCase4.description = "编码嵌套数组。";
         cases.push(testCase4);
 
-        // Test case 5: Date and time
+        // ==========================
+        // 表编码测试
+        // ==========================
+        // Test case 5: Basic table
         var testCase5:Object = new Object();
-        testCase5.input = new Object();
-        testCase5.input.date_time = "2024-10-09T08:30:00Z";
-        testCase5.expected = 'date_time = 2024-10-09T08:30:00Z\n';
-        testCase5.description = "Encoding date and time in ISO8601 format.";
+        testCase5.input = {
+            server: {
+                ip: "192.168.1.1",
+                port: 8080
+            }
+        };
+        testCase5.expected = '[server]\n' +
+                              'ip = "192.168.1.1"\n' +
+                              'port = 8080\n';
+        testCase5.description = "编码基本表结构。";
         cases.push(testCase5);
 
         // Test case 6: Nested tables
         var testCase6:Object = new Object();
-        testCase6.input = new Object();
-        testCase6.input.server = new Object();
-        testCase6.input.server.ip = "192.168.1.1";
-        testCase6.input.server.database = new Object();
-        testCase6.input.server.database.type = "PostgreSQL";
-        testCase6.input.server.database.ports = new Array(5432, 5433, 5434);
-        testCase6.input.server.database.settings = new Object();
-        testCase6.input.server.database.settings.enabled = true;
-        testCase6.expected = '[server]\n' +
-                              'ip = "192.168.1.1"\n' +
-                              '[server.database]\n' +
-                              'ports = [5432, 5433, 5434]\n' +
-                              'type = "PostgreSQL"\n' +
-                              '[server.database.settings]\n' +
-                              'enabled = true\n';
-        testCase6.description = "Encoding nested tables with multiple levels.";
+        testCase6.input = {
+            database: {
+                connection: {
+                    server: "localhost",
+                    port: 5432
+                }
+            }
+        };
+        testCase6.expected = '[database.connection]\n' +
+                              'port = 5432\n' +
+                              'server = "localhost"\n';
+        testCase6.description = "编码嵌套表结构。";
         cases.push(testCase6);
 
-        // Test case 7: Table arrays
+        // ==========================
+        // 表数组编码测试
+        // ==========================
+        // Test case 7: Simple table array
         var testCase7:Object = new Object();
-        testCase7.input = new Object();
-        testCase7.input.products = new Array();
-
-        var product1:Object = new Object();
-        product1.name = "Hammer";
-        product1.sku = 738594937;
-        testCase7.input.products.push(product1);
-
-        var product2:Object = new Object();
-        product2.name = "Nail";
-        product2.sku = 284758393;
-        testCase7.input.products.push(product2);
-
-        testCase7.expected = '[[products]]\n' +
-                              'name = "Hammer"\n' +
-                              'sku = 738594937\n' +
-                              '[[products]]\n' +
-                              'name = "Nail"\n' +
-                              'sku = 284758393\n';
-        testCase7.description = "Encoding table arrays with multiple entries.";
+        testCase7.input = {
+            monsters: [
+                { name: "Goblin", level: 5 },
+                { name: "Dragon", level: 50 }
+            ]
+        };
+        testCase7.expected = '[[monsters]]\n' +
+                              'level = 5\n' +
+                              'name = "Goblin"\n' +
+                              '[[monsters]]\n' +
+                              'level = 50\n' +
+                              'name = "Dragon"\n';
+        testCase7.description = "编码简单的表数组。";
         cases.push(testCase7);
 
-        // Test case 8: Complex nested tables and table arrays
+        // Test case 8: Nested table arrays
         var testCase8:Object = new Object();
-        testCase8.input = new Object();
-        testCase8.input.title = "FNTL Example";
-
-        testCase8.input.owner = new Object();
-        testCase8.input.owner.name = "Tom";
-        testCase8.input.owner.dob = "1979-05-27";
-
-        testCase8.input.products = new Array();
-
-        var product3:Object = new Object();
-        product3.name = "Hammer";
-        product3.sku = 738594937;
-        testCase8.input.products.push(product3);
-
-        var product4:Object = new Object();
-        product4.name = "Nail";
-        product4.sku = 284758393;
-        testCase8.input.products.push(product4);
-
-        testCase8.input.database = new Object();
-        testCase8.input.database.server = "192.168.1.1";
-        testCase8.input.database.ports = new Array(8001, 8001, 8002);
-        testCase8.input.database.connection_max = 5000;
-        testCase8.input.database.enabled = true;
-
-        testCase8.expected = '[owner]\n' +
-                              'dob = "1979-05-27"\n' +
-                              'name = "Tom"\n' +
-                              '[database]\n' +
-                              'connection_max = 5000\n' +
-                              'enabled = true\n' +
-                              'ports = [8001, 8001, 8002]\n' +
-                              'server = "192.168.1.1"\n' +
-                              '[[products]]\n' +
-                              'name = "Hammer"\n' +
-                              'sku = 738594937\n' +
-                              '[[products]]\n' +
-                              'name = "Nail"\n' +
-                              'sku = 284758393\n' +
-                              'title = "FNTL Example"\n';
-        testCase8.description = "Encoding complex nested tables and table arrays.";
+        testCase8.input = {
+            servers: [
+                {
+                    name: "Server1",
+                    ip: "10.0.0.1",
+                    database: {
+                        type: "MySQL",
+                        port: 3306,
+                        settings: {
+                            enabled: true
+                        }
+                    }
+                }
+            ]
+        };
+        testCase8.expected = '[[servers]]\n' +
+                              'database = { enabled = true, port = 3306, type = "MySQL" }\n' +
+                              'ip = "10.0.0.1"\n' +
+                              'name = "Server1"\n';
+        testCase8.description = "编码嵌套的表数组。";
         cases.push(testCase8);
 
-        // Test case 9: Unicode characters
+        // ==========================
+        // 内联表编码测试
+        // ==========================
+        // Test case 9: Inline table
         var testCase9:Object = new Object();
-        testCase9.input = new Object();
-        testCase9.input.greeting = "こんにちは";
-        testCase9.input.emoji = "😊";
-        testCase9.expected = 'emoji = "😊"\n' +
-                              'greeting = "こんにちは"\n';
-        testCase9.description = "Encoding Unicode characters and emojis.";
+        testCase9.input = {
+            player: {
+                name: "Alice",
+                score: 2500
+            }
+        };
+        testCase9.expected = 'player = { name = "Alice", score = 2500 }\n';
+        testCase9.description = "编码内联表。";
         cases.push(testCase9);
 
-        // Test case 10: Escape characters
+        // ==========================
+        // Unicode和Emoji编码测试
+        // ==========================
+        // Test case 10: Unicode characters and emojis
         var testCase10:Object = new Object();
-        testCase10.input = new Object();
-        testCase10.input.escaped_newline = "Line1\nLine2";
-        testCase10.input.escaped_quote = 'He said, "Hello!"';
-        testCase10.expected = 'escaped_newline = """Line1\nLine2"""\n' +
-                              'escaped_quote = "He said, \\"Hello!\\""\n';
-        testCase10.description = "Encoding strings with escape characters.";
+        testCase10.input = {
+            greeting: "こんにちは",
+            emoji: "😊"
+        };
+        testCase10.expected = 'emoji = "😊"\n' +
+                              'greeting = "こんにちは"\n';
+        testCase10.description = "编码Unicode字符和Emoji。";
         cases.push(testCase10);
 
-        // Test case 11: Mixed complex structures
+        // ==========================
+        // 转义字符编码测试
+        // ==========================
+        // Test case 11: Escape characters in strings
         var testCase11:Object = new Object();
-        testCase11.input = new Object();
-
-        // server
-        testCase11.input.server = new Object();
-        testCase11.input.server.host = "localhost";
-        testCase11.input.server.ports = new Array(8000, 8001, 8002);
-        testCase11.input.server.connection_max = 5000;
-        testCase11.input.server.enabled = true;
-
-        // owners
-        testCase11.input.owners = new Array();
-        var owner1:Object = new Object();
-        owner1.name = "Alice";
-        owner1.dob = "1990-01-01";
-        testCase11.input.owners.push(owner1);
-
-        var owner2:Object = new Object();
-        owner2.name = "Bob";
-        owner2.dob = "1985-05-12";
-        testCase11.input.owners.push(owner2);
-
-        // database
-        testCase11.input.database = new Object();
-        testCase11.input.database.server = "192.168.1.100";
-        testCase11.input.database.ports = new Array(3306);
-        testCase11.input.database.connection_max = 10000;
-        testCase11.input.database.enabled = false;
-
-        // users
-        testCase11.input.users = new Array();
-        var user1:Object = new Object();
-        user1.name = "user1";
-        user1.active = true;
-        testCase11.input.users.push(user1);
-
-        var user2:Object = new Object();
-        user2.name = "user2";
-        user2.active = false;
-        testCase11.input.users.push(user2);
-
-        testCase11.expected = '[server]\n' +
-                               'connection_max = 5000\n' +
-                               'enabled = true\n' +
-                               'host = "localhost"\n' +
-                               'ports = [8000, 8001, 8002]\n' +
-                               '[database]\n' +
-                               'connection_max = 10000\n' +
-                               'enabled = false\n' +
-                               'ports = [3306]\n' +
-                               'server = "192.168.1.100"\n' +
-                               '[[owners]]\n' +
-                               'dob = "1990-01-01"\n' +
-                               'name = "Alice"\n' +
-                               '[[owners]]\n' +
-                               'dob = "1985-05-12"\n' +
-                               'name = "Bob"\n' +
-                               '[[users]]\n' +
-                               'active = true\n' +
-                               'name = "user1"\n' +
-                               '[[users]]\n' +
-                               'active = false\n' +
-                               'name = "user2"\n';
-        testCase11.description = "Encoding mixed complex structures with multiple table arrays.";
+        testCase11.input = {
+            escaped_newline: "Line1\nLine2",
+            escaped_quote: 'He said, "Hello!"'
+        };
+        testCase11.expected = 'escaped_newline = """Line1\nLine2"""\n' +
+                              'escaped_quote = "He said, \\"Hello!\\""\n';
+        testCase11.description = "编码字符串中的转义字符。";
         cases.push(testCase11);
 
-        // Test case 12: Special number formats
+        // ==========================
+        // 特殊数字格式编码测试
+        // ==========================
+        // Test case 12: Special floating-point values
         var testCase12:Object = new Object();
-        testCase12.input = new Object();
-        testCase12.input.special_float_1 = Number.NaN;
-        testCase12.input.special_float_2 = Number.POSITIVE_INFINITY;
-        testCase12.input.special_float_3 = Number.NEGATIVE_INFINITY;
+        testCase12.input = {
+            special_float_1: NaN,
+            special_float_2: Infinity,
+            special_float_3: -Infinity
+        };
         testCase12.expected = 'special_float_1 = nan\n' +
                               'special_float_2 = inf\n' +
                               'special_float_3 = -inf\n';
-        testCase12.description = "Encoding special floating-point values: NaN, Infinity, -Infinity.";
+        testCase12.description = "编码特殊浮点数值：NaN、Infinity、-Infinity。";
         cases.push(testCase12);
 
-        // Test case 13: Malformed FNTL (missing equals)
+        // ==========================
+        // 错误输入编码测试
+        // ==========================
+        // Test case 13: Missing equals sign
         var testCase13:Object = new Object();
-        testCase13.input = new Object();
-        testCase13.input.invalid_line = "No equals sign";
+        testCase13.input = {
+            invalid_line: "No equals sign"
+        };
         testCase13.expected = null; // Encoder should skip or handle invalid entries
-        testCase13.description = "Encoding malformed FNTL input with missing equals sign.";
+        testCase13.description = "编码缺少等号的错误输入。";
         cases.push(testCase13);
 
-        // Test case 14: Malformed or unclosed string (simulated)
+        // Test case 14: Unclosed string
         var testCase14:Object = new Object();
-        testCase14.input = new Object();
-        testCase14.input.unclosed_string = "This string never ends...";
-        testCase14.expected = null; // Expected output is null because the parser should flag this as an error
-        testCase14.description = "Encoding malformed FNTL input with unclosed string.";
+        testCase14.input = {
+            unclosed_string: "This string never ends..."
+        };
+        testCase14.expected = null; // Encoder should handle invalid strings appropriately
+        testCase14.description = "编码未闭合字符串的错误输入。";
         cases.push(testCase14);
 
         // Test case 15: Invalid date-time format
         var testCase15:Object = new Object();
-        testCase15.input = new Object();
-        testCase15.input.invalid_date = "2024-13-40T25:61:61Z";
-        testCase15.expected = null; // Encoder should handle invalid dates or escape
-        testCase15.description = "Encoding malformed FNTL input with invalid date-time format.";
+        testCase15.input = {
+            invalid_date: "2024-13-40T25:61:61Z"
+        };
+        testCase15.expected = null; // Encoder should handle invalid dates appropriately
+        testCase15.description = "编码无效日期时间格式的错误输入。";
         cases.push(testCase15);
 
-        // Test case 16: Nested arrays
+        // ==========================
+        // 项目特定的复杂结构编码测试
+        // ==========================
+        // Test case 16: Project-specific complex structure
         var testCase16:Object = new Object();
         testCase16.input = new Object();
-        var nestedArray1:Array = new Array(1, 2);
-        var nestedArray2:Array = new Array(3, 4);
-        var nestedArray3:Array = new Array(5, 6);
-        var nestedArrays:Array = new Array(nestedArray1, nestedArray2, nestedArray3);
-        testCase16.input.nested_arrays = nestedArrays;
-        testCase16.expected = 'nested_arrays = [[1, 2], [3, 4], [5, 6]]\n';
-        testCase16.description = "Encoding nested arrays within FNTL.";
-        cases.push(testCase16);
 
-        // Test case 17: Project-specific sample with Unicode and complex structures
-        var testCase17:Object = new Object();
-        testCase17.input = new Object();
-        testCase17.input.task_chains_progress = new Object();
-        testCase17.input.task_chains_progress["主线"] = "1";
+        // 设置 task_chains_progress
+        testCase16.input.task_chains_progress = new Object();
+        testCase16.input.task_chains_progress["主线"] = "1";
 
-        testCase17.input.task_history = [0];
+        // 设置 task_history
+        testCase16.input.task_history = new Array();
+        testCase16.input.task_history.push(0);
 
-        testCase17.input.tasks_finished = new Object();
-        testCase17.input.tasks_finished["0"] = 1; // Manually adding the key-value pair
+        // 设置 tasks_finished
+        testCase16.input.tasks_finished = new Object();
+        testCase16.input.tasks_finished["0"] = 1;
 
-        testCase17.input.test = [
-            ["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [
-                ["上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]
-            ]],
-            "测试"
-        ];
+        // 设置 test 数组
+        testCase16.input.test = new Array();
 
-        testCase17.input.商城已购买物品 = new Array();
-        testCase17.input.战宠 = new Array(new Array());
-        testCase17.input.tasks_to_do = new Array();
+        // 创建嵌套数组
+        var testItem1:Array = new Array();
+        testItem1.push("fs");
+        testItem1.push("男");
+        testItem1.push(1000);
+        testItem1.push(50);
+        testItem1.push(1000000);
+        testItem1.push(175);
+        testItem1.push(300);
+        testItem1.push("新手");
+        testItem1.push(50000);
+        testItem1.push(500000);
 
-        var task_to_do1:Object = new Object();
-        task_to_do1.id = 1;
-        task_to_do1.requirements = new Object();
-        task_to_do1.requirements.items = new Array();
-        task_to_do1.requirements.stages = new Array();
+        // 创建内部的按键数组
+        var keys:Array = new Array();
+        keys.push(new Array("上键", "上键", 87));
+        keys.push(new Array("下键", "下键", 83));
+        keys.push(new Array("左键", "左键", 65));
+        keys.push(new Array("右键", "右键", 68));
 
+        // 将按键数组添加到 testItem1
+        testItem1.push(keys);
+
+        // 将 testItem1 添加到 test 数组中
+        testCase16.input.test.push(testItem1);
+
+        // 添加 "测试" 字符串到 test 数组中
+        testCase16.input.test.push("测试");
+
+        // 设置商城已购买物品和战宠
+        testCase16.input["商城已购买物品"] = new Array();
+        testCase16.input["战宠"] = new Array();
+        testCase16.input["战宠"].push(new Array());
+
+        // 设置 tasks_to_do 数组
+        testCase16.input.tasks_to_do = new Array();
+
+        // 创建第一个任务对象
+        var task1:Object = new Object();
+        task1.id = 1;
+
+        // 设置 requirements 对象
+        task1.requirements = new Object();
+        task1.requirements.items = new Array(); // 空数组
+
+        // 设置 stages 数组
+        task1.requirements.stages = new Array();
+
+        // 创建第一个 stage 对象
         var stage1:Object = new Object();
         stage1.difficulty = "简单";
         stage1.name = "测试任务";
-        task_to_do1.requirements.stages.push(stage1);
 
-        testCase17.input.tasks_to_do.push(task_to_do1);
+        // 将 stage1 添加到 stages 数组
+        task1.requirements.stages.push(stage1);
 
-        testCase17.expected = '[task_chains_progress]\n' +
-                               '主线 = "1"\n' +
-                               '[tasks_finished]\n' +
-                               '0 = 1\n' +
-                               '[task_history]\n' +
-                               '0 = 0\n' +
-                               '[[tasks_to_do]]\n' +
+        // 将 task1 添加到 tasks_to_do 数组
+        testCase16.input.tasks_to_do.push(task1);
+        testCase16.expected = '[[tasks_to_do]]\n' +
                                'id = 1\n' +
                                '[tasks_to_do.requirements]\n' +
                                'items = []\n' +
-                               '[tasks_to_do.requirements.stages]\n' +
-                               'difficulty = "简单"\n' +
-                               'name = "测试任务"\n' +
                                '[[tasks_to_do.requirements.stages]]\n' +
                                'difficulty = "简单"\n' +
                                'name = "测试任务"\n' +
+                               'task_chains_progress = { 主线 = "1" }\n' +
+                               'task_history = [0]\n' +
+                               'tasks_finished = { 0 = 1 }\n' +
                                'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
                                '"上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]]], "测试"]]\n' +
                                '商城已购买物品 = []\n' +
                                '战宠 = [[]]\n';
-        testCase17.description = "Encoding project-specific FNTL with Unicode characters and complex nested structures.";
-        cases.push(testCase17);
+        testCase16.description = "编码项目特定的复杂结构，包括Unicode字符和嵌套表数组。";
+        cases.push(testCase16);
 
         return cases;
     }
@@ -768,9 +1049,9 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     }
 
     /**
-     * Compares two FNTL/FNTL output strings for semantic equality by parsing and comparing objects.
-     * @param actual The encoded FNTL/FNTL string.
-     * @param expected The expected FNTL/FNTL string.
+     * Compares two FNTL output strings for semantic equality by parsing and comparing objects.
+     * @param actual The encoded FNTL string.
+     * @param expected The expected FNTL string.
      * @return True if semantic content matches, else false.
      */
     private function compareFNTLOutputs(actual:String, expected:String):Boolean {
@@ -822,23 +1103,6 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
             trace("编码输出不匹配！\n预期:\n" + expected + "\n实际:\n" + actual);
             return false;
         }
-    }
-
-    /**
-     * Trims trailing newline characters from a string.
-     * @param input The input string.
-     * @return The trimmed string.
-     */
-    private function trimTrailingNewlines(input:String):String {
-        while (input.length > 0) {
-            var lastChar:String = input.charAt(input.length - 1);
-            if (lastChar == "\n" || lastChar == "\r") {
-                input = input.substring(0, input.length - 1);
-            } else {
-                break;
-            }
-        }
-        return input;
     }
 
     /**
@@ -952,13 +1216,3 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     }
 
 }
-
-
-/*
-
-var test:org.flashNight.gesh.fntl.FNTLLexerTest = new org.flashNight.gesh.fntl.FNTLLexerTest();
-
-// 调用测试方法，运行所有测试用例
-test.runAllTests();
-
-*/
