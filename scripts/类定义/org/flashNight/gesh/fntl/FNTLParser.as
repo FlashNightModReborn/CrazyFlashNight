@@ -1,6 +1,7 @@
 ﻿import org.flashNight.gesh.regexp.RegExp;
 import org.flashNight.gesh.fntl.FNTLLexer; // 确保 Lexer 类路径正确
 import org.flashNight.gesh.string.StringUtils;
+import org.flashNight.gesh.object.ObjectUtil;
 
 /**
  * FNTLParser 类用于解析 FNTL（FlashNight Text Language）输入。
@@ -10,6 +11,7 @@ import org.flashNight.gesh.string.StringUtils;
  * - 处理内联表格。
  * - 支持多种数据类型，包括字符串、数字、布尔值和日期时间。
  * - 提供稳健的错误处理和报告。
+ * - 增强的日志输出能力，便于调试和测试。
  */
 class org.flashNight.gesh.fntl.FNTLParser {
     private var tokens:Array;
@@ -18,6 +20,29 @@ class org.flashNight.gesh.fntl.FNTLParser {
     private var root:Object;
     private var hasErrorFlag:Boolean;
     private var text:String;
+    
+    // 日志输出开关
+    private var debug:Boolean;
+
+    /**
+     * 构造函数
+     * @param tokens 要解析的 Token 列表。
+     * @param text 原始文本。
+     * @param debugFlag 可选参数，设置日志输出开关（默认为 false）。
+     */
+    public function FNTLParser(tokens:Array, text:String, debugFlag:Boolean) {
+        this.tokens = tokens;
+        this.text = text;
+        this.position = 0;
+        this.current = null;
+        this.root = new Object();
+        this.hasErrorFlag = false;
+        this.debug = debugFlag;
+        
+        if (this.debug) {
+            trace("FNTLParser 初始化。总 Token 数: " + this.tokens.length);
+        }
+    }
 
     private function isAlpha(c:String):Boolean {
         var code:Number = c.charCodeAt(0);
@@ -58,13 +83,22 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @return 解析后的 FNTL 对象。
      */
     public function parse():Object {
+        if (this.debug) {
+            trace("开始解析 FNTL 文本。");
+        }
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
+            if (this.debug) {
+                trace("当前 Token[" + this.position + "]: Type = " + token.type + ", Value = " + token.value);
+            }
 
             switch (token.type) {
                 case "KEY":
                     if (!this.handleKeyValuePair()) {
                         // 如果在处理键值对时发生错误，停止解析
+                        if (this.debug) {
+                            trace("处理键值对时发生错误，停止解析。");
+                        }
                         return null;
                     }
                     break;
@@ -99,8 +133,14 @@ class org.flashNight.gesh.fntl.FNTLParser {
             }
 
             if (this.hasErrorFlag) {
+                if (this.debug) {
+                    trace("检测到错误标志，停止解析。");
+                }
                 break; // 如果发生关键错误，停止解析
             }
+        }
+        if (this.debug) {
+            trace("解析完成。构建的对象: " + ObjectUtil.toString(this.root));
         }
         return this.root;
     }
@@ -122,6 +162,10 @@ class org.flashNight.gesh.fntl.FNTLParser {
         var key:String = keyToken.value;
         this.position++;
 
+        if (this.debug) {
+            trace("处理键值对，键: " + key);
+        }
+
         // 检查是否有 EQUALS Token
         if (this.position >= this.tokens.length || this.tokens[this.position].type != "EQUALS") {
             this.error("Expected '=' after key '" + key + "'", keyToken);
@@ -136,6 +180,10 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         var valueToken:Object = this.tokens[this.position];
         var value:Object = this.parseValue(valueToken);
+
+        if (this.debug) {
+            trace("解析键值对，键: " + key + ", 值: " + ObjectUtil.toString(value));
+        }
 
         if (value !== undefined) { // 仅在成功解析值时设置键值
             if (this.current[key] !== undefined) {
@@ -154,6 +202,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @return 解析后的值对象。
      */
     private function parseValue(token:Object):Object {
+        if (this.debug) {
+            trace("解析值，Token Type: " + token.type + ", Value: " + token.value);
+        }
         switch (token.type) {
             case "STRING":
                 return token.value;
@@ -183,6 +234,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @return 对应的 AS2 数字。
      */
     private function parseSpecialFloat(value:String):Object {
+        if (this.debug) {
+            trace("解析特殊浮点数值: " + value);
+        }
         switch (value.toLowerCase()) {
             case "nan":
                 return Number.NaN;
@@ -201,6 +255,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @return 格式化后的 ISO8601 日期时间字符串或 null（如果解析失败）。
      */
     private function parseDateTime(dateTimeStr:String):String {
+        if (this.debug) {
+            trace("解析日期时间字符串: " + dateTimeStr);
+        }
         // 使用 FNTLLexer 中定义的 dateTimeRegExp
         if (!FNTLLexer.dateTimeRegExp.test(dateTimeStr)) {
             this.error("Invalid datetime format: " + dateTimeStr, {line: 0, column: 0});
@@ -218,6 +275,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @return 解析后的数组或 null（如果有错误）。
      */
     private function parseArray(arrayData:Array):Array {
+        if (this.debug) {
+            trace("解析数组，元素数量: " + arrayData.length);
+        }
         var array:Array = new Array();
 
         for (var i:Number = 0; i < arrayData.length; i++) {
@@ -226,6 +286,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
             if (value !== undefined) { // 仅在成功解析值时添加到数组
                 array.push(value);
+                if (this.debug) {
+                    trace("添加到数组的元素[" + i + "]: " + ObjectUtil.toString(value));
+                }
             } else {
                 this.error("Failed to parse array element", elementToken);
                 return null;
@@ -241,15 +304,21 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @return 解析后的内联表格对象或 undefined（如果有错误）。
      */
     private function parseInlineTable(tableStr:String):Object {
+        if (this.debug) {
+            trace("解析内联表格: " + tableStr);
+        }
         var lexer:FNTLLexer = new FNTLLexer(tableStr);
         var tokens:Array = [];
         var tok:Object;
 
         while ((tok = lexer.getNextToken()) != null) {
             tokens.push(tok);
+            if (this.debug) {
+                trace("内联表格 Token[" + (tokens.length - 1) + "]: Type = " + tok.type + ", Value = " + tok.value);
+            }
         }
 
-        var parser:FNTLParser = new FNTLParser(tokens, tableStr);
+        var parser:FNTLParser = new FNTLParser(tokens, tableStr, this.debug);
         var parsedTable:Object = parser.parse();
 
         if (parser.hasError()) {
@@ -266,6 +335,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @param tableName 表格名。
      */
     private function handleTableHeader(tableName:String):Void {
+        if (this.debug) {
+            trace("处理表格头: " + tableName);
+        }
         var path:Array = tableName.split(".");
         var current:Object = this.root;
 
@@ -273,6 +345,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
             var part:String = path[i];
             if (current[part] == undefined || current[part] == null) {
                 current[part] = new Object();
+                if (this.debug) {
+                    trace("创建新表格: " + part);
+                }
             } else if (!(current[part] instanceof Object)) {
                 this.error("Key conflict: Cannot convert non-table type to table '" + part + "'", {line: 0, column: 0});
                 return;
@@ -280,6 +355,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
             current = current[part];
         }
         this.current = current;
+        if (this.debug) {
+            trace("当前上下文更新到: " + tableName);
+        }
     }
 
     /**
@@ -287,6 +365,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @param arrayName 表格数组名。
      */
     private function handleTableArray(arrayName:String):Void {
+        if (this.debug) {
+            trace("处理表格数组: " + arrayName);
+        }
         var path:Array = arrayName.split(".");
         var current:Object = this.root;
 
@@ -295,17 +376,32 @@ class org.flashNight.gesh.fntl.FNTLParser {
             if (i == path.length - 1) {
                 if (!(current[part] instanceof Array)) {
                     current[part] = new Array();
+                    if (this.debug) {
+                        trace("创建新表格数组: " + part);
+                    }
                 }
                 var newTable:Object = new Object();
                 current[part].push(newTable);
+                if (this.debug) {
+                    trace("向表格数组 '" + part + "' 添加新表格。");
+                }
                 current = newTable;
             } else {
                 if (current[part] == undefined || current[part] == null) {
                     current[part] = new Object();
+                    if (this.debug) {
+                        trace("创建新表格: " + part);
+                    }
                 } else if (current[part] instanceof Array) {
                     current = current[part][current[part].length - 1];
+                    if (this.debug) {
+                        trace("当前表格数组 '" + part + "' 的最新表格。");
+                    }
                 } else {
                     current = current[part];
+                    if (this.debug) {
+                        trace("进入表格: " + part);
+                    }
                 }
             }
         }
@@ -317,12 +413,24 @@ class org.flashNight.gesh.fntl.FNTLParser {
      * @param inlineTableStr 内联表格字符串。
      */
     private function handleInlineTable(inlineTableStr:String):Void {
+        if (this.debug) {
+            trace("处理内联表格: " + inlineTableStr);
+        }
         var inlineTable:Object = this.parseInlineTable(inlineTableStr);
+        if (inlineTable === undefined) {
+            if (this.debug) {
+                trace("内联表格解析失败: " + inlineTableStr);
+            }
+            return;
+        }
         for (var key:String in inlineTable) {
             if (this.current[key] !== undefined) {
                 this.error("Duplicate key '" + key + "'", {line: 0, column: 0});
             } else {
                 this.current[key] = inlineTable[key];
+                if (this.debug) {
+                    trace("将内联表格的键值对添加到当前上下文: " + key + " = " + ObjectUtil.toString(inlineTable[key]));
+                }
             }
         }
     }
@@ -336,6 +444,9 @@ class org.flashNight.gesh.fntl.FNTLParser {
         var lineInfo:String = "行: " + (token.line != undefined ? token.line : "?") + ", 列: " + (token.column != undefined ? token.column : "?");
         trace("错误: " + message + " 在 " + lineInfo);
         this.hasErrorFlag = true;
+        if (this.debug) {
+            trace("当前解析位置: " + this.position + "/" + this.tokens.length);
+        }
     }
     
     /**

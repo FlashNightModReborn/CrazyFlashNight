@@ -21,6 +21,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     private var totalTests:Number = 0;
     private var passedTests:Number = 0;
     private var failedTests:Number = 0;
+    private var debug:Boolean = true; // 调试日志开关
 
     /**
      * Runs all the test cases for FNTLLexer, FNTLParser, and FNTLEncoder.
@@ -118,10 +119,13 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
             // Tokenize the input
             while ((token = lexer.getNextToken()) != null) {
                 tokens.push(token);
+                if (this.debug) { // 添加调试输出
+                    trace("Lexer Token[" + tokens.length + "]: Type = " + token.type + ", Value = " + token.value);
+                }
             }
 
-            // Parse the tokens
-            var parser:FNTLParser = new FNTLParser(tokens, FNTLText);
+            // Parse the tokens with debug enabled
+            var parser:FNTLParser = new FNTLParser(tokens, FNTLText, this.debug); // 启用调试日志
             var result:Object = parser.parse();
 
             // Check for parsing errors
