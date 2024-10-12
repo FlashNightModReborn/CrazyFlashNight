@@ -1,175 +1,4 @@
-﻿/*
-### **字典类（Dictionary）实现说明 - README**
-
-#### **简介**
-`org.flashNight.naki.DataStructures.Dictionary` 类是一个通用的键值对存储容器，允许使用字符串、对象或函数作为键来存储对应的值。该类提供了高效的键值存储、检索、删除等操作，同时支持遍历字典中的所有键值对。与传统的键值存储方式不同，`Dictionary` 类能够处理复杂的数据结构，例如对象和函数作为键。
-
----
-
-### **主要功能**
-
-1. **支持多种类型的键**：
-   - 可以使用字符串、对象和函数作为键，存储对应的值。
-   - 对于对象和函数，`Dictionary` 使用唯一标识符（UID）来跟踪它们，确保每个对象和函数都能唯一识别。
-
-2. **键值对管理**：
-   - **添加或更新键值对**：通过 `setItem` 方法，可以向字典中添加或更新键值对。
-   - **获取键对应的值**：通过 `getItem` 方法，可以根据键查找并返回对应的值。
-   - **删除键值对**：通过 `removeItem` 方法，可以从字典中删除指定的键值对。
-   - **检查键是否存在**：通过 `hasKey` 方法，可以检查字典中是否存在指定的键。
-
-3. **性能优化**：
-   - 提供键缓存机制，通过 `keysCache` 缓存键列表，避免频繁遍历存储对象。
-   - **键值对遍历**：通过 `forEach` 方法，可以遍历字典中的所有键值对，并对每个键值对执行回调操作。
-
-4. **高级功能**：
-   - **获取键列表**：通过 `getKeys` 方法，可以返回所有键的数组（包括字符串键、对象键和函数键）。
-   - **获取字典大小**：通过 `getCount` 方法，可以获取字典中键值对的数量。
-   - **清空字典**：通过 `clear` 方法，可以清空字典中的所有数据。
-   - **销毁字典**：通过 `destroy` 方法，可以清理所有引用，防止内存泄漏。
-
----
-
-### **API 说明**
-
-#### **1. 构造函数**
-```actionscript
-public function Dictionary()
-```
-- **功能**：创建一个新的字典实例，初始化存储结构。
-
-#### **2. setItem**
-```actionscript
-public function setItem(key, value):Void
-```
-- **功能**：将键值对添加到字典中，支持字符串、对象和函数作为键。如果键已存在，则更新其对应的值。
-- **参数**：
-  - `key`：要存储的键，可以是字符串、对象或函数。
-  - `value`：与键关联的值。
-
-#### **3. getItem**
-```actionscript
-public function getItem(key)
-```
-- **功能**：获取指定键的值。
-- **参数**：
-  - `key`：要查找的键，可以是字符串、对象或函数。
-- **返回值**：键对应的值，如果键不存在则返回 `null`。
-
-#### **4. removeItem**
-```actionscript
-public function removeItem(key):Void
-```
-- **功能**：从字典中删除指定的键值对。
-- **参数**：
-  - `key`：要删除的键，可以是字符串、对象或函数。
-
-#### **5. hasKey**
-```actionscript
-public function hasKey(key):Boolean
-```
-- **功能**：检查字典中是否包含指定的键。
-- **参数**：
-  - `key`：要检查的键，可以是字符串、对象或函数。
-- **返回值**：如果键存在，返回 `true`；否则返回 `false`。
-
-#### **6. getKeys**
-```actionscript
-public function getKeys():Array
-```
-- **功能**：获取字典中所有键的数组，包括字符串键、对象键和函数键。
-- **返回值**：包含所有键的数组。
-
-#### **7. clear**
-```actionscript
-public function clear():Void
-```
-- **功能**：清空字典，删除所有键值对。
-
-#### **8. getCount**
-```actionscript
-public function getCount():Number
-```
-- **功能**：获取字典中键值对的数量。
-- **返回值**：当前字典中的键值对数量。
-
-#### **9. forEach**
-```actionscript
-public function forEach(callback:Function):Void
-```
-- **功能**：遍历字典中的所有键值对，并对每个键值对执行回调函数。
-- **参数**：
-  - `callback`：回调函数，格式为 `function(key, value)`，会对每个键值对执行该函数。
-
-#### **10. destroy**
-```actionscript
-public function destroy():Void
-```
-- **功能**：销毁字典，清理所有引用，防止内存泄漏。
-
----
-
-### **使用示例**
-
-```actionscript
-// 创建一个新的字典实例
-var dict:Dictionary = new Dictionary();
-
-// 添加字符串键
-dict.setItem("name", "Alice");
-
-// 添加对象键
-var obj:Object = { id: 1 };
-dict.setItem(obj, "对象一");
-
-// 添加函数键
-function greet():Void {
-    trace("Hello!");
-}
-dict.setItem(greet, "问候函数");
-
-// 获取值
-trace(dict.getItem("name"));     // 输出: Alice
-trace(dict.getItem(obj));        // 输出: 对象一
-trace(dict.getItem(greet));      // 输出: 问候函数
-
-// 检查键是否存在
-trace(dict.hasKey("name"));      // 输出: true
-trace(dict.hasKey("unknown"));   // 输出: false
-
-// 获取所有键
-var keys:Array = dict.getKeys();
-for (var i:Number = 0; i < keys.length; i++) {
-    trace(keys[i]);
-}
-
-// 删除键
-dict.removeItem("name");
-
-// 获取键值对数量
-trace(dict.getCount());         // 输出当前的键值对数量
-
-// 清空字典
-dict.clear();
-trace(dict.getCount());         // 输出: 0
-```
-
----
-
-### **注意事项**
-
-1. **对象键和函数键的处理**：在使用对象和函数作为键时，字典会为每个对象和函数生成唯一标识符（UID），并通过该 UID 来存储和查找值。这确保了即使两个对象具有相同的内容，它们仍然能够作为独立的键来处理。
-
-2. **性能**：字典类实现了缓存机制（`keysCache`），可以加速键列表的获取。但在大量增删操作后，可能需要重新计算键缓存。
-
-3. **内存管理**：使用 `destroy` 方法来销毁字典并清理所有引用，以防止内存泄漏，特别是在不再使用该字典时。
-
----
-
-*/
-
-
-class org.flashNight.naki.DataStructures.Dictionary extends Object {
+﻿class org.flashNight.naki.DataStructures.Dictionary extends Object {
 
     private var stringStorage:Object;    // 用于存储字符串键的对象
     private var objectStorage:Object;    // 用于存储对象和函数键的对象
@@ -196,6 +25,20 @@ class org.flashNight.naki.DataStructures.Dictionary extends Object {
      * @return 返回与该键关联的值，如果键不存在则返回 null,返回number以便进行数学运算加速
      */
     public function getUID(key:Object):Number {
+        var uid:Number = key.__dictUID;
+        if (uid === undefined) {
+            uid = key.__dictUID = uidCounter++;
+            uidMap[uid] = key;
+        }
+        return uid;
+    }
+
+    /**
+     * 静态版getUID方法，用于外部使用
+     * @param key 键（可以是字符串、对象或函数）
+     * @return 返回与该键关联的唯一标识符
+     */
+    public static function getStaticUID(key:Object):Number {
         var uid:Number = key.__dictUID;
         if (uid === undefined) {
             uid = key.__dictUID = uidCounter++;
