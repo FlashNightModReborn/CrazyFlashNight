@@ -1,7 +1,6 @@
 ﻿import org.flashNight.gesh.regexp.*;
 
-class org.flashNight.gesh.regexp.RegExp 
-{
+class org.flashNight.gesh.regexp.RegExp {
     private var pattern:String;
     private var flags:String;
     private var ast:ASTNode;
@@ -85,7 +84,83 @@ class org.flashNight.gesh.regexp.RegExp
         }
         return captures;
     }
+
+    // 静态方法：注入正则表达式相关方法
+    public static function injectMethods():Void {
+        // 注入 regexp_match 方法
+        String.prototype.regexp_match = function(re:RegExp):Array {
+            if (!(re instanceof RegExp)) {
+                return null;
+            }
+            var matches:Array = [];
+            re.lastIndex = 0;
+            var match:Array;
+            while ((match = re.exec(this)) != null) {
+                matches.push(match[0]);
+                if (!re.global) {
+                    break;
+                }
+            }
+            return matches.length > 0 ? matches : null;
+        };
+
+        // 注入 regexp_replace 方法
+        String.prototype.regexp_replace = function(re:RegExp, replacement:String):String {
+            if (!(re instanceof RegExp)) {
+                return this;
+            }
+            var result:String = "";
+            var lastPos:Number = 0;
+            var match:Array;
+            re.lastIndex = 0;
+            while ((match = re.exec(this)) != null) {
+                result += this.substring(lastPos, match.index) + replacement;
+                lastPos = re.lastIndex;
+                if (!re.global) {
+                    break;
+                }
+            }
+            result += this.substring(lastPos);
+            return result;
+        };
+
+        // 注入 regexp_search 方法
+        String.prototype.regexp_search = function(re:RegExp):Number {
+            if (!(re instanceof RegExp)) {
+                return -1;
+            }
+            re.lastIndex = 0;
+            var match:Array = re.exec(this);
+            return match ? match.index : -1;
+        };
+
+        // 注入 regexp_split 方法
+        String.prototype.regexp_split = function(re:RegExp, limit:Number):Array {
+            if (!(re instanceof RegExp)) {
+                return this.split(re, limit);
+            }
+            if (limit == undefined) {
+                limit = 9999;
+            }
+            var result:Array = [];
+            var lastPos:Number = 0;
+            var match:Array;
+            re.lastIndex = 0;
+            while ((match = re.exec(this)) != null && result.length < limit) {
+                result.push(this.substring(lastPos, match.index));
+                lastPos = re.lastIndex;
+            }
+            result.push(this.substring(lastPos));
+            return result;
+        };
+    }
+
+
+    // 静态方法：移除注入的正则表达式相关方法
+    public static function removeMethods():Void {
+        delete String.prototype.regexp_match;
+        delete String.prototype.regexp_replace;
+        delete String.prototype.regexp_search;
+        delete String.prototype.regexp_split;
+    }
 }
-
-
-
