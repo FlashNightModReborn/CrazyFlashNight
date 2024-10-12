@@ -1,5 +1,6 @@
-﻿import org.flashNight.gesh.regexp.RegExp;
+﻿import org.flashNight.gesh.regexp.RegExp; 
 import org.flashNight.gesh.string.StringUtils;
+import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.gesh.fntl.*;
 
 /**
@@ -11,6 +12,8 @@ import org.flashNight.gesh.fntl.*;
  * - 遵循 ISO8601 的日期时间标记
  * - 增强的错误处理与精确定位
  * - 通过缓存和高效的解析策略进行性能优化
+ * - 全局的调试标志和详细的日志输出
+ * - 上下文感知以正确处理内联表格中的整数键
  */
 class org.flashNight.gesh.fntl.FNTLLexer {
     private var text:String;
@@ -30,15 +33,35 @@ class org.flashNight.gesh.fntl.FNTLLexer {
     public static var alphaNumericRegex:RegExp = new RegExp("^[A-Za-z0-9_\\u00C0-\\u017F\\u4E00-\\u9FFF]$", "");
     public static var dateTimeRegExp:RegExp = new RegExp("^\\d{4}-\\d{2}-\\d{2}[Tt ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([Zz]|[+-]\\d{2}:\\d{2})?$");
 
-    public function FNTLLexer(text:String) {
+    // 全局调试标志
+    private var debug:Boolean;
+
+    // 上下文标志，用于识别当前是否处于内联表格中
+    private var inInlineTable:Boolean;
+
+    /**
+     * 构造函数
+     * @param text 要解析的 FNTL 文本。
+     * @param debugFlag 可选参数，设置调试日志输出开关（默认为 false）。
+     */
+    public function FNTLLexer(text:String, debugFlag:Boolean) {
         this.text = text;
         this.position = 0;
         this.loopCounter = 0;
         this.inValue = false;
         this.currentLine = 1;
         this.currentColumn = 1;
+        this.debug = debugFlag || false;
+        this.inInlineTable = false;
         this.nextChar();  
+        if (this.debug) {
+            trace("FNTLLexer 初始化。文本长度: " + this.text.length);
+        }
     }
+
+    /**
+     * 读取下一个字符并更新位置、行号和列号。
+     */
     private function nextChar():Void {
         if (this.position < this.text.length) {
             this.currentChar = this.text.charAt(this.position);
@@ -50,11 +73,21 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             } else {
                 this.currentColumn++;
             }
+
+            if (this.debug) {
+                trace("nextChar: '" + this.currentChar + "' (位置: " + this.position + ", 行: " + this.currentLine + ", 列: " + this.currentColumn + ")");
+            }
         } else {
             this.currentChar = null; 
+            if (this.debug) {
+                trace("nextChar: End of text reached.");
+            }
         }
     }
 
+    /**
+     * 判断字符是否为字母（包括 Unicode 字符）。
+     */
     private function isAlpha(c:String):Boolean {
         var code:Number = c.charCodeAt(0);
         // 检查ASCII字母
@@ -73,6 +106,9 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         return false;
     }
 
+    /**
+     * 判断字符是否为字母或数字（包括 Unicode 字符）。
+     */
     private function isAlphaNumeric(c:String):Boolean {
         var code:Number = c.charCodeAt(0);
         // 检查数字
@@ -87,13 +123,22 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         return isAlpha(c);
     }
 
-
+    /**
+     * 解析日期时间字符串并返回 ISO8601 格式。
+     * @param dateTimeStr 日期时间字符串。
+     * @return 格式化后的 ISO8601 日期时间字符串或 null（如果解析失败）。
+     */
     private function parseDateTime(dateTimeStr:String):String {
+        if (this.debug) {
+            trace("parseDateTime: " + dateTimeStr);
+        }
+        // 使用 FNTLLexer 中定义的 dateTimeRegExp
         if (!FNTLLexer.dateTimeRegExp.test(dateTimeStr)) {
-            this.error("无效的日期时间格式: " + dateTimeStr, this.currentLine, this.currentColumn);
+            this.error("Invalid datetime format: " + dateTimeStr, this.currentLine, this.currentColumn);
             return null;
         }
 
+        // 直接返回日期时间字符串，保留分数秒和时区信息
         return dateTimeStr;
     }
     
@@ -104,6 +149,9 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         while (this.currentChar != null && 
                (this.isWhitespace(this.currentChar) || this.currentChar == "#")) {
             if (this.currentChar == "#") {
+                if (this.debug) {
+                    trace("skipWhitespaceAndComments: Skipping comment.");
+                }
                 // 跳过注释，直到行末
                 while (this.currentChar != "\n" && this.currentChar != "\r" && this.currentChar != null) {
                     this.nextChar();
@@ -119,8 +167,9 @@ class org.flashNight.gesh.fntl.FNTLLexer {
      * @return 是否为空白字符
      */
     private function isWhitespace(c:String):Boolean {
-        return c == " " || c == "\t" || c == "\n" || c == "\r";
+        return c == " " || c == "\t";
     }
+
     
     /**
      * 获取下一个标记 (Token)
@@ -130,7 +179,32 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         this.skipWhitespaceAndComments();
 
         if (this.currentChar == null) {
-            return null; 
+            if (this.debug) {
+                trace("getNextToken: End of text.");
+            }
+            return null; // 不再返回 EOF Token
+        }
+
+        // 新增处理 NEWLINE Token
+        if (this.currentChar == "\n") {
+            var newlineToken:Object = { type: "NEWLINE", value: "\n", line: this.currentLine, column: this.currentColumn };
+            this.nextChar();
+            if (this.debug) {
+                trace("getNextToken: NEWLINE token detected.");
+            }
+            return newlineToken;
+        } else if (this.currentChar == "\r") {
+            var newlineToken:Object = { type: "NEWLINE", value: "\r", line: this.currentLine, column: this.currentColumn };
+            this.nextChar();
+            // 检查是否为 Windows 风格的换行符 \r\n
+            if (this.currentChar == "\n") {
+                newlineToken.value = "\r\n";
+                this.nextChar();
+            }
+            if (this.debug) {
+                trace("getNextToken: NEWLINE token detected.");
+            }
+            return newlineToken;
         }
 
         this.loopCounter = 0; 
@@ -138,13 +212,16 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         while (this.currentChar != null) {
             this.loopCounter++;
             if (this.loopCounter > this.maxLoops) {
-                this.error("警告: 循环次数过多，可能存在死循环", this.currentLine, this.currentColumn);
+                this.error("Warning: Loop counter exceeded maximum limit, possible infinite loop.", this.currentLine, this.currentColumn);
                 break;
             }
 
             this.skipWhitespaceAndComments();
 
             if (this.currentChar == null) {
+                if (this.debug) {
+                    trace("getNextToken: End of text after skipping whitespace/comments.");
+                }
                 return null; 
             }
 
@@ -159,78 +236,173 @@ class org.flashNight.gesh.fntl.FNTLLexer {
 
                 // 检查是否为特殊值
                 if (lowerIdentifier == "true" || lowerIdentifier == "false") {
+                    if (this.debug) {
+                        trace("getNextToken: BOOLEAN token detected - " + lowerIdentifier);
+                    }
                     return { type: "BOOLEAN", value: (lowerIdentifier == "true"), line: tokenLine, column: tokenColumn };
                 } else if (lowerIdentifier == "nan" || lowerIdentifier == "inf" || lowerIdentifier == "-inf") {
+                    if (this.debug) {
+                        trace("getNextToken: FLOAT token detected - " + lowerIdentifier);
+                    }
                     return { type: "FLOAT", value: lowerIdentifier, line: tokenLine, column: tokenColumn };
                 } else if (lowerIdentifier == "null") {
+                    if (this.debug) {
+                        trace("getNextToken: NULL token detected.");
+                    }
                     return { type: "NULL", value: null, line: tokenLine, column: tokenColumn };
                 } else {
                     // 是一个常规键
+                    if (this.debug) {
+                        trace("getNextToken: KEY token detected - " + identifier);
+                    }
                     return { type: "KEY", value: identifier, line: tokenLine, column: tokenColumn };
                 }
             } 
-            // 新增对特殊字符的处理
+            // 识别特殊字符
             else if (this.currentChar == "=") {
                 token = { type: "EQUALS", value: "=", line: tokenLine, column: tokenColumn };
                 this.nextChar();
-                this.inValue = true;
+                if (this.debug) {
+                    trace("getNextToken: EQUALS token detected.");
+                }
                 return token;
             } 
             else if (this.currentChar == ",") {
                 token = { type: "COMMA", value: ",", line: tokenLine, column: tokenColumn };
                 this.nextChar();
+                if (this.debug) {
+                    trace("getNextToken: COMMA token detected.");
+                }
                 return token;
             } 
             else if (this.currentChar == "]") {
                 token = { type: "RBRACKET", value: "]", line: tokenLine, column: tokenColumn };
                 this.nextChar();
+                if (this.debug) {
+                    trace("getNextToken: RBRACKET token detected.");
+                }
                 return token;
             } 
             else if (this.currentChar == "[") {
                 token = { type: "LBRACKET", value: "[", line: tokenLine, column: tokenColumn };
                 this.nextChar();
+                if (this.debug) {
+                    trace("getNextToken: LBRACKET token detected.");
+                }
                 return token;
             } 
             else if (this.currentChar == "{") {
+                // 进入内联表格上下文
+                this.inInlineTable = true;
                 token = { type: "LBRACE", value: "{", line: tokenLine, column: tokenColumn };
                 this.nextChar();
+                if (this.debug) {
+                    trace("getNextToken: LBRACE token detected. Entering inline table context.");
+                }
                 return token;
             } 
             else if (this.currentChar == "}") {
+                // 退出内联表格上下文
+                this.inInlineTable = false;
                 token = { type: "RBRACE", value: "}", line: tokenLine, column: tokenColumn };
                 this.nextChar();
+                if (this.debug) {
+                    trace("getNextToken: RBRACE token detected. Exiting inline table context.");
+                }
                 return token;
             } 
             else if (this.currentChar == ".") {
                 token = { type: "DOT", value: ".", line: tokenLine, column: tokenColumn };
                 this.nextChar();
+                if (this.debug) {
+                    trace("getNextToken: DOT token detected.");
+                }
                 return token;
             } 
             else if (this.currentChar == ":") {
                 token = { type: "COLON", value: ":", line: tokenLine, column: tokenColumn };
                 this.nextChar();
+                if (this.debug) {
+                    trace("getNextToken: COLON token detected.");
+                }
                 return token;
             } 
             // 识别字符串
             else if (this.currentChar == "\"" || this.currentChar == "'") {
-                token = this.readString();
-                this.inValue = false;
-                return token;
+                var stringToken:Object = this.readString();
+                if (stringToken != null) {
+                    if (this.debug) {
+                        trace("getNextToken: STRING token detected - " + stringToken.value);
+                    }
+                    return stringToken;
+                }
             } 
             // 识别数字或日期时间
             else if (this.isDigit(this.currentChar) || this.currentChar == "-") {
-                token = this.readNumberOrDate();
-                this.inValue = false;
-                return token;
+                var tokenLine:Number = this.currentLine;
+                var tokenColumn:Number = this.currentColumn;
+                var numberStr:String = this.readNumberString();
+                this.skipWhitespaceAndComments();
+
+                if (this.inInlineTable && this.currentChar == "=") {
+                    // 在内联表格中，且下一个非空白字符为 '='，将数字识别为 INTEGER
+                    if (this.debug) {
+                        trace("getNextToken: INTEGER token detected - " + numberStr);
+                    }
+                    return { type: "INTEGER", value: numberStr, line: tokenLine, column: tokenColumn };
+                } else {
+                    // 否则，按照通常方式处理数字
+                    var numberOrDateToken:Object = this.parseNumberOrDate(numberStr, tokenLine, tokenColumn);
+                    if (numberOrDateToken != null) {
+                        if (this.debug) {
+                            trace("getNextToken: " + numberOrDateToken.type + " token detected - " + numberOrDateToken.value);
+                        }
+                        return numberOrDateToken;
+                    }
+                }
             }
+            // 未知字符
             else {
-                this.error("未知的标记类型: '" + this.currentChar + "'", this.currentLine, this.currentColumn);
+                this.error("Unknown token type: '" + this.currentChar + "'", this.currentLine, this.currentColumn);
                 this.nextChar();
             }
         }
-
-        return null;
     }
+
+    /**
+     * 读取数字字符串，不解析为具体的数值类型。
+     * @return 读取到的数字字符串
+     */
+    private function readNumberString():String {
+        var numberStr:String = "";
+        while (this.isDigit(this.currentChar) || this.currentChar == "_" || this.currentChar == "-" || this.currentChar == "+") {
+            if (this.currentChar != "_") {
+                numberStr += this.currentChar;
+            }
+            this.nextChar();
+        }
+        return numberStr;
+    }
+
+    /**
+     * 解析数字字符串为具体的数值类型。
+     * @param numberStr 要解析的数字字符串
+     * @param tokenLine 行号
+     * @param tokenColumn 列号
+     * @return 解析后的数值 Token 对象
+     */
+    private function parseNumberOrDate(numberStr:String, tokenLine:Number, tokenColumn:Number):Object {
+        var isFloat:Boolean = (numberStr.indexOf(".") != -1);
+        // 检查是否为日期时间
+        if (this.currentChar == "T" || this.currentChar == "t" || this.currentChar == "Z" || 
+            this.currentChar == "z" || this.currentChar == ":" || this.currentChar == "-" || 
+            this.currentChar == "+") {
+            return this.readDateTime(numberStr, tokenLine, tokenColumn);
+        }
+        return { type: isFloat ? "FLOAT" : "INTEGER", value: numberStr, line: tokenLine, column: tokenColumn };
+    }
+
+
     
     /**
      * 读取标识符，包括可能的负号
@@ -246,9 +418,14 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 this.nextChar();
             }
         } else {
-            this.error("无效的标识符起始字符: " + this.currentChar, this.currentLine, this.currentColumn);
+            this.error("Invalid identifier start character: " + this.currentChar, this.currentLine, this.currentColumn);
             this.nextChar();
         }
+
+        if (this.debug) {
+            trace("readIdentifier: '" + identifier + "'");
+        }
+
         return identifier;
     }
     
@@ -269,6 +446,9 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             isMultiline = true;
             this.nextChar(); 
             this.nextChar(); 
+            if (this.debug) {
+                trace("readString: Detected multiline string.");
+            }
         }
 
         while (true) {
@@ -279,18 +459,23 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                     this.nextChar();
                     this.nextChar();
                     this.nextChar();
+                    if (this.debug) {
+                        trace("readString: Multiline string ended.");
+                    }
                     break;
                 }
             } else {
                 if (this.currentChar == quoteType) {
                     this.nextChar(); // 跳过结束引号
+                    if (this.debug) {
+                        trace("readString: Single-line string ended.");
+                    }
                     break;
                 }
             }
 
-
             if (this.currentChar == null) {
-                this.error("未关闭的字符串", tokenLine, tokenColumn);
+                this.error("Unclosed string", tokenLine, tokenColumn);
                 break;
             }
 
@@ -302,19 +487,16 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                     break;
                 }
                 var escapeSeq:String = "\\" + this.currentChar;
-                str += this.handleEscapeSequences(escapeSeq);
+                var escapedChar:String = this.handleEscapeSequences(escapeSeq);
+                str += escapedChar;
+                if (this.debug) {
+                    trace("readString: Escaped sequence processed - " + escapeSeq + " -> " + escapedChar);
+                }
                 this.nextChar(); // 跳过转义字符
             } else {
                 str += this.currentChar;
                 this.nextChar();
             }
-        }
-
-        // 跳过结束引号
-        this.nextChar(); 
-        if (isMultiline) {
-            this.nextChar(); 
-            this.nextChar(); 
         }
 
         return { type: "STRING", value: str, line: tokenLine, column: tokenColumn };
@@ -343,9 +525,12 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             var lowerIdentifier:String = (number + identifier).toLowerCase();
 
             if (lowerIdentifier == "nan" || lowerIdentifier == "inf" || lowerIdentifier == "-inf") {
+                if (this.debug) {
+                    trace("readNumberOrDate: Special float detected - " + lowerIdentifier);
+                }
                 return { type: "FLOAT", value: lowerIdentifier, line: tokenLine, column: tokenColumn };
             } else {
-                this.error("未知的特殊浮点数: " + lowerIdentifier, tokenLine, tokenColumn);
+                this.error("Unknown special float: " + lowerIdentifier, tokenLine, tokenColumn);
                 return { type: "INVALID", value: lowerIdentifier, line: tokenLine, column: tokenColumn };
             }
         }
@@ -379,6 +564,10 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         // 移除下划线
         number = number.split("_").join("");
 
+        if (this.debug) {
+            trace("readNumberOrDate: Detected " + (isFloat ? "FLOAT" : "INTEGER") + " - " + number);
+        }
+
         return { type: isFloat ? "FLOAT" : "INTEGER", value: number, line: tokenLine, column: tokenColumn };
     }
     
@@ -401,6 +590,10 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             this.nextChar();
         }
 
+        if (this.debug) {
+            trace("readDateTime: Detected DATETIME - " + dateTime);
+        }
+
         return { type: "DATETIME", value: dateTime, line: tokenLine, column: tokenColumn };
     }
     
@@ -415,6 +608,10 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         var tokenColumn:Number = this.currentColumn;
         this.nextChar(); // 跳过 '['
 
+        if (this.debug) {
+            trace("readArray: Starting array parsing at line " + tokenLine + ", column " + tokenColumn);
+        }
+
         this.skipWhitespaceAndComments();
 
         while (this.currentChar != "]" && this.currentChar != null) {
@@ -422,6 +619,9 @@ class org.flashNight.gesh.fntl.FNTLLexer {
 
             if (this.currentChar == ",") {
                 this.nextChar(); // 跳过逗号
+                if (this.debug) {
+                    trace("readArray: Skipping comma.");
+                }
                 continue;
             }
 
@@ -451,36 +651,52 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 } else if (lowerIdentifier == "null") {
                     element = { type: "NULL", value: null, line: this.currentLine, column: this.currentColumn };
                 } else {
-                    this.error("无效的数组元素: " + identifier, this.currentLine, this.currentColumn);
+                    this.error("Invalid array element: " + identifier, this.currentLine, this.currentColumn);
                     element = { type: "INVALID", value: identifier, line: this.currentLine, column: this.currentColumn };
                 }
             }
             // 处理内联表格
             else if (this.currentChar == "{") {
-                element = this.readInlineTable();
+                // 进入内联表格上下文
+                this.inInlineTable = true;
+                element = { type: "LBRACE", value: "{", line: this.currentLine, column: this.currentColumn };
+                this.nextChar(); // 跳过 '{'
+                if (this.debug) {
+                    trace("readArray: Detected inline table start.");
+                }
+                // 内联表格的键值对将被后续的 Token 处理
             }
             // 处理未知字符
             else {
-                this.error("无效的数组元素: " + this.currentChar, this.currentLine, this.currentColumn);
+                this.error("Invalid array element: " + this.currentChar, this.currentLine, this.currentColumn);
                 this.nextChar();
                 continue;
             }
 
-            if (element !== undefined) { // 仅在成功解析值时添加到数组
+            if (element !== undefined && element.type != "INVALID") { // 仅在成功解析值时添加到数组
                 array.push(element);
+                if (this.debug) {
+                    trace("readArray: Added element - " + ObjectUtil.toString(element));
+                }
             }
 
             this.skipWhitespaceAndComments();
 
             if (this.currentChar == ",") {
                 this.nextChar(); // 跳过逗号
+                if (this.debug) {
+                    trace("readArray: Skipping comma after element.");
+                }
             }
         }
 
         if (this.currentChar == "]") {
             this.nextChar(); // 跳过 ']'
+            if (this.debug) {
+                trace("readArray: Array parsing ended at line " + this.currentLine + ", column " + this.currentColumn);
+            }
         } else {
-            this.error("未正确关闭的数组", tokenLine, tokenColumn);
+            this.error("Unclosed array", tokenLine, tokenColumn);
         }
 
         return { type: "ARRAY", value: array, line: tokenLine, column: tokenColumn };
@@ -489,13 +705,17 @@ class org.flashNight.gesh.fntl.FNTLLexer {
     /**
      * 读取内联表格
      * 支持嵌套内联表格的未来扩展
-     * @return 内联表格类型的标记对象
+     * @return 内联表格内容类型的标记对象
      */
     private function readInlineTable():Object {
         var inlineTable:String = "";
         var tokenLine:Number = this.currentLine;
         var tokenColumn:Number = this.currentColumn;
         this.nextChar(); // 跳过 '{'
+
+        if (this.debug) {
+            trace("readInlineTable: Starting inline table parsing at line " + tokenLine + ", column " + tokenColumn);
+        }
 
         while (this.currentChar != "}" && this.currentChar != null) {
             if (this.currentChar == "\\") {
@@ -506,7 +726,11 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                     break;
                 }
                 var escapeSeq:String = "\\" + this.currentChar;
-                inlineTable += this.handleEscapeSequences(escapeSeq);
+                var escapedChar:String = this.handleEscapeSequences(escapeSeq);
+                inlineTable += escapedChar;
+                if (this.debug) {
+                    trace("readInlineTable: Escaped sequence processed - " + escapeSeq + " -> " + escapedChar);
+                }
                 this.nextChar(); // 跳过转义字符
             } else {
                 inlineTable += this.currentChar;
@@ -516,11 +740,14 @@ class org.flashNight.gesh.fntl.FNTLLexer {
 
         if (this.currentChar == "}") {
             this.nextChar(); // 跳过 '}'
+            if (this.debug) {
+                trace("readInlineTable: Inline table parsing ended.");
+            }
         } else {
-            this.error("未正确关闭的内联表格", tokenLine, tokenColumn);
+            this.error("Unclosed inline table", tokenLine, tokenColumn);
         }
 
-        return { type: "INLINE_TABLE", value: inlineTable, line: tokenLine, column: tokenColumn };
+        return { type: "INLINE_TABLE_CONTENT", value: inlineTable, line: tokenLine, column: tokenColumn };
     }
     
     /**
@@ -548,10 +775,12 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 this.nextChar(); // 跳过第一个 ']'
                 this.nextChar(); // 跳过第二个 ']'
                 tableName = StringUtils.trim(tableName);
-                trace("FNTLLexer.readTableHeader: 识别为 TABLE_ARRAY - " + tableName);
+                if (this.debug) {
+                    trace("readTableHeader: Detected TABLE_ARRAY - " + tableName);
+                }
                 return { type: "TABLE_ARRAY", value: tableName, line: tokenLine, column: tokenColumn };
             } else {
-                this.error("未正确关闭的表格数组", tokenLine, tokenColumn);
+                this.error("Unclosed table array header", tokenLine, tokenColumn);
                 return null;
             }
         } else {
@@ -564,10 +793,12 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             if (this.currentChar == ']') {
                 this.nextChar(); // 跳过 ']'
                 tableName = StringUtils.trim(tableName);
-                trace("FNTLLexer.readTableHeader: 识别为 TABLE_HEADER - " + tableName);
+                if (this.debug) {
+                    trace("readTableHeader: Detected TABLE_HEADER - " + tableName);
+                }
                 return { type: "TABLE_HEADER", value: tableName, line: tokenLine, column: tokenColumn };
             } else {
-                this.error("未正确关闭的表格头", tokenLine, tokenColumn);
+                this.error("Unclosed table header", tokenLine, tokenColumn);
                 return null;
             }
         }
@@ -583,6 +814,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             case "STRING":
                 return token.value;
             case "INTEGER":
+                // 无论是否处于内联表格上下文，都将 INTEGER 视为数值
                 return Number(token.value);
             case "FLOAT":
                 return this.parseSpecialFloat(token.value);
@@ -592,12 +824,12 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 return this.parseDateTime(token.value);
             case "ARRAY":
                 return this.parseArray(token.value);
-            case "INLINE_TABLE":
+            case "INLINE_TABLE_CONTENT":
                 return this.parseInlineTable(token.value);
             case "NULL":
                 return null;
             default:
-                this.error("未知的值类型: " + token.type, token.line, token.column);
+                this.error("Unknown value type: " + token.type, token.line, token.column);
                 return undefined;
         }
     }
@@ -634,10 +866,17 @@ class org.flashNight.gesh.fntl.FNTLLexer {
 
             if (value !== undefined) { // 仅在成功解析值时添加到数组
                 array.push(value);
+                if (this.debug) {
+                    trace("parseArray: Added element - " + ObjectUtil.toString(value));
+                }
             } else {
-                this.error("数组元素解析失败", elementToken.line, elementToken.column);
+                this.error("Array element parsing failed", elementToken.line, elementToken.column);
                 return null;
             }
+        }
+
+        if (this.debug) {
+            trace("parseArray: Final array - " + ObjectUtil.toString(array));
         }
 
         return array;
@@ -649,17 +888,22 @@ class org.flashNight.gesh.fntl.FNTLLexer {
      * @return 解析后的内联表格对象
      */
     private function parseInlineTable(tableStr:String):Object {
-        var table:Object = new Object();
-        var lexer:FNTLLexer = new FNTLLexer(tableStr);
+        if (this.debug) {
+            trace("parseInlineTable: Parsing inline table content - " + tableStr);
+        }
+        var lexer:FNTLLexer = new FNTLLexer(tableStr, this.debug);
         var tokens:Array = new Array();
         var tok:Object;
-        while ((tok = lexer.getNextToken()) != null) {
+        while ((tok = lexer.getNextToken()) != null) { // 正确处理 EOF
             tokens.push(tok);
+            if (this.debug) {
+                trace("parseInlineTable: Token - " + ObjectUtil.toString(tok));
+            }
         }
-        var parser:FNTLParser = new FNTLParser(tokens, tableStr);
+        var parser:FNTLParser = new FNTLParser(tokens, tableStr, this.debug);
         var parsedTable:Object = parser.parse();
         if (parser.hasError()) {
-            this.error("内联表格解析失败: " + tableStr, this.currentLine, this.currentColumn);
+            this.error("Inline table parsing failed: " + tableStr, this.currentLine, this.currentColumn);
             return undefined;
         }
         return parsedTable;
