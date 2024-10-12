@@ -353,12 +353,12 @@ class org.flashNight.gesh.fntl.FNTLParser {
             } else if (token.type == "COMMA") {
                 this.position++; // 跳过逗号
                 continue;
-            } else if (token.type == "KEY") {
-                var key:String = token.value;
+            } else if (token.type == "KEY" || token.type == "INTEGER") { // 允许 KEY 和 INTEGER 类型的键
+                var key:String = token.value.toString(); // 将键转换为字符串
                 this.position++;
 
                 // 检查 '='
-                if (this.tokens[this.position].type != "EQUALS") {
+                if (this.position >= this.tokens.length || this.tokens[this.position].type != "EQUALS") {
                     this.error("Expected '=' after key '" + key + "'", token);
                     return undefined;
                 }
@@ -386,6 +386,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         return table;
     }
+
 
     /**
      * 处理表格头 Token，更新当前上下文。
