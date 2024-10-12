@@ -39,44 +39,13 @@ class org.flashNight.gesh.fntl.FNTLParser {
         this.hasErrorFlag = false;
         this.debug = debugFlag;
         
+        // 修复1：初始化 this.current 为 this.root
+        this.current = this.root;
+        
         if (this.debug) {
             trace("FNTLParser 初始化。总 Token 数: " + this.tokens.length);
         }
     }
-
-    private function isAlpha(c:String):Boolean {
-        var code:Number = c.charCodeAt(0);
-        // 检查ASCII字母
-        if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
-            return true;
-        }
-        // 检查扩展拉丁字母
-        if (code >= 0x00C0 && code <= 0x017F) {
-            return true;
-        }
-        // 检查中文字符
-        if (code >= 0x4E00 && code <= 0x9FFF) {
-            return true;
-        }
-        // 可根据需要添加更多范围
-        return false;
-    }
-
-
-    private function isAlphaNumeric(c:String):Boolean {
-        var code:Number = c.charCodeAt(0);
-        // 检查数字
-        if (code >= 48 && code <= 57) {
-            return true;
-        }
-        // 检查下划线
-        if (code == 95) {
-            return true;
-        }
-        // 使用 isAlpha 方法
-        return isAlpha(c);
-    }
-
 
     /**
      * 解析 Token 列表并构建 FNTL 对象。
@@ -102,26 +71,23 @@ class org.flashNight.gesh.fntl.FNTLParser {
                         return null;
                     }
                     break;
-                case "TABLE_HEADER":
-                    this.handleTableHeader(token.value);
-                    this.position++;
-                    break;
-                case "TABLE_ARRAY":
-                    this.handleTableArray(token.value);
-                    this.position++;
+                case "LBRACKET":
+                    // 修复3：处理表头和表数组
+                    if (!this.handleTable()) {
+                        return null;
+                    }
                     break;
                 case "INLINE_TABLE":
                     this.handleInlineTable(token.value);
                     this.position++;
                     break;
-                case "LBRACKET":
+                case "EQUALS":
                 case "RBRACKET":
                 case "COMMA":
                 case "DOT":
                 case "COLON":
                 case "LBRACE":
                 case "RBRACE":
-                case "EQUALS":
                     // 这些 Token 类型应该在处理上下文时被解析，若出现在此处则为语法错误
                     this.error("Unexpected token: " + token.type, token);
                     this.position++;
@@ -143,6 +109,62 @@ class org.flashNight.gesh.fntl.FNTLParser {
             trace("解析完成。构建的对象: " + ObjectUtil.toString(this.root));
         }
         return this.root;
+    }
+
+    /**
+     * 处理表头和表数组
+     * @return 如果成功处理返回 true，否则返回 false。
+     */
+    private function handleTable():Boolean {
+        var startToken:Object = this.tokens[this.position];
+        var isArray:Boolean = false;
+        var tableNameTokens:Array = [];
+        this.position++; // 跳过第一个 '['
+
+        // 检查是否为表数组
+        if (this.position < this.tokens.length && this.tokens[this.position].type == "LBRACKET") {
+            isArray = true;
+            this.position++; // 跳过第二个 '['
+        }
+
+        // 收集表名的 Token
+        while (this.position < this.tokens.length) {
+            var token:Object = this.tokens[this.position];
+            if (token.type == "RBRACKET") {
+                // 如果是表数组，还需要检查第二个 ']'
+                if (isArray && this.position + 1 < this.tokens.length && this.tokens[this.position + 1].type == "RBRACKET") {
+                    this.position += 2; // 跳过两个 ']'
+                } else {
+                    this.position++; // 跳过 ']'
+                }
+                break;
+            } else {
+                tableNameTokens.push(token);
+                this.position++;
+            }
+        }
+
+        // 构建表名
+        var tableName:String = "";
+        for (var i:Number = 0; i < tableNameTokens.length; i++) {
+            tableName += tableNameTokens[i].value;
+        }
+
+        if (this.debug) {
+            if (isArray) {
+                trace("处理表数组: " + tableName);
+            } else {
+                trace("处理表头: " + tableName);
+            }
+        }
+
+        if (isArray) {
+            this.handleTableArray(tableName);
+        } else {
+            this.handleTableHeader(tableName);
+        }
+
+        return true;
     }
 
     /**
@@ -179,7 +201,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
         }
 
         var valueToken:Object = this.tokens[this.position];
-        var value:Object = this.parseValue(valueToken);
+        var value:Object = this.parseValue();
 
         if (this.debug) {
             trace("解析键值对，键: " + key + ", 值: " + ObjectUtil.toString(value));
@@ -192,35 +214,41 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 this.current[key] = value;
             }
         }
-        this.position++; // 移动到下一个 Token
+        // this.position++; // 移动到下一个 Token（在 parseValue() 中已经移动）
         return true;
     }
 
     /**
-     * 解析一个值 Token 并返回对应的 AS2 对象。
-     * @param token 要解析的值 Token。
+     * 解析一个值，从当前 position 开始。
      * @return 解析后的值对象。
      */
-    private function parseValue(token:Object):Object {
+    private function parseValue():Object {
+        var token:Object = this.tokens[this.position];
         if (this.debug) {
             trace("解析值，Token Type: " + token.type + ", Value: " + token.value);
         }
         switch (token.type) {
             case "STRING":
+                this.position++;
                 return token.value;
             case "INTEGER":
+                this.position++;
                 return Number(token.value);
             case "FLOAT":
+                this.position++;
                 return this.parseSpecialFloat(token.value);
             case "BOOLEAN":
+                this.position++;
                 return token.value;
             case "DATETIME":
+                this.position++;
                 return this.parseDateTime(token.value);
-            case "ARRAY":
-                return this.parseArray(token.value);
-            case "INLINE_TABLE":
-                return this.parseInlineTable(token.value);
+            case "LBRACKET":
+                return this.parseArray();
+            case "LBRACE":
+                return this.parseInlineTable();
             case "NULL":
+                this.position++;
                 return null;
             default:
                 this.error("Unknown value type: " + token.type, token);
@@ -268,30 +296,37 @@ class org.flashNight.gesh.fntl.FNTLParser {
         return dateTimeStr;
     }
 
-
     /**
-     * 解析数组 Token 为 AS2 数组。
-     * @param arrayData 数组 Token 的值。
+     * 解析数组，从当前 position 开始。
      * @return 解析后的数组或 null（如果有错误）。
      */
-    private function parseArray(arrayData:Array):Array {
+    private function parseArray():Array {
         if (this.debug) {
-            trace("解析数组，元素数量: " + arrayData.length);
+            trace("开始解析数组。");
         }
         var array:Array = new Array();
+        this.position++; // 跳过 '['
 
-        for (var i:Number = 0; i < arrayData.length; i++) {
-            var elementToken:Object = arrayData[i];
-            var value:Object = this.parseValue(elementToken);
+        while (this.position < this.tokens.length) {
+            var token:Object = this.tokens[this.position];
 
-            if (value !== undefined) { // 仅在成功解析值时添加到数组
-                array.push(value);
-                if (this.debug) {
-                    trace("添加到数组的元素[" + i + "]: " + ObjectUtil.toString(value));
-                }
+            if (token.type == "RBRACKET") {
+                this.position++; // 跳过 ']'
+                break;
+            } else if (token.type == "COMMA") {
+                this.position++; // 跳过逗号
+                continue;
             } else {
-                this.error("Failed to parse array element", elementToken);
-                return null;
+                var value:Object = this.parseValue();
+                if (value !== undefined) {
+                    array.push(value);
+                    if (this.debug) {
+                        trace("数组元素: " + ObjectUtil.toString(value));
+                    }
+                } else {
+                    this.error("Failed to parse array element", token);
+                    return null;
+                }
             }
         }
 
@@ -299,34 +334,57 @@ class org.flashNight.gesh.fntl.FNTLParser {
     }
 
     /**
-     * 解析内联表格字符串为对象。
-     * @param tableStr 内联表格字符串。
+     * 解析内联表格，从当前 position 开始。
      * @return 解析后的内联表格对象或 undefined（如果有错误）。
      */
-    private function parseInlineTable(tableStr:String):Object {
+    private function parseInlineTable():Object {
         if (this.debug) {
-            trace("解析内联表格: " + tableStr);
+            trace("开始解析内联表格。");
         }
-        var lexer:FNTLLexer = new FNTLLexer(tableStr);
-        var tokens:Array = [];
-        var tok:Object;
+        var table:Object = new Object();
+        this.position++; // 跳过 '{'
 
-        while ((tok = lexer.getNextToken()) != null) {
-            tokens.push(tok);
-            if (this.debug) {
-                trace("内联表格 Token[" + (tokens.length - 1) + "]: Type = " + tok.type + ", Value = " + tok.value);
+        while (this.position < this.tokens.length) {
+            var token:Object = this.tokens[this.position];
+
+            if (token.type == "RBRACE") {
+                this.position++; // 跳过 '}'
+                break;
+            } else if (token.type == "COMMA") {
+                this.position++; // 跳过逗号
+                continue;
+            } else if (token.type == "KEY") {
+                var key:String = token.value;
+                this.position++;
+
+                // 检查 '='
+                if (this.tokens[this.position].type != "EQUALS") {
+                    this.error("Expected '=' after key '" + key + "'", token);
+                    return undefined;
+                }
+                this.position++; // 跳过 '='
+
+                var value:Object = this.parseValue();
+                if (value !== undefined) {
+                    if (table[key] !== undefined) {
+                        this.error("Duplicate key '" + key + "' in inline table", token);
+                        return undefined;
+                    }
+                    table[key] = value;
+                    if (this.debug) {
+                        trace("内联表格键值对: " + key + " = " + ObjectUtil.toString(value));
+                    }
+                } else {
+                    this.error("Failed to parse value for key '" + key + "' in inline table", token);
+                    return undefined;
+                }
+            } else {
+                this.error("Unexpected token in inline table: " + token.type, token);
+                return undefined;
             }
         }
 
-        var parser:FNTLParser = new FNTLParser(tokens, tableStr, this.debug);
-        var parsedTable:Object = parser.parse();
-
-        if (parser.hasError()) {
-            this.error("Failed to parse inline table: " + tableStr, {line: 0, column: 0});
-            return undefined;
-        }
-
-        return parsedTable;
+        return table;
     }
 
     /**
@@ -416,7 +474,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
         if (this.debug) {
             trace("处理内联表格: " + inlineTableStr);
         }
-        var inlineTable:Object = this.parseInlineTable(inlineTableStr);
+        var inlineTable:Object = this.parseInlineTable();
         if (inlineTable === undefined) {
             if (this.debug) {
                 trace("内联表格解析失败: " + inlineTableStr);
@@ -447,37 +505,5 @@ class org.flashNight.gesh.fntl.FNTLParser {
         if (this.debug) {
             trace("当前解析位置: " + this.position + "/" + this.tokens.length);
         }
-    }
-    
-    /**
-     * 检查字符是否为数字
-     * @param c 要检查的字符
-     * @return 是否为数字
-     */
-    private function isDigit(c:String):Boolean {
-        return c >= "0" && c <= "9";
-    }
-
-    /**
-     * 查看下一个字符而不移动指针
-     * @return 下一个字符或空字符串
-     */
-    private function peek():String {
-        if (this.position < this.text.length) {
-            return this.text.charAt(this.position);
-        }
-        return "";
-    }
-    
-    /**
-     * 查看接下来的第 n 个字符而不移动指针
-     * @param n 要查看的字符位置偏移
-     * @return 第 n 个字符或空字符串
-     */
-    private function peekAhead(n:Number):String {
-        if (this.position + n < this.text.length) {
-            return this.text.charAt(this.position + n);
-        }
-        return "";
     }
 }
