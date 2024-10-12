@@ -72,7 +72,7 @@ class org.flashNight.neur.Event.Delegate {
         } else {
             // 为作用域生成唯一的 UID，并与方法 UID 组合生成缓存键
             var scopeUID:String = String(Dictionary.getStaticUID(scope));
-            cacheKey = scopeUID + "|" + methodUID;  // 将作用域和方法的 UID 组合成缓存键
+            cacheKey = String((scopeUID << 16) | methodUID);  // 将作用域和方法的 UID 组合成缓存键
 
             // 尝试从缓存中获取已存在的委托函数
             var cachedFunctionScope:Function = loccache[cacheKey];
