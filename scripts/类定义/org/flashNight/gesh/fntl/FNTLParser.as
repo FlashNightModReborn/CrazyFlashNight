@@ -39,7 +39,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
         this.hasErrorFlag = false;
         this.debug = debugFlag;
         
-        // 修复1：初始化 this.current 为 this.root
+        // 初始化 this.current 为 this.root
         this.current = this.root;
         
         if (this.debug) {
@@ -72,13 +72,20 @@ class org.flashNight.gesh.fntl.FNTLParser {
                     }
                     break;
                 case "LBRACKET":
-                    // 修复3：处理表头和表数组
+                    // 处理表头和表数组
                     if (!this.handleTable()) {
                         return null;
                     }
                     break;
                 case "INLINE_TABLE":
                     this.handleInlineTable(token.value);
+                    this.position++;
+                    break;
+                case "NEWLINE":
+                    // 跳过 NEWLINE token
+                    if (this.debug) {
+                        trace("跳过 NEWLINE token。");
+                    }
                     this.position++;
                     break;
                 case "EQUALS":
@@ -200,7 +207,6 @@ class org.flashNight.gesh.fntl.FNTLParser {
             return false;
         }
 
-        var valueToken:Object = this.tokens[this.position];
         var value:Object = this.parseValue();
 
         if (this.debug) {
@@ -214,7 +220,6 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 this.current[key] = value;
             }
         }
-        // this.position++; // 移动到下一个 Token（在 parseValue() 中已经移动）
         return true;
     }
 
@@ -227,7 +232,67 @@ class org.flashNight.gesh.fntl.FNTLParser {
         if (this.debug) {
             trace("解析值，Token Type: " + token.type + ", Value: " + token.value);
         }
-        switch (token.type) {
+
+        // 处理浮点数：INTEGER DOT INTEGER
+        if (token.type == "INTEGER") {
+            if (this.position + 2 < this.tokens.length &&
+                this.tokens[this.position + 1].type == "DOT" &&
+                this.tokens[this.position + 2].type == "INTEGER") {
+
+                var integerPart:String = token.value;
+                var dot:String = this.tokens[this.position + 1].value;
+                var fractionalPart:String = this.tokens[this.position + 2].value;
+
+                var floatStr:String = integerPart + dot + fractionalPart;
+                var floatVal:Number = Number(floatStr);
+                this.position += 3; // 跳过 INTEGER, DOT, INTEGER
+
+                if (isNaN(floatVal)) {
+                    this.error("Invalid float value: " + floatStr, token);
+                    return undefined;
+                }
+
+                if (this.debug) {
+                    trace("解析浮点数值: " + floatVal);
+                }
+
+                return floatVal;
+            }
+        }
+
+        // 处理负浮点数：'-' FLOAT
+        if (token.type == "INTEGER" && token.value == "-") {
+            if (this.position + 1 < this.tokens.length &&
+                this.tokens[this.position + 1].type == "FLOAT") {
+
+                var floatToken:Object = this.tokens[this.position + 1];
+                var floatValue:String = floatToken.value.toLowerCase();
+                var negativeFloat:Number;
+
+                switch(floatValue) {
+                    case "inf":
+                        negativeFloat = Number.NEGATIVE_INFINITY;
+                        break;
+                    case "nan":
+                        negativeFloat = Number.NaN;
+                        break;
+                    default:
+                        negativeFloat = Number("-" + floatValue);
+                        break;
+                }
+
+                this.position += 2; // 跳过 '-' 和 FLOAT
+
+                if (this.debug) {
+                    trace("解析负浮点数值: " + negativeFloat);
+                }
+
+                return negativeFloat;
+            }
+        }
+
+        // 处理其他类型
+        switch(token.type) {
             case "STRING":
                 this.position++;
                 return token.value;
@@ -316,6 +381,13 @@ class org.flashNight.gesh.fntl.FNTLParser {
             } else if (token.type == "COMMA") {
                 this.position++; // 跳过逗号
                 continue;
+            } else if (token.type == "NEWLINE") {
+                // 跳过 NEWLINE token
+                if (this.debug) {
+                    trace("跳过数组中的 NEWLINE token。");
+                }
+                this.position++;
+                continue;
             } else {
                 var value:Object = this.parseValue();
                 if (value !== undefined) {
@@ -378,6 +450,13 @@ class org.flashNight.gesh.fntl.FNTLParser {
                     this.error("Failed to parse value for key '" + key + "' in inline table", token);
                     return undefined;
                 }
+            } else if (token.type == "NEWLINE") {
+                // 跳过 NEWLINE token
+                if (this.debug) {
+                    trace("跳过内联表格中的 NEWLINE token。");
+                }
+                this.position++;
+                continue;
             } else {
                 this.error("Unexpected token in inline table: " + token.type, token);
                 return undefined;
@@ -386,7 +465,6 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         return table;
     }
-
 
     /**
      * 处理表格头 Token，更新当前上下文。
@@ -452,9 +530,18 @@ class org.flashNight.gesh.fntl.FNTLParser {
                         trace("创建新表格: " + part);
                     }
                 } else if (current[part] instanceof Array) {
-                    current = current[part][current[part].length - 1];
-                    if (this.debug) {
-                        trace("当前表格数组 '" + part + "' 的最新表格。");
+                    if (current[part].length == 0) {
+                        var nestedTable:Object = new Object();
+                        current[part].push(nestedTable);
+                        if (this.debug) {
+                            trace("向空表格数组 '" + part + "' 添加新表格。");
+                        }
+                        current = nestedTable;
+                    } else {
+                        current = current[part][current[part].length - 1];
+                        if (this.debug) {
+                            trace("当前表格数组 '" + part + "' 的最新表格。");
+                        }
                     }
                 } else {
                     current = current[part];
