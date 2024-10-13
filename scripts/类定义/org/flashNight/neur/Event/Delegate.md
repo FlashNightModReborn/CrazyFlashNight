@@ -126,3 +126,10 @@ trace(delegateA1 === delegateA2); // 输出: true
 
 1. **参数预处理与缓存**：当相同的作用域和方法组合多次被调用时，`Delegate` 类会自动复用缓存的委托函数，避免重复创建新函数。确保参数是稳定的，以充分利用缓存机制。
 2. **性能敏感场景**：对于需要频繁传递动态参数的高性能场景，优先考虑使用 `create
+
+
+
+
+// 使用 DelegateTest 类进行测试
+var delegateTest:org.flashNight.neur.Event.DelegateTest = new org.flashNight.neur.Event.DelegateTest();
+delegateTest.runAllTests();
