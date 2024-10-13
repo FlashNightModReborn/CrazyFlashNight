@@ -327,15 +327,12 @@ class org.flashNight.gesh.string.StringUtils {
         var result:String = "";
         var i:Number = 0;
 
-        // 正则表达式对象用于匹配 Unicode 序列
-        var unicodeRegExp:RegExp = new RegExp("^[0-9A-Fa-f]{4}$");
-
         while (i < str.length) {
             var char:String = str.charAt(i);
             if (char == "\\") {
                 i++;
                 if (i >= str.length) {
-                    // Incomplete escape sequence, add literal backslash
+                    // 不完整的转义序列，保留反斜杠
                     result += "\\";
                     break;
                 }
@@ -354,23 +351,32 @@ class org.flashNight.gesh.string.StringUtils {
                         result += "\"";
                         break;
                     case "u":
-                        // Handle Unicode escape sequences like \uXXXX
+                        // 处理 Unicode 转义序列 \uXXXX
                         if (i + 4 < str.length) {
                             var unicodeSeq:String = str.substr(i + 1, 4);
-                            if (unicodeRegExp.test(unicodeSeq)) {
-                                result += String.fromCharCode(parseInt(unicodeSeq, 16));
-                                i += 4;
+                            var isValidUnicode:Boolean = true;
+                            for (var j:Number = 0; j < 4; j++) {
+                                var hexChar:String = unicodeSeq.charAt(j).toUpperCase();
+                                if (!((hexChar >= "0" && hexChar <= "9") || (hexChar >= "A" && hexChar <= "F"))) {
+                                    isValidUnicode = false;
+                                    break;
+                                }
+                            }
+                            if (isValidUnicode) {
+                                var unicodeCode:Number = parseInt(unicodeSeq, 16);
+                                result += String.fromCharCode(unicodeCode);
+                                i += 4; // 跳过 4 位十六进制字符
                             } else {
-                                // Invalid Unicode sequence
+                                // 无效的 Unicode 序列，保留 \u
                                 result += "\\u";
                             }
                         } else {
-                            // Incomplete Unicode sequence
+                            // 不完整的 Unicode 序列，保留 \u
                             result += "\\u";
                         }
                         break;
                     default:
-                        // Preserve unknown escape sequences
+                        // 保留未知的转义序列
                         result += "\\" + char;
                         break;
                 }
@@ -381,6 +387,8 @@ class org.flashNight.gesh.string.StringUtils {
         }
         return result;
     }
+
+
 
     // 检查字符串是否包含子字符串
     public static function includes(str:String, substring:String):Boolean {
@@ -1012,3 +1020,56 @@ trace("Large object toJSON performance:");
 trace(StringUtils.toJSON(largeObj, false)); // 测试性能和输出正确性
 
 */
+
+
+/*
+import org.flashNight.gesh.string.StringUtils;
+
+// 辅助函数，用于生成重复字符
+function repeat(str:String, times:Number):String {
+    var result:String = "";
+    for (var i:Number = 0; i < times; i++) {
+        result += str;
+    }
+    return result;
+}
+
+// 定义测试用例
+var testCases:Array = [
+    // 原有测试用例
+    {input: "Mixed Escape: \\n \\t \\u0041", expected: "Mixed Escape: \n \t A", description: "Multiple Escape Characters"},
+    {input: "Incomplete Unicode: \\u123", expected: "Incomplete Unicode: \\u123", description: "Incomplete Unicode Sequence"},
+    {input: "Special Characters: $&\\u0041!", expected: "Special Characters: $&A!", description: "Special Characters"},
+    {input: "Invalid Escape: \\q \\r", expected: "Invalid Escape: \\q \\r", description: "Invalid Escape Sequences"},
+    {input: "Mixed Unicode: A\\u0042C \\u0043D", expected: "Mixed Unicode: ABC CD", description: "Mixed Unicode and Normal Characters"},
+    {input: "Escape with Number: \\n123", expected: "Escape with Number: \n123", description: "Escape Characters Followed by Numbers"},
+    
+    // 新增边界测试用例
+    {input: "\\", expected: "\\", description: "Single Backslash at End"},
+    {input: "\\n", expected: "\n", description: "Simple Escape at End"},
+    {input: "a\\", expected: "a\\", description: "Single Backslash at End After Character"},
+    {input: "\\\\", expected: "\\", description: "Double Backslash"},
+    {input: "\\u0041\\", expected: "A\\", description: "Unicode Followed by Backslash"},
+    {input: "Empty Escape \\", expected: "Empty Escape \\", description: "Empty Escape Sequence"},
+    {input: "Empty String", expected: "Empty String", description: "String with No Escape"},
+    {input: "", expected: "", description: "Empty String (No Characters)"}
+];
+
+// 执行测试
+for (var i:Number = 0; i < testCases.length; i++) {
+    var testCase:Object = testCases[i];
+    var result:String = StringUtils.unescape(testCase.input);
+    var passed:Boolean = (result == testCase.expected);
+    
+    if (!passed) {
+        trace("Test Case " + (i + 1) + ": " + testCase.description);
+        trace("Input: " + testCase.input);
+        trace("Expected: " + testCase.expected);
+        trace("Result: " + result);
+        trace("Passed: " + passed);
+        trace("");
+    } else {
+        trace("Test Case " + (i + 1) + ": Passed");
+    }
+}
+/*
