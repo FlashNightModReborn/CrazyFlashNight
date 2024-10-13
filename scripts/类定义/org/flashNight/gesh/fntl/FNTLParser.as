@@ -213,52 +213,61 @@ class org.flashNight.gesh.fntl.FNTLParser {
      */
     private function handleKeyValuePair():Boolean {
         var keyToken:Object = this.tokens[this.position];
-        var key:String = keyToken.value;
+        var key:String;
+
+        // 允许 INTEGER 类型的键，将其转换为字符串
+        if (keyToken.type == "INTEGER") {
+            key = String(keyToken.value);
+        } else {
+            key = keyToken.value;
+        }
+
         this.position++;
 
         if (this.debug) {
             trace("Handling key-value pair, Key: " + key);
         }
 
-        // Check for EQUALS token
+        // 检查是否有 '='
         if (this.position >= this.tokens.length || this.tokens[this.position].type != "EQUALS") {
             this.error("Expected '=' after key '" + key + "'", keyToken);
-            // Skip to next meaningful token (e.g., NEWLINE)
+            // 跳过到下一个有意义的标记（如 NEWLINE）
             this.skipToNextMeaningfulToken();
-            return true; // Continue parsing subsequent content
+            return true; // 继续解析后续内容
         }
-        this.position++; // Skip EQUALS token
+        this.position++; // 跳过 '=' 标记
 
         if (this.position >= this.tokens.length) {
             this.error("Missing value for key '" + key + "'", keyToken);
-            return true; // Continue parsing subsequent content
+            return true; // 继续解析后续内容
         }
 
         var value:Object = this.parseValue();
 
-        // Check if an error occurred during value parsing
+        // 检查值解析是否出错
         if (value === undefined || this.hasErrorFlag) {
-            // Skip to next meaningful token
+            // 跳过到下一个有意义的标记
             this.skipToNextMeaningfulToken();
-            return true; // Continue parsing subsequent content
+            return true; // 继续解析后续内容
         }
 
         if (this.debug) {
             trace("Parsed key-value pair, Key: " + key + ", Value: " + ObjectUtil.toString(value));
         }
 
-        if (value !== undefined) { // Only set the key-value if value was successfully parsed
+        if (value !== undefined) { // 仅在值成功解析时设置键值对
             if (this.current[key] !== undefined) {
                 this.error("Duplicate key '" + key + "'", keyToken);
-                // Skip to next meaningful token
+                // 跳过到下一个有意义的标记
                 this.skipToNextMeaningfulToken();
-                return true; // Continue parsing subsequent content
+                return true; // 继续解析后续内容
             } else {
                 this.current[key] = value;
             }
         }
         return true;
     }
+
 
     /**
      * Skips to the next meaningful token (e.g., NEWLINE).
@@ -288,14 +297,43 @@ class org.flashNight.gesh.fntl.FNTLParser {
             case "STRING":
                 var strValue:String = StringUtils.unescape(token.value); // 解析转义字符
                 this.position++;
+                // 检查字符串中是否包含换行符，未闭合字符串
+                if (strValue.indexOf("\n") >= 0 || strValue.indexOf("\r") >=0 ) {
+                    this.error("Unclosed string", token);
+                    return undefined;
+                }
                 return strValue;
             
             case "MULTILINE_STRING":
                 this.position++;
                 return token.value;
             
-            // Handle floating numbers: INTEGER DOT INTEGER
             case "INTEGER":
+                if (token.value == "-") { // 识别负号
+                    if (this.position + 1 < this.tokens.length) {
+                        var nextToken:Object = this.tokens[this.position + 1];
+                        if (nextToken.type == "FLOAT") {
+                            var negFloat:Number = -this.parseSpecialFloat(nextToken.value);
+                            this.position += 2; // 跳过 '-' 和 FLOAT
+                            if (this.debug) {
+                                trace("Parsed negative float value: " + negFloat);
+                            }
+                            return negFloat;
+                        } else if (nextToken.type == "INTEGER") {
+                            var negInt:Number = -Number(nextToken.value);
+                            this.position += 2; // 跳过 '-' 和 INTEGER
+                            if (this.debug) {
+                                trace("Parsed negative integer value: " + negInt);
+                            }
+                            return negInt;
+                        }
+                    }
+                    // 如果没有下一个标记或下一个标记不是数字
+                    this.error("Invalid minus usage", token);
+                    return undefined;
+                }
+
+                // 检查是否为浮点数（INTEGER DOT INTEGER）
                 if (this.position + 2 < this.tokens.length &&
                     this.tokens[this.position + 1].type == "DOT" &&
                     this.tokens[this.position + 2].type == "INTEGER") {
@@ -306,7 +344,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
                     var floatStr:String = integerPart + dot + fractionalPart;
                     var floatVal:Number = Number(floatStr);
-                    this.position += 3; // Skip INTEGER, DOT, INTEGER
+                    this.position += 3; // 跳过 INTEGER, DOT, INTEGER
 
                     if (isNaN(floatVal)) {
                         this.error("Invalid float value: " + floatStr, token);
@@ -319,40 +357,18 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
                     return floatVal;
                 }
-                break;
-
-            // Handle negative floating numbers: '-' FLOAT
-            case "INTEGER":
-                if (token.value == "-" && this.position + 1 < this.tokens.length &&
-                    this.tokens[this.position + 1].type == "FLOAT") {
-
-                    var floatToken:Object = this.tokens[this.position + 1];
-                    var floatValue:String = floatToken.value.toLowerCase();
-                    var negativeFloat:Number;
-
-                    switch(floatValue) {
-                        case "inf":
-                            negativeFloat = Number.NEGATIVE_INFINITY;
-                            break;
-                        case "nan":
-                            negativeFloat = Number.NaN;
-                            break;
-                        default:
-                            negativeFloat = Number("-" + floatValue);
-                            break;
-                    }
-
-                    this.position += 2; // Skip '-' and FLOAT
-
-                    if (this.debug) {
-                        trace("Parsed negative float value: " + negativeFloat);
-                    }
-
-                    return negativeFloat;
+                // 处理独立的 INTEGER
+                var intVal:Number = Number(token.value);
+                this.position++;
+                if (isNaN(intVal)) {
+                    this.error("Invalid integer value: " + token.value, token);
+                    return undefined;
                 }
-                break;
+                if (this.debug) {
+                    trace("Parsed integer value: " + intVal);
+                }
+                return intVal;
 
-            // Handle other types
             case "FLOAT":
                 this.position++;
                 return this.parseSpecialFloat(token.value);
@@ -374,7 +390,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 return undefined;
         }
 
-        // If none of the cases matched
+        // 如果没有匹配的情况
         this.error("Invalid value type: " + token.type, token);
         return undefined;
     }
@@ -397,9 +413,15 @@ class org.flashNight.gesh.fntl.FNTLParser {
             case "-inf":
                 return Number.NEGATIVE_INFINITY;
             default:
-                return Number(value);
+                var num:Number = Number(value);
+                if (isNaN(num)) {
+                    this.error("Invalid float value: " + value, {line: 0, column: 0});
+                    return undefined;
+                }
+                return num;
         }
     }
+
 
     /**
      * Parses a datetime string and returns it in ISO8601 format.
@@ -511,27 +533,27 @@ class org.flashNight.gesh.fntl.FNTLParser {
             trace("Starting to parse inline table.");
         }
         var table:Object = new Object();
-        this.position++; // Skip '{'
+        this.position++; // 跳过 '{'
 
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
 
             if (token.type == "RBRACE") {
-                this.position++; // Skip '}'
+                this.position++; // 跳过 '}'
                 break;
             } else if (token.type == "COMMA") {
-                this.position++; // Skip comma
+                this.position++; // 跳过逗号
                 continue;
-            } else if (token.type == "KEY" || token.type == "INTEGER") { // Allow KEY and INTEGER types as keys
-                var key:String = token.value.toString(); // Convert key to string
+            } else if (token.type == "KEY" || token.type == "INTEGER") { // 允许 KEY 和 INTEGER 类型作为键
+                var key:String = String(token.value); // 将键转换为字符串
                 this.position++;
 
-                // Check for '='
+                // 检查是否有 '='
                 if (this.position >= this.tokens.length || this.tokens[this.position].type != "EQUALS") {
                     this.error("Expected '=' after key '" + key + "'", token);
                     return undefined;
                 }
-                this.position++; // Skip '='
+                this.position++; // 跳过 '='
 
                 var value:Object = this.parseValue();
                 if (value !== undefined) {
@@ -548,16 +570,15 @@ class org.flashNight.gesh.fntl.FNTLParser {
                     return undefined;
                 }
             } else if (token.type == "MULTILINE_STRING") {
-                // Allow multiline strings within inline tables
+                // 允许内联表中包含多行字符串
                 var multilineValue:Object = this.parseValue();
                 if (multilineValue === undefined) {
                     this.error("Failed to parse multiline string in inline table", token);
                     return undefined;
                 }
-                // Assuming that the key was already handled
-                // This part may require specific handling based on the syntax
+                // 假设键已经被处理，具体处理可能需要根据语法调整
             } else if (token.type == "NEWLINE") {
-                // Skip NEWLINE tokens within inline tables
+                // 跳过内联表中的换行符
                 if (this.debug) {
                     trace("Skipping NEWLINE token within inline table.");
                 }
@@ -571,6 +592,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         return table;
     }
+
 
 
     /**
