@@ -322,7 +322,66 @@ class org.flashNight.gesh.string.StringUtils {
         result.push(input.substring(lastIndex));
         return result;
     }
-    
+
+    public static function unescape(str:String):String {
+        var result:String = "";
+        var i:Number = 0;
+
+        // 正则表达式对象用于匹配 Unicode 序列
+        var unicodeRegExp:RegExp = new RegExp("^[0-9A-Fa-f]{4}$");
+
+        while (i < str.length) {
+            var char:String = str.charAt(i);
+            if (char == "\\") {
+                i++;
+                if (i >= str.length) {
+                    // Incomplete escape sequence, add literal backslash
+                    result += "\\";
+                    break;
+                }
+                char = str.charAt(i);
+                switch (char) {
+                    case "n":
+                        result += "\n";
+                        break;
+                    case "t":
+                        result += "\t";
+                        break;
+                    case "\\":
+                        result += "\\";
+                        break;
+                    case "\"":
+                        result += "\"";
+                        break;
+                    case "u":
+                        // Handle Unicode escape sequences like \uXXXX
+                        if (i + 4 < str.length) {
+                            var unicodeSeq:String = str.substr(i + 1, 4);
+                            if (unicodeRegExp.test(unicodeSeq)) {
+                                result += String.fromCharCode(parseInt(unicodeSeq, 16));
+                                i += 4;
+                            } else {
+                                // Invalid Unicode sequence
+                                result += "\\u";
+                            }
+                        } else {
+                            // Incomplete Unicode sequence
+                            result += "\\u";
+                        }
+                        break;
+                    default:
+                        // Preserve unknown escape sequences
+                        result += "\\" + char;
+                        break;
+                }
+            } else {
+                result += char;
+            }
+            i++;
+        }
+        return result;
+    }
+
     // 检查字符串是否包含子字符串
     public static function includes(str:String, substring:String):Boolean {
         return str.indexOf(substring) != -1;

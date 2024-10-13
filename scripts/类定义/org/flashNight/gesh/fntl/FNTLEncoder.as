@@ -14,6 +14,7 @@ import org.flashNight.gesh.regexp.RegExp;
  * - Improved error handling with localized messages
  * - Logging warnings for internal keys
  */
+
 class org.flashNight.gesh.fntl.FNTLEncoder {
     
     private var MAX_RECURSION_DEPTH:Number = 256; // 递归深度限制

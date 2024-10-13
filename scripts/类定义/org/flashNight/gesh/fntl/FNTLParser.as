@@ -88,7 +88,19 @@ class org.flashNight.gesh.fntl.FNTLParser {
                     }
                     break;
                 case "INLINE_TABLE":
-                    this.handleInlineTable(token.value);
+                    var inlineTable:Object = this.parseInlineTable();
+                    if (inlineTable !== undefined) {
+                        for (var key:String in inlineTable) {
+                            if (this.current[key] !== undefined) {
+                                this.error("Duplicate key '" + key + "'", {line: 0, column: 0});
+                            } else {
+                                this.current[key] = inlineTable[key];
+                                if (this.debug) {
+                                    trace("Added inline table key-value pair to current context: " + key + " = " + ObjectUtil.toString(inlineTable[key]));
+                                }
+                            }
+                        }
+                    }
                     this.position++;
                     break;
                 case "NEWLINE":
@@ -272,87 +284,75 @@ class org.flashNight.gesh.fntl.FNTLParser {
             trace("Parsing value, Token Type: " + token.type + ", Value: " + token.value);
         }
 
-        // Handle basic string
-        if (token.type == "STRING") {
-            var strValue:String = token.value;
-            // Check for unclosed strings by looking for newline characters
-            if (strValue.indexOf("\n") != -1) {
-                this.error("Unclosed string", token);
-                return undefined;
-            }
-            this.position++;
-            return strValue;
-        }
-
-        // Handle multiline strings
-        if (token.type == "MULTILINE_STRING") {
-            this.position++;
-            return token.value;
-        }
-
-        // Handle floating numbers: INTEGER DOT INTEGER
-        if (token.type == "INTEGER") {
-            if (this.position + 2 < this.tokens.length &&
-                this.tokens[this.position + 1].type == "DOT" &&
-                this.tokens[this.position + 2].type == "INTEGER") {
-
-                var integerPart:String = token.value;
-                var dot:String = this.tokens[this.position + 1].value;
-                var fractionalPart:String = this.tokens[this.position + 2].value;
-
-                var floatStr:String = integerPart + dot + fractionalPart;
-                var floatVal:Number = Number(floatStr);
-                this.position += 3; // Skip INTEGER, DOT, INTEGER
-
-                if (isNaN(floatVal)) {
-                    this.error("Invalid float value: " + floatStr, token);
-                    return undefined;
-                }
-
-                if (this.debug) {
-                    trace("Parsed float value: " + floatVal);
-                }
-
-                return floatVal;
-            }
-        }
-
-        // Handle negative floating numbers: '-' FLOAT
-        if (token.type == "INTEGER" && token.value == "-") {
-            if (this.position + 1 < this.tokens.length &&
-                this.tokens[this.position + 1].type == "FLOAT") {
-
-                var floatToken:Object = this.tokens[this.position + 1];
-                var floatValue:String = floatToken.value.toLowerCase();
-                var negativeFloat:Number;
-
-                switch(floatValue) {
-                    case "inf":
-                        negativeFloat = Number.NEGATIVE_INFINITY;
-                        break;
-                    case "nan":
-                        negativeFloat = Number.NaN;
-                        break;
-                    default:
-                        negativeFloat = Number("-" + floatValue);
-                        break;
-                }
-
-                this.position += 2; // Skip '-' and FLOAT
-
-                if (this.debug) {
-                    trace("Parsed negative float value: " + negativeFloat);
-                }
-
-                return negativeFloat;
-            }
-        }
-
-        // Handle other types
         switch(token.type) {
-            case "INTEGER":
+            case "STRING":
+                var strValue:String = StringUtils.unescape(token.value); // 解析转义字符
                 this.position++;
-                return Number(token.value);
+                return strValue;
+            
+            case "MULTILINE_STRING":
+                this.position++;
+                return token.value;
+            
+            // Handle floating numbers: INTEGER DOT INTEGER
+            case "INTEGER":
+                if (this.position + 2 < this.tokens.length &&
+                    this.tokens[this.position + 1].type == "DOT" &&
+                    this.tokens[this.position + 2].type == "INTEGER") {
+
+                    var integerPart:String = token.value;
+                    var dot:String = this.tokens[this.position + 1].value;
+                    var fractionalPart:String = this.tokens[this.position + 2].value;
+
+                    var floatStr:String = integerPart + dot + fractionalPart;
+                    var floatVal:Number = Number(floatStr);
+                    this.position += 3; // Skip INTEGER, DOT, INTEGER
+
+                    if (isNaN(floatVal)) {
+                        this.error("Invalid float value: " + floatStr, token);
+                        return undefined;
+                    }
+
+                    if (this.debug) {
+                        trace("Parsed float value: " + floatVal);
+                    }
+
+                    return floatVal;
+                }
+                break;
+
+            // Handle negative floating numbers: '-' FLOAT
+            case "INTEGER":
+                if (token.value == "-" && this.position + 1 < this.tokens.length &&
+                    this.tokens[this.position + 1].type == "FLOAT") {
+
+                    var floatToken:Object = this.tokens[this.position + 1];
+                    var floatValue:String = floatToken.value.toLowerCase();
+                    var negativeFloat:Number;
+
+                    switch(floatValue) {
+                        case "inf":
+                            negativeFloat = Number.NEGATIVE_INFINITY;
+                            break;
+                        case "nan":
+                            negativeFloat = Number.NaN;
+                            break;
+                        default:
+                            negativeFloat = Number("-" + floatValue);
+                            break;
+                    }
+
+                    this.position += 2; // Skip '-' and FLOAT
+
+                    if (this.debug) {
+                        trace("Parsed negative float value: " + negativeFloat);
+                    }
+
+                    return negativeFloat;
+                }
+                break;
+
+            // Handle other types
             case "FLOAT":
                 this.position++;
                 return this.parseSpecialFloat(token.value);
@@ -373,7 +373,12 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 this.error("Unknown value type: " + token.type, token);
                 return undefined;
         }
+
+        // If none of the cases matched
+        this.error("Invalid value type: " + token.type, token);
+        return undefined;
     }
+
 
     /**
      * Parses special floating point numbers (NaN, Infinity, -Infinity).
@@ -544,11 +549,13 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 }
             } else if (token.type == "MULTILINE_STRING") {
                 // Allow multiline strings within inline tables
-                var multilineKey:String = token.value;
-                this.position++;
-                // According to FNTL syntax, inline table keys must be string keys, already handled above
-                this.error("Unexpected MULTILINE_STRING in inline table", token);
-                return undefined;
+                var multilineValue:Object = this.parseValue();
+                if (multilineValue === undefined) {
+                    this.error("Failed to parse multiline string in inline table", token);
+                    return undefined;
+                }
+                // Assuming that the key was already handled
+                // This part may require specific handling based on the syntax
             } else if (token.type == "NEWLINE") {
                 // Skip NEWLINE tokens within inline tables
                 if (this.debug) {
@@ -564,6 +571,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         return table;
     }
+
 
     /**
      * Handles table header tokens, updating the current context.
