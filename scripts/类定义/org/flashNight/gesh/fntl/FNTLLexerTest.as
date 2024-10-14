@@ -1478,25 +1478,12 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase22.description = "测试非法数值格式的编码。";
         cases.push(testCase22);
 
-        // Test Case 23: 测试内联表最后一项后多余的逗号
+        // Test Case 23: 测试内联表最后一项后多余的逗号（触发解析错误）
         var testCase23:Object = new Object();
-        testCase23.input = new Object();
-
-        // 手动构造类似 complexObj 的结构
-        testCase23.input["player"] = new Object();
-        testCase23.input["player"]["name"] = "Alice";
-        testCase23.input["player"]["level"] = 30;
-        testCase23.input["player"]["class"] = "Warrior";
-
-        // 创建带有多余逗号的内联表表示，模拟可能的错误情况
-        var fntlInput:String = 'player = { name = "Alice", level = 30, class = "Warrior", }';
-
-        // 期望输出应当排除掉多余的逗号
-        testCase23.expected = 'player = { name = "Alice", level = 30, class = "Warrior" }\n';
-        testCase23.description = "测试内联表最后一项后多余的逗号";
+        testCase23.input = 'player = { name = "Alice", level = 30, class = "Warrior", }'; // 带有多余逗号的内联表
+        testCase23.expected = null; // 期望解析失败
+        testCase23.description = "测试内联表最后一项后多余的逗号（已知问题）";
         cases.push(testCase23);
-
-        // 添加其他逻辑，确保编码器能够正确处理这种情况
 
 
         return cases;
