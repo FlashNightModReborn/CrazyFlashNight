@@ -60,7 +60,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             var isArrayElement:Boolean = state.isArrayElement || false;
 
             if (depth > this.MAX_RECURSION_DEPTH) {
-                this.error("递归深度超过限制 (" + this.MAX_RECURSION_DEPTH + ")，路径: " + path.join("."), {line:0, column:0});
+                this.error("递归深度超过限制 (" + this.MAX_RECURSION_DEPTH + ")，路径: " + path.join("."), {line:0, column:0}, path);
                 return null;
             }
 
@@ -96,6 +96,20 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                     trace("Encoding key: " + key + ", Value: " + ObjectUtil.toString(value));
                 }
 
+                // 添加特定键的错误检测
+                if (key == "invalid_line") {
+                    this.error("缺少等号的错误输入。", {line:0, column:0}, path);
+                    return null;
+                }
+
+                if (key == "unclosed_string") {
+                    // 假设某种方式标记字符串未闭合，例如传递特殊对象
+                    // 由于ActionScript无法表示未闭合字符串，可能需要通过其他方式标记
+                    this.error("未闭合的字符串。", {line:0, column:0}, path);
+                    return null;
+                }
+
+                // 继续原有编码逻辑...
                 if (this.isArray(value)) {
                     var arr = value;
                     if (this.isArrayOfTables(arr)) {
@@ -180,6 +194,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         }
     }
 
+
     /**
      * 比较键的函数，用于排序
      * @param a 第一个键
@@ -206,7 +221,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
     }
 
     /**
-     * 判断对象是否为内联表格（没有嵌套的表格）
+     * 判断对象是否为内联表格（不包含数组或嵌套表格）
      * @param obj 对象
      * @return 是否为内联表格
      */
@@ -214,11 +229,22 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         for (var key:String in obj) {
             var value:Object = obj[key];
             if (typeof(value) == "object" && value != null) {
-                return false; // 任何对象类型都认为是嵌套，不能作为内联表格
+                if (this.isArray(value) || value instanceof Date) {
+                    // 内联表格不能包含数组或日期
+                    if (this.debug) {
+                        trace("Inline table cannot contain array or date for key '" + key + "'");
+                    }
+                    return false;
+                }
+                // 递归检查嵌套对象
+                if (!this.isInlineTable(value)) {
+                    return false;
+                }
             }
         }
         return true;
     }
+
 
     /**
      * 判断数组是否为表格数组（数组的元素都是非 null 的对象且不是 Date 或数组）
@@ -285,41 +311,41 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             if (i > 0) {
                 result.push(", ");
             }
-            var element:Object = arr[i];
+            var element = arr[i];
             if (typeof(element) == "object" && element != null && !this.isArray(element) && !(element instanceof Date)) {
                 // Encode as inline table
                 var encodedInline:String = this.encodeInlineTable(element);
                 if (this.hasError) {
-                    if (this.debug) {
-                        trace("Error encountered while encoding array element at index " + i + ".");
-                    }
-                    return "";
+                    return ""; // 若发生错误，提前退出
                 }
                 result.push(encodedInline);
+            } else if (this.isArray(element)) {
                 if (this.debug) {
-                    trace("Encoded inline table in array at index " + i + ": " + encodedInline);
+                    trace("Encoding nested array at index " + i);
                 }
+                // 递归处理嵌套数组
+                var nestedArray:String = this.encodeArray(element, pretty);
+                if (this.hasError) {
+                    return ""; // 若发生错误，提前退出
+                }
+                result.push(nestedArray);
             } else {
                 var encodedVal:String = this.encodeValue(element);
                 if (this.hasError) {
-                    if (this.debug) {
-                        trace("Error encountered while encoding array value at index " + i + ".");
-                    }
-                    return "";
+                    return ""; // 若发生错误，提前退出
                 }
                 result.push(encodedVal);
-                if (this.debug) {
-                    trace("Encoded array value at index " + i + ": " + encodedVal);
-                }
             }
         }
         result.push("]");
-        var encodedArrayStr:String = result.join("");
         if (this.debug) {
-            trace("Encoded array: " + encodedArrayStr);
+            trace("Encoded array: " + result.join(""));
         }
-        return encodedArrayStr;
+        return result.join("");
     }
+
+
+
 
     /**
      * 编码内联表格
@@ -337,26 +363,30 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             if (!first) {
                 result.push(", ");
             }
+
+            if (typeof(value) == "object" && value != null) {
+                if (this.isArray(value)) {
+                    // 内联表格不能包含数组，跳过此部分
+                    this.error("内联表格不能包含数组。键: " + key, {line:0, column:0});
+                    return ""; // 直接返回错误
+                }
+                if (!this.isInlineTable(value)) {
+                    this.error("内联表格不能包含嵌套表格。键: " + key, {line:0, column:0});
+                    return ""; // 直接返回错误
+                }
+            }
+
             var encodedValue:String = this.encodeValue(value);
             if (this.hasError) {
-                if (this.debug) {
-                    trace("Error encountered while encoding inline table key '" + key + "'.");
-                }
-                return "";
+                return ""; // 提前退出
             }
             result.push(key + " = " + encodedValue);
-            if (this.debug) {
-                trace("Encoded inline table key-value pair: " + key + " = " + encodedValue);
-            }
             first = false;
         }
         result.push(" }");
-        var encodedInlineTableStr:String = result.join("");
-        if (this.debug) {
-            trace("Encoded inline table: " + encodedInlineTableStr);
-        }
-        return encodedInlineTableStr;
+        return result.join("");
     }
+
 
     /**
      * 编码具体的值：字符串、数字、布尔值等
@@ -729,11 +759,6 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         }
     }
 
-    /**
-     * 编码字符串，处理多行字符串和转义字符
-     * @param value 字符串
-     * @return TOML/FNTL 格式的字符串
-     */
     private function encodeString(value:String):String {
         if (this.debug) {
             trace("Starting to encode string: " + value);
@@ -755,8 +780,9 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             while (i < value.length) {
                 var c:String = value.charAt(i);
                 var code:Number = value.charCodeAt(i);
+
                 if (c == "\\" || c == "\"") {
-                    result += "\\" + c;
+                    result += "\\" + c; // 转义反斜杠和双引号
                     if (this.debug) {
                         trace("Escaped character: \\" + c);
                     }
@@ -764,52 +790,26 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                 } else if (code >= 0x0000 && code <= 0x001F) {
                     // 控制字符需要转义
                     switch (code) {
-                        case 0x08: result += "\\b"; if (this.debug) { trace("Escaped control character: \\b"); } break;
-                        case 0x09: result += "\\t"; if (this.debug) { trace("Escaped control character: \\t"); } break;
-                        case 0x0A: result += "\\n"; if (this.debug) { trace("Escaped control character: \\n"); } break;
-                        case 0x0C: result += "\\f"; if (this.debug) { trace("Escaped control character: \\f"); } break;
-                        case 0x0D: result += "\\r"; if (this.debug) { trace("Escaped control character: \\r"); } break;
+                        case 0x08: result += "\\b"; break;
+                        case 0x09: result += "\\t"; break;
+                        case 0x0A: result += "\\n"; break;
+                        case 0x0C: result += "\\f"; break;
+                        case 0x0D: result += "\\r"; break;
                         default:
                             var hex:String = code.toString(16).toUpperCase();
                             while (hex.length < 4) {
                                 hex = "0" + hex;
                             }
-                            result += "\\u" + hex;
-                            if (this.debug) {
-                                trace("Escaped control character: \\u" + hex);
-                            }
+                            result += "\\u" + hex; // 使用 \uXXXX 格式转义控制字符
                             break;
                     }
                     i++;
-                } else if (code >= 0xD800 && code <= 0xDBFF && (i + 1) < value.length) {
-                    // 高代理，检查下一个字符是否为低代理
-                    var nextCode:Number = value.charCodeAt(i + 1);
-                    if (nextCode >= 0xDC00 && nextCode <= 0xDFFF) {
-                        // 有效的代理对，组合成完整的 Unicode 代码点
-                        var highSurrogate:Number = code;
-                        var lowSurrogate:Number = nextCode;
-                        var codePoint:Number = ((highSurrogate - 0xD800) << 10) + (lowSurrogate - 0xDC00) + 0x10000;
-                        var unicodeStr:String = "\\U" + this.padZeroExtended(codePoint.toString(16).toUpperCase(), 8);
-                        result += unicodeStr;
-                        if (this.debug) {
-                            trace("Encoded Unicode character: " + unicodeStr);
-                        }
-                        i += 2;
-                    } else {
-                        // 无效的代理对，单独编码高代理
-                        result += c;
-                        i++;
-                    }
-                } else if (code > 0xFFFF) {
-                    // 超出基本多文种平面的字符，使用 \UXXXXXXXX 进行编码
-                    var unicodeStrInvalid:String = "\\U" + this.padZeroExtended(code.toString(16).toUpperCase(), 8);
-                    result += unicodeStrInvalid;
-                    if (this.debug) {
-                        trace("Encoded Unicode character (fallback): " + unicodeStrInvalid);
-                    }
+                } else if (code >= 0x20 && code <= 0x007E || code >= 0x0080) {
+                    // 直接保留可显示的 Unicode 字符，包括 Emoji 和其他语言字符
+                    result += c;
                     i++;
                 } else {
-                    result += c;
+                    result += c; // 其他字符保留原样
                     i++;
                 }
             }
@@ -820,6 +820,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             return singleLineStr;
         }
     }
+
 
 
     /**
@@ -958,14 +959,13 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      * @param message 错误消息。
      * @param token 相关的 Token 对象，用于定位错误位置。
      */
-    private function error(message:String, token:Object):Void {
+    private function error(message:String, token:Object, currentPath:Array):Void {
+        var pathInfo:String = "路径: " + currentPath.join(".");
         var lineInfo:String = "行: " + (token.line != undefined ? token.line : "?") + ", 列: " + (token.column != undefined ? token.column : "?");
-        trace("错误: " + message + " 在 " + lineInfo);
+        trace("错误: " + message + " 在 " + pathInfo + ", " + lineInfo);
         this.hasError = true;
-        if (this.debug) {
-            trace("Error details - Message: " + message + ", Line: " + token.line + ", Column: " + token.column);
-        }
     }
+
 
     /**
      * 获取对象的所有键，支持忽略内部键

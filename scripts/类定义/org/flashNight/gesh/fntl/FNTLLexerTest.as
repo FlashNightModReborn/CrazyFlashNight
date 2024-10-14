@@ -1117,7 +1117,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
      */
     private function getEncoderTestCases():Array {
         var cases:Array = new Array();
-
+        
         // ==========================
         // 基础键值对编码测试
         // ==========================
@@ -1239,10 +1239,13 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
                 }
             ]
         };
+
+        // 修正后的预期输出
         testCase8.expected = '[[servers]]\n' +
-                              'database = { enabled = true, port = 3306, type = "MySQL" }\n' +
-                              'ip = "10.0.0.1"\n' +
-                              'name = "Server1"\n';
+                            'database = { port = 3306, settings = { enabled = true }, type = "MySQL" }\n' +
+                            'ip = "10.0.0.1"\n' +
+                            'name = "Server1"\n';
+
         testCase8.description = "编码嵌套的表数组。";
         cases.push(testCase8);
 
@@ -1309,20 +1312,21 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         // 错误输入编码测试
         // ==========================
         // Test case 13: Missing equals sign
+        // Test case 13: 缺少等号的错误输入
         var testCase13:Object = new Object();
         testCase13.input = {
             invalid_line: "No equals sign"
         };
-        testCase13.expected = null; // Encoder should skip or handle invalid entries
+        testCase13.expected = null; // Encoder 应该跳过或处理此类无效输入
         testCase13.description = "编码缺少等号的错误输入。";
         cases.push(testCase13);
 
-        // Test case 14: Unclosed string
+        // Test case 14: 未闭合字符串的错误输入
         var testCase14:Object = new Object();
         testCase14.input = {
             unclosed_string: "This string never ends..."
         };
-        testCase14.expected = null; // Encoder should handle invalid strings appropriately
+        testCase14.expected = null; // Encoder 应该适当地处理未闭合的字符串
         testCase14.description = "编码未闭合字符串的错误输入。";
         cases.push(testCase14);
 
@@ -1336,28 +1340,19 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         cases.push(testCase15);
 
         // ==========================
-        // 项目特定的复杂结构编码测试
+        // Test Case 16: 编码项目特定的复杂结构，包括Unicode字符和嵌套表数组。
         // ==========================
-        // Test case 16: Project-specific complex structure
         var testCase16:Object = new Object();
-        testCase16.input = new Object();
 
-        // 设置 task_chains_progress
+        // 设置输入
+        testCase16.input = new Object();
         testCase16.input.task_chains_progress = new Object();
         testCase16.input.task_chains_progress["主线"] = "1";
-
-        // 设置 task_history
         testCase16.input.task_history = new Array();
         testCase16.input.task_history.push(0);
-
-        // 设置 tasks_finished
         testCase16.input.tasks_finished = new Object();
         testCase16.input.tasks_finished["0"] = 1;
-
-        // 设置 test 数组
         testCase16.input.test = new Array();
-
-        // 创建嵌套数组
         var testItem1:Array = new Array();
         testItem1.push("fs");
         testItem1.push("男");
@@ -1369,69 +1364,48 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testItem1.push("新手");
         testItem1.push(50000);
         testItem1.push(500000);
-
-        // 创建内部的按键数组
         var keys:Array = new Array();
         keys.push(new Array("上键", "上键", 87));
         keys.push(new Array("下键", "下键", 83));
         keys.push(new Array("左键", "左键", 65));
         keys.push(new Array("右键", "右键", 68));
-
-        // 将按键数组添加到 testItem1
         testItem1.push(keys);
-
-        // 将 testItem1 添加到 test 数组中
+        testItem1.push("测试"); // 将 "测试" 添加到内层数组
         testCase16.input.test.push(testItem1);
-
-        // 添加 "测试" 字符串到 test 数组中
-        testCase16.input.test.push("测试");
-
-        // 设置商城已购买物品和战宠
         testCase16.input["商城已购买物品"] = new Array();
         testCase16.input["战宠"] = new Array();
         testCase16.input["战宠"].push(new Array());
-
-        // 设置 tasks_to_do 数组
         testCase16.input.tasks_to_do = new Array();
-
-        // 创建第一个任务对象
         var task1:Object = new Object();
         task1.id = 1;
-
-        // 设置 requirements 对象
         task1.requirements = new Object();
         task1.requirements.items = new Array(); // 空数组
-
-        // 设置 stages 数组
         task1.requirements.stages = new Array();
-
-        // 创建第一个 stage 对象
         var stage1:Object = new Object();
         stage1.difficulty = "简单";
         stage1.name = "测试任务";
-
-        // 将 stage1 添加到 stages 数组
         task1.requirements.stages.push(stage1);
-
-        // 将 task1 添加到 tasks_to_do 数组
         testCase16.input.tasks_to_do.push(task1);
-        testCase16.expected = '[[tasks_to_do]]\n' +
-                               'id = 1\n' +
-                               '[tasks_to_do.requirements]\n' +
-                               'items = []\n' +
-                               '[[tasks_to_do.requirements.stages]]\n' +
-                               'difficulty = "简单"\n' +
-                               'name = "测试任务"\n' +
-                               'task_chains_progress = { 主线 = "1" }\n' +
-                               'task_history = [0]\n' +
-                               'tasks_finished = { 0 = 1 }\n' +
-                               'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
-                               '"上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]]], "测试"]]\n' +
-                               '商城已购买物品 = []\n' +
-                               '战宠 = [[]]\n';
+
+        // 修正后的预期输出，按照键的字母顺序，并移除多余的右括号
+        testCase16.expected = 
+            'task_chains_progress = { 主线 = "1" }\n' +
+            'task_history = [0]\n' +
+            'tasks_finished = { 0 = 1 }\n' +
+            'test = [["fs", "男", 1000, 50, 1000000, 175, 300, "新手", 50000, 500000, [[' +
+            '"上键", "上键", 87], ["下键", "下键", 83], ["左键", "左键", 65], ["右键", "右键", 68]], "测试"]]\n' +
+            '商城已购买物品 = []\n' +
+            '战宠 = [[]]\n' +
+            '[[tasks_to_do]]\n' +
+            'id = 1\n' +
+            '[tasks_to_do.requirements]\n' +
+            'items = []\n' +
+            '[[tasks_to_do.requirements.stages]]\n' +
+            'difficulty = "简单"\n' +
+            'name = "测试任务"\n';
+
         testCase16.description = "编码项目特定的复杂结构，包括Unicode字符和嵌套表数组。";
         cases.push(testCase16);
-
         return cases;
     }
 
