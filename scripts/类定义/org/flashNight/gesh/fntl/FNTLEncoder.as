@@ -50,7 +50,8 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             trace("Starting encoding process.");
         }
 
-        stack.push({ object: obj, path: currentPath, depth: 0, isArrayElement: false });
+        // 初始状态入栈
+        stack.push({ object: obj, path: currentPath, depth: 0, isArrayElement: false, indent: "" });
 
         while (stack.length > 0) {
             var state:Object = stack.pop();
@@ -58,22 +59,23 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             var path:Array = state.path;
             var depth:Number = state.depth;
             var isArrayElement:Boolean = state.isArrayElement || false;
+            var indent:String = state.indent;
 
             if (depth > this.MAX_RECURSION_DEPTH) {
                 this.error("递归深度超过限制 (" + this.MAX_RECURSION_DEPTH + ")，路径: " + path.join("."), {line:0, column:0}, path);
                 return null;
             }
 
-            // 输出表格头
+            // 输出表格头，根据是否为数组元素，处理不同的表格头类型
             if (isArrayElement) {
-                var tableArrayHeader:String = this.buildTableArrayHeader(path);
-                result.push(tableArrayHeader);
+                var tableArrayHeader:String = this.buildTableArrayHeader(path, indent);
+                result.push(encodeWithIndent(tableArrayHeader, indent));
                 if (this.debug) {
                     trace("Encoded table array header: " + tableArrayHeader);
                 }
             } else if (path.length > 0) {
-                var tableHeader:String = this.buildTableHeader(path);
-                result.push(tableHeader);
+                var tableHeader:String = this.buildTableHeader(path, indent);
+                result.push(encodeWithIndent(tableHeader, indent));
                 if (this.debug) {
                     trace("Encoded table header: " + tableHeader);
                 }
@@ -96,20 +98,18 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                     trace("Encoding key: " + key + ", Value: " + ObjectUtil.toString(value));
                 }
 
-                // 添加特定键的错误检测
+                // 错误处理部分
                 if (key == "invalid_line") {
                     this.error("缺少等号的错误输入。", {line:0, column:0}, path);
                     return null;
                 }
 
                 if (key == "unclosed_string") {
-                    // 假设某种方式标记字符串未闭合，例如传递特殊对象
-                    // 由于ActionScript无法表示未闭合字符串，可能需要通过其他方式标记
                     this.error("未闭合的字符串。", {line:0, column:0}, path);
                     return null;
                 }
 
-                // 继续原有编码逻辑...
+                // 继续处理数组
                 if (this.isArray(value)) {
                     var arr = value;
                     if (this.isArrayOfTables(arr)) {
@@ -120,21 +120,21 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                         for (var i:Number = arr.length - 1; i >= 0; i--) {
                             var tableObj:Object = arr[i];
                             var arrayPath:Array = path.concat([key]);
-                            stack.push({ object: tableObj, path: arrayPath, depth: depth + 1, isArrayElement: true });
+                            stack.push({ object: tableObj, path: arrayPath, depth: depth + 1, isArrayElement: true, indent: indent + "    " });
                             if (this.debug) {
                                 trace("Pushed table array element at index " + i + " to stack.");
                             }
                         }
                     } else {
-                        // 普通数组处理
-                        var encodedArray:String = this.encodeArray(arr, pretty);
+                        // 普通数组处理，考虑缩进和美化
+                        var encodedArray:String = this.encodeArray(arr, pretty, indent + "    ");
                         if (this.hasError) {
                             if (this.debug) {
                                 trace("Error encountered while encoding array for key '" + key + "'.");
                             }
                             return null;
                         }
-                        result.push(key + " = " + encodedArray);
+                        result.push(encodeWithIndent(key + " = " + encodedArray, indent));
                         if (this.debug) {
                             trace("Encoded array for key '" + key + "': " + encodedArray);
                         }
@@ -142,28 +142,28 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                 } else if (typeof(value) == "object" && value != null && !(value instanceof Date)) {
                     if (this.isInlineTable(value)) {
                         // 编码为内联表格
-                        var encodedInlineTable:String = this.encodeInlineTable(value);
+                        var encodedInlineTable:String = this.encodeInlineTable(value, pretty, indent + "    ");
                         if (this.hasError) {
                             if (this.debug) {
                                 trace("Error encountered while encoding inline table for key '" + key + "'.");
                             }
                             return null;
                         }
-                        result.push(key + " = " + encodedInlineTable);
+                        result.push(encodeWithIndent(key + " = " + encodedInlineTable, indent));
                         if (this.debug) {
                             trace("Encoded inline table for key '" + key + "': " + encodedInlineTable);
                         }
                     } else {
                         // 将嵌套对象作为独立表格处理
                         var newPath:Array = path.concat([key]);
-                        stack.push({ object: value, path: newPath, depth: depth + 1, isArrayElement: false });
+                        stack.push({ object: value, path: newPath, depth: depth + 1, isArrayElement: false, indent: indent + "    " });
                         if (this.debug) {
                             trace("Pushed nested object for key '" + key + "' to stack with path '" + newPath.join(".") + "'.");
                         }
-                        continue; // 不在当前表格中编码此键
+                        continue;
                     }
                 } else {
-                    // 普通键值对处理，不添加缩进
+                    // 普通键值对处理
                     var encodedValue:String = this.encodeValue(value);
                     if (this.hasError) {
                         if (this.debug) {
@@ -171,7 +171,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                         }
                         return null;
                     }
-                    result.push(key + " = " + encodedValue);
+                    result.push(encodeWithIndent(key + " = " + encodedValue, indent));
                     if (this.debug) {
                         trace("Encoded key-value pair: " + key + " = " + encodedValue);
                     }
@@ -193,6 +193,7 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             return encodedResult;
         }
     }
+
 
 
     /**
@@ -305,26 +306,23 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      * @param pretty 是否进行美化输出
      * @return TOML/FNTL 格式的数组字符串
      */
-    private function encodeArray(arr:Array, pretty:Boolean):String {
+    private function encodeArray(arr:Array, pretty:Boolean, indent:String):String {
         var result:Array = ["["];
         for (var i:Number = 0; i < arr.length; i++) {
             if (i > 0) {
-                result.push(", ");
+                result.push(pretty ? ",\n" + indent : ", ");
             }
             var element = arr[i];
             if (typeof(element) == "object" && element != null && !this.isArray(element) && !(element instanceof Date)) {
-                // Encode as inline table
-                var encodedInline:String = this.encodeInlineTable(element);
+                // 内联表格处理
+                var encodedInline:String = this.encodeInlineTable(element, pretty, indent + "    ");
                 if (this.hasError) {
                     return ""; // 若发生错误，提前退出
                 }
                 result.push(encodedInline);
             } else if (this.isArray(element)) {
-                if (this.debug) {
-                    trace("Encoding nested array at index " + i);
-                }
                 // 递归处理嵌套数组
-                var nestedArray:String = this.encodeArray(element, pretty);
+                var nestedArray:String = this.encodeArray(element, pretty, indent + "    ");
                 if (this.hasError) {
                     return ""; // 若发生错误，提前退出
                 }
@@ -338,9 +336,6 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             }
         }
         result.push("]");
-        if (this.debug) {
-            trace("Encoded array: " + result.join(""));
-        }
         return result.join("");
     }
 
@@ -349,41 +344,46 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
 
     /**
      * 编码内联表格
-     * @param table 对象
+     * @param table 要编码的对象
+     * @param pretty 是否进行美化
+     * @param indent 当前缩进
      * @return TOML/FNTL 格式的内联表格字符串
      */
-    private function encodeInlineTable(table:Object):String {
+    private function encodeInlineTable(table:Object, pretty:Boolean, indent:String):String {
         var result:Array = ["{ "];
         var keys:Array = this.getKeys(table);
         keys = QuickSort.adaptiveSort(keys, this.compareKeys);
         var first:Boolean = true;
+        
         for (var keyIndex:Number = 0; keyIndex < keys.length; keyIndex++) {
             var key:String = keys[keyIndex];
             var value:Object = table[key];
+            
             if (!first) {
-                result.push(", ");
+                result.push(pretty ? ",\n" + indent + "    " : ", ");
             }
 
+            // 检查值是否为对象或数组，避免递归嵌套
             if (typeof(value) == "object" && value != null) {
                 if (this.isArray(value)) {
-                    // 内联表格不能包含数组，跳过此部分
                     this.error("内联表格不能包含数组。键: " + key, {line:0, column:0});
-                    return ""; // 直接返回错误
+                    return ""; // 若发生错误，直接返回
                 }
                 if (!this.isInlineTable(value)) {
                     this.error("内联表格不能包含嵌套表格。键: " + key, {line:0, column:0});
-                    return ""; // 直接返回错误
+                    return ""; // 若发生错误，直接返回
                 }
             }
 
             var encodedValue:String = this.encodeValue(value);
             if (this.hasError) {
-                return ""; // 提前退出
+                return ""; // 若发生错误，提前退出
             }
             result.push(key + " = " + encodedValue);
             first = false;
         }
-        result.push(" }");
+
+        result.push(pretty ? " }" : "}");
         return result.join("");
     }
 
@@ -759,14 +759,18 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         }
     }
 
+    /**
+     * 编码字符串
+     * @param value 字符串值
+     * @return 编码后的字符串
+     */
     private function encodeString(value:String):String {
         if (this.debug) {
             trace("Starting to encode string: " + value);
         }
 
-        // 检查是否为多行字符串
         if (value.indexOf("\n") != -1 || value.indexOf("\r") != -1) {
-            // 使用多行字符串，转义内部的三引号
+            // 处理多行字符串
             var escapedValueMultiline:String = value.split('"""').join('\\"""');
             var multilineStr:String = '"""' + escapedValueMultiline + '"""';
             if (this.debug) {
@@ -774,21 +778,15 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             }
             return multilineStr;
         } else {
-            // 单行字符串，处理必要的转义
+            // 处理单行字符串
             var result:String = "";
-            var i:Number = 0;
-            while (i < value.length) {
+            for (var i:Number = 0; i < value.length; i++) {
                 var c:String = value.charAt(i);
                 var code:Number = value.charCodeAt(i);
-
                 if (c == "\\" || c == "\"") {
                     result += "\\" + c; // 转义反斜杠和双引号
-                    if (this.debug) {
-                        trace("Escaped character: \\" + c);
-                    }
-                    i++;
                 } else if (code >= 0x0000 && code <= 0x001F) {
-                    // 控制字符需要转义
+                    // 控制字符转义
                     switch (code) {
                         case 0x08: result += "\\b"; break;
                         case 0x09: result += "\\t"; break;
@@ -803,23 +801,14 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                             result += "\\u" + hex; // 使用 \uXXXX 格式转义控制字符
                             break;
                     }
-                    i++;
-                } else if (code >= 0x20 && code <= 0x007E || code >= 0x0080) {
-                    // 直接保留可显示的 Unicode 字符，包括 Emoji 和其他语言字符
-                    result += c;
-                    i++;
                 } else {
-                    result += c; // 其他字符保留原样
-                    i++;
+                    result += c;
                 }
             }
-            var singleLineStr:String = '"' + result + '"';
-            if (this.debug) {
-                trace("Encoded single-line string: " + singleLineStr);
-            }
-            return singleLineStr;
+            return '"' + result + '"';
         }
     }
+
 
 
 
@@ -845,57 +834,31 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      * @param date Date 对象
      * @return TOML/FNTL 格式的日期时间字符串
      */
-    private function encodeDate(date:Object):String {
+    private function encodeDate(date:Date):String {
         var year:String = String(date.getFullYear());
         var month:String = this.padZero(date.getMonth() + 1);
         var day:String = this.padZero(date.getDate());
         var hours:String = this.padZero(date.getHours());
         var minutes:String = this.padZero(date.getMinutes());
         var seconds:String = this.padZero(date.getSeconds());
-        
-        // 处理分数秒
+
         var milliseconds:Number = date.getMilliseconds();
         var fractional:String = milliseconds > 0 ? "." + this.padZeroFraction(milliseconds) : "";
-        
-        // 获取时区信息（假设为本地时区，转换为 ISO8601 格式）
-        var timezoneOffset:Number = -date.getTimezoneOffset(); // 分钟为单位
+
+        // 处理时区偏移
+        var timezoneOffset:Number = -date.getTimezoneOffset();
         var tzSign:String = timezoneOffset >= 0 ? "+" : "-";
         var tzHours:Number = Math.floor(Math.abs(timezoneOffset) / 60);
         var tzMinutes:Number = Math.abs(timezoneOffset) % 60;
         var timezoneSuffix:String = tzSign + this.padZero(tzHours) + ":" + this.padZero(tzMinutes);
-        
-        var encodedDateStr:String = year + "-" + month + "-" + day + "T" + hours + ":" + minutes + ":" + seconds + fractional + timezoneSuffix;
-        if (this.debug) {
-            trace("Encoded Date: " + encodedDateStr);
-        }
-        return encodedDateStr;
+
+        return year + "-" + month + "-" + day + "T" + hours + ":" + minutes + ":" + seconds + fractional + timezoneSuffix;
     }
 
-    /**
-     * 辅助函数：在小于10的数值前添加前导零
-     * @param value 数值
-     * @return 格式化后的字符串
-     */
-    private function padZero(value:Number):String {
-        return value < 10 ? "0" + value : String(value);
-    }
+
 
     /**
-     * 辅助函数：在分数秒前添加前导零以确保三位数
-     * @param milliseconds 数值
-     * @return 格式化后的分数秒字符串
-     */
-    private function padZeroFraction(milliseconds:Number):String {
-        var fraction:String = String(milliseconds);
-        while (fraction.length < 3) {
-            fraction = "0" + fraction;
-        }
-        return fraction;
-    }
-
-    /**
-     * 获取对象的所有键，忽略内部键（如 __dictUID）
-     * 并记录对内部键的警告
+     * 获取对象的所有键，支持忽略内部键
      * @param obj 对象
      * @return 键数组
      */
@@ -905,14 +868,14 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             if (!this.isInternalKey(key)) {
                 keys.push(key);
             } else {
-                trace("警告: 忽略内部键: " + key);
                 if (this.debug) {
                     trace("Internal key '" + key + "' is ignored.");
                 }
             }
         }
-        return keys;
+        return QuickSort.adaptiveSort(keys, this.compareKeys);
     }
+
 
     /**
      * 判断是否为内部键（如 __dictUID）
@@ -976,4 +939,90 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         var keys:Array = this.getKeys(obj);
         return QuickSort.adaptiveSort(keys, this.compareKeys);
     }
+
+    /**
+     * 获取当前递归深度的缩进字符串。
+     * @param level 当前递归深度。
+     * @return 缩进字符串。
+     */
+    private function getIndent(level:Number):String {
+        var indent:String = "";
+        for (var i:Number = 0; i < level; i++) {
+            indent += "    "; // 每层缩进4个空格
+        }
+        return indent;
+    }
+
+    /**
+     * 带缩进的编码输出辅助函数。
+     * @param content 要输出的内容。
+     * @param indent 当前缩进。
+     * @return 加入缩进后的字符串。
+     */
+    private function encodeWithIndent(content:String, indent:String):String {
+        return indent + content;
+    }
+
+
+    /**
+     * 格式化数组元素，根据是否启用美化决定是否换行和缩进。
+     * @param element 当前数组元素。
+     * @param pretty 是否启用美化。
+     * @param indent 当前缩进。
+     * @return 格式化后的数组元素字符串。
+     */
+    private function formatArrayElement(element:String, pretty:Boolean, indent:String):String {
+        if (pretty) {
+            return "\n" + indent + element;
+        } else {
+            return element;
+        }
+    }
+
+    /**
+     * 在数字前添加前导零以保证两位数格式。
+     * @param value 数值。
+     * @return 带前导零的两位数字符串。
+     */
+    private function padZero(value:Number):String {
+        return value < 10 ? "0" + value : String(value);
+    }
+
+    /**
+     * 在小数部分前添加前导零以保证三位数格式。
+     * @param milliseconds 数值。
+     * @return 带前导零的三位数字符串。
+     */
+    private function padZeroFraction(milliseconds:Number):String {
+        var fraction:String = String(milliseconds);
+        while (fraction.length < 3) {
+            fraction = "0" + fraction;
+        }
+        return fraction;
+    }
+
+    /**
+     * 将多行内容拼接为带缩进的输出。
+     * @param lines 多行内容数组。
+     * @param indent 缩进。
+     * @param pretty 是否启用美化。
+     * @return 拼接后的字符串。
+     */
+    private function joinLinesWithIndent(lines:Array, indent:String, pretty:Boolean):String {
+        if (pretty) {
+            return indent + lines.join("\n" + indent);
+        } else {
+            return lines.join(", ");
+        }
+    }
+
+    /**
+     * 如果启用美化输出，添加换行符。
+     * @param pretty 是否启用美化。
+     * @return 换行符（如果启用美化）。
+     */
+    private function encodeNewline(pretty:Boolean):String {
+        return pretty ? "\n" : "";
+    }
+
 }

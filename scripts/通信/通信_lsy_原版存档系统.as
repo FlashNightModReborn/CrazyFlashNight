@@ -199,7 +199,7 @@ _root.本地存盘 = function() {
    if(_root.调试模式 === true)
    {
       // Convert the saved object to FNTL format for testing and display purposes
-      var FNTL = ObjectUtil.toFNTL(mysave.data);  // Serialize saved data to FNTL
+      var FNTL = ObjectUtil.toFNTL(mysave.data, true);  // Serialize saved data to FNTL
 
       // Step 1: Create a text field for displaying the FNTL data
       if (!_root.saveDataField) {
