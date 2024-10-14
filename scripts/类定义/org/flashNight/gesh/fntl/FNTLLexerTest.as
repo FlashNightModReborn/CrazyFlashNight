@@ -21,7 +21,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     private var totalTests:Number = 0;
     private var passedTests:Number = 0;
     private var failedTests:Number = 0;
-    private var debug:Boolean = true; // 调试日志开关
+    private var debug:Boolean = false; // 调试日志开关
 
     /**
      * Runs all the test cases for FNTLLexer, FNTLParser, and FNTLEncoder.
@@ -1117,7 +1117,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
      */
     private function getEncoderTestCases():Array {
         var cases:Array = new Array();
-        
+
         // ==========================
         // 基础键值对编码测试
         // ==========================
