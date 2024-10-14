@@ -3,6 +3,7 @@ import org.flashNight.gesh.string.*;
 import org.flashNight.gesh.fntl.*;
 import org.flashNight.naki.Sort.QuickSort;
 import org.flashNight.gesh.regexp.RegExp;
+
 /**
  * FNTLEncoder class upgraded to support FNTL (FlashNight Text Language).
  * Enhancements include:
@@ -14,30 +15,41 @@ import org.flashNight.gesh.regexp.RegExp;
  * - Improved error handling with localized messages
  * - Logging warnings for internal keys
  */
-
 class org.flashNight.gesh.fntl.FNTLEncoder {
     
     private var MAX_RECURSION_DEPTH:Number = 256; // 递归深度限制
     private var tableHeaderCache:Object = {};      // 缓存表格头
     private var tableArrayHeaderCache:Object = {}; // 缓存表格数组头
+    private var hasError:Boolean = false;          // 错误标志
+    private var debug:Boolean = false;             // 调试模式标志
 
-    // 构造函数
-    public function FNTLEncoder() {
-        // 无需初始化缩进级别
+    /**
+     * 构造函数
+     * @param debugMode 是否启用调试模式
+     */
+    public function FNTLEncoder(debugMode:Boolean) {
+        this.debug = debugMode;
+        if (this.debug) {
+            trace("FNTLEncoder initialized in DEBUG mode.");
+        }
     }
 
     /**
      * 编码 AS2 对象为 TOML/FNTL 格式字符串
      * @param obj 要编码的对象
-     * @param pretty 是否进行美化输出
-     * @return TOML/FNTL 格式的字符串
+     * @param pretty 是否进行美化输出（目前未实现）
+     * @return TOML/FNTL 格式的字符串，或 null（如果有错误）
      */
     public function encode(obj:Object, pretty:Boolean):String {
-        var result:Array = []; // 使用数组来高效拼接字符串
-        var stack:Array = []; // 堆栈用于迭代处理
-        var currentPath:Array = []; // 跟踪当前表格路径
+        var result:Array = [];
+        var stack:Array = [];
+        var currentPath:Array = [];
+        this.hasError = false; // 重置错误标志
 
-        // 初始化堆栈，包含顶层对象和路径
+        if (this.debug) {
+            trace("Starting encoding process.");
+        }
+
         stack.push({ object: obj, path: currentPath, depth: 0, isArrayElement: false });
 
         while (stack.length > 0) {
@@ -48,56 +60,124 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             var isArrayElement:Boolean = state.isArrayElement || false;
 
             if (depth > this.MAX_RECURSION_DEPTH) {
-                throw new Error("递归深度超过限制 (" + this.MAX_RECURSION_DEPTH + ")，路径: " + path.join("."));
+                this.error("递归深度超过限制 (" + this.MAX_RECURSION_DEPTH + ")，路径: " + path.join("."), {line:0, column:0});
+                return null;
             }
 
             // 输出表格头
             if (isArrayElement) {
                 var tableArrayHeader:String = this.buildTableArrayHeader(path);
                 result.push(tableArrayHeader);
+                if (this.debug) {
+                    trace("Encoded table array header: " + tableArrayHeader);
+                }
             } else if (path.length > 0) {
                 var tableHeader:String = this.buildTableHeader(path);
                 result.push(tableHeader);
+                if (this.debug) {
+                    trace("Encoded table header: " + tableHeader);
+                }
             }
 
             // 获取并排序键
             var keys:Array = this.getKeys(currentObject);
             keys = QuickSort.adaptiveSort(keys, this.compareKeys);
 
+            if (this.debug) {
+                trace("Processing keys for path '" + path.join(".") + "': " + keys.join(", "));
+            }
+
             // 处理当前对象的每个键值对
             for (var keyIndex:Number = 0; keyIndex < keys.length; keyIndex++) {
                 var key:String = keys[keyIndex];
                 var value:Object = currentObject[key];
 
+                if (this.debug) {
+                    trace("Encoding key: " + key + ", Value: " + ObjectUtil.toString(value));
+                }
+
                 if (this.isArray(value)) {
                     var arr = value;
                     if (this.isArrayOfTables(arr)) {
                         // 表格数组处理，逆序添加到堆栈中以保持顺序
+                        if (this.debug) {
+                            trace("Key '" + key + "' is identified as an array of tables.");
+                        }
                         for (var i:Number = arr.length - 1; i >= 0; i--) {
                             var tableObj:Object = arr[i];
                             var arrayPath:Array = path.concat([key]);
                             stack.push({ object: tableObj, path: arrayPath, depth: depth + 1, isArrayElement: true });
+                            if (this.debug) {
+                                trace("Pushed table array element at index " + i + " to stack.");
+                            }
                         }
                     } else {
                         // 普通数组处理
                         var encodedArray:String = this.encodeArray(arr, pretty);
+                        if (this.hasError) {
+                            if (this.debug) {
+                                trace("Error encountered while encoding array for key '" + key + "'.");
+                            }
+                            return null;
+                        }
                         result.push(key + " = " + encodedArray);
+                        if (this.debug) {
+                            trace("Encoded array for key '" + key + "': " + encodedArray);
+                        }
                     }
                 } else if (typeof(value) == "object" && value != null && !(value instanceof Date)) {
-                    // 将嵌套对象作为独立表格处理
-                    var newPath:Array = path.concat([key]);
-                    stack.push({ object: value, path: newPath, depth: depth + 1, isArrayElement: false });
-                    continue; // 不在当前表格中编码此键
+                    if (this.isInlineTable(value)) {
+                        // 编码为内联表格
+                        var encodedInlineTable:String = this.encodeInlineTable(value);
+                        if (this.hasError) {
+                            if (this.debug) {
+                                trace("Error encountered while encoding inline table for key '" + key + "'.");
+                            }
+                            return null;
+                        }
+                        result.push(key + " = " + encodedInlineTable);
+                        if (this.debug) {
+                            trace("Encoded inline table for key '" + key + "': " + encodedInlineTable);
+                        }
+                    } else {
+                        // 将嵌套对象作为独立表格处理
+                        var newPath:Array = path.concat([key]);
+                        stack.push({ object: value, path: newPath, depth: depth + 1, isArrayElement: false });
+                        if (this.debug) {
+                            trace("Pushed nested object for key '" + key + "' to stack with path '" + newPath.join(".") + "'.");
+                        }
+                        continue; // 不在当前表格中编码此键
+                    }
                 } else {
                     // 普通键值对处理，不添加缩进
                     var encodedValue:String = this.encodeValue(value);
+                    if (this.hasError) {
+                        if (this.debug) {
+                            trace("Error encountered while encoding value for key '" + key + "'.");
+                        }
+                        return null;
+                    }
                     result.push(key + " = " + encodedValue);
+                    if (this.debug) {
+                        trace("Encoded key-value pair: " + key + " = " + encodedValue);
+                    }
                 }
             }
         }
 
         // 确保输出以换行符结尾
-        return result.join("\n") + "\n";
+        var encodedResult:String = result.join("\n") + "\n";
+        if (this.debug) {
+            trace("Encoding process completed. Final output:\n" + encodedResult);
+        }
+        if (this.hasError) {
+            if (this.debug) {
+                trace("Encoding failed due to encountered errors.");
+            }
+            return null;
+        } else {
+            return encodedResult;
+        }
     }
 
     /**
@@ -170,6 +250,9 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         var key:String = path.join(".");
         if (!this.tableHeaderCache.hasOwnProperty(key)) {
             this.tableHeaderCache[key] = "[" + key + "]";
+            if (this.debug) {
+                trace("Cached new table header: " + this.tableHeaderCache[key]);
+            }
         }
         return this.tableHeaderCache[key];
     }
@@ -183,6 +266,9 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         var key:String = path.join(".");
         if (!this.tableArrayHeaderCache.hasOwnProperty(key)) {
             this.tableArrayHeaderCache[key] = "[[" + key + "]]";
+            if (this.debug) {
+                trace("Cached new table array header: " + this.tableArrayHeaderCache[key]);
+            }
         }
         return this.tableArrayHeaderCache[key];
     }
@@ -203,14 +289,36 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
             if (typeof(element) == "object" && element != null && !this.isArray(element) && !(element instanceof Date)) {
                 // Encode as inline table
                 var encodedInline:String = this.encodeInlineTable(element);
+                if (this.hasError) {
+                    if (this.debug) {
+                        trace("Error encountered while encoding array element at index " + i + ".");
+                    }
+                    return "";
+                }
                 result.push(encodedInline);
+                if (this.debug) {
+                    trace("Encoded inline table in array at index " + i + ": " + encodedInline);
+                }
             } else {
                 var encodedVal:String = this.encodeValue(element);
+                if (this.hasError) {
+                    if (this.debug) {
+                        trace("Error encountered while encoding array value at index " + i + ".");
+                    }
+                    return "";
+                }
                 result.push(encodedVal);
+                if (this.debug) {
+                    trace("Encoded array value at index " + i + ": " + encodedVal);
+                }
             }
         }
         result.push("]");
-        return result.join("");
+        var encodedArrayStr:String = result.join("");
+        if (this.debug) {
+            trace("Encoded array: " + encodedArrayStr);
+        }
+        return encodedArrayStr;
     }
 
     /**
@@ -230,11 +338,24 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                 result.push(", ");
             }
             var encodedValue:String = this.encodeValue(value);
+            if (this.hasError) {
+                if (this.debug) {
+                    trace("Error encountered while encoding inline table key '" + key + "'.");
+                }
+                return "";
+            }
             result.push(key + " = " + encodedValue);
+            if (this.debug) {
+                trace("Encoded inline table key-value pair: " + key + " = " + encodedValue);
+            }
             first = false;
         }
         result.push(" }");
-        return result.join("");
+        var encodedInlineTableStr:String = result.join("");
+        if (this.debug) {
+            trace("Encoded inline table: " + encodedInlineTableStr);
+        }
+        return encodedInlineTableStr;
     }
 
     /**
@@ -244,27 +365,84 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      */
     private function encodeValue(value):String {
         if (typeof(value) == "string") {
-            // Check if the string is a date-time format
-            if (isDateTimeString(value)) {
-                return this.encodeDateTimeString(value);
+            // 检查是否为日期时间格式
+            if (this.isDateTimeString(value)) {
+                var dateTimeStr:String = this.encodeDateTimeString(value);
+                if (this.hasError) {
+                    if (this.debug) {
+                        trace("Error encountered while encoding date-time string: " + value);
+                    }
+                    return "";
+                }
+                if (this.debug) {
+                    trace("Encoded date-time string: " + dateTimeStr);
+                }
+                return dateTimeStr;
             } else {
-                return this.encodeString(String(value));
+                var encodedStr:String = this.encodeString(String(value));
+                if (this.hasError) {
+                    if (this.debug) {
+                        trace("Error encountered while encoding string: " + value);
+                    }
+                    return "";
+                }
+                if (this.debug) {
+                    trace("Encoded string: " + encodedStr);
+                }
+                return encodedStr;
             }
         } else if (typeof(value) == "number") {
-            return this.encodeFloat(value);
+            var encodedNum:String = this.encodeFloat(value);
+            if (this.debug) {
+                trace("Encoded number: " + encodedNum);
+            }
+            return encodedNum;
         } else if (typeof(value) == "boolean") {
-            return value ? "true" : "false";
+            var encodedBool:String = value ? "true" : "false";
+            if (this.debug) {
+                trace("Encoded boolean: " + encodedBool);
+            }
+            return encodedBool;
         } else if (value instanceof Date) {
-            return this.encodeDate(value);
+            var encodedDate:String = this.encodeDate(value);
+            if (this.debug) {
+                trace("Encoded date: " + encodedDate);
+            }
+            return encodedDate;
         } else if (typeof(value) == "object" && value != null) {
             if (this.isArray(value)) {
-                return this.encodeArray(value, false);
+                var encodedArr:String = this.encodeArray(value, false);
+                if (this.debug) {
+                    trace("Encoded nested array: " + encodedArr);
+                }
+                return encodedArr;
             } else {
-                // For nested objects, handled separately
-                return "";
+                if (this.isInlineTable(value)) {
+                    var inlineTableStr:String = this.encodeInlineTable(value);
+                    if (this.hasError) {
+                        if (this.debug) {
+                            trace("Error encountered while encoding nested inline table.");
+                        }
+                        return "";
+                    }
+                    if (this.debug) {
+                        trace("Encoded nested inline table: " + inlineTableStr);
+                    }
+                    return inlineTableStr;
+                } else {
+                    // 对象将由 encode 方法处理
+                    if (this.debug) {
+                        trace("Encountered nested object that will be handled separately.");
+                    }
+                    return "";
+                }
             }
         } else {
-            return value != null ? String(value) : "null";
+            var encodedOther:String = value != null ? String(value) : "null";
+            if (this.debug) {
+                trace("Encoded other type: " + encodedOther);
+            }
+            return encodedOther;
         }
     }
 
@@ -275,24 +453,251 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      */
     private function isDateTimeString(value:String):Boolean {
         var dateTimeRegExp:RegExp = new RegExp("^\\d{4}-\\d{2}-\\d{2}[Tt ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([Zz]|[+-]\\d{2}:\\d{2})?$");
-        return dateTimeRegExp.test(value);
+        var isMatch:Boolean = dateTimeRegExp.test(value);
+        if (this.debug) {
+            trace("Checking if string is date-time: '" + value + "' -> " + isMatch);
+        }
+        return isMatch;
     }
 
     /**
      * 编码日期时间字符串，返回不带引号的字符串
+     * 并验证日期时间的实际有效性
      * @param value 字符串
-     * @return TOML/FNTL 格式的日期时间字符串
+     * @return TOML/FNTL 格式的日期时间字符串，或空字符串（如果无效）
      */
     private function encodeDateTimeString(value:String):String {
-        // Validate date-time string
-        var dateTimeRegExp:RegExp = new RegExp("^\\d{4}-\\d{2}-\\d{2}[Tt ]\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?([Zz]|[+-]\\d{2}:\\d{2})?$");
-        if (dateTimeRegExp.test(value)) {
-            return value;
+        if (this.debug) {
+            trace("Starting manual parsing of date-time string: " + value);
+        }
+        
+        // 查找日期和时间的分隔符 'T'、't' 或空格
+        var separatorIndex:Number = value.indexOf('T');
+        if (separatorIndex == -1) {
+            separatorIndex = value.indexOf('t');
+        }
+        if (separatorIndex == -1) {
+            separatorIndex = value.indexOf(' ');
+        }
+        
+        if (separatorIndex == -1) {
+            // 没有找到分隔符，格式无效
+            this.error("Invalid date-time format: Missing date-time separator (T/t/ ). " + value, {line:0, column:0});
+            if (this.debug) {
+                trace("Missing date-time separator in string: " + value);
+            }
+            return "";
+        }
+        
+        var datePart:String = value.substring(0, separatorIndex);
+        var timeAndTZPart:String = value.substring(separatorIndex + 1);
+        
+        // 解析日期部分
+        var dateComponents:Array = datePart.split("-");
+        if (dateComponents.length != 3) {
+            this.error("Invalid date format: " + datePart, {line:0, column:0});
+            if (this.debug) {
+                trace("Date part does not have exactly 3 components: " + datePart);
+            }
+            return "";
+        }
+        
+        var year:Number = Number(dateComponents[0]);
+        var month:Number = Number(dateComponents[1]);
+        var day:Number = Number(dateComponents[2]);
+        
+        if (isNaN(year) || isNaN(month) || isNaN(day)) {
+            this.error("Non-numeric date components: " + datePart, {line:0, column:0});
+            if (this.debug) {
+                trace("One of the date components is not a number: " + datePart);
+            }
+            return "";
+        }
+        
+        // 验证月份
+        if (month < 1 || month > 12) {
+            this.error("Invalid month in date-time string: " + value, {line:0, column:0});
+            if (this.debug) {
+                trace("Invalid month detected: " + month);
+            }
+            return "";
+        }
+        
+        // 获取指定年份和月份的最大天数
+        var maxDay:Number = this.getMaxDay(year, month);
+        if (day < 1 || day > maxDay) {
+            this.error("Invalid day in date-time string: " + value, {line:0, column:0});
+            if (this.debug) {
+                trace("Invalid day detected: " + day + " for month: " + month + ", year: " + year);
+            }
+            return "";
+        }
+        
+        // 解析时间和时区部分
+        var tzSignIndex:Number = timeAndTZPart.indexOf('Z');
+        var tzOffsetIndex:Number = timeAndTZPart.indexOf('+');
+        if (tzSignIndex == -1) {
+            tzSignIndex = timeAndTZPart.indexOf('-');
+        }
+        
+        var timePart:String;
+        var tzPart:String = "Z"; // 默认时区为 Zulu 时间
+        if (tzSignIndex != -1) {
+            timePart = timeAndTZPart.substring(0, tzSignIndex);
+            tzPart = timeAndTZPart.substring(tzSignIndex);
         } else {
-            // Not a valid date-time string, treat as regular string
-            return this.encodeString(value);
+            timePart = timeAndTZPart;
+        }
+        
+        var timeComponents:Array = timePart.split(":");
+        if (timeComponents.length != 3) {
+            this.error("Invalid time format: " + timePart, {line:0, column:0});
+            if (this.debug) {
+                trace("Time part does not have exactly 3 components: " + timePart);
+            }
+            return "";
+        }
+        
+        var hour:Number = Number(timeComponents[0]);
+        var minute:Number = Number(timeComponents[1]);
+        var secondAndFraction:String = timeComponents[2];
+        
+        var second:Number = 0;
+        var fractional:Number = 0;
+        
+        var fractionIndex:Number = secondAndFraction.indexOf('.');
+        if (fractionIndex != -1) {
+            second = Number(secondAndFraction.substring(0, fractionIndex));
+            var fractionStr:String = secondAndFraction.substring(fractionIndex + 1);
+            // 仅取前三位作为毫秒
+            fractionStr = fractionStr.length > 3 ? fractionStr.substring(0,3) : fractionStr;
+            fractional = Number("0." + fractionStr);
+        } else {
+            second = Number(secondAndFraction);
+        }
+        
+        if (isNaN(hour) || isNaN(minute) || isNaN(second)) {
+            this.error("Non-numeric time components: " + timePart, {line:0, column:0});
+            if (this.debug) {
+                trace("One of the time components is not a number: " + timePart);
+            }
+            return "";
+        }
+        
+        // 验证时间组件
+        if (hour < 0 || hour > 23) {
+            this.error("Invalid hour in date-time string: " + value, {line:0, column:0});
+            if (this.debug) {
+                trace("Invalid hour detected: " + hour);
+            }
+            return "";
+        }
+        if (minute < 0 || minute > 59) {
+            this.error("Invalid minute in date-time string: " + value, {line:0, column:0});
+            if (this.debug) {
+                trace("Invalid minute detected: " + minute);
+            }
+            return "";
+        }
+        if (second < 0 || second > 59) {
+            this.error("Invalid second in date-time string: " + value, {line:0, column:0});
+            if (this.debug) {
+                trace("Invalid second detected: " + second);
+            }
+            return "";
+        }
+        
+        // 解析并验证时区部分
+        var tzSign:String = "Z";
+        var tzHours:Number = 0;
+        var tzMinutes:Number = 0;
+        
+        if (tzPart.charAt(0) == 'Z' || tzPart.charAt(0) == 'z') {
+            tzSign = "Z";
+        } else {
+            tzSign = tzPart.charAt(0);
+            var tzOffset:Array = tzPart.substring(1).split(":");
+            if (tzOffset.length != 2) {
+                this.error("Invalid timezone format: " + tzPart, {line:0, column:0});
+                if (this.debug) {
+                    trace("Timezone offset does not have exactly 2 components: " + tzPart);
+                }
+                return "";
+            }
+            tzHours = Number(tzOffset[0]);
+            tzMinutes = Number(tzOffset[1]);
+            
+            if (isNaN(tzHours) || isNaN(tzMinutes)) {
+                this.error("Non-numeric timezone components: " + tzPart, {line:0, column:0});
+                if (this.debug) {
+                    trace("One of the timezone components is not a number: " + tzPart);
+                }
+                return "";
+            }
+            
+            if (tzHours < 0 || tzHours > 23 || tzMinutes < 0 || tzMinutes > 59) {
+                this.error("Invalid timezone offset in date-time string: " + value, {line:0, column:0});
+                if (this.debug) {
+                    trace("Invalid timezone offset detected: " + tzPart);
+                }
+                return "";
+            }
+        }
+        
+        // 构建验证后的日期时间字符串
+        var encodedDateTimeStr:String = "";
+        encodedDateTimeStr += this.padZero(year) + "-";
+        encodedDateTimeStr += this.padZero(month) + "-";
+        encodedDateTimeStr += this.padZero(day) + "T";
+        encodedDateTimeStr += this.padZero(hour) + ":";
+        encodedDateTimeStr += this.padZero(minute) + ":";
+        encodedDateTimeStr += this.padZero(second);
+        if (fractional > 0) {
+            // 保留三位小数作为毫秒
+            var fractionalStr:String = String(Math.round(fractional * 1000));
+            while (fractionalStr.length < 3) {
+                fractionalStr = "0" + fractionalStr;
+            }
+            encodedDateTimeStr += "." + fractionalStr;
+        }
+        if (tzSign == "Z") {
+            encodedDateTimeStr += "Z";
+        } else {
+            encodedDateTimeStr += tzSign + this.padZero(tzHours) + ":" + this.padZero(tzMinutes);
+        }
+        
+        if (this.debug) {
+            trace("Encoded Date-Time String: " + encodedDateTimeStr);
+        }
+        
+        return encodedDateTimeStr;
+    }
+
+
+    /**
+     * 获取指定年份和月份的最大天数
+     * @param year 年份
+     * @param month 月份
+     * @return 最大天数
+     */
+    private function getMaxDay(year:Number, month:Number):Number {
+        switch(month) {
+            case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                return 31;
+            case 4: case 6: case 9: case 11:
+                return 30;
+            case 2:
+                // 闰年判断
+                if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+                    return 29;
+                } else {
+                    return 28;
+                }
+            default:
+                return 31; // 默认返回31
         }
     }
+
 
     /**
      * 编码浮点数，处理特殊数值
@@ -301,13 +706,26 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      */
     private function encodeFloat(value:Number):String {
         if (isNaN(value)) {
+            if (this.debug) {
+                trace("Encoded special float (NaN): nan");
+            }
             return "nan";
         } else if (value == Infinity) {
+            if (this.debug) {
+                trace("Encoded special float (Infinity): inf");
+            }
             return "inf";
         } else if (value == -Infinity) {
+            if (this.debug) {
+                trace("Encoded special float (-Infinity): -inf");
+            }
             return "-inf";
         } else {
-            return String(value);
+            var numStr:String = String(value);
+            if (this.debug) {
+                trace("Encoded float: " + numStr);
+            }
+            return numStr;
         }
     }
 
@@ -317,49 +735,92 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
      * @return TOML/FNTL 格式的字符串
      */
     private function encodeString(value:String):String {
+        if (this.debug) {
+            trace("Starting to encode string: " + value);
+        }
+
+        // 检查是否为多行字符串
         if (value.indexOf("\n") != -1 || value.indexOf("\r") != -1) {
-            // 使用多行字符串
-            // 处理字符串中的特殊字符，如连续的三个引号
-            var escapedValue:String = value.split('"""').join('\\"""');
-            return '"""' + escapedValue + '"""';
+            // 使用多行字符串，转义内部的三引号
+            var escapedValueMultiline:String = value.split('"""').join('\\"""');
+            var multilineStr:String = '"""' + escapedValueMultiline + '"""';
+            if (this.debug) {
+                trace("Encoded multiline string: " + multilineStr);
+            }
+            return multilineStr;
         } else {
             // 单行字符串，处理必要的转义
             var result:String = "";
-            for (var i:Number = 0; i < value.length; i++) {
+            var i:Number = 0;
+            while (i < value.length) {
                 var c:String = value.charAt(i);
                 var code:Number = value.charCodeAt(i);
                 if (c == "\\" || c == "\"") {
                     result += "\\" + c;
+                    if (this.debug) {
+                        trace("Escaped character: \\" + c);
+                    }
+                    i++;
                 } else if (code >= 0x0000 && code <= 0x001F) {
                     // 控制字符需要转义
                     switch (code) {
-                        case 0x08: result += "\\b"; break;
-                        case 0x09: result += "\\t"; break;
-                        case 0x0A: result += "\\n"; break;
-                        case 0x0C: result += "\\f"; break;
-                        case 0x0D: result += "\\r"; break;
+                        case 0x08: result += "\\b"; if (this.debug) { trace("Escaped control character: \\b"); } break;
+                        case 0x09: result += "\\t"; if (this.debug) { trace("Escaped control character: \\t"); } break;
+                        case 0x0A: result += "\\n"; if (this.debug) { trace("Escaped control character: \\n"); } break;
+                        case 0x0C: result += "\\f"; if (this.debug) { trace("Escaped control character: \\f"); } break;
+                        case 0x0D: result += "\\r"; if (this.debug) { trace("Escaped control character: \\r"); } break;
                         default:
                             var hex:String = code.toString(16).toUpperCase();
                             while (hex.length < 4) {
                                 hex = "0" + hex;
                             }
                             result += "\\u" + hex;
+                            if (this.debug) {
+                                trace("Escaped control character: \\u" + hex);
+                            }
                             break;
                     }
+                    i++;
+                } else if (code >= 0xD800 && code <= 0xDBFF && (i + 1) < value.length) {
+                    // 高代理，检查下一个字符是否为低代理
+                    var nextCode:Number = value.charCodeAt(i + 1);
+                    if (nextCode >= 0xDC00 && nextCode <= 0xDFFF) {
+                        // 有效的代理对，组合成完整的 Unicode 代码点
+                        var highSurrogate:Number = code;
+                        var lowSurrogate:Number = nextCode;
+                        var codePoint:Number = ((highSurrogate - 0xD800) << 10) + (lowSurrogate - 0xDC00) + 0x10000;
+                        var unicodeStr:String = "\\U" + this.padZeroExtended(codePoint.toString(16).toUpperCase(), 8);
+                        result += unicodeStr;
+                        if (this.debug) {
+                            trace("Encoded Unicode character: " + unicodeStr);
+                        }
+                        i += 2;
+                    } else {
+                        // 无效的代理对，单独编码高代理
+                        result += c;
+                        i++;
+                    }
                 } else if (code > 0xFFFF) {
-                    // 处理基本多文种平面（BMP）之外的字符，使用 \UXXXXXXXX
-                    var highSurrogate:Number = ((code - 0x10000) >> 10) + 0xD800;
-                    var lowSurrogate:Number = ((code - 0x10000) % 0x400) + 0xDC00;
-                    var highHex:String = highSurrogate.toString(16).toUpperCase();
-                    var lowHex:String = lowSurrogate.toString(16).toUpperCase();
-                    result += "\\U" + this.padZeroExtended(highHex, 8) + "\\U" + this.padZeroExtended(lowHex, 8);
+                    // 超出基本多文种平面的字符，使用 \UXXXXXXXX 进行编码
+                    var unicodeStrInvalid:String = "\\U" + this.padZeroExtended(code.toString(16).toUpperCase(), 8);
+                    result += unicodeStrInvalid;
+                    if (this.debug) {
+                        trace("Encoded Unicode character (fallback): " + unicodeStrInvalid);
+                    }
+                    i++;
                 } else {
                     result += c;
+                    i++;
                 }
             }
-            return '"' + result + '"';
+            var singleLineStr:String = '"' + result + '"';
+            if (this.debug) {
+                trace("Encoded single-line string: " + singleLineStr);
+            }
+            return singleLineStr;
         }
     }
+
 
     /**
      * 辅助函数：在16进制字符串前添加前导零以达到指定长度
@@ -402,7 +863,11 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
         var tzMinutes:Number = Math.abs(timezoneOffset) % 60;
         var timezoneSuffix:String = tzSign + this.padZero(tzHours) + ":" + this.padZero(tzMinutes);
         
-        return year + "-" + month + "-" + day + "T" + hours + ":" + minutes + ":" + seconds + fractional + timezoneSuffix;
+        var encodedDateStr:String = year + "-" + month + "-" + day + "T" + hours + ":" + minutes + ":" + seconds + fractional + timezoneSuffix;
+        if (this.debug) {
+            trace("Encoded Date: " + encodedDateStr);
+        }
+        return encodedDateStr;
     }
 
     /**
@@ -440,6 +905,9 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
                 keys.push(key);
             } else {
                 trace("警告: 忽略内部键: " + key);
+                if (this.debug) {
+                    trace("Internal key '" + key + "' is ignored.");
+                }
             }
         }
         return keys;
@@ -455,29 +923,32 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
     }
 
     /**
-     * 编码键数组，使用自定义 QuickSort 的 adaptiveSort 方法
-     * 已在 encode 和 encodeInlineTable 方法中使用
-     */
-    // 移除了内部 quickSort 方法，因为我们使用外部的 QuickSort 类
-
-    /**
      * 编码内联表格字符串为对象
      * @param tableStr 内联表格字符串
      * @return 解析后的内联表格对象
      */
     private function parseInlineTable(tableStr:String):Object {
         var table:Object = new Object();
-        var lexer:FNTLLexer = new FNTLLexer(tableStr);
+        var lexer:FNTLLexer = new FNTLLexer(tableStr, this.debug);
         var tokens:Array = new Array();
         var tok:Object;
         while ((tok = lexer.getNextToken()) != null) {
             tokens.push(tok);
+            if (this.debug) {
+                trace("Lexer Token: " + ObjectUtil.toString(tok));
+            }
         }
-        var parser:FNTLParser = new FNTLParser(tokens, tableStr);
+        var parser:FNTLParser = new FNTLParser(tokens, tableStr, this.debug);
         var parsedTable:Object = parser.parse();
         if (parser.hasError()) {
-            this.error("内联表格解析失败: " + tableStr, {line: 0, column: 0});
+            this.error("内联表格解析失败: " + tableStr, {line:0, column:0});
+            if (this.debug) {
+                trace("Inline table parsing failed for: " + tableStr);
+            }
             return undefined;
+        }
+        if (this.debug) {
+            trace("Parsed inline table: " + ObjectUtil.toString(parsedTable));
         }
         return parsedTable;
     }
@@ -490,7 +961,10 @@ class org.flashNight.gesh.fntl.FNTLEncoder {
     private function error(message:String, token:Object):Void {
         var lineInfo:String = "行: " + (token.line != undefined ? token.line : "?") + ", 列: " + (token.column != undefined ? token.column : "?");
         trace("错误: " + message + " 在 " + lineInfo);
-        // 可以根据需要抛出异常或记录错误标志
+        this.hasError = true;
+        if (this.debug) {
+            trace("Error details - Message: " + message + ", Line: " + token.line + ", Column: " + token.column);
+        }
     }
 
     /**

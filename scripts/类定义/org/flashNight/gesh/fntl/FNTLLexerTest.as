@@ -181,7 +181,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
             trace("Description: " + description);
 
             // Encode the object into FNTL
-            var encoder:FNTLEncoder = new FNTLEncoder();
+            var encoder:FNTLEncoder = new FNTLEncoder(this.debug);
             var FNTLOutput:String = encoder.encode(testObj, true); // true for pretty formatting
 
             // Compare the encoded output with expected FNTL string
