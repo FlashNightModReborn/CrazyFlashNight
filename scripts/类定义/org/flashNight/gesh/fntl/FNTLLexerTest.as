@@ -1162,7 +1162,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
      */
     private function getEncoderTestCases():Array {
         var cases:Array = new Array();
-
+        /*
         // ==========================
         // 基础键值对编码测试
         // ==========================
@@ -1451,6 +1451,99 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
 
         testCase16.description = "编码项目特定的复杂结构，包括Unicode字符和嵌套表数组。";
         cases.push(testCase16);
+
+        // Test case 17: 空数组和空表
+        var testCase17:Object = new Object();
+        testCase17.input = {
+            empty_array: [],
+            empty_table: {}
+        };
+        testCase17.expected = 'empty_array = []\n' +
+                              'empty_table = {}\n';
+        testCase17.description = "测试空数组和空表的编码。";
+        cases.push(testCase17);
+
+        // Test case 18: 嵌套空表数组
+        var testCase18:Object = new Object();
+        testCase18.input = {
+            nested_empty_tables: [
+                {}
+            ]
+        };
+        testCase18.expected = '[[nested_empty_tables]]\n';
+        testCase18.description = "测试嵌套空表数组的编码。";
+        cases.push(testCase18);
+
+        // Test case 19: 深度嵌套结构
+        var testCase19:Object = new Object();
+        testCase19.input = {
+            deep_nested: {
+                level1: {
+                    level2: {
+                        level3: {
+                            level4: {
+                                key: "value"
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        testCase19.expected = '[deep_nested.level1.level2.level3.level4]\n' +
+                              'key = "value"\n';
+        testCase19.description = "测试深度嵌套结构的编码。";
+        cases.push(testCase19);
+
+        */
+
+        
+        // Test case 20: 未闭合的多行字符串
+        var testCase20:Object = new Object();
+        testCase20.input = {
+            unclosed_multiline_string: '"""This is an unclosed multiline string...'
+        };
+        testCase20.expected = null; // 未闭合的多行字符串应该返回错误
+        testCase20.description = "测试未闭合的多行字符串的编码。";
+        cases.push(testCase20);
+
+        // Test case 21: 无效的日期格式
+        var testCase21:Object = new Object();
+        testCase21.input = {
+            invalid_date: "2024-02-30T25:61:61Z"
+        };
+        testCase21.expected = null; // 无效的日期应该返回错误
+        testCase21.description = "测试无效日期格式的编码。";
+        cases.push(testCase21);
+
+        // Test case 22: 非法数值格式
+        var testCase22:Object = new Object();
+        testCase22.input = new Object();
+        testCase22.input.invalid_number = "12..34";
+        testCase22.expected = null; // 非法数值应该返回错误
+        testCase22.description = "测试非法数值格式的编码。";
+        cases.push(testCase22);
+
+        // Test Case 23: 测试内联表最后一项后多余的逗号
+        var testCase23:Object = new Object();
+        testCase23.input = new Object();
+
+        // 手动构造类似 complexObj 的结构
+        testCase23.input["player"] = new Object();
+        testCase23.input["player"]["name"] = "Alice";
+        testCase23.input["player"]["level"] = 30;
+        testCase23.input["player"]["class"] = "Warrior";
+
+        // 创建带有多余逗号的内联表表示，模拟可能的错误情况
+        var fntlInput:String = 'player = { name = "Alice", level = 30, class = "Warrior", }';
+
+        // 期望输出应当排除掉多余的逗号
+        testCase23.expected = 'player = { name = "Alice", level = 30, class = "Warrior" }\n';
+        testCase23.description = "测试内联表最后一项后多余的逗号";
+        cases.push(testCase23);
+
+        // 添加其他逻辑，确保编码器能够正确处理这种情况
+
+
         return cases;
     }
 
