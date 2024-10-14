@@ -62,6 +62,14 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
+            
+            // 检测是否为 ERROR token
+            if (token.type == "ERROR") {
+                this.error(token.value, {line: token.line, column: token.column});
+                this.root = originalRoot;
+                return null; // 立即停止解析
+            }
+
             if (this.debug) {
                 trace("Current Token[" + this.position + "]: Type = " + token.type + ", Value = " + token.value);
             }
@@ -285,7 +293,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
     /**
      * Parses a value starting from the current position.
-     * @return The parsed value object.
+     * @return The parsed value object or undefined (if an error occurs).
      */
     private function parseValue():Object {
         var token:Object = this.tokens[this.position];
@@ -297,17 +305,12 @@ class org.flashNight.gesh.fntl.FNTLParser {
             case "STRING":
                 var strValue:String = StringUtils.unescape(token.value); // 解析转义字符
                 this.position++;
-                // 移除对换行符的检查
-                // if (strValue.indexOf("\n") >= 0 || strValue.indexOf("\r") >=0 ) {
-                //     this.error("Unclosed string", token);
-                //     return undefined;
-                // }
                 return strValue;
-            
+
             case "MULTILINE_STRING":
                 this.position++;
                 return token.value;
-            
+
             case "INTEGER":
                 if (token.value == "-") { // 识别负号
                     if (this.position + 1 < this.tokens.length) {
@@ -357,6 +360,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
                     return floatVal;
                 }
+
                 // 处理独立的 INTEGER
                 var intVal:Number = Number(token.value);
                 this.position++;
@@ -372,19 +376,25 @@ class org.flashNight.gesh.fntl.FNTLParser {
             case "FLOAT":
                 this.position++;
                 return this.parseSpecialFloat(token.value);
+
             case "BOOLEAN":
                 this.position++;
                 return token.value;
+
             case "DATETIME":
                 this.position++;
                 return this.parseDateTime(token.value);
+
             case "LBRACKET":
                 return this.parseArray();
+
             case "LBRACE":
                 return this.parseInlineTable();
+
             case "NULL":
                 this.position++;
                 return null;
+
             default:
                 this.error("Unknown value type: " + token.type, token);
                 return undefined;
@@ -394,6 +404,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
         this.error("Invalid value type: " + token.type, token);
         return undefined;
     }
+
 
 
     /**

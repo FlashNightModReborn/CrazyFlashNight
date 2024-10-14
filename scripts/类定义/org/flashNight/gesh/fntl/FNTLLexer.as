@@ -476,7 +476,8 @@ class org.flashNight.gesh.fntl.FNTLLexer {
 
             if (this.currentChar == null) {
                 this.error("Unclosed string", tokenLine, tokenColumn);
-                break;
+                // 返回 ERROR Token
+                return { type: "ERROR", value: "Unclosed string", line: tokenLine, column: tokenColumn };
             }
 
             if (this.currentChar == "\\") {
@@ -484,7 +485,8 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 this.nextChar(); // 跳过反斜杠
                 if (this.currentChar == null) {
                     this.error("Incomplete escape sequence at end of string", tokenLine, tokenColumn);
-                    break;
+                    // 返回 ERROR Token
+                    return { type: "ERROR", value: "Incomplete escape sequence at end of string", line: tokenLine, column: tokenColumn };
                 }
                 var escapeSeq:String = "\\" + this.currentChar;
                 var escapedChar:String = this.handleEscapeSequences(escapeSeq);
@@ -501,7 +503,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
 
         return { type: "STRING", value: str, line: tokenLine, column: tokenColumn };
     }
-    
+
     /**
      * 读取数字或日期时间
      * 支持负号、分数点、下划线（忽略）、以及日期时间标识符
@@ -652,7 +654,8 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                     element = { type: "NULL", value: null, line: this.currentLine, column: this.currentColumn };
                 } else {
                     this.error("Invalid array element: " + identifier, this.currentLine, this.currentColumn);
-                    element = { type: "INVALID", value: identifier, line: this.currentLine, column: this.currentColumn };
+                    // 返回 ERROR Token
+                    return { type: "ERROR", value: "Invalid array element: " + identifier, line: this.currentLine, column: this.currentColumn };
                 }
             }
             // 处理内联表格
@@ -669,8 +672,8 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             // 处理未知字符
             else {
                 this.error("Invalid array element: " + this.currentChar, this.currentLine, this.currentColumn);
-                this.nextChar();
-                continue;
+                // 返回 ERROR Token
+                return { type: "ERROR", value: "Invalid array element: " + this.currentChar, line: this.currentLine, column: this.currentColumn };
             }
 
             if (element !== undefined && element.type != "INVALID") { // 仅在成功解析值时添加到数组
@@ -697,10 +700,13 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             }
         } else {
             this.error("Unclosed array", tokenLine, tokenColumn);
+            // 返回 ERROR Token
+            return { type: "ERROR", value: "Unclosed array", line: tokenLine, column: tokenColumn };
         }
 
         return { type: "ARRAY", value: array, line: tokenLine, column: tokenColumn };
     }
+
     
     /**
      * 读取内联表格

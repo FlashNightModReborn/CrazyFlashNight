@@ -633,6 +633,55 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase40.description = "测试无效日期时间格式的错误输入。";
         cases.push(testCase40);
 
+        // Test case 41: Multiline string with varying newlines
+        var testCase41:Object = new Object();
+        testCase41.text = 'multiline = """First line\n\nSecond line with extra newline\nThird line"""';
+        testCase41.expectedTokens = null;
+        testCase41.description = "测试多行字符串，包含多个换行符。";
+        cases.push(testCase41);
+
+        // Test case 42: Multiline string with escape characters
+        var testCase42:Object = new Object();
+        testCase42.text = 'multiline_escape = """Line1\\nLine2\\tTabbed"""';
+        testCase42.expectedTokens = null;
+        testCase42.description = "测试多行字符串，包含转义字符。";
+        cases.push(testCase42);
+
+        // Test case 43: Multiline string with unclosed delimiter
+        var testCase43:Object = new Object();
+        testCase43.text = 'multiline_unclosed = """This string never ends...';
+        testCase43.expectedTokens = null;
+        testCase43.description = "测试未闭合的多行字符串。";
+        cases.push(testCase43);
+
+        // Test case 44: Multiline string with embedded quotes
+        var testCase44:Object = new Object();
+        testCase44.text = 'multiline_quotes = """This is a "quoted" line\nAnd it continues."""';
+        testCase44.expectedTokens = null;
+        testCase44.description = "测试多行字符串，包含嵌入的引号。";
+        cases.push(testCase44);
+
+        // Test case 45: Multiline string with trailing spaces
+        var testCase45:Object = new Object();
+        testCase45.text = 'multiline_spaces = """This line has trailing spaces   \nNext line"""';
+        testCase45.expectedTokens = null;
+        testCase45.description = "测试多行字符串，包含行末的空格。";
+        cases.push(testCase45);
+
+        // Test case 46: Multiline string with leading spaces on subsequent lines
+        var testCase46:Object = new Object();
+        testCase46.text = 'multiline_leading_spaces = """First line\n    Second line with leading spaces\nThird line"""';
+        testCase46.expectedTokens = null;
+        testCase46.description = "测试多行字符串，后续行开头有空格。";
+        cases.push(testCase46);
+
+        // Test case 47: Multiline string with an empty line in the middle
+        var testCase47:Object = new Object();
+        testCase47.text = 'multiline_empty_line = """First line\n\nSecond line after empty line"""';
+        testCase47.expectedTokens = null;
+        testCase47.description = "测试多行字符串，中间包含空行。";
+        cases.push(testCase47);
+
         return cases;
     }
 
@@ -642,7 +691,6 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     */
     private function getParserTestCases():Array {
         var cases:Array = new Array();
-
         // ==========================
         // 基础键值对解析测试
         // ==========================
@@ -855,7 +903,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase13.expected = expected13;
         testCase13.description = "解析缺少等号的错误输入。";
         cases.push(testCase13);
-
+        
 
         // Test case 14: Unclosed string
         var testCase14:Object = new Object();
