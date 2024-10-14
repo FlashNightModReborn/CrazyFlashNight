@@ -306,23 +306,19 @@ class org.flashNight.gesh.object.ObjectUtil {
     }
 
     /**
-     * 合并两个对象的属性，源对象的属性会覆盖目标对象的同名属性。
-     * @param target 目标对象。
-     * @param source 源对象。
-     * @return Object 合并后的新对象。
+     * Returns the number of keys in an object, excluding keys with the '__' prefix.
+     * @param obj The object to count keys from.
+     * @return The number of valid keys in the object (excluding keys starting with '__').
      */
-    public static function merge(target:Object, source:Object):Object {
-        var result:Object = clone(target); // 深拷贝目标对象
-
-        for (var key:String in source) {
-            if (typeof(source[key]) == "object" && typeof(result[key]) == "object") {
-                result[key] = merge(result[key], source[key]);
-            } else if (!isInternalKey(key)) {  // 忽略内部键
-                result[key] = source[key];
+    public static function size(obj:Object):Number {
+        var count:Number = 0;
+        for (var key:String in obj) {
+            // Exclude keys starting with '__' (used for system internal implementation)
+            if (key.indexOf("__") !== 0) {
+                count++;
             }
         }
-
-        return result;
+        return count;
     }
 
     /**
@@ -422,7 +418,7 @@ class org.flashNight.gesh.object.ObjectUtil {
      * @return String FNTL 字符串，或 null 解析失败。
      */
     public static function toFNTL(obj:Object, pretty:Boolean):String {
-        var encoder:FNTLEncoder = new FNTLEncoder(true);
+        var encoder:FNTLEncoder = new FNTLEncoder(false);
         try {
             return encoder.encode(obj, pretty); // 序列化对象为 FNTL 字符串
         } catch (e:Object) {
@@ -430,6 +426,32 @@ class org.flashNight.gesh.object.ObjectUtil {
             return null; // 处理异常并返回 null
         }
     }
+
+    /**
+     * 将对象序列化为 FNTL 字符串，并将结果转换为单行字符串，方便复制粘贴到其他 AS2 环境中使用。
+     * @param obj 要序列化的对象。
+     * @param pretty 是否格式化输出。
+     * @return String 转换后的单行 FNTL 字符串，或 null 如果解析失败。
+     */
+    public static function toFNTLSingleLine(obj:Object, pretty:Boolean):String {
+        var encoder:FNTLEncoder = new FNTLEncoder(false); // 创建编码器实例
+        try {
+            var fntlStr:String = encoder.encode(obj, pretty); // 序列化对象为 FNTL 字符串
+            if (fntlStr == null) {
+                return null; // 如果序列化失败，返回 null
+            }
+            
+            // 转换多行字符串为单行，替换换行符和回车符，确保可以直接复制粘贴
+            var singleLineStr:String = fntlStr.split("\n").join("\\n").split("\r").join("\\r");
+
+            // 返回处理后的单行字符串
+            return singleLineStr;
+        } catch (e:Object) {
+            trace("toFNTLSingleLine: 无法序列化对象为 FNTL 字符串 - " + e.message);
+            return null; // 处理异常并返回 null
+        }
+    }
+
 
     /**
      * 将 FNTL 字符串解析为对象。
@@ -785,6 +807,61 @@ trace("解析后的多行字符串 TOML 对象: " + ObjectUtil.toString(parsedMu
 trace("fromTOML 方法多行字符串测试完成。\n");
 
 trace("\n所有测试完毕。");
+
+
+*/
+
+/*
+
+import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.gesh.fntl.FNTLEncoder;
+import org.flashNight.gesh.fntl.FNTLParser;
+
+// 手动创建复杂对象
+var complexObj:Object = new Object();
+complexObj["player"] = new Object();
+complexObj["player"]["name"] = "测试玩家";
+complexObj["player"]["level"] = 25;
+
+complexObj["player"]["inventory"] = new Array();
+var sword:Object = new Object();
+sword["item"] = "剑";
+sword["quantity"] = 1;
+complexObj["player"]["inventory"].push(sword);
+
+var shield:Object = new Object();
+shield["item"] = "盾";
+shield["quantity"] = 1;
+complexObj["player"]["inventory"].push(shield);
+
+complexObj["game"] = new Object();
+complexObj["game"]["title"] = "冒险游戏";
+complexObj["game"]["version"] = "1.0.1";
+complexObj["game"]["settings"] = new Object();
+complexObj["game"]["settings"]["difficulty"] = "normal";
+complexObj["game"]["settings"]["sound"] = true;
+complexObj["game"]["settings"]["graphics"] = "high";
+
+complexObj["stats"] = new Object();
+complexObj["stats"]["health"] = 100;
+complexObj["stats"]["mana"] = 50;
+complexObj["stats"]["experience"] = 5000;
+complexObj["stats"]["achievements"] = new Array();
+complexObj["stats"]["achievements"].push("击败巨龙");
+complexObj["stats"]["achievements"].push("找到宝藏");
+complexObj["stats"]["achievements"].push("完成新手教程");
+
+// 使用 toFNTLSingleLine 方法生成单行 FNTL 字符串
+var fntlSingleLine:String = ObjectUtil.toFNTL(complexObj, true);
+
+
+trace("处理后的单行 FNTL 字符串:");
+trace(fntlSingleLine);
+
+// 使用 fromFNTL 方法解析单行 FNTL 字符串为对象
+var parsedObj:Object = ObjectUtil.fromFNTL(fntlSingleLine);
+trace("解析后的对象:");
+trace(ObjectUtil.toString(parsedObj));
 
 
 */

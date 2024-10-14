@@ -21,7 +21,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
     private var totalTests:Number = 0;
     private var passedTests:Number = 0;
     private var failedTests:Number = 0;
-    private var debug:Boolean = false; // 调试日志开关
+    private var debug:Boolean = true; // 调试日志开关
 
     /**
      * Runs all the test cases for FNTLLexer, FNTLParser, and FNTLEncoder.
@@ -203,7 +203,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
      */
     private function getLexerTestCases():Array {
         var cases:Array = new Array();
-
+        
         // ==========================
         // 基础键值对测试
         // ==========================
@@ -405,7 +405,7 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         ];
         testCase17.description = "测试内联表中使用整数作为键。";
         cases.push(testCase17);
-
+        
 
         // ==========================
         // 嵌套数组和内联表测试
@@ -414,34 +414,33 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         var testCase18:Object = new Object();
         testCase18.text = 'complex_structure = [["item1", { 1 = "a" }, [1, 2, 3]], "end"]\n';
         testCase18.expectedTokens = [
-            {type: "KEY", value: "complex_structure"},
-            {type: "EQUALS", value: "="},
-            {type: "LBRACKET", value: "["},
-            {type: "LBRACKET", value: "["},
-            {type: "STRING", value: "item1"},
-            {type: "COMMA", value: ","},
-            {type: "LBRACE", value: "{"},
-            {type: "INTEGER", value: "1"},
-            {type: "EQUALS", value: "="},
-            {type: "STRING", value: "a"},
-            {type: "RBRACE", value: "}"},
-            {type: "COMMA", value: ","},
-            {type: "LBRACKET", value: "["},
-            {type: "INTEGER", value: "1"},
-            {type: "COMMA", value: ","},
-            {type: "INTEGER", value: "2"},
-            {type: "COMMA", value: ","},
-            {type: "INTEGER", value: "3"},
-            {type: "RBRACKET", value: "]"},
-            {type: "RBRACKET", value: "]"},
-            {type: "COMMA", value: ","},
-            {type: "STRING", value: "end"},
-            {type: "RBRACKET", value: "]"},
-            {type: "NEWLINE", value: "\n"}
+            {type: "KEY", value: "complex_structure"}, // 1
+            {type: "EQUALS", value: "="},              // 2
+            {type: "LBRACKET", value: "["},            // 3
+            {type: "LBRACKET", value: "["},            // 4
+            {type: "STRING", value: "item1"},          // 5
+            {type: "COMMA", value: ","},               // 6
+            {type: "LBRACE", value: "{"},              // 7
+            {type: "INTEGER", value: "1"},             // 8
+            {type: "EQUALS", value: "="},              // 9
+            {type: "STRING", value: "a"},              // 10
+            {type: "RBRACE", value: "}"},              // 11
+            {type: "COMMA", value: ","},               // 12
+            {type: "LBRACKET", value: "["},            // 13
+            {type: "INTEGER", value: "1"},             // 14
+            {type: "COMMA", value: ","},               // 15
+            {type: "INTEGER", value: "2"},             // 16
+            {type: "COMMA", value: ","},               // 17
+            {type: "INTEGER", value: "3"},             // 18
+            {type: "RBRACKET", value: "]"},            // 19
+            {type: "RBRACKET", value: "]"},            // 20
+            {type: "COMMA", value: ","},               // 21
+            {type: "STRING", value: "end"},            // 22
+            {type: "RBRACKET", value: "]"},            // 23
+            {type: "NEWLINE", value: "\n"}             // 24
         ];
         testCase18.description = "测试嵌套数组中包含内联表。";
         cases.push(testCase18);
-
 
         // ==========================
         // 注释测试
@@ -682,6 +681,52 @@ class org.flashNight.gesh.fntl.FNTLLexerTest {
         testCase47.description = "测试多行字符串，中间包含空行。";
         cases.push(testCase47);
 
+        // Test case 48: 表格数组头识别
+        var testCase48:Object = new Object();
+        testCase48.text = '[[monsters]]\n' +
+                        'name = "Goblin"\n' +
+                        '[[monsters]]\n' +
+                        'name = "Dragon"\n';
+        testCase48.expectedTokens = null;
+        testCase48.description = "测试表格数组头的解析。";
+        cases.push(testCase48);
+
+        // Test case 49: 嵌套表格数组
+        var testCase49:Object = new Object();
+        testCase49.text = '[[servers]]\n' +
+                        'name = "Server1"\n' +
+                        '[[servers.database]]\n' +
+                        'type = "MySQL"\n' +
+                        '[[servers.database.settings]]\n' +
+                        'enabled = true\n';
+        testCase49.expectedTokens = null;
+        testCase49.description = "测试嵌套表格数组的解析。";
+        cases.push(testCase49);
+
+        // Test case 50: 扩展 Unicode 转义序列
+        var testCase50:Object = new Object();
+        testCase50.text = 'unicode_test = "\\U0001F600"\n';  // Unicode code point for 😀
+        testCase50.expectedTokens = null;
+        testCase50.description = "测试扩展的Unicode转义序列（\\UXXXXXXXX）。";
+        cases.push(testCase50);
+
+        // Test case 51: 表格数组中的多行字符串
+        var testCase51:Object = new Object();
+        testCase51.text = '[[servers]]\n' +
+                        'name = "Server1"\n' +
+                        'description = """This is a\nmultiline string."""\n';
+        testCase51.expectedTokens = null;
+        testCase51.description = "测试表格数组中多行字符串的解析。";
+        cases.push(testCase51);
+
+        // Test case 52: 内联表中的转义字符
+        var testCase52:Object = new Object();
+        testCase52.text = 'player = { name = "Alice\\nBob", score = 2500 }\n';
+        testCase52.expectedTokens = null;
+        testCase52.description = "测试内联表中的转义字符处理。";
+        cases.push(testCase52);
+
+        
         return cases;
     }
 
