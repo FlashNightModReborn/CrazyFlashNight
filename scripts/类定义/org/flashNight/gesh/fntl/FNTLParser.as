@@ -142,13 +142,6 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 this.root = originalRoot;
                 return null; // Critical error occurred, return null
             }
-
-            if (this.position >= this.tokens.length) {
-            if (this.debug) {
-                trace("End of tokens reached.");
-            }
-            break; // 退出循环，停止进一步解析
-}
         }
 
         if (this.debug) {
@@ -296,11 +289,7 @@ class org.flashNight.gesh.fntl.FNTLParser {
             }
             this.position++;
         }
-        if (this.position >= this.tokens.length) {
-            trace("End of tokens reached while skipping to next meaningful token.");
-        }
     }
-
 
     /**
      * Parses a value starting from the current position.
@@ -413,11 +402,6 @@ class org.flashNight.gesh.fntl.FNTLParser {
 
         // 如果没有匹配的情况
         this.error("Invalid value type: " + token.type, token);
-
-        if (this.position >= this.tokens.length) {
-            this.error("Unexpected end of input while parsing value", token);
-            return undefined;
-        }
         return undefined;
     }
 
@@ -540,16 +524,14 @@ class org.flashNight.gesh.fntl.FNTLParser {
         if (this.debug) {
             trace("Starting to parse array.");
         }
-
         var array:Array = new Array();
         this.position++; // Skip '['
 
-        var expectValue:Boolean = true; // 期待值标志
+        var expectValue:Boolean = true;
 
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
 
-            // 检查数组结束
             if (token.type == "RBRACKET") {
                 this.position++; // Skip ']'
                 break;
@@ -561,18 +543,18 @@ class org.flashNight.gesh.fntl.FNTLParser {
                 if (value !== undefined) {
                     array.push(value);
                     if (this.debug) {
-                        trace("Array element parsed: " + ObjectUtil.toString(value));
+                        trace("Array element: " + ObjectUtil.toString(value));
                     }
-                    expectValue = false; // 解析值后，不再期待值，期待逗号
+                    expectValue = false;
                 } else {
                     this.error("Failed to parse array element", token);
                     return null;
                 }
             } else {
-                // 期待一个逗号或数组结束符
+                // 期待一个逗号
                 if (token.type == "COMMA") {
                     this.position++; // Skip ','
-                    expectValue = true; // 下一个应该是值
+                    expectValue = true;
                 } else {
                     this.error("Expected ',' or ']' after array element", token);
                     return null;
@@ -589,7 +571,6 @@ class org.flashNight.gesh.fntl.FNTLParser {
     }
 
 
-
     /**
      * Parses an inline table starting from the current position.
      * @return The parsed inline table object or undefined (if an error occurs).
@@ -598,70 +579,62 @@ class org.flashNight.gesh.fntl.FNTLParser {
         if (this.debug) {
             trace("Starting to parse inline table.");
         }
-
         var table:Object = new Object();
-        this.position++; // Skip '{'
-
-        var expectKey:Boolean = true;
+        this.position++; // 跳过 '{'
 
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
 
-            // 检查表结束
             if (token.type == "RBRACE") {
-                this.position++; // Skip '}'
+                this.position++; // 跳过 '}'
                 break;
-            }
+            } else if (token.type == "COMMA") {
+                this.position++; // 跳过逗号
+                continue;
+            } else if (token.type == "KEY" || token.type == "INTEGER") { // 允许 KEY 和 INTEGER 类型作为键
+                var key:String = String(token.value); // 将键转换为字符串
+                this.position++;
 
-            if (expectKey) {
-                // 期待一个键
-                if (token.type == "KEY" || token.type == "INTEGER") { // 允许整数作为键
-                    var key:String = String(token.value);
-                    this.position++;
-
-                    // 检查是否有 '='
-                    if (this.position >= this.tokens.length || this.tokens[this.position].type != "EQUALS") {
-                        this.error("Expected '=' after key '" + key + "'", token);
-                        return undefined;
-                    }
-                    this.position++; // Skip '='
-
-                    // 解析值
-                    var value:Object = this.parseValue();
-                    if (value !== undefined) {
-                        if (table[key] !== undefined) {
-                            this.error("Duplicate key '" + key + "' in inline table", token);
-                            return undefined;
-                        }
-                        table[key] = value;
-                        if (this.debug) {
-                            trace("Inline table key-value pair: " + key + " = " + ObjectUtil.toString(value));
-                        }
-                    } else {
-                        this.error("Failed to parse value for key '" + key + "' in inline table", token);
-                        return undefined;
-                    }
-
-                    expectKey = false; // 解析完值后，期待逗号
-                } else {
-                    this.error("Expected a key or integer in inline table", token);
+                // 检查是否有 '='
+                if (this.position >= this.tokens.length || this.tokens[this.position].type != "EQUALS") {
+                    this.error("Expected '=' after key '" + key + "'", token);
                     return undefined;
                 }
+                this.position++; // 跳过 '='
+
+                var value:Object = this.parseValue();
+                if (value !== undefined) {
+                    if (table[key] !== undefined) {
+                        this.error("Duplicate key '" + key + "' in inline table", token);
+                        return undefined;
+                    }
+                    table[key] = value;
+                    if (this.debug) {
+                        trace("Inline table key-value pair: " + key + " = " + ObjectUtil.toString(value));
+                    }
+                } else {
+                    this.error("Failed to parse value for key '" + key + "' in inline table", token);
+                    return undefined;
+                }
+            } else if (token.type == "MULTILINE_STRING") {
+                // 允许内联表中包含多行字符串
+                var multilineValue:Object = this.parseValue();
+                if (multilineValue === undefined) {
+                    this.error("Failed to parse multiline string in inline table", token);
+                    return undefined;
+                }
+                // 假设键已经被处理，具体处理可能需要根据语法调整
+            } else if (token.type == "NEWLINE") {
+                // 跳过内联表中的换行符
+                if (this.debug) {
+                    trace("Skipping NEWLINE token within inline table.");
+                }
+                this.position++;
+                continue;
             } else {
-                // 期待一个逗号或表结束符
-                if (token.type == "COMMA") {
-                    this.position++; // Skip ','
-                    expectKey = true; // 下一个应该是键
-                } else {
-                    this.error("Expected ',' or '}' after inline table entry", token);
-                    return undefined;
-                }
+                this.error("Unexpected token in inline table: " + token.type, token);
+                return undefined;
             }
-        }
-
-        if (expectKey && ObjectUtil.size(table) > 0) {
-            this.error("Trailing comma in inline table", token);
-            return undefined;
         }
 
         return table;
