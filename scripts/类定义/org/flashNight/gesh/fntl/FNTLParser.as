@@ -297,11 +297,11 @@ class org.flashNight.gesh.fntl.FNTLParser {
             case "STRING":
                 var strValue:String = StringUtils.unescape(token.value); // 解析转义字符
                 this.position++;
-                // 检查字符串中是否包含换行符，未闭合字符串
-                if (strValue.indexOf("\n") >= 0 || strValue.indexOf("\r") >=0 ) {
-                    this.error("Unclosed string", token);
-                    return undefined;
-                }
+                // 移除对换行符的检查
+                // if (strValue.indexOf("\n") >= 0 || strValue.indexOf("\r") >=0 ) {
+                //     this.error("Unclosed string", token);
+                //     return undefined;
+                // }
                 return strValue;
             
             case "MULTILINE_STRING":
@@ -432,38 +432,53 @@ class org.flashNight.gesh.fntl.FNTLParser {
         if (this.debug) {
             trace("Parsing datetime string: " + dateTimeStr);
         }
-        // Use FNTLLexer's defined dateTimeRegExp
+        // 使用 FNTLLexer 的 dateTimeRegExp
         var regex:RegExp = FNTLLexer.dateTimeRegExp;
         if (!regex.test(dateTimeStr)) {
             this.error("Invalid datetime format: " + dateTimeStr, {line: 0, column: 0});
             return null;
         }
 
-        // Use exec to extract components
+        // 使用 exec 提取组件
         var components:Array = regex.exec(dateTimeStr);
-        if (components == null) {
+        if (components == null || components.length < 7) { // 确保所有必要的捕获组都存在
             this.error("Invalid datetime format: " + dateTimeStr, {line: 0, column: 0});
             return null;
         }
 
-        // Adjust indices based on your regex's capturing groups
-        // Example regex: /^(\d{4})-(\d{2})-(\d{2})[Tt ](\d{2}):(\d{2}):(\d{2})(\.\d+)?([Zz]|[+-]\d{2}:\d{2})?$/
+        // 根据正则表达式的捕获组调整索引
         var year:Number = Number(components[1]);
         var month:Number = Number(components[2]);
         var day:Number = Number(components[3]);
         var hour:Number = Number(components[4]);
         var minute:Number = Number(components[5]);
         var second:Number = Number(components[6]);
-        // var fractional:Number = components[7] ? Number(components[7]) : 0;
-        // var timezone:String = components[8] ? components[8] : "Z";
 
-        // Validate each component's range
+        // 验证组件范围
         if (month < 1 || month > 12) {
             this.error("Invalid month in datetime: " + dateTimeStr, {line: 0, column: 0});
             return null;
         }
 
-        if (day < 1 || day > 31) { // Simplistic check; could be improved based on month
+        if (day < 1 || day > 31) { // 可以根据月份进一步细化天数验证
+            this.error("Invalid day in datetime: " + dateTimeStr, {line: 0, column: 0});
+            return null;
+        }
+
+        // 根据月份调整天数的最大值
+        var maxDay:Number = 31;
+        if (month == 4 || month == 6 || month == 9 || month == 11) {
+            maxDay = 30;
+        } else if (month == 2) {
+            // 简单的闰年判断
+            if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+                maxDay = 29;
+            } else {
+                maxDay = 28;
+            }
+        }
+
+        if (day > maxDay) {
             this.error("Invalid day in datetime: " + dateTimeStr, {line: 0, column: 0});
             return null;
         }
@@ -483,9 +498,12 @@ class org.flashNight.gesh.fntl.FNTLParser {
             return null;
         }
 
-        // If all components are valid, return the datetime string
+        // 如果需要，可以添加更多验证，如时区格式等
+
+        // 如果所有组件都有效，返回日期时间字符串
         return dateTimeStr;
     }
+
 
     /**
      * Parses an array starting from the current position.
@@ -498,31 +516,49 @@ class org.flashNight.gesh.fntl.FNTLParser {
         var array:Array = new Array();
         this.position++; // Skip '['
 
+        var expectValue:Boolean = true;
+
         while (this.position < this.tokens.length) {
             var token:Object = this.tokens[this.position];
 
             if (token.type == "RBRACKET") {
                 this.position++; // Skip ']'
                 break;
-            } else if (token.type == "COMMA" || token.type == "NEWLINE") {
-                this.position++; // Skip commas and newlines
-                continue;
-            } else {
+            }
+
+            if (expectValue) {
+                // 期待一个值
                 var value:Object = this.parseValue();
                 if (value !== undefined) {
                     array.push(value);
                     if (this.debug) {
                         trace("Array element: " + ObjectUtil.toString(value));
                     }
+                    expectValue = false;
                 } else {
                     this.error("Failed to parse array element", token);
+                    return null;
+                }
+            } else {
+                // 期待一个逗号
+                if (token.type == "COMMA") {
+                    this.position++; // Skip ','
+                    expectValue = true;
+                } else {
+                    this.error("Expected ',' or ']' after array element", token);
                     return null;
                 }
             }
         }
 
+        if (expectValue && array.length > 0) {
+            this.error("Trailing comma in array", token);
+            return null;
+        }
+
         return array;
     }
+
 
     /**
      * Parses an inline table starting from the current position.
