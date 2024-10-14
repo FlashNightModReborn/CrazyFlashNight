@@ -422,7 +422,7 @@ class org.flashNight.gesh.object.ObjectUtil {
      * @return String FNTL 字符串，或 null 解析失败。
      */
     public static function toFNTL(obj:Object, pretty:Boolean):String {
-        var encoder:FNTLEncoder = new FNTLEncoder();
+        var encoder:FNTLEncoder = new FNTLEncoder(true);
         try {
             return encoder.encode(obj, pretty); // 序列化对象为 FNTL 字符串
         } catch (e:Object) {
@@ -437,7 +437,7 @@ class org.flashNight.gesh.object.ObjectUtil {
      * @return Object 解析后的对象，或 null 解析失败。
      */
     public static function fromFNTL(fntl:String):Object {
-        var lexer:FNTLLexer = new FNTLLexer(fntl);
+        var lexer:FNTLLexer = new FNTLLexer(fntl, true);
         var tokens:Array = [];
         var token:Object;
 
