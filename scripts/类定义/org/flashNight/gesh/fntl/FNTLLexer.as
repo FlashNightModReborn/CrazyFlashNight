@@ -170,12 +170,22 @@ class org.flashNight.gesh.fntl.FNTLLexer {
         return c == " " || c == "\t";
     }
 
-    
+    private var tokenStack:Array = [];
+
     /**
      * 获取下一个标记 (Token)
      * @return 下一个标记对象或 null
      */
     public function getNextToken():Object {
+        // 如果有回退的 Token，先返回
+        if (this.tokenStack.length > 0) {
+            var retToken:Object = this.tokenStack.pop();
+            if (this.debug) {
+                trace("getNextToken: Returning token from stack - " + ObjectUtil.toString(retToken));
+            }
+            return retToken;
+        }
+
         this.skipWhitespaceAndComments();
 
         if (this.currentChar == null) {
@@ -276,20 +286,44 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 return token;
             } 
             else if (this.currentChar == "]") {
-                token = { type: "RBRACKET", value: "]", line: tokenLine, column: tokenColumn };
-                this.nextChar();
-                if (this.debug) {
-                    trace("getNextToken: RBRACKET token detected.");
+                if (this.peek() == "]") {
+                    // 返回第一个 ']'
+                    var firstRBracket:Object = { type: "RBRACKET", value: "]", line: tokenLine, column: tokenColumn };
+                    this.nextChar(); // 跳过第一个 ']'
+                    if (this.debug) {
+                        trace("getNextToken: RBRACKET token detected.");
+                    }
+                    return firstRBracket;
+                    // 下一个 getNextToken 调用将处理第二个 ']'
+                } else {
+                    // 普通表格结束
+                    token = { type: "RBRACKET", value: "]", line: tokenLine, column: tokenColumn };
+                    this.nextChar();
+                    if (this.debug) {
+                        trace("getNextToken: RBRACKET token detected.");
+                    }
+                    return token;
                 }
-                return token;
             } 
             else if (this.currentChar == "[") {
-                token = { type: "LBRACKET", value: "[", line: tokenLine, column: tokenColumn };
-                this.nextChar();
-                if (this.debug) {
-                    trace("getNextToken: LBRACKET token detected.");
+                if (this.peek() == "[") {
+                    // 返回第一个 '['
+                    var firstBracket:Object = { type: "LBRACKET", value: "[", line: tokenLine, column: tokenColumn };
+                    this.nextChar(); // 跳过第一个 '['
+                    if (this.debug) {
+                        trace("getNextToken: LBRACKET token detected.");
+                    }
+                    return firstBracket;
+                    // 下一个 getNextToken 调用将处理第二个 '['
+                } else {
+                    // 普通表格
+                    token = { type: "LBRACKET", value: "[", line: tokenLine, column: tokenColumn };
+                    this.nextChar();
+                    if (this.debug) {
+                        trace("getNextToken: LBRACKET token detected.");
+                    }
+                    return token;
                 }
-                return token;
             } 
             else if (this.currentChar == "{") {
                 // 进入内联表格上下文
@@ -339,13 +373,11 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             } 
             // 识别数字或日期时间
             else if (this.isDigit(this.currentChar) || this.currentChar == "-") {
-                var tokenLine:Number = this.currentLine;
-                var tokenColumn:Number = this.currentColumn;
                 var numberStr:String = this.readNumberString();
                 this.skipWhitespaceAndComments();
 
                 if (this.inInlineTable && this.currentChar == "=") {
-                    // 在内联表格中，且下一个非空白字符为 '='，将数字识别为 INTEGER
+                    // 在内联表格中，且下一个非空白字符为 '=', 将数字识别为 INTEGER
                     if (this.debug) {
                         trace("getNextToken: INTEGER token detected - " + numberStr);
                     }
@@ -368,6 +400,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             }
         }
     }
+
 
     /**
      * 读取数字字符串，不解析为具体的数值类型。
@@ -809,7 +842,7 @@ class org.flashNight.gesh.fntl.FNTLLexer {
             }
         }
     }
-    
+
     /**
      * 读取并解析一个标记的值
      * @param token 要解析的标记
@@ -830,6 +863,8 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 return this.parseDateTime(token.value);
             case "ARRAY":
                 return this.parseArray(token.value);
+            case "TABLE_ARRAY":  // 新增处理表格数组
+                return this.parseTableArray(token.value);
             case "INLINE_TABLE_CONTENT":
                 return this.parseInlineTable(token.value);
             case "NULL":
@@ -839,6 +874,111 @@ class org.flashNight.gesh.fntl.FNTLLexer {
                 return undefined;
         }
     }
+
+    /**
+     * 解析表格数组标记为对象
+     * @param tableArrayName 表格数组的名称
+     * @return 表格数组对象
+     */
+    private function parseTableArray(tableArrayName:String):Object {
+        var tableArray:Object = {};
+        var tables:Array = [];
+        
+        if (this.debug) {
+            trace("parseTableArray: Parsing table array - " + tableArrayName);
+        }
+
+        // 初始化表格数组对象
+        tableArray["name"] = tableArrayName;
+        tableArray["tables"] = tables;  // 用于存储解析的多个表格实例
+
+        // 循环解析多个表格，直到不再遇到 TABLE_ARRAY 标记为止
+        var nextToken:Object;
+        while ((nextToken = this.getNextToken()) != null) {
+            if (nextToken.type == "TABLE_ARRAY") {
+                if (this.debug) {
+                    trace("parseTableArray: Detected new table in array - " + nextToken.value);
+                }
+
+                // 新的表格对象
+                var table:Object = this.parseTable(nextToken.value);
+                
+                // 将解析后的表格内容添加到数组中
+                if (table != null) {
+                    tables.push(table);
+                }
+            } else {
+                // 当不再是表格数组时，回退解析器位置并结束解析
+                this.ungetToken(nextToken);
+                break;
+            }
+        }
+
+        if (this.debug) {
+            trace("parseTableArray: Finished parsing table array. Total tables: " + tables.length);
+        }
+
+        return tableArray;
+    }
+
+    /**
+     * 解析单个表格
+     * @param tableName 表格的名称
+     * @return 表格对象
+     */
+    private function parseTable(tableName:String):Object {
+        var table:Object = {};
+        if (this.debug) {
+            trace("parseTable: Parsing table - " + tableName);
+        }
+
+        // 表格的键值对解析，假设表格内容类似于 KEY = VALUE 的格式
+        var nextToken:Object;
+        while ((nextToken = this.getNextToken()) != null) {
+            if (nextToken.type == "KEY") {
+                var key:String = nextToken.value;
+                var equalsToken:Object = this.getNextToken();  // 获取 '='
+                if (equalsToken.type != "EQUALS") {
+                    this.error("Expected '=' after key", nextToken.line, nextToken.column);
+                    return null;
+                }
+                var valueToken:Object = this.getNextToken();  // 获取值
+                var value:Object = this.parseValue(valueToken);
+                
+                table[key] = value;
+                
+                if (this.debug) {
+                    trace("parseTable: Added key-value pair - " + key + " = " + ObjectUtil.toString(value));
+                }
+            } else if (nextToken.type == "TABLE_ARRAY" || nextToken.type == "TABLE_HEADER") {
+                // 遇到新表格开始的标记时，回退解析器位置并退出当前表格解析
+                this.ungetToken(nextToken);
+                break;
+            } else {
+                // 其他未知情况，报错
+                this.error("Unexpected token in table: " + nextToken.type, nextToken.line, nextToken.column);
+                return null;
+            }
+        }
+
+        if (this.debug) {
+            trace("parseTable: Finished parsing table - " + tableName);
+        }
+
+        return table;
+    }
+
+    /**
+     * 回退标记到上一个位置，便于重新处理
+     * @param token 要回退的标记
+     */
+    private function ungetToken(token:Object):Void {
+        this.tokenStack.push(token);
+        if (this.debug) {
+            trace("ungetToken: Token pushed back - " + ObjectUtil.toString(token));
+        }
+    }
+
 
     /**
      * 解析特殊浮点数值（NaN, Infinity, -Infinity）
