@@ -123,7 +123,91 @@ class org.flashNight.neur.Event.Delegate {
 
         // 使用 Dictionary 静态方法生成 methodUID 和 paramsUID
         var methodUID:String = String(Dictionary.getStaticUID(method));
-        var paramsUID:String = params.toString();  // 使用 `toString()` 生成唯一的参数组合标识符
+
+        // 生成 paramsUID 的优化逻辑
+        var paramsUID:String;
+        if (params.length > 4) {
+            // 当参数数组长度超过 4 时，直接使用 Dictionary.getStaticUID 来生成该数组的唯一标识符
+            // 这样可以简化处理，并避免为每个参数分别生成 UID 的额外开销。
+            paramsUID = String(Dictionary.getStaticUID(params));
+        } else {
+            // 如果参数数组的长度小于等于 4，那么可以手动展开参数处理逻辑
+            // 目的是通过拼接每个参数的 UID 或其本身的字符串值来生成一个唯一的缓存键
+            // 这样可以避免直接使用 getStaticUID 而带来的性能开销，尤其是对于简单类型的参数
+
+            if (params.length == 0) {
+                // 如果参数数组为空，那么直接返回空字符串作为 paramsUID
+                paramsUID = ""; // 空数组
+            }
+            else if (params.length == 1) {
+                // 如果参数数组中只有一个元素
+                var elem0 = params[0];
+                if (typeof elem0 == "object" || typeof elem0 == "function") {
+                    // 如果该元素是对象或函数，使用 Dictionary.getStaticUID 获取它的唯一标识符
+                    paramsUID = String(Dictionary.getStaticUID(elem0));
+                } else {
+                    // 如果该元素是简单类型（如字符串或数字），直接使用它的字符串值作为 UID
+                    paramsUID = String(elem0);
+                }
+            }
+            else if (params.length == 2) {
+                // 如果参数数组中有两个元素
+                var elem0 = params[0];
+                var elem1 = params[1];
+                if ((typeof elem0 == "object" || typeof elem0 == "function") ||
+                    (typeof elem1 == "object" || typeof elem1 == "function")) {
+                    // 如果其中任何一个元素是对象或函数，则为每个对象或函数单独生成 UID
+                    // 使用 "|" 分隔符将两个 UID 拼接，保证生成的缓存键唯一且明确
+                    var uid0:String = (typeof elem0 == "object" || typeof elem0 == "function") ? String(Dictionary.getStaticUID(elem0)) : String(elem0);
+                    var uid1:String = (typeof elem1 == "object" || typeof elem1 == "function") ? String(Dictionary.getStaticUID(elem1)) : String(elem1);
+                    paramsUID = uid0 + "|" + uid1;
+                } else {
+                    // 如果两个元素都是简单类型，则直接拼接它们的字符串值
+                    paramsUID = String(elem0) + "|" + String(elem1);
+                }
+            }
+            else if (params.length == 3) {
+                // 如果参数数组中有三个元素
+                var elem0 = params[0];
+                var elem1 = params[1];
+                var elem2 = params[2];
+                if ((typeof elem0 == "object" || typeof elem0 == "function") ||
+                    (typeof elem1 == "object" || typeof elem1 == "function") ||
+                    (typeof elem2 == "object" || typeof elem2 == "function")) {
+                    // 如果其中任何一个元素是对象或函数，直接使用 getStaticUID 获取整个数组的 UID
+                    // 这样可以简化逻辑并保持高性能
+                    paramsUID = String(Dictionary.getStaticUID(params));
+                } else {
+                    // 如果三个元素都是简单类型，则手动拼接它们的字符串值
+                    paramsUID = String(elem0) + "|" + String(elem1) + "|" + String(elem2);
+                }
+            }
+            else if (params.length == 4) {
+                // 如果参数数组中有四个元素
+                var elem0 = params[0];
+                var elem1 = params[1];
+                var elem2 = params[2];
+                var elem3 = params[3];
+                if ((typeof elem0 == "object" || typeof elem0 == "function") ||
+                    (typeof elem1 == "object" || typeof elem1 == "function") ||
+                    (typeof elem2 == "object" || typeof elem2 == "function") ||
+                    (typeof elem3 == "object" || typeof elem3 == "function")) {
+                    // 如果其中任何一个元素是对象或函数，直接为整个数组生成 UID
+                    // 通过 getStaticUID 来简化操作
+                    paramsUID = String(Dictionary.getStaticUID(params));
+                } else {
+                    // 如果四个元素都是简单类型，则拼接它们的字符串值作为 UID
+                    paramsUID = String(elem0) + "|" + String(elem1) + "|" + String(elem2) + "|" + String(elem3);
+                }
+            }
+            else {
+                // 其他情况（理论上不会达到这里，因为已经处理了 params.length <= 4 和 > 4）
+                // 如果长度超出，使用 getStaticUID 确保生成唯一标识符
+                paramsUID = String(Dictionary.getStaticUID(params));
+            }
+        }
+
+
 
         // 如果作用域为 null，则函数将在全局作用域中执行
         if (scope == null) {
