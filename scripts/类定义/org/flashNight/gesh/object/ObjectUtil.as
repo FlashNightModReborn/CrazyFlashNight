@@ -141,10 +141,12 @@ class org.flashNight.gesh.object.ObjectUtil {
      * 将对象转换为字符串表示形式（类似于 JSON 格式）。
      * @param obj 要转换的对象。
      * @param seenObjects (可选) 追踪已转换的对象，防止循环引用
+     * @param depth (可选) 递归深度，防止无限递归
      * @return String 对象的字符串表示。
      */
     public static function toString(obj:Object, seenObjects:Dictionary, depth:Number):String {
         var MAX_DEPTH:Number = 256;  // 设置最大递归深度
+        var result:String = "";
 
         if(depth == undefined) {
             depth = 0;
@@ -171,10 +173,13 @@ class org.flashNight.gesh.object.ObjectUtil {
         // 将当前对象加入到 seenObjects，以追踪后续递归
         seenObjects.setItem(obj, true);
 
-        var result:String = "";
-
+        // 处理函数类型，输出 function:uid 格式
+        if (typeof(obj) == "function") {
+            var uid:Number = Dictionary.getStaticUID(obj);  // 使用 getUID 方法获取唯一标识符
+            result = "func:" + uid;
+        }
         // 处理数组类型
-        if (obj instanceof Array) {
+        else if (obj instanceof Array) {
             result += "[";
             for (var i:Number = 0; i < obj.length; i++) {
                 if (i > 0) result += ", ";
@@ -209,6 +214,7 @@ class org.flashNight.gesh.object.ObjectUtil {
 
         return result;
     }
+
 
 
     /**

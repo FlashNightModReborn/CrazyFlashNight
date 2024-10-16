@@ -132,3 +132,177 @@ public function update(playerX:Number, playerY:Number):Void {
 }
 
 }
+
+
+/*
+
+import flash.geom.Rectangle;
+import flash.geom.Matrix;
+import org.flashNight.sara.util.*;
+
+_root.createComplexMap = function(parentClip:MovieClip):MovieClip {
+    var mapClip:MovieClip = parentClip.createEmptyMovieClip("mapClip", parentClip.getNextHighestDepth());
+    mapClip._x = 0;
+    mapClip._y = 0;
+
+    // 绘制大矩形作为地图背景
+    mapClip.beginFill(0xCCCCCC, 100); // 灰色填充
+    mapClip.moveTo(0, 0);
+    mapClip.lineTo(1000, 0);
+    mapClip.lineTo(1000, 1000);
+    mapClip.lineTo(0, 1000);
+    mapClip.lineTo(0, 0);
+    mapClip.endFill();
+
+    // 绘制网格线
+    mapClip.lineStyle(1, 0x999999, 100);
+    for (var i:Number = 0; i <= 1000; i += 100) {
+        mapClip.moveTo(i, 0);
+        mapClip.lineTo(i, 1000);
+        mapClip.moveTo(0, i);
+        mapClip.lineTo(1000, i);
+    }
+
+    // 添加随机树木
+    for (var j:Number = 0; j < 10; j++) {
+        var treeX:Number = Math.random() * 1000;
+        var treeY:Number = Math.random() * 1000;
+        mapClip.beginFill(0x228B22, 100); // 树的颜色
+        mapClip.moveTo(treeX, treeY);
+        mapClip.lineTo(treeX - 10, treeY + 20);
+        mapClip.lineTo(treeX + 10, treeY + 20);
+        mapClip.lineTo(treeX, treeY);
+        mapClip.endFill();
+    }
+
+    // 添加随机建筑
+    for (var k:Number = 0; k < 5; k++) {
+        var buildingX:Number = Math.random() * 1000;
+        var buildingY:Number = Math.random() * 1000;
+        var buildingWidth:Number = 40 + Math.random() * 60;
+        var buildingHeight:Number = 60 + Math.random() * 100;
+        mapClip.beginFill(0x8B4513, 100); // 建筑颜色
+        mapClip.moveTo(buildingX, buildingY);
+        mapClip.lineTo(buildingX + buildingWidth, buildingY);
+        mapClip.lineTo(buildingX + buildingWidth, buildingY + buildingHeight);
+        mapClip.lineTo(buildingX, buildingY + buildingHeight);
+        mapClip.lineTo(buildingX, buildingY);
+        mapClip.endFill();
+    }
+
+    // 返回生成的地图影片剪辑
+    return mapClip;
+};
+
+// 初始化测试
+_root.initTest = function():Void {
+    // 创建游戏世界的影片剪辑
+    var gameWorld:MovieClip = _root.createEmptyMovieClip("gameWorld", _root.getNextHighestDepth());
+
+    // 在 gameWorld 中创建复杂地图影片剪辑
+    var mapClip:MovieClip = _root.createComplexMap(gameWorld);
+
+    // 创建一个模拟的玩家对象
+    var player:MovieClip = gameWorld.createEmptyMovieClip("player", gameWorld.getNextHighestDepth());
+    player.beginFill(0xFF0000, 100); // 红色填充
+    player.moveTo(-10, -10);
+    player.lineTo(10, -10);
+    player.lineTo(10, 10);
+    player.lineTo(-10, 10);
+    player.lineTo(-10, -10);
+    player.endFill();
+    player._x = 500; // 初始位置在地图中心
+    player._y = 500;
+
+    // 初始化 TileManager
+    var tileSize:Number = 200; // 瓦片大小
+    var tileManager:TileManager = new TileManager(tileSize, mapClip, gameWorld);
+
+    // 将 TileManager 保存到全局变量，方便在其他地方访问
+    _root.tileManager = tileManager;
+
+    // 监听键盘事件，控制玩家移动
+    var speed:Number = 5; // 玩家移动速度
+    var keys:Object = {left: false, right: false, up: false, down: false};
+
+    Key.addListener({
+        onKeyDown: function() {
+            var keyCode:Number = Key.getCode();
+            if (keyCode == Key.LEFT) keys.left = true;
+            if (keyCode == Key.RIGHT) keys.right = true;
+            if (keyCode == Key.UP) keys.up = true;
+            if (keyCode == Key.DOWN) keys.down = true;
+        },
+        onKeyUp: function() {
+            var keyCode:Number = Key.getCode();
+            if (keyCode == Key.LEFT) keys.left = false;
+            if (keyCode == Key.RIGHT) keys.right = false;
+            if (keyCode == Key.UP) keys.up = false;
+            if (keyCode == Key.DOWN) keys.down = false;
+        }
+    });
+
+    // 显示性能信息的文本字段
+    // Increase the size of the TextField to 300x120 for better visibility
+var infoText:TextField = _root.createTextField("infoText", _root.getNextHighestDepth(), 10, 10, 300, 120);
+
+    infoText.border = true;
+    infoText.background = true;
+    infoText.backgroundColor = 0xFFFFFF;
+    infoText.text = "性能信息";
+
+    // FPS 相关变量
+    var frameCount:Number = 0;
+    var lastTime:Number = getTimer();
+    var fps:Number = 0;
+
+    // 主循环
+    _root.onEnterFrame = function():Void {
+        // 更新玩家位置
+        if (keys.left) player._x -= speed;
+        if (keys.right) player._x += speed;
+        if (keys.up) player._y -= speed;
+        if (keys.down) player._y += speed;
+
+        // 限制玩家在地图范围内
+        if (player._x < 0) player._x = 0;
+        if (player._x > mapClip._width) player._x = mapClip._width;
+        if (player._y < 0) player._y = 0;
+        if (player._y > mapClip._height) player._y = mapClip._height;
+
+        // 更新 TileManager
+        tileManager.update(player._x, player._y);
+
+        // 让游戏世界跟随玩家移动，实现滚屏效果
+        var stageCenterX:Number = Stage.width / 2;
+        var stageCenterY:Number = Stage.height / 2;
+        gameWorld._x = stageCenterX - player._x;
+        gameWorld._y = stageCenterY - player._y;
+
+        // 计算 FPS
+        frameCount++;
+        var currentTime:Number = getTimer();
+        var elapsed:Number = currentTime - lastTime;
+
+        if (elapsed >= 1000) {  // 每秒更新一次 FPS
+            fps = frameCount * 1000 / elapsed;
+            frameCount = 0;
+            lastTime = currentTime;
+        }
+
+        // 更新性能信息
+        var cacheSize:Number = 0;
+        for (var id:String in tileManager.tileCache) {
+            cacheSize++;
+        }
+        infoText.text = "玩家位置：(" + Math.round(player._x) + ", " + Math.round(player._y) + ")\n";
+        infoText.text += "加载的瓦片数量：" + cacheSize + "\n";
+        infoText.text += "瓦片容器数量：" + tileManager.tileContainers.length + "\n";
+        infoText.text += "当前帧率：" + Math.round(fps) + " FPS\n";
+    };
+};
+
+// 启动测试
+_root.initTest();
+
+*/
