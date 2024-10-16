@@ -1,6 +1,7 @@
 ﻿// 文件路径：org/flashNight/neur/Event/DelegateTest.as
 import org.flashNight.neur.Event.Delegate; // 导入 Delegate 类
 
+
 class org.flashNight.neur.Event.DelegateTest {
     private var totalTests:Number;
     private var passedTests:Number;

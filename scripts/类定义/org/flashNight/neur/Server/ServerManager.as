@@ -5,9 +5,20 @@ class org.flashNight.neur.Server.ServerManager {
     public var portList:Array;
     public var portIndex:Number;
     public var currentPort:Number;
-    public var requestQueue:Array;
-    public var messageQueue:Array; // 消息队列
     private var frameClip:MovieClip; // 用于管理 enterFrame 事件的影片剪辑
+    public var currentFrame:Number; // 独立的帧计数器
+
+    // 重连相关变量
+    public var reconnectionAttempts:Number = 0;
+    public var maxReconnectionAttempts:Number = 5;
+    public var reconnectionDelayFrames:Number = 300; // 固定重连间隔10秒
+    public var framesSinceLastReconnectionAttempt:Number = 0;
+    public var isReconnecting:Boolean = false;
+
+    // 消息发送相关变量
+    private var isSending:Boolean = false; // 当前是否在发送消息
+    private var hasSentThisFrame:Boolean = false; // 本帧是否已发送过消息
+    private var messageBuffer:String = ""; // 待发送的消息缓冲区
 
     // 构造函数
     public function ServerManager() {
@@ -20,8 +31,7 @@ class org.flashNight.neur.Server.ServerManager {
         portList = [];
         portIndex = 0;
         currentPort = null;
-        requestQueue = [];
-        messageQueue = [];
+        currentFrame = 0;
         extractPorts();
         initFrameClip();
         getAvailablePort(); // 启动端口检测
@@ -86,7 +96,9 @@ class org.flashNight.neur.Server.ServerManager {
 
     private function initFrameClip():Void {
         frameClip = _root.createEmptyMovieClip("ServerManagerFrameClip", _root.getNextHighestDepth());
-        frameClip.onEnterFrame = Delegate.create(this, processRequestQueue);
+        frameClip.onEnterFrame = function() {
+            ServerManager.instance.onEnterFrameHandler();
+        };
     }
 
     public function getAvailablePort():Void {
@@ -94,129 +106,145 @@ class org.flashNight.neur.Server.ServerManager {
             var port:Number = portList[portIndex];
             trace("Trying to connect to port: " + port);
 
-            addToQueue({
-                url: "http://localhost:" + port + "/testConnection",
-                type: "testConnection",
-                onSuccess: Delegate.createWithParams(this, onPortSuccess, [port]),
-                onFailure: Delegate.createWithParams(this, onPortFailure, [port])
-            });
+            testConnection(port);
         } else {
             trace("No available ports found.");
         }
+    }
+
+    private function testConnection(port:Number):Void {
+        var lv:LoadVars = new LoadVars();
+
+        lv.onLoad = function(success:Boolean):Void {
+            if (success) {
+                ServerManager.instance.onPortSuccess(port);
+            } else {
+                ServerManager.instance.onPortFailure(port);
+            }
+        };
+
+        lv.sendAndLoad("http://localhost:" + port + "/testConnection", lv, "POST");
     }
 
     private function onPortSuccess(port:Number):Void {
         trace("Connected to port: " + port);
         currentPort = port;
 
-        if (messageQueue.length > 0) {
-            var messagesToSend:Array = messageQueue.slice();
-            messageQueue = [];
-            sendMessageBatch(messagesToSend);
-        }
+        // 重置重连相关变量
+        reconnectionAttempts = 0;
+        framesSinceLastReconnectionAttempt = 0;
+        isReconnecting = false;
+
+        trace("Messages are queued and will be sent in the next frame.");
     }
 
     private function onPortFailure(port:Number):Void {
         trace("Failed to connect to port: " + port);
-        portIndex++;
-        getAvailablePort();
-    }
+        reconnectionAttempts++;
+        framesSinceLastReconnectionAttempt = 0;
 
-    // 发送服务器消息（始终批量发送）
-    public function sendServerMessage(message:String):Void {
-        messageQueue.push(message);
-        trace("Message queued: " + message);
-
-        if (currentPort != null && messageQueue.length > 0) {
-            var messagesToSend:Array = messageQueue.slice();
-            messageQueue = [];
-            sendMessageBatch(messagesToSend);
-        }
-    }
-
-    // 批量发送消息的方法
-    private function sendMessageBatch(messages:Array):Void {
-        var combinedMessages:String = messages.join("|"); // 使用 '|' 作为分隔符
-        trace("Sending batch message: " + combinedMessages + " to port: " + currentPort);
-
-        addToQueue({
-            url: "http://localhost:" + currentPort + "/logBatch",
-            type: "logMessages",
-            data: { messages: combinedMessages },
-            onSuccess: Delegate.createWithParams(this, onMessageSuccess, [currentPort]),
-            onFailure: Delegate.createWithParams(this, onMessageFailure, [currentPort])
-        });
-    }
-
-    /*
-    // 移除 sendMessage 方法，确保所有消息通过批量发送
-    private function sendMessage(message:String):Void {
-        trace("Sending message: " + message + " to port " + currentPort);
-
-        addToQueue({
-            url: "http://localhost:" + currentPort + "/log",
-            type: "logMessage",
-            data: { message: message },
-            onSuccess: Delegate.createWithParams(this, onMessageSuccess, [currentPort]),
-            onFailure: Delegate.createWithParams(this, onMessageFailure, [currentPort])
-        });
-    }
-    */
-
-    private function onMessageSuccess(port:Number):Void {
-        trace("Message sent to port " + port);
-    }
-
-    private function onMessageFailure(port:Number):Void {
-        trace("Failed to send message to port " + port);
-    }
-
-    private function addToQueue(request:Object):Void {
-        if (request.type == "testConnection") {
-            var exists:Boolean = false;
-            for (var i:Number = 0; i < requestQueue.length; i++) {
-                if (requestQueue[i].type == request.type) {
-                    exists = true;
-                    break;
-                }
-            }
-            if (!exists) {
-                requestQueue.push(request);
-                trace("Request added to queue: " + request.type + " for URL: " + request.url);
-            } else {
-                trace("Duplicate testConnection request not added.");
-            }
+        if (reconnectionAttempts < maxReconnectionAttempts) {
+            isReconnecting = true;
+            trace("Reconnection attempt " + reconnectionAttempts + " scheduled in " + reconnectionDelayFrames + " frames.");
         } else {
-            requestQueue.push(request);
-            trace("Request added to queue: " + request.type + " for URL: " + request.url);
+            isReconnecting = false;
+            trace("Max reconnection attempts reached. Giving up.");
+        }
+
+        portIndex++;
+        if (portIndex >= portList.length) {
+            portIndex = 0; // 循环尝试端口列表
         }
     }
 
-    public function processRequestQueue():Void {
-        while (requestQueue.length > 0) {
-            var request:Object = requestQueue.shift();
-            var lv:LoadVars = new LoadVars();
-
-            if (request.data != undefined) {
-                for (var key:String in request.data) {
-                    lv[key] = request.data[key];
-                    trace("Setting LoadVars key: " + key + " to value: " + request.data[key]);
-                }
-            }
-
-            lv.onSuccessCallback = request.onSuccess;
-            lv.onFailureCallback = request.onFailure;
-
-            lv.onLoad = function(success:Boolean):Void {
-                if (success && this.onSuccessCallback != undefined) {
-                    this.onSuccessCallback();
-                } else if (!success && this.onFailureCallback != undefined) {
-                    this.onFailureCallback();
-                }
-            };
-
-            lv.sendAndLoad(request.url, lv, "POST");
-            trace("Request sent: " + request.type + " to " + request.url);
+    // 发送服务器消息（将消息追加到messageBuffer）
+    public function sendServerMessage(message:String):Void {
+        // 验证消息内容，确保只接受字符串且不包含非法字符
+        if (typeof(message) != "string" || message.indexOf("{") != -1 || message.indexOf("}") != -1) {
+            trace("Invalid message format. Only plain strings without '{}' are allowed.");
+            return;
         }
+
+        // 将消息追加到消息缓冲区
+        if (messageBuffer.length > 0) {
+            messageBuffer += "|" + message;
+        } else {
+            messageBuffer = message;
+        }
+
+        trace("Message appended to buffer: " + message);
+    }
+
+    // 每帧处理请求队列和消息发送
+    private function onEnterFrameHandler():Void {
+        // 增加帧计数
+        currentFrame++;
+
+        // 重置hasSentThisFrame标志
+        hasSentThisFrame = false;
+
+        // 处理重连逻辑
+        if (isReconnecting) {
+            framesSinceLastReconnectionAttempt++;
+            if (framesSinceLastReconnectionAttempt >= reconnectionDelayFrames) {
+                isReconnecting = false;
+                trace("Attempting reconnection...");
+                getAvailablePort(); // 尝试重连
+            }
+        }
+
+        // 如果当前没有在发送消息，且消息缓冲区不为空，且已连接到端口，且本帧还未发送过消息
+        if (!isSending && messageBuffer.length > 0 && currentPort != null && !hasSentThisFrame) {
+            sendMessageBuffer();
+        }
+    }
+
+    // 发送积累的消息
+    private function sendMessageBuffer():Void {
+        if (currentPort == null) {
+            trace("No current port available. Cannot send messages.");
+            return;
+        }
+
+        if (isSending) {
+            trace("Already sending messages. Send aborted.");
+            return;
+        }
+
+        // 发送消息
+        var lv:LoadVars = new LoadVars();
+        var messageToSend:String = messageBuffer; // 仅发送消息内容，不包含帧数
+
+        lv.frame = currentFrame; // 将帧数作为独立参数
+        lv.messages = messageToSend;
+
+        trace("Sending messages for frame " + currentFrame + ": " + messageToSend + " to port: " + currentPort);
+
+        isSending = true;
+        hasSentThisFrame = true; // 标记本帧已经发送过消息
+
+        lv.onLoad = function(success:Boolean):Void {
+            if (success) {
+                ServerManager.instance.onMessageSuccess();
+            } else {
+                ServerManager.instance.onMessageFailure();
+            }
+        };
+
+        lv.sendAndLoad("http://localhost:" + currentPort + "/logBatch", lv, "POST");
+
+        // 清空消息缓冲区
+        messageBuffer = "";
+    }
+
+    private function onMessageSuccess():Void {
+        trace("Messages sent successfully.");
+        isSending = false;
+    }
+
+    private function onMessageFailure():Void {
+        trace("Failed to send messages.");
+        isSending = false;
+        // 可选：将失败的消息重新加入缓冲区或记录错误
     }
 }

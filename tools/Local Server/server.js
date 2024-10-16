@@ -69,23 +69,25 @@ app.post('/log', (req, res) => {
 
 // 处理 AS2 客户端发送的批量日志消息
 app.post('/logBatch', (req, res) => {
+    const frame = req.body.frame;
     const messages = req.body.messages;
 
-    if (messages) {
+    if (frame !== undefined && messages) {
         const messageArray = messages.split('|'); // 使用 '|' 作为分隔符
 
-        // 逐条记录日志
+        // 逐条记录日志，将帧数信息嵌入到每一条消息前
         messageArray.forEach(msg => {
             if (msg.trim() !== '') { // 避免记录空消息
-                logger.info(`Received batch message: ${msg}`);
+                logger.info(`[F: ${frame}] ${msg}`);
             }
         });
 
         res.status(200).send('Messages logged');
     } else {
-        res.status(400).send('No messages received');
+        res.status(400).send('Frame or messages not received');
     }
 });
+
 
 // 连接测试端点
 app.post('/testConnection', (req, res) => {
