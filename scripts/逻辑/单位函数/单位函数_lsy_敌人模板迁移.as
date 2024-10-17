@@ -153,6 +153,7 @@ _root.敌人函数.方向改变 = function(新方向)
 
 _root.敌人函数.状态改变 = function(新状态名)
 {
+	旧状态 = 状态;//记录上一个状态名
 	状态 = 新状态名;
 	this.gotoAndStop(新状态名);
 };
