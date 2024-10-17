@@ -1,4 +1,5 @@
 ﻿import org.flashNight.neur.Event.Delegate;
+import org.flashNight.neur.Event.EventBus;
 
 class org.flashNight.neur.Server.ServerManager {
     public static var instance:ServerManager;
@@ -20,6 +21,9 @@ class org.flashNight.neur.Server.ServerManager {
     private var hasSentThisFrame:Boolean = false; // 本帧是否已发送过消息
     private var messageBuffer:String = ""; // 待发送的消息缓冲区
 
+    // Cached EventBus instance
+    private var eventBus:EventBus;
+
     // 构造函数
     public function ServerManager() {
         if (instance != null) {
@@ -32,9 +36,13 @@ class org.flashNight.neur.Server.ServerManager {
         portIndex = 0;
         currentPort = null;
         currentFrame = 0;
+        eventBus = EventBus.getInstance(); // Cache EventBus instance
         extractPorts();
         initFrameClip();
         getAvailablePort(); // 启动端口检测
+
+        // Subscribe internal functions to frameUpdate event
+        eventBus.subscribe("frameUpdate", onFrameUpdate, this);
     }
 
     // 获取单例实例
@@ -180,9 +188,15 @@ class org.flashNight.neur.Server.ServerManager {
         // 增加帧计数
         currentFrame++;
 
+        // Publish frameUpdate event
+        eventBus.publish("frameUpdate", currentFrame);
+
         // 重置hasSentThisFrame标志
         hasSentThisFrame = false;
+    }
 
+    // Handler subscribed to frameUpdate event
+    private function onFrameUpdate(currentFrame:Number):Void {
         // 处理重连逻辑
         if (isReconnecting) {
             framesSinceLastReconnectionAttempt++;

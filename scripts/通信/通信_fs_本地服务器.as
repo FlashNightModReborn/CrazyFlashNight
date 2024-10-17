@@ -27,8 +27,5 @@ _root.服务器.发布服务器消息 = function(消息) {
     _root.server.sendServerMessage(消息);
 };
 
-// 初始化连接尝试，通过旧接口
-_root.服务器.获得可用端口();  
-
 // 发送消息，通过旧接口
 _root.服务器.发布服务器消息("This is a test message.");

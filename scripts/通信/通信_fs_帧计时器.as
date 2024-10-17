@@ -4,7 +4,7 @@ import org.flashNight.naki.DataStructures.*;
 import org.flashNight.sara.*;
 import org.flashNight.neur.Server.*; 
 import org.flashNight.neur.Event.*;
-_root.帧计时器 = _root.createEmptyMovieClip("帧计时器", _root.getNextHighestDepth());
+_root.帧计时器 = {};
 
 _root.帧计时器.初始化任务栈 = function()
  {  
@@ -62,7 +62,8 @@ _root.帧计时器.初始化任务栈 = function()
                                   this.precisionThreshold);
 
     this.zeroFrameTasks = {}; // Use an object or array to store tasks
-    this.eventBus = EventBus.initialize();
+    this.server = ServerManager.getInstance();
+    this.eventBus = EventBus.getInstance();
 };
 
 _root.帧计时器.初始化任务栈();
@@ -404,22 +405,26 @@ _root.帧计时器.键盘输入控制目标 = function()
     }
 }
 
-_root.帧计时器.eventBus.subscribe("frameUpdate", function(当前帧数) {
+_root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     this.性能评估优化();
     this.定期更新天气();
     this.键盘输入控制目标();
 }, _root.帧计时器);
 
-_root.帧计时器.eventBus.subscribe("frameUpdate", function(当前帧数) {
+_root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     _root.显示列表.播放列表();
 }, _root.帧计时器);
 
-_root.帧计时器.eventBus.subscribe("frameUpdate", function(当前帧数) {
+_root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     _root.UI系统.虚拟币刷新();
     _root.UI系统.金钱刷新();
 }, _root.帧计时器);
 
-_root.帧计时器.eventBus.subscribe("frameUpdate", function(当前帧数) {
+_root.帧计时器.eventBus.subscribe("frameUpdate", function() {
+    this.当前帧数 = this.server.currentFrame;
+}, _root.帧计时器);
+
+_root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     var tasks = this.ScheduleTimer.tick();
 
     if (tasks != null) {
@@ -459,14 +464,6 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function(当前帧数) {
         }
     }
 }, _root.帧计时器);
-
-_root.帧计时器.onEnterFrame = function() {
-    this.当前帧数 += 1;
-
-    // 发布帧更新事件，传递当前帧数
-    this.eventBus.publish("frameUpdate", this.当前帧数);
-};
-
 
 _root.帧计时器.移除任务 = function(任务ID)
 {
