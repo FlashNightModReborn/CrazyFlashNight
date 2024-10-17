@@ -113,3 +113,6 @@ E;                           // 结束填充
 - **`B A;`**：设置混合模式为 `add`。
 - **`T 1 0.8 0.6 50 -30 0 0.5 0;`**：应用颜色变化，增强红色、降低绿色、增加透明度。
 - **`E;`**：结束填充操作。
+
+var test:org.flashNight.gesh.paint.renderMachine.RendererVMTest = new org.flashNight.gesh.paint.renderMachine.RendererVMTest();
+test.runTests();
