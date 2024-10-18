@@ -234,14 +234,8 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种386</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>40</Level>
-                    </Enemy>
-                    <Enemy id="1">
                         <Type>兵种384</Type>
-                        <Interval>500</Interval>
+                        <Interval>300</Interval>
                         <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
@@ -249,6 +243,19 @@
                         <Type>兵种383</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种386</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -269,7 +276,7 @@
         </BasicInformation>
         <Instances>
             <Instance id="0">
-                <x>900</x>
+                <x>850</x>
                 <y>194</y>
                 <Identifier>髅髅宫歌留多</Identifier>
             </Instance>
