@@ -165,7 +165,9 @@
             "get_conversation": "$SIDE_GET_1000008",
             "get_npc": "长生军战士",
 
-            "finish_requirements": [],
+            "finish_requirements": [
+                "古战场#简单"
+            ],
             "finish_conversation": "$SIDE_FINISH_1000008",
             "finish_npc": "长生军战士",
             "rewards": [
@@ -250,7 +252,9 @@
             "get_conversation": "$SIDE_GET_1000012",
             "get_npc": "诺艾尔",
 
-            "finish_requirements": [],
+            "finish_requirements": [
+                "密林中央#冒险"
+            ],
             "finish_conversation": "$SIDE_FINISH_1000012",
             "finish_npc": "尾上世莉架",
             "rewards": [
