@@ -1,12 +1,15 @@
-# 读取当前脚本所在的目录
-$scriptDirectory = (Get-Location)
+# 获取当前脚本所在的目录
+$scriptDirectory = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
 
 # 定义默认的 Flash Player 和 SWF 文件名称
 $flashPlayerDefault = "Adobe Flash Player 20.exe"
 $swfDefault = "CRAZYFLASHER7MercenaryEmpire.swf"
 
+# 计算相对于 automation 的路径 (resources)
+$resourcesDir = Split-Path -Parent $scriptDirectory
+
 # 检查配置文件是否存在，如果存在则读取
-$configFilePath = "$scriptDirectory\config.toml"
+$configFilePath = "$resourcesDir\config.toml"
 $flashPlayerPath = ""
 $swfPath = ""
 
@@ -26,11 +29,14 @@ if (Test-Path $configFilePath) {
 
 # 如果在配置文件中未指定路径，则使用默认值
 if (-not $flashPlayerPath) {
-    $flashPlayerPath = "$scriptDirectory\$flashPlayerDefault"
+    $flashPlayerPath = "$resourcesDir\$flashPlayerDefault"
 }
 if (-not $swfPath) {
-    $swfPath = "$scriptDirectory\$swfDefault"
+    $swfPath = "$resourcesDir\$swfDefault"
 }
+
+Write-Host "Flash Player Path: $flashPlayerPath"
+Write-Host "SWF Path: $swfPath"
 
 # 检查 Flash Player 和 SWF 文件是否存在
 if (-not (Test-Path $flashPlayerPath)) {
@@ -44,4 +50,7 @@ if (-not (Test-Path $swfPath)) {
 }
 
 # 启动 Flash Player 并加载 SWF 文件，但不隐藏 Flash Player 窗口
+Write-Host "Starting Flash Player with SWF..."
 Start-Process -FilePath $flashPlayerPath -ArgumentList $swfPath -NoNewWindow
+
+Write-Host "Game has been started successfully."
