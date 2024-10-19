@@ -1,4 +1,38 @@
+# 获取当前脚本所在的目录
+$scriptDirectory = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
 
+# 定义配置服务器脚本的路径
+$configureScriptPath = Join-Path $scriptDirectory "configure_server.ps1"
+
+# 检查Node.js是否已安装
+Write-Host "Checking for Node.js installation..."
+try {
+    $nodeVersion = & node -v 2>$null
+} catch {
+    $nodeVersion = $null
+}
+
+if (-not $nodeVersion) {
+    Write-Host "Node.js is not installed or not functioning. Running the configuration script..."
+    if (Test-Path $configureScriptPath) {
+        Write-Host "Calling configure_server.ps1 to install Node.js and set up the environment..."
+        # 调用配置脚本并等待执行完成
+        try {
+            & "$configureScriptPath"
+            Write-Host "Configuration script executed successfully. Continuing with server startup..."
+        } catch {
+            Write-Host "Failed to run the configuration script. Please check the configuration script for issues."
+            exit 1
+        }
+    } else {
+        Write-Host "Configuration script not found at $configureScriptPath. Please check the file path."
+        exit 1
+    }
+} else {
+    Write-Host "Node.js is already installed. Current installed version: $nodeVersion"
+}
+
+# 搜索 'Local Server' 目录并启动服务器
 Write-Host "Searching for the 'Local Server' directory containing server.js..."
 
 function Find-ServerDir {
