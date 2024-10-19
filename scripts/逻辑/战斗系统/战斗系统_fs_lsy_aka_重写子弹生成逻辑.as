@@ -639,7 +639,13 @@ _root.子弹生命周期 = function()
 	
 	var 击中地图判定 = false;
 	if(this._x < _root.Xmin || this._x > _root.Xmax || this.Z轴坐标 < _root.Ymin || this.Z轴坐标 > _root.Ymax){
-		击中地图判定 = true;
+		if(this.ZY比例){
+			// if(this.Z轴坐标 < _root.Ymin * this.ZY比例 || this.Z轴坐标 > _root.Ymax * this.ZY比例){
+			// 	击中地图判定 = true;
+			// }
+		}else{
+			击中地图判定 = true;
+		}
 	}else if(this._y > this.Z轴坐标 && !this.近战检测){
 		击中地图判定 = true;
 	}else{
