@@ -57,23 +57,12 @@ Write-Host "Setting up Flash Player trust directory..."
 
 # 获取当前脚本的目录
 $currentDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
+
+# 因为脚本在 'automation' 文件夹中，'resources' 文件夹是其父目录
+$resourcesDir = Split-Path -Parent $currentDir
+
 Write-Host "Current directory: $currentDir"
-
-function Find-ResourcesDir {
-    param ([string]$dir)
-    $resourcesPath = Join-Path $dir "resources"
-    if (Test-Path -Path $resourcesPath) {
-        return $resourcesPath
-    }
-    $parentDir = Split-Path -Parent -Path $dir
-    if ($parentDir -ne $dir) {
-        return Find-ResourcesDir -dir $parentDir
-    } else {
-        return $null
-    }
-}
-
-$resourcesDir = Find-ResourcesDir -dir $currentDir
+Write-Host "Resources directory: $resourcesDir"
 
 if ($resourcesDir) {
     Write-Host "Trust directory found: $resourcesDir"
@@ -102,4 +91,6 @@ if ($resourcesDir) {
     Write-Host "Failed to find the resources directory. Exiting..."
     exit 1
 }
-Write-Host "Configuration process completed."
+
+Write-Host "Configuration process completed. Press Enter to exit."
+Read-Host

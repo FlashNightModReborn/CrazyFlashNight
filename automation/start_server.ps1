@@ -1,28 +1,26 @@
-# 检查是否以管理员身份运行
-if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Write-Host "Script not running as administrator. Restarting with elevated privileges..."
-    Start-Process powershell.exe -ArgumentList ("-NoProfile", "-ExecutionPolicy Bypass", "-File `"" + $PSCommandPath + "`"") -Verb RunAs
-    exit
-}
 
 Write-Host "Searching for the 'Local Server' directory containing server.js..."
 
 function Find-ServerDir {
     param ([string]$dir)
-    $serverFilePath = Join-Path $dir "Local Server\server.js"
+    
+    # 查找 Local Server 文件夹中的 server.js 文件
+    $serverFilePath = Join-Path $dir "tools\Local Server\server.js"
     if (Test-Path -Path $serverFilePath) {
-        return (Join-Path $dir "Local Server")
+        return (Join-Path $dir "tools\Local Server")
     }
-    $parentDir = Split-Path -Parent -Path $dir
-    if ($parentDir -ne $dir) {
-        return Find-ServerDir -dir $parentDir
-    } else {
-        return $null
-    }
+
+    return $null
 }
 
+# 获取当前脚本目录
 $currentDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Path
-$serverDir = Find-ServerDir -dir $currentDir
+
+# Move one level up to the 'resources' directory
+$resourcesDir = Split-Path -Parent $currentDir
+
+# 从 'resources' 目录查找 'Local Server' 目录
+$serverDir = Find-ServerDir -dir $resourcesDir
 
 if ($serverDir) {
     Write-Host "Found 'server.js' in: $serverDir"
@@ -42,6 +40,6 @@ if ($serverDir) {
         exit 1
     }
 } else {
-    Write-Host "Unable to find the 'Local Server' directory with 'server.js' in any parent directories."
+    Write-Host "Unable to find the 'Local Server' directory with 'server.js'."
     exit 1
 }
