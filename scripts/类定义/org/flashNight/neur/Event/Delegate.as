@@ -240,7 +240,7 @@ class org.flashNight.neur.Event.Delegate {
             // 为作用域生成 UID，并与 methodUID 和 paramsUID 组合
             var scopeUID:Number = Dictionary.getStaticUID(scope);
             // 使用位运算生成缓存键，将 scopeUID、methodUID 和 paramsUID 组合
-            cacheKey = String((scopeUID << 24) | (methodUID << 8) | (paramsUID & 0xFF));
+            cacheKey = String((scopeUID << 24) | (methodUID << 8) + "|" + paramsUID);
             ServerManager.getInstance().sendServerMessage(cacheKey + " " + ObjectUtil.toString(arguments) + " " + paramsUID);
 
             // 尝试从缓存中获取已存在的委托函数
