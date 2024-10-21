@@ -1,5 +1,6 @@
 ﻿import org.flashNight.neur.Event.Delegate;
 import org.flashNight.neur.Event.EventBus;
+import JSON; // 导入您的 JSON 类
 
 class org.flashNight.neur.Server.ServerManager {
     public static var instance:ServerManager;
@@ -30,6 +31,9 @@ class org.flashNight.neur.Server.ServerManager {
     public var socketPort:Number = null; // 初始为空，在获取到端口号后设置
     public var isSocketConnected:Boolean = false; // 用于跟踪连接状态
 
+    // JSON parser instance
+    private var jsonParser:JSON;
+
     // 构造函数
     public function ServerManager() {
         if (instance != null) {
@@ -49,6 +53,9 @@ class org.flashNight.neur.Server.ServerManager {
 
         // Subscribe internal functions to frameUpdate event
         eventBus.subscribe("frameUpdate", onFrameUpdate, this);
+
+        // Initialize JSON parser
+        jsonParser = new JSON(true); // 传入 true 以启用宽容模式
     }
 
     // 获取单例实例
@@ -184,7 +191,7 @@ class org.flashNight.neur.Server.ServerManager {
         }
     }
 
-    // 新增：获取 XMLSocket 端口号
+    // 获取 XMLSocket 端口号
     private function getSocketPort():Void {
         var lv:LoadVars = new LoadVars();
 
@@ -207,7 +214,7 @@ class org.flashNight.neur.Server.ServerManager {
         lv.load("http://localhost:" + currentPort + "/getSocketPort");
     }
 
-    // 发送服务器消息（将消息追加到messageBuffer）
+    // 发送服务器消息（将消息追加到 messageBuffer）
     public function sendServerMessage(message:String):Void {
         // 验证消息内容，确保只接受字符串且不包含非法字符
         if (typeof(message) != "string" || message.indexOf("{") != -1 || message.indexOf("}") != -1) {
@@ -225,7 +232,6 @@ class org.flashNight.neur.Server.ServerManager {
         trace("Message appended to buffer: " + message);
     }
 
-    // 将以下方法的访问修饰符改为 public，以便在类外部调用
     public function onEnterFrameHandler():Void {
         // 增加帧计数
         currentFrame++;
@@ -233,11 +239,10 @@ class org.flashNight.neur.Server.ServerManager {
         // Publish frameUpdate event
         eventBus.publish("frameUpdate", currentFrame);
 
-        // 重置hasSentThisFrame标志
+        // 重置 hasSentThisFrame 标志
         hasSentThisFrame = false;
     }
 
-    // 将以下方法的访问修饰符改为 public，以便在类外部调用
     public function onFrameUpdate(currentFrame:Number):Void {
         // 处理重连逻辑
         if (isReconnecting) {
@@ -304,7 +309,7 @@ class org.flashNight.neur.Server.ServerManager {
         // 可选：将失败的消息重新加入缓冲区或记录错误
     }
 
-    // 新增：初始化 XMLSocket
+    // 初始化 XMLSocket
     public function initXMLSocket():Void {
         var self = this; // 保存对 this 的引用
         xmlSocket = new XMLSocket();
@@ -321,7 +326,6 @@ class org.flashNight.neur.Server.ServerManager {
         connectToSocket();
     }
 
-
     public function connectToSocket():Void {
         if (socketPort == null) {
             trace("Socket port not available. Cannot connect.");
@@ -330,7 +334,6 @@ class org.flashNight.neur.Server.ServerManager {
 
         xmlSocket.connect(socketHost, socketPort);
     }
-
 
     // 修改后的 XMLSocket onConnect 事件处理器
     private function onSocketConnect(success:Boolean):Void {
@@ -343,21 +346,44 @@ class org.flashNight.neur.Server.ServerManager {
         }
     }
 
+    // 使用 JSON 类解析服务器返回的数据
     private function onSocketData(data:String):Void {
         trace("Received data from server: " + data);
-        // 处理从服务器接收到的数据
+        // 移除 null 终止符
+        data = data.split('\0').join('');
+
+        var response:Object = jsonParser.parse(data);
+        if (jsonParser.errors.length > 0) {
+            trace("JSON parsing errors: " + jsonParser.errors);
+            // 处理解析错误
+            // 可以根据需要决定如何处理，这里暂时记录错误并返回
+            return;
+        }
+
+        if (response.success) {
+            // 处理成功的结果
+            if (response.result !== undefined) {
+                trace("Task succeeded. Result: " + response.result);
+            }
+            if (response.match !== undefined) {
+                trace("Regex Match Result: " + response.match);
+            }
+        } else {
+            // 处理错误信息
+            trace("Task failed. Error: " + response.error);
+        }
     }
 
     public function onSocketClose():Void {
         trace("XMLSocket connection closed");
         isSocketConnected = false; // 标记为未连接
-        // 可选：尝试重新连接
-        connectToSocket();
+        // 尝试重新连接
+        setTimeout(Delegate.create(this, connectToSocket), 1000); // 1秒后重试连接
     }
 
     // 发送消息的函数，检查是否已连接
     public function sendSocketMessage(message:String):Void {
-        if (isSocketConnected) { // 使用 isSocketConnected 变量代替 xmlSocket.connected
+        if (isSocketConnected) {
             xmlSocket.send(message + '\0');
             trace("Sent message to server: " + message);
         } else {
@@ -365,7 +391,49 @@ class org.flashNight.neur.Server.ServerManager {
         }
     }
 
-    // 例如：使用 socket 进行计算密集型任务
+    // 删除自定义的 JSON 序列化和解析函数
+
+    // 使用 JSON 类进行序列化
+    public function sendTaskToNode(taskType:String, payload:String, extra:Object):Void {
+        var message:Object = new Object();
+        message.task = taskType;
+        message.payload = payload;
+        message.extra = extra;
+
+        var messageString:String = jsonParser.stringify(message);
+        if (messageString == null) {
+            trace("Failed to stringify message.");
+            return;
+        }
+
+        sendSocketMessage(messageString);
+    }
+
+    // 具体任务执行函数
+
+    // 执行 eval 任务
+    public function executeEvalTask(code:String):Void {
+        sendTaskToNode("eval", code, null);
+    }
+
+    // 执行正则表达式匹配任务
+    public function executeRegexTask(text:String, pattern:String, flags:String):Void {
+        var extra:Object = new Object();
+        extra.pattern = pattern;
+        extra.flags = flags;
+
+        sendTaskToNode("regex", text, extra);
+    }
+
+    // 执行计算任务
+    public function executeComputationTask(data:Array):Void {
+        var extra:Object = new Object();
+        extra.data = data;
+
+        sendTaskToNode("computation", null, extra);
+    }
+
+    // 示例：使用 socket 进行计算密集型任务
     public function heavyComputation(data:String):Void {
         sendSocketMessage(data);
     }

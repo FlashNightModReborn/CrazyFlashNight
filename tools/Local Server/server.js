@@ -3,6 +3,7 @@ const fs = require('fs');
 const winston = require('winston');
 require('winston-daily-rotate-file');
 const net = require('net');
+const { VM } = require('vm2'); // 安全的沙箱模块
 
 const app = express();
 const logDir = 'logs';
@@ -215,31 +216,38 @@ function startSocketServer(httpPort, callback) {
         const socketServer = net.createServer((socket) => {
             logger.info('XMLSocket client connected');
 
+            // 处理每个 socket 的消息缓冲
+            let buffer = '';
+
             socket.on('data', (data) => {
-                let message = data.toString();
+                buffer += data.toString();
 
-                // 处理策略文件请求
-                if (message.indexOf('<policy-file-request/>') !== -1) {
-                    socket.write(policyResponse);
-                    logger.info('Sent policy file to client');
-                    return;
-                }
+                // 分割消息，以 '\0' 作为结束符
+                let parts = buffer.split('\0');
+                // 保留最后一部分（可能是不完整的）
+                buffer = parts.pop();
 
-                // 移除 null 终止符
-                message = message.replace(/\0/g, '');
+                parts.forEach(message => {
+                    if (message.length === 0) {
+                        return;
+                    }
 
-                if (message.length === 0) {
-                    return;
-                }
+                    // 处理策略文件请求
+                    if (message.indexOf('<policy-file-request/>') !== -1) {
+                        socket.write(policyResponse);
+                        logger.info('Sent policy file to client');
+                        return; // 处理策略文件请求后不继续处理
+                    }
 
-                logger.info('Received data from AS2 client: ' + message);
+                    logger.info('Received data from AS2 client: ' + message);
 
-                // 处理消息
-                const result = processSocketMessage(message);
+                    // 处理消息
+                    const result = processSocketMessage(message);
 
-                // 发送结果回 AS2 客户端，附加 null 终止符
-                socket.write(result + '\0');
-                logger.info('Sent response to AS2 client: ' + result);
+                    // 发送结果回 AS2 客户端，附加 null 终止符
+                    socket.write(result + '\0');
+                    logger.info('Sent response to AS2 client: ' + result);
+                });
             });
 
             socket.on('end', () => {
@@ -278,10 +286,91 @@ const policyResponse = '<cross-domain-policy><allow-access-from domain="*" to-po
 
 // 处理从 AS2 客户端接收到的消息
 function processSocketMessage(message) {
-    // 这里可以根据你的需求进行处理，例如执行计算密集型任务
-    // 下面是一个示例，将消息转换为大写
-    const result = message.toUpperCase();
-    return result;
+    let parsedMessage;
+
+    try {
+        parsedMessage = JSON.parse(message);
+    } catch (err) {
+        logger.warn('Received a non-JSON message: ' + message);
+        return JSON.stringify({ success: false, error: 'Expected JSON format' });
+    }
+
+    let taskType = parsedMessage.task;
+    let payload = parsedMessage.payload;
+    let extra = parsedMessage.extra || {};
+
+    if (!taskType) {
+        return JSON.stringify({ success: false, error: 'No task type provided' });
+    }
+
+    switch (taskType) {
+        case 'eval':
+            return handleEvalTask(payload);
+        case 'regex':
+            return handleRegexTask(payload, extra);
+        case 'computation':
+            return handleComputationTask(payload, extra);
+        default:
+            return JSON.stringify({ success: false, error: 'Unknown task type' });
+    }
+}
+
+// 处理 eval 任务
+function handleEvalTask(code) {
+    if (!code) {
+        return JSON.stringify({ success: false, error: 'No code provided for eval' });
+    }
+
+    try {
+        const vm = new VM({
+            timeout: 1000,  // 设置超时时间，防止死循环等
+            sandbox: {}
+        });
+        let result = vm.run(code);
+        return JSON.stringify({ success: true, result: result });
+    } catch (err) {
+        logger.error('Error executing eval task: ' + err.message);
+        return JSON.stringify({ success: false, error: err.message });
+    }
+}
+
+// 处理正则表达式任务
+function handleRegexTask(text, extra) {
+    let pattern = extra.pattern;
+    let flags = extra.flags || '';
+
+    if (!pattern) {
+        return JSON.stringify({ success: false, error: 'No pattern provided' });
+    }
+
+    try {
+        let regex = new RegExp(pattern, flags);
+        let match = regex.exec(text);
+        // 如果 match 为 null，返回 false
+        if (match === null) {
+            return JSON.stringify({ success: true, match: false });
+        }
+        // 返回匹配结果数组
+        return JSON.stringify({ success: true, match: match });
+    } catch (err) {
+        logger.error('Error executing regex task: ' + err.message);
+        return JSON.stringify({ success: false, error: err.message });
+    }
+}
+
+// 处理计算任务
+function handleComputationTask(payload, extra) {
+    if (!extra.data || !Array.isArray(extra.data)) {
+        return JSON.stringify({ success: false, error: 'No data array provided for computation' });
+    }
+
+    try {
+        let sum = extra.data.reduce((a, b) => a + b, 0);
+        return JSON.stringify({ success: true, result: sum });
+    } catch (err) {
+        logger.error('Error executing computation task: ' + err.message);
+        return JSON.stringify({ success: false, error: err.message });
+    }
 }
 
 // 优雅关闭服务器
@@ -307,6 +396,21 @@ function gracefulShutdown() {
 
 process.on('SIGTERM', gracefulShutdown);
 process.on('SIGINT', gracefulShutdown);
+
+// 捕获未处理的异常，防止服务器崩溃
+process.on('uncaughtException', (err) => {
+    logger.error('Uncaught Exception: ' + err.message);
+    logger.error(err.stack);
+    // 根据情况决定是否退出
+    // process.exit(1);
+});
+
+// 捕获未处理的 Promise 拒绝，防止服务器崩溃
+process.on('unhandledRejection', (reason, promise) => {
+    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // 根据情况决定是否退出
+    // process.exit(1);
+});
 
 // 提取端口并启动服务器
 extractPorts();
