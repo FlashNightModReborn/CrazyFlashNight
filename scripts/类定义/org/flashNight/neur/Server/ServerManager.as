@@ -24,6 +24,12 @@ class org.flashNight.neur.Server.ServerManager {
     // Cached EventBus instance
     private var eventBus:EventBus;
 
+    // 新增变量
+    public var xmlSocket:XMLSocket;
+    public var socketHost:String = "localhost";
+    public var socketPort:Number = null; // 初始为空，在获取到端口号后设置
+    public var isSocketConnected:Boolean = false; // 用于跟踪连接状态
+
     // 构造函数
     public function ServerManager() {
         if (instance != null) {
@@ -86,6 +92,18 @@ class org.flashNight.neur.Server.ServerManager {
             trace("Added default port: 3000");
         }
 
+        // 移除重复的端口
+        var uniquePorts:Object = {};
+        var finalPortList:Array = [];
+        for (var k:Number = 0; k < portList.length; k++) {
+            var port:Number = portList[k];
+            if (uniquePorts[port] == undefined) {
+                uniquePorts[port] = true;
+                finalPortList.push(port);
+            }
+        }
+        portList = finalPortList;
+
         trace("Final extracted ports: " + portList.join(", "));
     }
 
@@ -112,7 +130,7 @@ class org.flashNight.neur.Server.ServerManager {
     public function getAvailablePort():Void {
         if (portIndex < portList.length) {
             var port:Number = portList[portIndex];
-            trace("Trying to connect to port: " + port);
+            trace("Trying to connect to HTTP server on port: " + port);
 
             testConnection(port);
         } else {
@@ -135,7 +153,7 @@ class org.flashNight.neur.Server.ServerManager {
     }
 
     private function onPortSuccess(port:Number):Void {
-        trace("Connected to port: " + port);
+        trace("Connected to HTTP server on port: " + port);
         currentPort = port;
 
         // 重置重连相关变量
@@ -143,11 +161,12 @@ class org.flashNight.neur.Server.ServerManager {
         framesSinceLastReconnectionAttempt = 0;
         isReconnecting = false;
 
-        trace("Messages are queued and will be sent in the next frame.");
+        // 获取 XMLSocket 端口
+        getSocketPort();
     }
 
     private function onPortFailure(port:Number):Void {
-        trace("Failed to connect to port: " + port);
+        trace("Failed to connect to HTTP server on port: " + port);
         reconnectionAttempts++;
         framesSinceLastReconnectionAttempt = 0;
 
@@ -163,6 +182,29 @@ class org.flashNight.neur.Server.ServerManager {
         if (portIndex >= portList.length) {
             portIndex = 0; // 循环尝试端口列表
         }
+    }
+
+    // 新增：获取 XMLSocket 端口号
+    private function getSocketPort():Void {
+        var lv:LoadVars = new LoadVars();
+
+        lv.onLoad = function(success:Boolean):Void {
+            if (success) {
+                var response:Object = this;
+                if (response.socketPort != undefined) {
+                    ServerManager.instance.socketPort = Number(response.socketPort);
+                    trace("Retrieved XMLSocket port: " + ServerManager.instance.socketPort);
+                    // 初始化 XMLSocket 连接
+                    ServerManager.instance.initXMLSocket();
+                } else {
+                    trace("Failed to retrieve socket port.");
+                }
+            } else {
+                trace("Failed to load socket port.");
+            }
+        };
+
+        lv.load("http://localhost:" + currentPort + "/getSocketPort");
     }
 
     // 发送服务器消息（将消息追加到messageBuffer）
@@ -183,8 +225,8 @@ class org.flashNight.neur.Server.ServerManager {
         trace("Message appended to buffer: " + message);
     }
 
-    // 每帧处理请求队列和消息发送
-    private function onEnterFrameHandler():Void {
+    // 将以下方法的访问修饰符改为 public，以便在类外部调用
+    public function onEnterFrameHandler():Void {
         // 增加帧计数
         currentFrame++;
 
@@ -195,8 +237,8 @@ class org.flashNight.neur.Server.ServerManager {
         hasSentThisFrame = false;
     }
 
-    // Handler subscribed to frameUpdate event
-    private function onFrameUpdate(currentFrame:Number):Void {
+    // 将以下方法的访问修饰符改为 public，以便在类外部调用
+    public function onFrameUpdate(currentFrame:Number):Void {
         // 处理重连逻辑
         if (isReconnecting) {
             framesSinceLastReconnectionAttempt++;
@@ -216,7 +258,7 @@ class org.flashNight.neur.Server.ServerManager {
     // 发送积累的消息
     private function sendMessageBuffer():Void {
         if (currentPort == null) {
-            trace("No current port available. Cannot send messages.");
+            trace("No current HTTP port available. Cannot send messages.");
             return;
         }
 
@@ -232,7 +274,7 @@ class org.flashNight.neur.Server.ServerManager {
         lv.frame = currentFrame; // 将帧数作为独立参数
         lv.messages = messageToSend;
 
-        trace("Sending messages for frame " + currentFrame + ": " + messageToSend + " to port: " + currentPort);
+        trace("Sending messages for frame " + currentFrame + ": " + messageToSend + " to HTTP port: " + currentPort);
 
         isSending = true;
         hasSentThisFrame = true; // 标记本帧已经发送过消息
@@ -260,5 +302,71 @@ class org.flashNight.neur.Server.ServerManager {
         trace("Failed to send messages.");
         isSending = false;
         // 可选：将失败的消息重新加入缓冲区或记录错误
+    }
+
+    // 新增：初始化 XMLSocket
+    public function initXMLSocket():Void {
+        var self = this; // 保存对 this 的引用
+        xmlSocket = new XMLSocket();
+        xmlSocket.onConnect = function(success:Boolean):Void {
+            self.onSocketConnect(success);
+        };
+        xmlSocket.onData = function(data:String):Void {
+            self.onSocketData(data);
+        };
+        xmlSocket.onClose = function():Void {
+            self.onSocketClose();
+        };
+
+        connectToSocket();
+    }
+
+
+    public function connectToSocket():Void {
+        if (socketPort == null) {
+            trace("Socket port not available. Cannot connect.");
+            return;
+        }
+
+        xmlSocket.connect(socketHost, socketPort);
+    }
+
+
+    // 修改后的 XMLSocket onConnect 事件处理器
+    private function onSocketConnect(success:Boolean):Void {
+        if (success) {
+            trace("XMLSocket connected to server on port: " + socketPort);
+            isSocketConnected = true; // 标记为已连接
+        } else {
+            trace("Failed to connect XMLSocket to server on port: " + socketPort);
+            isSocketConnected = false; // 标记为未连接
+        }
+    }
+
+    private function onSocketData(data:String):Void {
+        trace("Received data from server: " + data);
+        // 处理从服务器接收到的数据
+    }
+
+    public function onSocketClose():Void {
+        trace("XMLSocket connection closed");
+        isSocketConnected = false; // 标记为未连接
+        // 可选：尝试重新连接
+        connectToSocket();
+    }
+
+    // 发送消息的函数，检查是否已连接
+    public function sendSocketMessage(message:String):Void {
+        if (isSocketConnected) { // 使用 isSocketConnected 变量代替 xmlSocket.connected
+            xmlSocket.send(message + '\0');
+            trace("Sent message to server: " + message);
+        } else {
+            trace("Socket not connected. Cannot send message.");
+        }
+    }
+
+    // 例如：使用 socket 进行计算密集型任务
+    public function heavyComputation(data:String):Void {
+        sendSocketMessage(data);
     }
 }
