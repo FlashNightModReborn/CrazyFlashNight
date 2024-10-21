@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,7 +54,8 @@ class org.as2lib.test.speed.TestSuite extends AbstractTest implements Test {
 	 * {@code Test}, they will be ignored.
 	 * 
 	 * @param name the name of this test suite
-	 * @param tests (optional) {@code Test} instances to populate this test suite with	 */
+	 * @param tests (optional) {@code Test} instances to populate this test suite with
+	 */
 	public function TestSuite(name:String, tests:Array) {
 		this.name = name;
 		this.tests = new Array();
@@ -62,7 +66,8 @@ class org.as2lib.test.speed.TestSuite extends AbstractTest implements Test {
 	}
 	
 	/**
-	 * Runs all added tests.	 */
+	 * Runs all added tests.
+	 */
 	public function run(Void):Void {
 		for (var i:Number = 0; i < this.tests.length; i++) {
 			var test:Test = this.tests[i];
@@ -73,7 +78,8 @@ class org.as2lib.test.speed.TestSuite extends AbstractTest implements Test {
 	/**
 	 * Returns this test suite's name.
 	 * 
-	 * @return this test suite's name	 */
+	 * @return this test suite's name
+	 */
 	public function getName(Void):String {
 		return this.name;
 	}
@@ -81,7 +87,8 @@ class org.as2lib.test.speed.TestSuite extends AbstractTest implements Test {
 	/**
 	 * @overload #addTestByTest
 	 * @overload #addTestByMethod
-	 * @overload #addTestByProperty	 */
+	 * @overload #addTestByProperty
+	 */
 	public function addTest() {
 		var o:Overload = new Overload(this);
 		o.addHandler([Test], addTestByTest);
@@ -96,7 +103,8 @@ class org.as2lib.test.speed.TestSuite extends AbstractTest implements Test {
 	 * <p>If the argument {@code test} is {@code null} or {@code undefined} this method
 	 * invocation will be ignored.
 	 * 
-	 * @param test the test to add	 */
+	 * @param test the test to add
+	 */
 	public function addTestByTest(test:Test):Void {
 		if (test) {
 			this.tests.push(test);
@@ -111,7 +119,8 @@ class org.as2lib.test.speed.TestSuite extends AbstractTest implements Test {
 	 * method invocation will be ignored and {@code null} will be returned.
 	 * 
 	 * @param method the method to profile
-	 * @return the created and added test	 */
+	 * @return the created and added test
+	 */
 	public function addTestByMethod(method:MethodInfo):Test {
 		if (method) {
 			var test:MethodTestCase = new MethodTestCase(method);
@@ -142,7 +151,8 @@ class org.as2lib.test.speed.TestSuite extends AbstractTest implements Test {
 	/**
 	 * Returns all tests of this test suite.
 	 * 
-	 * @return all tests of this test suite	 */
+	 * @return all tests of this test suite
+	 */
 	public function getTests(Void):Array {
 		return this.tests.concat();
 	}

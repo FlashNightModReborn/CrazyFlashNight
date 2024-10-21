@@ -1,11 +1,14 @@
 /*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,7 +62,8 @@ import org.as2lib.util.ArrayUtil;
  * </code>
  * 
  * @author Martin Heidegger
- * @version 1.5 */
+ * @version 1.5
+ */
 class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implements Impulse {
 	
 	/** Holder for the static instance */
@@ -70,7 +74,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	 * 
 	 * <p>Generates a new FrameImpulse if no FrameImpulse has been set.
 	 * 
-	 * @return {@code FrameImpulse} instance.	 */
+	 * @return {@code FrameImpulse} instance.
+	 */
 	public static function getInstance(Void):FrameImpulse {
 		if(!instance) instance = new FrameImpulse();
 		return instance;
@@ -81,7 +86,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	
 	/** 
 	 * Flag if the timeline is generated and should be destroyed after
-	 * replacement.	 */
+	 * replacement.
+	 */
 	private var timelineIsGenerated:Boolean;
 	
 	/** Broadcaster for connected FrameImpulseListener's */
@@ -90,7 +96,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	/**
 	 * Creates a new FrameImpulse instance.
 	 * 
-	 * @param timeline Timeline to be used - see: {@link #setTimeline}	 */
+	 * @param timeline Timeline to be used - see: {@link #setTimeline}
+	 */
 	private function FrameImpulse(timeline:MovieClip) {
 		frameImpulseBroadcaster = new Object();
 		AsBroadcaster.initialize(frameImpulseBroadcaster);
@@ -101,7 +108,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	 * Sets a new Timeline as main timeline for the MovieClip.
 	 * 
 	 * @param timeline Timeline to be used for the frame event.
-	 * @throws IllegalArgumentException if onEnterFrame has already been used in the timeline.	 */
+	 * @throws IllegalArgumentException if onEnterFrame has already been used in the timeline.
+	 */
 	public function setTimeline(timeline:MovieClip):Void {
 		var e:Object = execBroadcaster;
 		var i:Object = impulseBroadcaster;
@@ -144,7 +152,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	 * timeline has been set.
 	 * 
 	 * @return Timeline that is currently used
-	 * @throws FatalExeception if a Timeline could not be generated on the fly.	 */
+	 * @throws FatalExeception if a Timeline could not be generated on the fly.
+	 */
 	public function getTimeline(Void):MovieClip {
 		if (!timeline) {
 			var name:String = ReflectUtil.getUnusedMemberName(_root);
@@ -185,13 +194,15 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	 * 
 	 *   var impulse:Impulse = FrameImpulse.getInstance();
 	 *   impulse.addListener(new Call(this, test));
-	 * </code>	 * 
+	 * </code>
+	 * 
 	 * <p>Note: If a certain listener implements more than one supported event it
 	 * will listen to all of them at one execution (execute, onFrameImpulse,
 	 * onImpulse).
 	 * 
 	 * @param listener to be added.
-	 * @throws IllegalArgumentException if the listener doesn't match any type.	 */
+	 * @throws IllegalArgumentException if the listener doesn't match any type.
+	 */
 	public function addListener(listener):Void {
 		var added:Boolean = true;
 		try {
@@ -250,7 +261,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	 * 
 	 * @param listener Listener to be removed.
 	 * @throws IllegalArgumentException if you pass a listener that is of a
-	 *         illegal type.	 */
+	 *         illegal type.
+	 */
 	public function removeListener(listener):Void {
 		var notRemoved:Boolean = false;
 		try {
@@ -273,7 +285,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	 * <p>The passed listener will be removed from listening to any event
 	 * (not only to from listening to {@code onFrameImpulse}).
 	 * 
-	 * @param listener Listener to be removed.	 */
+	 * @param listener Listener to be removed.
+	 */
 	public function removeFrameImpulseListener(listener:FrameImpulseListener):Void {
 		removeListener(listener);
 	}
@@ -285,7 +298,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	 * {@link #connectExecutable}, {@link #addListener}
 	 * {@link #addImpulseListener} or {@link #addFrameImpulseListener}
 	 * 
-	 * @return List that contains all added listeners.	 */
+	 * @return List that contains all added listeners.
+	 */
 	public function getAllListeners(Void):Array {
 		return super.getAllListeners().concat(getAllFrameImpulseListeners());
 	}
@@ -293,7 +307,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	/**
 	 * Getter for the list of all added {@link FrameImpulseListener}s.
 	 * 
-	 * @return List that contains all added {@link FrameImpulseListener}s.	 */
+	 * @return List that contains all added {@link FrameImpulseListener}s.
+	 */
 	public function getAllFrameImpulseListeners(Void):Array {
 		return frameImpulseBroadcaster._listeners.concat();
 	}
@@ -301,7 +316,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	/**
 	 * Removes all added listeners from listening to the FrameImpulse.
 	 * 
-	 * @throws IllegalArgumentException if the 	 */
+	 * @throws IllegalArgumentException if the 
+	 */
 	public function removeAllListeners(Void):Void {
 		super.removeAllListeners();
 		removeAllFrameImpulseListeners();
@@ -326,7 +342,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	 * 
 	 * @param listeners List of all listeners to add.
 	 * @throws IllegalArgumentException if one listener didn't match to any listener type.
-	 * @see #addListener	 */
+	 * @see #addListener
+	 */
 	public function addAllFrameImpulseListeners(listeners:Array):Void {
 		for (var i:Number=0; i<listeners.length; i++) {
 			addListener(listeners[i]);
@@ -334,7 +351,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	}
 	
 	/**
-	 * Removes all added {@link FrameImpulseListener}s from listening to any event.	 */
+	 * Removes all added {@link FrameImpulseListener}s from listening to any event.
+	 */
 	public function removeAllFrameImpulseListeners(Void):Void {
 		// As its possible that a frameimpulselistener was added as executable
 		// listener they have to be removed one by one.
@@ -347,7 +365,8 @@ class org.as2lib.env.event.impulse.FrameImpulse extends AbstractImpulse implemen
 	 * listener.
 	 * 
 	 * @param listener Listener to be checked if it has been added.
-	 * @return {@code true} if the certain listener has been added.	 */
+	 * @return {@code true} if the certain listener has been added.
+	 */
 	public function hasFrameImpulseListener(listener:FrameImpulseListener):Boolean {
 		return ArrayUtil.contains(frameImpulseBroadcaster._listeners, listener); 
 	}

@@ -1,11 +1,14 @@
 ﻿/**
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -54,7 +57,8 @@ class org.as2lib.test.mock.support.StateArgumentMatcher extends BasicClass imple
 	 * 
 	 * @param propertyName the name of the expected property
 	 * @param propertyValue the value of the expected property
-	 * @see #checkProperty	 */
+	 * @see #checkProperty
+	 */
 	public function addExpectedProperty(propertyName:String, propertyValue):Void {
 		this.expectedProperties.put(propertyName, propertyValue);
 	}
@@ -70,7 +74,8 @@ class org.as2lib.test.mock.support.StateArgumentMatcher extends BasicClass imple
 	 * </ul>
 	 * 
 	 * @param argument the argument to check whether it is in the expected state
-	 * @return {@code true} if the argument is in the expected state else {@code false}	 */
+	 * @return {@code true} if the argument is in the expected state else {@code false}
+	 */
 	public function matchArgument(argument):Boolean {
 		if (!argument) return false;
 		if (!(argument instanceof this.expectedType)) return false;
@@ -97,7 +102,8 @@ class org.as2lib.test.mock.support.StateArgumentMatcher extends BasicClass imple
 	 * @param target the target object that declares the property
 	 * @param propertyName the name of the property
 	 * @param expectedPropertyValue the expected value of the property
-	 * @return {@code true} if the property has the expected value else {@code false}	 */
+	 * @return {@code true} if the property has the expected value else {@code false}
+	 */
 	private function checkProperty(target, propertyName:String, expectedPropertyValue):Boolean {
 		var getter:String = "get" + StringUtil.ucFirst(propertyName);
 		if (target[getter]) {

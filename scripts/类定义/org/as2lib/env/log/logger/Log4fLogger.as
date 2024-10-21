@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,7 +53,8 @@ class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger
 	
 	/**
 	 * Indicates that all messages at debug and higher levels shall be logged. This
-	 * level is equivalent to the Log4F {@code DEBUG} level.	 */
+	 * level is equivalent to the Log4F {@code DEBUG} level.
+	 */
 	public static var DEBUG:Level = Level.DEBUG;
 	
 	/**
@@ -140,7 +144,8 @@ class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger
 	 * <p>The result will be {@code undefined} if it is called on the root (global)
 	 * logger in the namespace.
 	 * 
-	 * @return the parent of this logger	 */
+	 * @return the parent of this logger
+	 */
 	public function getParent(Void):org.log4f.logging.Logger {
 		return this.logger.getParent();
 	}
@@ -148,7 +153,8 @@ class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger
 	/**
 	 * Returns an array with publishers associated with this logger.
 	 * 
-	 * @return an array with publishers that are associated with this logger	 */
+	 * @return an array with publishers that are associated with this logger
+	 */
 	public function getPublishers(Void):List {
 		return this.logger.getPublishers();
 	}
@@ -158,7 +164,8 @@ class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger
 	 * 
 	 * @param publisher the publisher to add
 	 * @return {@code true} if the {@code publisher} was added successfully else
-	 * {@code false}	 */
+	 * {@code false}
+	 */
 	public function addPublisher(publisher:IPublisher):Boolean {
 		return this.logger.addPublisher(publisher);
 	}
@@ -168,7 +175,8 @@ class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger
 	 * 
 	 * @param publisher the publisher to remove
 	 * @return {@code true} if the {@code publisher} was removed successfully else
-	 * {@code false}	 */
+	 * {@code false}
+	 */
 	public function removePublisher(publisher:IPublisher):Boolean {
 		return this.logger.removePublisher(publisher);
 	}
@@ -176,7 +184,8 @@ class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger
 	/**
 	 * Returns the current filter for this logger.
 	 * 
-	 * @return this logger's current filter or {@code undefined}	 */
+	 * @return this logger's current filter or {@code undefined}
+	 */
 	public function getFilter(Void):IFilter {
 		return this.logger.getFilter();
 	}
@@ -184,7 +193,8 @@ class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger
 	/**
 	 * Sets a new filter for this logger.
 	 * 
-	 * @param filter the new filter to set	 */
+	 * @param filter the new filter to set
+	 */
 	public function setFilter(filter:IFilter):Void {
 		this.logger.setFilter(filter);
 	}
@@ -195,7 +205,8 @@ class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger
 	 * <p>The result may be {@code undefined}, which means that this logger's effective
 	 * level will be inherited from its parent. 
 	 * 
-	 * @return this logger's level	 */
+	 * @return this logger's level
+	 */
 	public function getLevel(Void):Level {
 		return this.logger.getLevel();
 	}
@@ -210,7 +221,8 @@ class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger
 	 * <p>If the new level is {@code undefined}, it means that this node should inherit
 	 * its level from its nearest ancestor with a specific (non-undefined) level value.
 	 * 
-	 * @param level the new level	 */
+	 * @param level the new level
+	 */
 	public function setLevel(level:Level):Void {
 		this.logger.setLevel(level);
 	}

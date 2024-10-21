@@ -2,11 +2,14 @@
 /*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +29,8 @@ import org.as2lib.env.event.distributor.EventDistributorControl;
  * of listeners to provide more granularity if many different kinds of listeners are
  * used. It holds a collection of accepted types of listeners and checks if the listener
  * added via the {@link #addListener} method matches any of the accepted types and adds
- * it to the correct event distributor control(s). *
+ * it to the correct event distributor control(s).
+ *
  * <p>Class that uses the composites functionalities:
  * <code>
  *   import org.as2lib.env.event.distributor.SimpleConsumableCompositeEventDistributorControl;
@@ -94,7 +98,8 @@ interface org.as2lib.env.event.distributor.CompositeEventDistributorControl exte
 	 * <p>The returned distributor can be casted to the given {@code type} (type-safe
 	 * distribution of events).
 	 * 
-	 * @return the distributor to distribute events	 */
+	 * @return the distributor to distribute events
+	 */
 	public function getDistributor(type:Function);
 	
 	/**
@@ -120,7 +125,8 @@ interface org.as2lib.env.event.distributor.CompositeEventDistributorControl exte
 	 * 
 	 * @param eventDistributorControl the event distributor control to use for event
 	 * distribution for the given type
-	 * @see #setDefaultEventDistributorControl	 */
+	 * @see #setDefaultEventDistributorControl
+	 */
 	public function registerEventDistributorControl(eventDistributorControl:EventDistributorControl):Void;
 	
 	/**
@@ -130,7 +136,8 @@ interface org.as2lib.env.event.distributor.CompositeEventDistributorControl exte
 	 * <p>If there is already a distributor control registered for the given type, it
 	 * will be overwritten.
 	 * 
-	 * @param type the type to register a default distributor control with	 */
+	 * @param type the type to register a default distributor control with
+	 */
 	public function registerDefaultEventDistributorControl(type:Function):Void;
 	
 }

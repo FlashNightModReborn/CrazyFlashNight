@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,7 +33,8 @@ import org.as2lib.env.log.LogManager;
  * </pre>
  * 
  * @author Simon Wacker
- * @see <a href="http://www.mtasc.org/#trace">MTASC - Tracing facilities</a> */
+ * @see <a href="http://www.mtasc.org/#trace">MTASC - Tracing facilities</a>
+ */
 class org.as2lib.env.log.MtascUtil extends BasicClass {
 	
 	/** Debug level output. */
@@ -50,7 +54,8 @@ class org.as2lib.env.log.MtascUtil extends BasicClass {
 	
 	/**
 	 * @overload #logByDefaultLevel
-	 * @overload #logByLevel	 */
+	 * @overload #logByLevel
+	 */
 	public static function log():Void {
 		var o:Overload = new Overload(eval("th" + "is"));
 		o.addHandler([Object, String, String, Number], logByDefaultLevel);
@@ -65,7 +70,8 @@ class org.as2lib.env.log.MtascUtil extends BasicClass {
 	 * @param className the name of the class that logs the {@code message}
 	 * @param fileName the name of the file that declares the class
 	 * @param lineNumber the line number at which the logging call stands
-	 * @see #logByLevel	 */
+	 * @see #logByLevel
+	 */
 	public static function logByDefaultLevel(message:Object, className:String, fileName:String, lineNumber:Number):Void {
 		logByLevel(message, null, className, fileName, lineNumber);
 	}
@@ -83,7 +89,8 @@ class org.as2lib.env.log.MtascUtil extends BasicClass {
 	 * @param message the message to log
 	 * @param className the name of the class that logs the {@code message}
 	 * @param fileName the name of the file that declares the class
-	 * @param lineNumber the line number at which the logging call stands	 */
+	 * @param lineNumber the line number at which the logging call stands
+	 */
 	public static function logByLevel(message:Object, level:Number, className:String, fileName:String, lineNumber:Number):Void {
 		var logger:Logger = LogManager.getLogger(className);
 		switch (level) {
@@ -106,7 +113,8 @@ class org.as2lib.env.log.MtascUtil extends BasicClass {
 	}
 	
 	/**
-	 * Private constructor.	 */
+	 * Private constructor.
+	 */
 	private function MtascUtil(Void) {
 	}
 	

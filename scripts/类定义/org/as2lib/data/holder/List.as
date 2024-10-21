@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,14 +54,16 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	
 	/**
 	 * @overload #insertByValue
-	 * @overload #insertByIndexAndValue	 */
+	 * @overload #insertByIndexAndValue
+	 */
 	public function insert():Void;
 	
 	/**
 	 * Inserts {@code value} at the end of this list.
 	 * 
 	 * @param value the value to insert
-	 * @see #insertLast	 */
+	 * @see #insertLast
+	 */
 	public function insertByValue(value):Void;
 	
 	/**
@@ -70,13 +75,15 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * @param index the index at which to insert the {@code value}
 	 * @param value the value to insert
 	 * @throws IndexOutOfBoundsException if the given {@code index} is not in range,
-	 * this is less than 0 or greater than this list's size	 */
+	 * this is less than 0 or greater than this list's size
+	 */
 	public function insertByIndexAndValue(index:Number, value):Void;
 	
 	/**
 	 * Inserts {@code value} at the beginning of this list.
 	 * 
-	 * @param value the value to insert	 */
+	 * @param value the value to insert
+	 */
 	public function insertFirst(value):Void;
 	
 	/**
@@ -89,13 +96,15 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	
 	/**
 	 * @overload #insertAllByList
-	 * @overload #insertAllByIndexAndList	 */
+	 * @overload #insertAllByIndexAndList
+	 */
 	public function insertAll():Void;
 	
 	/**
 	 * Inserts all values contained in {@code list} to the end of this list.
 	 * 
-	 * @param list the values to insert	 */
+	 * @param list the values to insert
+	 */
 	public function insertAllByList(list:List):Void;
 	
 	/**
@@ -108,12 +117,14 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * @param index the index to start the insertion at
 	 * @param list the values to insert
 	 * @throws IndexOutOfBoundsException if the given {@code index} is not in range,
-	 * this is less than 0 or greater than this list's size	 */
+	 * this is less than 0 or greater than this list's size
+	 */
 	public function insertAllByIndexAndList(index:Number, list:List):Void;
 	
 	/**
 	 * @overload #removeByValue
-	 * @overload #removeByIndex	 */
+	 * @overload #removeByIndex
+	 */
 	public function remove();
 	
 	/**
@@ -122,7 +133,8 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * 
 	 * @param value the value to remove
 	 * @return the index of the removed element or {@code -1} if it did not exist on
-	 * this list	 */
+	 * this list
+	 */
 	public function removeByValue(value):Number;
 	
 	/**
@@ -131,25 +143,29 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * @param index the index of the value to remove
 	 * @return the removed value that was originally at given {@code index}
 	 * @throws IndexOutOfBoundsException if given {@code index} is less than 0 or
-	 * equal to or greater than this list's size	 */
+	 * equal to or greater than this list's size
+	 */
 	public function removeByIndex(index:Number);
 	
 	/**
 	 * Removes the value at the beginning of this list.
 	 * 
-	 * @return the removed value	 */
+	 * @return the removed value
+	 */
 	public function removeFirst(Void);
 	
 	/**
 	 * Removes the value at the end of this list.
 	 * 
-	 * @return the removed value	 */
+	 * @return the removed value
+	 */
 	public function removeLast(Void);
 	
 	/**
 	 * Removes all values contained in {@code list}.
 	 * 
-	 * @param list the values to remove	 */
+	 * @param list the values to remove
+	 */
 	public function removeAll(list:List):Void;
 	
 	/**
@@ -160,7 +176,8 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * @param value the {@code value} to set to given {@code index}
 	 * @return the value that was orignially at given {@code index}
 	 * @throws IndexOutOfBoundsException if given {@code index} is less than 0 or
-	 * equal to or greater than this list's size	 */
+	 * equal to or greater than this list's size
+	 */
 	public function set(index:Number, value);
 	
 	/**
@@ -179,7 +196,8 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * @throws IndexOutOfBoundsException if given {@code index} is less than 0 or if
 	 * any affected index, that is the given {@code index} plus the index of the
 	 * specific value in the given {@code list}, is equal to or greater than this list's
-	 * size	 */
+	 * size
+	 */
 	public function setAll(index:Number, list:List):Void;
 	
 	/**
@@ -188,14 +206,16 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * @param index the index to return the value of
 	 * @return the value that is at given {@code index}
 	 * @throws IndexOutOfBoundsException if given {@code index} is less than 0 or
-	 * equal to or greater than this list's size	 */
+	 * equal to or greater than this list's size
+	 */
 	public function get(index:Number);
 	
 	/**
 	 * Checks whether {@code value} is contained in this list.
 	 * 
 	 * @param value the value to check whether it is contained
-	 * @return {@code true} if {@code value} is contained else {@code false}	 */
+	 * @return {@code true} if {@code value} is contained else {@code false}
+	 */
 	public function contains(value):Boolean;
 	
 	/**
@@ -203,13 +223,15 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * 
 	 * @param list the values to check whether they are contained
 	 * @return {@code true} if all values of {@code list} are contained else
-	 * {@code false}	 */
+	 * {@code false}
+	 */
 	public function containsAll(list:List):Boolean;
 	
 	/**
 	 * Retains all values the are contained in {@code list} and removes all others.
 	 * 
-	 * @param list the list of values to retain	 */
+	 * @param list the list of values to retain
+	 */
 	public function retainAll(list:List):Void;
 	
 	/**
@@ -228,17 +250,20 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * @throws IndexOutOfBoundsException if argument {@code toIndex} is greater than
 	 * the size of this list
 	 * @throws IndexOutOfBoundsException if argument {@code fromIndex} is greater than
-	 * {@code toIndex}	 */
+	 * {@code toIndex}
+	 */
 	public function subList(fromIndex:Number, toIndex:Number):List;
 	
 	/**
-	 * Removes all values from this list.	 */
+	 * Removes all values from this list.
+	 */
 	public function clear(Void):Void;
 	
 	/**
 	 * Returns the number of added values.
 	 * 
-	 * @return the number of added values	 */
+	 * @return the number of added values
+	 */
 	public function size(Void):Number;
 	
 	/**
@@ -246,26 +271,30 @@ interface org.as2lib.data.holder.List extends BasicInterface {
 	 * 
 	 * <p>This list is empty if it has no values assigned to it.
 	 * 
-	 * @return {@code true} if this list is empty else {@code false}	 */
+	 * @return {@code true} if this list is empty else {@code false}
+	 */
 	public function isEmpty(Void):Boolean;
 	
 	/**
 	 * Returns the iterator to iterate over this list.
 	 * 
-	 * @return the iterator to iterate over this list	 */
+	 * @return the iterator to iterate over this list
+	 */
 	public function iterator(Void):Iterator;
 	
 	/**
 	 * Returns the index of {@code value}.
 	 * 
 	 * @param value the value to return the index of
-	 * @return the index of {@code value}	 */
+	 * @return the index of {@code value}
+	 */
 	public function indexOf(value):Number;
 	
 	/**
 	 * Returns the array representation of this list.
 	 * 
-	 * @return the array representation of this list	 */
+	 * @return the array representation of this list
+	 */
 	public function toArray(Void):Array;
 	
 }

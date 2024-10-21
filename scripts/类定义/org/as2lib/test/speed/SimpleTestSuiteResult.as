@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +27,8 @@ import org.as2lib.test.speed.MethodInvocationHolder;
 /**
  * {@code SimpleTestSuiteResult} holds the results of all tests contained by a test suite.
  * 
- * @author Simon Wacker */
+ * @author Simon Wacker
+ */
 class org.as2lib.test.speed.SimpleTestSuiteResult extends AbstractTestSuiteResult implements ConfigurableTestSuiteResult {
 	
 	/** Makes the static variables of the super-class accessible through this class. */
@@ -36,7 +40,8 @@ class org.as2lib.test.speed.SimpleTestSuiteResult extends AbstractTestSuiteResul
 	/**
 	 * Constructs a new {@code SimpleTestSuiteResult} instance.
 	 * 
-	 * @param name the name of this result	 */
+	 * @param name the name of this result
+	 */
 	public function SimpleTestSuiteResult(name:String) {
 		this.name = name;
 	}
@@ -44,7 +49,8 @@ class org.as2lib.test.speed.SimpleTestSuiteResult extends AbstractTestSuiteResul
 	/**
 	 * Returns the name of this test result.
 	 * 
-	 * @return the name of this test result	 */
+	 * @return the name of this test result
+	 */
 	public function getName(Void):String {
 		return this.name;
 	}

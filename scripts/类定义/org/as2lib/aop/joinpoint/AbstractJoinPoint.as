@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -83,7 +86,8 @@ class org.as2lib.aop.joinpoint.AbstractJoinPoint extends BasicClass {
 	 * <p>If {@code matcher} is {@code null} or {@code undefined}, {@link getMatcher}
 	 * will return the default matcher.
 	 * 
-	 * @param matcher the new matcher to set	 */
+	 * @param matcher the new matcher to set
+	 */
 	public function setMatcher(matcher:Matcher):Void {
 		this.matcher = matcher;
 	}
@@ -95,7 +99,8 @@ class org.as2lib.aop.joinpoint.AbstractJoinPoint extends BasicClass {
 	 * <p>If no matcher has been set manually the one returned by the
 	 * {@link AopConfig#getMatcher} method will be used.
 	 * 
-	 * @return the pattern matcher	 */
+	 * @return the pattern matcher
+	 */
 	public function getMatcher(Void):Matcher {
 		if (!this.matcher) this.matcher = AopConfig.getMatcher();
 		return this.matcher;
@@ -114,7 +119,8 @@ class org.as2lib.aop.joinpoint.AbstractJoinPoint extends BasicClass {
 	 * {@code undefined}
 	 * @throws IllegalStateException if logical this is {@code null} or
 	 * {@code undefined}
-	 * @see #getThis	 */
+	 * @see #getThis
+	 */
 	private function proceedMethod(method:MethodInfo, args:Array) {
 		if (!method) throw new IllegalArgumentException("Argument 'method' must not be 'null' nor 'undefined'.", this, arguments);
 		var t:Object = getThis();

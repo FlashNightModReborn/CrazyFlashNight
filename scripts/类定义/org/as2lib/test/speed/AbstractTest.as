@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +30,8 @@ import org.as2lib.test.speed.layout.MethodInvocationTreeLayout;
  * {@code AbstractTest} provides implementations for methods needed when implementing
  * the {@link Test} interface and some extra methods commonly needed.
  * 
- * @author Simon Wacker */
+ * @author Simon Wacker
+ */
 class org.as2lib.test.speed.AbstractTest extends BasicClass {
 	
 	/** Do not layout the result in any specific way. */
@@ -48,14 +52,16 @@ class org.as2lib.test.speed.AbstractTest extends BasicClass {
 	/**
 	 * Layout the result to depict the order of method invocations. This means that the
 	 * tree is ordered firstly in depth according to which method called which other
-	 * method and secondly sorted by the correct succession of method invocations.	 */
+	 * method and secondly sorted by the correct succession of method invocations.
+	 */
 	public static var METHOD_INVOCATION_TREE:Number = 4;
 	
 	/** The result of this test. */
 	private var result:ConfigurableTestSuiteResult;
 	
 	/**
-	 * Constructs a new {@code AbstractTest} instance.	 */
+	 * Constructs a new {@code AbstractTest} instance.
+	 */
 	private function AbstractTest(Void) {
 	}
 	
@@ -101,7 +107,8 @@ class org.as2lib.test.speed.AbstractTest extends BasicClass {
 	/**
 	 * Sets this test's result.
 	 * 
-	 * @param result this test's result	 */
+	 * @param result this test's result
+	 */
 	private function setResult(result:ConfigurableTestSuiteResult):Void {
 		this.result = result;
 	}

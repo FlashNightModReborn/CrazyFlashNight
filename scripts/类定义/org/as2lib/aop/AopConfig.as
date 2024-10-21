@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -81,7 +84,8 @@ class org.as2lib.aop.AopConfig extends BasicClass {
 	/**
 	 * Sets a new matcher.
 	 * 
-	 * @param newMatcher the new matcher	 */
+	 * @param newMatcher the new matcher
+	 */
 	public static function setMatcher(newMatcher:Matcher):Void {
 		matcher = newMatcher;
 	}
@@ -90,7 +94,8 @@ class org.as2lib.aop.AopConfig extends BasicClass {
 	 * Returns either the set or the default matcher. The default matcher is an
 	 * instance of the {@link WildcardMatcher} class.
 	 * 
-	 * @return the set or default matcher	 */
+	 * @return the set or default matcher
+	 */
 	public static function getMatcher(Void):Matcher {
 		if (!matcher) matcher = new WildcardMatcher();
 		return matcher;

@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,13 +24,15 @@ import org.as2lib.test.speed.MethodInvocation;
  * {@code MethodInvocationHolder} is a generic interface for tests that build upon
  * method invocations.
  * 
- * @author Simon Wacker */
+ * @author Simon Wacker
+ */
 interface org.as2lib.test.speed.MethodInvocationHolder extends BasicInterface {
 	
 	/**
 	 * Returns the held method invocation.
 	 * 
-	 * @return the held method invocation	 */
+	 * @return the held method invocation
+	 */
 	public function getMethodInvocation(Void):MethodInvocation;
 	
 }

@@ -1,11 +1,14 @@
 /*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -81,7 +84,8 @@ interface org.as2lib.env.event.impulse.Impulse extends EventListenerSource {
 	 * Adds a {@link ImpulseListener} for listening to the onImpulse event to
 	 * the Impulse.
 	 * 
-	 * @param listener Listener to be added.	 */
+	 * @param listener Listener to be added.
+	 */
 	public function addImpulseListener(listener:ImpulseListener):Void;
 	
 	/**
@@ -91,7 +95,8 @@ interface org.as2lib.env.event.impulse.Impulse extends EventListenerSource {
 	 * <p>If the certain listener also implements other event types it will also
 	 * be remove from listening to those events.
 	 * 
-	 * @param listener Listener to be added.	 */
+	 * @param listener Listener to be added.
+	 */
 	public function removeImpulseListener(listener:ImpulseListener):Void;
 	
 	/**
@@ -126,7 +131,8 @@ interface org.as2lib.env.event.impulse.Impulse extends EventListenerSource {
 	/**
 	 * Connect a certain executable to listen to the continous event.
 	 * 
-	 * @param executable {@link Executable} that should be connected	 */
+	 * @param executable {@link Executable} that should be connected
+	 */
 	public function connectExecutable(executable:Executable):Void;
 	
 	/**
@@ -146,7 +152,8 @@ interface org.as2lib.env.event.impulse.Impulse extends EventListenerSource {
 	/**
 	 * Disconnect a certain executable from listening to the {@code Impulse}.
 	 * 
-	 * @param executable Executable that should be disconnected	 */
+	 * @param executable Executable that should be disconnected
+	 */
 	public function disconnectExecutable(executable:Executable):Void;
 	
 	/**

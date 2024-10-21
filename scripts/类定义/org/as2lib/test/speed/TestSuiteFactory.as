@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,18 +29,21 @@ import org.as2lib.test.speed.MethodTestCase;
 /**
  * {@code TestSuiteFactory} collects test suites.
  * 
- * @author Simon Wacker */
+ * @author Simon Wacker
+ */
 class org.as2lib.test.speed.TestSuiteFactory extends BasicClass {
 	
 	/**
-	 * Constructs a new {@code TestSuiteFactory} instance.	 */
+	 * Constructs a new {@code TestSuiteFactory} instance.
+	 */
 	public function TestSuiteFactory(Void) {
 	}
 	
 	/**
 	 * @overload #collectAllTestCases
 	 * @overload #collectTestCasesByPackage
-	 * @overload #collectTestCasesByClass	 */
+	 * @overload #collectTestCasesByClass
+	 */
 	public function collectTestCases():TestSuite {
 		var o:Overload = new Overload(this);
 		o.addHandler([], collectAllTestCases);
@@ -50,7 +56,8 @@ class org.as2lib.test.speed.TestSuiteFactory extends BasicClass {
 	 * Collects all methods and properties as test cases except the ones declared by
 	 * {@code Object}.
 	 * 
-	 * @return a test suite that contains all tests	 */
+	 * @return a test suite that contains all tests
+	 */
 	public function collectAllTestCases(Void):TestSuite {
 		return collectTestCases(PackageInfo.getRootPackage());
 	}
@@ -60,7 +67,8 @@ class org.as2lib.test.speed.TestSuiteFactory extends BasicClass {
 	 * sub-packages as test cases except the ones declared by {@code Object}.
 	 * 
 	 * @param package the package to begin the collection at
-	 * @return a test suite that contains all collected tests	 */
+	 * @return a test suite that contains all collected tests
+	 */
 	public function collectTestCasesByPackage(package:PackageInfo):TestSuite {
 		if (!package) throw new IllegalArgumentException("Argument 'package' [" + package + "] must not be 'null' nor 'undefined'.", this, arguments);
 		var r:TestSuite = new TestSuite(package.getFullName());
@@ -80,7 +88,8 @@ class org.as2lib.test.speed.TestSuiteFactory extends BasicClass {
 	 * Methods and properties of super-classes are not included.
 	 * 
 	 * @param clazz the class to collect the methods and properties of
-	 * @return a test suite that contains all collected tests	 */
+	 * @return a test suite that contains all collected tests
+	 */
 	public function collectTestCasesByClass(clazz:ClassInfo):TestSuite {
 		var r:TestSuite = new TestSuite(clazz.getFullName());
 		r.addTest(clazz.getConstructor());

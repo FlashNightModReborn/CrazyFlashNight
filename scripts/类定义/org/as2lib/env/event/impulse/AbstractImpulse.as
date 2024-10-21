@@ -1,11 +1,14 @@
 /*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +29,8 @@ import org.as2lib.util.ArrayUtil;
  * by different {@link org.as2lib.env.event.impulse.Impulse} Implementations.
  * 
  * @author Martin Heidegger
- * @version 1.0 */
+ * @version 1.0
+ */
 class org.as2lib.env.event.impulse.AbstractImpulse extends BasicClass {
 	
 	/** Broadcaster for connected executables */
@@ -36,7 +40,8 @@ class org.as2lib.env.event.impulse.AbstractImpulse extends BasicClass {
 	private var impulseBroadcaster:Object;
 	
 	/**
-	 * Constructs a new impulse.	 */
+	 * Constructs a new impulse.
+	 */
 	public function AbstractImpulse() {
 		// Creation of ASBroadcasters for the events.
 		execBroadcaster = new Object();
@@ -58,7 +63,8 @@ class org.as2lib.env.event.impulse.AbstractImpulse extends BasicClass {
 	 * Adds a list of listeners to listen to the impulse events.
 	 * 
 	 * @param listeners List of listeners to be added.
-	 * @throws IllegalArgumentException if a listener could not be added.	 */
+	 * @throws IllegalArgumentException if a listener could not be added.
+	 */
 	public function addAllListeners(listeners:Array):Void {
 		for(var i=0; i<listeners.length; i++) {
 			addListener(listeners[i]);
@@ -175,14 +181,16 @@ class org.as2lib.env.event.impulse.AbstractImpulse extends BasicClass {
 	}
 	
 	/**
-	 * Removes all added Listeners from listening to the impulse.	 */
+	 * Removes all added Listeners from listening to the impulse.
+	 */
 	public function removeAllListeners(Void):Void {
 		removeAllImpulseListeners();
 		disconnectAllExecutables();
 	}
 	
 	/**
-	 * Removes all added {@link ImpulseListener}s from listening to the impulse.	 */
+	 * Removes all added {@link ImpulseListener}s from listening to the impulse.
+	 */
 	public function removeAllImpulseListeners(Void):Void {
 		var c:Call = new Call(this, removeListener);
 		c.forEach(impulseBroadcaster._listeners);

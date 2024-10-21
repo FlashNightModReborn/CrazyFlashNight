@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -70,7 +73,11 @@ class org.as2lib.env.log.handler.SosHandler extends XmlSocketHandler {
 	 */
 	public function SosHandler(messageStringifier:Stringifier) {
 		super("localhost", 4445, (!messageStringifier ? new SosMessageStringifier() : messageStringifier));
-		socket.send("<setKey><name>" + DEBUG_KEY + "</name><color>" + DEBUG + "</color></setKey>");		socket.send("<setKey><name>" + INFO_KEY + "</name><color>" + INFO + "</color></setKey>");		socket.send("<setKey><name>" + WARNING_KEY + "</name><color>" + WARNING + "</color></setKey>");		socket.send("<setKey><name>" + ERROR_KEY + "</name><color>" + ERROR + "</color></setKey>");		socket.send("<setKey><name>" + FATAL_KEY + "</name><color>" + FATAL + "</color></setKey>");
+		socket.send("<setKey><name>" + DEBUG_KEY + "</name><color>" + DEBUG + "</color></setKey>");
+		socket.send("<setKey><name>" + INFO_KEY + "</name><color>" + INFO + "</color></setKey>");
+		socket.send("<setKey><name>" + WARNING_KEY + "</name><color>" + WARNING + "</color></setKey>");
+		socket.send("<setKey><name>" + ERROR_KEY + "</name><color>" + ERROR + "</color></setKey>");
+		socket.send("<setKey><name>" + FATAL_KEY + "</name><color>" + FATAL + "</color></setKey>");
 	}
 	
 }

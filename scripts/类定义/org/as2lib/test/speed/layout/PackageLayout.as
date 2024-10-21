@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +30,8 @@ import org.as2lib.test.speed.layout.ClassLayout;
  * {@code PackageLayout} lays test suite results out with packages as root elements of
  * the structure.
  * 
- * @author Simon Wacker */
+ * @author Simon Wacker
+ */
 class org.as2lib.test.speed.layout.PackageLayout extends BasicClass implements TestResultLayout {
 	
 	/** The result of the lay-outing of the current test suite result. */
@@ -37,7 +41,8 @@ class org.as2lib.test.speed.layout.PackageLayout extends BasicClass implements T
 	private var methodInvocations:Array;
 	
 	/**
-	 * Constructs a new {@code PackageLayout} instance.	 */
+	 * Constructs a new {@code PackageLayout} instance.
+	 */
 	public function PackageLayout(Void) {
 	}
 	
@@ -65,7 +70,8 @@ class org.as2lib.test.speed.layout.PackageLayout extends BasicClass implements T
 	 * result and removes these invocations from the {@code methodInvocations} array.
 	 * 
 	 * @param package the package to add method invocations for
-	 * @return the number of removed method invocations	 */
+	 * @return the number of removed method invocations
+	 */
 	private function addMethodInvocations(package:PackageInfo):Number {
 		var count:Number = 0;
 		var classResult:ConfigurableTestSuiteResult = new SimpleTestSuiteResult(package.getFullName());

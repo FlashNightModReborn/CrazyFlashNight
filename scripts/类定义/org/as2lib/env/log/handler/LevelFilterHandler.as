@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +26,8 @@ import org.as2lib.env.log.level.AbstractLogLevel;
 /**
  * {@code LevelFilterHandler} filters log messages depending on their level.
  * 
- * @author Simon Wacker */
+ * @author Simon Wacker
+ */
 class org.as2lib.env.log.handler.LevelFilterHandler implements LogHandler {
 	
 	/** All log messages get logged. */
@@ -69,7 +73,8 @@ class org.as2lib.env.log.handler.LevelFilterHandler implements LogHandler {
 	 * @param handler the handler to forward not-filtered log messages to
 	 * @param (optional) level the log level determining which log messages to filter
 	 * @throws IllegalArgumentException if the passed-in {@code handler} is
-	 * {@code null} or {@code undefined}	 */
+	 * {@code null} or {@code undefined}
+	 */
 	public function LevelFilterHandler(handler:LogHandler, level:LogLevel) {
 		if (!handler) throw new IllegalArgumentException("Argument 'handler' [" + handler + "] must not be 'null' nor 'undefined'.", this, arguments);
 		this.handler = handler;
@@ -80,7 +85,8 @@ class org.as2lib.env.log.handler.LevelFilterHandler implements LogHandler {
 	/**
 	 * Returns the wrapped handler not-filtered log messages are fowarded to.
 	 * 
-	 * @return the wrapped handler	 */
+	 * @return the wrapped handler
+	 */
 	public function getHandler(Void):LogHandler {
 		return this.handler;
 	}
@@ -89,7 +95,8 @@ class org.as2lib.env.log.handler.LevelFilterHandler implements LogHandler {
 	 * Returns the lowest level messages can have that are not filtered. All messages
 	 * at a lower level than the returned one are filtered.
 	 * 
-	 * @return the lowest level of messages that are not filtered	 */
+	 * @return the lowest level of messages that are not filtered
+	 */
 	public function getLevel(Void):LogLevel {
 		return this.level;
 	}
@@ -98,7 +105,8 @@ class org.as2lib.env.log.handler.LevelFilterHandler implements LogHandler {
 	 * Forwards that passed-in {@code message} to the wrapped handler if the message
 	 * has a higher or the same level than the specified one.
 	 * 
-	 * @param message the message to forward to the wrapped handler	 */
+	 * @param message the message to forward to the wrapped handler
+	 */
 	public function write(message:LogMessage):Void {
 		if (this.levelAsNumber >= message.getLevel().toNumber()) {
 			this.handler.write(message);

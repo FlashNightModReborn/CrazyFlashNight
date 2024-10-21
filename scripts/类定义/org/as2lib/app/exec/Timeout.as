@@ -1,11 +1,14 @@
 /*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -57,7 +60,8 @@ import org.as2lib.env.event.impulse.FrameImpulse;
  * 
  * @author Martin Heidegger
  * @version 1.0
- * @see Executable#execute */
+ * @see Executable#execute
+ */
 class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExecutable {
 	
 	/** Connected Executable */
@@ -85,7 +89,8 @@ class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExec
 	 * 
 	 * @param exe Executable to excute after a delay
 	 * @param frames Amout of frames during the end of the execution
-	 * @param args Arguments to be passed at execution	 */
+	 * @param args Arguments to be passed at execution
+	 */
 	public static function setTimeout(exe:Executable, frames:Number, args:Array) {
 		var t:Function = eval("th"+"is");
 		var o = new t(exe, frames).execute(args);
@@ -95,7 +100,8 @@ class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExec
 	 * Creates a new {@code Timeout} instance.
 	 * 
 	 * @overload #setExecutable
-	 * @overload #setExecutableByObjectAndFunction	 */
+	 * @overload #setExecutableByObjectAndFunction
+	 */
 	public function Timeout() {
 		timeCall = new Call(this, onEnterFrame);
 		var o:Overload = new Overload(this);
@@ -108,7 +114,8 @@ class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExec
 	 * Sets the connected executable.
 	 * 
 	 * @param exe Executable to be executed after the delay
-	 * @param frames Delay in frames until execution.	 */
+	 * @param frames Delay in frames until execution.
+	 */
 	public function setExecutable(exe:Executable, frames:Number):Void {
 		this.exe = exe;
 		this.frames = frames;
@@ -119,7 +126,8 @@ class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExec
 	 * 
 	 * @param inObject Scope of the execution
 	 * @param func Method to execute
-	 * @param frames Delay in frames until execution.	 */
+	 * @param frames Delay in frames until execution.
+	 */
 	public function setExecutableByObjectAndFunction(inObject:Object, func:Function, frames:Number):Void {
 		setExecutable(new Call(inObject, func), frames);
 	}
@@ -129,7 +137,8 @@ class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExec
 	 * 
 	 * @see #setExecutable
 	 * @see #setExecutableByObjectAndFunction
-	 * @see Executable#execute	 */
+	 * @see Executable#execute
+	 */
 	public function execute() {
 		executed = 1;
 		if (!target) target = new Array();
@@ -143,7 +152,8 @@ class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExec
 	 * Referes to execute.
 	 * 
 	 * <p>Implementation of {@link AbstractProcess#run} for using it as a
-	 * process.	 */
+	 * process.
+	 */
 	public function run(Void):Void {
 		execute.apply(this, arguments);
 	}
@@ -174,7 +184,8 @@ class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExec
 	 * </pre>
 	 * 
 	 * @param object Object to be iterated
-	 * @return null as the result isn't available yet.	 */
+	 * @return null as the result isn't available yet.
+	 */
 	public function forEach(object):Array {
 		executed = 0;
 		if (!target) target = new Array();
@@ -188,7 +199,8 @@ class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExec
 	}
 
 	/**
-	 * Executed on each interval execution.	 */
+	 * Executed on each interval execution.
+	 */
 	private function onEnterFrame(Void):Void {
 		if (executed++ > frames) {
 			finalExecution();
@@ -196,7 +208,8 @@ class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExec
 	}
 	
 	/**
-	 * Internal method to finish the execution.	 */
+	 * Internal method to finish the execution.
+	 */
 	private function finalExecution(impulse:FrameImpulse):Void {
 		executed = 1;
 		var i:Number;

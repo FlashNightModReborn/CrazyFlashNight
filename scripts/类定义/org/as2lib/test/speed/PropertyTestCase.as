@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +29,8 @@ import org.as2lib.test.speed.MethodTestCase;
 /**
  * {@code PropertyTestCase} profiles a property.
  * 
- * @author Simon Wacker */
+ * @author Simon Wacker
+ */
 class org.as2lib.test.speed.PropertyTestCase extends AbstractTest implements Test {
 	
 	/** The property to profile. */
@@ -40,7 +44,8 @@ class org.as2lib.test.speed.PropertyTestCase extends AbstractTest implements Tes
 	
 	/**
 	 * @overload #PropertyTestCaseByProperty
-	 * @overload #PropertyTestCaseByObjectAndName	 */
+	 * @overload #PropertyTestCaseByObjectAndName
+	 */
 	public function PropertyTestCase() {
 		var o:Overload = new Overload(this);
 		o.addHandler([PropertyInfo], PropertyTestCaseByProperty);
@@ -60,7 +65,8 @@ class org.as2lib.test.speed.PropertyTestCase extends AbstractTest implements Tes
 	 * @param referenceScope (optional) the scope of the property reference to profile
 	 * @param referenceName (optional) the name of the property reference to profile
 	 * @throws IllegalArgumentException if the passed-in {@code property} is
-	 * {@code null} or {@code undefined}	 */
+	 * {@code null} or {@code undefined}
+	 */
 	public function PropertyTestCaseByProperty(property:PropertyInfo, referenceScope, referenceName:String):Void {
 		if (!property) {
 			throw new IllegalArgumentException("Argument 'property' [" + property + "] must not be 'null' nor 'undefined'.", this, arguments);
@@ -83,7 +89,8 @@ class org.as2lib.test.speed.PropertyTestCase extends AbstractTest implements Tes
 	 * @param object the object that declares the property to profile
 	 * @param propertyName the name of the property to profile
 	 * @throws IllegalArgumentException if there is no property with the given
-	 * {@code propertyName} on the given {@code object}	 */
+	 * {@code propertyName} on the given {@code object}
+	 */
 	public function PropertyTestCaseByObjectAndName(object, propertyName:String):Void {
 		var c:ClassInfo = ClassInfo.forObject(object);
 		if (c.hasProperty(propertyName)) {
@@ -102,13 +109,15 @@ class org.as2lib.test.speed.PropertyTestCase extends AbstractTest implements Tes
 	/**
 	 * Returns the profiled property.
 	 * 
-	 * @return the profiled property	 */
+	 * @return the profiled property
+	 */
 	public function getProperty(Void):PropertyInfo {
 		return this.property;
 	}
 	
 	/**
-	 * Runs this property test case.	 */
+	 * Runs this property test case.
+	 */
 	public function run(Void):Void {
 		this.getter.run();
 		this.setter.run();

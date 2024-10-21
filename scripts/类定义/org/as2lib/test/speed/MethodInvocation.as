@@ -1,11 +1,14 @@
 ﻿/*
  * Copyright the original author or authors.
  * 
- * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * Licensed under the Mozilla Public License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ *      https://www.mozilla.org/MPL/2.0/
+ *
+ * This file may be redistributed under the terms of the GNU General Public License,
+ * version 3.0 (GPLv3), or any later version.
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +27,8 @@ import org.as2lib.test.speed.AbstractTestResult;
 /**
  * {@code MethodInvocation} reflects a profiled method invocation.
  * 
- * @author Simon Wacker */
+ * @author Simon Wacker
+ */
 class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implements TestResult {
 	
 	/** Designates an unknown type in the type signature. */
@@ -59,7 +63,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	 * 
 	 * @param method the invoked method
 	 * @throws IllegalArgumentException if {@code method} is {@code null} or
-	 * {@code undefined}	 */
+	 * {@code undefined}
+	 */
 	public function MethodInvocation(method:MethodInfo) {
 		if (!method) {
 			throw new IllegalArgumentException("Argument 'method' [" + method + "] must not be 'null' nor 'undefined'.", this, arguments);
@@ -82,7 +87,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	 * 
 	 * @return the name of this method invocation
 	 * @see #getMethodName
-	 * @see #getMethodSignature	 */
+	 * @see #getMethodSignature
+	 */
 	public function getName(Void):String {
 		return (getMethodName() + getSignature());
 	}
@@ -90,7 +96,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	/**
 	 * Returns the full name of the invoked method.
 	 * 
-	 * @return the full name of the invoked method	 */
+	 * @return the full name of the invoked method
+	 */
 	public function getMethodName(Void):String {
 		return this.method.getFullName();
 	}
@@ -101,7 +108,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	 * <p>If any information needed to generate the signature is not defined,
 	 * {@link #UNKNOWN} is used as placeholder.
 	 * 
-	 * @return this method invocation's signature	 */
+	 * @return this method invocation's signature
+	 */
 	public function getSignature(Void):String {
 		var result:String = "(";
 		if (this.args.length > 0) {
@@ -135,7 +143,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	 * Returns the fully qualified type name for the passed-in {@code instance}.
 	 * 
 	 * @param instance the instance to return the type name for
-	 * @return the fully qualified type name for the passed-in {@code instance}.	 */
+	 * @return the fully qualified type name for the passed-in {@code instance}.
+	 */
 	private function getFullTypeName(instance):String {
 		if (instance == null) return UNKNOWN;
 		var typeName:String = ClassInfo.forInstance(instance).getFullName();
@@ -235,7 +244,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	 * method invocation.
 	 * 
 	 * @return the method invocation that called the method that resulted in this
-	 * method.	 */
+	 * method.
+	 */
 	public function getCaller(Void):MethodInvocation {
 		return this.caller;
 	}
@@ -245,7 +255,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	 * invocation.
 	 * 
 	 * @param caller the method invocation that called the method that resulted in this
-	 * method invocation.	 */
+	 * method invocation.
+	 */
 	public function setCaller(caller:MethodInvocation):Void {
 		this.caller = caller;
 	}
@@ -253,7 +264,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	/**
 	 * Returns the previous method invocation.
 	 * 
-	 * @return the previous method invocation	 */
+	 * @return the previous method invocation
+	 */
 	public function getPreviousMethodInvocation(Void):MethodInvocation {
 		return this.previousMethodInvocation;
 	}
@@ -261,7 +273,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	/**
 	 * Sets the previous method invocation.
 	 * 
-	 * @param previousMethodInvocation the previous method invocation	 */
+	 * @param previousMethodInvocation the previous method invocation
+	 */
 	public function setPreviousMethodInvocation(previousMethodInvocation:MethodInvocation):Void {
 		this.previousMethodInvocation = previousMethodInvocation;
 	}
@@ -272,7 +285,8 @@ class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implemen
 	 * 
 	 * @param methodInvocation the method invocation to make the check upon
 	 * @return {@code true} if this method invocation was invoked previously to the
-	 * passed-in {@code methodInvocation} else {@code false}	 */
+	 * passed-in {@code methodInvocation} else {@code false}
+	 */
 	public function isPreviousMethodInvocation(methodInvocation:MethodInvocation):Boolean {
 		if (methodInvocation == this) return false;
 		var previousMethodInvocation:MethodInvocation = methodInvocation.getPreviousMethodInvocation();
