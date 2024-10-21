@@ -28,31 +28,40 @@
      * @return JSON 字符串
      */
     public function stringify(arg) {
-        var resultParts = [];
         var serializedValue;
+        var result = ""; // 直接拼接字符串
         var index;
 
         switch (typeof arg) {
             case "object":
                 if (arg) {
                     if (arg instanceof Array) {
+                        result = "[";
                         for (index = 0; index < arg.length; index++) {
                             serializedValue = this.stringify(arg[index]);
-                            resultParts.push(serializedValue);
+                            if (index > 0) {
+                                result += ","; // 使用字符串拼接而非数组
+                            }
+                            result += serializedValue;
                         }
-                        return "[" + resultParts.join(",") + "]";
+                        return result + "]"; // 拼接数组结束符
                     }
                     if (typeof arg.toString != "undefined") {
+                        result = "{";
+                        var isFirst = true; // 控制逗号的添加
                         for (index in arg) {
                             if (arg.hasOwnProperty(index)) {
                                 serializedValue = arg[index];
                                 if (typeof serializedValue != "undefined" && typeof serializedValue != "function") {
-                                    serializedValue = this.stringify(serializedValue);
-                                    resultParts.push(this.stringifyString(index) + ":" + serializedValue);
+                                    if (!isFirst) {
+                                        result += ",";
+                                    }
+                                    isFirst = false;
+                                    result += this.stringifyString(index) + ":" + this.stringify(serializedValue);
                                 }
                             }
                         }
-                        return "{" + resultParts.join(",") + "}";
+                        return result + "}"; // 拼接对象结束符
                     }
                 }
                 return "null";
@@ -67,13 +76,14 @@
         }
     }
 
+
     /**
      * 将字符串中的特殊字符进行转义并包裹在双引号中
      * @param value 要处理的字符串
      * @return 处理后的字符串
      */
     public function stringifyString(value) {
-        var resultParts = ["\""];
+        var result = "\"";
         var length = value.length;
         var index = 0;
         var char;
@@ -82,25 +92,26 @@
             char = value.charAt(index);
             if (char >= " ") {
                 if (char == "\\" || char == "\"") {
-                    resultParts.push("\\");
+                    result += "\\" + char; // 直接拼接转义符
+                } else {
+                    result += char; // 直接拼接字符
                 }
-                resultParts.push(char);
             } else {
                 switch (char) {
                     case "\b":
-                        resultParts.push("\\b");
+                        result += "\\b";
                         break;
                     case "\f":
-                        resultParts.push("\\f");
+                        result += "\\f";
                         break;
                     case "\n":
-                        resultParts.push("\\n");
+                        result += "\\n";
                         break;
                     case "\r":
-                        resultParts.push("\\r");
+                        result += "\\r";
                         break;
                     case "\t":
-                        resultParts.push("\\t");
+                        result += "\\t";
                         break;
                     default:
                         var charCode = char.charCodeAt();
@@ -108,14 +119,14 @@
                         while (hexCode.length < 4) {
                             hexCode = "0" + hexCode;
                         }
-                        resultParts.push("\\u" + hexCode);
+                        result += "\\u" + hexCode;
                 }
             }
             index += 1;
         }
-        resultParts.push("\"");
-        return resultParts.join("");
+        return result + "\"";
     }
+
 
     /**
      * 跳过空白字符和注释
