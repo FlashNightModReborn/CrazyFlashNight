@@ -49,7 +49,7 @@ class org.flashNight.neur.Event.Delegate {
         // 如果作用域为 null，则函数将在全局作用域中执行
         if (scope == null) {
             cacheKey = methodUID;  // 使用方法的 UID 作为缓存键
-            ServerManager.getInstance().sendServerMessage(cacheKey + " " + ObjectUtil.toString(arguments));
+            //ServerManager.getInstance().sendServerMessage(cacheKey + " " + ObjectUtil.toString(arguments));
             // 尝试从缓存中获取已存在的委托函数
             var cachedFunction:Function = loccache[cacheKey];
             if (cachedFunction != undefined) {
@@ -75,7 +75,7 @@ class org.flashNight.neur.Event.Delegate {
             // 为作用域生成唯一的 UID，并与方法 UID 组合生成缓存键
             var scopeUID:String = String(Dictionary.getStaticUID(scope));
             cacheKey = String((scopeUID << 16) | methodUID);  // 将作用域和方法的 UID 组合成缓存键
-            ServerManager.getInstance().sendServerMessage(cacheKey + " " + ObjectUtil.toString(arguments));
+            //ServerManager.getInstance().sendServerMessage(cacheKey + " " + ObjectUtil.toString(arguments));
             // 尝试从缓存中获取已存在的委托函数
             var cachedFunctionScope:Function = loccache[cacheKey];
             if (cachedFunctionScope != undefined) {
@@ -214,7 +214,7 @@ class org.flashNight.neur.Event.Delegate {
         // 如果作用域为 null，则函数将在全局作用域中执行
         if (scope == null) {
             cacheKey = methodUID + "|" + paramsUID;  // 组合方法 UID 和参数 UID 生成缓存键
-            ServerManager.getInstance().sendServerMessage(cacheKey + " " + ObjectUtil.toString(arguments) + " " + paramsUID);
+            //ServerManager.getInstance().sendServerMessage(cacheKey + " " + ObjectUtil.toString(arguments) + " " + paramsUID);
             // 尝试从缓存中获取已存在的委托函数
             var cachedFunctionWithParams:Function = loccache[cacheKey];
             if (cachedFunctionWithParams != undefined) {
@@ -241,7 +241,7 @@ class org.flashNight.neur.Event.Delegate {
             var scopeUID:Number = Dictionary.getStaticUID(scope);
             // 使用位运算生成缓存键，将 scopeUID、methodUID 和 paramsUID 组合
             cacheKey = String((scopeUID << 24) | (methodUID << 8) + "|" + paramsUID);
-            ServerManager.getInstance().sendServerMessage(cacheKey + " " + ObjectUtil.toString(arguments) + " " + paramsUID);
+            //ServerManager.getInstance().sendServerMessage(cacheKey + " " + ObjectUtil.toString(arguments) + " " + paramsUID);
 
             // 尝试从缓存中获取已存在的委托函数
             var cachedFunctionWithParamsScope:Function = loccache[cacheKey];

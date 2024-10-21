@@ -1,4 +1,5 @@
 ﻿import org.flashNight.gesh.paint.renderMachine.*;
+import org.flashNight.neur.Event.Delegate; // 引入 Delegate 类
 import flash.geom.ColorTransform;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
@@ -20,32 +21,32 @@ class org.flashNight.gesh.paint.renderMachine.RendererVM {
     public function RendererVM(target:MovieClip) {
         this.mc = target;
         this.utils = new org.flashNight.gesh.paint.renderMachine.Utils();
-        initializeCommandMap();  // Dynamically initialize the command mapping
+        initializeCommandMap();  // 动态初始化命令映射
     }
 
-    // Dynamically initialize the command mapping
+    // 动态初始化命令映射，使用 Delegate 包装函数
     private function initializeCommandMap():Void {
         commandMap = {};
-        commandMap["M"] = handleMoveTo;
-        commandMap["L"] = handleLineTo;
-        commandMap["C"] = handleCurveTo;
-        commandMap["R"] = handleDrawRect;
-        commandMap["O"] = handleDrawCircle;
-        commandMap["A"] = handleDrawRoundRect;
-        commandMap["P"] = handleDrawPolygon;
-        commandMap["S"] = handleSetLineStyle;
-        commandMap["F"] = handleBeginFill;
-        commandMap["G"] = handleBeginGradientFill;
-        commandMap["B"] = handleBeginBitmapFill;
-        commandMap["T"] = handleSetColorTransform;
-        commandMap["Q"] = handleSetAlpha;
-        commandMap["N"] = handleSetBlendModeNormal;
-        commandMap["X"] = handleSetBlendModeMultiply;
-        commandMap["D"] = handleSetBlendModeAdd;
-        commandMap["U"] = handleSetBlendModeSubtract;
-        commandMap["K"] = handleClear;
-        commandMap["E"] = handleEndFill;
-        commandMap[";"] = handleEndCommand;
+        commandMap["M"] = Delegate.create(this, handleMoveTo);
+        commandMap["L"] = Delegate.create(this, handleLineTo);
+        commandMap["C"] = Delegate.create(this, handleCurveTo);
+        commandMap["R"] = Delegate.create(this, handleDrawRect);
+        commandMap["O"] = Delegate.create(this, handleDrawCircle);
+        commandMap["A"] = Delegate.create(this, handleDrawRoundRect);
+        commandMap["P"] = Delegate.create(this, handleDrawPolygon);
+        commandMap["S"] = Delegate.create(this, handleSetLineStyle);
+        commandMap["F"] = Delegate.create(this, handleBeginFill);
+        commandMap["G"] = Delegate.create(this, handleBeginGradientFill);
+        commandMap["B"] = Delegate.create(this, handleBeginBitmapFill);
+        commandMap["T"] = Delegate.create(this, handleSetColorTransform);
+        commandMap["Q"] = Delegate.create(this, handleSetAlpha);
+        commandMap["N"] = Delegate.create(this, handleSetBlendModeNormal);
+        commandMap["X"] = Delegate.create(this, handleSetBlendModeMultiply);
+        commandMap["D"] = Delegate.create(this, handleSetBlendModeAdd);
+        commandMap["U"] = Delegate.create(this, handleSetBlendModeSubtract);
+        commandMap["K"] = Delegate.create(this, handleClear);
+        commandMap["E"] = Delegate.create(this, handleEndFill);
+        commandMap[";"] = Delegate.create(this, handleEndCommand);
     }
 
     public function executeCommandStream(commandStream:String):Void {
@@ -57,16 +58,17 @@ class org.flashNight.gesh.paint.renderMachine.RendererVM {
             var cmd:String = commandStream.charAt(i++);
             var handler:Function = commandMap[cmd];
             if (handler != undefined) {
-                handler.call(this);
+                handler(); // 直接调用缓存的函数对象
             } else if (cmd == ';') {
-                continue;  // Command terminator
+                continue;  // 命令终止符
             } else {
-                // Unknown command
+                // 未知命令，可以考虑添加日志
+                // trace("Unknown command: " + cmd);
             }
         }
     }
 
-    // Command handling functions
+    // 命令处理函数
     private function handleMoveTo():Void {
         var x:Number = utils.readNumber(commandStream, len, i);
         i = utils.getCurrentIndex();
@@ -210,7 +212,8 @@ class org.flashNight.gesh.paint.renderMachine.RendererVM {
             var matrix:Matrix = new Matrix();
             mc.beginBitmapFill(bitmapData, matrix, true, true);
         } else {
-            // BitmapData not found
+            // BitmapData 未找到，可以添加日志或默认处理
+            // trace("BitmapData not found for ID: " + bitmapId);
         }
     }
 
@@ -278,10 +281,10 @@ class org.flashNight.gesh.paint.renderMachine.RendererVM {
     }
 
     private function handleEndCommand():Void {
-        // Handle command termination if necessary
+        // 处理命令终止符，如果需要的话
     }
 
-    // Helper function to draw a circle
+    // 辅助函数：绘制圆形
     private function drawCircle(mc:MovieClip, x:Number, y:Number, r:Number):Void {
         mc.moveTo(x + r, y);
         for (var angle:Number = 0; angle <= 360; angle += 10) {
@@ -292,7 +295,7 @@ class org.flashNight.gesh.paint.renderMachine.RendererVM {
         }
     }
 
-    // Helper function to draw a polygon
+    // 辅助函数：绘制多边形
     private function drawPolygon(mc:MovieClip, x:Number, y:Number, radius:Number, sides:Number):Void {
         mc.moveTo(x + radius, y);
         for (var j:Number = 1; j <= sides; j++) {
@@ -302,11 +305,10 @@ class org.flashNight.gesh.paint.renderMachine.RendererVM {
         mc.lineTo(x + radius, y);
     }
 
-    // Function to retrieve BitmapData by ID
+    // 获取 BitmapData（此处保留之前的逻辑）
     private function getBitmapDataById(bitmapId:String):BitmapData {
-        // Implement logic to retrieve BitmapData based on bitmapId
-        // For example, you might have a dictionary of BitmapData objects
-        // Return the corresponding BitmapData object
-        return null; // Placeholder
+        // 实现逻辑以根据 bitmapId 加载 BitmapData
+        // 这是一个占位符，需根据实际情况实现
+        return null;
     }
 }
