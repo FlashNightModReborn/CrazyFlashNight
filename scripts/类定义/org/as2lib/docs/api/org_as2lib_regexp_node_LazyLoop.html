@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>LazyLoop</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_regexp_node_LazyLoop">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>LazyLoop</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_regexp_node_Loop.html">Loop</a> &lt; <a href="org_as2lib_regexp_node_Node.html">Node</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Igor Sadovskiy</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.regexp.node.LazyLoop</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Tuesday, 11 October 2005, 16:56:16</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+import org.as2lib.regexp.node.Loop; 
+import org.as2lib.regexp.node.TreeInfo;
+
+/**
+ * {@code LazyLoop} handles the repetition count for a reluctant Curly. 
+ * The matchInit is called from the Prolog to save the index of where 
+ * the group beginning is stored. A zero length group check occurs in the
+ * normal match but is skipped in the matchInit.
+ * 
+ * @author Igor Sadovskiy
+ */
+ 
+class org.as2lib.regexp.node.LazyLoop extends Loop {
+    
+    public function LazyLoop(countIndex:Number, beginIndex:Number) {
+        super(countIndex, beginIndex);
+    }
+    
+    public function match(matcher:Object, i:Number, seq:String):Boolean {
+        // Check for zero length group
+        if (i &gt; matcher.locals[beginIndex]) {
+            var count:Number = matcher.locals[countIndex];
+            if (count &lt; cmin) {
+                matcher.locals[countIndex] = count + 1;
+                var result:Boolean = body.match(matcher, i, seq);
+                // If match failed we must backtrack, so
+                // the loop count should NOT be incremented
+                if (!result)
+                    matcher.locals[countIndex] = count;
+                return result;
+            }
+            if (next.match(matcher, i, seq))
+                return true;
+            if (count &lt; cmax) {
+                matcher.locals[countIndex] = count + 1;
+                var result:Boolean = body.match(matcher, i, seq);
+                // If match failed we must backtrack, so
+                // the loop count should NOT be incremented
+                if (!result)
+                    matcher.locals[countIndex] = count;
+                return result;
+            }
+            return false;
+        }
+        return next.match(matcher, i, seq);
+    }
+    
+    public function matchInit(matcher:Object, i:Number, seq:String):Boolean {
+        var save:Number = matcher.locals[countIndex];
+        var ret:Boolean = false;
+        if (0 &lt; cmin) {
+            matcher.locals[countIndex] = 1;
+            ret = body.match(matcher, i, seq);
+        } else if (next.match(matcher, i, seq)) {
+            ret = true;
+        } else if (0 &lt; cmax) {
+            matcher.locals[countIndex] = 1;
+            ret = body.match(matcher, i, seq);
+        }
+        matcher.locals[countIndex] = save;
+        return ret;
+    }
+    
+    public function study(info:TreeInfo):Boolean {
+        info.maxValid = false;
+        info.deterministic = false;
+        return false;
+    }
+}
+
+
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>LazyLoop</code> handles the repetition count for a reluctant Curly.</div> <br /> The matchInit is called from the Prolog to save the index of where <br /> the group beginning is stored. A zero length group check occurs in the<br /> normal match but is skipped in the matchInit.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#LazyLoop">LazyLoop</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_regexp_node_Loop.html">Loop</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_node_Loop.html#beginIndex" class="privatInline">beginIndex</a>, <a href="org_as2lib_regexp_node_Loop.html#body" class="privatInline">body</a>, <a href="org_as2lib_regexp_node_Loop.html#cmax" class="privatInline">cmax</a>, <a href="org_as2lib_regexp_node_Loop.html#cmin" class="privatInline">cmin</a>, <a href="org_as2lib_regexp_node_Loop.html#countIndex" class="privatInline">countIndex</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_regexp_node_Node.html">Node</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_node_Node.html#next" class="privatInline">next</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#match">match</a>
+                </li>
+                <li>
+                  <a href="#matchInit">matchInit</a>
+                </li>
+                <li>
+                  <a href="#study">study</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_regexp_node_Loop.html">Loop</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_node_Loop.html#getBody">getBody</a>, <a href="org_as2lib_regexp_node_Loop.html#getCmax">getCmax</a>, <a href="org_as2lib_regexp_node_Loop.html#getCmin">getCmin</a>, <a href="org_as2lib_regexp_node_Loop.html#match">match</a>, <a href="org_as2lib_regexp_node_Loop.html#matchInit">matchInit</a>, <a href="org_as2lib_regexp_node_Loop.html#setBody">setBody</a>, <a href="org_as2lib_regexp_node_Loop.html#setCmax">setCmax</a>, <a href="org_as2lib_regexp_node_Loop.html#setCmin">setCmin</a>, <a href="org_as2lib_regexp_node_Loop.html#study">study</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_regexp_node_Node.html">Node</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_node_Node.html#dup">dup</a>, <a href="org_as2lib_regexp_node_Node.html#getNext">getNext</a>, <a href="org_as2lib_regexp_node_Node.html#match">match</a>, <a href="org_as2lib_regexp_node_Node.html#setNext">setNext</a>, <a href="org_as2lib_regexp_node_Node.html#study">study</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="LazyLoop">LazyLoop</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>LazyLoop</b> (
+
+</div>
+                <div><span class="code">countIndex:Number,
+beginIndex:Number)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="match">match</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>match</b> (
+
+
+</div>
+                <div><span class="code">matcher:Object,
+i:Number,
+seq:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description"><div class="inheritDoc">This method implements the classic accept node.</div><a class="followInheritDoc" href="org_as2lib_regexp_node_Node.html#match">#</a></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_regexp_node_Loop.html#match">Loop.match</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="matchInit">matchInit</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>matchInit</b> (
+
+
+</div>
+                <div><span class="code">matcher:Object,
+i:Number,
+seq:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_regexp_node_Loop.html#matchInit">Loop.matchInit</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="study">study</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>study</b> (
+</div>
+                <div><span class="code">info:<a href="org_as2lib_regexp_node_TreeInfo.html">TreeInfo</a>) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description"><div class="inheritDoc">This method is good for all zero length assertions.</div><a class="followInheritDoc" href="org_as2lib_regexp_node_Node.html#study">#</a></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_regexp_node_Loop.html#study">Loop.study</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:28:16</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

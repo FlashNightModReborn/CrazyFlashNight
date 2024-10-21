@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Bound</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_regexp_node_Bound">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>Bound</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_regexp_node_Node.html">Node</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Igor Sadovskiy</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.regexp.node.Bound</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Tuesday, 11 October 2005, 16:56:16</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.regexp.AsciiUtil;
+import org.as2lib.regexp.node.Node; 
+
+/**
+ * {@code Bound} handles word boundaries. Includes a field to allow this 
+ * one class to deal with the different types of word boundaries we can 
+ * match. The word characters include underscores, letters, and digits.
+ * 
+ * @author Igor Sadovskiy
+ */
+ 
+class org.as2lib.regexp.node.Bound extends Node {
+    
+    public static var LEFT:Number = 0x1;
+    public static var RIGHT:Number= 0x2;
+    public static var BOTH:Number = 0x3;
+    public static var NONE:Number = 0x4;
+    
+    private var type:Number;
+    
+    public function Bound(n:Number) {
+        type = n;
+    }
+    
+    public function check(matcher:Object, i:Number, seq:String):Number {
+        var ch:Number;
+        var left:Boolean = false;
+        if (i &gt; matcher.from) {
+            ch = seq.charCodeAt(i-1);
+            left = (ch == 0x5F || AsciiUtil.isLower(ch) || AsciiUtil.isDigit(ch));
+        }
+        var right:Boolean = false;
+        if (i &lt; matcher.to) {
+            ch = seq.charCodeAt(i);
+            right = (ch == 0x5F || AsciiUtil.isLower(ch) || AsciiUtil.isDigit(ch));
+        }
+        return ((Number(left) ^ Number(right)) ? (right ? LEFT : RIGHT) : NONE);
+    }
+    
+    public function match(matcher:Object, i:Number, seq:String):Boolean {
+        return (check(matcher, i, seq) &amp; type) &gt; 0
+            &amp;&amp; next.match(matcher, i, seq);
+    }
+    
+}
+
+
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>Bound</code> handles word boundaries.</div> Includes a field to allow this <br /> one class to deal with the different types of word boundaries we can <br /> match. The word characters include underscores, letters, and digits.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#Bound">Bound</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li>
+                  <a href="#LEFT">LEFT</a>
+                </li>
+                <li>
+                  <a href="#RIGHT">RIGHT</a>
+                </li>
+                <li>
+                  <a href="#BOTH">BOTH</a>
+                </li>
+                <li>
+                  <a href="#NONE">NONE</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#type">type</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_regexp_node_Node.html">Node</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_node_Node.html#next" class="privatInline">next</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#check">check</a>
+                </li>
+                <li>
+                  <a href="#match">match</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_regexp_node_Node.html">Node</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_node_Node.html#dup">dup</a>, <a href="org_as2lib_regexp_node_Node.html#getNext">getNext</a>, <a href="org_as2lib_regexp_node_Node.html#match">match</a>, <a href="org_as2lib_regexp_node_Node.html#setNext">setNext</a>, <a href="org_as2lib_regexp_node_Node.html#study">study</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="Bound">Bound</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>Bound</b> (
+</div>
+                <div><span class="code">n:Number)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="BOTH">BOTH</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>BOTH</b>:Number = 0x3
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="LEFT">LEFT</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>LEFT</b>:Number = 0x1
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="NONE">NONE</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>NONE</b>:Number = 0x4
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="RIGHT">RIGHT</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>RIGHT</b>:Number = 0x2
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="type">type</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>type</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="check">check</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>check</b> (
+
+
+</div>
+                <div><span class="code">matcher:Object,
+i:Number,
+seq:String) : Number</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="match">match</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>match</b> (
+
+
+</div>
+                <div><span class="code">matcher:Object,
+i:Number,
+seq:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description"><div class="inheritDoc">This method implements the classic accept node.</div><a class="followInheritDoc" href="org_as2lib_regexp_node_Node.html#match">#</a></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_regexp_node_Node.html#match">Node.match</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:28:03</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

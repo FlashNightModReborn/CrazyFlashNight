@@ -1,0 +1,345 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>WildcardMatcher</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_aop_matcher_WildcardMatcher">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>WildcardMatcher</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_aop_Matcher.html">Matcher</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.aop.matcher.WildcardMatcher</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Sunday, 11 September 2005, 18:48:48</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.aop.Matcher;
+import org.as2lib.core.BasicClass;
+import org.as2lib.util.StringUtil;
+
+/**
+ * {@code WildcardMatcher} matches a join point with a pattern that may contain
+ * wildcards.
+ * 
+ * TODO: Add a list of supported wildcards and how they can be used.
+ * 
+ * @author Simon Wacker
+ */
+class org.as2lib.aop.matcher.WildcardMatcher extends BasicClass implements Matcher {
+    
+    /**
+     * Constructs a new {@code WildcardMatcher} instance.
+     */
+    public function WildcardMatcher(Void) {
+    }
+    
+    /**
+     * Checks if the passed {@code joinPoint} represented by a string matches the
+     * given {@code pattern}. 
+     *
+     * &lt;p&gt;Supported wildcards are '*' and '..'.
+     *
+     * &lt;p&gt;{@code false} will be returned if:
+     * &lt;ul&gt;
+     *   &lt;li&gt;
+     *     The passed-in {@code joinPoint} is {@code null}, {@code undefined} or an
+     *     empty string.
+     *   &lt;/li&gt;
+     *   &lt;li&gt;The given {@code pattern} does not match the given {@code joinPoint}.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * &lt;p&gt;A {@code pattern} of value {@code null}, {@code undefined} or empty string
+     * matches every join point.
+     *
+     * @param joinPoint the string representation of the join point to match with the
+     * given {@code pattern}
+     * @param pattern the pattern to match with the {@code joinPoint}
+     * @return {@code true} if the {@code joinPoint} matches the {@code pattern} else
+     * {@code false}
+     */
+    public function match(joinPoint:String, pattern:String):Boolean {
+        if (!joinPoint) return false;
+        if (!pattern) return true;
+        if (pattern == "* ..*.*") return true;
+        if (pattern == "..*.*") {
+            return (joinPoint.indexOf("static ") == -1);
+        }
+        if (pattern.indexOf("*") &lt; 0
+                &amp;&amp; pattern.indexOf("..") &lt; -1) {
+            return (joinPoint == pattern);
+        }
+        if (pattern.indexOf("* ") == 0 &amp;&amp; joinPoint.indexOf("static ") == -1) {
+            pattern = pattern.substring(2, pattern.length);
+        }
+        while (pattern.indexOf("**") &gt; -1) {
+            pattern = StringUtil.replace(pattern, "**", "*");
+        }
+        while (pattern.indexOf("...") &gt; -1) {
+            pattern = StringUtil.replace(pattern, "...", "..");
+        }
+        return wildcardMatch(joinPoint, pattern);
+    }
+    
+    /**
+     * TODO: Documentation
+     */
+    private function wildcardMatch(jp:String, p:String):Boolean {
+        var a:Array = jp.split(".");
+        var b:Array = p.split(".");
+        var x:Number = b.length;
+        var y:Number = a.length;
+        while (b[--x] == "*" &amp;&amp; a[--y] != null) {
+            b.pop();
+            a.pop();
+        }
+        var d:Number = a.length;
+        var e:Number = b.length;
+        if (p.indexOf("..") &lt; 0 &amp;&amp; d != e) return false;
+        if (b[0] == "") b.shift();
+        if (b[b.length - 1] == "" &amp;&amp; b[b.length - 2] == "") b.pop();
+        for (var i:Number = 0; i &lt; d; i++) {
+            var f:String = b[i];
+            if (f == "") {
+                f = b[i + 1];
+                if (f == null) return true;
+                var g:Boolean = false;
+                for (var k:Number = i; k &lt; d; k++) {
+                    if (matchString(a[k], f)) {
+                        if (k == i) b.shift();
+                        g = true;
+                        i = k;
+                        break;
+                    }
+                    if (k &gt; i) b.unshift("");
+                }
+                if (!g) return false;
+            } else {
+                if (!matchString(a[i], f)) {
+                    if (b[i - 1] != "*" || b[i - 2] != "") {
+                        return false;
+                    } else {
+                        b.unshift("");
+                    }
+                }
+            }
+        }
+        if (a.length == b.length - 1 &amp;&amp; b[b.length - 1] == "") return true;
+        if (a.length != b.length) return false;
+        return true;
+    }
+    
+    /**
+     * TODO: Documentation
+     */
+    private static function matchString(s:String, p:String):Boolean {
+        if (p == "*") return true;
+        if (p.indexOf("*") &gt; -1) {
+            var a:Array = p.split("*");
+            var b:Number = a.length;
+            var z:Number = -1;
+            for (var i:Number = 0; i &lt; b; i++) {
+                var c:String = a[i];
+                if (c == "") continue;
+                var d:Number = s.indexOf(c);
+                if (d &lt; 0) return false;
+                if (d &lt; z) return false;
+                if (d &gt; 0 &amp;&amp; i == 0) {
+                    return false;
+                }
+                if (i == b - 1 &amp;&amp; d + c.length &lt; s.length) {
+                    return false;
+                }
+                z = d;
+            }
+            return true;
+        } else {
+            return (s == p);
+        }
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>WildcardMatcher</code> matches a join point with a pattern that may contain<br /> wildcards.</div><br /> <br /> TODO: Add a list of supported wildcards and how they can be used.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#WildcardMatcher">WildcardMatcher</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Class methods</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#matchString">matchString</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#match">match</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#wildcardMatch">wildcardMatch</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="WildcardMatcher">WildcardMatcher</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>WildcardMatcher</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>WildcardMatcher</code> instance.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="matchString">matchString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private function <b>matchString</b> (
+
+</div>
+                <div><span class="code">s:String,
+p:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">TODO: Documentation</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="match">match</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>match</b> (
+
+</div>
+                <div><span class="code">joinPoint:String,
+pattern:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if the passed <code>joinPoint</code> represented by a string matches the<br /> given <code>pattern</code>.<p>Supported wildcards are '*' and '..'.<p><code>false</code> will be returned if:<ul><li>The passed-in <code>joinPoint</code> is <code>null</code>, <code>undefined</code> or an<br />     empty string.</li><li>The given <code>pattern</code> does not match the given <code>joinPoint</code>.</li></ul><p>A <code>pattern</code> of value <code>null</code>, <code>undefined</code> or empty string<br /> matches every join point.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">joinPoint<span class="itemSeparator">:</span></div>
+                    <div>the string representation of the join point to match with the<br /> given <code>pattern</code></div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">pattern  <span class="itemSeparator">:</span></div>
+                    <div>the pattern to match with the <code>joinPoint</code></div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the <code>joinPoint</code> matches the <code>pattern</code> else<br /> <code>false</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a class="privatInline" href="org_as2lib_regexp_Matcher.html#match">org.as2lib.regexp.Matcher.match</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="wildcardMatch">wildcardMatch</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>wildcardMatch</b> (
+
+</div>
+                <div><span class="code">jp:String,
+p:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">TODO: Documentation</div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:08</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

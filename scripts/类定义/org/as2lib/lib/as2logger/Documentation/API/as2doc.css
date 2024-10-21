@@ -1,0 +1,81 @@
+﻿html body 			{ color: #000000; background: #FFFFFF; font-family: Arial, Helvetica, sans-serif; }
+
+/* links */
+
+:link, :visited 		{ color: #0000FF; text-decoration: none; }
+:link:hover, :visited:hover 	{ color: #0000FF; text-decoration: underline; }
+a.head				{ color: #FFFFFF; font-weight: bold; margin: 2px; padding: 6px;	}
+a.head:visited			{ color: #FFFFFF; font-weight: bold; margin: 2px; padding: 6px;	}
+a.head:hover 			{ color: #FF6600; background-color: #FFFFFF; text-decoration: none; }
+
+/* tags */
+
+h1				{ color: #000000; }
+h2				{ color: #FF6600; }
+h3				{ color: #000000; }
+.code, code, pre		{ font-family:"Courier New", monospace; font-size:10pt; white-space:pre; }
+code, pre			{ color: #900000; vertical-align: text-bottom; }
+pre.code			{ color: #000000; }
+pre				{ padding: 5px 5px 5px 5px; background-color: #FAFAFA; border: 1px solid #E0E0E0; }
+
+/* special */
+
+.parameter			{ color: #333333; font-style: italic; }
+.footer				{ color: #666666; font-size:10pt }
+.modifier			{ color: #FF0000; }
+.readproperty			{ color: #009900; }
+.writeproperty			{ color: #990000; }
+.askeyword			{ color: #000099; }
+.packagename			{ font-size:12pt; }
+
+/* navigation */
+
+.subnavigation			{ color: #333333; font-size:8pt; }
+div.docindex 			{ color: #FFFFFF; background-color: #FF6600; width: 100%; padding: 4px 0px 4px 0px; }
+
+/* tables */
+
+div.comment table		{ border: 1px solid #E0E0E0; page-break-before: always; margin-top: 1em; margin-bottom: 1em; }
+div.comment th			{ padding: 2px; text-align: left; background-color: #F0F0F0; }
+div.comment td			{ padding: 2px; }
+
+.summary_table			{
+	font-size: 12px;
+	
+	padding: 5px 0px 0px 8px;
+	margin: 4px;
+
+	background-color: #FAFAFA;
+
+	border-top: 1px solid #E0E0E0;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+}
+
+.summary_table_description	{
+	font-size: 12px;
+
+	padding: 1px 0px 0px 8px;
+	margin: 4px;
+
+	background-color: #FAFAFA;
+}
+
+.members_documentation_table	{
+	padding: 5px 5px 5px 5px;
+
+	background-color: #FAFAFA;
+
+	border: 1px solid #E0E0E0;
+}
+
+.summary_inherited_members_table {
+	font-size: 11px;
+
+	padding: 5px 5px;
+
+	background-color: #FAFAFA;
+
+	border: 1px solid #E0E0E0;
+}

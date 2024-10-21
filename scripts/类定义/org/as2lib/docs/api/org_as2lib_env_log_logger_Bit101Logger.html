@@ -1,0 +1,875 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Bit101Logger</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_log_logger_Bit101Logger">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>Bit101Logger</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_env_log_logger_AbstractLogger.html">AbstractLogger</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_env_log_Logger.html">Logger</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.log.logger.Bit101Logger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Thursday, 05 May 2005, 09:47:24</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.env.log.Logger;
+import org.as2lib.env.log.LogLevel;
+import org.as2lib.env.log.LogMessage;
+import org.as2lib.env.log.logger.AbstractLogger;
+
+/**
+ * {@code Bit101Logger} delegates all log messages to the {@code Debug.trace}
+ * method from Keith Peter's Debug Panel.
+ * 
+ * &lt;p&gt;Using this class instead of the {@code Debug} class in your application
+ * directly enables you to switch between almost every available Logging API
+ * without having to change the logging calls but just the underlying configuration
+ * on startup.
+ *
+ * @author Simon Wacker
+ * @see org.as2lib.env.log.handler.Bit101Handler
+ * @see &lt;a href="http://www.bit-101.com/DebugPanel"&gt;Flash Debug Panel Source&lt;/a&gt;
+ * @see &lt;a href="http://www.bit-101.com/blog/archives/000119.html"&gt;Flash Debug Panel Article&lt;/a&gt;
+ */
+class org.as2lib.env.log.logger.Bit101Logger extends AbstractLogger implements Logger {
+    
+    /** Makes the static variables of the super-class accessible through this class. */
+    private static var __proto__:Function = AbstractLogger;
+    
+    /** The set level. */
+    private var level:LogLevel;
+    
+    /** The set level as number. */
+    private var levelAsNumber:Number;
+    
+    /** Determines whether to trace objects recursively. */
+    private var traceObject:Boolean;
+    
+    /** The number of recursions when tracing an object recursively. */
+    private var recursionDepth:Number;
+    
+    /** The indentation number for recursively traced objects. */
+    private var indentation:Number;
+    
+    /**
+     * Constructs a new {@code Bit101Logger} instance.
+     *
+     * &lt;p&gt;The default log level is {@code ALL}. This means all messages regardless of
+     * their level are logged.
+     *
+     * &lt;p&gt;{@code traceObject} is by default {@code false}. Refer to the {@code Debug}
+     * class for information on the default {@code recursionDepth} and
+     * {@code indentation}.
+     *
+     * @param traceObject (optional) determines whether to trace objects recursively
+     * or to use the result of their {@code toString} method
+     * @param recursionDepth (optional) determines the count of recursions for
+     * recursively traced objects
+     * @param indentation (optional) determines the indentation number for recursively
+     * traced objects
+     */
+    public function Bit101Logger(traceObject:Boolean, recursionDepth:Number, indentation:Number) {
+        this.traceObject = !traceObject ? false : true;
+        this.recursionDepth = recursionDepth;
+        this.indentation = indentation;
+        level = ALL;
+        levelAsNumber = level.toNumber();
+    }
+    
+    /**
+     * Sets the log level.
+     *
+     * &lt;p&gt;The log level determines which messages are logged and which are not.
+     *
+     * &lt;p&gt;A level of value {@code null} or {@code undefined} is interpreted as level
+     * {@code ALL}, which is also the default level.
+     *
+     * @param level the new log level
+     */
+    public function setLevel(level:LogLevel):Void {
+        if (level) {
+            this.level = level;
+        } else {
+            this.level = ALL;
+        }
+        this.levelAsNumber = this.level.toNumber();
+    }
+    
+    /**
+     * Returns the set level.
+     *
+     * @return the set level
+     */
+    public function getLevel(Void):LogLevel {
+        return level;
+    }
+    
+    /**
+     * Checks if this logger is enabled for debug level messages.
+     *
+     * @return {@code true} if debug messages are logged
+     * @see org.as2lib.env.log.level.AbstractLogLevel#DEBUG
+     * @see #debug
+     */
+    public function isDebugEnabled(Void):Boolean {
+        return (levelAsNumber &gt;= debugLevelAsNumber);
+    }
+    
+    /**
+     * Checks if this logger is enabled for info level messages.
+     *
+     * @return {@code true} if info messages are logged
+     * @see org.as2lib.env.log.level.AbstractLogLevel#INFO
+     * @see #info
+     */
+    public function isInfoEnabled(Void):Boolean {
+        return (levelAsNumber &gt;= infoLevelAsNumber);
+    }
+    
+    /**
+     * Checks if this logger is enabled for warning level messages.
+     *
+     * @return {@code true} if warning messages are logged
+     * @see org.as2lib.env.log.level.AbstractLogLevel#WARNING
+     * @see #warning
+     */
+    public function isWarningEnabled(Void):Boolean {
+        return (levelAsNumber &gt;= warningLevelAsNumber);
+    }
+    
+    /**
+     * Checks if this logger is enabled for error level messages.
+     *
+     * @return {@code true} if error messages are logged
+     * @see org.as2lib.env.log.level.AbstractLogLevel#ERROR
+     * @see #error
+     */
+    public function isErrorEnabled(Void):Boolean {
+        return (levelAsNumber &gt;= errorLevelAsNumber);
+    }
+    
+    /**
+     * Checks if this logger is enabled for fatal level messages.
+     *
+     * @return {@code true} if fatal messages are logged
+     * @see org.as2lib.env.log.level.AbstractLogLevel#FATAL
+     * @see #fatal
+     */
+    public function isFatalEnabled(Void):Boolean {
+        return (levelAsNumber &gt;= fatalLevelAsNumber);
+    }
+    
+    /**
+     * Logs the {@code message} using the {@code Debug.trace} method if
+     * {@code traceObject} is turned off or if the {@code message} is of type
+     * {@code "string"}, {@code "number"}, {@code "boolean"}, {@code "undefined"} or
+     * {@code "null"} and using the {@code Debug.traceObject} method if neither of the
+     * above cases holds {@code true}.
+     *
+     * @param message the message to log
+     */
+    public function log(message):Void {
+        if (this.traceObject) {
+            var type:String = typeof(message);
+            if (type == "string" || type == "number" || type == "boolean" || type == "undefined" || type == "null") {
+                Debug.trace(message.toString());
+            } else {
+                Debug.traceObject(message, this.recursionDepth, this.indentation);
+            }
+        } else {
+            Debug.trace(message.toString());
+        }
+    }
+    
+    /**
+     * Logs the passed-in {@code message} at debug level.
+     *
+     * &lt;p&gt;The {@code message} is only logged when the level is set to {@code DEBUG} or
+     * a level above.
+     *
+     * @param message the message object to log
+     * @see #isDebugEnabled
+     */
+    public function debug(message):Void {
+        if (isDebugEnabled()) {
+            log(message);
+        }
+    }
+    
+    /**
+     * Logs the passed-in {@code message} object at info level.
+     *
+     * &lt;p&gt;The {@code message} is only logged when the level is set to {@code INFO} or
+     * a level above.
+     *
+     * @param message the message object to log
+     * @see #isInfoEnabled
+     */
+    public function info(message):Void {
+        if (isInfoEnabled()) {
+            log(message);
+        }
+    }
+    
+    /**
+     * Logs the passed-in {@code message} object at warning level.
+     *
+     * &lt;p&gt;The {@code message} is only logged when the level is set to {@code WARNING}
+     * or a level above.
+     *
+     * @param message the message object to log
+     * @see #isWarningEnabled
+     */
+    public function warning(message):Void {
+        if (isWarningEnabled()) {
+            log(message);
+        }
+    }
+    
+    /**
+     * Logs the passed-in {@code message} object at error level.
+     *
+     * &lt;p&gt;The {@code message} is only logged when the level is set to {@code ERROR} or a
+     * level above.
+     *
+     * @param message the message object to log
+     * @see #isErrorEnabled
+     */
+    public function error(message):Void {
+        if (isErrorEnabled()) {
+            log(message);
+        }
+    }
+    
+    /**
+     * Logs the passed-in {@code message} object at fatal level.
+     *
+     * &lt;p&gt;The {@code message} is only logged when the level is set to {@code FATAL} or
+     * a level above.
+     *
+     * @param message the message object to log
+     * @see #isFatalEnabled
+     */
+    public function fatal(message):Void {
+        if (isFatalEnabled()) {
+            log(message);
+        }
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>Bit101Logger</code> delegates all log messages to the <code>Debug.trace</code><br /> method from Keith Peter's Debug Panel.</div><p>Using this class instead of the <code>Debug</code> class in your application<br /> directly enables you to switch between almost every available Logging API<br /> without having to change the logging calls but just the underlying configuration<br /> on startup.<div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_handler_Bit101Handler.html">org.as2lib.env.log.handler.Bit101Handler</a><br /><a href="http://www.bit-101.com/DebugPanel">Flash Debug Panel Source</a><br /><a href="http://www.bit-101.com/blog/archives/000119.html">Flash Debug Panel Article</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#Bit101Logger">Bit101Logger</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#__proto__">__proto__</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class properties inherited from <span class="superclass"><a href="org_as2lib_env_log_logger_AbstractLogger.html">AbstractLogger</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_logger_AbstractLogger.html#ALL">ALL</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#DEBUG">DEBUG</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#ERROR">ERROR</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#FATAL">FATAL</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#INFO">INFO</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#NONE">NONE</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#WARNING">WARNING</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#level">level</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#levelAsNumber">levelAsNumber</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#traceObject">traceObject</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#recursionDepth">recursionDepth</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#indentation">indentation</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_log_logger_AbstractLogger.html">AbstractLogger</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_logger_AbstractLogger.html#debugLevel" class="privatInline">debugLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#debugLevelAsNumber" class="privatInline">debugLevelAsNumber</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#errorLevel" class="privatInline">errorLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#errorLevelAsNumber" class="privatInline">errorLevelAsNumber</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#fatalLevel" class="privatInline">fatalLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#fatalLevelAsNumber" class="privatInline">fatalLevelAsNumber</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#infoLevel" class="privatInline">infoLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#infoLevelAsNumber" class="privatInline">infoLevelAsNumber</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#warningLevel" class="privatInline">warningLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#warningLevelAsNumber" class="privatInline">warningLevelAsNumber</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#setLevel">setLevel</a>
+                </li>
+                <li>
+                  <a href="#getLevel">getLevel</a>
+                </li>
+                <li>
+                  <a href="#isDebugEnabled">isDebugEnabled</a>
+                </li>
+                <li>
+                  <a href="#isInfoEnabled">isInfoEnabled</a>
+                </li>
+                <li>
+                  <a href="#isWarningEnabled">isWarningEnabled</a>
+                </li>
+                <li>
+                  <a href="#isErrorEnabled">isErrorEnabled</a>
+                </li>
+                <li>
+                  <a href="#isFatalEnabled">isFatalEnabled</a>
+                </li>
+                <li>
+                  <a href="#log">log</a>
+                </li>
+                <li>
+                  <a href="#debug">debug</a>
+                </li>
+                <li>
+                  <a href="#info">info</a>
+                </li>
+                <li>
+                  <a href="#warning">warning</a>
+                </li>
+                <li>
+                  <a href="#error">error</a>
+                </li>
+                <li>
+                  <a href="#fatal">fatal</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="Bit101Logger">Bit101Logger</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>Bit101Logger</b> (
+
+
+</div>
+                <div><span class="code">traceObject:Boolean,
+recursionDepth:Number,
+indentation:Number)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>Bit101Logger</code> instance.<p>The default log level is <code>ALL</code>. This means all messages regardless of<br /> their level are logged.<p><code>traceObject</code> is by default <code>false</code>. Refer to the <code>Debug</code><br /> class for information on the default <code>recursionDepth</code> and<br /> <code>indentation</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">traceObject   <span class="itemSeparator">:</span></div>
+                    <div>(optional) determines whether to trace objects recursively<br /> or to use the result of their <code>toString</code> method</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">recursionDepth<span class="itemSeparator">:</span></div>
+                    <div>(optional) determines the count of recursions for<br /> recursively traced objects</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">indentation   <span class="itemSeparator">:</span></div>
+                    <div>(optional) determines the indentation number for recursively<br /> traced objects</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="__proto__">__proto__</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>__proto__</b>:Function = AbstractLogger
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Makes the static variables of the super-class accessible through this class.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="indentation">indentation</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>indentation</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The indentation number for recursively traced objects.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="level">level</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>level</b>:<a href="org_as2lib_env_log_LogLevel.html">LogLevel</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The set level.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="levelAsNumber">levelAsNumber</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>levelAsNumber</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The set level as number.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="recursionDepth">recursionDepth</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>recursionDepth</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The number of recursions when tracing an object recursively.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="traceObject">traceObject</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>traceObject</b>:Boolean
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Determines whether to trace objects recursively.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="debug">debug</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>debug</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> at debug level.<p>The <code>message</code> is only logged when the level is set to <code>DEBUG</code> or<br /> a level above.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Bit101Logger.html#isDebugEnabled">isDebugEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#debug">org.as2lib.env.log.Logger.debug</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="error">error</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>error</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> object at error level.<p>The <code>message</code> is only logged when the level is set to <code>ERROR</code> or a<br /> level above.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Bit101Logger.html#isErrorEnabled">isErrorEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#error">org.as2lib.env.log.Logger.error</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="fatal">fatal</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>fatal</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> object at fatal level.<p>The <code>message</code> is only logged when the level is set to <code>FATAL</code> or<br /> a level above.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Bit101Logger.html#isFatalEnabled">isFatalEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#fatal">org.as2lib.env.log.Logger.fatal</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getLevel">getLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getLevel</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_log_LogLevel.html">LogLevel</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the set level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the set level</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="info">info</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>info</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> object at info level.<p>The <code>message</code> is only logged when the level is set to <code>INFO</code> or<br /> a level above.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Bit101Logger.html#isInfoEnabled">isInfoEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#info">org.as2lib.env.log.Logger.info</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isDebugEnabled">isDebugEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isDebugEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for debug level messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if debug messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_level_AbstractLogLevel.html#DEBUG">org.as2lib.env.log.level.AbstractLogLevel.DEBUG</a><br /><a href="org_as2lib_env_log_logger_Bit101Logger.html#debug">debug</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isDebugEnabled">org.as2lib.env.log.Logger.isDebugEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isErrorEnabled">isErrorEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isErrorEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for error level messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if error messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_level_AbstractLogLevel.html#ERROR">org.as2lib.env.log.level.AbstractLogLevel.ERROR</a><br /><a href="org_as2lib_env_log_logger_Bit101Logger.html#error">error</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isErrorEnabled">org.as2lib.env.log.Logger.isErrorEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isFatalEnabled">isFatalEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isFatalEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for fatal level messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if fatal messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_level_AbstractLogLevel.html#FATAL">org.as2lib.env.log.level.AbstractLogLevel.FATAL</a><br /><a href="org_as2lib_env_log_logger_Bit101Logger.html#fatal">fatal</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isFatalEnabled">org.as2lib.env.log.Logger.isFatalEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isInfoEnabled">isInfoEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isInfoEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for info level messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if info messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_level_AbstractLogLevel.html#INFO">org.as2lib.env.log.level.AbstractLogLevel.INFO</a><br /><a href="org_as2lib_env_log_logger_Bit101Logger.html#info">info</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isInfoEnabled">org.as2lib.env.log.Logger.isInfoEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isWarningEnabled">isWarningEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isWarningEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for warning level messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if warning messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_level_AbstractLogLevel.html#WARNING">org.as2lib.env.log.level.AbstractLogLevel.WARNING</a><br /><a href="org_as2lib_env_log_logger_Bit101Logger.html#warning">warning</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isWarningEnabled">org.as2lib.env.log.Logger.isWarningEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="log">log</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>log</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the <code>message</code> using the <code>Debug.trace</code> method if<br /> <code>traceObject</code> is turned off or if the <code>message</code> is of type<br /> <code>"string"</code>, <code>"number"</code>, <code>"boolean"</code>, <code>"undefined"</code> or<br /> <code>"null"</code> and using the <code>Debug.traceObject</code> method if neither of the<br /> above cases holds <code>true</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message to log</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setLevel">setLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setLevel</b> (
+</div>
+                <div><span class="code">level:<a href="org_as2lib_env_log_LogLevel.html">LogLevel</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the log level.<p>The log level determines which messages are logged and which are not.<p>A level of value <code>null</code> or <code>undefined</code> is interpreted as level<br /> <code>ALL</code>, which is also the default level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">level<span class="itemSeparator">:</span></div>
+                    <div>the new log level</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="warning">warning</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>warning</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> object at warning level.<p>The <code>message</code> is only logged when the level is set to <code>WARNING</code><br /> or a level above.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Bit101Logger.html#isWarningEnabled">isWarningEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#warning">org.as2lib.env.log.Logger.warning</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:25:25</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

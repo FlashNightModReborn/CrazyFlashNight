@@ -1,0 +1,831 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AsciiUtil</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_regexp_AsciiUtil">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods</span></span><h1>AsciiUtil</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Igor Sadovskiy</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.regexp.AsciiUtil</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Friday, 09 September 2005, 18:31:34</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+
+/**
+ * {@code AsciiUtil} provides common routines for ASCII char validations and
+ * conversations.
+ * 
+ * @author Igor Sadovskiy
+ */
+
+class org.as2lib.regexp.AsciiUtil extends BasicClass {
+    
+    public static var UPPER:Number   = 0x00000100;
+    
+    public static var LOWER:Number   = 0x00000200;
+    
+    public static var DIGIT:Number   = 0x00000400;
+    
+    public static var SPACE:Number   = 0x00000800;
+    
+    public static var PUNCT:Number   = 0x00001000;
+    
+    public static var CNTRL:Number   = 0x00002000;
+    
+    public static var BLANK:Number   = 0x00004000;
+    
+    public static var HEX:Number     = 0x00008000;
+    
+    public static var UNDER:Number   = 0x00010000;
+    
+    public static var ASCII:Number   = 0x0000FF00;
+
+    public static var ALPHA:Number   = (UPPER|LOWER);
+
+    public static var ALNUM:Number   = (UPPER|LOWER|DIGIT);
+
+    public static var GRAPH:Number   = (PUNCT|UPPER|LOWER|DIGIT);
+
+    public static var WORD:Number    = (UPPER|LOWER|UNDER|DIGIT);
+
+    public static var XDIGIT:Number  = HEX;
+
+    private static var charTypes:Array = [
+        CNTRL,                  /* 00 (NUL) */
+        CNTRL,                  /* 01 (SOH) */
+        CNTRL,                  /* 02 (STX) */
+        CNTRL,                  /* 03 (ETX) */
+        CNTRL,                  /* 04 (EOT) */
+        CNTRL,                  /* 05 (ENQ) */
+        CNTRL,                  /* 06 (ACK) */
+        CNTRL,                  /* 07 (BEL) */
+        CNTRL,                  /* 08 (BS)  */
+        SPACE+CNTRL+BLANK,      /* 09 (HT)  */
+        SPACE+CNTRL,            /* 0A (LF)  */
+        SPACE+CNTRL,            /* 0B (VT)  */
+        SPACE+CNTRL,            /* 0C (FF)  */
+        SPACE+CNTRL,            /* 0D (CR)  */
+        CNTRL,                  /* 0E (SI)  */
+        CNTRL,                  /* 0F (SO)  */
+        CNTRL,                  /* 10 (DLE) */
+        CNTRL,                  /* 11 (DC1) */
+        CNTRL,                  /* 12 (DC2) */
+        CNTRL,                  /* 13 (DC3) */
+        CNTRL,                  /* 14 (DC4) */
+        CNTRL,                  /* 15 (NAK) */
+        CNTRL,                  /* 16 (SYN) */
+        CNTRL,                  /* 17 (ETB) */
+        CNTRL,                  /* 18 (CAN) */
+        CNTRL,                  /* 19 (EM)  */
+        CNTRL,                  /* 1A (SUB) */
+        CNTRL,                  /* 1B (ESC) */
+        CNTRL,                  /* 1C (FS)  */
+        CNTRL,                  /* 1D (GS)  */
+        CNTRL,                  /* 1E (RS)  */
+        CNTRL,                  /* 1F (US)  */
+        SPACE+BLANK,            /* 20 SPACE */
+        PUNCT,                  /* 21 !     */
+        PUNCT,                  /* 22 "     */
+        PUNCT,                  /* 23 #     */
+        PUNCT,                  /* 24 $     */
+        PUNCT,                  /* 25 %     */
+        PUNCT,                  /* 26 &amp;     */
+        PUNCT,                  /* 27 '     */
+        PUNCT,                  /* 28 (     */
+        PUNCT,                  /* 29 )     */
+        PUNCT,                  /* 2A *     */
+        PUNCT,                  /* 2B +     */
+        PUNCT,                  /* 2C ,     */
+        PUNCT,                  /* 2D -     */
+        PUNCT,                  /* 2E .     */
+        PUNCT,                  /* 2F /     */
+        DIGIT+HEX+0,            /* 30 0     */
+        DIGIT+HEX+1,            /* 31 1     */
+        DIGIT+HEX+2,            /* 32 2     */
+        DIGIT+HEX+3,            /* 33 3     */
+        DIGIT+HEX+4,            /* 34 4     */
+        DIGIT+HEX+5,            /* 35 5     */
+        DIGIT+HEX+6,            /* 36 6     */
+        DIGIT+HEX+7,            /* 37 7     */
+        DIGIT+HEX+8,            /* 38 8     */
+        DIGIT+HEX+9,            /* 39 9     */
+        PUNCT,                  /* 3A :     */
+        PUNCT,                  /* 3B ;     */
+        PUNCT,                  /* 3C &lt;     */
+        PUNCT,                  /* 3D =     */
+        PUNCT,                  /* 3E &gt;     */
+        PUNCT,                  /* 3F ?     */
+        PUNCT,                  /* 40 @     */
+        UPPER+HEX+10,           /* 41 A     */
+        UPPER+HEX+11,           /* 42 B     */
+        UPPER+HEX+12,           /* 43 C     */
+        UPPER+HEX+13,           /* 44 D     */
+        UPPER+HEX+14,           /* 45 E     */
+        UPPER+HEX+15,           /* 46 F     */
+        UPPER+16,               /* 47 G     */
+        UPPER+17,               /* 48 H     */
+        UPPER+18,               /* 49 I     */
+        UPPER+19,               /* 4A J     */
+        UPPER+20,               /* 4B K     */
+        UPPER+21,               /* 4C L     */
+        UPPER+22,               /* 4D M     */
+        UPPER+23,               /* 4E N     */
+        UPPER+24,               /* 4F O     */
+        UPPER+25,               /* 50 P     */
+        UPPER+26,               /* 51 Q     */
+        UPPER+27,               /* 52 R     */
+        UPPER+28,               /* 53 S     */
+        UPPER+29,               /* 54 T     */
+        UPPER+30,               /* 55 U     */
+        UPPER+31,               /* 56 V     */
+        UPPER+32,               /* 57 W     */
+        UPPER+33,               /* 58 X     */
+        UPPER+34,               /* 59 Y     */
+        UPPER+35,               /* 5A Z     */
+        PUNCT,                  /* 5B [     */
+        PUNCT,                  /* 5C \     */
+        PUNCT,                  /* 5D ]     */
+        PUNCT,                  /* 5E ^     */
+        PUNCT|UNDER,            /* 5F _     */
+        PUNCT,                  /* 60 `     */
+        LOWER+HEX+10,           /* 61 a     */
+        LOWER+HEX+11,           /* 62 b     */
+        LOWER+HEX+12,           /* 63 c     */
+        LOWER+HEX+13,           /* 64 d     */
+        LOWER+HEX+14,           /* 65 e     */
+        LOWER+HEX+15,           /* 66 f     */
+        LOWER+16,               /* 67 g     */
+        LOWER+17,               /* 68 h     */
+        LOWER+18,               /* 69 i     */
+        LOWER+19,               /* 6A j     */
+        LOWER+20,               /* 6B k     */
+        LOWER+21,               /* 6C l     */
+        LOWER+22,               /* 6D m     */
+        LOWER+23,               /* 6E n     */
+        LOWER+24,               /* 6F o     */
+        LOWER+25,               /* 70 p     */
+        LOWER+26,               /* 71 q     */
+        LOWER+27,               /* 72 r     */
+        LOWER+28,               /* 73 s     */
+        LOWER+29,               /* 74 t     */
+        LOWER+30,               /* 75 u     */
+        LOWER+31,               /* 76 v     */
+        LOWER+32,               /* 77 w     */
+        LOWER+33,               /* 78 x     */
+        LOWER+34,               /* 79 y     */
+        LOWER+35,               /* 7A z     */
+        PUNCT,                  /* 7B {     */
+        PUNCT,                  /* 7C |     */
+        PUNCT,                  /* 7D }     */
+        PUNCT,                  /* 7E ~     */
+        CNTRL                   /* 7F (DEL) */
+    ]; 
+    
+    private function AsciiUtil(Void) {
+        super();
+    }
+
+    public static function getType(ch:Number):Number {
+        return ((ch &amp; 0xFFFFFF80) == 0 ? charTypes[ch] : 0);
+    }
+
+    public static function isType(ch:Number, type:Number):Boolean {
+        return (getType(ch) &amp; type) != 0;
+    }
+
+    public static function isAscii(ch:Number):Boolean {
+        return ((ch &amp; 0xFFFFFF80) == 0);
+    }
+
+    public static function isAlpha(ch:Number):Boolean {
+        return isType(ch, ALPHA);
+    }
+
+    public static function isDigit(ch:Number):Boolean {
+        return ((ch - 0x30) | (0x39 - ch)) &gt;= 0;
+    }
+
+    public static function isAlnum(ch:Number):Boolean {
+        return isType(ch, ALNUM);
+    }
+
+    public static function isGraph(ch:Number):Boolean {
+        return isType(ch, GRAPH);
+    }
+
+    public static function isPrint(ch:Number):Boolean {
+        return ((ch - 0x20) | (0x7E - ch)) &gt;= 0;
+    }
+
+    public static function isPunct(ch:Number):Boolean {
+        return isType(ch, PUNCT);
+    }
+
+    public static function isSpace(ch:Number):Boolean {
+        return isType(ch, SPACE);
+    }
+
+    public static function isHexDigit(ch:Number):Boolean {
+        return isType(ch, HEX);
+    }
+
+    public static function isOctDigit(ch:Number):Boolean {
+        return ((ch - 0x30) | (0x37 - ch)) &gt;= 0;
+    }
+
+    public static function isCntrl(ch:Number):Boolean {
+        return isType(ch, CNTRL);
+    }
+
+    public static function isLower(ch:Number):Boolean {
+        return ((ch - 0x61) | (0x7A - ch)) &gt;= 0;
+    }
+
+    public static function isUpper(ch:Number):Boolean {
+        return ((ch - 0x41) | (0x5A - ch)) &gt;= 0;
+    }
+
+    public static function isWord(ch:Number):Boolean {
+        return isType(ch, WORD);
+    }
+
+    public static function toDigit(ch:Number):Number {
+        return (charTypes[ch &amp; 0x7F] &amp; 0x3F);
+    }
+
+    public static function toLower(ch:Number):Number {
+        return isUpper(ch) ? (ch + 0x20) : ch;
+    }
+
+    public static function toUpper(ch:Number):Number {
+        return isLower(ch) ? (ch - 0x20) : ch;
+    }
+
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>AsciiUtil</code> provides common routines for ASCII char validations and<br /> conversations.</div></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Constructor</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#AsciiUtil">AsciiUtil</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li>
+                  <a href="#UPPER">UPPER</a>
+                </li>
+                <li>
+                  <a href="#LOWER">LOWER</a>
+                </li>
+                <li>
+                  <a href="#DIGIT">DIGIT</a>
+                </li>
+                <li>
+                  <a href="#SPACE">SPACE</a>
+                </li>
+                <li>
+                  <a href="#PUNCT">PUNCT</a>
+                </li>
+                <li>
+                  <a href="#CNTRL">CNTRL</a>
+                </li>
+                <li>
+                  <a href="#BLANK">BLANK</a>
+                </li>
+                <li>
+                  <a href="#HEX">HEX</a>
+                </li>
+                <li>
+                  <a href="#UNDER">UNDER</a>
+                </li>
+                <li>
+                  <a href="#ASCII">ASCII</a>
+                </li>
+                <li>
+                  <a href="#ALPHA">ALPHA</a>
+                </li>
+                <li>
+                  <a href="#ALNUM">ALNUM</a>
+                </li>
+                <li>
+                  <a href="#GRAPH">GRAPH</a>
+                </li>
+                <li>
+                  <a href="#WORD">WORD</a>
+                </li>
+                <li>
+                  <a href="#XDIGIT">XDIGIT</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#charTypes">charTypes</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#getType">getType</a>
+                </li>
+                <li>
+                  <a href="#isType">isType</a>
+                </li>
+                <li>
+                  <a href="#isAscii">isAscii</a>
+                </li>
+                <li>
+                  <a href="#isAlpha">isAlpha</a>
+                </li>
+                <li>
+                  <a href="#isDigit">isDigit</a>
+                </li>
+                <li>
+                  <a href="#isAlnum">isAlnum</a>
+                </li>
+                <li>
+                  <a href="#isGraph">isGraph</a>
+                </li>
+                <li>
+                  <a href="#isPrint">isPrint</a>
+                </li>
+                <li>
+                  <a href="#isPunct">isPunct</a>
+                </li>
+                <li>
+                  <a href="#isSpace">isSpace</a>
+                </li>
+                <li>
+                  <a href="#isHexDigit">isHexDigit</a>
+                </li>
+                <li>
+                  <a href="#isOctDigit">isOctDigit</a>
+                </li>
+                <li>
+                  <a href="#isCntrl">isCntrl</a>
+                </li>
+                <li>
+                  <a href="#isLower">isLower</a>
+                </li>
+                <li>
+                  <a href="#isUpper">isUpper</a>
+                </li>
+                <li>
+                  <a href="#isWord">isWord</a>
+                </li>
+                <li>
+                  <a href="#toDigit">toDigit</a>
+                </li>
+                <li>
+                  <a href="#toLower">toLower</a>
+                </li>
+                <li>
+                  <a href="#toUpper">toUpper</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="AsciiUtil">AsciiUtil</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>AsciiUtil</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="ALNUM">ALNUM</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>ALNUM</b>:Number = (UPPER|LOWER|DIGIT)
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="ALPHA">ALPHA</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>ALPHA</b>:Number = (UPPER|LOWER)
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="ASCII">ASCII</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>ASCII</b>:Number = 0x0000FF00
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="BLANK">BLANK</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>BLANK</b>:Number = 0x00004000
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="charTypes">charTypes</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>charTypes</b>:Array = [ CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, SPACE+CNTRL+BLANK, SPACE+CNTRL, SPACE+CNTRL, SPACE+CNTRL, SPACE+CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, CNTRL, SPACE+BLANK, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, DIGIT+HEX+<span class="codeNumber">0</span>, DIGIT+HEX+<span class="codeNumber">1</span>, DIGIT+HEX+<span class="codeNumber">2</span>, DIGIT+HEX+<span class="codeNumber">3</span>, DIGIT+HEX+<span class="codeNumber">4</span>, DIGIT+HEX+<span class="codeNumber">5</span>, DIGIT+HEX+<span class="codeNumber">6</span>, DIGIT+HEX+<span class="codeNumber">7</span>, DIGIT+HEX+<span class="codeNumber">8</span>, DIGIT+HEX+<span class="codeNumber">9</span>, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT, UPPER+HEX+<span class="codeNumber">10</span>, UPPER+HEX+<span class="codeNumber">11</span>, UPPER+HEX+<span class="codeNumber">12</span>, UPPER+HEX+<span class="codeNumber">13</span>, UPPER+HEX+<span class="codeNumber">14</span>, UPPER+HEX+<span class="codeNumber">15</span>, UPPER+<span class="codeNumber">16</span>, UPPER+<span class="codeNumber">17</span>, UPPER+<span class="codeNumber">18</span>, UPPER+<span class="codeNumber">19</span>, UPPER+<span class="codeNumber">20</span>, UPPER+<span class="codeNumber">21</span>, UPPER+<span class="codeNumber">22</span>, UPPER+<span class="codeNumber">23</span>, UPPER+<span class="codeNumber">24</span>, UPPER+<span class="codeNumber">25</span>, UPPER+<span class="codeNumber">26</span>, UPPER+<span class="codeNumber">27</span>, UPPER+<span class="codeNumber">28</span>, UPPER+<span class="codeNumber">29</span>, UPPER+<span class="codeNumber">30</span>, UPPER+<span class="codeNumber">31</span>, UPPER+<span class="codeNumber">32</span>, UPPER+<span class="codeNumber">33</span>, UPPER+<span class="codeNumber">34</span>, UPPER+<span class="codeNumber">35</span>, PUNCT, PUNCT, PUNCT, PUNCT, PUNCT|UNDER, PUNCT, LOWER+HEX+<span class="codeNumber">10</span>, LOWER+HEX+<span class="codeNumber">11</span>, LOWER+HEX+<span class="codeNumber">12</span>, LOWER+HEX+<span class="codeNumber">13</span>, LOWER+HEX+<span class="codeNumber">14</span>, LOWER+HEX+<span class="codeNumber">15</span>, LOWER+<span class="codeNumber">16</span>, LOWER+<span class="codeNumber">17</span>, LOWER+<span class="codeNumber">18</span>, LOWER+<span class="codeNumber">19</span>, LOWER+<span class="codeNumber">20</span>, LOWER+<span class="codeNumber">21</span>, LOWER+<span class="codeNumber">22</span>, LOWER+<span class="codeNumber">23</span>, LOWER+<span class="codeNumber">24</span>, LOWER+<span class="codeNumber">25</span>, LOWER+<span class="codeNumber">26</span>, LOWER+<span class="codeNumber">27</span>, LOWER+<span class="codeNumber">28</span>, LOWER+<span class="codeNumber">29</span>, LOWER+<span class="codeNumber">30</span>, LOWER+<span class="codeNumber">31</span>, LOWER+<span class="codeNumber">32</span>, LOWER+<span class="codeNumber">33</span>, LOWER+<span class="codeNumber">34</span>, LOWER+<span class="codeNumber">35</span>, PUNCT, PUNCT, PUNCT, PUNCT, CNTRL ]
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="CNTRL">CNTRL</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>CNTRL</b>:Number = 0x00002000
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="DIGIT">DIGIT</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>DIGIT</b>:Number = 0x00000400
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="GRAPH">GRAPH</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>GRAPH</b>:Number = (PUNCT|UPPER|LOWER|DIGIT)
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="HEX">HEX</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>HEX</b>:Number = 0x00008000
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="LOWER">LOWER</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>LOWER</b>:Number = 0x00000200
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="PUNCT">PUNCT</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>PUNCT</b>:Number = 0x00001000
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="SPACE">SPACE</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>SPACE</b>:Number = 0x00000800
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="UNDER">UNDER</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>UNDER</b>:Number = 0x00010000
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="UPPER">UPPER</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>UPPER</b>:Number = 0x00000100
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="WORD">WORD</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>WORD</b>:Number = (UPPER|LOWER|UNDER|DIGIT)
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="XDIGIT">XDIGIT</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>XDIGIT</b>:Number = HEX
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getType">getType</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>getType</b> (
+</div>
+                <div><span class="code">ch:Number) : Number</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isAlnum">isAlnum</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isAlnum</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isAlpha">isAlpha</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isAlpha</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isAscii">isAscii</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isAscii</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isCntrl">isCntrl</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isCntrl</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isDigit">isDigit</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isDigit</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isGraph">isGraph</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isGraph</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isHexDigit">isHexDigit</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isHexDigit</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isLower">isLower</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isLower</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isOctDigit">isOctDigit</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isOctDigit</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isPrint">isPrint</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isPrint</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isPunct">isPunct</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isPunct</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isSpace">isSpace</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isSpace</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isType">isType</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isType</b> (
+
+</div>
+                <div><span class="code">ch:Number,
+type:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isUpper">isUpper</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isUpper</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isWord">isWord</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isWord</b> (
+</div>
+                <div><span class="code">ch:Number) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toDigit">toDigit</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>toDigit</b> (
+</div>
+                <div><span class="code">ch:Number) : Number</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toLower">toLower</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>toLower</b> (
+</div>
+                <div><span class="code">ch:Number) : Number</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toUpper">toUpper</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>toUpper</b> (
+</div>
+                <div><span class="code">ch:Number) : Number</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:27:52</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2004 Peter Armstrong
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!--
+The root element gets consumed when we use mx:Model, so we create a
+meaningless root element above the <logging> element.
+-->
+<loggingConfig>
+	<logging enabled="true">
+		<logger name="DefaultLogger" level="ALL">
+			<publisher name="org.log4f.logging.DefaultPublisher"/>
+		</logger>
+		<logger name="AlertLogger" level="ALL">
+			<publisher name="org.log4f.logging.AlertPublisher"/>
+		</logger>
+		<logger name="DebugModelLogger" level="ALL">
+			<publisher name="org.log4f.logging.console.DebugModelPublisher"/>
+		</logger>
+		<logger name="org.log4f.logging.PropertyHandler" level="WARN">
+			<publisher name="org.log4f.logging.AlertPublisher"/>
+		</logger>
+	</logging>
+</loggingConfig>

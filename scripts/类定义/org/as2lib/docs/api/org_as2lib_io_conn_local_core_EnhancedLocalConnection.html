@@ -1,0 +1,919 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>EnhancedLocalConnection</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_io_conn_local_core_EnhancedLocalConnection">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>EnhancedLocalConnection</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker, Christoph Atteneder</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.io.conn.local.core.EnhancedLocalConnection</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Saturday, 02 July 2005, 22:43:54</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.overload.Overload;
+import org.as2lib.env.event.distributor.EventDistributorControl;
+import org.as2lib.env.event.distributor.SimpleEventDistributorControl;
+import org.as2lib.env.except.IllegalArgumentException;
+import org.as2lib.io.conn.core.event.MethodInvocationErrorListener;
+import org.as2lib.io.conn.core.event.MethodInvocationErrorInfo;
+import org.as2lib.io.conn.core.client.MethodInvocationException;
+import org.as2lib.io.conn.local.core.ReservedConnectionException;
+import org.as2lib.io.conn.local.core.UnknownConnectionException;
+
+/**
+ * {@code EnhancedLocalConnection} provides enhanced local connection functionalities.
+ * 
+ * &lt;p&gt;These functionalities are proper listener support for asynchronous failures
+ * and comprehensible exceptions on synchronous errors like reserved and unknown
+ * connections and oversized arguments. Refer to the specific method for further
+ * descriptions.
+ * 
+ * &lt;p&gt;You can set up a connection to receive 'remote' method invocations as follows:
+ * &lt;code&gt;
+ *   var service:EnhancedLocalConnection = new EnhancedLocalConnection();
+ *   service["myMethod"] = function(myArg1:String, myArg2:String):Void {
+ *       trace("invoked myMethod(" + myArg1 + ", " + myArg2 + ")");
+ *   }
+ *   service.connect("myService");
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;While the above example works it is not as neat as it could be. It would be
+ * better to use another instance as service and the connection only to set it up
+ * to receive 'remote' method calls.
+ * &lt;code&gt;
+ *   var service:MyService = new MyService();
+ *   var connection:EnhancedLocalConnection = new EnhancedLocalConnection(service);
+ *   connection.connect("myService");
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;The service is set up now to receive 'remote' method invocations. You can now
+ * invoke a method on it as follows:
+ * &lt;code&gt;
+ *   var client:EnhancedLocalConnection = new EnhancedLocalConnection();
+ *   var listener:MethodInvocationErrorListener = client.send("myService", "myMethod", ["arg1", "arg2"]);
+ *   listener.onError = function(errorInfo:MethodInvocationErrorInfo):Void {
+ *       trace("Error occured: " + errorInfo); 
+ *   }
+ * &lt;/code&gt;
+ *
+ * @author Simon Wacker
+ * @author Christoph Atteneder
+ */
+class org.as2lib.io.conn.local.core.EnhancedLocalConnection extends BasicClass {
+    
+    /** Target that is used as server. */
+    private var target:Object;
+    
+    /** Indicates whether this connection is open {@code true} or closed {@code false}. */
+    private var connected:Boolean;
+    
+    /** Stores added error listeners and provides distribution functionality. */
+    private var errorDistributorControl:EventDistributorControl;
+    
+    /** Stores clients waiting for status reports. */
+    private var clientArray:Array;
+    
+    /**
+     * Checks if a connection with the passed-in {@code connectionName} exists.
+     * 
+     * &lt;p&gt;{@code false} will always be returned if the {@code connectionName} is {@code null}, 
+     * {@code undefined} or an empty string.
+     * 
+     * @param connectionName the name of the connection
+     * @return {@code true} if the connection exists else {@code false}
+     */
+    public static function connectionExists(connectionName:String):Boolean {
+        if (!connectionName) return false;
+        var lc:LocalConnection = new LocalConnection();
+        var result:Boolean = !lc.connect(connectionName);
+        lc.close();
+        return result;
+    }
+    
+    /**
+     * @overload #EnhancedLocalConnectionByVoid
+     * @overload #EnhancedLocalConnectionByTarget
+     */
+    public function EnhancedLocalConnection() {
+        var o:Overload = new Overload(this);
+        o.addHandler([], EnhancedLocalConnectionByVoid);
+        o.addHandler([Object], EnhancedLocalConnectionByTarget);
+        o.forward(arguments);
+    }
+    
+    /**
+     * Constructs a new {@code EnhancedLocalConnection} instance.
+     *
+     * &lt;p&gt;The target is set to {@code this}.
+     */
+    private function EnhancedLocalConnectionByVoid(Void):Void {
+        EnhancedLocalConnectionByTarget(this);
+    }
+    
+    /**
+     * Constructs a new {@code EnhancedLocalConnection} instance with target.
+     * 
+     * &lt;p&gt;If the passed-in {@code target} is {@code null} or {@code undefined}, the it
+     * will be set to {@code this}.
+     * 
+     * @param target the target to use as server when creating a new connection
+     */
+    private function EnhancedLocalConnectionByTarget(target):Void {
+        this.target = target ? target : this;
+        connected = false;
+        errorDistributorControl = new SimpleEventDistributorControl(MethodInvocationErrorListener, false);
+        clientArray = new Array();
+    }
+    
+    /**
+     * Prepares this connection to receive 'remote' method invocations.
+     *
+     * &lt;p&gt;Closes this connection if it is currenlty running and opens a new one.
+     * 
+     * &lt;p&gt;If you specified a target, the 'remote' method invocations will be led directly
+     * to it.
+     * 
+     * @param connectionName name of the connection the client uses to send method calls
+     * @throws IllegalArgumentException if the passed-in {@code connectionName} is 
+     * {@code null}, {@code undefined} or an empty string
+     * @throws ReservedConnectionException if a connection with the passed-in
+     * {@code connectionName} is already in use
+     */
+    public function connect(connectionName:String):Void {
+        if (!connectionName) throw new IllegalArgumentException("Name of connection must not be null, undefined or an empty string.", this, arguments);
+        if (connected) close();
+        if (!LocalConnection.prototype.connect.apply(target, [connectionName]))
+            throw new ReservedConnectionException("Connection with name [" + connectionName + "] is already in use.", this, arguments);
+        connected = true;
+    }
+    
+    /**
+     * Closes this connection.
+     */
+    public function close(Void):Void {
+        LocalConnection.prototype.close.apply(target);
+        connected = false;
+    }
+    
+    /**
+     * @overload #sendByConnectionAndMethod
+     * @overload #sendByConnectionAndMethodAndArguments
+     * @overload #sendByConnectionAndMethodAndListener
+     * @overload #sendByConnectionAndMethodAndArgumentsAndListener
+     */
+    public function send():MethodInvocationErrorListener {
+        var o:Overload = new Overload(this);
+        o.addHandler([String, String], sendByConnectionAndMethod);
+        o.addHandler([String, String, Array], sendByConnectionAndMethodAndArguments);
+        o.addHandler([String, String, MethodInvocationErrorListener], sendByConnectionAndMethodAndListener);
+        o.addHandler([String, String, Array, MethodInvocationErrorListener], sendByConnectionAndMethodAndArgumentsAndListener);
+        return o.forward(arguments);
+    }
+    
+    /**
+     * Invokes a method remotely on the connection specified by the passed-in
+     * {@code connectionName}, passing no arguments.
+     * 
+     * &lt;p&gt;Error listeners are informed if the 'remote' method invocation failed asynchron
+     * of an unknown reason.
+     * 
+     * &lt;p&gt;A new {@code MethodInvocationErrorListener} instance is created and returned.
+     * You can set the {@code onError} method on it to be informed of occuring errors.
+     * 
+     * @param connectionName the name of the connection to invoke the method on
+     * @param methodName the name of the method to invoke on the connection
+     * @return an error listener that informs you of occuring errors if you set the
+     * {@code onError} method on it
+     * 
+     * @throws IllegalArgumentException if {@code connectionName} or {@code methodName}
+     * are {@code null}, {@code undefined} or an empty string
+     * @throws UnknownConnectionException if a connection with the passed-in
+     * {@code connectionName} does not exist
+     */
+    public function sendByConnectionAndMethod(connectionName:String, methodName:String):MethodInvocationErrorListener {
+        return sendByConnectionAndMethodAndArgumentsAndListener(connectionName, methodName, [], null);
+    }
+    
+    /**
+     * Invokes a method remotely on the connection specified by the passed-in
+     * {@code connectionName} passing {@code args} as parameters.
+     * 
+     * &lt;p&gt;Error listeners are informed if the 'remote' method invocation failed asynchron
+     * of an unknown reason.
+     * 
+     * &lt;p&gt;A new {@code MethodInvocationErrorListener} instance is created and returned.
+     * You can set the {@code onError} method on it to be informed of occuring errors.
+     * 
+     * @param connectionName the name of the connection to invoke the method on
+     * @param methodName the name of the method to invoke on the connection
+     * @param args the arguments to pass as parameters when invoking the connection
+     * @return an error listener that informs you of occuring errors if you set the 
+     * {@code onError} method on it
+     * @throws IllegalArgumentException if {@code connectionName} or {@code methodName}
+     * are {@code null}, {@code undefined} or an empty string
+     * @throws UnknownConnectionException if a connection with the passed-in 
+     * {@code connectionName} does not exist
+     * @throws MethodInvocationException if the arguments you try to pass are out of size
+     */
+    public function sendByConnectionAndMethodAndArguments(connectionName:String, methodName:String, args:Array):MethodInvocationErrorListener {
+        return sendByConnectionAndMethodAndArgumentsAndListener(connectionName, methodName, args, null);
+    }
+    
+    /**
+     * Invokes a method remotely on the connection specified by the passed-in
+     * {@code connectionName} passing {@code args} as parameters.
+     * 
+     * &lt;p&gt;Error listeners are informed if the 'remote' method invocation failed asynchron
+     * of an unknown reason.
+     * 
+     * &lt;p&gt;A new {@code MethodInvocationErrorListener} instance is created and returned,
+     * if the passed-in {@code listener} is {@code null}. Otherwise the passed-in one
+     * is returned. You can set the {@code onError} method on it to be informed of
+     * occuring errors.
+     * 
+     * @param connectionName the name of the connection to invoke a method on
+     * @param methodName the name of the method to invoke on the connection
+     * @param listener the listener to notify if the method invocation failed out of an
+     * asynchron unknwon reason
+     * @return either the passed-in listener if it was not {@code null} or {@code undefined},
+     * or a new listener
+     * @throws IllegalArgumentException if {@code connectionName} or {@code methodName}
+     * are {@code null}, {@code undefined} or an empty string
+     * @throws UnknownConnectionException if a connection with the passed-in 
+     * {@code connectionName} does not exist
+     * @throws MethodInvocationException if the arguments you try to pass are out of size
+     */
+    public function sendByConnectionAndMethodAndListener(connectionName:String, methodName:String, listener:MethodInvocationErrorListener):MethodInvocationErrorListener {
+        return sendByConnectionAndMethodAndArgumentsAndListener(connectionName, methodName, [], listener);
+    }
+    
+    /**
+     * Invokes a method remotely on the connection specified by the passed-in
+     * {@code connectionName} passing {@code args} as parameters.
+     * 
+     * &lt;p&gt;Error listeners are informed if the 'remote' method invocation failed asynchron
+     * of an unknown reason.
+     * 
+     * &lt;p&gt;A new {@code MethodInvocationErrorListener} instance is created and returned,
+     * if the passed-in {@code listener} is {@code null}. Otherwise the passed-in one
+     * is returned. You can set the {@code onError} method on it to be informed of
+     * occuring errors.
+     * 
+     * @param connectionName the name of the connection to invoke a method on
+     * @param methodName the name of the method to invoke on the connection
+     * @param args the arguments to pass as parameters when invoking the method
+     * @param listener the listener to notify if the method invocation failed out of an
+     * asynchron unknwon reason
+     * @return either the passed-in listener if it was not {@code null} or {@code undefined},
+     * or a new listener
+     * @throws IllegalArgumentException if {@code connectionName} or {@code methodName}
+     * are {@code null}, {@code undefined} or an empty string
+     * @throws UnknownConnectionException if a connection with the passed-in 
+     * {@code connectionName} does not exist
+     * @throws MethodInvocationException if the arguments you try to pass are out of size
+     */
+    public function sendByConnectionAndMethodAndArgumentsAndListener(connectionName:String, methodName:String, args:Array, listener:MethodInvocationErrorListener):MethodInvocationErrorListener {
+        if (!connectionName || !methodName) throw new IllegalArgumentException("Neither the connection name [" + connectionName + "] nor the method name [" + methodName + "] are allowed to be null, undefined or an empty string.", this, arguments);
+        if (!connectionExists(connectionName)) throw new UnknownConnectionException("Connection with name [" + connectionName + "] does not exist.", this, arguments);
+        if (!args) args = new Array();
+        if (!listener) listener = getBlankMethodInvocationErrorListener();
+        var client:LocalConnection = new LocalConnection();
+        var owner:EnhancedLocalConnection = this;
+        // If the client did not get stored the garbage collector would remove it before
+        // the onStatus-event would get invoked.
+        var index:Number = clientArray.push(client) - 1;
+        client.onStatus = function(info) {
+            // "owner.clientArray" is not MTASC compatible because "clientArray" is private
+            owner["clientArray"].splice(index, 1);
+            if (info.level == "error") {
+                // "owner.dispatchError" is not MTASC compatible because "dispatchError" is private
+                owner["dispatchError"](new MethodInvocationErrorInfo(connectionName, methodName, args, MethodInvocationErrorInfo.UNKNOWN_ERROR));
+                listener.onError(new MethodInvocationErrorInfo(connectionName, methodName, args, MethodInvocationErrorInfo.UNKNOWN_ERROR));
+            }
+        };
+        if (!client.send.apply(client, [connectionName, methodName].concat(args)))
+            throw new MethodInvocationException("Arguments [" + args + "] are out of size.", this, arguments);
+        return listener;
+    }
+    
+    /**
+     * Returns a blank method invocation error listener. This is an error listener with
+     * no implemented methods.
+     * 
+     * @return a blank method invocation error listener
+     */
+    private function getBlankMethodInvocationErrorListener(Void):MethodInvocationErrorListener {
+        var result = new Object();
+        result.__proto__ = MethodInvocationErrorListener["prototype"];
+        result.__constructor__ = MethodInvocationErrorListener;
+        return result;
+    }
+    
+    /**
+     * Dispatches the occured error to all registered error listeners.
+     *
+     * @param info that contains further information about the error
+     */
+    private function dispatchError(info:MethodInvocationErrorInfo):Void {
+        var distributor:MethodInvocationErrorListener = errorDistributorControl.getDistributor();
+        distributor.onError(info);
+    }
+    
+    /**
+     * Adds a new error listener.
+     *
+     * &lt;p&gt;Error listener is invoked if an asynchron error occured. This is mostly when
+     * you try to invoke a remote method.
+     * 
+     * @param listener the new error listener to add
+     */
+    public function addErrorListener(listener:MethodInvocationErrorListener):Void {
+        errorDistributorControl.addListener(listener);
+    }
+    
+    /**
+     * Removes an error listener.
+     *
+     * &lt;p&gt;Error listener is invoked if an asynchron error occured. This is mostly when
+     * you try to invoke a remote method.
+     * 
+     * @param listener the error listener to remove
+     */
+    public function removeErrorListener(listener:MethodInvocationErrorListener):Void {
+        errorDistributorControl.removeListener(listener);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>EnhancedLocalConnection</code> provides enhanced local connection functionalities.</div><p>These functionalities are proper listener support for asynchronous failures<br /> and comprehensible exceptions on synchronous errors like reserved and unknown<br /> connections and oversized arguments. Refer to the specific method for further<br /> descriptions.<p>You can set up a connection to receive 'remote' method invocations as follows:<pre><span class="codeKeyword">var</span> service:EnhancedLocalConnection = <span class="codeKeyword">new</span> EnhancedLocalConnection();
+service[<span class="codeString">"myMethod"</span>] = <span class="codeKeyword">function</span>(myArg1:<span class="codeIdentifier">String</span>, myArg2:<span class="codeIdentifier">String</span>):<span class="codeIdentifier">Void</span> {
+    <span class="codeIdentifier">trace</span>(<span class="codeString">"invoked myMethod("</span> + myArg1 + <span class="codeString">", "</span> + myArg2 + <span class="codeString">")"</span>);
+}
+service.connect(<span class="codeString">"myService"</span>);</pre><p>While the above example works it is not as neat as it could be. It would be<br /> better to use another instance as service and the connection only to set it up<br /> to receive 'remote' method calls.<pre><span class="codeKeyword">var</span> service:MyService = <span class="codeKeyword">new</span> MyService();
+<span class="codeKeyword">var</span> connection:EnhancedLocalConnection = <span class="codeKeyword">new</span> EnhancedLocalConnection(service);
+connection.connect(<span class="codeString">"myService"</span>);</pre><p>The service is set up now to receive 'remote' method invocations. You can now<br /> invoke a method on it as follows:<pre><span class="codeKeyword">var</span> client:EnhancedLocalConnection = <span class="codeKeyword">new</span> EnhancedLocalConnection();
+<span class="codeKeyword">var</span> listener:MethodInvocationErrorListener = client.send(<span class="codeString">"myService"</span>, <span class="codeString">"myMethod"</span>, [<span class="codeString">"arg1"</span>, <span class="codeString">"arg2"</span>]);
+listener.onError = <span class="codeKeyword">function</span>(errorInfo:MethodInvocationErrorInfo):<span class="codeIdentifier">Void</span> {
+    <span class="codeIdentifier">trace</span>(<span class="codeString">"Error occured: "</span> + errorInfo); 
+}</pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#EnhancedLocalConnection">EnhancedLocalConnection</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#target">target</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#connected">connected</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#errorDistributorControl">errorDistributorControl</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#clientArray">clientArray</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#connectionExists">connectionExists</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#EnhancedLocalConnectionByVoid">EnhancedLocalConnectionByVoid</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#EnhancedLocalConnectionByTarget">EnhancedLocalConnectionByTarget</a>
+                </li>
+                <li>
+                  <a href="#connect">connect</a>
+                </li>
+                <li>
+                  <a href="#close">close</a>
+                </li>
+                <li>
+                  <a href="#send">send</a>
+                </li>
+                <li>
+                  <a href="#sendByConnectionAndMethod">sendByConnectionAndMethod</a>
+                </li>
+                <li>
+                  <a href="#sendByConnectionAndMethodAndArguments">sendByConnectionAndMethodAndArguments</a>
+                </li>
+                <li>
+                  <a href="#sendByConnectionAndMethodAndListener">sendByConnectionAndMethodAndListener</a>
+                </li>
+                <li>
+                  <a href="#sendByConnectionAndMethodAndArgumentsAndListener">sendByConnectionAndMethodAndArgumentsAndListener</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#getBlankMethodInvocationErrorListener">getBlankMethodInvocationErrorListener</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#dispatchError">dispatchError</a>
+                </li>
+                <li>
+                  <a href="#addErrorListener">addErrorListener</a>
+                </li>
+                <li>
+                  <a href="#removeErrorListener">removeErrorListener</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="EnhancedLocalConnection">EnhancedLocalConnection</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>EnhancedLocalConnection</b> (
+</div>
+                <div><span class="code">)</span></div>
+              </div>
+            </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overloading:</span><div class="item"><a class="privatInline" href="org_as2lib_io_conn_local_core_EnhancedLocalConnection.html#EnhancedLocalConnectionByVoid">EnhancedLocalConnectionByVoid (Void) : Void</a><br /><a class="privatInline" href="org_as2lib_io_conn_local_core_EnhancedLocalConnection.html#EnhancedLocalConnectionByTarget">EnhancedLocalConnectionByTarget (target) : Void</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="clientArray">clientArray</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>clientArray</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Stores clients waiting for status reports.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="connected">connected</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>connected</b>:Boolean
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Indicates whether this connection is open <code>true</code> or closed <code>false</code>.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="errorDistributorControl">errorDistributorControl</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>errorDistributorControl</b>:<a href="org_as2lib_env_event_distributor_EventDistributorControl.html">EventDistributorControl</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Stores added error listeners and provides distribution functionality.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="target">target</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>target</b>:Object
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Target that is used as server.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="connectionExists">connectionExists</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>connectionExists</b> (
+</div>
+                <div><span class="code">connectionName:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if a connection with the passed-in <code>connectionName</code> exists.<p><code>false</code> will always be returned if the <code>connectionName</code> is <code>null</code>, <br /> <code>undefined</code> or an empty string.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">connectionName<span class="itemSeparator">:</span></div>
+                    <div>the name of the connection</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the connection exists else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="addErrorListener">addErrorListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>addErrorListener</b> (
+</div>
+                <div><span class="code">listener:<a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Adds a new error listener.<p>Error listener is invoked if an asynchron error occured. This is mostly when<br /> you try to invoke a remote method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">listener<span class="itemSeparator">:</span></div>
+                    <div>the new error listener to add</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="close">close</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>close</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Closes this connection.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="connect">connect</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>connect</b> (
+</div>
+                <div><span class="code">connectionName:String) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Prepares this connection to receive 'remote' method invocations.<p>Closes this connection if it is currenlty running and opens a new one.<p>If you specified a target, the 'remote' method invocations will be led directly<br /> to it.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">connectionName<span class="itemSeparator">:</span></div>
+                    <div>name of the connection the client uses to send method calls</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if the passed-in <code>connectionName</code> is <br /> <code>null</code>, <code>undefined</code> or an empty string<br /><a href="org_as2lib_io_conn_local_core_ReservedConnectionException.html">ReservedConnectionException</a> if a connection with the passed-in<br /> <code>connectionName</code> is already in use</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="dispatchError">dispatchError</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>dispatchError</b> (
+</div>
+                <div><span class="code">info:<a href="org_as2lib_io_conn_core_event_MethodInvocationErrorInfo.html">MethodInvocationErrorInfo</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Dispatches the occured error to all registered error listeners.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">info<span class="itemSeparator">:</span></div>
+                    <div>that contains further information about the error</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="EnhancedLocalConnectionByTarget">EnhancedLocalConnectionByTarget</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>EnhancedLocalConnectionByTarget</b> (
+</div>
+                <div><span class="code">target) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>EnhancedLocalConnection</code> instance with target.<p>If the passed-in <code>target</code> is <code>null</code> or <code>undefined</code>, the it<br /> will be set to <code>this</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">target<span class="itemSeparator">:</span></div>
+                    <div>the target to use as server when creating a new connection</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="EnhancedLocalConnectionByVoid">EnhancedLocalConnectionByVoid</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>EnhancedLocalConnectionByVoid</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>EnhancedLocalConnection</code> instance.<p>The target is set to <code>this</code>.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getBlankMethodInvocationErrorListener">getBlankMethodInvocationErrorListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getBlankMethodInvocationErrorListener</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns a blank method invocation error listener. This is an error listener with<br /> no implemented methods.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a blank method invocation error listener</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="removeErrorListener">removeErrorListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>removeErrorListener</b> (
+</div>
+                <div><span class="code">listener:<a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Removes an error listener.<p>Error listener is invoked if an asynchron error occured. This is mostly when<br /> you try to invoke a remote method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">listener<span class="itemSeparator">:</span></div>
+                    <div>the error listener to remove</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="send">send</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>send</b> (
+</div>
+                <div><span class="code">) : <a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a></span></div>
+              </div>
+            </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overloading:</span><div class="item"><a href="org_as2lib_io_conn_local_core_EnhancedLocalConnection.html#sendByConnectionAndMethod">sendByConnectionAndMethod (connectionName:String, methodName:String) : MethodInvocationErrorListener</a><br /><a href="org_as2lib_io_conn_local_core_EnhancedLocalConnection.html#sendByConnectionAndMethodAndArguments">sendByConnectionAndMethodAndArguments (connectionName:String, methodName:String, args:Array) : MethodInvocationErrorListener</a><br /><a href="org_as2lib_io_conn_local_core_EnhancedLocalConnection.html#sendByConnectionAndMethodAndListener">sendByConnectionAndMethodAndListener (connectionName:String, methodName:String, listener:MethodInvocationErrorListener) : MethodInvocationErrorListener</a><br /><a href="org_as2lib_io_conn_local_core_EnhancedLocalConnection.html#sendByConnectionAndMethodAndArgumentsAndListener">sendByConnectionAndMethodAndArgumentsAndListener (connectionName:String, methodName:String, args:Array, listener:MethodInvocationErrorListener) : MethodInvocationErrorListener</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="sendByConnectionAndMethod">sendByConnectionAndMethod</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>sendByConnectionAndMethod</b> (
+
+</div>
+                <div><span class="code">connectionName:String,
+methodName:String) : <a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a></span></div>
+              </div>
+            </div>
+            <div class="description">Invokes a method remotely on the connection specified by the passed-in<br /> <code>connectionName</code>, passing no arguments.<p>Error listeners are informed if the 'remote' method invocation failed asynchron<br /> of an unknown reason.<p>A new <code>MethodInvocationErrorListener</code> instance is created and returned.<br /> You can set the <code>onError</code> method on it to be informed of occuring errors.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">connectionName<span class="itemSeparator">:</span></div>
+                    <div>the name of the connection to invoke the method on</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">methodName    <span class="itemSeparator">:</span></div>
+                    <div>the name of the method to invoke on the connection</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an error listener that informs you of occuring errors if you set the<br /> <code>onError</code> method on it</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if <code>connectionName</code> or <code>methodName</code><br /> are <code>null</code>, <code>undefined</code> or an empty string<br /><a href="org_as2lib_io_conn_local_core_UnknownConnectionException.html">UnknownConnectionException</a> if a connection with the passed-in<br /> <code>connectionName</code> does not exist</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="sendByConnectionAndMethodAndArguments">sendByConnectionAndMethodAndArguments</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>sendByConnectionAndMethodAndArguments</b> (
+
+
+</div>
+                <div><span class="code">connectionName:String,
+methodName:String,
+args:Array) : <a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a></span></div>
+              </div>
+            </div>
+            <div class="description">Invokes a method remotely on the connection specified by the passed-in<br /> <code>connectionName</code> passing <code>args</code> as parameters.<p>Error listeners are informed if the 'remote' method invocation failed asynchron<br /> of an unknown reason.<p>A new <code>MethodInvocationErrorListener</code> instance is created and returned.<br /> You can set the <code>onError</code> method on it to be informed of occuring errors.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">connectionName<span class="itemSeparator">:</span></div>
+                    <div>the name of the connection to invoke the method on</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">methodName    <span class="itemSeparator">:</span></div>
+                    <div>the name of the method to invoke on the connection</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">args          <span class="itemSeparator">:</span></div>
+                    <div>the arguments to pass as parameters when invoking the connection</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an error listener that informs you of occuring errors if you set the <br /> <code>onError</code> method on it</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if <code>connectionName</code> or <code>methodName</code><br /> are <code>null</code>, <code>undefined</code> or an empty string<br /><a href="org_as2lib_io_conn_local_core_UnknownConnectionException.html">UnknownConnectionException</a> if a connection with the passed-in <br /> <code>connectionName</code> does not exist<br /><a href="org_as2lib_io_conn_core_client_MethodInvocationException.html">org.as2lib.io.conn.core.client.MethodInvocationException</a> if the arguments you try to pass are out of size</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="sendByConnectionAndMethodAndArgumentsAndListener">sendByConnectionAndMethodAndArgumentsAndListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>sendByConnectionAndMethodAndArgumentsAndListener</b> (
+
+
+
+</div>
+                <div><span class="code">connectionName:String,
+methodName:String,
+args:Array,
+listener:<a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a>) : <a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a></span></div>
+              </div>
+            </div>
+            <div class="description">Invokes a method remotely on the connection specified by the passed-in<br /> <code>connectionName</code> passing <code>args</code> as parameters.<p>Error listeners are informed if the 'remote' method invocation failed asynchron<br /> of an unknown reason.<p>A new <code>MethodInvocationErrorListener</code> instance is created and returned,<br /> if the passed-in <code>listener</code> is <code>null</code>. Otherwise the passed-in one<br /> is returned. You can set the <code>onError</code> method on it to be informed of<br /> occuring errors.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">connectionName<span class="itemSeparator">:</span></div>
+                    <div>the name of the connection to invoke a method on</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">methodName    <span class="itemSeparator">:</span></div>
+                    <div>the name of the method to invoke on the connection</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">args          <span class="itemSeparator">:</span></div>
+                    <div>the arguments to pass as parameters when invoking the method</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">listener      <span class="itemSeparator">:</span></div>
+                    <div>the listener to notify if the method invocation failed out of an<br /> asynchron unknwon reason</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">either the passed-in listener if it was not <code>null</code> or <code>undefined</code>,<br /> or a new listener</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if <code>connectionName</code> or <code>methodName</code><br /> are <code>null</code>, <code>undefined</code> or an empty string<br /><a href="org_as2lib_io_conn_local_core_UnknownConnectionException.html">UnknownConnectionException</a> if a connection with the passed-in <br /> <code>connectionName</code> does not exist<br /><a href="org_as2lib_io_conn_core_client_MethodInvocationException.html">org.as2lib.io.conn.core.client.MethodInvocationException</a> if the arguments you try to pass are out of size</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="sendByConnectionAndMethodAndListener">sendByConnectionAndMethodAndListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>sendByConnectionAndMethodAndListener</b> (
+
+
+</div>
+                <div><span class="code">connectionName:String,
+methodName:String,
+listener:<a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a>) : <a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a></span></div>
+              </div>
+            </div>
+            <div class="description">Invokes a method remotely on the connection specified by the passed-in<br /> <code>connectionName</code> passing <code>args</code> as parameters.<p>Error listeners are informed if the 'remote' method invocation failed asynchron<br /> of an unknown reason.<p>A new <code>MethodInvocationErrorListener</code> instance is created and returned,<br /> if the passed-in <code>listener</code> is <code>null</code>. Otherwise the passed-in one<br /> is returned. You can set the <code>onError</code> method on it to be informed of<br /> occuring errors.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">connectionName<span class="itemSeparator">:</span></div>
+                    <div>the name of the connection to invoke a method on</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">methodName    <span class="itemSeparator">:</span></div>
+                    <div>the name of the method to invoke on the connection</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">listener      <span class="itemSeparator">:</span></div>
+                    <div>the listener to notify if the method invocation failed out of an<br /> asynchron unknwon reason</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">either the passed-in listener if it was not <code>null</code> or <code>undefined</code>,<br /> or a new listener</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if <code>connectionName</code> or <code>methodName</code><br /> are <code>null</code>, <code>undefined</code> or an empty string<br /><a href="org_as2lib_io_conn_local_core_UnknownConnectionException.html">UnknownConnectionException</a> if a connection with the passed-in <br /> <code>connectionName</code> does not exist<br /><a href="org_as2lib_io_conn_core_client_MethodInvocationException.html">org.as2lib.io.conn.core.client.MethodInvocationException</a> if the arguments you try to pass are out of size</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:27:20</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

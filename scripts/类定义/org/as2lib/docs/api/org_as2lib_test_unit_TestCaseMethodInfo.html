@@ -1,0 +1,584 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>TestCaseMethodInfo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_test_unit_TestCaseMethodInfo">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>TestCaseMethodInfo</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.test.unit.TestCaseMethodInfo</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Wednesday, 21 September 2005, 18:37:06</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/**
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.data.holder.array.TypedArray;
+import org.as2lib.data.holder.Iterator;
+import org.as2lib.data.holder.array.ArrayIterator;
+import org.as2lib.env.reflect.MethodInfo;
+import org.as2lib.util.StopWatch;
+import org.as2lib.util.StringUtil;
+import org.as2lib.test.unit.ExecutionInfo;
+
+/**
+ * Informationholder for all Informations related to the execution of a Method within a Testcase.
+ * 
+ * @author Martin Heidegger
+ */
+class org.as2lib.test.unit.TestCaseMethodInfo extends BasicClass {
+    
+    /** Internal Holder for the Reflections Information about the method. */
+    private var methodInfo:MethodInfo;
+    
+    /** Holder for the Stopwatch that contains the execution time. */
+    private var stopWatch:StopWatch;
+    
+    /** All collected Informations for the execution. */
+    private var infos:TypedArray;
+    
+    /** Information if the method was executed by @see #executeTo */
+    private var executed:Boolean = false;
+    
+    /**    
+     * Constructs a new Informations for a TestCase method.
+     * 
+     * @param methodInfo Reflection based information of the method.
+     */
+    public function TestCaseMethodInfo(methodInfo:MethodInfo) {
+        this.methodInfo = methodInfo;
+        
+        stopWatch = new StopWatch();
+        infos = new TypedArray(ExecutionInfo);
+    }
+    
+    /**
+     * Getter for the Stopwatch that is held by this class.
+     * 
+     * @return StopWatch related to this class.
+     */
+    public function getStopWatch(Void):StopWatch {
+        return stopWatch;
+    }
+    
+    /**
+     * Information if the method contains errors.
+     * 
+     * @return true if the method contains errors.
+     */
+    public function hasErrors(Void):Boolean {
+        var i:Number = infos.length;
+        while (--i-(-1)) {
+            if(infos[i].isFailed()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Getter for the available operation time.
+     * 
+     * @return Operation time in milliseconds.
+     */
+    public function getOperationTime(Void):Number {
+        return getStopWatch().getTimeInMilliSeconds();
+    }
+    
+    /**
+     * Getter for the Reflection based method information.
+     * 
+     * @return Original MethodInfo to the executed method.
+     */
+    public function getMethodInfo(Void):MethodInfo {
+        return this.methodInfo;
+    }
+    
+    /**
+     * Adds a Information about the execution of the method.
+     * 
+     * @param info Information that should be added.
+     */
+    public function addInfo(info:ExecutionInfo):Void {
+        infos.push(info);
+    }
+    
+    /**
+     * Getter for all infos occured during the execution.
+     * Returns a copy of all infos!
+     * 
+     * @return List of all infos occured during execution.
+     */
+    public function getInfos(Void):TypedArray {
+        return infos.concat();
+    }
+    
+    /**
+     * Getter for all errors occured during the execution.
+     * 
+     * @return List of all errors occured during execution of the method.
+     */
+    public function getErrors(Void):TypedArray {
+        var result:TypedArray = new TypedArray(ExecutionInfo);
+        var i:Number = 0;
+        var l:Number = infos.length;
+        while (i&lt;l) {
+            if(infos[i].isFailed()) {
+                result.push(infos[i]);
+            }
+            i-=(-1);
+        }
+        return result;
+    }
+    
+    /**
+     * @return True if the method was executed by @see #executeTo
+     */
+    public function isExecuted(Void):Boolean {
+        return executed;
+    }
+
+    /**
+     * Sets the current state of execution.
+     * 
+     * @param executed True if the method has been executed, else false.
+     */
+    public function setExecuted(executed:Boolean):Void {
+        this.executed = executed;
+    }
+    
+    /**
+     * Extended .toString implementation.
+     * 
+     * @return TestCaseMethodInfo as well formated String.
+     */
+    public function toString():String {
+        var result:String = getMethodInfo().getName()+"() ["+getStopWatch().getTimeInMilliSeconds()+"ms]";
+        var errors:Array = getErrors();
+        if(errors.length &gt; 1) {
+            result += " "+errors.length+" errors occured";
+        } else if(errors.length &gt; 0) {
+            result += " 1 error occured";
+            
+        }
+        var errorIterator:Iterator = new ArrayIterator(errors);
+        while(errorIterator.hasNext()) {
+            var error = errorIterator.next();
+            result += "\n"+StringUtil.addSpaceIndent(error.getMessage(), 2);
+        }
+        if(hasErrors()) {
+            result += "\n";
+        }
+        return result;
+    }
+    
+    /**
+     * Getter for the complete name of the methodinfo
+     * 
+     * @return Complete name as string of the methodinfo.
+     */
+    public function getName(Void):String {
+        return methodInfo.getFullName();
+    }
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary">Informationholder for all Informations related to the execution of a Method within a Testcase.</div></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#TestCaseMethodInfo">TestCaseMethodInfo</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#methodInfo">methodInfo</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#stopWatch">stopWatch</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#infos">infos</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#executed">executed</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#getStopWatch">getStopWatch</a>
+                </li>
+                <li>
+                  <a href="#hasErrors">hasErrors</a>
+                </li>
+                <li>
+                  <a href="#getOperationTime">getOperationTime</a>
+                </li>
+                <li>
+                  <a href="#getMethodInfo">getMethodInfo</a>
+                </li>
+                <li>
+                  <a href="#addInfo">addInfo</a>
+                </li>
+                <li>
+                  <a href="#getInfos">getInfos</a>
+                </li>
+                <li>
+                  <a href="#getErrors">getErrors</a>
+                </li>
+                <li>
+                  <a href="#isExecuted">isExecuted</a>
+                </li>
+                <li>
+                  <a href="#setExecuted">setExecuted</a>
+                </li>
+                <li>
+                  <a href="#toString">toString</a>
+                </li>
+                <li>
+                  <a href="#getName">getName</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="TestCaseMethodInfo">TestCaseMethodInfo</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>TestCaseMethodInfo</b> (
+</div>
+                <div><span class="code">methodInfo:<a href="org_as2lib_env_reflect_MethodInfo.html">MethodInfo</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new Informations for a TestCase method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">methodInfo<span class="itemSeparator">:</span></div>
+                    <div>Reflection based information of the method.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="executed">executed</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>executed</b>:Boolean = <span class="codeIdentifier">false</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Information if the method was executed by @see #executeTo</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="infos">infos</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>infos</b>:<a href="org_as2lib_data_holder_array_TypedArray.html">TypedArray</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">All collected Informations for the execution.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="methodInfo">methodInfo</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>methodInfo</b>:<a href="org_as2lib_env_reflect_MethodInfo.html">MethodInfo</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Internal Holder for the Reflections Information about the method.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="stopWatch">stopWatch</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>stopWatch</b>:<a href="org_as2lib_util_StopWatch.html">StopWatch</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Holder for the Stopwatch that contains the execution time.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="addInfo">addInfo</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>addInfo</b> (
+</div>
+                <div><span class="code">info:<a href="org_as2lib_test_unit_ExecutionInfo.html">ExecutionInfo</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Adds a Information about the execution of the method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">info<span class="itemSeparator">:</span></div>
+                    <div>Information that should be added.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getErrors">getErrors</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getErrors</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_array_TypedArray.html">TypedArray</a></span></div>
+              </div>
+            </div>
+            <div class="description">Getter for all errors occured during the execution.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">List of all errors occured during execution of the method.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getInfos">getInfos</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getInfos</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_array_TypedArray.html">TypedArray</a></span></div>
+              </div>
+            </div>
+            <div class="description">Getter for all infos occured during the execution.<br /> Returns a copy of all infos!</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">List of all infos occured during execution.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getMethodInfo">getMethodInfo</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getMethodInfo</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_reflect_MethodInfo.html">MethodInfo</a></span></div>
+              </div>
+            </div>
+            <div class="description">Getter for the Reflection based method information.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">Original MethodInfo to the executed method.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getName">getName</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getName</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Getter for the complete name of the methodinfo</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">Complete name as string of the methodinfo.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getOperationTime">getOperationTime</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getOperationTime</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Getter for the available operation time.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">Operation time in milliseconds.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getStopWatch">getStopWatch</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getStopWatch</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_util_StopWatch.html">StopWatch</a></span></div>
+              </div>
+            </div>
+            <div class="description">Getter for the Stopwatch that is held by this class.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">StopWatch related to this class.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="hasErrors">hasErrors</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasErrors</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Information if the method contains errors.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">true if the method contains errors.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isExecuted">isExecuted</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isExecuted</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">True if the method was executed by @see #executeTo</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setExecuted">setExecuted</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setExecuted</b> (
+</div>
+                <div><span class="code">executed:Boolean) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the current state of execution.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">executed<span class="itemSeparator">:</span></div>
+                    <div>True if the method has been executed, else false.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toString">toString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>toString</b> (
+</div>
+                <div><span class="code">) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Extended .toString implementation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">TestCaseMethodInfo as well formated String.</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_core_BasicClass.html#toString">org.as2lib.core.BasicClass.toString</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:30:40</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

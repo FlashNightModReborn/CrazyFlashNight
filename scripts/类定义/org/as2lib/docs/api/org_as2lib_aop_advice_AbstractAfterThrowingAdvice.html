@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AbstractAfterThrowingAdvice</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_aop_advice_AbstractAfterThrowingAdvice">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>AbstractAfterThrowingAdvice</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_aop_advice_AbstractAdvice.html">AbstractAdvice</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Known subclasses:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_aop_advice_DynamicAfterThrowingAdvice.html">DynamicAfterThrowingAdvice</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.aop.advice.AbstractAfterThrowingAdvice</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Tuesday, 16 August 2005, 21:26:48</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.aop.Aspect;
+import org.as2lib.aop.JoinPoint;
+import org.as2lib.aop.advice.AbstractAdvice;
+import org.as2lib.aop.advice.AfterThrowingAdvice;
+
+/**
+ * {@code AbstractAfterThrowingAdvice} provides implementations of methods needed by
+ * {@link AfterThrowingAdvice} implementations.
+ * 
+ * @author Simon Wacker
+ */
+class org.as2lib.aop.advice.AbstractAfterThrowingAdvice extends AbstractAdvice {
+    
+    /**
+     * Constructs a new {@code AbstractAfterThrowingAdvice} instance.
+     * 
+     * @param aspect (optional) the aspect that contains this advice
+     */
+    private function AbstractAfterThrowingAdvice(aspect:Aspect) {
+        super(aspect);
+    }
+    
+    /**
+     * Proceeds the passed-in {@code joinPoint} with the given {@code args} and returns
+     * the result of this procession after invoking this advice's {@code execute}
+     * method passing the given {@code joinPoint} and the thrown exception.
+     * 
+     * &lt;p&gt;Note that this advice's {@code execute} method is only invoked if the
+     * procession of the {@code joinPoint} with the given {@code args} resulted in an
+     * exception.
+     * 
+     * @param joinPoint the reached join point
+     * @param args the arguments to use for the procession of the join point, these are
+     * normally the ones that were originally passed-to the join point
+     * @return the result of the procession of the given {@code joinPoint} with the
+     * given {@code args}
+     * @throws * if the procession of the {@code joinPoint} with the given {@code args}
+     * results in an exception or if this advice's {@code execute} method threw an
+     * exception
+     */
+    private function executeJoinPoint(joinPoint:JoinPoint, args:Array) {
+        // 'this' in the catch block refers to '_level0' without this preceding 'this'
+        // (at least in the test cases)
+        // a detached 'this' is not allowed by MTASC we does have to store it in a variable
+        var x:AbstractAfterThrowingAdvice = this;
+        var result;
+        try {
+            result = joinPoint.proceed(args);
+        } catch (throwable) {
+            AfterThrowingAdvice(this).execute(joinPoint, throwable);
+            throw throwable;
+        }
+        return result;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>AbstractAfterThrowingAdvice</code> provides implementations of methods needed by<br /> <a href="org_as2lib_aop_advice_AfterThrowingAdvice.html">AfterThrowingAdvice</a> implementations.</div></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Constructor</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#AbstractAfterThrowingAdvice">AbstractAfterThrowingAdvice</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class properties inherited from <span class="superclass"><a href="org_as2lib_aop_advice_AbstractAdvice.html">AbstractAdvice</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_aop_advice_AbstractAdvice.html#AFTER">AFTER</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#AFTER_RETURNING">AFTER_RETURNING</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#AFTER_THROWING">AFTER_THROWING</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#AROUND">AROUND</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#BEFORE">BEFORE</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_aop_advice_AbstractAdvice.html">AbstractAdvice</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_aop_advice_AbstractAdvice.html#aspect" class="privatInline">aspect</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#pointcut" class="privatInline">pointcut</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#executeJoinPoint">executeJoinPoint</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_aop_advice_AbstractAdvice.html">AbstractAdvice</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_aop_advice_AbstractAdvice.html#captures">captures</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#executeJoinPoint" class="privatInline">executeJoinPoint</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#getAspect">getAspect</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#getPointcut">getPointcut</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#getProxy">getProxy</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#setAspect" class="privatInline">setAspect</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#setPointcut" class="privatInline">setPointcut</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#setPointcutByPointcut" class="privatInline">setPointcutByPointcut</a>, <a href="org_as2lib_aop_advice_AbstractAdvice.html#setPointcutByString" class="privatInline">setPointcutByString</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="AbstractAfterThrowingAdvice">AbstractAfterThrowingAdvice</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>AbstractAfterThrowingAdvice</b> (
+</div>
+                <div><span class="code">aspect:<a href="org_as2lib_aop_Aspect.html">Aspect</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>AbstractAfterThrowingAdvice</code> instance.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">aspect<span class="itemSeparator">:</span></div>
+                    <div>(optional) the aspect that contains this advice</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="executeJoinPoint">executeJoinPoint</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>executeJoinPoint</b> (
+
+</div>
+                <div><span class="code">joinPoint:<a href="org_as2lib_aop_JoinPoint.html">JoinPoint</a>,
+args:Array)</span></div>
+              </div>
+            </div>
+            <div class="description">Proceeds the passed-in <code>joinPoint</code> with the given <code>args</code> and returns<br /> the result of this procession after invoking this advice's <code>execute</code><br /> method passing the given <code>joinPoint</code> and the thrown exception.<p>Note that this advice's <code>execute</code> method is only invoked if the<br /> procession of the <code>joinPoint</code> with the given <code>args</code> resulted in an<br /> exception.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">joinPoint<span class="itemSeparator">:</span></div>
+                    <div>the reached join point</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">args     <span class="itemSeparator">:</span></div>
+                    <div>the arguments to use for the procession of the join point, these are<br /> normally the ones that were originally passed-to the join point</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the result of the procession of the given <code>joinPoint</code> with the<br /> given <code>args</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item">if the procession of the <code>joinPoint</code> with the given <code>args</code><br /> results in an exception or if this advice's <code>execute</code> method threw an<br /> exception</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a class="privatInline" href="org_as2lib_aop_advice_AbstractAdvice.html#executeJoinPoint">AbstractAdvice.executeJoinPoint</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:22:49</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>LocalClientServiceProxyFactory</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_io_conn_local_client_LocalClientServiceProxyFactory">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>LocalClientServiceProxyFactory</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_io_conn_core_client_AbstractClientServiceProxyFactory.html">AbstractClientServiceProxyFactory</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_io_conn_core_client_ClientServiceProxyFactory.html">ClientServiceProxyFactory</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker, Christoph Atteneder</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.io.conn.local.client.LocalClientServiceProxyFactory</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Saturday, 28 May 2005, 12:19:20</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.env.reflect.ProxyFactory;
+import org.as2lib.env.reflect.InterfaceProxyFactory;
+import org.as2lib.env.reflect.InvocationHandler;
+import org.as2lib.io.conn.core.client.ClientServiceProxy;
+import org.as2lib.io.conn.core.client.ClientServiceProxyFactory;
+import org.as2lib.io.conn.core.client.AbstractClientServiceProxyFactory;
+import org.as2lib.io.conn.local.client.SimpleClientServiceProxyFactory;
+import org.as2lib.io.conn.core.event.MethodInvocationCallback;
+
+/**
+ * {@code LocalClientServiceProxyFactory} acts as central provider of client service
+ * proxies.
+ * 
+ * &lt;p&gt;This provision is in the simplest case just the returning of a new client 
+ * service proxy.
+ * &lt;code&gt;
+ *   var clientFactory:LocalClientServiceProxyFactory = new LocalClientServiceProxyFactory();
+ *   var client:ClientServiceProxy = clientFactory.getClientServiceProxy("local.as2lib.org/myService");
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;In a more complex case this means creating a client service proxy for a specific
+ * type, mostly an interface, that is the same type of the 'remote' service.
+ * &lt;code&gt;
+ *   var clientFactory:LocalClientServiceProxyFactory = new LocalClientServiceProxyFactory();
+ *   var client:MyType = clientFactory.getClientServiceProxy("local.as2lib.org/myService", MyType);
+ *   client.myMethod("myArg1", "myArg2");
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;There is sadly one flaw with the last type of usage. That is that the method
+ * cannot response directly due to the asynchronity of the call. To get a response
+ * you therefore have to pass a third argument of type {@code MethodInvocationCallback}.
+ * &lt;code&gt;
+ *   var clientFactory:LocalClientServiceProxyFactory = new LocalClientServiceProxyFactory();
+ *   var client:MyType = clientFactory.getClientServiceProxy("local.as2lib.org/myService", MyType);
+ *   var callback:MethodInvocationCallback = new MethodInvocationCallback();
+ *   client.myMethod("myArg1", "myArg2", callback);
+ *   callback.onReturn = function(returnInfo:MethodInvocationReturnInfo):Void {
+ *       trace("myMethod - return value: " + returnInfo.getReturnValue());
+ *   }
+ *   callback.onError = function(errorInfo:MethodInvocationErrorInfo):Void {
+ *       trace("myMethod - error: " + errorInfo.getException());
+ *   }
+ * &lt;/code&gt;
+ *
+ * @author Simon Wacker
+ * @author Christoph Atteneder
+ * @see org.as2lib.io.conn.core.event.MethodInvocationCallback
+ */
+class org.as2lib.io.conn.local.client.LocalClientServiceProxyFactory extends AbstractClientServiceProxyFactory implements ClientServiceProxyFactory {
+    
+    /** The currently used proxy factory to create proxies for a specific type. */
+    private var typeProxyFactory:ProxyFactory;
+    
+    /** Stores the client service proxy factory used to get client service proxy instances. */
+    private var clientServiceProxyFactory:ClientServiceProxyFactory;
+    
+    /**
+     * Constructs a new {@code LocalClientServiceProxyFactory} instance.
+     */
+    public function LocalClientServiceProxyFactory(Void) {
+    }
+    
+    /**
+     * Returns the currently used type proxy factory that is used to create proxies for
+     * a specific type.
+     * 
+     * &lt;p&gt;That is either the proxy factory set via {@link #setTypeProxyFactory}
+     * or the default one, which is an instance of type {@link InterfaceProxyFactory}.
+     * 
+     * &lt;p&gt;The default {@link InterfaceProxyFactory} can only be used to create proxies
+     * of interfaces.
+     *
+     * @return the currently used type proxy factory
+     */
+    public function getTypeProxyFactory(Void):ProxyFactory {
+        if (!typeProxyFactory) typeProxyFactory = new InterfaceProxyFactory();
+        return typeProxyFactory;
+    }
+    
+    /**
+     * Sets the new type proxy factory that is used to create proxies for a specific type.
+     * 
+     * &lt;p&gt;If you set a type proxy factory of value {@code null}, {@link #getTypeProxyFactory}
+     * will return the default factory.
+     *
+     * @param proxyFactory the new type proxy factory
+     */
+    public function setTypeProxyFactory(typeServiceProxyFactory:ProxyFactory):Void {
+        this.typeProxyFactory = typeServiceProxyFactory;
+    }
+    
+    /**
+     * Returns the client service proxy factory used to create client service proxy
+     * instances.
+     * 
+     * &lt;p&gt;The returned factory is either the one set via {@link #setClientServiceProxyFactory}
+     * or the default one which is an instance of {@link SimpleClientServiceProxyFactory}.
+     *
+     * @return the currently used client service proxy factory
+     */
+    public function getClientServiceProxyFactory(Void):ClientServiceProxyFactory {
+        if (!clientServiceProxyFactory) clientServiceProxyFactory = new SimpleClientServiceProxyFactory();
+        return clientServiceProxyFactory;
+    }
+    
+    /**
+     * Sets a new client service proxy factory used to get client service
+     * proxy instances.
+     *
+     * &lt;p&gt;If you set a new factory of value null or undefined {@link #getClientServiceProxyFactory}
+     * will return the default factory.
+     *
+     * @param clientServiceProxyFactory the new client service proxy factory
+     */
+    public function setClientServiceProxyFactory(clientServiceProxyFactory:ClientServiceProxyFactory):Void {
+        this.clientServiceProxyFactory = clientServiceProxyFactory;
+    }
+    
+    /**
+     * Returns a client service proxy for the service specified by the passed-in
+     * {@code url}.
+     * 
+     * &lt;p&gt;You can use the returned proxy to invoke methods on the 'remote' service and
+     * to handle responses.
+     * 
+     * @param url the url of the 'remote' service
+     * @return a client service proxy to invoke methods on the 'remote' service
+     */
+    public function getClientServiceProxyByUrl(url:String):ClientServiceProxy {
+        return getClientServiceProxyFactory().getClientServiceProxy(url);
+    }
+    
+    /**
+     * Returns a client service proxy that can be typed to the passed-in {@code type}
+     * (class or interface).
+     * 
+     * &lt;p&gt;The type is therefore normally the type of the 'remote' service you wanna
+     * invoke methods on.
+     * 
+     * &lt;p&gt;If {@code type} is {@code null}, an instance of type {@link ClientServiceProxy}
+     * will be returned. That means this method will then do the same as the
+     * {@link #getClientServiceProxyByUrl} method.
+     *
+     * &lt;p&gt;Note that with the default configuration only interfaces can be used as
+     * {@code type}. You can edit this behavior through the {@link #setTypeProxyFactory}.
+     * method.
+     * 
+     * @param url the url of the 'remote' service
+     * @param type the type of the 'remote' service
+     * @return a client service proxy that can be casted to the passed-in {@code type}
+     */
+    public function getClientServiceProxyByUrlAndType(url:String, type:Function) {
+        var serviceProxy:ClientServiceProxy = getClientServiceProxyByUrl(url);
+        if (!type) return serviceProxy;
+        var handler:InvocationHandler = getBlankInvocationHandler();
+        handler.invoke = function(proxy, methodName:String, args:Array) {
+            if (args[args.length-1] instanceof MethodInvocationCallback) {
+                var callback:MethodInvocationCallback = MethodInvocationCallback(args.pop());
+                return serviceProxy.invokeByNameAndArgumentsAndCallback(methodName, args, callback);
+            } else {
+                return serviceProxy.invokeByNameAndArguments(methodName, args);
+            }
+        };
+        return getTypeProxyFactory().createProxy(type, handler);
+    }
+    
+    /**
+     * Returns a blank invocation handler. This is a handler with no methods implemented.
+     * 
+     * @return a blank invocation handler
+     */
+    private function getBlankInvocationHandler(Void):InvocationHandler {
+        var result = new Object();
+        result.__proto__ = InvocationHandler["prototype"];
+        result.__constructor__ = InvocationHandler;
+        return result;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>LocalClientServiceProxyFactory</code> acts as central provider of client service<br /> proxies.</div><p>This provision is in the simplest case just the returning of a new client <br /> service proxy.<pre><span class="codeKeyword">var</span> clientFactory:LocalClientServiceProxyFactory = <span class="codeKeyword">new</span> LocalClientServiceProxyFactory();
+<span class="codeKeyword">var</span> client:ClientServiceProxy = clientFactory.getClientServiceProxy(<span class="codeString">"local.as2lib.org/myService"</span>);</pre><p>In a more complex case this means creating a client service proxy for a specific<br /> type, mostly an interface, that is the same type of the 'remote' service.<pre><span class="codeKeyword">var</span> clientFactory:LocalClientServiceProxyFactory = <span class="codeKeyword">new</span> LocalClientServiceProxyFactory();
+<span class="codeKeyword">var</span> client:MyType = clientFactory.getClientServiceProxy(<span class="codeString">"local.as2lib.org/myService"</span>, MyType);
+client.myMethod(<span class="codeString">"myArg1"</span>, <span class="codeString">"myArg2"</span>);</pre><p>There is sadly one flaw with the last type of usage. That is that the method<br /> cannot response directly due to the asynchronity of the call. To get a response<br /> you therefore have to pass a third argument of type <code>MethodInvocationCallback</code>.<pre><span class="codeKeyword">var</span> clientFactory:LocalClientServiceProxyFactory = <span class="codeKeyword">new</span> LocalClientServiceProxyFactory();
+<span class="codeKeyword">var</span> client:MyType = clientFactory.getClientServiceProxy(<span class="codeString">"local.as2lib.org/myService"</span>, MyType);
+<span class="codeKeyword">var</span> callback:MethodInvocationCallback = <span class="codeKeyword">new</span> MethodInvocationCallback();
+client.myMethod(<span class="codeString">"myArg1"</span>, <span class="codeString">"myArg2"</span>, callback);
+callback.onReturn = <span class="codeKeyword">function</span>(returnInfo:MethodInvocationReturnInfo):<span class="codeIdentifier">Void</span> {
+    <span class="codeIdentifier">trace</span>(<span class="codeString">"myMethod - return value: "</span> + returnInfo.getReturnValue());
+}
+callback.onError = <span class="codeKeyword">function</span>(errorInfo:MethodInvocationErrorInfo):<span class="codeIdentifier">Void</span> {
+    <span class="codeIdentifier">trace</span>(<span class="codeString">"myMethod - error: "</span> + errorInfo.getException());
+}</pre><div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_io_conn_core_event_MethodInvocationCallback.html">org.as2lib.io.conn.core.event.MethodInvocationCallback</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#LocalClientServiceProxyFactory">LocalClientServiceProxyFactory</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#typeProxyFactory">typeProxyFactory</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#clientServiceProxyFactory">clientServiceProxyFactory</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#getTypeProxyFactory">getTypeProxyFactory</a>
+                </li>
+                <li>
+                  <a href="#setTypeProxyFactory">setTypeProxyFactory</a>
+                </li>
+                <li>
+                  <a href="#getClientServiceProxyFactory">getClientServiceProxyFactory</a>
+                </li>
+                <li>
+                  <a href="#setClientServiceProxyFactory">setClientServiceProxyFactory</a>
+                </li>
+                <li>
+                  <a href="#getClientServiceProxyByUrl">getClientServiceProxyByUrl</a>
+                </li>
+                <li>
+                  <a href="#getClientServiceProxyByUrlAndType">getClientServiceProxyByUrlAndType</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#getBlankInvocationHandler">getBlankInvocationHandler</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_io_conn_core_client_AbstractClientServiceProxyFactory.html">AbstractClientServiceProxyFactory</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_io_conn_core_client_AbstractClientServiceProxyFactory.html#getClientServiceProxy">getClientServiceProxy</a>, <a href="org_as2lib_io_conn_core_client_AbstractClientServiceProxyFactory.html#getClientServiceProxyByUrlAndType">getClientServiceProxyByUrlAndType</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="LocalClientServiceProxyFactory">LocalClientServiceProxyFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>LocalClientServiceProxyFactory</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>LocalClientServiceProxyFactory</code> instance.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="clientServiceProxyFactory">clientServiceProxyFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>clientServiceProxyFactory</b>:<a href="org_as2lib_io_conn_core_client_ClientServiceProxyFactory.html">ClientServiceProxyFactory</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Stores the client service proxy factory used to get client service proxy instances.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="typeProxyFactory">typeProxyFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>typeProxyFactory</b>:<a href="org_as2lib_env_reflect_ProxyFactory.html">ProxyFactory</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The currently used proxy factory to create proxies for a specific type.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getBlankInvocationHandler">getBlankInvocationHandler</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getBlankInvocationHandler</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_reflect_InvocationHandler.html">InvocationHandler</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns a blank invocation handler. This is a handler with no methods implemented.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a blank invocation handler</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getClientServiceProxyByUrl">getClientServiceProxyByUrl</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getClientServiceProxyByUrl</b> (
+</div>
+                <div><span class="code">url:String) : <a href="org_as2lib_io_conn_core_client_ClientServiceProxy.html">ClientServiceProxy</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns a client service proxy for the service specified by the passed-in<br /> <code>url</code>.<p>You can use the returned proxy to invoke methods on the 'remote' service and<br /> to handle responses.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">url<span class="itemSeparator">:</span></div>
+                    <div>the url of the 'remote' service</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a client service proxy to invoke methods on the 'remote' service</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_conn_core_client_ClientServiceProxyFactory.html#getClientServiceProxyByUrl">org.as2lib.io.conn.core.client.ClientServiceProxyFactory.getClientServiceProxyByUrl</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getClientServiceProxyByUrlAndType">getClientServiceProxyByUrlAndType</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getClientServiceProxyByUrlAndType</b> (
+
+</div>
+                <div><span class="code">url:String,
+type:Function)</span></div>
+              </div>
+            </div>
+            <div class="description">Returns a client service proxy that can be typed to the passed-in <code>type</code><br /> (class or interface).<p>The type is therefore normally the type of the 'remote' service you wanna<br /> invoke methods on.<p>If <code>type</code> is <code>null</code>, an instance of type <a href="org_as2lib_io_conn_core_client_ClientServiceProxy.html">org.as2lib.io.conn.core.client.ClientServiceProxy</a><br /> will be returned. That means this method will then do the same as the<br /> <a href="org_as2lib_io_conn_local_client_LocalClientServiceProxyFactory.html#getClientServiceProxyByUrl">getClientServiceProxyByUrl</a> method.<p>Note that with the default configuration only interfaces can be used as<br /> <code>type</code>. You can edit this behavior through the <a href="org_as2lib_io_conn_local_client_LocalClientServiceProxyFactory.html#setTypeProxyFactory">setTypeProxyFactory</a>.<br /> method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">url <span class="itemSeparator">:</span></div>
+                    <div>the url of the 'remote' service</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">type<span class="itemSeparator">:</span></div>
+                    <div>the type of the 'remote' service</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a client service proxy that can be casted to the passed-in <code>type</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><div class="inheritDoc"><a href="org_as2lib_io_conn_core_client_ClientServiceProxy.html">org.as2lib.io.conn.core.client.ClientServiceProxy</a></div><a class="followInheritDoc" href="org_as2lib_io_conn_core_client_AbstractClientServiceProxyFactory.html#getClientServiceProxyByUrlAndType">#</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_io_conn_core_client_AbstractClientServiceProxyFactory.html#getClientServiceProxyByUrlAndType">org.as2lib.io.conn.core.client.AbstractClientServiceProxyFactory.getClientServiceProxyByUrlAndType</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_conn_core_client_ClientServiceProxyFactory.html#getClientServiceProxyByUrlAndType">org.as2lib.io.conn.core.client.ClientServiceProxyFactory.getClientServiceProxyByUrlAndType</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getClientServiceProxyFactory">getClientServiceProxyFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getClientServiceProxyFactory</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_io_conn_core_client_ClientServiceProxyFactory.html">ClientServiceProxyFactory</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the client service proxy factory used to create client service proxy<br /> instances.<p>The returned factory is either the one set via <a href="org_as2lib_io_conn_local_client_LocalClientServiceProxyFactory.html#setClientServiceProxyFactory">setClientServiceProxyFactory</a><br /> or the default one which is an instance of <a href="org_as2lib_io_conn_local_client_SimpleClientServiceProxyFactory.html">SimpleClientServiceProxyFactory</a>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the currently used client service proxy factory</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getTypeProxyFactory">getTypeProxyFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTypeProxyFactory</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_reflect_ProxyFactory.html">ProxyFactory</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the currently used type proxy factory that is used to create proxies for<br /> a specific type.<p>That is either the proxy factory set via <a href="org_as2lib_io_conn_local_client_LocalClientServiceProxyFactory.html#setTypeProxyFactory">setTypeProxyFactory</a><br /> or the default one, which is an instance of type <a href="org_as2lib_env_reflect_InterfaceProxyFactory.html">org.as2lib.env.reflect.InterfaceProxyFactory</a>.<p>The default <a href="org_as2lib_env_reflect_InterfaceProxyFactory.html">org.as2lib.env.reflect.InterfaceProxyFactory</a> can only be used to create proxies<br /> of interfaces.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the currently used type proxy factory</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setClientServiceProxyFactory">setClientServiceProxyFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setClientServiceProxyFactory</b> (
+</div>
+                <div><span class="code">clientServiceProxyFactory:<a href="org_as2lib_io_conn_core_client_ClientServiceProxyFactory.html">ClientServiceProxyFactory</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets a new client service proxy factory used to get client service<br /> proxy instances.<p>If you set a new factory of value null or undefined <a href="org_as2lib_io_conn_local_client_LocalClientServiceProxyFactory.html#getClientServiceProxyFactory">getClientServiceProxyFactory</a><br /> will return the default factory.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">clientServiceProxyFactory<span class="itemSeparator">:</span></div>
+                    <div>the new client service proxy factory</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setTypeProxyFactory">setTypeProxyFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setTypeProxyFactory</b> (
+</div>
+                <div><span class="code">typeServiceProxyFactory:<a href="org_as2lib_env_reflect_ProxyFactory.html">ProxyFactory</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the new type proxy factory that is used to create proxies for a specific type.<p>If you set a type proxy factory of value <code>null</code>, <a href="org_as2lib_io_conn_local_client_LocalClientServiceProxyFactory.html#getTypeProxyFactory">getTypeProxyFactory</a><br /> will return the default factory.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">proxyFactory<span class="itemSeparator">:</span></div>
+                    <div>the new type proxy factory</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:27:17</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

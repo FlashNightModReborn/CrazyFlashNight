@@ -1,0 +1,778 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>TextFileLoader</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_io_file_TextFileLoader">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>TextFileLoader</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_io_file_AbstractFileLoader.html">AbstractFileLoader</a> &lt; <a href="org_as2lib_app_exec_AbstractTimeConsumer.html">AbstractTimeConsumer</a> &lt; <a href="org_as2lib_env_event_EventSupport.html">EventSupport</a> &lt; <a href="org_as2lib_env_log_LogSupport.html">LogSupport</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_io_file_FileLoader.html">FileLoader</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.1</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.io.file.TextFileLoader</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Thursday, 13 October 2005, 17:04:58</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.io.file.TextFileFactory;
+import org.as2lib.io.file.TextFile;
+import org.as2lib.io.file.File;
+import org.as2lib.data.type.Byte;
+import org.as2lib.data.holder.Iterator;
+import org.as2lib.data.holder.Map;
+import org.as2lib.env.except.IllegalArgumentException;
+import org.as2lib.io.file.FileLoader;
+import org.as2lib.io.file.AbstractFileLoader;
+import org.as2lib.io.file.SimpleTextFileFactory;
+import org.as2lib.io.file.FileNotLoadedException;
+import org.as2lib.app.exec.Executable;
+
+/**
+ * {@code TextFileLoader} is a implementation of {@link FileLoader} for text resources.
+ * 
+ * &lt;p&gt;Any ASCII/Unicode readable resource is ment as "Text resource". {@code TextFileLoader}
+ * is a implementation for those resources and generates a {@code TextFile}
+ * implementation with the loaded content.
+ * 
+ * &lt;p&gt;{@link TextFileFactory} allows to generate different {@code TextFile}
+ * implementations for the loaded content.
+ * 
+ * &lt;p&gt;{@code TextFileLoader} represents the time consuming part of accessing files
+ * ({@code TextFile} is the handleable part} and therefore contains a event system
+ * to add listeners to listen to the concrete events. It is possible to add
+ * listeners using {@code addListener}.
+ * 
+ * &lt;p&gt;Example listener:
+ * &lt;code&gt;
+ *   import org.as2lib.io.file.AbstractFileLoader;
+ *   import org.as2lib.io.file.LoadProgressListener;
+ *   import org.as2lib.io.file.LoadStartListener;
+ *   import org.as2lib.io.file.LoadCompleteListener;
+ *   import org.as2lib.io.file.LoadErrorListener;
+ *   import org.as2lib.io.file.FileLoader;
+ *   import org.as2lib.io.file.TextFile;
+ *   
+ *   class MyFileListener implements 
+ *        LoadProgressListener, LoadStartListener,
+ *        LoadCompleteListener, LoadErrorListener {
+ *        
+ *     public function onLoadComplete(fileLoader:FileLoader):Void {
+ *       var file:TextFile = TextFile(fileLoader.getFile());
+ *       if (file != null) {
+ *         // Proper file available
+ *       } else {
+ *         // Wrong event handled
+ *       }
+ *     }
+ *     
+ *     public function onLoadError(fileLoader:FileLoader, errorCode:String, error):Void {
+ *       if (errorCode == AbstractFileLoader.FILE_NOT_FOUND) {
+ *         var notExistantUrl = error;
+ *         // Use that url
+ *       }
+ *     }
+ *     
+ *     public function onLoadStart(fileLoader:FileLoader) {
+ *       // show that this file just gets loaded
+ *     }
+ *     
+ *     public function onLoadProgress(fileLoader:FileLoader) {
+ *       // update the percentage display with resourceLoader.getPercentage();
+ *     }
+ *   }
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;Example of the usage:
+ * &lt;code&gt;
+ *   import org.as2lib.io.file.TextFileLoader;
+ *   
+ *   var fileLoader:TextFileLoader = new TextFileLoader();
+ *   fileLoader.addListener(new MyFileListener());
+ *   fileLoader.load("test.txt");
+ * &lt;/code&gt;
+ * 
+ * @author Martin Heidegger
+ * @version 1.1
+ */
+class org.as2lib.io.file.TextFileLoader extends AbstractFileLoader implements FileLoader {
+    
+    /** {@code LoadVars} instance for loading the content. */
+    private var helper:LoadVars;
+    
+    /** Result of the loaded {@code uri}. */
+    private var textFile:TextFile;
+    
+    /** Factory to create the concrete {@code TextFile} instances. */
+    private var textFileFactory:TextFileFactory;
+    
+    /**
+     * Constructs a new {@code TextFileLoader}.
+     * 
+     * @param textFileFactory (optional) {@code TextFileFactory to create the
+     *        {@code TextFile} implementations, {@link SimpleTextFileFactory}
+     *        gets used if no custom {@code TextFileFactory} gets passed-in
+     */
+    public function TextFileLoader(textFileFactory:TextFileFactory) {
+        if (!textFileFactory) {
+            textFileFactory = new SimpleTextFileFactory();
+        }
+        this.textFileFactory = textFileFactory;
+    }
+    
+    /**
+     * Loads a certain text file by a http request.
+     * 
+     * &lt;p&gt;It sends http request by using the passed-in {@code uri}, {@code method}
+     * and {@code parameters}. The responding file will be passed to the set
+     * {@code TextFileFactory}.
+     * 
+     * &lt;p&gt;If you only need to listen if the {@code TextFile} finished loading you can
+     * apply a {@code callBack} that gets called if the {@code TextFile} is loaded.
+     * 
+     * @param uri location of the resource to load
+     * @param parameters (optional) parameters for loading the resource
+     * @param method (optional) POST/GET as method for submitting the parameters,
+     *        default method used if {@code method} was not passed-in is POST.
+     * @param callBack (optional) {@link Executable} to be executed after the
+     *        the resource was loaded.
+     */
+    public function load(uri:String, method:String, parameters:Map, callBack:Executable):Void {
+        super.load(uri, method, parameters, callBack);
+        initHelper();
+        if (uri == null) {
+            throw new IllegalArgumentException("Url has to be set for starting the process.", this, arguments);
+        } else {
+            if (parameters) {
+                if (method == "POST") {
+                    var keys:Iterator = parameters.keyIterator();
+                    while (keys.hasNext()) {
+                        var key = keys.next();
+                        helper[key.toString()] = parameters.get(key);
+                    }
+                    helper["sendAndLoad"](uri, this, method);
+                } else {
+                    var result:String = uri;
+                    if (uri.indexOf("?") == -1) {
+                        result += "?";
+                    }
+                    var keys:Iterator = parameters.keyIterator();
+                    while (keys.hasNext()) {
+                        var key = keys.next();
+                        uri += _global.encode(key.toString()) + "=" + _global.encode(parameters.get(key).toString());
+                    }
+                    helper.load(uri);
+                }
+            } else {
+                helper.load(uri);
+            }
+            sendStartEvent();
+        }
+    }
+    
+    /**
+     * Returns the loaded {@code File}.
+     * 
+     * @return {@code File} that has been loaded
+     * @throws FileNotLoadedException if the resource has not been loaded yet
+     */
+    public function getFile(Void):File {
+        return getFile();
+    }
+    
+    /**
+     * Returns the loaded {@code TextFile}.
+     * 
+     * @return {@code TextFile} that has been loaded
+     * @throws FileNotLoadedException if the resource has not been loaded yet
+     */
+    public function getTextFile(Void):TextFile {
+        if (textFile == null) {
+            throw new FileNotLoadedException("No File has been loaded.", this, arguments);
+        }
+        return textFile;
+    }
+    
+    /**
+     * Prepares the helper property {@link helper} for the loading process.
+     */
+    private function initHelper(Void):Void {
+        var owner:TextFileLoader = this;
+        helper = new LoadVars();
+        // Watching _bytesLoaded allows realtime events
+        helper.watch(
+            "_bytesLoaded",
+            function(prop, oldValue, newValue) {
+                // Prevent useless events.
+                if(newValue != oldValue &amp;&amp; newValue &gt; 0) {
+                    owner["handleUpdateEvent"]();
+                }
+                return newValue;
+            }
+        );
+        
+        // Using LoadVars Template to get the onData Event.
+        helper.onData = function(data) {
+            owner["handleDataEvent"](data);
+        };
+    }
+    
+    /**
+     * Returns the total amount of bytes that has been loaded.
+     * 
+     * &lt;p&gt;Returns {@code null} if its not possible to get the loaded bytes.
+     * 
+     * @return amount of bytes that has been loaded
+     */
+    public function getBytesLoaded(Void):Byte {
+        var result:Number = helper.getBytesLoaded();
+        if (result &gt;= 0) {
+            return new Byte(result);
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the total amount of bytes that will approximately be loaded.
+     * 
+     * &lt;p&gt;Returns {@code null} if its not possible to get the total amount of bytes.
+     * 
+     * @return amount of bytes to load
+     */
+    public function getBytesTotal(Void):Byte {
+        var total:Number = helper.getBytesTotal();
+        if (total &gt;= 0) {
+            return new Byte(total);
+        }
+        return null;
+    }
+    
+    /**
+     * Handles a update event from the helper.
+     * 
+     * @see #initHelper
+     */
+    private function handleUpdateEvent(Void):Void {
+        sendProgressEvent();
+    }
+    
+    /**
+     * Handles a data event from the helper.
+     * 
+     * @see #initHelper
+     */
+    private function handleDataEvent(data:String):Void {
+        finished = true;
+        started = false;
+        endTime = getTimer();
+        helper.onLoad = function() {};
+        helper.unwatch("_bytesLoaded");
+        // Check if the file was not available.
+        if(typeof data == "undefined") {
+            // Dispatching the event for the missing uri.
+            sendErrorEvent(FILE_NOT_FOUND_ERROR, uri);
+        } else {
+            // Correct replacing of special line breaks that don't match the "\n" (Windows &amp; Mac Line Breaks).
+            textFile = textFileFactory.createTextFile(data, getBytesTotal(), uri);
+            // Dispatching the event for the loaded file.
+            sendCompleteEvent();
+        }
+    }
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>TextFileLoader</code> is a implementation of <a href="org_as2lib_io_file_FileLoader.html">FileLoader</a> for text resources.</div><p>Any ASCII/Unicode readable resource is ment as "Text resource". <code>TextFileLoader</code><br /> is a implementation for those resources and generates a <code>TextFile</code><br /> implementation with the loaded content.<p><a href="org_as2lib_io_file_TextFileFactory.html">TextFileFactory</a> allows to generate different <code>TextFile</code><br /> implementations for the loaded content.<p><code>TextFileLoader</code> represents the time consuming part of accessing files<br /> (<code>TextFile</code> is the handleable part} and therefore contains a event system<br /> to add listeners to listen to the concrete events. It is possible to add<br /> listeners using <code>addListener</code>.<p>Example listener:<pre><span class="codeKeyword">import</span> org.as2lib.io.file.AbstractFileLoader;
+<span class="codeKeyword">import</span> org.as2lib.io.file.LoadProgressListener;
+<span class="codeKeyword">import</span> org.as2lib.io.file.LoadStartListener;
+<span class="codeKeyword">import</span> org.as2lib.io.file.LoadCompleteListener;
+<span class="codeKeyword">import</span> org.as2lib.io.file.LoadErrorListener;
+<span class="codeKeyword">import</span> org.as2lib.io.file.FileLoader;
+<span class="codeKeyword">import</span> org.as2lib.io.file.TextFile;
+
+<span class="codeKeyword">class</span> MyFileListener <span class="codeKeyword">implements</span> 
+     LoadProgressListener, LoadStartListener,
+     LoadCompleteListener, LoadErrorListener {
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> <span class="codeIdentifier">onLoadComplete</span>(fileLoader:FileLoader):<span class="codeIdentifier">Void</span> {
+    <span class="codeKeyword">var</span> file:TextFile = TextFile(fileLoader.getFile());
+    <span class="codeKeyword">if</span> (file != <span class="codeIdentifier">null</span>) {
+      <span class="codeComment">// Proper file available</span>
+    } <span class="codeKeyword">else</span> {
+      <span class="codeComment">// Wrong event handled</span>
+    }
+  }
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> <span class="codeIdentifier">onLoadError</span>(fileLoader:FileLoader, errorCode:<span class="codeIdentifier">String</span>, error):<span class="codeIdentifier">Void</span> {
+    <span class="codeKeyword">if</span> (errorCode == AbstractFileLoader.FILE_NOT_FOUND) {
+      <span class="codeKeyword">var</span> notExistantUrl = error;
+      <span class="codeComment">// Use that url</span>
+    }
+  }
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> <span class="codeIdentifier">onLoadStart</span>(fileLoader:FileLoader) {
+    <span class="codeComment">// show that this file just gets loaded</span>
+  }
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> <span class="codeIdentifier">onLoadProgress</span>(fileLoader:FileLoader) {
+    <span class="codeComment">// update the percentage display with resourceLoader.getPercentage();</span>
+  }
+}</pre><p>Example of the usage:<pre><span class="codeKeyword">import</span> org.as2lib.io.file.TextFileLoader;
+
+<span class="codeKeyword">var</span> fileLoader:TextFileLoader = <span class="codeKeyword">new</span> TextFileLoader();
+fileLoader.<span class="codeIdentifier">addListener</span>(<span class="codeKeyword">new</span> MyFileListener());
+fileLoader.<span class="codeIdentifier">load</span>(<span class="codeString">"test.txt"</span>);</pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#TextFileLoader">TextFileLoader</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class properties inherited from <span class="superclass"><a href="org_as2lib_io_file_AbstractFileLoader.html">AbstractFileLoader</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_io_file_AbstractFileLoader.html#FILE_NOT_FOUND_ERROR">FILE_NOT_FOUND_ERROR</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#helper">helper</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#textFile">textFile</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#textFileFactory">textFileFactory</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_io_file_AbstractFileLoader.html">AbstractFileLoader</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_io_file_AbstractFileLoader.html#callBack" class="privatInline">callBack</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#dC" class="privatInline">dC</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#method" class="privatInline">method</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#parameters" class="privatInline">parameters</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#uri" class="privatInline">uri</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_app_exec_AbstractTimeConsumer.html">AbstractTimeConsumer</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#duration" class="privatInline">duration</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#endTime" class="privatInline">endTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#finished" class="privatInline">finished</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#restTime" class="privatInline">restTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#started" class="privatInline">started</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#startTime" class="privatInline">startTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#totalTime" class="privatInline">totalTime</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_event_EventSupport.html">EventSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_event_EventSupport.html#distributorControl" class="privatInline">distributorControl</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#logger">logger</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class methods inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#getLoggerByClass">getLoggerByClass</a>, <a href="org_as2lib_env_log_LogSupport.html#getLoggerByInstance">getLoggerByInstance</a>, <a href="org_as2lib_env_log_LogSupport.html#getLoggerByScope">getLoggerByScope</a>, <a href="org_as2lib_env_log_LogSupport.html#storeLoggerInPrototype" class="privatInline">storeLoggerInPrototype</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#load">load</a>
+                </li>
+                <li>
+                  <a href="#getFile">getFile</a>
+                </li>
+                <li>
+                  <a href="#getTextFile">getTextFile</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#initHelper">initHelper</a>
+                </li>
+                <li>
+                  <a href="#getBytesLoaded">getBytesLoaded</a>
+                </li>
+                <li>
+                  <a href="#getBytesTotal">getBytesTotal</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#handleUpdateEvent">handleUpdateEvent</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#handleDataEvent">handleDataEvent</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_io_file_AbstractFileLoader.html">AbstractFileLoader</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_io_file_AbstractFileLoader.html#getBytesLoaded">getBytesLoaded</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#getBytesTotal">getBytesTotal</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#getFile">getFile</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#getParameters">getParameters</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#getParameterSubmitMethod">getParameterSubmitMethod</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#getPercentage">getPercentage</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#getTransferRate">getTransferRate</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#getUri">getUri</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#load">load</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#sendCompleteEvent" class="privatInline">sendCompleteEvent</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#sendErrorEvent" class="privatInline">sendErrorEvent</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#sendProgressEvent" class="privatInline">sendProgressEvent</a>, <a href="org_as2lib_io_file_AbstractFileLoader.html#sendStartEvent" class="privatInline">sendStartEvent</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_app_exec_AbstractTimeConsumer.html">AbstractTimeConsumer</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#getDuration">getDuration</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#getEstimatedRestTime">getEstimatedRestTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#getEstimatedTotalTime">getEstimatedTotalTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#getPercentage">getPercentage</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#hasFinished">hasFinished</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#hasStarted">hasStarted</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_env_event_EventSupport.html">EventSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_event_EventSupport.html#acceptListenerType" class="privatInline">acceptListenerType</a>, <a href="org_as2lib_env_event_EventSupport.html#addAllListeners">addAllListeners</a>, <a href="org_as2lib_env_event_EventSupport.html#addListener">addListener</a>, <a href="org_as2lib_env_event_EventSupport.html#getAllListeners">getAllListeners</a>, <a href="org_as2lib_env_event_EventSupport.html#hasListener">hasListener</a>, <a href="org_as2lib_env_event_EventSupport.html#removeAllListeners">removeAllListeners</a>, <a href="org_as2lib_env_event_EventSupport.html#removeListener">removeListener</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#getLogger">getLogger</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="TextFileLoader">TextFileLoader</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>TextFileLoader</b> (
+</div>
+                <div><span class="code">textFileFactory:<a href="org_as2lib_io_file_TextFileFactory.html">TextFileFactory</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>TextFileLoader</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">textFileFactory<span class="itemSeparator">:</span></div>
+                    <div>(optional) <code>TextFileFactory to create the<br />	 *        <code>TextFile</code> implementations, {@link SimpleTextFileFactory</code><br />        gets used if no custom <code>TextFileFactory</code> gets passed-in</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="helper">helper</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>helper</b>:LoadVars
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description"><code>LoadVars</code> instance for loading the content.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="textFile">textFile</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>textFile</b>:<a href="org_as2lib_io_file_TextFile.html">TextFile</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Result of the loaded <code>uri</code>.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="textFileFactory">textFileFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>textFileFactory</b>:<a href="org_as2lib_io_file_TextFileFactory.html">TextFileFactory</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Factory to create the concrete <code>TextFile</code> instances.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getBytesLoaded">getBytesLoaded</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getBytesLoaded</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Byte.html">Byte</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the total amount of bytes that has been loaded.<p>Returns <code>null</code> if its not possible to get the loaded bytes.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">amount of bytes that has been loaded</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_io_file_AbstractFileLoader.html#getBytesLoaded">AbstractFileLoader.getBytesLoaded</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getBytesLoaded">FileLoader.getBytesLoaded</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getBytesTotal">getBytesTotal</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getBytesTotal</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Byte.html">Byte</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the total amount of bytes that will approximately be loaded.<p>Returns <code>null</code> if its not possible to get the total amount of bytes.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">amount of bytes to load</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_io_file_AbstractFileLoader.html#getBytesTotal">AbstractFileLoader.getBytesTotal</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getBytesTotal">FileLoader.getBytesTotal</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getFile">getFile</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getFile</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_io_file_File.html">File</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the loaded <code>File</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>File</code> that has been loaded</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_io_file_FileNotLoadedException.html">FileNotLoadedException</a> if the resource has not been loaded yet</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_io_file_AbstractFileLoader.html#getFile">AbstractFileLoader.getFile</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getFile">FileLoader.getFile</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getTextFile">getTextFile</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTextFile</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_io_file_TextFile.html">TextFile</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the loaded <code>TextFile</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>TextFile</code> that has been loaded</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_io_file_FileNotLoadedException.html">FileNotLoadedException</a> if the resource has not been loaded yet</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="handleDataEvent">handleDataEvent</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>handleDataEvent</b> (
+</div>
+                <div><span class="code">data:String) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Handles a data event from the helper.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a class="privatInline" href="org_as2lib_io_file_TextFileLoader.html#initHelper">initHelper</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="handleUpdateEvent">handleUpdateEvent</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>handleUpdateEvent</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Handles a update event from the helper.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a class="privatInline" href="org_as2lib_io_file_TextFileLoader.html#initHelper">initHelper</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="initHelper">initHelper</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>initHelper</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Prepares the helper property helper for the loading process.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="load">load</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>load</b> (
+
+
+
+</div>
+                <div><span class="code">uri:String,
+method:String,
+parameters:<a href="org_as2lib_data_holder_Map.html">Map</a>,
+callBack:<a href="org_as2lib_app_exec_Executable.html">Executable</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Loads a certain text file by a http request.<p>It sends http request by using the passed-in <code>uri</code>, <code>method</code><br /> and <code>parameters</code>. The responding file will be passed to the set<br /> <code>TextFileFactory</code>.<p>If you only need to listen if the <code>TextFile</code> finished loading you can<br /> apply a <code>callBack</code> that gets called if the <code>TextFile</code> is loaded.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">uri       <span class="itemSeparator">:</span></div>
+                    <div>location of the resource to load</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">parameters<span class="itemSeparator">:</span></div>
+                    <div>(optional) parameters for loading the resource</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">method    <span class="itemSeparator">:</span></div>
+                    <div>(optional) POST/GET as method for submitting the parameters,<br />        default method used if <code>method</code> was not passed-in is POST.</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">callBack  <span class="itemSeparator">:</span></div>
+                    <div>(optional) <a href="org_as2lib_app_exec_Executable.html">org.as2lib.app.exec.Executable</a> to be executed after the<br />        the resource was loaded.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_io_file_AbstractFileLoader.html#load">AbstractFileLoader.load</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:27:49</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

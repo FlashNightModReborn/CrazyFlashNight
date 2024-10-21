@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.macromedia.com/2003/mxml" width="500" height="300">
+
+<!-- include the dumpUtil -->
+<mx:Script source="dumpUtil.as"></mx:Script>
+
+<mx:Script>
+	<![CDATA[
+		function testDump1() {
+			// dump an array
+			var a = new Array();
+			a.push("Works with Strings");
+			a.push(["and", "nested", "Arrays"]);
+			
+			var o = {t1: "and", t2: "even", t3: "objects"}
+			a.push(o);
+			
+			dump(a);
+		}
+		
+	]]>
+</mx:Script>
+
+<mx:Panel width="400" height="200" title="Dump test" widthFlex="1">
+	<mx:VBox>
+		<mx:Label text="Insert text and press ok, then check the Central Panel." />
+		<mx:HBox>
+			<mx:TextInput id="txt" width="200"/>
+			<mx:Button click="dump(txt.text);" width="100" label="Button" />
+		</mx:HBox>
+		
+		<mx:Label text="Check a complex type, too." />
+		<mx:HBox>
+			<mx:Button width="100" click="testDump1();" label="Array dump" />
+		</mx:HBox>
+	</mx:VBox>
+</mx:Panel>
+</mx:Application>

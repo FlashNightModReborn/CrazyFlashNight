@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <?eclipse version="3.1"?>
+<plugin
+        id="com.potapenko.flashout"
+        name="Flashout Plug-in"
+        version="0.2.1.6"
+        provider-name="POTAPENKO"
+        class="com.potapenko.flashout.FlashoutPlugin">
+
+    <runtime>
+        <library name="flashout.jar">
+            <export name="*"/>
+        </library>
+        <library name="/lib/jdom.jar">
+            <export name="*"/>
+        </library>
+    </runtime>
+
+    <requires>
+        <import plugin="org.eclipse.ui"/>
+        <import plugin="org.eclipse.core.runtime"/>
+        <import plugin="org.eclipse.jface.text"/>
+        <import plugin="org.eclipse.core.resources"/>
+        <import plugin="org.eclipse.ui.editors"/>
+        <import plugin="org.eclipse.ui.ide"/>
+        <import plugin="org.eclipse.ui.workbench.texteditor"/>
+        <import plugin="org.asdt.editor"/>
+    </requires>
+
+    <extension
+            point="org.eclipse.ui.editors">
+        <editor
+                name="Flashout"
+                extensions="flashout"
+                icon="icons/sample.gif"
+                contributorClass="com.potapenko.flashout.editors.FlashoutContributor"
+                class="com.potapenko.flashout.editors.FlashoutEditor"
+                id="com.potapenko.flashout.editors.FlashoutEditor">
+        </editor>
+    </extension>
+    <extension
+            point="org.eclipse.ui.preferencePages">
+        <page
+                class="com.potapenko.flashout.preferences.FlashoutMTASCPreferences"
+                name="Flashout"
+                id="com.potapenko.flashout.preferences.FlashoutMTASCPreferences"/>
+    </extension>
+
+    <extension
+            point="org.eclipse.ui.editorActions">
+        <editorContribution
+                targetID="org.asdt.editor.ActionScript2Editor"
+                id="org.asdt.editor.internal.ASActionContributor">
+            <menu
+                    label="Flashout"
+                    id="flashout">
+                <separator name="editGroup"/>
+            </menu>
+            <action
+                    label="Compile last"
+                    definitionId="com.potapenko.flashout.actions.CompileLast"
+                    class="com.potapenko.flashout.actions.CompileLast"
+                    menubarPath="flashout/editGroup"
+                    id="com.potapenko.flashout.actions.CompileLast">
+            </action>
+            <action
+                    label="Compile all"
+                    definitionId="com.potapenko.flashout.actions.CompileAll"
+                    class="com.potapenko.flashout.actions.CompileAll"
+                    menubarPath="flashout/editGroup"
+                    id="com.potapenko.flashout.actions.CompileAll">
+            </action>
+            <action
+                    label="Back to Flashout window"
+                    definitionId="com.potapenko.flashout.actions.GotoLastFlashout"
+                    class="com.potapenko.flashout.actions.GotoLastFlashout"
+                    menubarPath="flashout/editGroup"
+                    id="com.potapenko.flashout.actions.GotoLastFlashout">
+            </action>
+
+        </editorContribution>
+    </extension>
+
+    <extension point="org.eclipse.ui.commands">
+       <scope
+		            name="ActionScript2Editor scope"
+		            parent="org.eclipse.ui.textEditorScope"
+		            description="ActionScript2Editor commands"
+		            id="org.asdt.editor.scope">
+       </scope>
+       <category
+		            name="ActionScript2Editor commands"
+		            description="ActionScript2Editor category"
+		            id="org.asdt.editor.category.source">
+       </category>
+        <command
+                description="Complile last flashout"
+                category="org.asdt.editor.category.source"
+                name="Complile last flashout"
+                id="com.potapenko.flashout.actions.CompileLast"/>
+        <keyBinding
+                command="com.potapenko.flashout.actions.CompileLast"
+                string="Ctrl+Enter"
+                scope="org.asdt.editor.scope"
+                configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <command
+                description="Compile all open flashout files"
+                category="org.asdt.editor.category.source"
+                name="Compile all open flashout files"
+                id="com.potapenko.flashout.actions.CompileAll"/>
+        <keyBinding
+                command="com.potapenko.flashout.actions.CompileAll"
+                string="Ctrl+Shift+Enter"
+                scope="org.asdt.editor.scope"
+                configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <command
+                description="Go back to flashout file"
+                category="org.asdt.editor.category.source"
+                name="Go back to flashout file"
+                id="com.potapenko.flashout.actions.GotoLastFlashout"/>
+        <keyBinding
+                command="com.potapenko.flashout.actions.GotoLastFlashout"
+                string="Ctrl+Alt+Enter"
+                scope="org.asdt.editor.scope"
+                configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    </extension>
+
+
+    <extension
+            point="org.eclipse.ui.editorActions">
+        <editorContribution
+                targetID="com.potapenko.flashout.editors.FlashoutEditor"
+                id="org.flashout.editorContribution">
+            <menu
+                    label="Flashout"
+                    id="flashout">
+                <separator name="editGroup"/>
+            </menu>
+            <action
+                    label="Go to last AS2 editor"
+                    definitionId="com.potapenko.flashout.actions.GotoLastASDT"
+                    class="com.potapenko.flashout.actions.GotoLastASDT"
+                    menubarPath="flashout/editGroup"
+                    id="com.potapenko.flashout.actions.GotoLastASDT">
+            </action>
+            <action
+                    label="Quick switch Logger/Swf"
+                    definitionId="com.potapenko.flashout.actions.GotoNextTab"
+                    class="com.potapenko.flashout.actions.GotoNextTab"
+                    menubarPath="flashout/editGroup"
+                    id="com.potapenko.flashout.actions.GotoNextTab">
+            </action>
+        </editorContribution>
+    </extension>
+
+    <extension point="org.eclipse.ui.commands">
+        <category
+                name="FlashoutEditor commands"
+                description="FlashoutEditor category"
+                id="org.flashout.ui.category">
+        </category>
+        <command
+                description="Go to last AS2 editor"
+                category="org.flashout.ui.category"
+                name="Go to last AS2 editor"
+                id="com.potapenko.flashout.actions.GotoLastASDT"/>
+        <keyBinding
+                command="com.potapenko.flashout.actions.GotoLastASDT"
+                string="Ctrl+Enter"
+                scope="org.eclipse.ui.globalScope"
+                configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <command
+                description="Go to next tab"
+                category="org.flashout.ui.category"
+                name="Go to next tab"
+                id="com.potapenko.flashout.actions.GotoNextTab"/>
+        <keyBinding
+                command="com.potapenko.flashout.actions.GotoNextTab"
+                string="Ctrl+Tab"
+                scope="org.eclipse.ui.globalScope"
+                configuration="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    </extension>
+
+    <extension
+            point="org.eclipse.ui.editors.templates">
+        <contextType
+                class="org.asdt.editor.template.ASContextType"
+                id="org.asdt.ui.editor.template.actionscript.flashout"/>
+        <include file="templates/templates.xml"/>
+    </extension>
+</plugin>
+

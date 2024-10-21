@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Delegate</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_reflect_Delegate">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods</span></span><h1>Delegate</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>none</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.0</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.reflect.Delegate</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Wednesday, 21 September 2005, 18:40:46</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * {@code Delegate} offers with {@link Delegate#createDelegate} a method for
+ * using old-style Template classes.
+ * 
+ * &lt;p&gt;Using event handling like in common MovieClips creates problems in OOP
+ * ActionScript due to the fact that it uses functions as event executions 
+ * without minding about that the scope always refers to the MovieClip.
+ * {@code Delegate.createDelegate} allows a proper Workaround for the redirection
+ * of such methods to a proper different scope.
+ * 
+ * &lt;p&gt;Example:
+ * 
+ * &lt;p&gt;Test class:
+ * &lt;code&gt;
+ *   class com.domain.MyMovieClipController {
+ *     private var content:String;
+ *     
+ *     public function MyMovieClipController(content:String) {
+ *       this.content = content;
+ *     }
+ *     
+ *     public function onEnterFrame() {
+ *       trace(content);
+ *     }
+ *   }
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;Usage:
+ * &lt;code&gt;
+ *   import com.domain.MyMovieClipController;
+ *   import org.as2lib.env.reflect.Delegate;
+ *  
+ *   var mc:MyMovieClipController = new MyMovieClipController("Hello World!");
+ *   
+ *   // Following will not work because of the wrong scope
+ *   _root.onEnterFrame = mc.onEnterFrame;
+ *   
+ *   // Workaround using delegate
+ *   _root.onEnterFrame = Delegate.create(mc, onEnterFrame);
+ * &lt;/code&gt;
+ * 
+ * @author Martin Heidegger
+ * @version 1.0
+ */
+class org.as2lib.env.reflect.Delegate {
+    
+    /**
+     * Creates a method that delegates its arguments to a certain scope.
+     * 
+     * @param scope Scope to be used by calling this method.
+     * @param method Method to be executed at the scope.
+     * @return Function that delegates its call to a different scope &amp; method.
+     */
+    public static function create(scope, method:Function):Function {
+        var result:Function;
+        result = function() {
+            return arguments.callee.method.apply(arguments.callee.scope, arguments);
+        };
+        result.scope = scope;
+        result.method = method;
+        return result;
+    }
+    
+    /**
+     * Creates a method that delegates its arguments to a certain scope and
+     * uses additional fixed arguments.
+     * 
+     * &lt;p&gt;Example:
+     * &lt;code&gt;
+     *   import org.as2lib.env.reflect.Delegate;
+     *   
+     *   function test(a:String, b:Number, c:String) {
+     *       trace(a+","+b+","+c);
+     *   }
+     *   
+     *   var delegate:Function = Delegate.createExtendedDelegate(this, test, ["a"]);
+     *   delegate(1,"b"); // will trace "a,1,b"
+     * &lt;/code&gt;
+     * 
+     * 
+     * @param scope Scope to be used by calling this method.
+     * @param method Method to be executed at the scope.
+     * @param args Arguments to be used at first position.
+     * @return Function that delegates its call to a different scope &amp; method.
+     * @TODO find better name
+     */
+    public static function createExtendedDelegate(scope, method:Function, args:Array):Function {
+        var result:Function;
+        result = function() {
+            return arguments.callee.method.apply(arguments.callee.scope, arguments.callee.args.concat(arguments));
+        };
+        result.scope = scope;
+        result.method = method;
+        result.args = args;
+        return result;
+    }
+        
+    /**
+     * Private Constructor to prevent instantiation.
+     */
+    private function Delegate(Void) {
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>Delegate</code> offers with Delegate#createDelegate a method for<br /> using old-style Template classes.</div><p>Using event handling like in common MovieClips creates problems in OOP<br /> ActionScript due to the fact that it uses functions as event executions <br /> without minding about that the scope always refers to the MovieClip.<br /> <code>Delegate.createDelegate</code> allows a proper Workaround for the redirection<br /> of such methods to a proper different scope.<p>Example:<p>Test class:<pre><span class="codeKeyword">class</span> com.domain.MyMovieClipController {
+  <span class="codeKeyword">private</span> <span class="codeKeyword">var</span> content:<span class="codeIdentifier">String</span>;
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> MyMovieClipController(content:<span class="codeIdentifier">String</span>) {
+    <span class="codeIdentifier">this</span>.content = content;
+  }
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> <span class="codeIdentifier">onEnterFrame</span>() {
+    <span class="codeIdentifier">trace</span>(content);
+  }
+}</pre><p>Usage:<pre><span class="codeKeyword">import</span> com.domain.MyMovieClipController;
+<span class="codeKeyword">import</span> org.as2lib.env.reflect.Delegate;
+
+<span class="codeKeyword">var</span> mc:MyMovieClipController = <span class="codeKeyword">new</span> MyMovieClipController(<span class="codeString">"Hello World!"</span>);
+
+<span class="codeComment">// Following will not work because of the wrong scope</span>
+<span class="codeIdentifier">_root</span>.<span class="codeIdentifier">onEnterFrame</span> = mc.<span class="codeIdentifier">onEnterFrame</span>;
+
+<span class="codeComment">// Workaround using delegate</span>
+<span class="codeIdentifier">_root</span>.<span class="codeIdentifier">onEnterFrame</span> = Delegate.create(mc, <span class="codeIdentifier">onEnterFrame</span>);</pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Constructor</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#Delegate">Delegate</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#create">create</a>
+                </li>
+                <li>
+                  <a href="#createExtendedDelegate">createExtendedDelegate</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="Delegate">Delegate</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>Delegate</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Private Constructor to prevent instantiation.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="create">create</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>create</b> (
+
+</div>
+                <div><span class="code">scope,
+method:Function) : Function</span></div>
+              </div>
+            </div>
+            <div class="description">Creates a method that delegates its arguments to a certain scope.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">scope <span class="itemSeparator">:</span></div>
+                    <div>Scope to be used by calling this method.</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">method<span class="itemSeparator">:</span></div>
+                    <div>Method to be executed at the scope.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">Function that delegates its call to a different scope & method.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="createExtendedDelegate">createExtendedDelegate</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>createExtendedDelegate</b> (
+
+
+</div>
+                <div><span class="code">scope,
+method:Function,
+args:Array) : Function</span></div>
+              </div>
+            </div>
+            <div class="description">Creates a method that delegates its arguments to a certain scope and<br /> uses additional fixed arguments.<p>Example:<pre><span class="codeKeyword">import</span> org.as2lib.env.reflect.Delegate;
+
+<span class="codeKeyword">function</span> test(a:<span class="codeIdentifier">String</span>, b:<span class="codeIdentifier">Number</span>, c:<span class="codeIdentifier">String</span>) {
+    <span class="codeIdentifier">trace</span>(a+<span class="codeString">","</span>+b+<span class="codeString">","</span>+c);
+}
+
+<span class="codeKeyword">var</span> delegate:<span class="codeIdentifier">Function</span> = Delegate.createExtendedDelegate(<span class="codeIdentifier">this</span>, test, [<span class="codeString">"a"</span>]);
+delegate(<span class="codeNumber">1</span>,<span class="codeString">"b"</span>); <span class="codeComment">// will trace "a,1,b"</span></pre></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">scope <span class="itemSeparator">:</span></div>
+                    <div>Scope to be used by calling this method.</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">method<span class="itemSeparator">:</span></div>
+                    <div>Method to be executed at the scope.</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">args  <span class="itemSeparator">:</span></div>
+                    <div>Arguments to be used at first position.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">Function that delegates its call to a different scope & method.@TODO find better name</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:26:31</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

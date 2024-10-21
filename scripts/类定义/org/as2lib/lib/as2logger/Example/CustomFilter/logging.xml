@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<logging>
+	<logger name="global" level="ALL" filter="de.audiofarm.code.logger.CustomFilter">
+		<publisher name="logging.TraceOutput" />
+	</logger>
+	<!-- Filters are not inherited! -->
+	<logger name="de.audiofarm.code.logger.Application" level="ALL" filter="de.audiofarm.code.logger.CustomFilter" />
+</logging>

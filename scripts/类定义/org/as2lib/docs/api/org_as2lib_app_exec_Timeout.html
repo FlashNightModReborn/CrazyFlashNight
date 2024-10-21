@@ -1,0 +1,650 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Timeout</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_app_exec_Timeout">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods, <a href="#Eventhandlers" accesskey="e">E</a>vent handlers</span></span><h1>Timeout</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>AbstractProcess</td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_app_exec_ForEachExecutable.html">ForEachExecutable</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.0</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.app.exec.Timeout</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Sunday, 18 September 2005, 20:59:06</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.env.overload.Overload;
+import org.as2lib.app.exec.AbstractProcess;
+import org.as2lib.app.exec.Call;
+import org.as2lib.app.exec.Executable;
+import org.as2lib.app.exec.ForEachExecutable;
+import org.as2lib.env.event.impulse.FrameImpulse;
+
+/**
+ * {@code Timeout} works as delayed execution of a executable.
+ * 
+ * &lt;p&gt;As {@code Timeout} implements {@link Executable} it works like a usual
+ * executable and can be started with {@link #execute}. 
+ * 
+ * &lt;p&gt;As {@code Timeout} implements {@link Process} its possible to handle it
+ * as process.
+ * 
+ * &lt;p&gt;{@code Timeout} works framebased, that means you have to define the delay 
+ * in number of frames.
+ * 
+ * &lt;p&gt;Due to the definition of Call all arguments passed-in in {@link #execute}
+ * will be passed to the connected executable
+ * 
+ * Example for a direct execution:
+ * &lt;code&gt;
+ *   import org.as2lib.app.exec.Timeout;
+ *   import org.as2lib.app.exec.Call;
+ * 
+ *   Timeout.timeout(new Call(myObj, myMethod), 20, ["1", "2"]); 
+ * &lt;/code&gt;
+ * 
+ * Example for a controlable usage:
+ * &lt;code&gt;
+ *   import org.as2lib.app.exec.Timeout;
+ *   import org.as2lib.app.exec.Call;
+ * 
+ *   var call:Call = new Call(myObj, myMethod);
+ *   var frames:Number = 20;
+ *   var t:Timeout = new Timeout(call, frames);
+ *   t.execute("argument 1", "argument 2");
+ * &lt;/code&gt;
+ * 
+ * @author Martin Heidegger
+ * @version 1.0
+ * @see Executable#execute
+ */
+class org.as2lib.app.exec.Timeout extends AbstractProcess implements ForEachExecutable {
+    
+    /** Connected Executable */
+    private var exe:Executable;
+    
+    /** Amount of frames until execution (delay) */
+    private var frames:Number;
+    
+    /** Amount of listened frames */
+    private var executed:Number;
+    
+    /**
+     * List of the targets (arguments) for the execution.
+     * used in {@link #forEach}.
+     */
+    private var target:Array;
+    
+    /** Call to the onEnterFrame listener */
+    private var timeCall:Call;
+    
+    /**
+     * Simplyfier for the execution of a timeout.
+     * 
+     * &lt;p&gt;Allows creation and execution of a {@code Timeout} with one call.
+     * 
+     * @param exe Executable to excute after a delay
+     * @param frames Amout of frames during the end of the execution
+     * @param args Arguments to be passed at execution
+     */
+    public static function setTimeout(exe:Executable, frames:Number, args:Array) {
+        var t:Function = eval("th"+"is");
+        var o = new t(exe, frames).execute(args);
+    }
+    
+    /**
+     * Creates a new {@code Timeout} instance.
+     * 
+     * @overload #setExecutable
+     * @overload #setExecutableByObjectAndFunction
+     */
+    public function Timeout() {
+        timeCall = new Call(this, onEnterFrame);
+        var o:Overload = new Overload(this);
+        o.addHandler([Executable, Number], setExecutable);
+        o.addHandler([Object, Function, Number], setExecutableByObjectAndFunction);
+        o.forward(arguments);
+    }
+    
+    /**
+     * Sets the connected executable.
+     * 
+     * @param exe Executable to be executed after the delay
+     * @param frames Delay in frames until execution.
+     */
+    public function setExecutable(exe:Executable, frames:Number):Void {
+        this.exe = exe;
+        this.frames = frames;
+    }
+    
+    /**
+     * Sets the connected executable with a generated call.
+     * 
+     * @param inObject Scope of the execution
+     * @param func Method to execute
+     * @param frames Delay in frames until execution.
+     */
+    public function setExecutableByObjectAndFunction(inObject:Object, func:Function, frames:Number):Void {
+        setExecutable(new Call(inObject, func), frames);
+    }
+    
+    /**
+     * Starts the delay until the execution of the connected Executable.
+     * 
+     * @see #setExecutable
+     * @see #setExecutableByObjectAndFunction
+     * @see Executable#execute
+     */
+    public function execute() {
+        executed = 1;
+        if (!target) target = new Array();
+        target.push(arguments);
+        working = true;
+        FrameImpulse.getInstance().connectExecutable(timeCall);
+        return null;
+    }
+    
+    /**
+     * Referes to execute.
+     * 
+     * &lt;p&gt;Implementation of {@link AbstractProcess#run} for using it as a
+     * process.
+     */
+    public function run(Void):Void {
+        execute.apply(this, arguments);
+    }
+    
+    /**
+     * Executed the Timeout for all iterable objects.
+     * 
+     * &lt;p&gt;If you execute .forEach to Timeout it will redirect content, name and
+     * the object to each execution of the connected call. 
+     * 
+     * Example:
+     * &lt;code&gt;
+     *   import org.as2lib.app.exec.Timeout;
+     * 
+     *   function display(content, name, inObject) {
+     *     trace("Executed: "+content+", "+name+", "+inObject+";");
+     *   }
+     *   
+     *   var t:Timeout = new Timeout(this, display, 40);
+     *   t.forEach({a:"1", b:"2", c:"3"});
+     * &lt;/code&gt;
+     * 
+     * Delays for 40 frames:
+     * &lt;pre&gt;
+     * Executed: 1, a, [Object object];
+     * Executed: 2, b, [Object object];
+     * Executed: 3, c, [Object object];
+     * &lt;/pre&gt;
+     * 
+     * @param object Object to be iterated
+     * @return null as the result isn't available yet.
+     */
+    public function forEach(object):Array {
+        executed = 0;
+        if (!target) target = new Array();
+        var i:String;
+        for (i in object) {
+            target.push([object[i], i, object]);
+        }
+        execute();
+        FrameImpulse.getInstance().connectExecutable(timeCall);
+        return null;
+    }
+
+    /**
+     * Executed on each interval execution.
+     */
+    private function onEnterFrame(Void):Void {
+        if (executed++ &gt; frames) {
+            finalExecution();
+        }
+    }
+    
+    /**
+     * Internal method to finish the execution.
+     */
+    private function finalExecution(impulse:FrameImpulse):Void {
+        executed = 1;
+        var i:Number;
+        impulse.disconnectExecutable(timeCall);
+        var oldTarget = target.concat();
+        target = new Array();
+        
+        // Applying the execution to multiple targets (foreach)
+        try {
+            for (i=0; i&lt;oldTarget.length; i++) {
+                exe["execute"].apply(exe, oldTarget[i]);
+            }
+            finish();
+        } catch(e) {
+            interrupt(e);
+        }
+    }
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>Timeout</code> works as delayed execution of a executable.</div><p>As <code>Timeout</code> implements <a href="org_as2lib_app_exec_Executable.html">Executable</a> it works like a usual<br /> executable and can be started with <a href="org_as2lib_app_exec_Timeout.html#execute">execute</a>.<p>As <code>Timeout</code> implements <a href="org_as2lib_app_exec_Process.html">Process</a> its possible to handle it<br /> as process.<p><code>Timeout</code> works framebased, that means you have to define the delay <br /> in number of frames.<p>Due to the definition of Call all arguments passed-in in <a href="org_as2lib_app_exec_Timeout.html#execute">execute</a><br /> will be passed to the connected executable<br /> <br /> Example for a direct execution:<pre><span class="codeKeyword">import</span> org.as2lib.app.exec.Timeout;
+<span class="codeKeyword">import</span> org.as2lib.app.exec.Call;
+
+Timeout.timeout(<span class="codeKeyword">new</span> Call(myObj, myMethod), <span class="codeNumber">20</span>, [<span class="codeString">"1"</span>, <span class="codeString">"2"</span>]);</pre> <br /> Example for a controlable usage:<pre><span class="codeKeyword">import</span> org.as2lib.app.exec.Timeout;
+<span class="codeKeyword">import</span> org.as2lib.app.exec.Call;
+
+<span class="codeKeyword">var</span> <span class="codeIdentifier">call</span>:Call = <span class="codeKeyword">new</span> Call(myObj, myMethod);
+<span class="codeKeyword">var</span> frames:<span class="codeIdentifier">Number</span> = <span class="codeNumber">20</span>;
+<span class="codeKeyword">var</span> t:Timeout = <span class="codeKeyword">new</span> Timeout(<span class="codeIdentifier">call</span>, frames);
+t.execute(<span class="codeString">"argument 1"</span>, <span class="codeString">"argument 2"</span>);</pre><div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_app_exec_Executable.html#execute">Executable.execute</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#Timeout">Timeout</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#exe">exe</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#frames">frames</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#executed">executed</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#target">target</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#timeCall">timeCall</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#setTimeout">setTimeout</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#setExecutable">setExecutable</a>
+                </li>
+                <li>
+                  <a href="#setExecutableByObjectAndFunction">setExecutableByObjectAndFunction</a>
+                </li>
+                <li>
+                  <a href="#execute">execute</a>
+                </li>
+                <li>
+                  <a href="#run">run</a>
+                </li>
+                <li>
+                  <a href="#forEach">forEach</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#finalExecution">finalExecution</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Event handlers</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#onEnterFrame">onEnterFrame</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="Timeout">Timeout</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>Timeout</b> (
+</div>
+                <div><span class="code">)</span></div>
+              </div>
+            </div>
+            <div class="description">Creates a new <code>Timeout</code> instance.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overloading:</span><div class="item"><a href="org_as2lib_app_exec_Timeout.html#setExecutable">setExecutable (exe:Executable, frames:Number) : Void</a><br /><a href="org_as2lib_app_exec_Timeout.html#setExecutableByObjectAndFunction">setExecutableByObjectAndFunction (inObject:Object, func:Function, frames:Number) : Void</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="exe">exe</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>exe</b>:<a href="org_as2lib_app_exec_Executable.html">Executable</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Connected Executable</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="executed">executed</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>executed</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Amount of listened frames</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="frames">frames</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>frames</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Amount of frames until execution (delay)</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="target">target</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>target</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">List of the targets (arguments) for the execution.<br /> used in <a href="org_as2lib_app_exec_Timeout.html#forEach">forEach</a>.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="timeCall">timeCall</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>timeCall</b>:<a href="org_as2lib_app_exec_Call.html">Call</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Call to the onEnterFrame listener</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="setTimeout">setTimeout</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>setTimeout</b> (
+
+
+</div>
+                <div><span class="code">exe:<a href="org_as2lib_app_exec_Executable.html">Executable</a>,
+frames:Number,
+args:Array)</span></div>
+              </div>
+            </div>
+            <div class="description">Simplyfier for the execution of a timeout.<p>Allows creation and execution of a <code>Timeout</code> with one call.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">exe   <span class="itemSeparator">:</span></div>
+                    <div>Executable to excute after a delay</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">frames<span class="itemSeparator">:</span></div>
+                    <div>Amout of frames during the end of the execution</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">args  <span class="itemSeparator">:</span></div>
+                    <div>Arguments to be passed at execution</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="execute">execute</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>execute</b> (
+</div>
+                <div><span class="code">)</span></div>
+              </div>
+            </div>
+            <div class="description">Starts the delay until the execution of the connected Executable.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_app_exec_Timeout.html#setExecutable">setExecutable</a><br /><a href="org_as2lib_app_exec_Timeout.html#setExecutableByObjectAndFunction">setExecutableByObjectAndFunction</a><br /><a href="org_as2lib_app_exec_Executable.html#execute">Executable.execute</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><div class="inheritDoc">the result of the execution</div><a class="followInheritDoc" href="org_as2lib_app_exec_Executable.html#execute">#</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_app_exec_Executable.html#execute">Executable.execute</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="finalExecution">finalExecution</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>finalExecution</b> (
+</div>
+                <div><span class="code">impulse:<a href="org_as2lib_env_event_impulse_FrameImpulse.html">FrameImpulse</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Internal method to finish the execution.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="forEach">forEach</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>forEach</b> (
+</div>
+                <div><span class="code">object) : Array</span></div>
+              </div>
+            </div>
+            <div class="description">Executed the Timeout for all iterable objects.<p>If you execute .forEach to Timeout it will redirect content, name and<br /> the object to each execution of the connected call. <br /> <br /> Example:<pre><span class="codeKeyword">import</span> org.as2lib.app.exec.Timeout;
+
+<span class="codeKeyword">function</span> display(content, name, inObject) {
+  <span class="codeIdentifier">trace</span>(<span class="codeString">"Executed: "</span>+content+<span class="codeString">", "</span>+name+<span class="codeString">", "</span>+inObject+<span class="codeString">";"</span>);
+}
+
+<span class="codeKeyword">var</span> t:Timeout = <span class="codeKeyword">new</span> Timeout(<span class="codeIdentifier">this</span>, display, <span class="codeNumber">40</span>);
+t.forEach({a:<span class="codeString">"1"</span>, b:<span class="codeString">"2"</span>, c:<span class="codeString">"3"</span>});</pre> <br /> Delays for 40 frames:<pre>Executed: <span class="codeNumber">1</span>, a, [<span class="codeIdentifier">Object</span> object];
+Executed: <span class="codeNumber">2</span>, b, [<span class="codeIdentifier">Object</span> object];
+Executed: <span class="codeNumber">3</span>, c, [<span class="codeIdentifier">Object</span> object];</pre></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">object<span class="itemSeparator">:</span></div>
+                    <div>Object to be iterated</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">null as the result isn't available yet.</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_app_exec_ForEachExecutable.html#forEach">ForEachExecutable.forEach</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="run">run</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>run</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Referes to execute.<p>Implementation of <a href="org_as2lib_app_exec_Timeout.html#run">run</a> for using it as a<br /> process.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setExecutable">setExecutable</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setExecutable</b> (
+
+</div>
+                <div><span class="code">exe:<a href="org_as2lib_app_exec_Executable.html">Executable</a>,
+frames:Number) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the connected executable.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">exe   <span class="itemSeparator">:</span></div>
+                    <div>Executable to be executed after the delay</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">frames<span class="itemSeparator">:</span></div>
+                    <div>Delay in frames until execution.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setExecutableByObjectAndFunction">setExecutableByObjectAndFunction</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setExecutableByObjectAndFunction</b> (
+
+
+</div>
+                <div><span class="code">inObject:Object,
+func:Function,
+frames:Number) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the connected executable with a generated call.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">inObject<span class="itemSeparator">:</span></div>
+                    <div>Scope of the execution</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">func    <span class="itemSeparator">:</span></div>
+                    <div>Method to execute</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">frames  <span class="itemSeparator">:</span></div>
+                    <div>Delay in frames until execution.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Eventhandlers">Event handlers</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="onEnterFrame">onEnterFrame</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>onEnterFrame</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Executed on each interval execution.</div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:29</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

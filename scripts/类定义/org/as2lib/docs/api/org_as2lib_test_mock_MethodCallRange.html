@@ -1,0 +1,496 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>MethodCallRange</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_test_mock_MethodCallRange">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>MethodCallRange</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.test.mock.MethodCallRange</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Saturday, 28 May 2005, 12:23:16</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/**
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.overload.Overload;
+
+/**
+ * {@code MethodCallRange} represents the number of expected method calls.
+ *
+ * @author Simon Wacker
+ */
+class org.as2lib.test.mock.MethodCallRange extends BasicClass {
+    
+    /** The minimum that is used if none has been specified. */
+    public static var DEFAULT_MINIMUM:Number = 0;
+    
+    /** The maximum that is used if none has been specified. */
+    public static var DEFAULT_MAXIMUM:Number = Number.POSITIVE_INFINITY;
+    
+    /** The minimum. */
+    private var minimum:Number;
+    
+    /** The maximum. */
+    private var maximum:Number;
+    
+    /**
+     * @overload #MethodCallRangeByVoid
+     * @overload #MethodCallRangeByQuantity
+     * @overload #MethodCallRangeByMinimumAndMaximumQuantity
+     */
+    public function MethodCallRange() {
+        var o:Overload = new Overload(this);
+        o.addHandler([], MethodCallRangeByVoid);
+        o.addHandler([Number], MethodCallRangeByQuantity);
+        o.addHandler([Number, Number], MethodCallRangeByMinimumAndMaximumQuantity);
+        o.forward(arguments);
+    }
+    
+    /**
+     * Uses the default minimum and the default maximum value.
+     */
+    private function MethodCallRangeByVoid(Void):Void {
+        MethodCallRangeByMinimumAndMaximumQuantity(null, null);
+    }
+    
+    /**
+     * Uses the passed-in {@code quantity} as minimum and maximum.
+     *
+     * &lt;p&gt;If the passed-in {@code quantity} is {@code null} {@link #DEFAULT_MINIMUM}
+     * and {@link #DEFAULT_MAXIMUM} is used.
+     *
+     * @param quantity the quantity
+     */
+    private function MethodCallRangeByQuantity(quantity:Number):Void {
+        if (quantity == null) {
+            MethodCallRangeByMinimumAndMaximumQuantity(null, null);
+        }
+        MethodCallRangeByMinimumAndMaximumQuantity(quantity, quantity);
+    }
+    
+    /**
+     * Creates a new range with the passed-in {@code minimum} and {@code maximum}.
+     *
+     * &lt;ul&gt;
+     *   &lt;li&gt;If {@code minimum} is {@code null} {@link #DEFAULT_MINIMUM} will be used.&lt;/li&gt;
+     *   &lt;li&gt;If {@code maximum} is {@code null} {@link #DEFAULT_MAXIMUM} will be used.&lt;/li&gt;
+     *   &lt;li&gt;If {@code minimum} is negative it will be made positive.&lt;/li&gt;
+     *   &lt;li&gt;If {@code maximum} is negative it will be made positive.&lt;/li&gt;
+     *   &lt;li&gt;
+     *     If {@code minimum} is bigger than {@code maximum} the two values will be
+     *     exchanged.
+     *   &lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param minimum the minimum
+     * @param maximum the maximum
+     */
+    private function MethodCallRangeByMinimumAndMaximumQuantity(minimum:Number, maximum:Number):Void {
+        if (minimum == null) minimum = DEFAULT_MINIMUM;
+        if (maximum == null) maximum = DEFAULT_MAXIMUM;
+        if (minimum &lt; 0) minimum = -minimum;
+        if (maximum &lt; 0) maximum = -maximum;
+        if (minimum &gt; maximum) {
+            var oldMinimum:Number = minimum;
+            minimum = maximum;
+            maximum = oldMinimum;
+        }
+        this.minimum = minimum;
+        this.maximum = maximum;
+    }
+    
+    /**
+     * Returns the minimum of this range.
+     *
+     * @return the set minimum
+     */
+    public function getMinimum(Void):Number {
+        return minimum;
+    }
+    
+    /**
+     * Returns the maximum of this range.
+     *
+     * @return the set maximum
+     */
+    public function getMaximum(Void):Number {
+        return maximum;
+    }
+    
+    /**
+     * Checks whether the passed-in {@code quantity} is between the minimum and
+     * maximum.
+     *
+     * &lt;p&gt;The quantity will be made positive if it is negative.
+     *
+     * &lt;p&gt;{@code false} will be returned if:
+     * &lt;ul&gt;
+     *   &lt;li&gt;The passed-in {@code quantity} is {@code null}.&lt;/li&gt;
+     *   &lt;li&gt;The passed-in {@code quantity} is smaller than the minimum.&lt;/li&gt;
+     *   &lt;li&gt;The passed-in {@code quantity} is bigger than the maximum.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param quantity the quantity
+     * @return {@code true} if the quantity is contained by this range else
+     * {@code false}
+     */
+    public function contains(quantity:Number):Boolean {
+        if (quantity == null) return false;
+        if (quantity &lt; 0) quantity = -quantity;
+        if (minimum &gt; quantity || maximum &lt; quantity) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Returns the string representation of this range.
+     *
+     * @return the string representation of this range
+     */
+    public function toString():String {
+        if (minimum == maximum) return minimum.toString();
+        var interval:String = "[";
+        if (minimum == Number.POSITIVE_INFINITY) interval += "&#8734;";
+        else interval += minimum.toString();
+        interval += ",";
+        if (maximum == Number.POSITIVE_INFINITY) interval += "&#8734;";
+        else interval += maximum.toString();
+        interval += "]";
+        return interval;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>MethodCallRange</code> represents the number of expected method calls.</div></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#MethodCallRange">MethodCallRange</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li>
+                  <a href="#DEFAULT_MINIMUM">DEFAULT_MINIMUM</a>
+                </li>
+                <li>
+                  <a href="#DEFAULT_MAXIMUM">DEFAULT_MAXIMUM</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#minimum">minimum</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#maximum">maximum</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#MethodCallRangeByVoid">MethodCallRangeByVoid</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#MethodCallRangeByQuantity">MethodCallRangeByQuantity</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#MethodCallRangeByMinimumAndMaximumQuantity">MethodCallRangeByMinimumAndMaximumQuantity</a>
+                </li>
+                <li>
+                  <a href="#getMinimum">getMinimum</a>
+                </li>
+                <li>
+                  <a href="#getMaximum">getMaximum</a>
+                </li>
+                <li>
+                  <a href="#contains">contains</a>
+                </li>
+                <li>
+                  <a href="#toString">toString</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="MethodCallRange">MethodCallRange</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>MethodCallRange</b> (
+</div>
+                <div><span class="code">)</span></div>
+              </div>
+            </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overloading:</span><div class="item"><a class="privatInline" href="org_as2lib_test_mock_MethodCallRange.html#MethodCallRangeByVoid">MethodCallRangeByVoid (Void) : Void</a><br /><a class="privatInline" href="org_as2lib_test_mock_MethodCallRange.html#MethodCallRangeByQuantity">MethodCallRangeByQuantity (quantity:Number) : Void</a><br /><a class="privatInline" href="org_as2lib_test_mock_MethodCallRange.html#MethodCallRangeByMinimumAndMaximumQuantity">MethodCallRangeByMinimumAndMaximumQuantity (minimum:Number, maximum:Number) : Void</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="DEFAULT_MAXIMUM">DEFAULT_MAXIMUM</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>DEFAULT_MAXIMUM</b>:Number = <span class="codeIdentifier">Number</span>.POSITIVE_INFINITY
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The maximum that is used if none has been specified.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="DEFAULT_MINIMUM">DEFAULT_MINIMUM</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>DEFAULT_MINIMUM</b>:Number = <span class="codeNumber">0</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The minimum that is used if none has been specified.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="maximum">maximum</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>maximum</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The maximum.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="minimum">minimum</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>minimum</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The minimum.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="contains">contains</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>contains</b> (
+</div>
+                <div><span class="code">quantity:Number) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks whether the passed-in <code>quantity</code> is between the minimum and<br /> maximum.<p>The quantity will be made positive if it is negative.<p><code>false</code> will be returned if:<ul><li>The passed-in <code>quantity</code> is <code>null</code>.</li><li>The passed-in <code>quantity</code> is smaller than the minimum.</li><li>The passed-in <code>quantity</code> is bigger than the maximum.</li></ul></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">quantity<span class="itemSeparator">:</span></div>
+                    <div>the quantity</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the quantity is contained by this range else<br /> <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getMaximum">getMaximum</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getMaximum</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the maximum of this range.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the set maximum</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getMinimum">getMinimum</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getMinimum</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the minimum of this range.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the set minimum</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="MethodCallRangeByMinimumAndMaximumQuantity">MethodCallRangeByMinimumAndMaximumQuantity</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>MethodCallRangeByMinimumAndMaximumQuantity</b> (
+
+</div>
+                <div><span class="code">minimum:Number,
+maximum:Number) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Creates a new range with the passed-in <code>minimum</code> and <code>maximum</code>.<ul><li>If <code>minimum</code> is <code>null</code> <a href="org_as2lib_test_mock_MethodCallRange.html#DEFAULT_MINIMUM">DEFAULT_MINIMUM</a> will be used.</li><li>If <code>maximum</code> is <code>null</code> <a href="org_as2lib_test_mock_MethodCallRange.html#DEFAULT_MAXIMUM">DEFAULT_MAXIMUM</a> will be used.</li><li>If <code>minimum</code> is negative it will be made positive.</li><li>If <code>maximum</code> is negative it will be made positive.</li><li>If <code>minimum</code> is bigger than <code>maximum</code> the two values will be<br />     exchanged.</li></ul></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">minimum<span class="itemSeparator">:</span></div>
+                    <div>the minimum</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">maximum<span class="itemSeparator">:</span></div>
+                    <div>the maximum</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="MethodCallRangeByQuantity">MethodCallRangeByQuantity</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>MethodCallRangeByQuantity</b> (
+</div>
+                <div><span class="code">quantity:Number) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Uses the passed-in <code>quantity</code> as minimum and maximum.<p>If the passed-in <code>quantity</code> is <code>null</code> <a href="org_as2lib_test_mock_MethodCallRange.html#DEFAULT_MINIMUM">DEFAULT_MINIMUM</a><br /> and <a href="org_as2lib_test_mock_MethodCallRange.html#DEFAULT_MAXIMUM">DEFAULT_MAXIMUM</a> is used.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">quantity<span class="itemSeparator">:</span></div>
+                    <div>the quantity</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="MethodCallRangeByVoid">MethodCallRangeByVoid</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>MethodCallRangeByVoid</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Uses the default minimum and the default maximum value.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toString">toString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>toString</b> (
+</div>
+                <div><span class="code">) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the string representation of this range.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the string representation of this range</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_core_BasicClass.html#toString">org.as2lib.core.BasicClass.toString</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:28:51</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

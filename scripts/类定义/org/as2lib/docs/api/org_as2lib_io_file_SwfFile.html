@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SwfFile</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_io_file_SwfFile">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>SwfFile</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_io_file_MediaFile.html">MediaFile</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.0</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.io.file.SwfFile</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Thursday, 13 October 2005, 17:42:04</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.data.type.Byte;
+import org.as2lib.env.reflect.ReflectUtil;
+import org.as2lib.io.file.MediaFile;
+
+/**
+ * {@code SwfFile} holds all information of a loaded SWF-file.
+ * 
+ * &lt;p&gt;Note that this file can also be used to represent images.
+ * 
+ * @author Martin Heidegger
+ * @version 1.0
+ */
+class org.as2lib.io.file.SwfFile extends BasicClass implements MediaFile {
+
+    /** Size of the file in bytes. */
+    private var size:Byte;
+
+    /** Location of the file. */
+    private var uri:String;
+
+    /** Container of the loaded MovieClip */
+    private var container:MovieClip;
+    
+    /**
+     * Constructs a new {@code SwfFile}.
+     * 
+     * @param container {@code MovieClip} that contains the loaded {@code .swf}
+     * @param uri (optional) URI to use as location ({@code container._url} will
+     *           be used as default).
+     * @param size (optional) size of the loaded {@code .swf}
+     *        ({@code container.getBytesTotal()} will be used as default.)
+     */
+    public function SwfFile(container:MovieClip, uri:String, size:Byte) {
+        if (!size) {
+            size = new Byte(container.getBytesTotal());
+        }
+        if (!uri) {
+            uri = container._url;
+        }
+        this.size = size;
+        this.uri = uri;
+        this.container = container;
+    }
+    
+    /**
+     * Returns the container to the resource.
+     * 
+     * @return {@code MovieClip} that contains the {@code .swf}
+     */
+    public function getContainer(Void):MovieClip {
+        return container;
+    }
+    
+    /**
+     * Returns the location of the resource corresponding to the content.
+     * 
+     * &lt;p&gt;Note: Might be the URI of the resource or null if its not requestable
+     * or the internal location corresponding to the instance path (if its without
+     * any connection to a real file).
+     * 
+     * @return location of the resource related to the content
+     */
+    public function getLocation(Void):String {
+        return uri;
+    }
+
+    /**
+     * Returns the size of the file in bytes.
+     * 
+     * @return size of the file in bytes
+     */
+    public function getSize(Void):Byte {
+        return size;
+    }
+    
+    /**
+     * Extended Stringifier
+     * 
+     * Example:
+     * {@code [type org.as2lib.io.file.SwfResource | Location: MyFile.txt; Size: 12KB; ]}
+     * 
+     * @return the {@code SwfResource} as string
+     */
+    public function toString():String {
+        var result:String;
+        result = "[type " + ReflectUtil.getTypeNameForInstance(this)
+                 + " | Location: " + getLocation()
+                 + "; Size: " + getSize().toString(false, 2)
+                 + "; ]";
+        return result;
+    }
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>SwfFile</code> holds all information of a loaded SWF-file.</div><p>Note that this file can also be used to represent images.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#SwfFile">SwfFile</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#size">size</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#uri">uri</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#container">container</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#getContainer">getContainer</a>
+                </li>
+                <li>
+                  <a href="#getLocation">getLocation</a>
+                </li>
+                <li>
+                  <a href="#getSize">getSize</a>
+                </li>
+                <li>
+                  <a href="#toString">toString</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="SwfFile">SwfFile</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>SwfFile</b> (
+
+
+</div>
+                <div><span class="code">container:MovieClip,
+uri:String,
+size:<a href="org_as2lib_data_type_Byte.html">Byte</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>SwfFile</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">container<span class="itemSeparator">:</span></div>
+                    <div><code>MovieClip</code> that contains the loaded <code>.swf</code></div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">uri      <span class="itemSeparator">:</span></div>
+                    <div>(optional) URI to use as location (<code>container._url</code> will<br /> 		  be used as default).</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">size     <span class="itemSeparator">:</span></div>
+                    <div>(optional) size of the loaded <code>.swf</code><br />        (<code>container.getBytesTotal()</code> will be used as default.)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="container">container</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>container</b>:MovieClip
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Container of the loaded MovieClip</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="size">size</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>size</b>:<a href="org_as2lib_data_type_Byte.html">Byte</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Size of the file in bytes.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="uri">uri</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>uri</b>:String
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Location of the file.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getContainer">getContainer</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getContainer</b> (
+</div>
+                <div><span class="code">Void) : MovieClip</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the container to the resource.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>MovieClip</code> that contains the <code>.swf</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_MediaFile.html#getContainer">MediaFile.getContainer</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getLocation">getLocation</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getLocation</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the location of the resource corresponding to the content.<p>Note: Might be the URI of the resource or null if its not requestable<br /> or the internal location corresponding to the instance path (if its without<br /> any connection to a real file).</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">location of the resource related to the content</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_File.html#getLocation">File.getLocation</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getSize">getSize</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getSize</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Byte.html">Byte</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the size of the file in bytes.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">size of the file in bytes</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_File.html#getSize">File.getSize</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toString">toString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>toString</b> (
+</div>
+                <div><span class="code">) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Extended Stringifier<br /> <br /> Example:<br /> <code>[type org.as2lib.io.file.SwfResource | Location: MyFile.txt; Size: 12KB; ]</code></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the <code>SwfResource</code> as string</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_core_BasicClass.html#toString">org.as2lib.core.BasicClass.toString</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_core_BasicInterface.html#toString">org.as2lib.core.BasicInterface.toString</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:27:45</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

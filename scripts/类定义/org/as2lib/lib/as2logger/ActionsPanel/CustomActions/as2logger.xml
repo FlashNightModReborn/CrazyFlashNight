@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customactions>
+<actionspanel xmlns:as2doc="urn:http://www.as2doc.com/as2doc">
+<folder name="as2logger" id="as2logger" tiptext="as2logger" version="6" helpurl="Help/as2logger/introduction.html">
+<folder name="DefaultFormatter" id="[logging.DefaultFormatter]" tiptext="A default formatter implementation. " index="true" version="6" helpurl="Help/as2logger/idaslj5.html"> <folder name="Methods" id="Methods" tiptext="DefaultFormatter Methods" version="6" helpurl="Help/as2logger/idaslj5.html">
+<string name="format" id="format" object="[logging.DefaultFormatter]" tiptext="Format the given log record and return the formatted string.  " version="" text=".format(% logRecord:LogRecord %);" helpurl="Help/as2logger/idanmj5.html" />
+</folder>
+</folder>
+<folder name="Level" id="[logging.Level]" tiptext="The Level class defines a set of standard logging levels that can be used to control logging output.  The logging Level objects are ordered and are specified by ordered integers.  Enabling logging at a given level also enables logging at all higher levels.  Clients should normally use the predefined Level constants such as Level.SEVERE.  " index="true" version="6" helpurl="Help/as2logger/idasej5.html"> <folder name="Properties" id="Properties" tiptext="Level Properties" version="6" helpurl="Help/as2logger/idasej5.html">
+<string name="ALL" id="ALL" object="[logging.Level]" tiptext="ALL indicates that all messages should be logged" version="" text=".ALL" helpurl="Help/as2logger/idajfj5.html" />
+<string name="FINEST" id="FINEST" object="[logging.Level]" tiptext="CONFIG is a message level for static configuration messages." version="" text=".FINEST" helpurl="Help/as2logger/idatfj5.html" />
+<string name="FINER" id="FINER" object="[logging.Level]" tiptext="FINE is a message level providing tracing information." version="" text=".FINER" helpurl="Help/as2logger/ida3fj5.html" />
+<string name="FINE" id="FINE" object="[logging.Level]" tiptext="FINER indicates a fairly detailed tracing message." version="" text=".FINE" helpurl="Help/as2logger/idahgj5.html" />
+<string name="CONFIG" id="CONFIG" object="[logging.Level]" tiptext="FINEST indicates a highly detailed tracing message." version="" text=".CONFIG" helpurl="Help/as2logger/idargj5.html" />
+<string name="INFO" id="INFO" object="[logging.Level]" tiptext="INFO is a message level for informational messages." version="" text=".INFO" helpurl="Help/as2logger/ida1gj5.html" />
+<string name="WARNING" id="WARNING" object="[logging.Level]" tiptext="WARNING is a message level indicating a potential problem." version="" text=".WARNING" helpurl="Help/as2logger/idafhj5.html" />
+<string name="SEVERE" id="SEVERE" object="[logging.Level]" tiptext="SEVERE is a message level indicating a serious failure." version="" text=".SEVERE" helpurl="Help/as2logger/idaphj5.html" />
+<string name="OFF" id="OFF" object="[logging.Level]" tiptext="OFF is a special level that can be used to turn off logging." version="" text=".OFF" helpurl="Help/as2logger/idazhj5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="Level Methods" version="6" helpurl="Help/as2logger/idasej5.html">
+<string name="forName" id="forName" object="[logging.Level]" tiptext="Returns the level object for the given level string " version="" text=".forName(% level:String %);" helpurl="Help/as2logger/idagqj5.html" />
+<string name="getName" id="getName" object="[logging.Level]" tiptext="Get the name of this level " version="" text=".getName(% %);" helpurl="Help/as2logger/ida2qj5.html" />
+<string name="valueOf" id="valueOf" object="[logging.Level]" tiptext="Get the integer value for this level " version="" text=".valueOf(% %);" helpurl="Help/as2logger/idairj5.html" />
+<string name="toString" id="toString" object="[logging.Level]" tiptext="" version="" text=".toString(% %);" helpurl="Help/as2logger/idaurj5.html" />
+</folder>
+</folder>
+<folder name="Logger" id="[logging.Logger]" tiptext="A Logger object is used to log messages for a specific system or application component.  Loggers are normally named, using a hierarchical dot-separated namespace.  Logger names can be arbitrary strings, but they should normally be based on the package name or class name of the logged component, such as mx.core or mx.controls.  In additon it is possible to create &quot;anonymous&quot; Loggers that are not stored in the Logger namespace.  " index="true" version="6" helpurl="Help/as2logger/ida3rj5.html"> <folder name="Methods" id="Methods" tiptext="Logger Methods" version="6" helpurl="Help/as2logger/ida3rj5.html">
+<string name="getLogger" id="getLogger" object="[logging.Logger]" tiptext="Find or create a logger for a named subsystem.  If a logger has already been created with the given name it is returned. Otherwise a new logger is created.  If a new logger is created its log level will be configured based on the LogManager configuration and it will configured to also send logging output to its parent's publishers.  " version="" text=".getLogger(% name:String %);" helpurl="Help/as2logger/idagtj5.html" />
+<string name="getParent" id="getParent" object="[logging.Logger]" tiptext="Return the parent for this Logger.  This method returns the nearest extant parent in the namespace.  Thus if a Logger is called &quot;a.b.c.d&quot;, and a Logger called &quot;a.b&quot; has been created but no logger &quot;a.b.c&quot; exists, then a call of getParent on the Logger &quot;a.b.c.d&quot; will return the Logger &quot;a.b&quot;.  The parent for the anonymous Logger is always the root (global) Logger. The result will be undefined if it is called on the root (global) Logger in the namespace.  " version="" text=".getParent(% %);" helpurl="Help/as2logger/ida2tj5.html" />
+<string name="getName" id="getName" object="[logging.Logger]" tiptext="Get the name for this logger. " version="" text=".getName(% %);" helpurl="Help/as2logger/idaiuj5.html" />
+<string name="finest" id="finest" object="[logging.Logger]" tiptext="Log a FINEST message.  If the logger is currently enabled for the FINEST message level then the given message is forwarded to all the registered publishers.  " version="" text=".finest(% message:String %);" helpurl="Help/as2logger/idauuj5.html" />
+<string name="finer" id="finer" object="[logging.Logger]" tiptext="Log a FINER message.  If the logger is currently enabled for the FINER message level then the given message is forwarded to all the registered publishers.  " version="" text=".finer(% message:String %);" helpurl="Help/as2logger/idagvj5.html" />
+<string name="fine" id="fine" object="[logging.Logger]" tiptext="Log a FINE message.  If the logger is currently enabled for the FINE message level then the given message is forwarded to all the registered publishers.  " version="" text=".fine(% message:String %);" helpurl="Help/as2logger/idayvj5.html" />
+<string name="info" id="info" object="[logging.Logger]" tiptext="Log a INFO message.  If the logger is currently enabled for the INFO message level then the given message is forwarded to all the registered publishers.  " version="" text=".info(% message:String %);" helpurl="Help/as2logger/idakwj5.html" />
+<string name="warning" id="warning" object="[logging.Logger]" tiptext="Log a WARNING message.  If the logger is currently enabled for the WARNING message level then the given message is forwarded to all the registered publishers.  " version="" text=".warning(% message:String %);" helpurl="Help/as2logger/ida2wj5.html" />
+<string name="severe" id="severe" object="[logging.Logger]" tiptext="Log a SEVERE message.  If the logger is currently enabled for the SEVERE message level then the given message is forwarded to all the registered publishers.  " version="" text=".severe(% message:String %);" helpurl="Help/as2logger/idaoxj5.html" />
+<string name="log" id="log" object="[logging.Logger]" tiptext="Log a message.  If the logger is currently enabled for the given message level then the given message is forwarded to all the registered publishers.  " version="" text=".log(% level:Level, message:String %);" helpurl="Help/as2logger/idadyj5.html" />
+<string name="setLevel" id="setLevel" object="[logging.Logger]" tiptext="Set the log level specifying which message levels will be logged by this logger.  Message levels lower than this value will be discarded. The level value Level.OFF can be used to turn off logging.  If the new level is undefined, it means that this node should inherit its level from its nearest ancestor with a specific (non-undefined) level value.  " version="" text=".setLevel(% level:Level %);" helpurl="Help/as2logger/ida3yj5.html" />
+<string name="getLevel" id="getLevel" object="[logging.Logger]" tiptext="Get the log Level that has been specified for this Logger.  The result may be undefined, which means that this logger's effective level will be inherited from its parent.  " version="" text=".getLevel(% %);" helpurl="Help/as2logger/idapzj5.html" />
+<string name="setFilter" id="setFilter" object="[logging.Logger]" tiptext="Set a filter to control output on this Logger.  After passing the initial &quot;level&quot; check, the Logger will call this Filter to check if a log record should really be published.  " version="" text=".setFilter(% filter:IFilter %);" helpurl="Help/as2logger/ida1zj5.html" />
+<string name="getFilter" id="getFilter" object="[logging.Logger]" tiptext="Get the current filter for this Logger.  " version="" text=".getFilter(% %);" helpurl="Help/as2logger/idan0j5.html" />
+<string name="addPublisher" id="addPublisher" object="[logging.Logger]" tiptext="Adds a publisher for this logger to receive logging messages. By default, Loggers also send their output to their parent logger. " version="" text=".addPublisher(% publisher:IPublisher %);" helpurl="Help/as2logger/idaz0j5.html" />
+<string name="removePublisher" id="removePublisher" object="[logging.Logger]" tiptext="Removes a publisher currently associated with this logger. " version="" text=".removePublisher(% publisher:IPublisher %);" helpurl="Help/as2logger/idao1j5.html" />
+<string name="getPublishers" id="getPublishers" object="[logging.Logger]" tiptext="Gets a list with Publishers currently associated with this logger. " version="" text=".getPublishers(% %);" helpurl="Help/as2logger/idad2j5.html" />
+<string name="isLoggable" id="isLoggable" object="[logging.Logger]" tiptext="Check if a message of the given level would actually be logged by this logger.  This check is based on the Loggers effective level, which may be inherited from its parent.  " version="" text=".isLoggable(% level:Level %);" helpurl="Help/as2logger/idap2j5.html" />
+</folder>
+</folder>
+<folder name="LogManager" id="[logging.LogManager]" tiptext="The LogManager provides a hook mechanism applications can use for loading the logging.xml file which applications can use. The global LogManager object can be retrieved using LogManager.getInstance().  The LogManager object is created during class initialization and cannot subsequently be changed.  " index="true" version="6" helpurl="Help/as2logger/idae3j5.html"> <folder name="Methods" id="Methods" tiptext="LogManager Methods" version="6" helpurl="Help/as2logger/idae3j5.html">
+<string name="getInstance" id="getInstance" object="[logging.LogManager]" tiptext="Get the singleton instance. " version="" text=".getInstance(% %);" helpurl="Help/as2logger/idaw4j5.html" />
+<string name="createFilterByName" id="createFilterByName" object="[logging.LogManager]" tiptext="Returns the Filter object associated with the class with the given string name " version="" text=".createFilterByName(% className:String %);" helpurl="Help/as2logger/idad5j5.html" />
+<string name="createFormatterByName" id="createFormatterByName" object="[logging.LogManager]" tiptext="Returns the Formatter object associated with the class with the given string name " version="" text=".createFormatterByName(% className:String %);" helpurl="Help/as2logger/idaz5j5.html" />
+<string name="createPublisherByName" id="createPublisherByName" object="[logging.LogManager]" tiptext="Returns the Publisher object associated with the class with the given string name " version="" text=".createPublisherByName(% className:String %);" helpurl="Help/as2logger/idasak5.html" />
+<string name="enableLogging" id="enableLogging" object="[logging.LogManager]" tiptext="Enables logging (logging is enabled by default) for all loggers." version="" text=".enableLogging(% %);" helpurl="Help/as2logger/idaibk5.html" />
+<string name="disableLogging" id="disableLogging" object="[logging.LogManager]" tiptext="Disables logging (logging is enabled by default) for all loggers." version="" text=".disableLogging(% %);" helpurl="Help/as2logger/idarbk5.html" />
+<string name="addPropertyChangeListener" id="addPropertyChangeListener" object="[logging.LogManager]" tiptext="Registers a property change listener with the log manager. " version="" text=".addPropertyChangeListener(% listener:IPropertyChangeListener %);" helpurl="Help/as2logger/ida0bk5.html" />
+<string name="removePropertyChangeListener" id="removePropertyChangeListener" object="[logging.LogManager]" tiptext="Unregisters a property change listener from the log manager. " version="" text=".removePropertyChangeListener(% listener:IPropertyChangeListener %);" helpurl="Help/as2logger/idapck5.html" />
+<string name="getDefaultPublisher" id="getDefaultPublisher" object="[logging.LogManager]" tiptext="Gets the default publisher, which usually will be the trace output. " version="" text=".getDefaultPublisher(% %);" helpurl="Help/as2logger/idaedk5.html" />
+<string name="readProperties" id="readProperties" object="[logging.LogManager]" tiptext="Convenience method to start reading the external logging properties. The method is supposed to be invoked by an application's main class on startup as part of the hook mechanism. Make sure you have registered a listener before in order to proceed. " version="" text=".readProperties(% propertyFile:String %);" helpurl="Help/as2logger/idaqdk5.html" />
+<string name="onPropertiesRead" id="onPropertiesRead" object="[logging.LogManager]" tiptext="Proxy handler which will be invoked when properties are read. It then will forward the event to all registered property change listeners.	" version="" text=".onPropertiesRead(% %);" helpurl="Help/as2logger/idacek5.html" />
+</folder>
+</folder>
+<folder name="LogRecord" id="[logging.LogRecord]" tiptext="LogRecord value objects are used to pass logging requests between the logging framework and individual publishers.  " index="true" version="6" helpurl="Help/as2logger/idalek5.html"> <folder name="Constructor" id="Constructor" tiptext="LogRecord Constructor" version="6" helpurl="Help/as2logger/ida5ek5.html">
+<string name="LogRecord" id="LogRecord" object="[logging.LogRecord]" tiptext="Construct a LogRecord with the given date, source's logger name, level and message values.  " version="" text="new LogRecord(% date:Date, loggerName:String, level:Level, message:String %);" helpurl="Help/as2logger/ida5ek5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="LogRecord Methods" version="6" helpurl="Help/as2logger/idalek5.html">
+<string name="getDate" id="getDate" object="[logging.LogRecord]" tiptext="Get the event date. " version="" text=".getDate(% %);" helpurl="Help/as2logger/idaigk5.html" />
+<string name="getLoggerName" id="getLoggerName" object="[logging.LogRecord]" tiptext="Get the source's logger name " version="" text=".getLoggerName(% %);" helpurl="Help/as2logger/idaugk5.html" />
+<string name="getLevel" id="getLevel" object="[logging.LogRecord]" tiptext="Get the logging message level, for example Level.SEVERE. " version="" text=".getLevel(% %);" helpurl="Help/as2logger/idaahk5.html" />
+<string name="getMessage" id="getMessage" object="[logging.LogRecord]" tiptext="Get the &quot;raw&quot; log message before formatting.  " version="" text=".getMessage(% %);" helpurl="Help/as2logger/idamhk5.html" />
+</folder>
+</folder>
+<folder name="PropertyHandler" id="[logging.PropertyHandler]" tiptext="The property handler takes various logging properties and assigns them to the suitable loggers. " index="true" version="6" helpurl="Help/as2logger/idayhk5.html"> <folder name="Methods" id="Methods" tiptext="PropertyHandler Methods" version="6" helpurl="Help/as2logger/idayhk5.html">
+<string name="handleLoggerProperties" id="handleLoggerProperties" object="[logging.PropertyHandler]" tiptext="Handles appliable properties for loggers.  Important: If a filter is specified, make sure to import and reference the given class so it can be accessed by the Logger framework " version="" text=".handleLoggerProperties(% name:String, level:String, filter:String %);" helpurl="Help/as2logger/ida4ik5.html" />
+<string name="handlePublisherProperties" id="handlePublisherProperties" object="[logging.PropertyHandler]" tiptext="Handles appliable properties for publishers.  Important: If a publisher or formatter is specified, make sure to import and reference the given class so it can be accessed by the Logging Framework " version="" text=".handlePublisherProperties(% name:String, publisher:String, formatter:String, level:String %);" helpurl="Help/as2logger/idaakk5.html" />
+</folder>
+</folder>
+<folder name="PropertyLoader" id="[logging.PropertyLoader]" tiptext="Responsible for loading and traversing the logging properties file data. " index="true" version="6" helpurl="Help/as2logger/idaglk5.html"> <folder name="Methods" id="Methods" tiptext="PropertyLoader Methods" version="6" helpurl="Help/as2logger/idaglk5.html">
+<string name="read" id="read" object="[logging.PropertyLoader]" tiptext="Read the given logging property xml file and travers the data. Inform the LogManager when done. " version="" text=".read(% file:String, propHandler:PropertyHandler, logManager:LogManager %);" helpurl="Help/as2logger/idadmk5.html" />
+</folder>
+</folder>
+<folder name="TraceOutput" id="[logging.TraceOutput]" tiptext="Standard implementation of the Logger's framework IPublisher interface. Plain text formats incoming logging messages and sends them (traces) to the output window. " index="true" version="6" helpurl="Help/as2logger/idafnk5.html"> <folder name="Constructor" id="Constructor" tiptext="TraceOutput Constructor" version="6" helpurl="Help/as2logger/idamok5.html">
+<string name="TraceOutput" id="TraceOutput" object="[logging.TraceOutput]" tiptext="Constructs a new trace publisher with the default formatter" version="" text="new TraceOutput(% %);" helpurl="Help/as2logger/idamok5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="TraceOutput Methods" version="6" helpurl="Help/as2logger/idafnk5.html">
+<string name="publish" id="publish" object="[logging.TraceOutput]" tiptext="Publish a LogRecord.  The logging request was made initially to a Logger object, which initialized the LogRecord and forwarded it here.  The Handler is responsible for formatting the message. " version="" text=".publish(% logRecord:LogRecord %);" helpurl="Help/as2logger/idauok5.html" />
+<string name="setFilter" id="setFilter" object="[logging.TraceOutput]" tiptext="Set a filter to control output on this Publisher.  For each call of publish the Publisher will call this Filter (if it is non-null) to check if the LogRecord should be published or discarded.   " version="" text=".setFilter(% filter:IFilter %);" helpurl="Help/as2logger/idampk5.html" />
+<string name="getFilter" id="getFilter" object="[logging.TraceOutput]" tiptext="Get the current filter for this Publisher.  " version="" text=".getFilter(% %);" helpurl="Help/as2logger/idahqk5.html" />
+<string name="setFormatter" id="setFormatter" object="[logging.TraceOutput]" tiptext="Set a formatter for this publisher " version="" text=".setFormatter(% formatter:IFormatter %);" helpurl="Help/as2logger/idazqk5.html" />
+<string name="getFormatter" id="getFormatter" object="[logging.TraceOutput]" tiptext="Gets the formatter currently associated with this publisher " version="" text=".getFormatter(% %);" helpurl="Help/as2logger/idarrk5.html" />
+<string name="setLevel" id="setLevel" object="[logging.TraceOutput]" tiptext="Set the log level specifying which message levels will be logged by this Publisher.  Message levels lower than this value will be discarded. " version="" text=".setLevel(% level:Level %);" helpurl="Help/as2logger/idadsk5.html" />
+<string name="getLevel" id="getLevel" object="[logging.TraceOutput]" tiptext="Get the log level specifying which messages will be logged by this Publisher.  Message levels lower than this level will be discarded. " version="" text=".getLevel(% %);" helpurl="Help/as2logger/ida1sk5.html" />
+<string name="isLoggable" id="isLoggable" object="[logging.TraceOutput]" tiptext="Check if this Publisher would actually log a given LogRecord.  This method checks if the LogRecord has an appropriate Level and whether it satisfies any Filter.  It also may make other Publisher specific checks that might prevent a publisher from logging the LogRecord.  " version="" text=".isLoggable(% logRecord:LogRecord %);" helpurl="Help/as2logger/idantk5.html" />
+</folder>
+</folder>
+<folder name="XMLFormatter" id="[logging.XMLFormatter]" tiptext="A XML formatter implementation. " index="true" version="6" helpurl="Help/as2logger/idaiuk5.html"> <folder name="Methods" id="Methods" tiptext="XMLFormatter Methods" version="6" helpurl="Help/as2logger/idaiuk5.html">
+<string name="format" id="format" object="[logging.XMLFormatter]" tiptext="Format the given log record and return the formatted string.  " version="" text=".format(% logRecord:LogRecord %);" helpurl="Help/as2logger/idadvk5.html" />
+</folder>
+</folder>
+<folder name="XMLOutput" id="[logging.XMLOutput]" tiptext="Standard implementation of the Logger's framework IPublisher interface. XML formats incoming logging messages and sends them (traces) to the output window. " index="true" version="6" helpurl="Help/as2logger/ida4vk5.html"> <folder name="Constructor" id="Constructor" tiptext="XMLOutput Constructor" version="6" helpurl="Help/as2logger/idafxk5.html">
+<string name="XMLOutput" id="XMLOutput" object="[logging.XMLOutput]" tiptext="Constructs a new trace publisher with the standard XML formatter" version="" text="new XMLOutput(% %);" helpurl="Help/as2logger/idafxk5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="XMLOutput Methods" version="6" helpurl="Help/as2logger/ida4vk5.html">
+<string name="publish" id="publish" object="[logging.XMLOutput]" tiptext="Publish a LogRecord.  The logging request was made initially to a Logger object, which initialized the LogRecord and forwarded it here.  The Handler is responsible for formatting the message. " version="" text=".publish(% logRecord:LogRecord %);" helpurl="Help/as2logger/idanxk5.html" />
+<string name="setFilter" id="setFilter" object="[logging.XMLOutput]" tiptext="Set a filter to control output on this Publisher.  For each call of publish the Publisher will call this Filter (if it is non-null) to check if the LogRecord should be published or discarded.   " version="" text=".setFilter(% filter:IFilter %);" helpurl="Help/as2logger/idaiyk5.html" />
+<string name="getFilter" id="getFilter" object="[logging.XMLOutput]" tiptext="Get the current filter for this Publisher.  " version="" text=".getFilter(% %);" helpurl="Help/as2logger/idaazk5.html" />
+<string name="setFormatter" id="setFormatter" object="[logging.XMLOutput]" tiptext="Set a formatter for this publisher " version="" text=".setFormatter(% formatter:IFormatter %);" helpurl="Help/as2logger/idaszk5.html" />
+<string name="getFormatter" id="getFormatter" object="[logging.XMLOutput]" tiptext="Gets the formatter currently associated with this publisher " version="" text=".getFormatter(% %);" helpurl="Help/as2logger/idak0k5.html" />
+<string name="setLevel" id="setLevel" object="[logging.XMLOutput]" tiptext="Set the log level specifying which message levels will be logged by this Publisher.  Message levels lower than this value will be discarded. " version="" text=".setLevel(% level:Level %);" helpurl="Help/as2logger/ida20k5.html" />
+<string name="getLevel" id="getLevel" object="[logging.XMLOutput]" tiptext="Get the log level specifying which messages will be logged by this Publisher.  Message levels lower than this level will be discarded. " version="" text=".getLevel(% %);" helpurl="Help/as2logger/idau1k5.html" />
+<string name="isLoggable" id="isLoggable" object="[logging.XMLOutput]" tiptext="Check if this Publisher would actually log a given LogRecord.  This method checks if the LogRecord has an appropriate Level and whether it satisfies any Filter.  It also may make other Publisher specific checks that might prevent a publisher from logging the LogRecord.  " version="" text=".isLoggable(% logRecord:LogRecord %);" helpurl="Help/as2logger/idag2k5.html" />
+</folder>
+</folder>
+<folder name="EventObject" id="[logging.events.EventObject]" tiptext="" index="true" version="6" helpurl="Help/as2logger/idaf3k5.html"> <folder name="Constructor" id="Constructor" tiptext="EventObject Constructor" version="6" helpurl="Help/as2logger/idav3k5.html">
+<string name="EventObject" id="EventObject" object="[logging.events.EventObject]" tiptext="" version="" text="new EventObject(% source:Object %);" helpurl="Help/as2logger/idav3k5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="EventObject Methods" version="6" helpurl="Help/as2logger/idaf3k5.html">
+<string name="getSource" id="getSource" object="[logging.events.EventObject]" tiptext="" version="" text=".getSource(% %);" helpurl="Help/as2logger/ida43k5.html" />
+</folder>
+</folder>
+<folder name="PropertyChangeEvent" id="[logging.events.PropertyChangeEvent]" tiptext="" index="true" version="6" helpurl="Help/as2logger/ida44k5.html"> <folder name="Constructor" id="Constructor" tiptext="PropertyChangeEvent Constructor" version="6" helpurl="Help/as2logger/idas5k5.html">
+<string name="PropertyChangeEvent" id="PropertyChangeEvent" object="[logging.events.PropertyChangeEvent]" tiptext="" version="" text="new PropertyChangeEvent(% source:Object %);" helpurl="Help/as2logger/idas5k5.html" />
+</folder>
+</folder>
+<folder name="ClassNotFoundError" id="[logging.errors.ClassNotFoundError]" tiptext="" index="true" version="6" helpurl="Help/as2logger/idacal5.html"> <folder name="Properties" id="Properties" tiptext="ClassNotFoundError Properties" version="6" helpurl="Help/as2logger/idacal5.html">
+<string name="name" id="name" object="[logging.errors.ClassNotFoundError]" tiptext="" version="" text=".name" helpurl="Help/as2logger/idasal5.html" />
+<string name="message" id="message" object="[logging.errors.ClassNotFoundError]" tiptext="" version="" text=".message" helpurl="Help/as2logger/idaxal5.html" />
+</folder>
+<folder name="Constructor" id="Constructor" tiptext="ClassNotFoundError Constructor" version="6" helpurl="Help/as2logger/ida2al5.html">
+<string name="ClassNotFoundError" id="ClassNotFoundError" object="[logging.errors.ClassNotFoundError]" tiptext="" version="" text="new ClassNotFoundError(% className:String %);" helpurl="Help/as2logger/ida2al5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="ClassNotFoundError Methods" version="6" helpurl="Help/as2logger/idacal5.html">
+<string name="toString" id="toString" object="[logging.errors.ClassNotFoundError]" tiptext="" version="" text=".toString(% %);" helpurl="Help/as2logger/idafbl5.html" />
+</folder>
+</folder>
+<folder name="IllegalArgumentError" id="[logging.errors.IllegalArgumentError]" tiptext="" index="true" version="6" helpurl="Help/as2logger/idakbl5.html"> <folder name="Properties" id="Properties" tiptext="IllegalArgumentError Properties" version="6" helpurl="Help/as2logger/idakbl5.html">
+<string name="name" id="name" object="[logging.errors.IllegalArgumentError]" tiptext="" version="" text=".name" helpurl="Help/as2logger/ida0bl5.html" />
+<string name="message" id="message" object="[logging.errors.IllegalArgumentError]" tiptext="" version="" text=".message" helpurl="Help/as2logger/ida5bl5.html" />
+</folder>
+<folder name="Constructor" id="Constructor" tiptext="IllegalArgumentError Constructor" version="6" helpurl="Help/as2logger/idaecl5.html">
+<string name="IllegalArgumentError" id="IllegalArgumentError" object="[logging.errors.IllegalArgumentError]" tiptext="" version="" text="new IllegalArgumentError(% message:String %);" helpurl="Help/as2logger/idaecl5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="IllegalArgumentError Methods" version="6" helpurl="Help/as2logger/idakbl5.html">
+<string name="toString" id="toString" object="[logging.errors.IllegalArgumentError]" tiptext="" version="" text=".toString(% %);" helpurl="Help/as2logger/idancl5.html" />
+</folder>
+</folder>
+<folder name="InvalidFilterError" id="[logging.errors.InvalidFilterError]" tiptext="" index="true" version="6" helpurl="Help/as2logger/idascl5.html"> <folder name="Properties" id="Properties" tiptext="InvalidFilterError Properties" version="6" helpurl="Help/as2logger/idascl5.html">
+<string name="name" id="name" object="[logging.errors.InvalidFilterError]" tiptext="" version="" text=".name" helpurl="Help/as2logger/ida5cl5.html" />
+<string name="message" id="message" object="[logging.errors.InvalidFilterError]" tiptext="" version="" text=".message" helpurl="Help/as2logger/idaedl5.html" />
+</folder>
+<folder name="Constructor" id="Constructor" tiptext="InvalidFilterError Constructor" version="6" helpurl="Help/as2logger/idajdl5.html">
+<string name="InvalidFilterError" id="InvalidFilterError" object="[logging.errors.InvalidFilterError]" tiptext="" version="" text="new InvalidFilterError(% className:String %);" helpurl="Help/as2logger/idajdl5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="InvalidFilterError Methods" version="6" helpurl="Help/as2logger/idascl5.html">
+<string name="toString" id="toString" object="[logging.errors.InvalidFilterError]" tiptext="" version="" text=".toString(% %);" helpurl="Help/as2logger/idasdl5.html" />
+</folder>
+</folder>
+<folder name="InvalidFormatterError" id="[logging.errors.InvalidFormatterError]" tiptext="" index="true" version="6" helpurl="Help/as2logger/idaxdl5.html"> <folder name="Properties" id="Properties" tiptext="InvalidFormatterError Properties" version="6" helpurl="Help/as2logger/idaxdl5.html">
+<string name="name" id="name" object="[logging.errors.InvalidFormatterError]" tiptext="" version="" text=".name" helpurl="Help/as2logger/idaeel5.html" />
+<string name="message" id="message" object="[logging.errors.InvalidFormatterError]" tiptext="" version="" text=".message" helpurl="Help/as2logger/idajel5.html" />
+</folder>
+<folder name="Constructor" id="Constructor" tiptext="InvalidFormatterError Constructor" version="6" helpurl="Help/as2logger/idaoel5.html">
+<string name="InvalidFormatterError" id="InvalidFormatterError" object="[logging.errors.InvalidFormatterError]" tiptext="" version="" text="new InvalidFormatterError(% className:String %);" helpurl="Help/as2logger/idaoel5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="InvalidFormatterError Methods" version="6" helpurl="Help/as2logger/idaxdl5.html">
+<string name="toString" id="toString" object="[logging.errors.InvalidFormatterError]" tiptext="" version="" text=".toString(% %);" helpurl="Help/as2logger/idaxel5.html" />
+</folder>
+</folder>
+<folder name="InvalidLevelError" id="[logging.errors.InvalidLevelError]" tiptext="" index="true" version="6" helpurl="Help/as2logger/ida2el5.html"> <folder name="Properties" id="Properties" tiptext="InvalidLevelError Properties" version="6" helpurl="Help/as2logger/ida2el5.html">
+<string name="name" id="name" object="[logging.errors.InvalidLevelError]" tiptext="" version="" text=".name" helpurl="Help/as2logger/idajfl5.html" />
+<string name="message" id="message" object="[logging.errors.InvalidLevelError]" tiptext="" version="" text=".message" helpurl="Help/as2logger/idaofl5.html" />
+</folder>
+<folder name="Constructor" id="Constructor" tiptext="InvalidLevelError Constructor" version="6" helpurl="Help/as2logger/idatfl5.html">
+<string name="InvalidLevelError" id="InvalidLevelError" object="[logging.errors.InvalidLevelError]" tiptext="" version="" text="new InvalidLevelError(% levelName:String %);" helpurl="Help/as2logger/idatfl5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="InvalidLevelError Methods" version="6" helpurl="Help/as2logger/ida2el5.html">
+<string name="toString" id="toString" object="[logging.errors.InvalidLevelError]" tiptext="" version="" text=".toString(% %);" helpurl="Help/as2logger/ida2fl5.html" />
+</folder>
+</folder>
+<folder name="InvalidPublisherError" id="[logging.errors.InvalidPublisherError]" tiptext="" index="true" version="6" helpurl="Help/as2logger/idabgl5.html"> <folder name="Properties" id="Properties" tiptext="InvalidPublisherError Properties" version="6" helpurl="Help/as2logger/idabgl5.html">
+<string name="name" id="name" object="[logging.errors.InvalidPublisherError]" tiptext="" version="" text=".name" helpurl="Help/as2logger/idaogl5.html" />
+<string name="message" id="message" object="[logging.errors.InvalidPublisherError]" tiptext="" version="" text=".message" helpurl="Help/as2logger/idatgl5.html" />
+</folder>
+<folder name="Constructor" id="Constructor" tiptext="InvalidPublisherError Constructor" version="6" helpurl="Help/as2logger/idaygl5.html">
+<string name="InvalidPublisherError" id="InvalidPublisherError" object="[logging.errors.InvalidPublisherError]" tiptext="" version="" text="new InvalidPublisherError(% className:String %);" helpurl="Help/as2logger/idaygl5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="InvalidPublisherError Methods" version="6" helpurl="Help/as2logger/idabgl5.html">
+<string name="toString" id="toString" object="[logging.errors.InvalidPublisherError]" tiptext="" version="" text=".toString(% %);" helpurl="Help/as2logger/idabhl5.html" />
+</folder>
+</folder>
+<folder name="Class" id="[logging.util.Class]" tiptext="" index="true" version="6" helpurl="Help/as2logger/idakhl5.html"> <folder name="Methods" id="Methods" tiptext="Class Methods" version="6" helpurl="Help/as2logger/idakhl5.html">
+<string name="forName" id="forName" object="[logging.util.Class]" tiptext="Returns the Function object associated with the class with the given string name. " version="" text=".forName(% className:String %);" helpurl="Help/as2logger/idaeil5.html" />
+</folder>
+</folder>
+<folder name="Vector" id="[logging.util.Vector]" tiptext="" index="true" version="6" helpurl="Help/as2logger/idawnl5.html"> <folder name="Constructor" id="Constructor" tiptext="Vector Constructor" version="6" helpurl="Help/as2logger/idaool5.html">
+<string name="Vector" id="Vector" object="[logging.util.Vector]" tiptext="Constructs a new Vector object" version="" text="new Vector(% init:Array %);" helpurl="Help/as2logger/idaool5.html" />
+</folder>
+<folder name="Methods" id="Methods" tiptext="Vector Methods" version="6" helpurl="Help/as2logger/idawnl5.html">
+<string name="addItem" id="addItem" object="[logging.util.Vector]" tiptext="Adds the specified item to the list. " version="" text=".addItem(% o:Object %);" helpurl="Help/as2logger/ida1ol5.html" />
+<string name="addAll" id="addAll" object="[logging.util.Vector]" tiptext="Adds all items to the list. " version="" text=".addAll(% list:List %);" helpurl="Help/as2logger/idaspl5.html" />
+<string name="clear" id="clear" object="[logging.util.Vector]" tiptext="Clear all items in the list /	" version="" text=".clear(% %);" helpurl="Help/as2logger/idamql5.html" />
+<string name="containsItem" id="containsItem" object="[logging.util.Vector]" tiptext="Checks whether the given object is an item of that list " version="" text=".containsItem(% o:Object %);" helpurl="Help/as2logger/ida1ql5.html" />
+<string name="getItem" id="getItem" object="[logging.util.Vector]" tiptext="Gets the item at the specified index " version="" text=".getItem(% index:Number %);" helpurl="Help/as2logger/idasrl5.html" />
+<string name="indexOf" id="indexOf" object="[logging.util.Vector]" tiptext="Return the index number of a given list item " version="" text=".indexOf(% o:Object %);" helpurl="Help/as2logger/idajsl5.html" />
+<string name="isEmpty" id="isEmpty" object="[logging.util.Vector]" tiptext="Checks whether the list is empty or not " version="" text=".isEmpty(% %);" helpurl="Help/as2logger/idaatl5.html" />
+<string name="removeItem" id="removeItem" object="[logging.util.Vector]" tiptext="Removes an item from the list " version="" text=".removeItem(% o:Object %);" helpurl="Help/as2logger/idastl5.html" />
+<string name="size" id="size" object="[logging.util.Vector]" tiptext="Returns the number of items in the list " version="" text=".size(% %);" helpurl="Help/as2logger/idajul5.html" />
+<string name="toArray" id="toArray" object="[logging.util.Vector]" tiptext="Returns the list as array object " version="" text=".toArray(% %);" helpurl="Help/as2logger/ida1ul5.html" />
+</folder>
+</folder>
+</folder>
+</actionspanel>
+<colorsyntax>
+<identifier text="logging.DefaultFormatter" />
+<identifier text="DefaultFormatter" />
+<identifier text=".format" />
+<identifier text="logging.IFilter" />
+<identifier text="IFilter" />
+<identifier text=".isLoggable" />
+<identifier text="logging.IFormatter" />
+<identifier text="IFormatter" />
+<identifier text=".format" />
+<identifier text="logging.IPublisher" />
+<identifier text="IPublisher" />
+<identifier text=".getFilter" />
+<identifier text=".getFormatter" />
+<identifier text=".getLevel" />
+<identifier text=".isLoggable" />
+<identifier text=".publish" />
+<identifier text=".setFilter" />
+<identifier text=".setFormatter" />
+<identifier text=".setLevel" />
+<identifier text="logging.Level" />
+<identifier text="Level" />
+<identifier text=".ALL" />
+<identifier text=".CONFIG" />
+<identifier text=".FINE" />
+<identifier text=".FINER" />
+<identifier text=".FINEST" />
+<identifier text=".forName" />
+<identifier text=".getName" />
+<identifier text=".INFO" />
+<identifier text=".OFF" />
+<identifier text=".SEVERE" />
+<identifier text=".toString" />
+<identifier text=".valueOf" />
+<identifier text=".WARNING" />
+<identifier text="logging.Logger" />
+<identifier text="Logger" />
+<identifier text=".addPublisher" />
+<identifier text=".fine" />
+<identifier text=".finer" />
+<identifier text=".finest" />
+<identifier text=".getFilter" />
+<identifier text=".getLevel" />
+<identifier text=".getLogger" />
+<identifier text=".getName" />
+<identifier text=".getParent" />
+<identifier text=".getPublishers" />
+<identifier text=".info" />
+<identifier text=".isLoggable" />
+<identifier text=".log" />
+<identifier text=".removePublisher" />
+<identifier text=".setFilter" />
+<identifier text=".setLevel" />
+<identifier text=".severe" />
+<identifier text=".warning" />
+<identifier text="logging.LogManager" />
+<identifier text="LogManager" />
+<identifier text=".addPropertyChangeListener" />
+<identifier text=".createFilterByName" />
+<identifier text=".createFormatterByName" />
+<identifier text=".createPublisherByName" />
+<identifier text=".disableLogging" />
+<identifier text=".enableLogging" />
+<identifier text=".getDefaultPublisher" />
+<identifier text=".getInstance" />
+<identifier text=".onPropertiesRead" />
+<identifier text=".readProperties" />
+<identifier text=".removePropertyChangeListener" />
+<identifier text="logging.LogRecord" />
+<identifier text="LogRecord" />
+<identifier text=".getDate" />
+<identifier text=".getLevel" />
+<identifier text=".getLoggerName" />
+<identifier text=".getMessage" />
+<identifier text="logging.PropertyHandler" />
+<identifier text="PropertyHandler" />
+<identifier text=".handleLoggerProperties" />
+<identifier text=".handlePublisherProperties" />
+<identifier text="logging.PropertyLoader" />
+<identifier text="PropertyLoader" />
+<identifier text=".read" />
+<identifier text="logging.TraceOutput" />
+<identifier text="TraceOutput" />
+<identifier text=".getFilter" />
+<identifier text=".getFormatter" />
+<identifier text=".getLevel" />
+<identifier text=".isLoggable" />
+<identifier text=".publish" />
+<identifier text=".setFilter" />
+<identifier text=".setFormatter" />
+<identifier text=".setLevel" />
+<identifier text="logging.XMLFormatter" />
+<identifier text="XMLFormatter" />
+<identifier text=".format" />
+<identifier text="logging.XMLOutput" />
+<identifier text="XMLOutput" />
+<identifier text=".getFilter" />
+<identifier text=".getFormatter" />
+<identifier text=".getLevel" />
+<identifier text=".isLoggable" />
+<identifier text=".publish" />
+<identifier text=".setFilter" />
+<identifier text=".setFormatter" />
+<identifier text=".setLevel" />
+<identifier text="logging.events.EventObject" />
+<identifier text="EventObject" />
+<identifier text=".getSource" />
+<identifier text="logging.events.IPropertyChangeListener" />
+<identifier text="IPropertyChangeListener" />
+<identifier text=".onPropertyChanged" />
+<identifier text="logging.events.PropertyChangeEvent" />
+<identifier text="PropertyChangeEvent" />
+<identifier text="logging.errors.ClassNotFoundError" />
+<identifier text="ClassNotFoundError" />
+<identifier text=".message" />
+<identifier text=".name" />
+<identifier text=".toString" />
+<identifier text="logging.errors.IllegalArgumentError" />
+<identifier text="IllegalArgumentError" />
+<identifier text=".message" />
+<identifier text=".name" />
+<identifier text=".toString" />
+<identifier text="logging.errors.InvalidFilterError" />
+<identifier text="InvalidFilterError" />
+<identifier text=".message" />
+<identifier text=".name" />
+<identifier text=".toString" />
+<identifier text="logging.errors.InvalidFormatterError" />
+<identifier text="InvalidFormatterError" />
+<identifier text=".message" />
+<identifier text=".name" />
+<identifier text=".toString" />
+<identifier text="logging.errors.InvalidLevelError" />
+<identifier text="InvalidLevelError" />
+<identifier text=".message" />
+<identifier text=".name" />
+<identifier text=".toString" />
+<identifier text="logging.errors.InvalidPublisherError" />
+<identifier text="InvalidPublisherError" />
+<identifier text=".message" />
+<identifier text=".name" />
+<identifier text=".toString" />
+<identifier text="logging.util.Class" />
+<identifier text="Class" />
+<identifier text=".forName" />
+<identifier text="logging.util.List" />
+<identifier text="List" />
+<identifier text=".addAll" />
+<identifier text=".addItem" />
+<identifier text=".clear" />
+<identifier text=".containsItem" />
+<identifier text=".getItem" />
+<identifier text=".indexOf" />
+<identifier text=".isEmpty" />
+<identifier text=".removeItem" />
+<identifier text=".size" />
+<identifier text=".toArray" />
+<identifier text="logging.util.Vector" />
+<identifier text="Vector" />
+<identifier text=".addAll" />
+<identifier text=".addItem" />
+<identifier text=".clear" />
+<identifier text=".containsItem" />
+<identifier text=".getItem" />
+<identifier text=".indexOf" />
+<identifier text=".isEmpty" />
+<identifier text=".removeItem" />
+<identifier text=".size" />
+<identifier text=".toArray" />
+</colorsyntax>
+<codehints>
+<codehint pattern="Level.ALL" />
+<codehint pattern="Level.FINEST" />
+<codehint pattern="Level.FINER" />
+<codehint pattern="Level.FINE" />
+<codehint pattern="Level.CONFIG" />
+<codehint pattern="Level.INFO" />
+<codehint pattern="Level.WARNING" />
+<codehint pattern="Level.SEVERE" />
+<codehint pattern="Level.OFF" />
+<codehint pattern="Level.forName(% level:String %);" />
+<codehint pattern="Logger.getLogger(% name:String %);" />
+<codehint pattern="LogManager.getInstance(% %);" />
+<codehint pattern="LogManager.createFilterByName(% className:String %);" />
+<codehint pattern="LogManager.createFormatterByName(% className:String %);" />
+<codehint pattern="LogManager.createPublisherByName(% className:String %);" />
+<codehint pattern="Class.forName(% className:String %);" />
+</codehints>
+</customactions>

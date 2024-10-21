@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>KindedPointcut</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_aop_pointcut_KindedPointcut">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>KindedPointcut</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_aop_Pointcut.html">Pointcut</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.aop.pointcut.KindedPointcut</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Monday, 15 August 2005, 10:17:46</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.aop.Pointcut;
+import org.as2lib.aop.JoinPoint;
+
+/**
+ * {@code KindedPointcut} represents any kinded pointcuts. These are for example
+ * execution, set and get access pointcuts.
+ * 
+ * &lt;p&gt;Kinded pointcuts build upon a join point pattern and a specific join point type.
+ * Pre-defined join point types are {@link AbstractJoinPoint#METHOD},
+ * {@link AbstractJoinPoint#PROPERTY}, {@link AbstractJoinPoint#GET_PROPERTY},
+ * {@link AbstractJoinPoint#SET_PROPERTY} and {@link AbstractJoinPoint#CONSTRUCTOR}.
+ * You may combine several join point types with a bitwise or "|" to make this kinded
+ * pointcut match all the combined join point types.
+ * 
+ * &lt;p&gt;The pattern may consist of wildcards. Using wildcards you can capture join points
+ * based on specific characteristics like capture every setter method contained in every
+ * class whose name starts with {@code "Abstract"} in the {@code org.as2lib.env} package
+ * and every sub-package. Such a pattern would look something like this:
+ * &lt;code&gt;org.as2lib.env..Abstract*.set*&lt;/code&gt;
+ * 
+ * &lt;p&gt;You already see two wildcards there: '*' and '..'.
+ * &lt;ul&gt;
+ *   &lt;li&gt;'*' indicates any number of characters excluding the period.&lt;/li&gt;
+ *   &lt;li&gt;'..' indicates any number of charecters including all periods.&lt;/li&gt;
+ *   &lt;li&gt;'+' indicates all subclasses or subinterfaces of a given type.&lt;/li&gt;
+ *   &lt;li&gt;
+ *     '!' negates the match; match all join points except the ones that match the
+ *     pattern.
+ *   &lt;/li&gt;
+ * &lt;/ul&gt;
+ * 
+ * @author Simon Wacker
+ * @see &lt;a href="http://www.simonwacker.com/blog/archives/000057.php"&gt;Kinded Pointcuts&lt;/a&gt;
+ * @see &lt;a href="http://www.simonwacker.com/blog/archives/000053.php"&gt;Wildcards&lt;/a&gt;
+ */
+class org.as2lib.aop.pointcut.KindedPointcut extends BasicClass implements Pointcut {
+    
+    /** The types of the matching join points. */
+    private var matchingJoinPointTypes:Number;
+    
+    /** The pattern that represents the join point. */
+    private var joinPointPattern:String;
+    
+    /**
+     * Constructs a new {@code KindedPointcut} instance.
+     *
+     * &lt;p&gt;Depending on the join points {@code matches} method a pattern of value
+     * {@code null} or {@code undefined} will cause the {@link #captures} method to
+     * return {@code true} or {@code false}. Note that the join point implementations
+     * provided by this framework return {@code true} for a {@code null} pattern.
+     * 
+     * &lt;p&gt;A matching join point type of value {@code null} or {@code undefined} is
+     * interpreted as "any type of join point allowed".
+     * 
+     * &lt;p&gt;{@code matchingJoinPointTypes} can be either only one type or a bitwise or "|"
+     * combination of several types. It is thus possible to make this kinded pointcut
+     * match more than one join point type.
+     * &lt;code&gt;AbstractJoinPoint.METHOD | AbstractJoinPoint.CONSTRUCTOR&lt;/code&gt;
+     * 
+     * @param joinPointPattern the join point pattern
+     * @param matchingJoinPointTypes the types of the join points that match this
+     * pointcut
+     */
+    public function KindedPointcut(joinPointPattern:String, matchingJoinPointTypes:Number) {
+        this.joinPointPattern = joinPointPattern;
+        this.matchingJoinPointTypes = matchingJoinPointTypes;
+    }
+    
+    /**
+     * Checks whether the given {@code joinPoint} is captured by this pointcut. This is
+     * normally the case if the join point is of the correct type and the pattern
+     * matches the join point.
+     * 
+     * {@code false} will be returned if:
+     * &lt;ul&gt;
+     *   &lt;li&gt;The passed-in join point is {@code null} or {@code undefined}.&lt;/li&gt;
+     *   &lt;li&gt;The passed-in join point does not match the given join point pattern.&lt;/li&gt;
+     *   &lt;li&gt;The passed-in join point's type does not match the given one.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param joinPoint the join point to check whether it is captured by this pointcut
+     * @return {@code true} if the given {@code joinPoint} is captured else {@code false}
+     * @see JoinPoint#matches
+     */
+    public function captures(joinPoint:JoinPoint):Boolean {
+        if (!joinPoint) return false;
+        if (this.matchingJoinPointTypes == null) {
+            return joinPoint.matches(this.joinPointPattern);
+        }
+        return ((this.matchingJoinPointTypes &amp; joinPoint.getType()) &gt; 0
+                    &amp;&amp; joinPoint.matches(this.joinPointPattern));
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>KindedPointcut</code> represents any kinded pointcuts.</div> These are for example<br /> execution, set and get access pointcuts.<p>Kinded pointcuts build upon a join point pattern and a specific join point type.<br /> Pre-defined join point types are <a href="org_as2lib_aop_joinpoint_AbstractJoinPoint.html#METHOD">org.as2lib.aop.joinpoint.AbstractJoinPoint.METHOD</a>,<br /> <a href="org_as2lib_aop_joinpoint_AbstractJoinPoint.html#PROPERTY">org.as2lib.aop.joinpoint.AbstractJoinPoint.PROPERTY</a>, <a href="org_as2lib_aop_joinpoint_AbstractJoinPoint.html#GET_PROPERTY">org.as2lib.aop.joinpoint.AbstractJoinPoint.GET_PROPERTY</a>,<br /> <a href="org_as2lib_aop_joinpoint_AbstractJoinPoint.html#SET_PROPERTY">org.as2lib.aop.joinpoint.AbstractJoinPoint.SET_PROPERTY</a> and <a href="org_as2lib_aop_joinpoint_AbstractJoinPoint.html#CONSTRUCTOR">org.as2lib.aop.joinpoint.AbstractJoinPoint.CONSTRUCTOR</a>.<br /> You may combine several join point types with a bitwise or "|" to make this kinded<br /> pointcut match all the combined join point types.<p>The pattern may consist of wildcards. Using wildcards you can capture join points<br /> based on specific characteristics like capture every setter method contained in every<br /> class whose name starts with <code>"Abstract"</code> in the <code>org.as2lib.env</code> package<br /> and every sub-package. Such a pattern would look something like this:<br /> <code>org.as2lib.env..Abstract*.<span class="codeIdentifier">set</span>*</code><p>You already see two wildcards there: '*' and '..'.<ul><li>'*' indicates any number of characters excluding the period.</li><li>'..' indicates any number of charecters including all periods.</li><li>'+' indicates all subclasses or subinterfaces of a given type.</li><li>'!' negates the match; match all join points except the ones that match the<br />     pattern.</li></ul><div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="http://www.simonwacker.com/blog/archives/000057.php">Kinded Pointcuts</a><br /><a href="http://www.simonwacker.com/blog/archives/000053.php">Wildcards</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#KindedPointcut">KindedPointcut</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#matchingJoinPointTypes">matchingJoinPointTypes</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#joinPointPattern">joinPointPattern</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#captures">captures</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="KindedPointcut">KindedPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>KindedPointcut</b> (
+
+</div>
+                <div><span class="code">joinPointPattern:String,
+matchingJoinPointTypes:Number)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>KindedPointcut</code> instance.<p>Depending on the join points <code>matches</code> method a pattern of value<br /> <code>null</code> or <code>undefined</code> will cause the <a href="org_as2lib_aop_pointcut_KindedPointcut.html#captures">captures</a> method to<br /> return <code>true</code> or <code>false</code>. Note that the join point implementations<br /> provided by this framework return <code>true</code> for a <code>null</code> pattern.<p>A matching join point type of value <code>null</code> or <code>undefined</code> is<br /> interpreted as "any type of join point allowed".<p><code>matchingJoinPointTypes</code> can be either only one type or a bitwise or "|"<br /> combination of several types. It is thus possible to make this kinded pointcut<br /> match more than one join point type.<br /> <code>AbstractJoinPoint.METHOD | AbstractJoinPoint.CONSTRUCTOR</code></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">joinPointPattern      <span class="itemSeparator">:</span></div>
+                    <div>the join point pattern</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">matchingJoinPointTypes<span class="itemSeparator">:</span></div>
+                    <div>the types of the join points that match this<br /> pointcut</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="joinPointPattern">joinPointPattern</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>joinPointPattern</b>:String
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The pattern that represents the join point.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="matchingJoinPointTypes">matchingJoinPointTypes</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>matchingJoinPointTypes</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The types of the matching join points.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="captures">captures</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>captures</b> (
+</div>
+                <div><span class="code">joinPoint:<a href="org_as2lib_aop_JoinPoint.html">JoinPoint</a>) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks whether the given <code>joinPoint</code> is captured by this pointcut. This is<br /> normally the case if the join point is of the correct type and the pattern<br /> matches the join point.<br /> <br /> <code>false</code> will be returned if:<ul><li>The passed-in join point is <code>null</code> or <code>undefined</code>.</li><li>The passed-in join point does not match the given join point pattern.</li><li>The passed-in join point's type does not match the given one.</li></ul></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">joinPoint<span class="itemSeparator">:</span></div>
+                    <div>the join point to check whether it is captured by this pointcut</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the given <code>joinPoint</code> is captured else <code>false</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_aop_JoinPoint.html#matches">org.as2lib.aop.JoinPoint.matches</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_aop_Pointcut.html#captures">org.as2lib.aop.Pointcut.captures</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:11</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

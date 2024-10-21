@@ -1,0 +1,471 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>MultilineString</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_data_type_MultilineString">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>MultilineString</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>String</td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_core_BasicInterface.html">BasicInterface</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.0</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.data.type.MultilineString</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Sunday, 25 September 2005, 20:59:34</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicInterface;
+import org.as2lib.data.holder.Iterator;
+import org.as2lib.data.holder.array.ArrayIterator;
+import org.as2lib.Config;
+
+/**
+ * {@code MultilineString} is a extension for {@code String} that allows to access
+ * all lines seperatly.
+ * 
+ * &lt;p&gt;To not have to deal with different forms of line breaks (Windows/Apple/Unix)
+ * {@code MultilineString} automatically standarizes them to the {@code \n} character.
+ * So the passed-in {@code string} will always get standardized.
+ * 
+ * &lt;p&gt;If you need to access the orignal {@code string} you can use
+ * {@code getOriginalString}.
+ * 
+ * @author Martin Heidegger
+ * @version 1.0
+ */
+class org.as2lib.data.type.MultilineString extends String implements BasicInterface {
+    
+    /** Character code for the WINDOWS line break. */
+    private static var WIN_BREAK = String.fromCharCode(13)+String.fromCharCode(10);
+    
+    /** Character code for the APPLE line break. */
+    private static var MAC_BREAK = String.fromCharCode(13);
+    
+    /** Original content without standardized line breaks. */
+    private var original:String;
+    
+    /** Seperation of all lines for the string. */
+    private var lines:Array;
+    
+    /**
+     * Constructs a new {@code MultilineString}.
+     * 
+     * @param string {@code String} to be handled as multiline
+     */
+    public function MultilineString(string:String) {
+        super(setString(string));
+        lines = new Array();
+        lines = split("\n");
+    }
+    
+    /**
+     * Standardizes the passed-in string to have {@code \n} line breaks and saves
+     * the original content.
+     * 
+     * @param string {@code String} to be used
+     * @return {@code String} that contains no special line breaks
+     */
+    private function setString(string:String):String {
+        original = string;
+        return string.split(WIN_BREAK).join("\n").split(MAC_BREAK).join("\n");
+    }
+    
+    /**
+     * Returns the original used string (without line break standarisation).
+     * 
+     * @return the original used string
+     */
+    public function getOriginalString(Void):String {
+        return original;
+    }
+    
+    /**
+     * Returns a specific line within the {@code MultilineString}.
+     * 
+     * &lt;p&gt;It will return {@code undefined} if the line does not exist.
+     * 
+     * &lt;p&gt;The line does not contain the line break.
+     * 
+     * &lt;p&gt;The counting of lines startes with {@code 0}.
+     * 
+     * @param line number of the line to get the content of
+     * @return content of the line
+     */
+    public function getLine(line:Number):String {
+        return lines[line];
+    }
+    
+    /**
+     * Returns the content as array that contains each line.
+     * 
+     * @return content split into lines
+     */
+    public function getLines(Void):Array {
+        return lines.concat();
+    }
+    
+    /**
+     * Returns the amount of lines in the content.
+     * 
+     * @return amount of lines within the content
+     */
+    public function getLineCount(Void):Number {
+        return lines.length;
+    }
+    
+    /**
+     * Returns a {@link Iterator} to iterate through all lines of the content.
+     * 
+     * @return {@code Iterator} for all lines of the content
+     */
+    public function lineIterator(Void):Iterator {
+        return (new ArrayIterator(lines));
+    }
+
+    /**
+     * Extended {@code .toString} implementation.
+     * 
+     * @return this instance as string
+     */
+    public function toString():String {
+        return Config.getObjectStringifier().execute(this);
+    }
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>MultilineString</code> is a extension for <code>String</code> that allows to access<br /> all lines seperatly.</div><p>To not have to deal with different forms of line breaks (Windows/Apple/Unix)<br /> <code>MultilineString</code> automatically standarizes them to the <code>&#92;n</code> character.<br /> So the passed-in <code>string</code> will always get standardized.<p>If you need to access the orignal <code>string</code> you can use<br /> <code>getOriginalString</code>.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#MultilineString">MultilineString</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Class properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#WIN_BREAK">WIN_BREAK</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#MAC_BREAK">MAC_BREAK</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#original">original</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#lines">lines</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#setString">setString</a>
+                </li>
+                <li>
+                  <a href="#getOriginalString">getOriginalString</a>
+                </li>
+                <li>
+                  <a href="#getLine">getLine</a>
+                </li>
+                <li>
+                  <a href="#getLines">getLines</a>
+                </li>
+                <li>
+                  <a href="#getLineCount">getLineCount</a>
+                </li>
+                <li>
+                  <a href="#lineIterator">lineIterator</a>
+                </li>
+                <li>
+                  <a href="#toString">toString</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="MultilineString">MultilineString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>MultilineString</b> (
+</div>
+                <div><span class="code">string:String)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>MultilineString</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">string<span class="itemSeparator">:</span></div>
+                    <div><code>String</code> to be handled as multiline</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="MAC_BREAK">MAC_BREAK</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>MAC_BREAK</b> = <span class="codeIdentifier">String</span>.fromCharCode(<span class="codeNumber">13</span>)
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Character code for the APPLE line break.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="WIN_BREAK">WIN_BREAK</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>WIN_BREAK</b> = <span class="codeIdentifier">String</span>.fromCharCode(<span class="codeNumber">13</span>)+<span class="codeIdentifier">String</span>.fromCharCode(<span class="codeNumber">10</span>)
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Character code for the WINDOWS line break.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="lines">lines</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>lines</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Seperation of all lines for the string.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="original">original</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>original</b>:String
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Original content without standardized line breaks.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getLine">getLine</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getLine</b> (
+</div>
+                <div><span class="code">line:Number) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns a specific line within the <code>MultilineString</code>.<p>It will return <code>undefined</code> if the line does not exist.<p>The line does not contain the line break.<p>The counting of lines startes with <code>0</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">line<span class="itemSeparator">:</span></div>
+                    <div>number of the line to get the content of</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">content of the line</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getLineCount">getLineCount</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getLineCount</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the amount of lines in the content.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">amount of lines within the content</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getLines">getLines</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getLines</b> (
+</div>
+                <div><span class="code">Void) : Array</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the content as array that contains each line.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">content split into lines</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getOriginalString">getOriginalString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getOriginalString</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the original used string (without line break standarisation).</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the original used string</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="lineIterator">lineIterator</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>lineIterator</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_Iterator.html">Iterator</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns a <a href="org_as2lib_data_holder_Iterator.html">org.as2lib.data.holder.Iterator</a> to iterate through all lines of the content.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>Iterator</code> for all lines of the content</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="setString">setString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>setString</b> (
+</div>
+                <div><span class="code">string:String) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Standardizes the passed-in string to have <code>&#92;n</code> line breaks and saves<br /> the original content.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">string<span class="itemSeparator">:</span></div>
+                    <div><code>String</code> to be used</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>String</code> that contains no special line breaks</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toString">toString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>toString</b> (
+</div>
+                <div><span class="code">) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Extended <code>.toString</code> implementation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">this instance as string</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_core_BasicInterface.html#toString">org.as2lib.core.BasicInterface.toString</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:24:11</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

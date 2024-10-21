@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>RootLogger</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_log_logger_RootLogger">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>RootLogger</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html">SimpleHierarchicalLogger</a> &lt; <a href="org_as2lib_env_log_logger_AbstractLogger.html">AbstractLogger</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.log.logger.RootLogger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Sunday, 10 April 2005, 10:34:10</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.env.except.IllegalArgumentException;
+import org.as2lib.env.log.LogLevel;
+import org.as2lib.env.log.logger.SimpleHierarchicalLogger;
+
+/**
+ * {@code RootLogger} represents the root in a logger hierarchy.
+ *
+ * &lt;p&gt;The name of a root logger is by default {@code "root"}.
+ *
+ * &lt;p&gt;You must set a log level because otherwise the level in the hierarchy could
+ * be {@code null} which could cause unexpected behavior.
+ *
+ * &lt;p&gt;This class is normally used in conjunction with the {@link LoggerHierarchy}.
+ *
+ * @author Simon Wacker
+ */
+class org.as2lib.env.log.logger.RootLogger extends SimpleHierarchicalLogger {
+    
+    /** Makes the static variables of the super-class accessible through this class. */
+    private static var __proto__:Function = SimpleHierarchicalLogger;
+    
+    /**
+     * Constructs a new {@code RootLogger} instance.
+     *
+     * &lt;p&gt;The name is automatically set to {@code "root"}.
+     *
+     * @param level the level of this logger
+     * @throws IllegalArgumentException if the passed-in {@code level} is {@code null}
+     * or {@code undefined}
+     */
+    public function RootLogger(level:LogLevel) {
+        super("root");
+        setLevel(level);
+    }
+    
+    /**
+     * Sets the level of this logger.
+     *
+     * &lt;p&gt;A level of value {@code null} or {@code undefined} is not allowed.
+     *
+     * @param level the new level of this logger
+     * @throws IllegalArgumentException when {@code level} is {@code null} or
+     * {@code undefined}
+     */
+    public function setLevel(level:LogLevel):Void {
+        if (!level) throw new IllegalArgumentException("The instance [" + this + "] is not allowed to have a level value of null.", this, arguments);
+        super.setLevel(level);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>RootLogger</code> represents the root in a logger hierarchy.</div><p>The name of a root logger is by default <code>"root"</code>.<p>You must set a log level because otherwise the level in the hierarchy could<br /> be <code>null</code> which could cause unexpected behavior.<p>This class is normally used in conjunction with the <a href="org_as2lib_env_log_repository_LoggerHierarchy.html">org.as2lib.env.log.repository.LoggerHierarchy</a>.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#RootLogger">RootLogger</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#__proto__">__proto__</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class properties inherited from <span class="superclass"><a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html">SimpleHierarchicalLogger</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#__proto__" class="privatInline">__proto__</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class properties inherited from <span class="superclass"><a href="org_as2lib_env_log_logger_AbstractLogger.html">AbstractLogger</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_logger_AbstractLogger.html#ALL">ALL</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#DEBUG">DEBUG</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#ERROR">ERROR</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#FATAL">FATAL</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#INFO">INFO</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#NONE">NONE</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#WARNING">WARNING</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html">SimpleHierarchicalLogger</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#addedParentHandlers" class="privatInline">addedParentHandlers</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#distributor" class="privatInline">distributor</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#distributorControl" class="privatInline">distributorControl</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#level" class="privatInline">level</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#name" class="privatInline">name</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#parent" class="privatInline">parent</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_log_logger_AbstractLogger.html">AbstractLogger</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_logger_AbstractLogger.html#debugLevel" class="privatInline">debugLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#debugLevelAsNumber" class="privatInline">debugLevelAsNumber</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#errorLevel" class="privatInline">errorLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#errorLevelAsNumber" class="privatInline">errorLevelAsNumber</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#fatalLevel" class="privatInline">fatalLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#fatalLevelAsNumber" class="privatInline">fatalLevelAsNumber</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#infoLevel" class="privatInline">infoLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#infoLevelAsNumber" class="privatInline">infoLevelAsNumber</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#warningLevel" class="privatInline">warningLevel</a>, <a href="org_as2lib_env_log_logger_AbstractLogger.html#warningLevelAsNumber" class="privatInline">warningLevelAsNumber</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#setLevel">setLevel</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html">SimpleHierarchicalLogger</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#addHandler">addHandler</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#addParentHandlers" class="privatInline">addParentHandlers</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#debug">debug</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#error">error</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#fatal">fatal</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#getAllHandlers">getAllHandlers</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#getLevel">getLevel</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#getName">getName</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#getParent">getParent</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#info">info</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#isDebugEnabled">isDebugEnabled</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#isEnabled">isEnabled</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#isErrorEnabled">isErrorEnabled</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#isFatalEnabled">isFatalEnabled</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#isInfoEnabled">isInfoEnabled</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#isWarningEnabled">isWarningEnabled</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#log">log</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#removeAllHandlers">removeAllHandlers</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#removeHandler">removeHandler</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#setLevel">setLevel</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#setName">setName</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#setParent">setParent</a>, <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#warning">warning</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="RootLogger">RootLogger</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>RootLogger</b> (
+</div>
+                <div><span class="code">level:<a href="org_as2lib_env_log_LogLevel.html">LogLevel</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>RootLogger</code> instance.<p>The name is automatically set to <code>"root"</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">level<span class="itemSeparator">:</span></div>
+                    <div>the level of this logger</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if the passed-in <code>level</code> is <code>null</code><br /> or <code>undefined</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="__proto__">__proto__</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>__proto__</b>:Function = SimpleHierarchicalLogger
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Makes the static variables of the super-class accessible through this class.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="setLevel">setLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setLevel</b> (
+</div>
+                <div><span class="code">level:<a href="org_as2lib_env_log_LogLevel.html">LogLevel</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the level of this logger.<p>A level of value <code>null</code> or <code>undefined</code> is not allowed.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">level<span class="itemSeparator">:</span></div>
+                    <div>the new level of this logger</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> when <code>level</code> is <code>null</code> or<br /> <code>undefined</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html#setLevel">SimpleHierarchicalLogger.setLevel</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:25:41</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

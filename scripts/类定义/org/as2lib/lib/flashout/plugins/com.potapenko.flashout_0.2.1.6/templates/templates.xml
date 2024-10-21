@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+	<template id="org.asdt.ui.editor.template.trace_d" name="trace_d" 
+		description="TRACE(Flashout.DEBUG + message);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.DEBUG + ${});
+${cursor}</template>
+    <template id="org.asdt.ui.editor.template.trace_i" name="trace_i" 
+		description="TRACE(Flashout.INFO + message);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.INFO + ${});
+${cursor}</template>
+	<template id="org.asdt.ui.editor.template.trace_w" name="trace_w" 
+		description="TRACE(Flashout.WARN + message);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.WARN + ${});
+${cursor}</template>
+    <template id="org.asdt.ui.editor.template.trace_e" name="trace_e" 
+        description="TRACE(Flashout.ERROR + message);" 
+        context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+        deleted="false">TRACE(Flashout.ERROR + ${});
+${cursor}</template>
+	<template id="org.asdt.ui.editor.template.trace_f" name="trace_f" 
+		description="TRACE(Flashout.FATAL + message);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.FATAL + ${});
+${cursor}</template>
+	<template id="org.asdt.ui.editor.template.trace_sin" name="trace_sin" 
+		description="TRACE(Flashout.SERVER_IN + message);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.SERVER_IN + ${});
+${cursor}</template>
+	<template id="org.asdt.ui.editor.template.trace_sout" name="trace_sout" 
+		description="TRACE(Flashout.SERVER_OUT + message);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.SERVER_OUT + ${});
+${cursor}</template>
+	<template id="org.asdt.ui.editor.template.trace_dv" name="tracev_d" 
+		description="TRACE(Flashout.DEBUG + variable);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.DEBUG + "${}=" + ${});
+${cursor}</template>
+    <template id="org.asdt.ui.editor.template.trace_iv" name="tracev_i" 
+		description="TRACE(Flashout.INFO + variable);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.INFO + "${}=" + ${});
+${cursor}</template>
+	<template id="org.asdt.ui.editor.template.trace_wv" name="tracev_w" 
+		description="TRACE(Flashout.WARN + variable);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.WARN + "${}=" + ${});
+${cursor}</template>
+    <template id="org.asdt.ui.editor.template.trace_ev" name="tracev_e" 
+        description="TRACE(Flashout.ERROR + message);" 
+        context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+        deleted="false">TRACE(Flashout.ERROR + "${}=" + ${});
+${cursor}</template>
+    <template id="org.asdt.ui.editor.template.trace_fv" name="tracev_f" 
+		description="TRACE(Flashout.FATAL + variable);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.FATAL + "${}=" + ${});
+${cursor}</template>
+	<template id="org.asdt.ui.editor.template.trace_sinv" name="tracev_sin" 
+		description="TRACE(Flashout.SERVER_IN + variable);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.SERVER_IN + "${}=" + ${});
+${cursor}</template>
+	<template id="org.asdt.ui.editor.template.trace_soutv" name="tracev_sout" 
+		description="TRACE(Flashout.SERVER_OUT + variable);" 
+		context="org.asdt.ui.editor.template.actionscript" enabled="true" 
+		deleted="false">TRACE(Flashout.SERVER_OUT + "${}=" + ${});
+${cursor}</template>
+</templates>

@@ -1,0 +1,167 @@
+[+] org.as2lib.io.file.MediaFile (13/10/2005)
+
+[+] org.as2lib.data.holder.Properties (12/10/2005)
+Data holder for String properties
+
+[+] org.as2lib.data.holder.properties.SimpleProperties (12/10/2005)
+
+[+] org.as2lib.data.holder.properties.PropertiesParser (12/10/2005)
+
+[+] org.as2lib.io.file.PropertyFileFactory (12/10/2005)
+
+[+] org.as2lib.io.file.PropertyFile (12/10/2005)
+
+[+] org.as2lib.util.StringUtil.escape (12/10/2005)
+
+[+] org.as2lib.io.file.LoadStartListener (11/10/2005)
+
+[+] org.as2lib.io.file.LoadErrorListener (11/10/2005)
+
+[+] org.as2lib.io.file.LoadProgressListener (11/10/2005)
+
+[+] org.as2lib.io.file.LoadCompleteListener (11/10/2005)
+
+[-] org.as2lib.io.file.FileListener (11/10/2005)
+
+[+] org.as2lib.io.file.CompositeFileFactory (11/10/2005)
+Factory to create different files by their extension
+
+[+] org.as2lib.io.file.Loader (11/10/2005)
+Central access to load files
+
+[+] org.as2lib.io.file.TextFileFactory (11/10/2005)
+Interface for factories to text file implementations
+
+[+] org.as2lib.io.file.SimpleTextFileFactory (11/10/2005)
+
+[+] org.as2lib.io.file.XmlFileFactory (11/10/2005)
+
+[+] org.as2lib.io.file.TextFileLoader (11/10/2005)
+File loader to load textfiles (former SimpleFile)
+
+[~] org.as2lib.io.file.FileLoader (11/10/2005)
+Changed to a generic file loader interface
+
+[+] org.as2lib.io.file.TextFile (11/10/2005)
+File extension for text content
+
+[+] org.as2lib.io.file.SimpleTextFile (11/10/2005)
+
+[+] org.as2lib.io.file.XmlFile (11/10/2005)
+
+[~] org.as2lib.io.file.File (11/10/2005)
+Changed to a generic interface
+
+[+] org.as2lib.aop.matcher.RegexpMatcher (11/10/2005)
+Matches a join point with a regular expression pattern.
+
+[+] org.as2lib.aop.matcher.RegexpMatcher (11/10/2005)
+Matches a join point with a regular expression pattern.
+
+[*] org.as2lib.regexp.node (10/10/2005)
+Access modificators are specified for the class members
+
+[~] org.as2lib.regexp.Pattern.isMatch (10/10/2005)
+Renamed to matches.
+
+[~] org.as2lib.regexp.Matcher.isMatch (10/10/2005)
+Renamed to matches.
+
+[+] org.as2lib.app.exec.BatchStartListener (9/10/2005)
+
+[+] org.as2lib.app.exec.BatchFinishListener (9/10/2005)
+
+[+] org.as2lib.app.exec.BatchUpdateListener (9/10/2005)
+
+[+] org.as2lib.app.exec.BatchErrorListener (9/10/2005)
+
+[-] org.as2lib.app.exec.BatchListener (9/10/2005)
+
+[+] org.as2lib.app.exec.ProcessStartListener (9/10/2005)
+
+[+] org.as2lib.app.exec.ProcessFinishListener (9/10/2005)
+
+[+] org.as2lib.app.exec.ProcessPauseListener (9/10/2005)
+
+[+] org.as2lib.app.exec.ProcessResumeListener (9/10/2005)
+
+[+] org.as2lib.app.exec.ProcessUpdateListener (9/10/2005)
+
+[+] org.as2lib.app.exec.ProcessErrorListener (9/10/2005)
+
+[-] org.as2lib.app.exec.ProcessListener (9/10/2005)
+
+[+] org.as2lib.env.log.parser.XmlLogConfigurationParser (8/10/2005)
+Parses xml log configurations.
+
+[+] org.as2lib.env.log.LogConfigurationParser (8/10/2005)
+Interface for log configuration parsers.
+
+[+] static org.as2lib.env.log.level.AbstractLogLevel.forName (8/10/2005)
+
+[+] org.as2lib.env.reflect.ReflectUtil (2/10/2005)
+Added proper cache for type and method names.
+
+[+] org.as2lib.test.unit.TestCaseRunner (21/9/2005)
+
+[+] org.as2lib.test.unit.TestSuiteRunner (21/9/2005)
+
+[-] org.as2lib.test.unit.Test.getTestResult (21/9/2005)
+
+[+] org.as2lib.test.unit.Test.getTestRunner (21/9/2005)
+
+[~] org.as2lib.test.unit.TestRunner (21/9/2005)
+Changed from a concrete class to a interface
+
+[+] org.as2lib.app.exec.Processor (18/9/2005)
+Class to process a StepByStepProcess
+
+[+] org.as2lib.app.exec.StepByStepProcess (18/9/2005)
+Interface to define step based processing
+
+[~] org.as2lib.io.file.BitFormat (13/9/2005)
+Renamed to org.as2lib.data.type.Bit.
+
+[~] org.as2lib.io.file.ByteFormat (13/9/2005)
+Renamed to org.as2lib.data.type.Byte.
+
+[+] org.as2lib.data.type.Time (13/9/2005)
+Holder for time distances
+
+[+] org.as2lib.env.event.EventSupport (13/9/2005)
+Simple access to CompositeEventDistributorControl
+
+[+] org.as2lib.env.log.LogSupport (13/9/2005)
+Simple access to logging
+
+[+] org.as2lib.util.Comparable (11/9/2005)
+Interface to compare to instances
+
+[+] org.as2lib.util.ObjectUtil.compare(obj1, obj2):Boolean (11/9/2005)
+
+[+] org.as2lib.env.log.LogManager.getLoggerByObject (10/9/2005)
+Convenience method that releases you from evaluating the logger name yourself.
+
+[+] org.as2lib.util.MethodUtil (10/9/2005)
+
+[+] org.as2lib.env.except.Throwable.initErrorCode/getErrorCode (10/9/2005)
+Error code to get localized message to display to users.
+
+[+] org.as2lib.regexp (10/9/2005)
+Regular Expression framework is added.
+
+[+] org.as2lib.env.log.LogManager (9/9/2005)
+Enhanced class to allow the following access: "private static var logger:Logger = LogManager.getLogger(&quot;org.as2lib.MyClass&quot;);".
+
+[!] org.as2lib.aop.weaver.SimpleWeaver.weaveSuperClassConstructor (1/9/2005)
+Fixed bug with super constructors and multiple advices.
+
+[!] org.as2lib.aop.mtacher.WildcardMatcher.match (1/9/2005)
+Fixed serious bug with often used pattern "..*.*".
+
+[!] org.as2lib.aop.weaver.SimpleWeaver.addAspectForAllTypesInPackage/addAdviceForAllTypesInPackage (1/9/2005)
+Fixed serious bug that prevented weaving aspects and advices by types package as affected types.
+
+[!] org.as2lib.aop.weaver.SimpleWeaver.addAspectForAllTypes/addAdviceForAllTypes (23/8/2005)
+Fixed major bug that resulted in IllegalArgumentException.
+

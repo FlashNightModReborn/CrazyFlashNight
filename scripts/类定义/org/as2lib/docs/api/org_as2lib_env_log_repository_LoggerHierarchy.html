@@ -1,0 +1,738 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>LoggerHierarchy</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_log_repository_LoggerHierarchy">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>LoggerHierarchy</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_env_log_LoggerRepository.html">LoggerRepository</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.log.repository.LoggerHierarchy</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Friday, 01 July 2005, 19:57:42</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.except.IllegalArgumentException;
+import org.as2lib.env.except.IllegalStateException;
+import org.as2lib.env.log.LoggerRepository;
+import org.as2lib.env.log.ConfigurableHierarchicalLogger;
+import org.as2lib.env.log.Logger;
+import org.as2lib.env.log.logger.SimpleHierarchicalLogger;
+import org.as2lib.env.log.logger.RootLogger;
+import org.as2lib.env.log.level.AbstractLogLevel;
+import org.as2lib.env.log.repository.ConfigurableHierarchicalLoggerFactory;
+
+/**
+ * {@code LoggerHierarchy} organizes loggers in a hierarchical structure.
+ *
+ * &lt;p&gt;It works only with loggers that are capable of acting properly in a hierarchy.
+ * These loggers must implement the {@link ConfigurableHierarchicalLogger}
+ * interface.
+ * 
+ * &lt;p&gt;The names of the loggers must be fully qualified and the differnt parts of
+ * the preceding structure/path must be separated by periods.
+ *
+ * &lt;p&gt;This repository takes care that the parents of all loggers are correct and
+ * updates them if necessary. The hierarchical loggers themselves are responsible
+ * of obtaining the level and handlers from its parents if necessary and desired.
+ *
+ * &lt;p&gt;Example:
+ * &lt;code&gt;
+ *   var repository:LoggerHierarchy = new LoggerHierarchy();
+ *   LogManager.setLoggerRepository(repository);
+ *   var traceLogger:SimpleHierarchicalLogger = new SimpleHierarchicalLogger("org.as2lib");
+ *   traceLogger.addHandler(new TraceHandler());
+ *   repository.addLogger(traceLogger);
+ *   // in some other class or something
+ *   var myLogger:Logger = LogManager.getLogger("org.as2lib.mypackage.MyClass");
+ *   myLogger.warning("Someone did something he should not do.");
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;The message is traced because the namespace of {@code myLogger} is the same
+ * as the one of {@code traceLogger}. You can of course add multiple handlers to
+ * one logger and also multiple loggers to different namespaces.
+ *
+ * @author Simon Wacker
+ */
+class org.as2lib.env.log.repository.LoggerHierarchy extends BasicClass implements LoggerRepository {
+    
+    /** Stores the root of this hierarchy. */
+    private var root:ConfigurableHierarchicalLogger;
+    
+    /** Stores added loggers. */
+    private var loggers:Array;
+    
+    /** This factory is used when no custom factory is specified. */
+    private var defaultLoggerFactory:ConfigurableHierarchicalLoggerFactory;
+    
+    /**
+     * Constructs a new {@code LoggerHierarchy} instance.
+     *
+     * &lt;p&gt;Registers the root logger with name {@code "root"} if the {@code root}'s
+     * {@code getName} method returns {@code null} or {@code undefined}. Otherwise it
+     * will be registered with the name returned by the {@code root}'s {@code getName}
+     * method.
+     *
+     * &lt;p&gt;If the passed-in {@code root} is {@code null} or {@code undefined} an
+     * instance of type {@link RootLogger} with name {@code "root"} and log level
+     * {@code ALL} will be used instead.
+     *
+     * @param root the root of the hierarchy
+     */
+    public function LoggerHierarchy(root:ConfigurableHierarchicalLogger) {
+        if (!root) root = new RootLogger(AbstractLogLevel.ALL);
+        this.root = root;
+        loggers = new Array();
+        if (root.getName() == null) {
+            loggers["root"] = root;
+        } else {
+            loggers[root.getName()] = root;
+        }
+    }
+    
+    /**
+     * Returns either the factory set via {@link #setDefaultLoggerFactory} or the
+     * default one.
+     *
+     * &lt;p&gt;The default factory returns instances of type
+     * {@link SimpleHierarchicalLogger}.
+     *
+     * @return the factory used as default
+     */
+    public function getDefaultLoggerFactory(Void):ConfigurableHierarchicalLoggerFactory {
+        if (!defaultLoggerFactory) defaultLoggerFactory = getNormalLoggerFactory();
+        return defaultLoggerFactory;
+    }
+    
+    /**
+     * Returns the normal factory that returns instances of class
+     * {@link SimpleHierarchicalLogger}.
+     *
+     * @return the normal factory
+     */
+    private function getNormalLoggerFactory(Void):ConfigurableHierarchicalLoggerFactory {
+        var result:ConfigurableHierarchicalLoggerFactory = getBlankConfigurableHierarchicalLoggerFactory();
+        // Not function(Void) because mtasc compiler complains with the following message:
+        // type error Local variable redefinition : Void
+        result.getLogger = function():ConfigurableHierarchicalLogger {
+            return new SimpleHierarchicalLogger();
+        };
+        return result;
+    }
+    
+    /**
+     * Sets the factory used to obtain loggers that have not been set manually before.
+     *
+     * @param defaultLoggerFactory the factory to use as default
+     */
+    public function setDefaultLoggerFactory(defaultLoggerFactory:ConfigurableHierarchicalLoggerFactory):Void {
+        this.defaultLoggerFactory = defaultLoggerFactory;
+    }
+    
+    /**
+     * Returns the root logger of this hierarchy.
+     *
+     * @return the root logger of this hierarchy
+     */
+    public function getRootLogger(Void):Logger {
+        return root;
+    }
+    
+    /**
+     * Adds a new logger to this hierarchical repository.
+     *
+     * &lt;p&gt;The logger is automatically integrated into the hierarchy.
+     *
+     * @param logger the logger to add to this hierarchy
+     * @throws IllegalArgumentException if the passed-in {@code logger} is {@code null}
+     * or {@code undefined} or if the passed-in {@code logger}'s {@code getName} method
+     * returns {@code null} or {@code undefined} or if a logger with the {@code logger}'s
+     * name is already in use
+     */
+    public function addLogger(logger:ConfigurableHierarchicalLogger):Void {
+        if (!logger) throw new IllegalArgumentException("Logger to add is not allowed to be null or undefined.", this, arguments);
+        var name:String = logger.getName();
+        if (name == null || name == "") throw new IllegalArgumentException("Name is not allowed to be null, undefined or a blank string.", this, arguments);
+        if (loggers[name] &amp;&amp; loggers[name] instanceof ConfigurableHierarchicalLogger) {
+            throw new IllegalArgumentException("Name [" + name + "] is already in use.", this, arguments);
+        }
+        getLoggerByFactory(name, getSingletonFactory(logger));
+    }
+    
+    /**
+     * Returns the factory used to obtain the passed-in {@code logger}.
+     *
+     * @param logger the logger to be returned by the returned factory
+     * @return a factory that returns the passed-in {@code logger}
+     */
+    private function getSingletonFactory(logger:ConfigurableHierarchicalLogger):ConfigurableHierarchicalLoggerFactory {
+        var result:ConfigurableHierarchicalLoggerFactory = getBlankConfigurableHierarchicalLoggerFactory();
+        result.getLogger = function(Void):ConfigurableHierarchicalLogger {
+            return logger;
+        };
+        return result;
+    }
+    
+    /**
+     * Returns the logger appropriate to the given {@code name}.
+     *
+     * &lt;p&gt;The {@code name} can exist of a path as well as the actual specifier, for
+     * example {@code org.as2lib.core.BasicClass}. In case no logger instance has been
+     * put for the passed-in {@code name} a new will be created by the set factory,
+     * that by default obtains all its configuration from the parent logger.
+     *
+     * &lt;p&gt;{@code null} will be returned if passed-in {@code name} is {@code null} or
+     * {@code undefined}.
+     *
+     * @param name the name of the logger to obtain
+     * @return the logger corresponding to the {@code name}
+     */
+    public function getLogger(name:String):Logger {
+        if (name == null) return null;
+        return getLoggerByFactory(name, null);
+    }
+    
+    /**
+     * Returns the logger corresponding to the passed-in {@code name}.
+     *
+     * &lt;p&gt;If a logger with the passed-in name is not explicitely registered the logger
+     * returned by the factory is registered with the passed-in {@code name},
+     * integrated in the hierarchy and returned.
+     *
+     * &lt;p&gt;The {@code name} can exist of a path as well as the actual specifier, for
+     * example {@code org.as2lib.core.BasicClass}. In case no logger instance has been
+     * put for the passed-in {@code name} a new will be created by the set factory,
+     * that by default obtains all its configuration from the parent logger.
+     * 
+     * &lt;p&gt;{@code null} will be returned if the passed-in {@code name} is {@code null}
+     * or {@code undefined}.
+     *
+     * &lt;p&gt;If the passed-in {@code factory} is {@code null} or {@code undefined} the
+     * default one will be used.
+     *
+     * @param name the name of the logger to return
+     * @return the logger appropriate to the passed-in {@code name}
+     */
+    public function getLoggerByFactory(name:String, factory:ConfigurableHierarchicalLoggerFactory):Logger {
+        if (name == null) return null;
+        if (!factory) factory = getDefaultLoggerFactory();
+        var result = loggers[name];
+        if (!result) {
+            result = factory.getLogger();
+            result.setName(name);
+            loggers[name] = result;
+            updateParents(result);
+        } else if (result instanceof Array) {
+            var children:Array = result;
+            result = factory.getLogger();
+            result.setName(name);
+            loggers[name] = result;
+            updateChildren(children, result);
+            updateParents(result);
+        }
+        return result;
+    }
+    
+    /**
+     * Updates the affected parents.
+     *
+     * @param l the newly added logger
+     */
+    private function updateParents(l:ConfigurableHierarchicalLogger):Void {
+        var n:String = l.getName();
+        var f:Boolean = false;
+        var s:Number = n.length;
+        for (var i:Number = n.lastIndexOf(".", s-1); i &gt;= 0; i = n.lastIndexOf(".", i-1)) {
+            var t:String = n.substring(0, i);
+            var o = loggers[t];
+            if (!o) {
+                loggers[t] = [l];
+            } else if (o instanceof Logger) {
+                f = true;
+                l.setParent(o);
+                break;
+            } else if (o instanceof Array) {
+                o.push(l);
+            } else {
+                throw new IllegalStateException("Obtained object [" + o + "] is of an unexpected type.", this, arguments);
+            }
+        }
+        if (!f) l.setParent(root);
+    }
+    
+    /**
+     * Updates the affected children of the node.
+     *
+     * @param c the children to update
+     * @param l the logger that now replaces the node
+     */
+    private function updateChildren(c:Array, l:ConfigurableHierarchicalLogger):Void {
+        var s:Number = c.length;
+        for (var i:Number = 0; i &lt; s; i++) {
+            var z:ConfigurableHierarchicalLogger = c[i];
+            if (z.getParent().getName().indexOf(l.getName()) != 0) {
+                l.setParent(z.getParent());
+                z.setParent(l);
+            }
+        }
+    }
+    
+    /**
+     * Returns a blank configurable hierarchical logger factory. That is a logger
+     * factory with no implemented methods.
+     *
+     * @return a blank configurable hierarchical logger factory
+     */
+    private function getBlankConfigurableHierarchicalLoggerFactory(Void):ConfigurableHierarchicalLoggerFactory {
+        var result = new Object();
+        result.__proto__ = ConfigurableHierarchicalLoggerFactory["prototype"];
+        result.__constructor__ = ConfigurableHierarchicalLoggerFactory;
+        return result;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>LoggerHierarchy</code> organizes loggers in a hierarchical structure.</div><p>It works only with loggers that are capable of acting properly in a hierarchy.<br /> These loggers must implement the <a href="org_as2lib_env_log_ConfigurableHierarchicalLogger.html">org.as2lib.env.log.ConfigurableHierarchicalLogger</a><br /> interface.<p>The names of the loggers must be fully qualified and the differnt parts of<br /> the preceding structure/path must be separated by periods.<p>This repository takes care that the parents of all loggers are correct and<br /> updates them if necessary. The hierarchical loggers themselves are responsible<br /> of obtaining the level and handlers from its parents if necessary and desired.<p>Example:<pre><span class="codeKeyword">var</span> repository:LoggerHierarchy = <span class="codeKeyword">new</span> LoggerHierarchy();
+LogManager.setLoggerRepository(repository);
+<span class="codeKeyword">var</span> traceLogger:SimpleHierarchicalLogger = <span class="codeKeyword">new</span> SimpleHierarchicalLogger(<span class="codeString">"org.as2lib"</span>);
+traceLogger.addHandler(<span class="codeKeyword">new</span> TraceHandler());
+repository.addLogger(traceLogger);
+<span class="codeComment">// in some other class or something</span>
+<span class="codeKeyword">var</span> myLogger:Logger = LogManager.getLogger(<span class="codeString">"org.as2lib.mypackage.MyClass"</span>);
+myLogger.warning(<span class="codeString">"Someone did something he should not do."</span>);</pre><p>The message is traced because the namespace of <code>myLogger</code> is the same<br /> as the one of <code>traceLogger</code>. You can of course add multiple handlers to<br /> one logger and also multiple loggers to different namespaces.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#LoggerHierarchy">LoggerHierarchy</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#root">root</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#loggers">loggers</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#defaultLoggerFactory">defaultLoggerFactory</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#getDefaultLoggerFactory">getDefaultLoggerFactory</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#getNormalLoggerFactory">getNormalLoggerFactory</a>
+                </li>
+                <li>
+                  <a href="#setDefaultLoggerFactory">setDefaultLoggerFactory</a>
+                </li>
+                <li>
+                  <a href="#getRootLogger">getRootLogger</a>
+                </li>
+                <li>
+                  <a href="#addLogger">addLogger</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#getSingletonFactory">getSingletonFactory</a>
+                </li>
+                <li>
+                  <a href="#getLogger">getLogger</a>
+                </li>
+                <li>
+                  <a href="#getLoggerByFactory">getLoggerByFactory</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#updateParents">updateParents</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#updateChildren">updateChildren</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#getBlankConfigurableHierarchicalLoggerFactory">getBlankConfigurableHierarchicalLoggerFactory</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="LoggerHierarchy">LoggerHierarchy</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>LoggerHierarchy</b> (
+</div>
+                <div><span class="code">root:<a href="org_as2lib_env_log_ConfigurableHierarchicalLogger.html">ConfigurableHierarchicalLogger</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>LoggerHierarchy</code> instance.<p>Registers the root logger with name <code>"root"</code> if the <code>root</code>'s<br /> <code>getName</code> method returns <code>null</code> or <code>undefined</code>. Otherwise it<br /> will be registered with the name returned by the <code>root</code>'s <code>getName</code><br /> method.<p>If the passed-in <code>root</code> is <code>null</code> or <code>undefined</code> an<br /> instance of type <a href="org_as2lib_env_log_logger_RootLogger.html">org.as2lib.env.log.logger.RootLogger</a> with name <code>"root"</code> and log level<br /> <code>ALL</code> will be used instead.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">root<span class="itemSeparator">:</span></div>
+                    <div>the root of the hierarchy</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="defaultLoggerFactory">defaultLoggerFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>defaultLoggerFactory</b>:<a href="org_as2lib_env_log_repository_ConfigurableHierarchicalLoggerFactory.html">ConfigurableHierarchicalLoggerFactory</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">This factory is used when no custom factory is specified.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="loggers">loggers</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>loggers</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Stores added loggers.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="root">root</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>root</b>:<a href="org_as2lib_env_log_ConfigurableHierarchicalLogger.html">ConfigurableHierarchicalLogger</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Stores the root of this hierarchy.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="addLogger">addLogger</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>addLogger</b> (
+</div>
+                <div><span class="code">logger:<a href="org_as2lib_env_log_ConfigurableHierarchicalLogger.html">ConfigurableHierarchicalLogger</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Adds a new logger to this hierarchical repository.<p>The logger is automatically integrated into the hierarchy.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">logger<span class="itemSeparator">:</span></div>
+                    <div>the logger to add to this hierarchy</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if the passed-in <code>logger</code> is <code>null</code><br /> or <code>undefined</code> or if the passed-in <code>logger</code>'s <code>getName</code> method<br /> returns <code>null</code> or <code>undefined</code> or if a logger with the <code>logger</code>'s<br /> name is already in use</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getBlankConfigurableHierarchicalLoggerFactory">getBlankConfigurableHierarchicalLoggerFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getBlankConfigurableHierarchicalLoggerFactory</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_log_repository_ConfigurableHierarchicalLoggerFactory.html">ConfigurableHierarchicalLoggerFactory</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns a blank configurable hierarchical logger factory. That is a logger<br /> factory with no implemented methods.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a blank configurable hierarchical logger factory</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getDefaultLoggerFactory">getDefaultLoggerFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getDefaultLoggerFactory</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_log_repository_ConfigurableHierarchicalLoggerFactory.html">ConfigurableHierarchicalLoggerFactory</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns either the factory set via <a href="org_as2lib_env_log_repository_LoggerHierarchy.html#setDefaultLoggerFactory">setDefaultLoggerFactory</a> or the<br /> default one.<p>The default factory returns instances of type<br /> <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html">org.as2lib.env.log.logger.SimpleHierarchicalLogger</a>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the factory used as default</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getLogger">getLogger</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getLogger</b> (
+</div>
+                <div><span class="code">name:String) : <a href="org_as2lib_env_log_Logger.html">Logger</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the logger appropriate to the given <code>name</code>.<p>The <code>name</code> can exist of a path as well as the actual specifier, for<br /> example <code>org.as2lib.core.BasicClass</code>. In case no logger instance has been<br /> put for the passed-in <code>name</code> a new will be created by the set factory,<br /> that by default obtains all its configuration from the parent logger.<p><code>null</code> will be returned if passed-in <code>name</code> is <code>null</code> or<br /> <code>undefined</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">name<span class="itemSeparator">:</span></div>
+                    <div>the name of the logger to obtain</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the logger corresponding to the <code>name</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_LoggerRepository.html#getLogger">org.as2lib.env.log.LoggerRepository.getLogger</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getLoggerByFactory">getLoggerByFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getLoggerByFactory</b> (
+
+</div>
+                <div><span class="code">name:String,
+factory:<a href="org_as2lib_env_log_repository_ConfigurableHierarchicalLoggerFactory.html">ConfigurableHierarchicalLoggerFactory</a>) : <a href="org_as2lib_env_log_Logger.html">Logger</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the logger corresponding to the passed-in <code>name</code>.<p>If a logger with the passed-in name is not explicitely registered the logger<br /> returned by the factory is registered with the passed-in <code>name</code>,<br /> integrated in the hierarchy and returned.<p>The <code>name</code> can exist of a path as well as the actual specifier, for<br /> example <code>org.as2lib.core.BasicClass</code>. In case no logger instance has been<br /> put for the passed-in <code>name</code> a new will be created by the set factory,<br /> that by default obtains all its configuration from the parent logger.<p><code>null</code> will be returned if the passed-in <code>name</code> is <code>null</code><br /> or <code>undefined</code>.<p>If the passed-in <code>factory</code> is <code>null</code> or <code>undefined</code> the<br /> default one will be used.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">name<span class="itemSeparator">:</span></div>
+                    <div>the name of the logger to return</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the logger appropriate to the passed-in <code>name</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getNormalLoggerFactory">getNormalLoggerFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getNormalLoggerFactory</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_log_repository_ConfigurableHierarchicalLoggerFactory.html">ConfigurableHierarchicalLoggerFactory</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the normal factory that returns instances of class<br /> <a href="org_as2lib_env_log_logger_SimpleHierarchicalLogger.html">org.as2lib.env.log.logger.SimpleHierarchicalLogger</a>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the normal factory</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getRootLogger">getRootLogger</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getRootLogger</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_log_Logger.html">Logger</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the root logger of this hierarchy.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the root logger of this hierarchy</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getSingletonFactory">getSingletonFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getSingletonFactory</b> (
+</div>
+                <div><span class="code">logger:<a href="org_as2lib_env_log_ConfigurableHierarchicalLogger.html">ConfigurableHierarchicalLogger</a>) : <a href="org_as2lib_env_log_repository_ConfigurableHierarchicalLoggerFactory.html">ConfigurableHierarchicalLoggerFactory</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the factory used to obtain the passed-in <code>logger</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">logger<span class="itemSeparator">:</span></div>
+                    <div>the logger to be returned by the returned factory</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a factory that returns the passed-in <code>logger</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setDefaultLoggerFactory">setDefaultLoggerFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setDefaultLoggerFactory</b> (
+</div>
+                <div><span class="code">defaultLoggerFactory:<a href="org_as2lib_env_log_repository_ConfigurableHierarchicalLoggerFactory.html">ConfigurableHierarchicalLoggerFactory</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the factory used to obtain loggers that have not been set manually before.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">defaultLoggerFactory<span class="itemSeparator">:</span></div>
+                    <div>the factory to use as default</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="updateChildren">updateChildren</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>updateChildren</b> (
+
+</div>
+                <div><span class="code">c:Array,
+l:<a href="org_as2lib_env_log_ConfigurableHierarchicalLogger.html">ConfigurableHierarchicalLogger</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Updates the affected children of the node.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">c<span class="itemSeparator">:</span></div>
+                    <div>the children to update</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">l<span class="itemSeparator">:</span></div>
+                    <div>the logger that now replaces the node</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="updateParents">updateParents</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>updateParents</b> (
+</div>
+                <div><span class="code">l:<a href="org_as2lib_env_log_ConfigurableHierarchicalLogger.html">ConfigurableHierarchicalLogger</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Updates the affected parents.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">l<span class="itemSeparator">:</span></div>
+                    <div>the newly added logger</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:26:06</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

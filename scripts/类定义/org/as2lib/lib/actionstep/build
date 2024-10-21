@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+# with ruby trace
+/usr/local/bin/mtasc -cp "src" -swf ActionStep.swf -header 800:600:20 -trace org.actionstep.ASDebugger.trace -pack org/actionstep -pack org/actionstep/constants -pack org/actionstep/images org/actionstep/test/ASTestMain -main
+
+# with OS X trace
+# /usr/local/bin/mtasc -cp "src" -swf ActionStep.swf -header 800:600:20 -trace org.actionstep.ASDebugger.SWFConsoleTrace -pack org/actionstep -pack org/actionstep/images -pack org/actionstep/constants org/actionstep/test/ASTestMain -main
+
+# without trace
+# /usr/local/bin/mtasc -cp "src" -swf ActionStep.swf -header 800:600:20 -pack org/actionstep -pack org/actionstep/images -pack org/actionstep/constants -pack org/actionstep/images org/actionstep/test/ASTestMain -main
+
+echo 'Build complete.'

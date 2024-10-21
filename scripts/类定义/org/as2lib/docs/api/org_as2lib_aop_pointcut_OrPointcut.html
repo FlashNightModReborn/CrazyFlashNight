@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>OrPointcut</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_aop_pointcut_OrPointcut">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>OrPointcut</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_aop_pointcut_AbstractCompositePointcut.html">AbstractCompositePointcut</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_aop_pointcut_CompositePointcut.html">CompositePointcut</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.aop.pointcut.OrPointcut</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Friday, 19 August 2005, 17:17:52</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.aop.pointcut.CompositePointcut;
+import org.as2lib.aop.pointcut.AbstractCompositePointcut;
+import org.as2lib.aop.AopConfig;
+import org.as2lib.aop.Pointcut;
+import org.as2lib.aop.JoinPoint;
+
+/**
+ * {@code OrPointcut} combines multiple pointcuts with a logical OR. This means that
+ * this pointcut captures a given join point if at least one of its contained pointcuts
+ * captures the given join point.
+ *
+ * &lt;p&gt;This pointcut expects a string representation as parameter on construction. Such
+ * a string representation may look something like this:
+ * &lt;code&gt;execution(org.as2lib.env.Logger.*) || execution(org.as2lib.reflect.*.*)&lt;/code&gt;
+ * 
+ * @author Simon Wacker
+ */
+class org.as2lib.aop.pointcut.OrPointcut extends AbstractCompositePointcut implements CompositePointcut {
+    
+    /**
+     * Constructs a new {@code OrPointcut} instance.
+     * 
+     * &lt;p&gt;The string representation is supposed to be a combination of multiple
+     * pointcuts where some of them are combined with the {@code ||} operator.
+     * 
+     * @param pointcut the string representation of this or pointcut
+     */
+    public function OrPointcut(pointcut:String) {
+        if (pointcut != null &amp;&amp; pointcut != "") {
+            // source this out
+            var pointcuts:Array = pointcut.split("||");
+            for (var i:Number = 0; i &lt; pointcuts.length; i++) {
+                addPointcut(AopConfig.getPointcutFactory().getPointcut(pointcuts[i]));
+            }
+        }
+    }
+    
+    /**
+     * Checks whether this pointcut captures the given {@code joinPoint}. The
+     * {@code joinPoint} is captured if at least one sub-pointcut of this pointcut
+     * captures it.
+     * 
+     * {@code false} will be returned if:
+     * &lt;ul&gt;
+     *   &lt;li&gt;The passed-in {@code joinPoint} is {@code null} or {@code undefined}.&lt;/li&gt;
+     *   &lt;li&gt;Not even one sub-pointcut captures the given {@code joinPoint}.&lt;/li&gt;
+     *   &lt;li&gt;There are no pointcuts added.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param joinPoint the join point to check whether it is captured by this pointcut
+     * @return {@code true} if this pointcut captures the given {@code joinPoint} else
+     * {@code false}
+     */
+    public function captures(joinPoint:JoinPoint):Boolean {
+        if (!joinPoint) return false;
+        var i:Number = this.pointcuts.length;
+        if (i &lt; 1) return false;
+        while (--i-(-1)) {
+            var pointcut:Pointcut = this.pointcuts[i];
+            if (pointcut.captures(joinPoint)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>OrPointcut</code> combines multiple pointcuts with a logical OR.</div> This means that<br /> this pointcut captures a given join point if at least one of its contained pointcuts<br /> captures the given join point.<p>This pointcut expects a string representation as parameter on construction. Such<br /> a string representation may look something like this:<br /> <code>execution(org.as2lib.env.Logger.*) || execution(org.as2lib.reflect.*.*)</code></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#OrPointcut">OrPointcut</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_aop_pointcut_AbstractCompositePointcut.html">AbstractCompositePointcut</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_aop_pointcut_AbstractCompositePointcut.html#pointcuts" class="privatInline">pointcuts</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#captures">captures</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_aop_pointcut_AbstractCompositePointcut.html">AbstractCompositePointcut</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_aop_pointcut_AbstractCompositePointcut.html#addPointcut">addPointcut</a>, <a href="org_as2lib_aop_pointcut_AbstractCompositePointcut.html#getPointcuts">getPointcuts</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="OrPointcut">OrPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>OrPointcut</b> (
+</div>
+                <div><span class="code">pointcut:String)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>OrPointcut</code> instance.<p>The string representation is supposed to be a combination of multiple<br /> pointcuts where some of them are combined with the <code>||</code> operator.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">pointcut<span class="itemSeparator">:</span></div>
+                    <div>the string representation of this or pointcut</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="captures">captures</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>captures</b> (
+</div>
+                <div><span class="code">joinPoint:<a href="org_as2lib_aop_JoinPoint.html">JoinPoint</a>) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks whether this pointcut captures the given <code>joinPoint</code>. The<br /> <code>joinPoint</code> is captured if at least one sub-pointcut of this pointcut<br /> captures it.<br /> <br /> <code>false</code> will be returned if:<ul><li>The passed-in <code>joinPoint</code> is <code>null</code> or <code>undefined</code>.</li><li>Not even one sub-pointcut captures the given <code>joinPoint</code>.</li><li>There are no pointcuts added.</li></ul></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">joinPoint<span class="itemSeparator">:</span></div>
+                    <div>the join point to check whether it is captured by this pointcut</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if this pointcut captures the given <code>joinPoint</code> else<br /> <code>false</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_aop_Pointcut.html#captures">org.as2lib.aop.Pointcut.captures</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:12</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashSocketServer", "FlashSocketServer.csproj", "{58B6AA2E-5F16-4095-82B6-65E497018970}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{58B6AA2E-5F16-4095-82B6-65E497018970}.Debug.ActiveCfg = Debug|.NET
+		{58B6AA2E-5F16-4095-82B6-65E497018970}.Debug.Build.0 = Debug|.NET
+		{58B6AA2E-5F16-4095-82B6-65E497018970}.Release.ActiveCfg = Release|.NET
+		{58B6AA2E-5F16-4095-82B6-65E497018970}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

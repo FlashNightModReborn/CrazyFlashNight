@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2004 Peter Armstrong
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<mx:Application
+	horizontalAlign="center"
+	backgroundColor="#FFFFFF"
+	initialize="doInit()"
+	xmlns:mx="http://www.macromedia.com/2003/mxml"
+	xmlns:console="org.log4f.logging.console.*">
+
+	<mx:Script>
+	<![CDATA[
+	import org.log4f.logging.Level;
+	import org.log4f.logging.Logger;
+	import org.log4f.logging.LoggingConfig;
+	
+	private var _loggingConfig:LoggingConfig;
+	
+	public function doInit() {
+		_loggingConfig = new LoggingConfig(loggingConfig);
+	}
+	
+	private function doLog(logger:Logger) {
+		logger.log(Level.DEBUG, logMsg.text, this);
+	}
+	]]>
+	</mx:Script>
+
+	<!-- The logging configuration file -->
+	<mx:Model id="loggingConfig" source="/org/log4f/logging/defaultConfig.xml"/>
+	<mx:Form width="100%" height="100%">
+		<mx:FormHeading label="Log4F Tester"/>
+		<mx:FormItem label="Enter log message:">
+			<mx:TextInput id="logMsg" text="log message"/>
+		</mx:FormItem>
+		<mx:Button
+			label="Test logger with AlertPublisher"
+			click="doLog(_loggingConfig.alertLogger)"/>
+		<mx:Button label="Test logger with DefaultPublisher (i.e. trace())"
+			click="doLog(_loggingConfig.defaultLogger)"/>
+		<mx:Button label="Test logger with DebugModelPublisher (i.e. to the debug console)"
+			click="doLog(_loggingConfig.debugModelLogger)"/>
+	</mx:Form>
+	<console:DebugPanel/>
+</mx:Application>

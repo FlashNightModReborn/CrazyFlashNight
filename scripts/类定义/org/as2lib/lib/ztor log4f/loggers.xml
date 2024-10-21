@@ -1,0 +1,9 @@
+<include>
+  <refresh value="1"/>
+  <logger  name="logfile">
+    <format  xml="true"/>
+    <filter  name="Default (all)"   types="0,1,2,3,4,5" header="" body=""/>
+    <filter  name="Only Error"      types="4" />
+    <filter  name="Server response" types="0" header="io.response" />
+  </logger>  
+</include>

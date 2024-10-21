@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>PackageMemberAlgorithm</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_reflect_algorithm_PackageMemberAlgorithm">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>PackageMemberAlgorithm</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.reflect.algorithm.PackageMemberAlgorithm</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Monday, 23 May 2005, 11:23:54</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.reflect.PackageInfo;
+import org.as2lib.env.reflect.ClassInfo;
+import org.as2lib.env.reflect.Cache;
+import org.as2lib.env.reflect.ReflectConfig;
+
+/**
+ * {@code PackageMemberAlgorithm} searches for members, that means types and packages,
+ * of a specific package. Sub-packages are not searched through.
+ * 
+ * &lt;p&gt;This class is mostly used internally. If you wanna obtain the members of a 
+ * package you need its representing {@code PackageInfo}. You can then also use the
+ * {@link PackageInfo#getMembers}, {@link PackageInfo#getMemberClasses} and
+ * {@link PackageInfo#getMemberPackages} methods directly and do not have to make
+ * the detour over this method. The PackageInfo's methods are also easier to use and
+ * offer some extra functionalities.
+ *
+ * &lt;p&gt;If you nevertheless want to use this class here is how it works.
+ *
+ * &lt;code&gt;
+ *   var packageInfo:PackageInfo = PackageInfo.forPackage(org.as2lib.core);
+ *   var packageMemberAlgorithm:PackageMemberAlgorithm = new PackageMemberAlgorithm();
+ *   var members:Array = packageMemberAlgorithm.execute(packageInfo);
+ * &lt;/code&gt;
+ *
+ * &lt;p&gt;Refer to the {@link #execute} method for details on how to get data from the
+ * members array appropriately.
+ *
+ * @author Simon Wacker
+ */
+class org.as2lib.env.reflect.algorithm.PackageMemberAlgorithm extends BasicClass {
+    
+    /** The cache. */
+    private var c:Cache;
+    
+    /**
+     * Constructs a new {@code PackageMemberAlgorithm} instance.
+     */
+    public function PackageMemberAlgorithm(Void) {
+    }
+    
+    /**
+     * Sets the cache that is used by the {@link #execute} method to look whether the
+     * member package or class is already stored and to get the root package to start the
+     * search if not.
+     * 
+     * @param cache the new cache
+     */
+    public function setCache(cache:Cache):Void {
+        c = cache;
+    }
+    
+    /**
+     * Returns the cache set via the {@link #setCache} method or the default cache that
+     * is returned by the {@link ReflectConfig#getCache} method.
+     * 
+     * @return the currently used cache
+     */
+    public function getCache(Void):Cache {
+        if (!c) c = ReflectConfig.getCache();
+        return c;
+    }
+    
+    /**
+     * Executes the search for the members, that means member types and packages, in
+     * the passed-in package {@code p}.
+     * 
+     * &lt;p&gt;The resulting array contains instances of type {@link PackageMemberInfo}, that
+     * is either of type {@link ClassInfo} or {@link PackageInfo}.
+     *
+     * &lt;p&gt;The specific members can be either referenced by index or by name.
+     * &lt;dl&gt;
+     *   &lt;dt&gt;Reference member by index; can be class or package.&lt;/dt&gt;
+     *   &lt;dd&gt;&lt;code&gt;myMembers[0];&lt;/code&gt;&lt;/dd&gt;
+     *   &lt;dt&gt;Reference class by index.&lt;/dt&gt;
+     *   &lt;dd&gt;&lt;code&gt;myMembers.classes[0];&lt;/code&gt;&lt;/dd&gt;
+     *   &lt;dt&gt;Reference package by index.&lt;/dt&gt;
+     *   &lt;dd&gt;&lt;code&gt;myMembers.packages[0];&lt;/code&gt;&lt;/dd&gt;
+     *   &lt;dt&gt;Reference member by index; can be class or package.&lt;/dt&gt;
+     *   &lt;dd&gt;&lt;code&gt;myMembers.MyClass;&lt;/code&gt; or &lt;code&gt;myMembers.mypackage&lt;/code&gt;&lt;/dd&gt;
+     *   &lt;dt&gt;Reference class by name; use only the name of the class, excluding the namespace.&lt;/dt&gt;
+     *   &lt;dd&gt;&lt;code&gt;myMembers.classes.MyClass;&lt;/code&gt;&lt;/dd&gt;
+     *   &lt;dt&gt;Reference package by name; use only the package name, excluding the namespace.&lt;/dt&gt;
+     *   &lt;dd&gt;&lt;code&gt;myMembers.packages.mypackage;&lt;/code&gt;&lt;/dd&gt;
+     * &lt;/dl&gt;
+     *
+     * &lt;p&gt;{@code null} will be returned if:
+     * &lt;ul&gt;
+     *   &lt;li&gt;The passed-in package {@code p} is {@code null} or {@code undefined}.&lt;/li&gt;
+     *   &lt;li&gt;The {@code getPackage} method of the passed-in package returns {@code null}.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * &lt;p&gt;Only the passed-in package {@code p} will be searched through, no sub-packages.
+     *
+     * &lt;p&gt;In case the cache already contains a specific member class or package the
+     * contained info it will be added to the resulting members array.
+     * 
+     * @param g the package info instance representing the package to search through
+     * @return the members of the package, an empty array or {@code null}
+     */
+    public function execute(p:PackageInfo):Array {
+        if (p == null) return null;
+        var t:Object = p.getPackage();
+        if (!t) return null;
+        // must set access permissions because by default all package members in _global are hidden
+        _global.ASSetPropFlags(t, null, 0, true);
+        _global.ASSetPropFlags(t, ["__proto__", "constructor", "__constructor__", "prototype"], 1, true);
+        getCache();
+        var r:Array = new Array();
+        var n:Array = new Array();
+        r["classes"] = n;
+        var m:Array = new Array();
+        r["packages"] = m;
+        var i:String;
+        for (i in t) {
+            // The last two checks are made to exclude methods from _global like "ASnative".
+            // The last two checks must be made with strict eval because there are types with prototypes whose "valueOf"
+            // method returns "null" or "undefined", for example "Date", "Boolean" and "Number". But if you do a strict
+            // eval check between these prototypes and "null" or "undefined", "false" is be returned.
+            if (typeof(t[i]) == "function" &amp;&amp; t[i].prototype !== undefined &amp;&amp; t[i].prototype !== null) {
+                // flex stores every class in _global and in its actual package
+                // e.g. org.as2lib.core.BasicClass is stored in _global with name org_as2lib_core_BasicClass
+                // this if-clause excludes these extra stored classes
+                if (!eval("_global." + i.split("_").join(".")) || i.indexOf("_") &lt; 0) {
+                    var b:ClassInfo = c.getClassByClass(t[i]);
+                    if (!b) {
+                        b = c.addClass(new ClassInfo(t[i], i, p));
+                    }
+                    r[r.length] = b;
+                    r[i] = b;
+                    n[n.length] = b;
+                    n[i] = b;
+                }
+            } else if (typeof(t[i]) == "object") {
+                var a:PackageInfo = c.getPackage(t[i]);
+                if (!a) {
+                    a = c.addPackage(new PackageInfo(t[i], i, p));
+                }
+                r[r.length] = a;
+                r[i] = a;
+                m[m.length] = a;
+                m[i] = a;
+            }
+        }
+        return r;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>PackageMemberAlgorithm</code> searches for members, that means types and packages,<br /> of a specific package.</div> Sub-packages are not searched through.<p>This class is mostly used internally. If you wanna obtain the members of a <br /> package you need its representing <code>PackageInfo</code>. You can then also use the<br /> <a href="org_as2lib_env_reflect_PackageInfo.html#getMembers">org.as2lib.env.reflect.PackageInfo.getMembers</a>, <a href="org_as2lib_env_reflect_PackageInfo.html#getMemberClasses">org.as2lib.env.reflect.PackageInfo.getMemberClasses</a> and<br /> <a href="org_as2lib_env_reflect_PackageInfo.html#getMemberPackages">org.as2lib.env.reflect.PackageInfo.getMemberPackages</a> methods directly and do not have to make<br /> the detour over this method. The PackageInfo's methods are also easier to use and<br /> offer some extra functionalities.<p>If you nevertheless want to use this class here is how it works.<pre><span class="codeKeyword">var</span> packageInfo:PackageInfo = PackageInfo.forPackage(org.as2lib.core);
+<span class="codeKeyword">var</span> packageMemberAlgorithm:PackageMemberAlgorithm = <span class="codeKeyword">new</span> PackageMemberAlgorithm();
+<span class="codeKeyword">var</span> members:<span class="codeIdentifier">Array</span> = packageMemberAlgorithm.execute(packageInfo);</pre><p>Refer to the <a href="org_as2lib_env_reflect_algorithm_PackageMemberAlgorithm.html#execute">execute</a> method for details on how to get data from the<br /> members array appropriately.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#PackageMemberAlgorithm">PackageMemberAlgorithm</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#c">c</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#setCache">setCache</a>
+                </li>
+                <li>
+                  <a href="#getCache">getCache</a>
+                </li>
+                <li>
+                  <a href="#execute">execute</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="PackageMemberAlgorithm">PackageMemberAlgorithm</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>PackageMemberAlgorithm</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>PackageMemberAlgorithm</code> instance.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="c">c</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>c</b>:<a href="org_as2lib_env_reflect_Cache.html">Cache</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The cache.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="execute">execute</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>execute</b> (
+</div>
+                <div><span class="code">p:<a href="org_as2lib_env_reflect_PackageInfo.html">PackageInfo</a>) : Array</span></div>
+              </div>
+            </div>
+            <div class="description">Executes the search for the members, that means member types and packages, in<br /> the passed-in package <code>p</code>.<p>The resulting array contains instances of type <a href="org_as2lib_env_reflect_PackageMemberInfo.html">org.as2lib.env.reflect.PackageMemberInfo</a>, that<br /> is either of type <a href="org_as2lib_env_reflect_ClassInfo.html">org.as2lib.env.reflect.ClassInfo</a> or <a href="org_as2lib_env_reflect_PackageInfo.html">org.as2lib.env.reflect.PackageInfo</a>.<p>The specific members can be either referenced by index or by name.<br /> <dl><br />   <dt>Reference member by index; can be class or package.</dt><br />   <dd><code>myMembers[<span class="codeNumber">0</span>];</code></dd><br />   <dt>Reference class by index.</dt><br />   <dd><code>myMembers.classes[<span class="codeNumber">0</span>];</code></dd><br />   <dt>Reference package by index.</dt><br />   <dd><code>myMembers.packages[<span class="codeNumber">0</span>];</code></dd><br />   <dt>Reference member by index; can be class or package.</dt><br />   <dd><code>myMembers.MyClass;</code> or <code>myMembers.mypackage</code></dd><br />   <dt>Reference class by name; use only the name of the class, excluding the namespace.</dt><br />   <dd><code>myMembers.classes.MyClass;</code></dd><br />   <dt>Reference package by name; use only the package name, excluding the namespace.</dt><br />   <dd><code>myMembers.packages.mypackage;</code></dd><br /> </dl><p><code>null</code> will be returned if:<ul><li>The passed-in package <code>p</code> is <code>null</code> or <code>undefined</code>.</li><li>The <code>getPackage</code> method of the passed-in package returns <code>null</code>.</li></ul><p>Only the passed-in package <code>p</code> will be searched through, no sub-packages.<p>In case the cache already contains a specific member class or package the<br /> contained info it will be added to the resulting members array.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">g<span class="itemSeparator">:</span></div>
+                    <div>the package info instance representing the package to search through</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the members of the package, an empty array or <code>null</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getCache">getCache</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getCache</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_reflect_Cache.html">Cache</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the cache set via the <a href="org_as2lib_env_reflect_algorithm_PackageMemberAlgorithm.html#setCache">setCache</a> method or the default cache that<br /> is returned by the <a href="org_as2lib_env_reflect_ReflectConfig.html#getCache">org.as2lib.env.reflect.ReflectConfig.getCache</a> method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the currently used cache</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setCache">setCache</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setCache</b> (
+</div>
+                <div><span class="code">cache:<a href="org_as2lib_env_reflect_Cache.html">Cache</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the cache that is used by the <a href="org_as2lib_env_reflect_algorithm_PackageMemberAlgorithm.html#execute">execute</a> method to look whether the<br /> member package or class is already stored and to get the root package to start the<br /> search if not.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">cache<span class="itemSeparator">:</span></div>
+                    <div>the new cache</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:26:20</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

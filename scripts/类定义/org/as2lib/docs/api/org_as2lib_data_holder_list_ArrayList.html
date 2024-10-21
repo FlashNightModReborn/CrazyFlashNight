@@ -1,0 +1,640 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>ArrayList</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_data_holder_list_ArrayList">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>ArrayList</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_data_holder_list_AbstractList.html">AbstractList</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_data_holder_List.html">List</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.data.holder.list.ArrayList</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Tuesday, 12 July 2005, 15:35:10</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.data.holder.List;
+import org.as2lib.data.holder.Iterator;
+import org.as2lib.data.holder.array.ArrayIterator;
+import org.as2lib.data.holder.list.AbstractList;
+import org.as2lib.data.holder.IndexOutOfBoundsException;
+
+/**
+ * {@code ArrayList} is a resizable-array implementation of {@code List} interface.
+ * 
+ * &lt;p&gt;Example:
+ * &lt;code&gt;
+ *   var list:List = new ArrayList();
+ *   list.insert("myValue1");
+ *   list.insertFirst("myValue2");
+ *   list.insertLast("myValue3");
+ *   trace(list.contains("myValue2"));
+ *   trace(list.remove(0));
+ *   trace(list.contains("myValue2"));
+ *   trace(list.removeLast());
+ *   trace(list.get(0));
+ *   list.clear();
+ *   trace(list.size());
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;Output:
+ * &lt;pre&gt;
+ *   true
+ *   myValue2
+ *   false
+ *   myValue3
+ *   myValue1
+ *   0
+ * &lt;/pre&gt;
+ * 
+ * @author Simon Wacker
+ */
+class org.as2lib.data.holder.list.ArrayList extends AbstractList implements List {
+    
+    /** Makes the static variables of the super-class accessible through this class. */
+    private static var __proto__:Function = AbstractList;
+    
+    /** Holds added values. */
+    private var data:Array;
+    
+    /**
+     * Constructs a new {@code ArrayList} instance.
+     *
+     * @param source (optional) an array that contains values to populate this new list
+     * with
+     */
+    public function ArrayList(source:Array) {
+        if (source) {
+            data = source.concat();
+        } else {
+            data = new Array();
+        }
+    }
+    
+    /**
+     * Inserts {@code value} at the given {@code index}.
+     * 
+     * &lt;p&gt;The element that is currently at the given {@code index} is shifted by one to
+     * the right, as well as any subsequent elements.
+     * 
+     * @param index the index at which to insert the {@code value}
+     * @param value the value to insert
+     * @throws IndexOutOfBoundsException if the given {@code index} is not in range,
+     * this is less than 0 or greater than this list's size
+     */
+    public function insertByIndexAndValue(index:Number, value):Void {
+        if (index &lt; 0 || index &gt; data.length) {
+            throw new IndexOutOfBoundsException("Argument 'index' [" + index + "] is out of range, this is less than 0 or greater than this list's size [" + size() + "].", this, arguments);
+        }
+        if (index == data.length) {
+            data.push(value);
+            return;
+        }
+        if (index == 0) {
+            data.unshift(value);
+            return;
+        }
+        data.splice(index, 0, value);
+    }
+    
+    /**
+     * Removes the value at given {@code index} from this list and returns it.
+     * 
+     * @param index the index of the value to remove
+     * @return the removed value that was originally at given {@code index}
+     * @throws IndexOutOfBoundsException if given {@code index} is less than 0 or
+     * equal to or greater than this list's size
+     */
+    public function removeByIndex(index:Number) {
+        if (index &lt; 0 || index &gt;= data.length) {
+            throw new IndexOutOfBoundsException("Argument 'index' [" + index + "] is out of range, this is less than 0 or equal to or greater than this list's size [" + size() + "].", this, arguments);
+        }
+        if (index == 0) {
+            return data.shift();
+        }
+        if (index == data.length - 1) {
+            return data.pop();
+        }
+        var result = data[index];
+        data.splice(index, 1);
+        return result;
+    }
+    
+    /**
+     * Sets {@code value} to given {@code index} on this list.
+     * 
+     * @param index the index of {@code value}
+     * @param value the {@code value} to set to given {@code index}
+     * @return the value that was orignially at given {@code index}
+     * @throws IndexOutOfBoundsException if given {@code index} is less than 0 or
+     * equal to or greater than this list's size
+     */
+    public function set(index:Number, value) {
+        if (index &lt; 0 || index &gt;= data.length) {
+            throw new IndexOutOfBoundsException("Argument 'index' [" + index + "] is out of range, this is less than 0 or equal to or greater than this list's size [" + size() + "].", this, arguments);
+        }
+        var result = data[index];
+        data[index] = value;
+        return result;
+    }
+    
+    /**
+     * Returns the value at given {@code index}.
+     * 
+     * @param index the index to return the value of
+     * @return the value that is at given {@code index}
+     * @throws IndexOutOfBoundsException if given {@code index} is less than 0 or
+     * equal to or greater than this list's size
+     */
+    public function get(index:Number) {
+        if (index &lt; 0 || index &gt;= data.length) {
+            throw new IndexOutOfBoundsException("Argument 'index' [" + index + "] is out of range, this is less than 0 or equal to or greater than this list's size [" + size() + "].", this, arguments);
+        }
+        return data[index];
+    }
+    
+    /**
+     * Removes all values from this list.
+     */
+    public function clear(Void):Void {
+        data = new Array();
+    }
+    
+    /**
+     * Returns the number of added values.
+     * 
+     * @return the number of added values
+     */
+    public function size(Void):Number {
+        return data.length;
+    }
+    
+    /**
+     * Returns the iterator to iterate over this list.
+     * 
+     * @return the iterator to iterate over this list
+     */
+    public function iterator(Void):Iterator {
+        return new ArrayIterator(data);
+    }
+    
+    /**
+     * Returns the array representation of this list.
+     * 
+     * @return the array representation of this list
+     */
+    public function toArray(Void):Array {
+        return data.concat();
+    }
+
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>ArrayList</code> is a resizable-array implementation of <code>List</code> interface.</div><p>Example:<pre><span class="codeKeyword">var</span> list:List = <span class="codeKeyword">new</span> ArrayList();
+list.insert(<span class="codeString">"myValue1"</span>);
+list.insertFirst(<span class="codeString">"myValue2"</span>);
+list.insertLast(<span class="codeString">"myValue3"</span>);
+<span class="codeIdentifier">trace</span>(list.contains(<span class="codeString">"myValue2"</span>));
+<span class="codeIdentifier">trace</span>(list.remove(<span class="codeNumber">0</span>));
+<span class="codeIdentifier">trace</span>(list.contains(<span class="codeString">"myValue2"</span>));
+<span class="codeIdentifier">trace</span>(list.removeLast());
+<span class="codeIdentifier">trace</span>(list.<span class="codeIdentifier">get</span>(<span class="codeNumber">0</span>));
+list.clear();
+<span class="codeIdentifier">trace</span>(list.size());</pre><p>Output:<pre><span class="codeIdentifier">true</span>
+myValue2
+<span class="codeIdentifier">false</span>
+myValue3
+myValue1
+<span class="codeNumber">0</span></pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#ArrayList">ArrayList</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#__proto__">__proto__</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class properties inherited from <span class="superclass"><a href="org_as2lib_data_holder_list_AbstractList.html">AbstractList</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_data_holder_list_AbstractList.html#stringifier" class="privatInline">stringifier</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#data">data</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_data_holder_list_AbstractList.html">AbstractList</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_data_holder_list_AbstractList.html#thiz" class="privatInline">thiz</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class methods inherited from <span class="superclass"><a href="org_as2lib_data_holder_list_AbstractList.html">AbstractList</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_data_holder_list_AbstractList.html#getStringifier">getStringifier</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#setStringifier">setStringifier</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#insertByIndexAndValue">insertByIndexAndValue</a>
+                </li>
+                <li>
+                  <a href="#removeByIndex">removeByIndex</a>
+                </li>
+                <li>
+                  <a href="#set">set</a>
+                </li>
+                <li>
+                  <a href="#get">get</a>
+                </li>
+                <li>
+                  <a href="#clear">clear</a>
+                </li>
+                <li>
+                  <a href="#size">size</a>
+                </li>
+                <li>
+                  <a href="#iterator">iterator</a>
+                </li>
+                <li>
+                  <a href="#toArray">toArray</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_data_holder_list_AbstractList.html">AbstractList</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_data_holder_list_AbstractList.html#contains">contains</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#containsAll">containsAll</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#indexOf">indexOf</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#insert">insert</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#insertAll">insertAll</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#insertAllByIndexAndList">insertAllByIndexAndList</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#insertAllByList">insertAllByList</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#insertByValue">insertByValue</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#insertFirst">insertFirst</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#insertLast">insertLast</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#isEmpty">isEmpty</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#remove">remove</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#removeAll">removeAll</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#removeByValue">removeByValue</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#removeFirst">removeFirst</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#removeLast">removeLast</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#retainAll">retainAll</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#setAll">setAll</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#subList">subList</a>, <a href="org_as2lib_data_holder_list_AbstractList.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="ArrayList">ArrayList</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>ArrayList</b> (
+</div>
+                <div><span class="code">source:Array)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>ArrayList</code> instance.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">source<span class="itemSeparator">:</span></div>
+                    <div>(optional) an array that contains values to populate this new list<br /> with</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="__proto__">__proto__</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>__proto__</b>:Function = AbstractList
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Makes the static variables of the super-class accessible through this class.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="data">data</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>data</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Holds added values.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="clear">clear</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>clear</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Removes all values from this list.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_List.html#clear">org.as2lib.data.holder.List.clear</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="get">get</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>get</b> (
+</div>
+                <div><span class="code">index:Number)</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the value at given <code>index</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">index<span class="itemSeparator">:</span></div>
+                    <div>the index to return the value of</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the value that is at given <code>index</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_data_holder_IndexOutOfBoundsException.html">org.as2lib.data.holder.IndexOutOfBoundsException</a> if given <code>index</code> is less than 0 or<br /> equal to or greater than this list's size</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_List.html#get">org.as2lib.data.holder.List.get</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="insertByIndexAndValue">insertByIndexAndValue</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>insertByIndexAndValue</b> (
+
+</div>
+                <div><span class="code">index:Number,
+value) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Inserts <code>value</code> at the given <code>index</code>.<p>The element that is currently at the given <code>index</code> is shifted by one to<br /> the right, as well as any subsequent elements.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">index<span class="itemSeparator">:</span></div>
+                    <div>the index at which to insert the <code>value</code></div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">value<span class="itemSeparator">:</span></div>
+                    <div>the value to insert</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_data_holder_IndexOutOfBoundsException.html">org.as2lib.data.holder.IndexOutOfBoundsException</a> if the given <code>index</code> is not in range,<br /> this is less than 0 or greater than this list's size</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_List.html#insertByIndexAndValue">org.as2lib.data.holder.List.insertByIndexAndValue</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="iterator">iterator</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>iterator</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_Iterator.html">Iterator</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the iterator to iterate over this list.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the iterator to iterate over this list</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_List.html#iterator">org.as2lib.data.holder.List.iterator</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="removeByIndex">removeByIndex</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>removeByIndex</b> (
+</div>
+                <div><span class="code">index:Number)</span></div>
+              </div>
+            </div>
+            <div class="description">Removes the value at given <code>index</code> from this list and returns it.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">index<span class="itemSeparator">:</span></div>
+                    <div>the index of the value to remove</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the removed value that was originally at given <code>index</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_data_holder_IndexOutOfBoundsException.html">org.as2lib.data.holder.IndexOutOfBoundsException</a> if given <code>index</code> is less than 0 or<br /> equal to or greater than this list's size</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_List.html#removeByIndex">org.as2lib.data.holder.List.removeByIndex</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="set">set</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>set</b> (
+
+</div>
+                <div><span class="code">index:Number,
+value)</span></div>
+              </div>
+            </div>
+            <div class="description">Sets <code>value</code> to given <code>index</code> on this list.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">index<span class="itemSeparator">:</span></div>
+                    <div>the index of <code>value</code></div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">value<span class="itemSeparator">:</span></div>
+                    <div>the <code>value</code> to set to given <code>index</code></div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the value that was orignially at given <code>index</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_data_holder_IndexOutOfBoundsException.html">org.as2lib.data.holder.IndexOutOfBoundsException</a> if given <code>index</code> is less than 0 or<br /> equal to or greater than this list's size</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_List.html#set">org.as2lib.data.holder.List.set</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="size">size</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>size</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the number of added values.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the number of added values</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_List.html#size">org.as2lib.data.holder.List.size</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toArray">toArray</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>toArray</b> (
+</div>
+                <div><span class="code">Void) : Array</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the array representation of this list.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the array representation of this list</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_List.html#toArray">org.as2lib.data.holder.List.toArray</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:46</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

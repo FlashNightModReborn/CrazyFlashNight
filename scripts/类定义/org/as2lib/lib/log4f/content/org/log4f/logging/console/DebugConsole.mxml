@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2004 Peter Armstrong
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<mx:VBox
+	xmlns:mx="http://www.macromedia.com/2003/mxml"
+	xmlns:console="org.log4f.logging.console.*"
+	initialize="doInit()">	
+	<mx:Script>
+	<![CDATA[
+		import org.log4f.logging.console.InspectInstanceDialog;
+		import org.log4f.logging.console.DebugModel;
+		import mx.utils.Delegate;
+		import mx.core.UIObject;
+		import mx.core.Application;
+		import mx.formatters.DateFormatter;
+		import mx.managers.PopUpManager;
+
+		var formatString:String = "L:NN:SS A";
+
+		private var _debugModel:DebugModel;
+		
+		private var _dateFormatter:DateFormatter;
+		
+		private function doInit(Void):Void {
+			_debugModel = DebugModel.getSharedInstance();
+			_debugModel.addEventListener(
+				"modelChanged",
+				Delegate.create(this, handleModelChanged));
+			_dateFormatter = new DateFormatter();
+			_dateFormatter.formatString = formatString;
+		}
+
+		public function doInspect():Void {
+			var appUI:UIObject = UIObject(Application.application);
+			var popup = PopUpManager.createPopUp(
+				this,
+				InspectInstanceDialog,
+				false,
+				{	deferred: true,
+					width:(.7 * appUI.width),
+					height:(.6 * appUI.height),
+					instance:debugMessageGrid.selectedItem.provider},
+				false);
+		}
+		
+		public function get debugModel():DebugModel {
+			return _debugModel;
+		}
+		
+		public function doCopy(Void):Void {
+			System.setClipboard(
+				"<messages>\n\t" + _debugModel.messages.join("\n\t") +
+				"\n</messages>");
+		}
+		
+		private function handleModelChanged(Void) {
+			debugMessageGrid.executeBindings();
+		}
+		
+		private function formatTimestamp(rowData):String {
+			return _dateFormatter.format(rowData.date);
+		}
+	]]>
+	</mx:Script>
+	<mx:DataGrid
+		id="debugMessageGrid"
+		width="100%"
+		height="100%"
+		dataProvider="{_debugModel.messages}">
+		<mx:columns>
+			<mx:Array>
+				<mx:DataGridColumn
+					columnName="date"
+					labelFunction="formatTimestamp"
+					headerText="Time Stamp"
+					width="100"/>
+				<mx:DataGridColumn
+					columnName="loggerName"
+					headerText="Logger"
+					width="100"/>
+				<mx:DataGridColumn
+					columnName="level"
+					headerText="Level"
+					width="100"/>
+				<mx:DataGridColumn
+					columnName="provider"
+					headerText="Provider"
+					width="100"/>
+				<mx:DataGridColumn
+					columnName="message"
+					headerText="Message"
+					width="400"/>
+			</mx:Array>
+		</mx:columns>
+	</mx:DataGrid>
+</mx:VBox>

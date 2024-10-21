@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Log4F Readme</title>
+</head>
+<body>
+<h1 style="font-family: helvetica,arial,sans-serif;"><small>Log4F Readme</small></h1>
+<br>
+<small><span style="font-family: helvetica,arial,sans-serif;">Please
+email comments or questions to Peter Armstrong (<a
+ href="mailto:peterarmstrong@gmail.com">peterarmstrong@gmail.com</a>)
+or use the forum at the project homepage on SourceForge at <a
+ href="http://sourceforge.net/projects/log4f/">http://sourceforge.net/projects/log4f/</a>.<br>
+<br>
+</span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;"></span></small>
+<h3><span style="font-family: helvetica,arial,sans-serif;">Introduction</span><br>
+</h3>
+<small><span style="font-family: helvetica,arial,sans-serif;">Log4F is
+a Log4J-style logging framework for Flex applications. It is
+based on Ralf Siegel's public domain logging framework found at
+<a href="http://code.audiofarm.de/Logger/">http://code.audiofarm.de/Logger/</a>
+and adds useful Flex-specific
+enhancements including a debug console, instance inspector, etc.<br>
+<br>
+Loggers can have one or more Publishers.&nbsp; Log4F comes with
+Publishers that print messages to:<br>
+</span></small>
+<ul>
+  <li><small><span style="font-family: helvetica,arial,sans-serif;">an
+alert message box (via Alert.show())</span></small></li>
+  <li><small><span style="font-family: helvetica,arial,sans-serif;">the
+Flex debugger (via trace())</span></small></li>
+  <li><span style="font-family: helvetica,arial,sans-serif;"><small>an
+enhanced debug console with integrated instance inspector</small></span></li>
+</ul>
+<span style="font-family: helvetica,arial,sans-serif;"><small>The
+default loggers are configured as such in the defaultConfig.xml file:<br>
+<br>
+</small></span><span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;logger name="DefaultLogger" level="ALL"&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;publisher
+name="org.log4f.logging.DefaultPublisher"/&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;/logger&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;logger name="AlertLogger" level="ALL"&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;publisher
+name="org.log4f.logging.AlertPublisher"/&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;/logger&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;logger name="DebugModelLogger" level="ALL"&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;publisher
+name="org.log4f.logging.console.DebugModelPublisher"/&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &lt;/logger&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: helvetica,arial,sans-serif;"></span><br>
+<h3><span style="font-family: helvetica,arial,sans-serif;">DebugModelLogger</span><br>
+</h3>
+<small><span style="font-family: helvetica,arial,sans-serif;">The
+DebugModelLogger uses the DebugModelPublisher to log a message to a
+debug model which is the data model for a DebugConsole.&nbsp; This
+DebugConsole can be displayed either in the DebugPanel (which is
+appropriate for a one-off testing application used for testing a
+particular component) or in the DebugTitleWindow which is accessible
+via the a menu item which gets added to the default Flash popup
+menu.&nbsp; The following screenshot shows the debug console in both
+the </span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;">DebugTitleWindow
+(top) and in the </span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;">DebugPanel (bottom):</span></small><br>
+<br>
+<img alt="" src="images/twoConsoles.gif"
+ style="width: 910px; height: 788px;"><br>
+<br>
+<small><span style="font-family: helvetica,arial,sans-serif;">The rows
+in the DebugConsole are selectable.&nbsp; The Provider element of the
+selected row can be inspected by clicking the Inspect Instance
+button.&nbsp; This triggers the InspectInstanceDialog which shows a
+tree view of the properties of the selected Provider element.&nbsp; The
+</span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;">Provider is the root
+of the tree, and each of its properties is a child of the root.&nbsp;
+If those child properties themselves have properties they are displayed
+as node elements (with folder icons) which can be expanded to show
+their children; if they do not have properties they are displayed as
+leaf elements (with document icons).</span></small><br>
+<br>
+<img alt="" src="images/instanceInspector.gif"
+ style="width: 843px; height: 510px;"><br>
+<br>
+<small><span style="font-family: helvetica,arial,sans-serif;">Together,
+the </span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;"></span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;">DebugTitleWindow </span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;">and
+InspectInstanceDialog are an extremely useful tool which give you many
+of the benefits of a debugger in situations when you do not want to (or
+cannot) use the Flash debugger.&nbsp; Since the </span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;"></span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;"></span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;">DebugTitleWindow is
+accessed via a popup menu item only, disabling it is as simple as
+hiding that popup menu item.<br>
+<br>
+Furthermore, messages in the DebugConsole can be copied by clicking on
+the Copy Messages button.&nbsp; This puts an XML document on the
+clipboard such as the following:<br>
+<br>
+</span><big><span style="font-family: monospace;">&lt;messages&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &lt;logRecord"
+date="Mon Dec 13 16:48:00 GMT-0800 2004" loggerName="DebugModelLogger"
+level="10000" message="log message one" provider="[object Object]"/&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; &lt;logRecord"
+date="Mon Dec 13 16:48:04 GMT-0800 2004" loggerName="DebugModelLogger"
+level="10000" message="log message two" provider="[object Object]"/&gt;</span><br
+ style="font-family: monospace;">
+<span style="font-family: monospace;">&lt;/messages&gt;<br>
+<br>
+</span></big><span style="font-family: helvetica,arial,sans-serif;">The
+clipboard can be pasted into your favorite text editor and saved,
+searched etc.<br>
+<br>
+</span></small><br>
+<h2><small><small><small><small><span
+ style="font-family: helvetica,arial,sans-serif;"><big><big><big>AlertLogger</big></big></big></span></small></small></small></small></h2>
+<h2><small><span style="font-family: helvetica,arial,sans-serif;"></span></small></h2>
+<small><span style="font-family: helvetica,arial,sans-serif;"></span></small><small><span
+ style="font-family: helvetica,arial,sans-serif;"></span></small><span
+ style="font-family: helvetica,arial,sans-serif;"><small>If the
+DebugModelLogger did not exist, then for extremely quick-and-dirty
+debugging the AlertLogger could be useful.&nbsp; (I only used it to
+test the framework when working on the DebugModelLogger; it continues
+to exist primarily to demonstrate how to write a simple Publisher other
+than the DebugModelPublisher.)<br>
+<br>
+The AlertLogger uses the AlertPublisher to display an alert message box
+such as the following:<br>
+</small></span><br>
+<img alt="" src="images/alertPublisher.gif"
+ style="width: 271px; height: 138px;"><br>
+<small><span style="font-family: helvetica,arial,sans-serif;"><br>
+<br>
+Peter Armstrong<br>
+December 14, 2004<br>
+</span></small>
+</body>
+</html>

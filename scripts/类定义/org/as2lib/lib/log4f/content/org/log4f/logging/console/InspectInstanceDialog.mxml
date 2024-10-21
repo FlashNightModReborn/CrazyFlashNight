@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2004 Peter Armstrong
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<mx:TitleWindow
+	title="Inspecting Instance..."
+	width="800"
+	height="600"
+	closeButton="true"
+	click="deletePopUp()"
+	xmlns:mx="http://www.macromedia.com/2003/mxml">
+	<mx:Script>
+	<![CDATA[
+		import mx.core.UIObject;
+		import mx.utils.Delegate;
+		import mx.controls.treeclasses.TreeNode;
+		import mx.controls.treeclasses.TreeDataProvider;
+		import org.log4f.logging.console.InstanceDataProvider;
+	
+		/**
+		 * The instance whose properties we're inspecting.
+		 */
+		public var instance:Object;
+		
+		/**
+		 * Create the tree, traversing it fully for now.
+		 */
+		private function initTree() {
+			var treeDP = new TreeNode();
+			var root = treeDP.addTreeNode(instance.toString(), instance);
+			myTree.dataProvider = treeDP;
+			myTree.setIsBranch(root, true);
+		}
+		
+		public function instanceTreeLabelFunc(item):String {
+			return item.label;
+		}
+
+		private function hasKids(obj) {
+			if (!(obj instanceof Object)) return false;
+			var hasKids:Boolean = false;
+			for (var childPropKey:String in obj) {
+				hasKids = true;
+				break;//only need one
+			}
+			return hasKids;
+		}
+
+		public function handleNodeOpen(event) {
+			var dataProvider:TreeDataProvider = TreeDataProvider(event.node);
+			if (!dataProvider.hasChildNodes()) {
+				var theData:Object = dataProvider.getData();
+				var childPropKeyArray:Array = new Array();
+				for (var childPropKey:String in theData) {
+					childPropKeyArray.push(childPropKey);
+				}
+				childPropKeyArray.sort();
+				var sortedKey:String;
+				var prevKey:String = null;
+				for (var i = 0; i < childPropKeyArray.length; i++) {
+					sortedKey = childPropKeyArray[i];
+					if (prevKey === sortedKey) {
+						//Utils.debug("duplicate key: " + sortedKey);
+						continue;
+					}
+					var childPropValue:Object = theData[sortedKey];
+					var newNode = dataProvider.addTreeNode(
+						sortedKey + " = " + childPropValue.toString(),
+						childPropValue);
+					if (hasKids(childPropValue)) {
+						myTree.setIsBranch(newNode, true);
+					}
+					prevKey = sortedKey;
+				}
+			}
+		}
+		
+		public function setSummary(event:Object) {
+			var selectedObject = myTree.selectedNode.getData();
+			summary.text = "typeof(): " + typeof(selectedObject) +
+				", className: " + selectedObject.className;
+		}
+
+		public function clearSummary(event:Object) {
+			summary.text = "(No Object Selected)";
+		}
+	]]>
+	</mx:Script>
+	<mx:Tree
+		id="myTree"
+		initialize="initTree()"
+		nodeOpen="handleNodeOpen(event)"
+		width="100%"
+		height="100%"
+		change="setSummary(event)"
+		cellFocusIn="setSummary(event)"
+		cellFocusOut="clearSummary(event)"
+		labelFunction="instanceTreeLabelFunc"
+		/>
+	<mx:ControlBar>
+		<mx:Label id="summary" text="(No Object Selected)"/>
+	</mx:ControlBar>
+</mx:TitleWindow>

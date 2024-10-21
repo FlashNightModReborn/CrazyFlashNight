@@ -1,0 +1,896 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>LuminicBoxLogger</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_log_logger_LuminicBoxLogger">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>LuminicBoxLogger</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_env_log_Logger.html">Logger</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker, Christoph Atteneder</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.log.logger.LuminicBoxLogger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Sunday, 09 October 2005, 19:28:26</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.log.Logger;
+
+import LuminicBox.Log.Level;
+import LuminicBox.Log.IPublisher;
+
+/**
+ * {@code LuminicBoxLogger} acts as a wrapper for a {@code Logger} instance of the
+ * LuminicBox Logging API.
+ * 
+ * &lt;p&gt;Configure the LuminicBox Logging API as normally and just use this class in
+ * your application to log messages or objects. This enables you to switch between
+ * almost every available Logging API without having to change the logs in your
+ * application but just the underlying configuration on startup.
+ *
+ * &lt;p&gt;All functionalities that the LuminicBox Logging API offers are delegated to
+ * it. Other functionalities are performed by this class directly.
+ * 
+ * @author Simon Wacker
+ * @author Christoph Atteneder
+ * 
+ * @see org.as2lib.env.log.handler.LuminicBoxHandler
+ * @see &lt;a href="http://www.luminicbox.com/dev/flash/log"&gt;LuminicBox Logging API&lt;/a&gt;
+ */
+class org.as2lib.env.log.logger.LuminicBoxLogger extends BasicClass implements Logger {
+    
+    /** The Logger instance of LuminicBox every task is delegated to. */
+    private var logger:LuminicBox.Log.Logger;
+    
+    /** The set level as number. */
+    private var levelAsNumber:Number;
+    
+    /** Debug level as number. */
+    private var debugLevelAsNumber:Number;
+    
+    /** Info level as number. */
+    private var infoLevelAsNumber:Number;
+    
+    /** Warning level as number. */
+    private var warningLevelAsNumber:Number;
+    
+    /** Error level as number. */
+    private var errorLevelAsNumber:Number;
+    
+    /** Fatal level as number. */
+    private var fatalLevelAsNumber:Number;
+    
+    /**
+     * Constructs a new {@code LuminicBoxLogger} instance.
+     *
+     * @param name (optional) the name of this logger
+     */
+    public function LuminicBoxLogger(name:String) {
+        this.logger = new LuminicBox.Log.Logger(name);
+        this.levelAsNumber = getLevel().getValue();
+        this.debugLevelAsNumber = Level.DEBUG.getValue();
+        this.infoLevelAsNumber = Level.INFO.getValue();
+        this.warningLevelAsNumber = Level.WARN.getValue();
+        this.errorLevelAsNumber = Level.ERROR.getValue();
+        this.fatalLevelAsNumber = Level.FATAL.getValue();
+    }
+    
+    /**
+     * Returns the name of this logger.
+     *
+     * @return the name of this logger
+     */
+    public function getName(Void):String {
+        return this.logger.getId();
+    }
+    
+    /**
+     * Sets the new level.
+     *
+     * &lt;p&gt;The level determines which messages are logged and which are not.
+     *
+     * @param newLevel the new level
+     */
+    public function setLevel(newLevel:Level):Void {
+        this.logger.setLevel(newLevel);
+        this.levelAsNumber = newLevel.getValue();
+    }
+    
+    /**
+     * Returns the set or default level.
+     *
+     * @return the set or default level
+     */
+    public function getLevel(Void):Level {
+        return this.logger.getLevel();
+    }
+    
+    /**
+     * Adds the {@code publisher} to the wrapped LuminicBox {@code Logger}.
+     *
+     * @param publisher the publisher to add
+     */
+    public function addPublisher(publisher:IPublisher):Void {
+        logger.addPublisher(publisher);
+    }
+    
+    /** 
+     * Removes the {@code publisher} from the wrapped LuminicBox {@code Logger}.
+     *
+     * @param publisher the publisher to remove
+     */
+    public function removePublisher(publisher:IPublisher):Void {
+        logger.removePublisher(publisher);
+    }
+    
+    /**
+     * Returns the added publishers of type {@code IPublisher}.
+     *
+     * @return the added publishers
+     * @see #addPublisher
+     */
+    public function getPublishers(Void):Object {
+        return logger.getPublishers();
+    }
+    
+    /**
+     * Checks if this logger is enabled for debug level log messages.
+     *
+     * @return {@code true} if debug messages are logged
+     * @see #debug
+     */
+    public function isDebugEnabled(Void):Boolean {
+        return (levelAsNumber &lt;= debugLevelAsNumber);
+    }
+    
+    /**
+     * Checks if this logger is enabled for info level log messages.
+     *
+     * @return {@code true} if info messages are logged
+     * @see #info
+     */
+    public function isInfoEnabled(Void):Boolean {
+        return (levelAsNumber &lt;= infoLevelAsNumber);
+    }
+    
+    /**
+     * Checks if this logger is enabled for warning level log messages.
+     *
+     * @return {@code true} if warning messages are logged
+     * @see #warning
+     */
+    public function isWarningEnabled(Void):Boolean {
+        return (levelAsNumber &lt;= warningLevelAsNumber);
+    }
+    
+    /**
+     * Checks if this logger is enabled for error level log messages.
+     *
+     * @return {@code true} if error messages are logged
+     * @see #error
+     */
+    public function isErrorEnabled(Void):Boolean {
+        return (levelAsNumber &lt;= errorLevelAsNumber);
+    }
+    
+    /**
+     * Checks if this logger is enabled for fatal level log messages.
+     *
+     * @return {@code true} if fatal messages are logged
+     * @see #fatal
+     */
+    public function isFatalEnabled(Void):Boolean {
+        return (levelAsNumber &lt;= fatalLevelAsNumber);
+    }
+    
+    /**
+     * Logs the passed-in {@code message} to LuminicBox {@code Logger} at debug level.
+     *
+     * @param message the message object to log
+     * @see #isDebugEnabled
+     */
+    public function debug(message):Void {
+        logger.debug(message);
+    }
+    
+    /**
+     * Logs the passed-in {@code message} to LuminicBox {@code Logger} at info level.
+     *
+     * @param message the message object to log
+     * @see #isInfoEnabled
+     */
+    public function info(message):Void {
+        logger.info(message);
+    }
+    
+    /**
+     * Logs the passed-in {@code message} to LuminicBox {@code Logger} at warning
+     * level.
+     *
+     * @param message the message object to log
+     * @see #isWarningEnabled
+     */
+    public function warning(message):Void {
+        logger.warn(message);
+    }
+    
+    /**
+     * Logs the passed-in {@code message} to LuminicBox {@code Logger} at error level.
+     *
+     * @param message the message object to log
+     * @see #isErrorEnabled
+     */
+    public function error(message):Void {
+        logger.error(message);
+    }
+    
+    /**
+     * Logs the passed-in {@code message} to LuminicBox {@code Logger} at fatal level.
+     *
+     * @param message the message object to log
+     * @see #isFatalEnabled
+     */
+    public function fatal(message):Void {
+        logger.fatal(message);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>LuminicBoxLogger</code> acts as a wrapper for a <code>Logger</code> instance of the<br /> LuminicBox Logging API.</div><p>Configure the LuminicBox Logging API as normally and just use this class in<br /> your application to log messages or objects. This enables you to switch between<br /> almost every available Logging API without having to change the logs in your<br /> application but just the underlying configuration on startup.<p>All functionalities that the LuminicBox Logging API offers are delegated to<br /> it. Other functionalities are performed by this class directly.<div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_handler_LuminicBoxHandler.html">org.as2lib.env.log.handler.LuminicBoxHandler</a><br /><a href="http://www.luminicbox.com/dev/flash/log">LuminicBox Logging API</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#LuminicBoxLogger">LuminicBoxLogger</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#logger">logger</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#levelAsNumber">levelAsNumber</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#debugLevelAsNumber">debugLevelAsNumber</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#infoLevelAsNumber">infoLevelAsNumber</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#warningLevelAsNumber">warningLevelAsNumber</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#errorLevelAsNumber">errorLevelAsNumber</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#fatalLevelAsNumber">fatalLevelAsNumber</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#getName">getName</a>
+                </li>
+                <li>
+                  <a href="#setLevel">setLevel</a>
+                </li>
+                <li>
+                  <a href="#getLevel">getLevel</a>
+                </li>
+                <li>
+                  <a href="#addPublisher">addPublisher</a>
+                </li>
+                <li>
+                  <a href="#removePublisher">removePublisher</a>
+                </li>
+                <li>
+                  <a href="#getPublishers">getPublishers</a>
+                </li>
+                <li>
+                  <a href="#isDebugEnabled">isDebugEnabled</a>
+                </li>
+                <li>
+                  <a href="#isInfoEnabled">isInfoEnabled</a>
+                </li>
+                <li>
+                  <a href="#isWarningEnabled">isWarningEnabled</a>
+                </li>
+                <li>
+                  <a href="#isErrorEnabled">isErrorEnabled</a>
+                </li>
+                <li>
+                  <a href="#isFatalEnabled">isFatalEnabled</a>
+                </li>
+                <li>
+                  <a href="#debug">debug</a>
+                </li>
+                <li>
+                  <a href="#info">info</a>
+                </li>
+                <li>
+                  <a href="#warning">warning</a>
+                </li>
+                <li>
+                  <a href="#error">error</a>
+                </li>
+                <li>
+                  <a href="#fatal">fatal</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="LuminicBoxLogger">LuminicBoxLogger</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>LuminicBoxLogger</b> (
+</div>
+                <div><span class="code">name:String)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>LuminicBoxLogger</code> instance.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">name<span class="itemSeparator">:</span></div>
+                    <div>(optional) the name of this logger</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="debugLevelAsNumber">debugLevelAsNumber</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>debugLevelAsNumber</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Debug level as number.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="errorLevelAsNumber">errorLevelAsNumber</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>errorLevelAsNumber</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Error level as number.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="fatalLevelAsNumber">fatalLevelAsNumber</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>fatalLevelAsNumber</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Fatal level as number.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="infoLevelAsNumber">infoLevelAsNumber</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>infoLevelAsNumber</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Info level as number.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="levelAsNumber">levelAsNumber</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>levelAsNumber</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The set level as number.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="logger">logger</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>logger</b>:LuminicBox.Log.Logger
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The Logger instance of LuminicBox every task is delegated to.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="warningLevelAsNumber">warningLevelAsNumber</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>warningLevelAsNumber</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Warning level as number.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="addPublisher">addPublisher</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>addPublisher</b> (
+</div>
+                <div><span class="code">publisher:IPublisher) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Adds the <code>publisher</code> to the wrapped LuminicBox <code>Logger</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">publisher<span class="itemSeparator">:</span></div>
+                    <div>the publisher to add</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="debug">debug</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>debug</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> to LuminicBox <code>Logger</code> at debug level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#isDebugEnabled">isDebugEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#debug">org.as2lib.env.log.Logger.debug</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="error">error</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>error</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> to LuminicBox <code>Logger</code> at error level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#isErrorEnabled">isErrorEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#error">org.as2lib.env.log.Logger.error</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="fatal">fatal</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>fatal</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> to LuminicBox <code>Logger</code> at fatal level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#isFatalEnabled">isFatalEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#fatal">org.as2lib.env.log.Logger.fatal</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getLevel">getLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getLevel</b> (
+</div>
+                <div><span class="code">Void) : Level</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the set or default level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the set or default level</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getName">getName</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getName</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the name of this logger.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the name of this logger</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getPublishers">getPublishers</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getPublishers</b> (
+</div>
+                <div><span class="code">Void) : Object</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the added publishers of type <code>IPublisher</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the added publishers</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#addPublisher">addPublisher</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="info">info</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>info</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> to LuminicBox <code>Logger</code> at info level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#isInfoEnabled">isInfoEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#info">org.as2lib.env.log.Logger.info</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isDebugEnabled">isDebugEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isDebugEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for debug level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if debug messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#debug">debug</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isDebugEnabled">org.as2lib.env.log.Logger.isDebugEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isErrorEnabled">isErrorEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isErrorEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for error level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if error messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#error">error</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isErrorEnabled">org.as2lib.env.log.Logger.isErrorEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isFatalEnabled">isFatalEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isFatalEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for fatal level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if fatal messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#fatal">fatal</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isFatalEnabled">org.as2lib.env.log.Logger.isFatalEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isInfoEnabled">isInfoEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isInfoEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for info level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if info messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#info">info</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isInfoEnabled">org.as2lib.env.log.Logger.isInfoEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isWarningEnabled">isWarningEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isWarningEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for warning level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if warning messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#warning">warning</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isWarningEnabled">org.as2lib.env.log.Logger.isWarningEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="removePublisher">removePublisher</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>removePublisher</b> (
+</div>
+                <div><span class="code">publisher:IPublisher) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Removes the <code>publisher</code> from the wrapped LuminicBox <code>Logger</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">publisher<span class="itemSeparator">:</span></div>
+                    <div>the publisher to remove</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setLevel">setLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setLevel</b> (
+</div>
+                <div><span class="code">newLevel:Level) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the new level.<p>The level determines which messages are logged and which are not.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">newLevel<span class="itemSeparator">:</span></div>
+                    <div>the new level</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="warning">warning</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>warning</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the passed-in <code>message</code> to LuminicBox <code>Logger</code> at warning<br /> level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_LuminicBoxLogger.html#isWarningEnabled">isWarningEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#warning">org.as2lib.env.log.Logger.warning</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:25:35</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

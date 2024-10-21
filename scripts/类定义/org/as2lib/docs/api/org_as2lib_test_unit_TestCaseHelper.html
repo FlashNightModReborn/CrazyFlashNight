@@ -1,0 +1,455 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>TestCaseHelper</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_test_unit_TestCaseHelper">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods</span></span><h1>TestCaseHelper</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_test_unit_TestCase.html">TestCase</a> &lt; <a href="org_as2lib_env_log_LogSupport.html">LogSupport</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.1</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.test.unit.TestCaseHelper</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Wednesday, 21 September 2005, 18:37:06</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/**
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+import org.as2lib.test.unit.TestCase;
+import org.as2lib.test.unit.TestCaseRunner;
+
+/**
+ * {@code TestCaseHelper} is a class that helps writing {@link TestCase}s.
+ * &lt;p&gt;A {@code TestCase} allows proper execution for any kind of test. But if
+ * you want to refactor/break apart your code and simplify your test it disallows
+ * you to handle assertions.
+ * 
+ * &lt;p&gt;A common example is if you want to test for a interface. Any implementation
+ * has to match the rules of the interface. A standardised test for the interface
+ * would therefore be a helper. Code could look like this:
+ * 
+ * &lt;p&gt;Interface
+ * &lt;code&gt;
+ *   interface MyInterface {
+ *       public function addInstance(obj):Void;
+ *       public function containsInstance(obj):Void;
+ *       public function removeInstance(obj):Void;
+ *   }
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;Implementation #1
+ * &lt;code&gt;
+ *   import org.as2lib.util.ArrayUtil;
+ * 
+ *   class MyImplementationA implements MyInterface {
+ *       private var array:Array;
+ *       
+ *       public fucntion MyImplementationA() {
+ *           array = new Array();
+ *       }
+ *       
+ *       public function addInstance(obj):Void {
+ *           removeInstance(obj);
+ *           array.push(obj);
+ *       }
+ *       
+ *       public function removeInstance(obj):Void {
+ *           ArrayUtil.removeElement(array, obj);
+ *       }
+ *       
+ *       public function containsInstance(obj):Boolean {
+ *           for (var i:Number = 0; i &lt; array.length; i++) {
+ *               if (array[i] === obj) {
+ *                   return true;
+ *               }
+ *           }
+ *           return false;
+ *       }
+ *   }
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;Implementation #2
+ * &lt;code&gt;
+ *   class MyImplementationB extends MyImplementationA {
+ *       public function containsInstance(obj):Boolean {
+ *           for (var i:Number = array.length-1; i &gt; 0; i++) {
+ *               if (array[i] === obj) {
+ *                   return true;
+ *               }
+ *           }
+ *           return false;
+ *       }
+ *   }
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;Test for the Interface
+ * &lt;code&gt;
+ *   import org.as2lib.test.unit.TestCaseHelper;
+ *   import org.as2lib.test.mock.MockControl;
+ *   
+ *   class TMyInterface extends TestCaseHelper {
+ *       public function testAccess(instance:MyInterface) {
+ *           var mC:MockControl = new MockControl(Object);
+ *           mC.replay();
+ *           assertfalse("Instance should not be contained",    
+ *               instance.containsListener(mC.getMock()));
+ *           instance.addInstance(mC.getMock());
+ *           assertTrue("Instance should be contained",
+ *               instance.containsListener(mC.getMock()));
+ *           instance.removeInstance(mC.getMock());
+ *           assertfalse("Instance should not be contained",
+ *               instance.containsListener(mC.getMock()));
+ *           instance.addInstance(mC.getMock());
+ *           instance.addInstance(mC.getMock());
+ *           instance.removeInstance(mC.getMock());
+ *           assertfalse("Instance should not be contained after double adding",
+ *               instance.containsListener(mC.getMock()));
+ *           mC.verify();
+ *       }
+ *   }
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;Test for Implementation A
+ * &lt;code&gt;
+ *      import org.as2lib.test.unit.TestCase;
+ *      
+ *      class TMyImplementationA extends TestCase {
+ *      
+ *          public function testMyInterface() {
+ *              var i:TMyInterface = new TMyInterface(this);
+ *              i.testAccess(new MyImplementationA());
+ *          }
+ *      }
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;Test for Implementation B
+ * &lt;code&gt;
+ *      import org.as2lib.test.unit.TestCase;
+ *      
+ *      class TMyImplementationB extends TestCase {
+ *      
+ *          public function testMyInterface() {
+ *              var i:TMyInterface = new TMyInterface(this);
+ *              i.testAccess(new MyImplementationB());
+ *          }
+ *      }
+ * &lt;/code&gt;
+ * 
+ * @author Martin Heidegger
+ * @version 1.1
+ */
+class org.as2lib.test.unit.TestCaseHelper extends TestCase {
+    
+    /** Reference testCase to work with */
+    private var testCase:TestCase;
+    
+    /**
+     * Flag to hide from getting collected by
+     * {@link org.as2lib.test.unit.TestSuiteFactory#collectAllTestCases}
+     * 
+     * @return true to block collecting
+     */
+    public static function blockCollecting(Void):Boolean {
+        return true;
+    }
+    
+    /**
+     * Constructs a new {@code TestCaseHelper} instance.
+     * 
+     * @param testCase {@code TestCase} instance that should be used with all
+     *        assertions.
+     */
+    public function TestCaseHelper(testCase:TestCase) {
+        this.testCase = testCase;
+        testRunner = TestCaseRunner(testCase.getTestRunner());
+    }
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>TestCaseHelper</code> is a class that helps writing <a href="org_as2lib_test_unit_TestCase.html">TestCase</a>s.</div><p>A <code>TestCase</code> allows proper execution for any kind of test. But if<br /> you want to refactor/break apart your code and simplify your test it disallows<br /> you to handle assertions.<p>A common example is if you want to test for a interface. Any implementation<br /> has to match the rules of the interface. A standardised test for the interface<br /> would therefore be a helper. Code could look like this:<p>Interface<pre><span class="codeKeyword">interface</span> MyInterface {
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> addInstance(obj):<span class="codeIdentifier">Void</span>;
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> containsInstance(obj):<span class="codeIdentifier">Void</span>;
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> removeInstance(obj):<span class="codeIdentifier">Void</span>;
+}</pre><p>Implementation #1<pre><span class="codeKeyword">import</span> org.as2lib.util.ArrayUtil;
+
+<span class="codeKeyword">class</span> MyImplementationA <span class="codeKeyword">implements</span> MyInterface {
+    <span class="codeKeyword">private</span> <span class="codeKeyword">var</span> array:<span class="codeIdentifier">Array</span>;
+
+    <span class="codeKeyword">public</span> fucntion MyImplementationA() {
+        array = <span class="codeKeyword">new</span> <span class="codeIdentifier">Array</span>();
+    }
+
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> addInstance(obj):<span class="codeIdentifier">Void</span> {
+        removeInstance(obj);
+        array.push(obj);
+    }
+
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> removeInstance(obj):<span class="codeIdentifier">Void</span> {
+        ArrayUtil.removeElement(array, obj);
+    }
+
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> containsInstance(obj):<span class="codeIdentifier">Boolean</span> {
+        <span class="codeKeyword">for</span> (<span class="codeKeyword">var</span> i:<span class="codeIdentifier">Number</span> = <span class="codeNumber">0</span>; i &#60; array.<span class="codeIdentifier">length</span>; i++) {
+            <span class="codeKeyword">if</span> (array[i] === obj) {
+                <span class="codeKeyword">return</span> <span class="codeIdentifier">true</span>;
+            }
+        }
+        <span class="codeKeyword">return</span> <span class="codeIdentifier">false</span>;
+    }
+}</pre><p>Implementation #2<pre><span class="codeKeyword">class</span> MyImplementationB <span class="codeKeyword">extends</span> MyImplementationA {
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> containsInstance(obj):<span class="codeIdentifier">Boolean</span> {
+        <span class="codeKeyword">for</span> (<span class="codeKeyword">var</span> i:<span class="codeIdentifier">Number</span> = array.<span class="codeIdentifier">length</span>-<span class="codeNumber">1</span>; i &#62; <span class="codeNumber">0</span>; i++) {
+            <span class="codeKeyword">if</span> (array[i] === obj) {
+                <span class="codeKeyword">return</span> <span class="codeIdentifier">true</span>;
+            }
+        }
+        <span class="codeKeyword">return</span> <span class="codeIdentifier">false</span>;
+    }
+}</pre><p>Test for the Interface<pre><span class="codeKeyword">import</span> org.as2lib.test.unit.TestCaseHelper;
+<span class="codeKeyword">import</span> org.as2lib.test.mock.MockControl;
+
+<span class="codeKeyword">class</span> TMyInterface <span class="codeKeyword">extends</span> TestCaseHelper {
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> testAccess(instance:MyInterface) {
+        <span class="codeKeyword">var</span> mC:MockControl = <span class="codeKeyword">new</span> MockControl(<span class="codeIdentifier">Object</span>);
+        mC.replay();
+        assertfalse(<span class="codeString">"Instance should not be contained"</span>,	
+            instance.containsListener(mC.getMock()));
+        instance.addInstance(mC.getMock());
+        assertTrue(<span class="codeString">"Instance should be contained"</span>,
+            instance.containsListener(mC.getMock()));
+        instance.removeInstance(mC.getMock());
+        assertfalse(<span class="codeString">"Instance should not be contained"</span>,
+            instance.containsListener(mC.getMock()));
+        instance.addInstance(mC.getMock());
+        instance.addInstance(mC.getMock());
+        instance.removeInstance(mC.getMock());
+        assertfalse(<span class="codeString">"Instance should not be contained after double adding"</span>,
+            instance.containsListener(mC.getMock()));
+        mC.verify();
+    }
+}</pre><p>Test for Implementation A<pre><span class="codeKeyword">import</span> org.as2lib.test.unit.TestCase;
+
+<span class="codeKeyword">class</span> TMyImplementationA <span class="codeKeyword">extends</span> TestCase {
+
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> testMyInterface() {
+        <span class="codeKeyword">var</span> i:TMyInterface = <span class="codeKeyword">new</span> TMyInterface(<span class="codeIdentifier">this</span>);
+        i.testAccess(<span class="codeKeyword">new</span> MyImplementationA());
+    }
+}</pre><p>Test for Implementation B<pre><span class="codeKeyword">import</span> org.as2lib.test.unit.TestCase;
+
+<span class="codeKeyword">class</span> TMyImplementationB <span class="codeKeyword">extends</span> TestCase {
+
+    <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> testMyInterface() {
+        <span class="codeKeyword">var</span> i:TMyInterface = <span class="codeKeyword">new</span> TMyInterface(<span class="codeIdentifier">this</span>);
+        i.testAccess(<span class="codeKeyword">new</span> MyImplementationB());
+    }
+}</pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#TestCaseHelper">TestCaseHelper</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class properties inherited from <span class="superclass"><a href="org_as2lib_test_unit_TestCase.html">TestCase</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_test_unit_TestCase.html#DEFAULT_MAX_DIFF">DEFAULT_MAX_DIFF</a>, <a href="org_as2lib_test_unit_TestCase.html#testRunners" class="privatInline">testRunners</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#testCase">testCase</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_test_unit_TestCase.html">TestCase</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_test_unit_TestCase.html#testRunner" class="privatInline">testRunner</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#logger">logger</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#blockCollecting">blockCollecting</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class methods inherited from <span class="superclass"><a href="org_as2lib_test_unit_TestCase.html">TestCase</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_test_unit_TestCase.html#blockCollecting">blockCollecting</a>, <a href="org_as2lib_test_unit_TestCase.html#getClassTestRunner" class="privatInline">getClassTestRunner</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class methods inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#getLoggerByClass">getLoggerByClass</a>, <a href="org_as2lib_env_log_LogSupport.html#getLoggerByInstance">getLoggerByInstance</a>, <a href="org_as2lib_env_log_LogSupport.html#getLoggerByScope">getLoggerByScope</a>, <a href="org_as2lib_env_log_LogSupport.html#storeLoggerInPrototype" class="privatInline">storeLoggerInPrototype</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_test_unit_TestCase.html">TestCase</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_test_unit_TestCase.html#addInfo" class="privatInline">addInfo</a>, <a href="org_as2lib_test_unit_TestCase.html#assertAlmostEquals" class="privatInline">assertAlmostEquals</a>, <a href="org_as2lib_test_unit_TestCase.html#assertAlmostEqualsWithMessageWithMaxDiff" class="privatInline">assertAlmostEqualsWithMessageWithMaxDiff</a>, <a href="org_as2lib_test_unit_TestCase.html#assertAlmostEqualsWithMessageWithoutMaxDiff" class="privatInline">assertAlmostEqualsWithMessageWithoutMaxDiff</a>, <a href="org_as2lib_test_unit_TestCase.html#assertAlmostEqualsWithoutMessageWithMaxDiff" class="privatInline">assertAlmostEqualsWithoutMessageWithMaxDiff</a>, <a href="org_as2lib_test_unit_TestCase.html#assertAlmostEqualsWithoutMessageWithoutMaxDiff" class="privatInline">assertAlmostEqualsWithoutMessageWithoutMaxDiff</a>, <a href="org_as2lib_test_unit_TestCase.html#assertEmpty" class="privatInline">assertEmpty</a>, <a href="org_as2lib_test_unit_TestCase.html#assertEmptyWithMessage" class="privatInline">assertEmptyWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertEmptyWithoutMessage" class="privatInline">assertEmptyWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertEquals" class="privatInline">assertEquals</a>, <a href="org_as2lib_test_unit_TestCase.html#assertEqualsWithMessage" class="privatInline">assertEqualsWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertEqualsWithoutMessage" class="privatInline">assertEqualsWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertFalse" class="privatInline">assertFalse</a>, <a href="org_as2lib_test_unit_TestCase.html#assertFalseWithMessage" class="privatInline">assertFalseWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertFalseWithoutMessage" class="privatInline">assertFalseWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertInfinity" class="privatInline">assertInfinity</a>, <a href="org_as2lib_test_unit_TestCase.html#assertInfinityWithMessage" class="privatInline">assertInfinityWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertInfinityWithoutMessage" class="privatInline">assertInfinityWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertInstanceOf" class="privatInline">assertInstanceOf</a>, <a href="org_as2lib_test_unit_TestCase.html#assertInstanceOfWithMessage" class="privatInline">assertInstanceOfWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertInstanceOfWithoutMessage" class="privatInline">assertInstanceOfWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotEmpty" class="privatInline">assertNotEmpty</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotEmptyWithMessage" class="privatInline">assertNotEmptyWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotEmptyWithoutMessage" class="privatInline">assertNotEmptyWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotEquals" class="privatInline">assertNotEquals</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotEqualsWithMessage" class="privatInline">assertNotEqualsWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotEqualsWithoutMessage" class="privatInline">assertNotEqualsWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotInfinity" class="privatInline">assertNotInfinity</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotInfinityWithMessage" class="privatInline">assertNotInfinityWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotInfinityWithoutMessage" class="privatInline">assertNotInfinityWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotNull" class="privatInline">assertNotNull</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotNullWithMessage" class="privatInline">assertNotNullWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotNullWithoutMessage" class="privatInline">assertNotNullWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotSame" class="privatInline">assertNotSame</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotSameWithMessage" class="privatInline">assertNotSameWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotSameWithoutMessage" class="privatInline">assertNotSameWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrows" class="privatInline">assertNotThrows</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithCall" class="privatInline">assertNotThrowsWithCall</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithCallAndMessage" class="privatInline">assertNotThrowsWithCallAndMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithCallAndMessageAndType" class="privatInline">assertNotThrowsWithCallAndMessageAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithCallAndType" class="privatInline">assertNotThrowsWithCallAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithFunction" class="privatInline">assertNotThrowsWithFunction</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithFunctionAndMessage" class="privatInline">assertNotThrowsWithFunctionAndMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithFunctionAndMessageAndType" class="privatInline">assertNotThrowsWithFunctionAndMessageAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithFunctionAndType" class="privatInline">assertNotThrowsWithFunctionAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithString" class="privatInline">assertNotThrowsWithString</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithStringAndMessage" class="privatInline">assertNotThrowsWithStringAndMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithStringAndMessageAndType" class="privatInline">assertNotThrowsWithStringAndMessageAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotThrowsWithStringAndType" class="privatInline">assertNotThrowsWithStringAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotUndefined" class="privatInline">assertNotUndefined</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotUndefinedWithMessage" class="privatInline">assertNotUndefinedWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNotUndefinedWithoutMessage" class="privatInline">assertNotUndefinedWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNull" class="privatInline">assertNull</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNullWithMessage" class="privatInline">assertNullWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertNullWithoutMessage" class="privatInline">assertNullWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertSame" class="privatInline">assertSame</a>, <a href="org_as2lib_test_unit_TestCase.html#assertSameWithMessage" class="privatInline">assertSameWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertSameWithoutMessage" class="privatInline">assertSameWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrows" class="privatInline">assertThrows</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithCall" class="privatInline">assertThrowsWithCall</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithCallAndMessage" class="privatInline">assertThrowsWithCallAndMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithCallAndMessageAndType" class="privatInline">assertThrowsWithCallAndMessageAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithCallAndType" class="privatInline">assertThrowsWithCallAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithFunction" class="privatInline">assertThrowsWithFunction</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithFunctionAndMessage" class="privatInline">assertThrowsWithFunctionAndMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithFunctionAndMessageAndType" class="privatInline">assertThrowsWithFunctionAndMessageAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithFunctionAndType" class="privatInline">assertThrowsWithFunctionAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithString" class="privatInline">assertThrowsWithString</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithStringAndMessage" class="privatInline">assertThrowsWithStringAndMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithStringAndMessageAndType" class="privatInline">assertThrowsWithStringAndMessageAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertThrowsWithStringAndType" class="privatInline">assertThrowsWithStringAndType</a>, <a href="org_as2lib_test_unit_TestCase.html#assertTrue" class="privatInline">assertTrue</a>, <a href="org_as2lib_test_unit_TestCase.html#assertTrueWithMessage" class="privatInline">assertTrueWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertTrueWithoutMessage" class="privatInline">assertTrueWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertTypeOf" class="privatInline">assertTypeOf</a>, <a href="org_as2lib_test_unit_TestCase.html#assertTypeOfWithMessage" class="privatInline">assertTypeOfWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertTypeOfWithoutMessage" class="privatInline">assertTypeOfWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertUndefined" class="privatInline">assertUndefined</a>, <a href="org_as2lib_test_unit_TestCase.html#assertUndefinedWithMessage" class="privatInline">assertUndefinedWithMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#assertUndefinedWithoutMessage" class="privatInline">assertUndefinedWithoutMessage</a>, <a href="org_as2lib_test_unit_TestCase.html#fail" class="privatInline">fail</a>, <a href="org_as2lib_test_unit_TestCase.html#getTestRunner">getTestRunner</a>, <a href="org_as2lib_test_unit_TestCase.html#pause" class="privatInline">pause</a>, <a href="org_as2lib_test_unit_TestCase.html#resume" class="privatInline">resume</a>, <a href="org_as2lib_test_unit_TestCase.html#run">run</a>, <a href="org_as2lib_test_unit_TestCase.html#setUp">setUp</a>, <a href="org_as2lib_test_unit_TestCase.html#startProcess" class="privatInline">startProcess</a>, <a href="org_as2lib_test_unit_TestCase.html#tearDown">tearDown</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#getLogger">getLogger</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="TestCaseHelper">TestCaseHelper</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>TestCaseHelper</b> (
+</div>
+                <div><span class="code">testCase:<a href="org_as2lib_test_unit_TestCase.html">TestCase</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>TestCaseHelper</code> instance.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">testCase<span class="itemSeparator">:</span></div>
+                    <div><code>TestCase</code> instance that should be used with all<br />        assertions.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="testCase">testCase</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>testCase</b>:<a href="org_as2lib_test_unit_TestCase.html">TestCase</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Reference testCase to work with</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="blockCollecting">blockCollecting</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>blockCollecting</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Flag to hide from getting collected by<br /> <a href="org_as2lib_test_unit_TestSuiteFactory.html#collectAllTestCases">TestSuiteFactory.collectAllTestCases</a></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">true to block collecting</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_test_unit_TestCase.html#blockCollecting">TestCase.blockCollecting</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:30:38</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

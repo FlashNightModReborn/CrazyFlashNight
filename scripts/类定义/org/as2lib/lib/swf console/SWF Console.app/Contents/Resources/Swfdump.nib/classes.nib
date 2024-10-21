@@ -1,0 +1,22 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {handleCommandCompletion = id; launch = id; showWindow = id; }; 
+            CLASS = SwfdumpController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                oExpandActions = NSButton; 
+                oExpandBoundingBoxes = NSButton; 
+                oExpandHexOutput = NSButton; 
+                oExpandPlacements = NSButton; 
+                oExpandReferredIDs = NSButton; 
+                oExpandText = NSButton; 
+                oTextView = NSTextView; 
+                oWindow = NSWindow; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

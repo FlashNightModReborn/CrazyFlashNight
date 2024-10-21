@@ -1,0 +1,621 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Process</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_app_exec_Process">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>Process</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>interface</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_env_event_EventListenerSource.html">EventListenerSource</a> &lt; <a href="org_as2lib_core_BasicInterface.html">BasicInterface</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implemented by:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_app_conf_UnitTestExecution.html">UnitTestExecution</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>Known subinterfaces:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_app_exec_Batch.html">Batch</a>
+                  </li>
+                  <li>
+                    <a href="org_as2lib_app_exec_StepByStepProcess.html">StepByStepProcess</a>
+                  </li>
+                  <li>
+                    <a href="org_as2lib_test_unit_TestRunner.html">TestRunner</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.0</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.app.exec.Process</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Wednesday, 12 October 2005, 16:40:46</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.env.event.EventListenerSource;
+import org.as2lib.data.type.Time;
+
+/**
+ * {@code Process} represents the access to a lacy execution.
+ * 
+ * &lt;p&gt;{@code Process} can be used as access to application code that executes with
+ * a time delay. This can be eighter file requests or time consuming algorithms
+ * that have to be delayed to prevent player timeouts.
+ * 
+ * &lt;p&gt;Any {@code Process} implementation can be started with {@link #start}.
+ *
+ * &lt;p&gt;Any {@code Process} can send events defined in following interfaces:
+ * {@link ProcessStartListener}, {@link ProcessErrorListener},
+ * {@link ProcessFinishListener}, {@link ProcessPauseListener},
+ * {@link ProcessResumeListener}, {@link ProcessUpdateListener}
+ * 
+ * &lt;p&gt;To listen to the events implement one or more of the above interfaces and
+ * add the listener with {@code addListener} as listener to the {@code Process}.
+ * 
+ * @author Martin Heidegger
+ * @version 1.0
+ * @see org.as2lib.app.exec.AbstractProcess
+ */
+interface org.as2lib.app.exec.Process extends EventListenerSource {
+    
+    /**
+     * Starts the execution of this process.
+     * 
+     * &lt;p&gt;It is possible that the process finishes execution before returning the
+     * from this method, but it is also possible that it finishes after returning
+     * from this method. This rule exists to not loose unnecessary performance by
+     * simple accepting that every process has to be finished after this execution.
+     * 
+     * &lt;p&gt;Problematic example:
+     * &lt;code&gt;
+     * 
+     *   class MyClass implements ProcessFinishListener {
+     *     private var processStarted:Boolean
+     *     
+     *     public function MyClass(Void) {
+     *          processStarted = false;
+     *     }
+     *   
+     *     public function doSomething(Void):Void {
+     *       var process:Process = new MyProcess();
+     *       process.start();
+     *       process.addListener(this);
+     *       processStarted = true;
+     *     }
+     *     
+     *     public function onFinishProcess(process:Process):Void {
+     *       if (processStarted) {
+     *         // do something
+     *         processStarted = false;
+     *       } else {
+     *         // throw an error (will be called if the process finishes immediatly.
+     *       }
+     *     }
+     *   }
+     * &lt;/code&gt;
+     * 
+     * &lt;p&gt;Any {@code Process} is allowed to take arguments for its execution or
+     * return a result of its execution.
+     * 
+     * @return (optiona) result for the start (implementation specific).
+     */
+    public function start();
+    
+    /**
+     * Flag if the process has been started.
+     * 
+     * @return true if the process has been started and isn't finish yet else false.
+     */
+    public function hasStarted(Void):Boolean;
+    
+    /**
+     * Returns {@code true} if the process has been finished else {@code false}.
+     * 
+     * &lt;p&gt;A {@code Process} can only be finished if it has been started with 
+     * {@code start()}
+     * 
+     * @return {@code true} if the process has been finished else {@code false}
+     */
+    public function hasFinished(Void):Boolean;
+    
+    /**
+     * Returns {@code true} if the process has been started and has been paused.
+     * 
+     * &lt;p&gt;A {@code Process} is allowed to be paused, this indicates that the process
+     * is actually waiting for something.
+     * 
+     * @return {@code true} if the process has been started and has been paused
+     */
+    public function isPaused(Void):Boolean;
+    
+    /**
+     * Returns {@code true} if the process has been started and is not paused.
+     * 
+     * &lt;p&gt;A {@code Process} is allowed to be paused, this indicates that the process
+     * is actually not waiting for something.
+     * 
+     * @return {@code true} if the process has been started and is not paused
+     */
+    public function isRunning(Void):Boolean;
+    
+    /**
+     * Returns the percentage of execution
+     * 
+     * &lt;p&gt;There are several possibilies of return values:
+     * 
+     * &lt;p&gt;If the execution has not been started and the percentage will be
+     * evaluateable for sure it will return {@code 0}.
+     * 
+     * &lt;p&gt;If the execution has been started and the percentage is evaluateable,
+     * it returns the current amount of percentage from {@code 0}-{@code 100}.
+     * 
+     * &lt;p&gt;If the execution has finished and the percentage was evaluateable, it
+     * returns {@code 100}.
+     * 
+     * &lt;p&gt;In any other case it will return {@code null}.
+     * 
+     * @return current percentage of execution
+     */
+    public function getPercentage(Void):Number;
+    
+    /**
+     * Allows the integration and access to a process hierarchy.
+     * 
+     * @param process {@code Process} that started the current process.
+     * @throws org.as2lib.env.except.IllegalArgumentException if the passed-in
+     *            process has the current process within the parent process list or
+     *            if the passed-in process is the same process as the current
+     *            process.
+     */
+    public function setParentProcess(process:Process):Void;
+    
+    /**
+     * Returns the parent {@code Process} set with {@code setParentProcess}.
+     * 
+     * @return parent process if available, else {@code null}.
+     */
+    public function getParentProcess(Void):Process;
+    
+    /**
+     * Returns the occured errors published with {@code onProcessError} during
+     * exeuction of the {@code Process} in an array.
+     *
+     * @return all occured errors during the execution of the event
+     */
+    public function getErrors(Void):Array;
+    
+    /**
+     * Checks if an error occured during execution of the {@code Process}.
+     *  
+     * @return {@code true} if an error occured, else {@code false}
+     */
+    public function hasError(Void):Boolean;
+    
+    /**
+     * By using {@code start()} it saves the start time of the execution of the process.
+     * 
+     * &lt;p&gt;This method allows access to the total execution time of the process. The total
+     * execution time get evaluated by comparing start time with end time or (if the
+     * process has not finished yet) with the current time.
+     * 
+     * @return time difference between start time and finish time or current point
+     */
+    public function getDuration(Void):Time;
+    
+    /**
+     * Evaluates the expected total time of execution.
+     * 
+     * &lt;p&gt;If the {@code Process} has been finished it returns the final total time
+     * of the execution.
+     * 
+     * &lt;p&gt;If the {@code Process} has not been started it returns a estimated total
+     * time of {@code 0}.
+     * 
+     * @return estimated time difference between start and finish time
+     */
+    public function getEstimatedTotalTime(Void):Time;
+    
+    /**
+     * Evaluates the expected rest time until the execution finishes.
+     * 
+     * &lt;p&gt;If the {@code Process} has been finished it returns {@code 0}. If it
+     * has not been started it returns {@code null}.
+     * 
+     * @return estimated rest time of the execution of the process.
+     */
+    public function getEstimatedRestTime(Void):Time;
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>Process</code> represents the access to a lacy execution.</div><p><code>Process</code> can be used as access to application code that executes with<br /> a time delay. This can be eighter file requests or time consuming algorithms<br /> that have to be delayed to prevent player timeouts.<p>Any <code>Process</code> implementation can be started with <a href="org_as2lib_app_exec_Process.html#start">start</a>.<p>Any <code>Process</code> can send events defined in following interfaces:<br /> <a href="org_as2lib_app_exec_ProcessStartListener.html">ProcessStartListener</a>, <a href="org_as2lib_app_exec_ProcessErrorListener.html">ProcessErrorListener</a>,<br /> <a href="org_as2lib_app_exec_ProcessFinishListener.html">ProcessFinishListener</a>, <a href="org_as2lib_app_exec_ProcessPauseListener.html">ProcessPauseListener</a>,<br /> <a href="org_as2lib_app_exec_ProcessResumeListener.html">ProcessResumeListener</a>, <a href="org_as2lib_app_exec_ProcessUpdateListener.html">ProcessUpdateListener</a><p>To listen to the events implement one or more of the above interfaces and<br /> add the listener with <code>addListener</code> as listener to the <code>Process</code>.<div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item">org.as2lib.app.exec.AbstractProcess</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#start">start</a>
+                </li>
+                <li>
+                  <a href="#hasStarted">hasStarted</a>
+                </li>
+                <li>
+                  <a href="#hasFinished">hasFinished</a>
+                </li>
+                <li>
+                  <a href="#isPaused">isPaused</a>
+                </li>
+                <li>
+                  <a href="#isRunning">isRunning</a>
+                </li>
+                <li>
+                  <a href="#getPercentage">getPercentage</a>
+                </li>
+                <li>
+                  <a href="#setParentProcess">setParentProcess</a>
+                </li>
+                <li>
+                  <a href="#getParentProcess">getParentProcess</a>
+                </li>
+                <li>
+                  <a href="#getErrors">getErrors</a>
+                </li>
+                <li>
+                  <a href="#hasError">hasError</a>
+                </li>
+                <li>
+                  <a href="#getDuration">getDuration</a>
+                </li>
+                <li>
+                  <a href="#getEstimatedTotalTime">getEstimatedTotalTime</a>
+                </li>
+                <li>
+                  <a href="#getEstimatedRestTime">getEstimatedRestTime</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_env_event_EventListenerSource.html">EventListenerSource</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_event_EventListenerSource.html#addAllListeners">addAllListeners</a>, <a href="org_as2lib_env_event_EventListenerSource.html#addListener">addListener</a>, <a href="org_as2lib_env_event_EventListenerSource.html#getAllListeners">getAllListeners</a>, <a href="org_as2lib_env_event_EventListenerSource.html#hasListener">hasListener</a>, <a href="org_as2lib_env_event_EventListenerSource.html#removeAllListeners">removeAllListeners</a>, <a href="org_as2lib_env_event_EventListenerSource.html#removeListener">removeListener</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicInterface.html">BasicInterface</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicInterface.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getDuration">getDuration</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getDuration</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Time.html">Time</a></span></div>
+              </div>
+            </div>
+            <div class="description">By using <code>start()</code> it saves the start time of the execution of the process.<p>This method allows access to the total execution time of the process. The total<br /> execution time get evaluated by comparing start time with end time or (if the<br /> process has not finished yet) with the current time.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">time difference between start time and finish time or current point</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getErrors">getErrors</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getErrors</b> (
+</div>
+                <div><span class="code">Void) : Array</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the occured errors published with <code>onProcessError</code> during<br /> exeuction of the <code>Process</code> in an array.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">all occured errors during the execution of the event</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getEstimatedRestTime">getEstimatedRestTime</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getEstimatedRestTime</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Time.html">Time</a></span></div>
+              </div>
+            </div>
+            <div class="description">Evaluates the expected rest time until the execution finishes.<p>If the <code>Process</code> has been finished it returns <code>0</code>. If it<br /> has not been started it returns <code>null</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">estimated rest time of the execution of the process.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getEstimatedTotalTime">getEstimatedTotalTime</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getEstimatedTotalTime</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Time.html">Time</a></span></div>
+              </div>
+            </div>
+            <div class="description">Evaluates the expected total time of execution.<p>If the <code>Process</code> has been finished it returns the final total time<br /> of the execution.<p>If the <code>Process</code> has not been started it returns a estimated total<br /> time of <code>0</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">estimated time difference between start and finish time</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getParentProcess">getParentProcess</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getParentProcess</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_app_exec_Process.html">Process</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the parent <code>Process</code> set with <code>setParentProcess</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">parent process if available, else <code>null</code>.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getPercentage">getPercentage</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getPercentage</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the percentage of execution<p>There are several possibilies of return values:<p>If the execution has not been started and the percentage will be<br /> evaluateable for sure it will return <code>0</code>.<p>If the execution has been started and the percentage is evaluateable,<br /> it returns the current amount of percentage from <code>0</code>-<code>100</code>.<p>If the execution has finished and the percentage was evaluateable, it<br /> returns <code>100</code>.<p>In any other case it will return <code>null</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">current percentage of execution</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="hasError">hasError</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasError</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if an error occured during execution of the <code>Process</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if an error occured, else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="hasFinished">hasFinished</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasFinished</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns <code>true</code> if the process has been finished else <code>false</code>.<p>A <code>Process</code> can only be finished if it has been started with <br /> <code>start()</code></div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the process has been finished else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="hasStarted">hasStarted</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasStarted</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Flag if the process has been started.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">true if the process has been started and isn't finish yet else false.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isPaused">isPaused</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isPaused</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns <code>true</code> if the process has been started and has been paused.<p>A <code>Process</code> is allowed to be paused, this indicates that the process<br /> is actually waiting for something.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the process has been started and has been paused</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isRunning">isRunning</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isRunning</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns <code>true</code> if the process has been started and is not paused.<p>A <code>Process</code> is allowed to be paused, this indicates that the process<br /> is actually not waiting for something.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the process has been started and is not paused</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setParentProcess">setParentProcess</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setParentProcess</b> (
+</div>
+                <div><span class="code">process:<a href="org_as2lib_app_exec_Process.html">Process</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Allows the integration and access to a process hierarchy.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">process<span class="itemSeparator">:</span></div>
+                    <div><code>Process</code> that started the current process.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if the passed-in<br /> 		   process has the current process within the parent process list or<br /> 		   if the passed-in process is the same process as the current<br /> 		   process.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="start">start</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>start</b> (
+</div>
+                <div><span class="code">)</span></div>
+              </div>
+            </div>
+            <div class="description">Starts the execution of this process.<p>It is possible that the process finishes execution before returning the<br /> from this method, but it is also possible that it finishes after returning<br /> from this method. This rule exists to not loose unnecessary performance by<br /> simple accepting that every process has to be finished after this execution.<p>Problematic example:<pre><span class="codeKeyword">class</span> MyClass <span class="codeKeyword">implements</span> ProcessFinishListener {
+  <span class="codeKeyword">private</span> <span class="codeKeyword">var</span> processStarted:<span class="codeIdentifier">Boolean</span>
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> MyClass(<span class="codeIdentifier">Void</span>) {
+       processStarted = <span class="codeIdentifier">false</span>;
+  }
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> doSomething(<span class="codeIdentifier">Void</span>):<span class="codeIdentifier">Void</span> {
+    <span class="codeKeyword">var</span> process:Process = <span class="codeKeyword">new</span> MyProcess();
+    process.start();
+    process.<span class="codeIdentifier">addListener</span>(<span class="codeIdentifier">this</span>);
+    processStarted = <span class="codeIdentifier">true</span>;
+  }
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> onFinishProcess(process:Process):<span class="codeIdentifier">Void</span> {
+    <span class="codeKeyword">if</span> (processStarted) {
+      <span class="codeComment">// do something</span>
+      processStarted = <span class="codeIdentifier">false</span>;
+    } <span class="codeKeyword">else</span> {
+      <span class="codeComment">// throw an error (will be called if the process finishes immediatly.</span>
+    }
+  }
+}</pre><p>Any <code>Process</code> is allowed to take arguments for its execution or<br /> return a result of its execution.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">(optiona) result for the start (implementation specific).</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:23</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

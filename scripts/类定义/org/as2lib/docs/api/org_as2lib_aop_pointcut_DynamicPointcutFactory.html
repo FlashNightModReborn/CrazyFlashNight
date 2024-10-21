@@ -1,0 +1,597 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>DynamicPointcutFactory</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_aop_pointcut_DynamicPointcutFactory">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>DynamicPointcutFactory</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_aop_pointcut_PointcutFactory.html">PointcutFactory</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.aop.pointcut.DynamicPointcutFactory</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Friday, 19 August 2005, 17:17:52</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.util.StringUtil;
+import org.as2lib.env.except.IllegalArgumentException;
+import org.as2lib.data.holder.Map;
+import org.as2lib.data.holder.map.HashMap;
+import org.as2lib.aop.AopConfig;
+import org.as2lib.aop.Pointcut;
+import org.as2lib.aop.pointcut.OrPointcut;
+import org.as2lib.aop.pointcut.AndPointcut;
+import org.as2lib.aop.pointcut.NotPointcut;
+import org.as2lib.aop.pointcut.KindedPointcut;
+import org.as2lib.aop.pointcut.WithinPointcut;
+import org.as2lib.aop.pointcut.PointcutFactory;
+import org.as2lib.aop.pointcut.PointcutRule;
+import org.as2lib.aop.joinpoint.AbstractJoinPoint;
+
+/**
+ * {@code DynamicPointcutFactory} is a pointcut factory that can be dynamically expanded
+ * with new pointcut types at run-time. You can do so by adding a new pointcut factory.
+ * This pointcut factory is mapped to a pointcut rule that determines whether the given
+ * pointcut factory is used to create the pointcut to return based on a given pointcut
+ * pattern.
+ * 
+ * &lt;p&gt;This pointcut factory allows for execution, within, set and get access join points
+ * and for composite pointcuts combined with AND or OR logic.
+ * &lt;code&gt;execution(org.as2lib.env.Logger.debug)&lt;/code&gt;
+ * &lt;code&gt;set(org.as2lib.MyClass.myProperty)&lt;/code&gt;
+ * &lt;code&gt;get(org.as2lib.MyClass.myProperty)&lt;/code&gt;
+ * &lt;code&gt;within(org.as2lib.MyClass)&lt;/code&gt;
+ * &lt;code&gt;execution(org.as2lib.env.Logger.debug) || set(org.as2lib.MyClass.myProperty)&lt;/code&gt;
+ * 
+ * &lt;p&gt;Negation is also supported for every kind of pointcut:
+ * &lt;code&gt;execution(org.as2lib..*.*) &amp;&amp; !within(org.as2lib.MyAspect)&lt;/code&gt;
+ * 
+ * &lt;p&gt;You may of course enhance the list of supported pointcuts by binding new ones with
+ * the {@link #bindPointcutFactory} method.
+ * 
+ * @author Simon Wacker
+ */
+class org.as2lib.aop.pointcut.DynamicPointcutFactory extends BasicClass implements PointcutFactory {
+    
+    /** All bound factories. */
+    private var factoryMap:Map;
+    
+    /**
+     * Constructs a new {@code DynamicPointcutFactory} instance.
+     */
+    public function DynamicPointcutFactory(Void) {
+        factoryMap = new HashMap();
+        bindOrPointcut();
+        bindAndPointcut();
+        bindNotPointcut();
+        bindExecutionPointcut();
+        bindSetPropertyPointcut();
+        bindGetPropertyPointcut();
+        bindWithinPointcut();
+    }
+    
+    /**
+     * Returns a blank pointcut rule. This is a rule with no initialized methods.
+     * 
+     * @return a blank pointcut rule
+     */
+    private function getBlankPointcutRule(Void):PointcutRule {
+        var result = new Object();
+        result.__proto__ = PointcutRule["prototype"];
+        result.__constructor__ = PointcutRule;
+        return result;
+    }
+    
+    /**
+     * Returns a blank pointcut factory. That is a factory with no initialized methods.
+     *
+     * @return a blank pointcut factory
+     */
+    private function getBlankPointcutFactory(Void):PointcutFactory {
+        var result = new Object();
+        result.__proto__ = PointcutFactory["prototype"];
+        result.__constructor__ = PointcutFactory;
+        return result;
+    }
+    
+    /**
+     * TODO: Documentation
+     */
+    private function bindOrPointcut(Void):Void {
+        var rule:PointcutRule = getBlankPointcutRule();
+        rule.execute = function(pattern:String):Boolean {
+            return (pattern.indexOf("||") != -1);
+        };
+        var factory:PointcutFactory = getBlankPointcutFactory();
+        factory.getPointcut = function(pattern:String):Pointcut {
+            return (new OrPointcut(pattern));
+        };
+        bindPointcutFactory(rule, factory);
+    }
+    
+    /**
+     * TODO: Documentation
+     */
+    private function bindAndPointcut(Void):Void {
+        var rule:PointcutRule = getBlankPointcutRule();
+        rule.execute = function(pattern:String):Boolean {
+            return (pattern.indexOf("&amp;&amp;") != -1);
+        };
+        var factory:PointcutFactory = getBlankPointcutFactory();
+        factory.getPointcut = function(pattern:String):Pointcut {
+            return (new AndPointcut(pattern));
+        };
+        bindPointcutFactory(rule, factory);
+    }
+    
+    /**
+     * TODO: Documentation
+     */
+    private function bindNotPointcut(Void):Void {
+        var rule:PointcutRule = getBlankPointcutRule();
+        rule.execute = function(pattern:String):Boolean {
+            return (pattern.indexOf("!") == 0);
+        };
+        var factory:PointcutFactory = getBlankPointcutFactory();
+        factory.getPointcut = function(pattern:String):Pointcut {
+            pattern = pattern.substring(1, pattern.length);
+            return (new NotPointcut(AopConfig.getPointcutFactory().getPointcut(pattern)));
+        };
+        bindPointcutFactory(rule, factory);
+    }
+    
+    /**
+     * TODO: Documentation
+     */
+    private function bindExecutionPointcut(Void):Void {
+        var rule:PointcutRule = getBlankPointcutRule();
+        rule.execute = function(pattern:String):Boolean {
+            return (pattern.indexOf("execution") == 0);
+        };
+        var factory:PointcutFactory = getBlankPointcutFactory();
+        factory.getPointcut = function(pattern:String):Pointcut {
+            if (pattern.indexOf("()") != -1) {
+                pattern = pattern.substring(10, pattern.length - 3);
+            } else {
+                pattern = pattern.substring(10, pattern.length - 1);
+            }
+            return (new KindedPointcut(pattern, AbstractJoinPoint.METHOD | AbstractJoinPoint.CONSTRUCTOR));
+        };
+        bindPointcutFactory(rule, factory);
+    }
+    
+    /**
+     * TODO: Documentation
+     */
+    private function bindSetPropertyPointcut(Void):Void {
+        var rule:PointcutRule = getBlankPointcutRule();
+        rule.execute = function(pattern:String):Boolean {
+            return (pattern.indexOf("set") == 0);
+        };
+        var factory:PointcutFactory = getBlankPointcutFactory();
+        factory.getPointcut = function(pattern:String):Pointcut {
+            pattern = pattern.substring(4, pattern.length - 1);
+            return (new KindedPointcut(pattern, AbstractJoinPoint.SET_PROPERTY));
+        };
+        bindPointcutFactory(rule, factory);
+    }
+    
+    /**
+     * TODO: Documentation
+     */
+    private function bindGetPropertyPointcut(Void):Void {
+        var rule:PointcutRule = getBlankPointcutRule();
+        rule.execute = function(pattern:String):Boolean {
+            return (pattern.indexOf("get") == 0);
+        };
+        var factory:PointcutFactory = getBlankPointcutFactory();
+        factory.getPointcut = function(pattern:String):Pointcut {
+            pattern = pattern.substring(4, pattern.length - 1);
+            return (new KindedPointcut(pattern, AbstractJoinPoint.GET_PROPERTY));
+        };
+        bindPointcutFactory(rule, factory);
+    }
+    
+    /**
+     * TODO: Documentation
+     */
+    private function bindWithinPointcut(Void):Void {
+        var rule:PointcutRule = getBlankPointcutRule();
+        rule.execute = function(pattern:String):Boolean {
+            return (pattern.indexOf("within") == 0);
+        };
+        var factory:PointcutFactory = getBlankPointcutFactory();
+        factory.getPointcut = function(pattern:String):Pointcut {
+            pattern = pattern.substring(7, pattern.length - 1);
+            return (new WithinPointcut(pattern));
+        };
+        bindPointcutFactory(rule, factory);
+    }
+    
+    /**
+     * Returns a pointcut based on the passed-in {@code pattern} representation.
+     * 
+     * &lt;p&gt;The pointcut to return is determined by the rules of the added pointcut
+     * factories. The pointcut factory whose rule applies first to the given
+     * {@code pattern} is used to get the pointcut to return. This means that order
+     * matters.
+     *
+     * @param pattern the string representation of the pointcut
+     * @return the object-oriented view of the passed-in pointcut {@code pattern}
+     */
+    public function getPointcut(pattern:String):Pointcut {
+        if (!pattern) return null;
+        // this should be refactored, it is not a perfect solution, but it works for now
+        if (pattern.indexOf(" ") != -1) {
+            pattern = StringUtil.trim(pattern);
+            while (pattern.indexOf("  ") != -1) {
+                pattern = StringUtil.replace(pattern, "  ", " ");
+            }
+            pattern = StringUtil.replace(pattern, "( ", "(");
+            pattern = StringUtil.replace(pattern, " )", ")");
+            pattern = StringUtil.replace(pattern, " (", "(");
+            pattern = StringUtil.replace(pattern, "! ", "!");
+            pattern = StringUtil.replace(pattern, " &amp;&amp;", "&amp;&amp;");
+            pattern = StringUtil.replace(pattern, " ||", "||");
+            pattern = StringUtil.replace(pattern, "&amp;&amp; ", "&amp;&amp;");
+            pattern = StringUtil.replace(pattern, "|| ", "||");
+        }
+        var rules:Array = factoryMap.getKeys();
+        var factories:Array = factoryMap.getValues();
+        for (var i:Number = 0; i &lt; rules.length; i++) {
+            var rule:PointcutRule = rules[i];
+            if (rule.execute(pattern)) {
+                return PointcutFactory(factories[i]).getPointcut(pattern);
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Binds a new {@code factory} to the given {@code rule}.
+     *
+     * @param rule the rule that must evaluate to {@code true} to indicate that the
+     * {@code factory} shall be used for a given pointcut pattern
+     * @param factory the factory to add
+     * @throws IllegalArgumentException if rule is {@code null} or {@code undefined}
+     * @throws IllegalArgumentException if factory is {@code null} or {@code undefined}
+     */
+    public function bindPointcutFactory(rule:PointcutRule, factory:PointcutFactory):Void {
+        if (!rule || !factory) throw new IllegalArgumentException("Neither argument 'rule' nor argument 'factory' must be {@code null} nor {@code undefined}.", this, arguments);
+        factoryMap.put(rule, factory);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>DynamicPointcutFactory</code> is a pointcut factory that can be dynamically expanded<br /> with new pointcut types at run-time.</div> You can do so by adding a new pointcut factory.<br /> This pointcut factory is mapped to a pointcut rule that determines whether the given<br /> pointcut factory is used to create the pointcut to return based on a given pointcut<br /> pattern.<p>This pointcut factory allows for execution, within, set and get access join points<br /> and for composite pointcuts combined with AND or OR logic.<br /> <code>execution(org.as2lib.env.Logger.debug)</code><br /> <code><span class="codeIdentifier">set</span>(org.as2lib.MyClass.myProperty)</code><br /> <code><span class="codeIdentifier">get</span>(org.as2lib.MyClass.myProperty)</code><br /> <code>within(org.as2lib.MyClass)</code><br /> <code>execution(org.as2lib.env.Logger.debug) || <span class="codeIdentifier">set</span>(org.as2lib.MyClass.myProperty)</code><p>Negation is also supported for every kind of pointcut:<br /> <code>execution(org.as2lib..*.*) && !within(org.as2lib.MyAspect)</code><p>You may of course enhance the list of supported pointcuts by binding new ones with<br /> the <a href="org_as2lib_aop_pointcut_DynamicPointcutFactory.html#bindPointcutFactory">bindPointcutFactory</a> method.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#DynamicPointcutFactory">DynamicPointcutFactory</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#factoryMap">factoryMap</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#getBlankPointcutRule">getBlankPointcutRule</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#getBlankPointcutFactory">getBlankPointcutFactory</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#bindOrPointcut">bindOrPointcut</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#bindAndPointcut">bindAndPointcut</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#bindNotPointcut">bindNotPointcut</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#bindExecutionPointcut">bindExecutionPointcut</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#bindSetPropertyPointcut">bindSetPropertyPointcut</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#bindGetPropertyPointcut">bindGetPropertyPointcut</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#bindWithinPointcut">bindWithinPointcut</a>
+                </li>
+                <li>
+                  <a href="#getPointcut">getPointcut</a>
+                </li>
+                <li>
+                  <a href="#bindPointcutFactory">bindPointcutFactory</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="DynamicPointcutFactory">DynamicPointcutFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>DynamicPointcutFactory</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>DynamicPointcutFactory</code> instance.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="factoryMap">factoryMap</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>factoryMap</b>:<a href="org_as2lib_data_holder_Map.html">Map</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">All bound factories.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="bindAndPointcut">bindAndPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>bindAndPointcut</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">TODO: Documentation</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="bindExecutionPointcut">bindExecutionPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>bindExecutionPointcut</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">TODO: Documentation</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="bindGetPropertyPointcut">bindGetPropertyPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>bindGetPropertyPointcut</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">TODO: Documentation</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="bindNotPointcut">bindNotPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>bindNotPointcut</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">TODO: Documentation</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="bindOrPointcut">bindOrPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>bindOrPointcut</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">TODO: Documentation</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="bindPointcutFactory">bindPointcutFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>bindPointcutFactory</b> (
+
+</div>
+                <div><span class="code">rule:<a href="org_as2lib_aop_pointcut_PointcutRule.html">PointcutRule</a>,
+factory:<a href="org_as2lib_aop_pointcut_PointcutFactory.html">PointcutFactory</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Binds a new <code>factory</code> to the given <code>rule</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">rule   <span class="itemSeparator">:</span></div>
+                    <div>the rule that must evaluate to <code>true</code> to indicate that the<br /> <code>factory</code> shall be used for a given pointcut pattern</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">factory<span class="itemSeparator">:</span></div>
+                    <div>the factory to add</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if rule is <code>null</code> or <code>undefined</code><br /><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if factory is <code>null</code> or <code>undefined</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="bindSetPropertyPointcut">bindSetPropertyPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>bindSetPropertyPointcut</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">TODO: Documentation</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="bindWithinPointcut">bindWithinPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>bindWithinPointcut</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">TODO: Documentation</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getBlankPointcutFactory">getBlankPointcutFactory</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getBlankPointcutFactory</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_aop_pointcut_PointcutFactory.html">PointcutFactory</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns a blank pointcut factory. That is a factory with no initialized methods.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a blank pointcut factory</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getBlankPointcutRule">getBlankPointcutRule</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getBlankPointcutRule</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_aop_pointcut_PointcutRule.html">PointcutRule</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns a blank pointcut rule. This is a rule with no initialized methods.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a blank pointcut rule</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getPointcut">getPointcut</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getPointcut</b> (
+</div>
+                <div><span class="code">pattern:String) : <a href="org_as2lib_aop_Pointcut.html">Pointcut</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns a pointcut based on the passed-in <code>pattern</code> representation.<p>The pointcut to return is determined by the rules of the added pointcut<br /> factories. The pointcut factory whose rule applies first to the given<br /> <code>pattern</code> is used to get the pointcut to return. This means that order<br /> matters.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">pattern<span class="itemSeparator">:</span></div>
+                    <div>the string representation of the pointcut</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the object-oriented view of the passed-in pointcut <code>pattern</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_aop_pointcut_PointcutFactory.html#getPointcut">PointcutFactory.getPointcut</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:10</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

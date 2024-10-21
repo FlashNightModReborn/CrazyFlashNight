@@ -1,0 +1,1155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Log4fLogger</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_log_logger_Log4fLogger">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>Log4fLogger</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_env_log_Logger.html">Logger</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.log.logger.Log4fLogger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Sunday, 03 July 2005, 17:00:12</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.log.Logger;
+
+import org.log4f.logging.Level;
+import org.log4f.logging.IFilter;
+import org.log4f.logging.IPublisher;
+import org.log4f.logging.util.List;
+
+/**
+ * {@code Log4fLogger} acts as a wrapper for a {@code org.log4f.logging.logger}
+ * instance of the Log4F Framework from Peter Armstrong.
+ * 
+ * &lt;p&gt;Log4F (http://sourceforge.net/projects/log4f), by Peter Armstrong, is a
+ * Log4j-style logging framework for Flex applications. It is based on Ralf Siegel's
+ * public domain logging framework found at http://code.audiofarm.de/Logger and adds
+ * useful Flex-specific enhancements including a debug console, instance inspector
+ * etc.
+ * 
+ * &lt;p&gt;Configure the Log4F Framework as normally and just use this class in your
+ * application to log messages. This enables you to switch between almost every
+ * available Logging API without having to change the logs in your application but
+ * just the underlying configuration on startup.
+ * 
+ * @author Simon Wacker
+ * @see &lt;a href="http://sourceforge.net/projects/log4f"&gt;Log4F&lt;/a&gt;
+ */
+class org.as2lib.env.log.logger.Log4fLogger extends BasicClass implements Logger {
+    
+    /**
+     * Indicates that all messages shall be logged. This level is equivalent to the
+     * Log4F {@code ALL} level.
+     */
+    public static var ALL:Level = Level.ALL;
+    
+    /**
+     * Indicates that all messages at debug and higher levels shall be logged. This
+     * level is equivalent to the Log4F {@code DEBUG} level.
+     */
+    public static var DEBUG:Level = Level.DEBUG;
+    
+    /**
+     * Indicates that all messages at info and higher levels shall be logged. This
+     * level is equivalent to the Log4F {@code INFO} level.
+     */
+    public static var INFO:Level = Level.INFO;
+    
+    /**
+     * Indicates that all messages at warning and higher levels shall be logged. This
+     * level is equivalent to the Log4F {@code WARN} level.
+     */
+    public static var WARNING:Level = Level.WARN;
+    
+    /**
+     * Indicates that all messages at error and higher levels shall be logged. This
+     * level is equivalent to the Log4F {@code ERROR} level.
+     */
+    public static var ERROR:Level = Level.ERROR;
+    
+    /**
+     * Indicates that all messages at fatal and higher levels shall be logged. This
+     * level is equivalent to the Log4F {@code FATAL} level.
+     */
+    public static var FATAL:Level = Level.FATAL;
+    
+    /**
+     * Indicates that no messages shall be logged; logging shall be turned off. This
+     * level is equivalent to the Log4F {@code OFF} level.
+     */
+    public static var NONE:Level = Level.OFF;
+    
+    /** The {@code Logger} instance of Log4F every task is delegated to. */
+    private var logger:org.log4f.logging.Logger;
+    
+    /** Debug level. */
+    private var debugLevel:Level;
+    
+    /** Info level. */
+    private var infoLevel:Level;
+    
+    /** Warning level. */
+    private var warningLevel:Level;
+    
+    /** Error level. */
+    private var errorLevel:Level;
+    
+    /** Fatal level. */
+    private var fatalLevel:Level;
+    
+    /**
+     * Constructs a new {@code Log4fLogger} instance.
+     * 
+     * &lt;p&gt;Gets an Log4F {@code Logger} instance via the
+     * {@code org.log4f.logging.Logger.getLogger} method.
+     *
+     * @param name the name of this logger
+     */
+    public function Log4fLogger(name:String) {
+        this.logger = org.log4f.logging.Logger.getLogger(name);
+        this.debugLevel = DEBUG;
+        this.infoLevel = INFO;
+        this.warningLevel = WARNING;
+        this.errorLevel = ERROR;
+        this.fatalLevel = FATAL;
+    }
+    
+    /**
+     * Returns the name of this logger or {@code undefined} for anonymous loggers.
+     *
+     * @return the name of this logger
+     */
+    public function getName(Void):String {
+        return this.logger.getName();
+    }
+    
+    /**
+     * Returns the parent of this logger.
+     * 
+     * &lt;p&gt;This method returns the nearest extant parent in the namespace. Thus if a
+     * logger is called "a.b.c.d", and a logger called "a.b" has been created but no
+     * logger "a.b.c" exists, then a call of {@code getParent} on the logger "a.b.c.d"
+     * will return the logger "a.b".
+     * 
+     * &lt;p&gt;The parent for the anonymous Logger is always the root (global) logger.
+     * 
+     * &lt;p&gt;The result will be {@code undefined} if it is called on the root (global)
+     * logger in the namespace.
+     * 
+     * @return the parent of this logger
+     */
+    public function getParent(Void):org.log4f.logging.Logger {
+        return this.logger.getParent();
+    }
+    
+    /**
+     * Returns an array with publishers associated with this logger.
+     * 
+     * @return an array with publishers that are associated with this logger
+     */
+    public function getPublishers(Void):List {
+        return this.logger.getPublishers();
+    }
+    
+    /**
+     * Adds a new publisher to this logger.
+     * 
+     * @param publisher the publisher to add
+     * @return {@code true} if the {@code publisher} was added successfully else
+     * {@code false}
+     */
+    public function addPublisher(publisher:IPublisher):Boolean {
+        return this.logger.addPublisher(publisher);
+    }
+    
+    /**
+     * Removes the given {@code publisher} from this logger.
+     * 
+     * @param publisher the publisher to remove
+     * @return {@code true} if the {@code publisher} was removed successfully else
+     * {@code false}
+     */
+    public function removePublisher(publisher:IPublisher):Boolean {
+        return this.logger.removePublisher(publisher);
+    }
+    
+    /**
+     * Returns the current filter for this logger.
+     * 
+     * @return this logger's current filter or {@code undefined}
+     */
+    public function getFilter(Void):IFilter {
+        return this.logger.getFilter();
+    }
+    
+    /**
+     * Sets a new filter for this logger.
+     * 
+     * @param filter the new filter to set
+     */
+    public function setFilter(filter:IFilter):Void {
+        this.logger.setFilter(filter);
+    }
+    
+    /**
+     * Returns the log level specified for this logger.
+     * 
+     * &lt;p&gt;The result may be {@code undefined}, which means that this logger's effective
+     * level will be inherited from its parent. 
+     * 
+     * @return this logger's level
+     */
+    public function getLevel(Void):Level {
+        return this.logger.getLevel();
+    }
+    
+    /**
+     * Sets the log level specifying which messages at which levels will be logged by
+     * this logger.
+     * 
+     * &lt;p&gt;Message levels lower than this value will be discarded. The level value
+     * {@link OFF} can be used to turn off logging.
+     * 
+     * &lt;p&gt;If the new level is {@code undefined}, it means that this node should inherit
+     * its level from its nearest ancestor with a specific (non-undefined) level value.
+     * 
+     * @param level the new level
+     */
+    public function setLevel(level:Level):Void {
+        this.logger.setLevel(level);
+    }
+    
+    /**
+     * Checks if this logger is enabled for debug level log messages.
+     *
+     * @return {@code true} if debug messages are logged
+     * @see #debug
+     */
+    public function isDebugEnabled(Void):Boolean {
+        return this.logger.isLoggable(this.debugLevel);
+    }
+    
+    /**
+     * Checks if this logger is enabled for info level log messages.
+     *
+     * @return {@code true} if info messages are logged
+     * @see #info
+     */
+    public function isInfoEnabled(Void):Boolean {
+        return this.logger.isLoggable(this.infoLevel);
+    }
+    
+    /**
+     * Checks if this logger is enabled for warning level log messages.
+     *
+     * @return {@code true} if warning messages are logged
+     * @see #warning
+     */
+    public function isWarningEnabled(Void):Boolean {
+        return this.logger.isLoggable(this.warningLevel);
+    }
+    
+    /**
+     * Checks if this logger is enabled for error level log messages.
+     *
+     * @return {@code true} if error messages are logged
+     * @see #error
+     */
+    public function isErrorEnabled(Void):Boolean {
+        return this.logger.isLoggable(this.errorLevel);
+    }
+    
+    /**
+     * Checks if this logger is enabled for fatal level log messages.
+     *
+     * @return {@code true} if fatal messages are logged
+     * @see #fatal
+     */
+    public function isFatalEnabled(Void):Boolean {
+        return this.logger.isLoggable(this.fatalLevel);
+    }
+    
+    /**
+     * Logs the message object to wrapped Log4F {@code Logger} at debug level.
+     *
+     * @param message the message object to log
+     * @see #isDebugEnabled
+     */
+    public function debug(message):Void {
+        if (isDebugEnabled()) {
+            this.logger.debug(message);
+        }
+    }
+    
+    /**
+     * Logs the message object to wrapped Log4F {@code Logger} at info level.
+     *
+     * @param message the message object to log
+     * @see #isInfoEnabled
+     */
+    public function info(message):Void {
+        if (isInfoEnabled()) {
+            this.logger.info(message);
+        }
+    }
+    
+    /**
+     * Logs the message object to wrapped Log4F {@code Logger} at warning level.
+     * 
+     * &lt;p&gt;The warning level is equivalent to the warn level of Log4F
+     *
+     * @param message the message object to log
+     * @see #isWarningEnabled
+     */
+    public function warning(message):Void {
+        if (isWarningEnabled()) {
+            this.logger.warn(message);
+        }
+    }
+    
+    /**
+     * Logs the message object to wrapped Log4F {@code Logger} at error level.
+     *
+     * @param message the message object to log
+     * @see #isErrorEnabled
+     */
+    public function error(message):Void {
+        if (isErrorEnabled()) {
+            this.logger.error(message);
+        }
+    }
+    
+    /**
+     * Logs the message object to wrapped Log4F {@code Logger} at fatal level.
+     *
+     * @param message the message object to log
+     * @see #isFatalEnabled
+     */
+    public function fatal(message):Void {
+        if (isFatalEnabled()) {
+            this.logger.fatal(message);
+        }
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>Log4fLogger</code> acts as a wrapper for a <code>org.log4f.logging.logger</code><br /> instance of the Log4F Framework from Peter Armstrong.</div><p>Log4F (<a href="http://sourceforge.net/projects/log4f">http://sourceforge.net/projects/log4f</a>), by Peter Armstrong, is a<br /> Log4j-style logging framework for Flex applications. It is based on Ralf Siegel's<br /> public domain logging framework found at <a href="http://code.audiofarm.de/Logger">http://code.audiofarm.de/Logger</a> and adds<br /> useful Flex-specific enhancements including a debug console, instance inspector<br /> etc.<p>Configure the Log4F Framework as normally and just use this class in your<br /> application to log messages. This enables you to switch between almost every<br /> available Logging API without having to change the logs in your application but<br /> just the underlying configuration on startup.<div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="http://sourceforge.net/projects/log4f">Log4F</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#Log4fLogger">Log4fLogger</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li>
+                  <a href="#ALL">ALL</a>
+                </li>
+                <li>
+                  <a href="#DEBUG">DEBUG</a>
+                </li>
+                <li>
+                  <a href="#INFO">INFO</a>
+                </li>
+                <li>
+                  <a href="#WARNING">WARNING</a>
+                </li>
+                <li>
+                  <a href="#ERROR">ERROR</a>
+                </li>
+                <li>
+                  <a href="#FATAL">FATAL</a>
+                </li>
+                <li>
+                  <a href="#NONE">NONE</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#logger">logger</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#debugLevel">debugLevel</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#infoLevel">infoLevel</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#warningLevel">warningLevel</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#errorLevel">errorLevel</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#fatalLevel">fatalLevel</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#getName">getName</a>
+                </li>
+                <li>
+                  <a href="#getParent">getParent</a>
+                </li>
+                <li>
+                  <a href="#getPublishers">getPublishers</a>
+                </li>
+                <li>
+                  <a href="#addPublisher">addPublisher</a>
+                </li>
+                <li>
+                  <a href="#removePublisher">removePublisher</a>
+                </li>
+                <li>
+                  <a href="#getFilter">getFilter</a>
+                </li>
+                <li>
+                  <a href="#setFilter">setFilter</a>
+                </li>
+                <li>
+                  <a href="#getLevel">getLevel</a>
+                </li>
+                <li>
+                  <a href="#setLevel">setLevel</a>
+                </li>
+                <li>
+                  <a href="#isDebugEnabled">isDebugEnabled</a>
+                </li>
+                <li>
+                  <a href="#isInfoEnabled">isInfoEnabled</a>
+                </li>
+                <li>
+                  <a href="#isWarningEnabled">isWarningEnabled</a>
+                </li>
+                <li>
+                  <a href="#isErrorEnabled">isErrorEnabled</a>
+                </li>
+                <li>
+                  <a href="#isFatalEnabled">isFatalEnabled</a>
+                </li>
+                <li>
+                  <a href="#debug">debug</a>
+                </li>
+                <li>
+                  <a href="#info">info</a>
+                </li>
+                <li>
+                  <a href="#warning">warning</a>
+                </li>
+                <li>
+                  <a href="#error">error</a>
+                </li>
+                <li>
+                  <a href="#fatal">fatal</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="Log4fLogger">Log4fLogger</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>Log4fLogger</b> (
+</div>
+                <div><span class="code">name:String)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>Log4fLogger</code> instance.<p>Gets an Log4F <code>Logger</code> instance via the<br /> <code>org.log4f.logging.Logger.getLogger</code> method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">name<span class="itemSeparator">:</span></div>
+                    <div>the name of this logger</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="ALL">ALL</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>ALL</b>:Level = Level.ALL
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Indicates that all messages shall be logged. This level is equivalent to the<br /> Log4F <code>ALL</code> level.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="DEBUG">DEBUG</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>DEBUG</b>:Level = Level.DEBUG
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Indicates that all messages at debug and higher levels shall be logged. This<br /> level is equivalent to the Log4F <code>DEBUG</code> level.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="ERROR">ERROR</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>ERROR</b>:Level = Level.ERROR
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Indicates that all messages at error and higher levels shall be logged. This<br /> level is equivalent to the Log4F <code>ERROR</code> level.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="FATAL">FATAL</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>FATAL</b>:Level = Level.FATAL
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Indicates that all messages at fatal and higher levels shall be logged. This<br /> level is equivalent to the Log4F <code>FATAL</code> level.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="INFO">INFO</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>INFO</b>:Level = Level.INFO
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Indicates that all messages at info and higher levels shall be logged. This<br /> level is equivalent to the Log4F <code>INFO</code> level.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="NONE">NONE</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>NONE</b>:Level = Level.OFF
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Indicates that no messages shall be logged; logging shall be turned off. This<br /> level is equivalent to the Log4F <code>OFF</code> level.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="WARNING">WARNING</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>WARNING</b>:Level = Level.WARN
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Indicates that all messages at warning and higher levels shall be logged. This<br /> level is equivalent to the Log4F <code>WARN</code> level.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="debugLevel">debugLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>debugLevel</b>:Level
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Debug level.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="errorLevel">errorLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>errorLevel</b>:Level
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Error level.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="fatalLevel">fatalLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>fatalLevel</b>:Level
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Fatal level.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="infoLevel">infoLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>infoLevel</b>:Level
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Info level.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="logger">logger</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>logger</b>:org.log4f.logging.Logger
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The <code>Logger</code> instance of Log4F every task is delegated to.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="warningLevel">warningLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>warningLevel</b>:Level
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Warning level.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="addPublisher">addPublisher</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>addPublisher</b> (
+</div>
+                <div><span class="code">publisher:IPublisher) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Adds a new publisher to this logger.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">publisher<span class="itemSeparator">:</span></div>
+                    <div>the publisher to add</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the <code>publisher</code> was added successfully else<br /> <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="debug">debug</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>debug</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the message object to wrapped Log4F <code>Logger</code> at debug level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#isDebugEnabled">isDebugEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#debug">org.as2lib.env.log.Logger.debug</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="error">error</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>error</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the message object to wrapped Log4F <code>Logger</code> at error level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#isErrorEnabled">isErrorEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#error">org.as2lib.env.log.Logger.error</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="fatal">fatal</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>fatal</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the message object to wrapped Log4F <code>Logger</code> at fatal level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#isFatalEnabled">isFatalEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#fatal">org.as2lib.env.log.Logger.fatal</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getFilter">getFilter</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getFilter</b> (
+</div>
+                <div><span class="code">Void) : IFilter</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the current filter for this logger.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">this logger's current filter or <code>undefined</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getLevel">getLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getLevel</b> (
+</div>
+                <div><span class="code">Void) : Level</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the log level specified for this logger.<p>The result may be <code>undefined</code>, which means that this logger's effective<br /> level will be inherited from its parent. </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">this logger's level</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getName">getName</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getName</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the name of this logger or <code>undefined</code> for anonymous loggers.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the name of this logger</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getParent">getParent</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getParent</b> (
+</div>
+                <div><span class="code">Void) : org.log4f.logging.Logger</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the parent of this logger.<p>This method returns the nearest extant parent in the namespace. Thus if a<br /> logger is called "a.b.c.d", and a logger called "a.b" has been created but no<br /> logger "a.b.c" exists, then a call of <code>getParent</code> on the logger "a.b.c.d"<br /> will return the logger "a.b".<p>The parent for the anonymous Logger is always the root (global) logger.<p>The result will be <code>undefined</code> if it is called on the root (global)<br /> logger in the namespace.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the parent of this logger</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getPublishers">getPublishers</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getPublishers</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_List.html">List</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns an array with publishers associated with this logger.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an array with publishers that are associated with this logger</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="info">info</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>info</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the message object to wrapped Log4F <code>Logger</code> at info level.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#isInfoEnabled">isInfoEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#info">org.as2lib.env.log.Logger.info</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isDebugEnabled">isDebugEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isDebugEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for debug level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if debug messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#debug">debug</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isDebugEnabled">org.as2lib.env.log.Logger.isDebugEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isErrorEnabled">isErrorEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isErrorEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for error level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if error messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#error">error</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isErrorEnabled">org.as2lib.env.log.Logger.isErrorEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isFatalEnabled">isFatalEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isFatalEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for fatal level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if fatal messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#fatal">fatal</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isFatalEnabled">org.as2lib.env.log.Logger.isFatalEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isInfoEnabled">isInfoEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isInfoEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for info level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if info messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#info">info</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isInfoEnabled">org.as2lib.env.log.Logger.isInfoEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isWarningEnabled">isWarningEnabled</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isWarningEnabled</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if this logger is enabled for warning level log messages.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if warning messages are logged</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#warning">warning</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#isWarningEnabled">org.as2lib.env.log.Logger.isWarningEnabled</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="removePublisher">removePublisher</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>removePublisher</b> (
+</div>
+                <div><span class="code">publisher:IPublisher) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Removes the given <code>publisher</code> from this logger.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">publisher<span class="itemSeparator">:</span></div>
+                    <div>the publisher to remove</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the <code>publisher</code> was removed successfully else<br /> <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setFilter">setFilter</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setFilter</b> (
+</div>
+                <div><span class="code">filter:IFilter) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets a new filter for this logger.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">filter<span class="itemSeparator">:</span></div>
+                    <div>the new filter to set</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setLevel">setLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setLevel</b> (
+</div>
+                <div><span class="code">level:Level) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the log level specifying which messages at which levels will be logged by<br /> this logger.<p>Message levels lower than this value will be discarded. The level value<br /> OFF can be used to turn off logging.<p>If the new level is <code>undefined</code>, it means that this node should inherit<br /> its level from its nearest ancestor with a specific (non-undefined) level value.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">level<span class="itemSeparator">:</span></div>
+                    <div>the new level</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="warning">warning</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>warning</b> (
+</div>
+                <div><span class="code">message) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Logs the message object to wrapped Log4F <code>Logger</code> at warning level.<p>The warning level is equivalent to the warn level of Log4F</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the message object to log</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_log_logger_Log4fLogger.html#isWarningEnabled">isWarningEnabled</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_Logger.html#warning">org.as2lib.env.log.Logger.warning</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:25:33</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

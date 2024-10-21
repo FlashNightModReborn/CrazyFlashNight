@@ -1,0 +1,827 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AbstractFileLoader</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_io_file_AbstractFileLoader">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>AbstractFileLoader</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_app_exec_AbstractTimeConsumer.html">AbstractTimeConsumer</a> &lt; <a href="org_as2lib_env_event_EventSupport.html">EventSupport</a> &lt; <a href="org_as2lib_env_log_LogSupport.html">LogSupport</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_io_file_FileLoader.html">FileLoader</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>Known subclasses:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_io_file_SwfFileLoader.html">SwfFileLoader</a>
+                  </li>
+                  <li>
+                    <a href="org_as2lib_io_file_TextFileLoader.html">TextFileLoader</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.0</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.io.file.AbstractFileLoader</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Wednesday, 12 October 2005, 19:02:22</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.data.holder.Map;
+import org.as2lib.data.type.Bit;
+import org.as2lib.data.type.Byte;
+import org.as2lib.env.event.distributor.CompositeEventDistributorControl;
+import org.as2lib.io.file.LoadStartListener;
+import org.as2lib.io.file.LoadCompleteListener;
+import org.as2lib.io.file.LoadProgressListener;
+import org.as2lib.io.file.LoadErrorListener;
+import org.as2lib.io.file.FileLoader;
+import org.as2lib.io.file.File;
+import org.as2lib.app.exec.Executable;
+import org.as2lib.app.exec.AbstractTimeConsumer;
+import org.as2lib.env.except.IllegalArgumentException;
+
+/**
+ * {@code AbstractFileLoader} is a abstract implementation for a {@code FileLoader}.
+ * 
+ * &lt;p&gt;Extend {@code AbstractFileLoader} to implement most methods required
+ * for a {@code ResourceLoader}.
+ * 
+ * @author Martin Heidegger
+ * @version 1.0
+ */
+class org.as2lib.io.file.AbstractFileLoader extends AbstractTimeConsumer implements FileLoader {
+    
+    /** Error code if a certain file could not be found. */
+    public static var FILE_NOT_FOUND_ERROR:String = "File not found";
+    
+    /** URI for the request. */
+    private var uri:String;
+    
+    /** Method to pass resource request parameters. */
+    private var method:String = "POST";
+    
+    /** Parameters to be used for the resource request. */
+    private var parameters:Map;
+    
+    /** Faster access to internal event handling. */
+    private var dC:CompositeEventDistributorControl;
+    
+    /** {@link Executable} to be executed on finish of loading. */
+    private var callBack:Executable;
+    
+    /**
+     * Constructs a new {@code AbstractFileLoader}
+     * 
+     * &lt;p&gt;Pass all arguments from the extended constructor by using super to 
+     * add the parameters to the instance.
+     */
+    function AbstractFileLoader(Void) {
+        super();
+        dC = distributorControl;
+        acceptListenerType(LoadStartListener);
+        acceptListenerType(LoadCompleteListener);
+        acceptListenerType(LoadProgressListener);
+        acceptListenerType(LoadErrorListener);
+    }
+    
+    /**
+     * Returns for the location of the resource that was requested to load.
+     * 
+     * @return location of the resource to load
+     */
+    public function getUri(Void):String {
+        return uri;
+    }
+    
+    /**
+     * Returns the pecentage of the file that has been loaded.
+     * 
+     * &lt;p&gt;Evaluates the current percentage of the execution by using
+     * {@code getBytesTotal} and {@code getBytesLoaded}.
+     * 
+     * &lt;p&gt;Returns {@code null} if the percentage is not evaluable
+     * 
+     * @return percentage of the file that has been loaded
+     */
+    public function getPercentage(Void):Number {
+        if (hasStarted() || hasFinished()) {
+            var percentage:Number = (
+                100  
+                / getBytesTotal().getBytes()
+                * getBytesLoaded().getBytes()
+                );
+            if (percentage &gt;= 100) {
+                percentage = 100;
+            }
+            return percentage;
+        } else {
+            return null;
+        }
+    }
+    /**
+     * Returns the current transfer rate for the execution.
+     * 
+     * &lt;p&gt;Evalutes the transfer rate by using {@code getBytesLoaded} and
+     * {@code getDuration}.
+     * 
+     * @return transfer rate in bit (per second)
+     */
+    public function getTransferRate(Void):Bit {
+        return new Bit(getBytesLoaded().getBit()/getDuration().inSeconds());
+    }
+
+    /**
+     * Stub implementation for the amount of bytes that were loaded.
+     * 
+     * @return {@code null} for not evaluable
+     */
+    public function getBytesTotal(Void):Byte {
+        return null;
+    }
+    
+    /**
+     * Stub implementation for the amount of bytes to be loaded.
+     * 
+     * @return {@code null} for not evaluable
+     */
+    public function getBytesLoaded(Void):Byte {
+        return null;
+    }
+    
+    /**
+     * Prepares the loading of a certain file.
+     * 
+     * &lt;p&gt;To be overwritten with the concrete load implentation. Do not forget 
+     * to apply super.load().
+     * 
+     * @param uri location of the resource to load
+     * @param parameters (optional) parameters for loading the resource
+     * @param method (optional) POST/GET as method for submitting the parameters,
+     *        default method used if {@code method} was not passed-in is POST.
+     * @param callBack (optional) {@link Executable} to be executed after the
+     *        the resource was loaded.
+     */
+    public function load(uri:String, method:String, parameters:Map, callBack:Executable):Void {
+        if (!uri) {
+            throw new IllegalArgumentException("Url has to be set for starting the process.", this, arguments);
+        }
+        this.uri = uri;
+        this.parameters = parameters;
+        this.callBack = callBack;
+        this.method = (method.toUpperCase() == "GET") ? "GET" : "POST";
+        started = true;
+        finished = false;
+        startTime = getTimer();
+    }
+    
+    /**
+     * Returns the {@code method} to pass request parameters for request.
+     * 
+     * @return method to pass request parameters
+     */
+    public function getParameterSubmitMethod(Void):String {
+        return method;
+    }
+
+    /**
+     * Sets the {@code parameters} for the request to the resource.
+     * 
+     * &lt;p&gt;Returns {@code null} if no parameters has been set.
+     * 
+     * @return parameters to be passed with the resource request
+     */
+    public function getParameters(Void):Map {
+        return parameters;
+    }
+
+    /**
+     * Returns the loaded resource.
+     * 
+     * @return the loaded resource
+     * @throws org.as2lib.io.file.ResourceNotLoadedException if the resource has
+     *         not been loaded yet
+     */
+    public function getFile(Void):File {
+        return null;
+    }
+    
+    /**
+     * Internal helper to send the start event.
+     */
+    private function sendStartEvent(Void):Void {
+        var startDistributor:LoadStartListener
+            = dC.getDistributor(LoadStartListener);
+        startDistributor.onLoadStart(this);
+    }
+    
+    /**
+     * Internal helper to send the error event.
+     * 
+     * @param code errorcode for the certain error
+     * @param error information to the certain error
+     */
+    private function sendErrorEvent(code:String, error):Void {
+        var errorDistributor:LoadErrorListener
+            = dC.getDistributor(LoadErrorListener);
+        errorDistributor.onLoadError(this, code, error);
+    }
+    
+    /**
+     * Internal helper to send the complete event.
+     * 
+     * &lt;p&gt;Event to be sent if the file was completly loaded.
+     */
+    private function sendCompleteEvent(Void):Void {
+        var completeDistributor:LoadCompleteListener
+            = dC.getDistributor(LoadCompleteListener);
+        completeDistributor.onLoadComplete(this);
+        callBack.execute(this);
+    }
+    
+    /**
+     * Internal helper to send the progress event.
+     */
+    private function sendProgressEvent(Void):Void {
+        var completeDistributor:LoadProgressListener
+            = dC.getDistributor(LoadProgressListener);
+        completeDistributor.onLoadProgress(this);
+    }
+
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>AbstractFileLoader</code> is a abstract implementation for a <code>FileLoader</code>.</div><p>Extend <code>AbstractFileLoader</code> to implement most methods required<br /> for a <code>ResourceLoader</code>.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#AbstractFileLoader">AbstractFileLoader</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li>
+                  <a href="#FILE_NOT_FOUND_ERROR">FILE_NOT_FOUND_ERROR</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#uri">uri</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#method">method</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#parameters">parameters</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#dC">dC</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#callBack">callBack</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_app_exec_AbstractTimeConsumer.html">AbstractTimeConsumer</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#duration" class="privatInline">duration</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#endTime" class="privatInline">endTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#finished" class="privatInline">finished</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#restTime" class="privatInline">restTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#started" class="privatInline">started</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#startTime" class="privatInline">startTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#totalTime" class="privatInline">totalTime</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_event_EventSupport.html">EventSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_event_EventSupport.html#distributorControl" class="privatInline">distributorControl</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#logger">logger</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class methods inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#getLoggerByClass">getLoggerByClass</a>, <a href="org_as2lib_env_log_LogSupport.html#getLoggerByInstance">getLoggerByInstance</a>, <a href="org_as2lib_env_log_LogSupport.html#getLoggerByScope">getLoggerByScope</a>, <a href="org_as2lib_env_log_LogSupport.html#storeLoggerInPrototype" class="privatInline">storeLoggerInPrototype</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#getUri">getUri</a>
+                </li>
+                <li>
+                  <a href="#getPercentage">getPercentage</a>
+                </li>
+                <li>
+                  <a href="#getTransferRate">getTransferRate</a>
+                </li>
+                <li>
+                  <a href="#getBytesTotal">getBytesTotal</a>
+                </li>
+                <li>
+                  <a href="#getBytesLoaded">getBytesLoaded</a>
+                </li>
+                <li>
+                  <a href="#load">load</a>
+                </li>
+                <li>
+                  <a href="#getParameterSubmitMethod">getParameterSubmitMethod</a>
+                </li>
+                <li>
+                  <a href="#getParameters">getParameters</a>
+                </li>
+                <li>
+                  <a href="#getFile">getFile</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#sendStartEvent">sendStartEvent</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#sendErrorEvent">sendErrorEvent</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#sendCompleteEvent">sendCompleteEvent</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#sendProgressEvent">sendProgressEvent</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_app_exec_AbstractTimeConsumer.html">AbstractTimeConsumer</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#getDuration">getDuration</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#getEstimatedRestTime">getEstimatedRestTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#getEstimatedTotalTime">getEstimatedTotalTime</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#getPercentage">getPercentage</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#hasFinished">hasFinished</a>, <a href="org_as2lib_app_exec_AbstractTimeConsumer.html#hasStarted">hasStarted</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_env_event_EventSupport.html">EventSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_event_EventSupport.html#acceptListenerType" class="privatInline">acceptListenerType</a>, <a href="org_as2lib_env_event_EventSupport.html#addAllListeners">addAllListeners</a>, <a href="org_as2lib_env_event_EventSupport.html#addListener">addListener</a>, <a href="org_as2lib_env_event_EventSupport.html#getAllListeners">getAllListeners</a>, <a href="org_as2lib_env_event_EventSupport.html#hasListener">hasListener</a>, <a href="org_as2lib_env_event_EventSupport.html#removeAllListeners">removeAllListeners</a>, <a href="org_as2lib_env_event_EventSupport.html#removeListener">removeListener</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#getLogger">getLogger</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="AbstractFileLoader">AbstractFileLoader</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>AbstractFileLoader</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>AbstractFileLoader</code><p>Pass all arguments from the extended constructor by using super to <br /> add the parameters to the instance.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="FILE_NOT_FOUND_ERROR">FILE_NOT_FOUND_ERROR</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>FILE_NOT_FOUND_ERROR</b>:String = <span class="codeString">"File not found"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Error code if a certain file could not be found.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="callBack">callBack</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>callBack</b>:<a href="org_as2lib_app_exec_Executable.html">Executable</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description"><a href="org_as2lib_app_exec_Executable.html">org.as2lib.app.exec.Executable</a> to be executed on finish of loading.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="dC">dC</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>dC</b>:<a href="org_as2lib_env_event_distributor_CompositeEventDistributorControl.html">CompositeEventDistributorControl</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Faster access to internal event handling.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="method">method</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>method</b>:String = <span class="codeString">"POST"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Method to pass resource request parameters.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="parameters">parameters</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>parameters</b>:<a href="org_as2lib_data_holder_Map.html">Map</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Parameters to be used for the resource request.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="uri">uri</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>uri</b>:String
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">URI for the request.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getBytesLoaded">getBytesLoaded</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getBytesLoaded</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Byte.html">Byte</a></span></div>
+              </div>
+            </div>
+            <div class="description">Stub implementation for the amount of bytes to be loaded.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>null</code> for not evaluable</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getBytesLoaded">FileLoader.getBytesLoaded</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getBytesTotal">getBytesTotal</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getBytesTotal</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Byte.html">Byte</a></span></div>
+              </div>
+            </div>
+            <div class="description">Stub implementation for the amount of bytes that were loaded.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>null</code> for not evaluable</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getBytesTotal">FileLoader.getBytesTotal</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getFile">getFile</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getFile</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_io_file_File.html">File</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the loaded resource.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the loaded resource</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item">org.as2lib.io.file.ResourceNotLoadedException if the resource has<br />         not been loaded yet</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getFile">FileLoader.getFile</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getParameters">getParameters</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getParameters</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_Map.html">Map</a></span></div>
+              </div>
+            </div>
+            <div class="description">Sets the <code>parameters</code> for the request to the resource.<p>Returns <code>null</code> if no parameters has been set.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">parameters to be passed with the resource request</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getParameters">FileLoader.getParameters</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getParameterSubmitMethod">getParameterSubmitMethod</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getParameterSubmitMethod</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the <code>method</code> to pass request parameters for request.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">method to pass request parameters</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getParameterSubmitMethod">FileLoader.getParameterSubmitMethod</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getPercentage">getPercentage</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getPercentage</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the pecentage of the file that has been loaded.<p>Evaluates the current percentage of the execution by using<br /> <code>getBytesTotal</code> and <code>getBytesLoaded</code>.<p>Returns <code>null</code> if the percentage is not evaluable</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">percentage of the file that has been loaded</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_app_exec_AbstractTimeConsumer.html#getPercentage">org.as2lib.app.exec.AbstractTimeConsumer.getPercentage</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getPercentage">FileLoader.getPercentage</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getTransferRate">getTransferRate</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTransferRate</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Bit.html">Bit</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the current transfer rate for the execution.<p>Evalutes the transfer rate by using <code>getBytesLoaded</code> and<br /> <code>getDuration</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">transfer rate in bit (per second)</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getTransferRate">FileLoader.getTransferRate</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getUri">getUri</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getUri</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns for the location of the resource that was requested to load.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">location of the resource to load</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_io_file_FileLoader.html#getUri">FileLoader.getUri</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="load">load</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>load</b> (
+
+
+
+</div>
+                <div><span class="code">uri:String,
+method:String,
+parameters:<a href="org_as2lib_data_holder_Map.html">Map</a>,
+callBack:<a href="org_as2lib_app_exec_Executable.html">Executable</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Prepares the loading of a certain file.<p>To be overwritten with the concrete load implentation. Do not forget <br /> to apply super.load().</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">uri       <span class="itemSeparator">:</span></div>
+                    <div>location of the resource to load</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">parameters<span class="itemSeparator">:</span></div>
+                    <div>(optional) parameters for loading the resource</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">method    <span class="itemSeparator">:</span></div>
+                    <div>(optional) POST/GET as method for submitting the parameters,<br />        default method used if <code>method</code> was not passed-in is POST.</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">callBack  <span class="itemSeparator">:</span></div>
+                    <div>(optional) <a href="org_as2lib_app_exec_Executable.html">org.as2lib.app.exec.Executable</a> to be executed after the<br />        the resource was loaded.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="sendCompleteEvent">sendCompleteEvent</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>sendCompleteEvent</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Internal helper to send the complete event.<p>Event to be sent if the file was completly loaded.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="sendErrorEvent">sendErrorEvent</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>sendErrorEvent</b> (
+
+</div>
+                <div><span class="code">code:String,
+error) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Internal helper to send the error event.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">code <span class="itemSeparator">:</span></div>
+                    <div>errorcode for the certain error</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">error<span class="itemSeparator">:</span></div>
+                    <div>information to the certain error</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="sendProgressEvent">sendProgressEvent</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>sendProgressEvent</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Internal helper to send the progress event.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="sendStartEvent">sendStartEvent</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>sendStartEvent</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Internal helper to send the start event.</div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:27:31</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

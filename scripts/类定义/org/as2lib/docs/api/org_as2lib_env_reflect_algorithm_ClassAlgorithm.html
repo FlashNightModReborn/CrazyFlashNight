@@ -1,0 +1,649 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>ClassAlgorithm</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_reflect_algorithm_ClassAlgorithm">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>ClassAlgorithm</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.reflect.algorithm.ClassAlgorithm</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Tuesday, 16 August 2005, 18:09:58</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.except.IllegalArgumentException;
+import org.as2lib.env.reflect.ClassNotFoundException;
+import org.as2lib.env.reflect.Cache;
+import org.as2lib.env.reflect.PackageInfo;
+import org.as2lib.env.reflect.ClassInfo;
+import org.as2lib.env.reflect.ReflectConfig;
+
+/**
+ * {@code ClassAlgorithm} searches for the class of a specific instance or class
+ * and returns information about that class.
+ * 
+ * &lt;p&gt;This class is rather cumbersome to use. It is recommended to use the static
+ * {@link ClassInfo#forObject}, {@link ClassInfo#forInstance}, {@link ClassInfo#forClass}
+ * and {@link ClassInfo#forName} methods instead. They offer more sophisticated
+ * return values and do also store {@code ClassInfo} instances retrieved by classes
+ * or instances and not only those by name like this algorithm does.
+ *
+ * &lt;p&gt;To obtain information corresponding to an instance or a class you can use
+ * this class as follows.
+ * 
+ * &lt;code&gt;
+ *   var myInstance:MyClass = new MyClass();
+ *   var classAlgorithm:ClassAlgorithm = new ClassAlgorithm();
+ *   var infoByInstance:Object = classAlgorithm.execute(myInstance);
+ *   var infoByClass:Object = classAlgorithm.execute(MyClass);
+ * &lt;/code&gt;
+ *
+ * &lt;p&gt;It is also possible to retrieve a class info by name.
+ *
+ * &lt;code&gt;
+ *   classInfoByName:ClassInfo = classAlgorithm.executeByName("MyClass");
+ * &lt;/code&gt;
+ *
+ * &lt;p&gt;If the class is not contained in the root/default package you must specify
+ * the whole path / its namespace.
+ * 
+ * &lt;code&gt;
+ *   classInfoByName:ClassInfo = classAlgorithm.executeByName("org.as2lib.MyClass");
+ * &lt;/code&gt;
+ *
+ * &lt;p&gt;Already retrieved class infos are stored in a cache. There thus exists only
+ * one {@code ClassInfo} instance per class. Note that the {@link #execute} method
+ * does not return {@code ClassInfo} instances and does thus not store the found
+ * information.
+ * 
+ * @author Simon Wacker
+ */
+class org.as2lib.env.reflect.algorithm.ClassAlgorithm extends BasicClass {
+    
+    /** The cache to store class and package infos. */
+    private var c:Cache;
+    
+    /** The temporary result. */
+    private var r;
+    
+    /**
+     * Constructs a new {@code ClassAlgorithm} instance.
+     */
+    public function ClassAlgorithm(Void) {
+    }
+    
+    /**
+     * Sets the cache that is used by the {@link #executeByName} method to look whether
+     * the class the shall be found is already stored.
+     *
+     * &lt;p&gt;This cache also determines where the search for a class starts.
+     * 
+     * @param cache the new cache
+     */
+    public function setCache(cache:Cache):Void {
+        c = cache;
+    }
+    
+    /**
+     * Returns the cache set via the {@link #setCache} method or the default cache that
+     * is returned by the {@link ReflectConfig#getCache} method.
+     * 
+     * @return the currently used cache
+     */
+    public function getCache(Void):Cache {
+        if (!c) c = ReflectConfig.getCache();
+        return c;
+    }
+    
+    /**
+     * @overload #executeByClass
+     * @overload #executeByInstance
+     */
+    public function execute(d) {
+        if (typeof(d) == "function") {
+            return executeByClass(d);
+        }
+        return executeByInstance(d);
+    }
+    
+    /**
+     * Executes the search for the passed-in class {@code d} and returns information
+     * about this class.
+     * 
+     * &lt;p&gt;The returned object has the following properties:
+     * &lt;dl&gt;
+     *   &lt;dt&gt;clazz&lt;/dt&gt;
+     *   &lt;dd&gt;The class as {@code Function} that has been searched for, this is the
+     *       passed-in class {@code d}.&lt;/dd&gt;
+     *   &lt;dt&gt;name&lt;/dt&gt;
+     *   &lt;dd&gt;The name as {@code String} of the searched for class.&lt;/dd&gt;
+     *   &lt;dt&gt;package&lt;/dt&gt;
+     *   &lt;dd&gt;The package represented by a {@link PackageInfo} instance the class is
+     *       a member of.&lt;/dd&gt;
+     * &lt;/dl&gt;
+     *
+     * &lt;p&gt;{@code null} will be returned if:
+     * &lt;ul&gt;
+     *   &lt;li&gt;The passed-in class {@code d} is {@code null} or {@code undefined}.&lt;/li&gt;
+     *   &lt;li&gt;The passed-in class {@code d} could not be found.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * &lt;p&gt;The search starts on the package returned by the {@link Cache#getRoot} method
+     * of the set cache. If this method returns a package info whose {@code getPackage}
+     * method returns {@code null} or {@code undefined} {@code _global} is used instead.
+     * 
+     * @param d the class to return information about
+     * @return an object that contains information about the passed-in class {@code d}
+     * @see #getCache
+     */
+    public function executeByClass(d:Function) {
+        if (d === null || d === undefined) return null;
+        return executeByComparator(function(f:Function) {
+            // use f.valueOf() because this allows one to overwrite the original class,
+            // to add a valueOf method that returns the original class and still find
+            // the correct class at run-time (this is for example used by the aop framework)
+            return f.valueOf() == d.valueOf();
+        });
+    }
+    
+    /**
+     * Executes the search for the class the passed-in object {@code d} is an instance
+     * of and returns information about that class.
+     * 
+     * &lt;p&gt;The returned object has the following properties:
+     * &lt;dl&gt;
+     *   &lt;dt&gt;clazz&lt;/dt&gt;
+     *   &lt;dd&gt;The class as {@code Function} that has been searched for.&lt;/dd&gt;
+     *   &lt;dt&gt;name&lt;/dt&gt;
+     *   &lt;dd&gt;The name as {@code String} of the searched for class.&lt;/dd&gt;
+     *   &lt;dt&gt;package&lt;/dt&gt;
+     *   &lt;dd&gt;The package represented by a {@link PackageInfo} instance the class is
+     *       a member of.&lt;/dd&gt;
+     * &lt;/dl&gt;
+     *
+     * &lt;p&gt;{@code null} will be returned if:
+     * &lt;ul&gt;
+     *   &lt;li&gt;The passed-in instance {@code d} is {@code null} or {@code undefined}.&lt;/li&gt;
+     *   &lt;li&gt;The class of the passed-in instance could not be found.&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * &lt;p&gt;The search starts on the package returned by the {@link Cache#getRoot} method
+     * of the set cache. If this method returns a package info whose {@code getPackage}
+     * method returns {@code null} or {@code undefined} {@code _global} is used instead.
+     *
+     * @param d the instance of the class to return information about
+     * @return an object that contains information about the class the passed-in object
+     * {@code d} is an instance of
+     * @see #getCache
+     */
+    public function executeByInstance(d) {
+        // not 'if (!d)' because 'd' could be en empty string or a boolean
+        // 'valueOf' method of 'd' could return 'null' or 'undefined' thus strict eval is used
+        if (d === null || d === undefined) return null;
+        return executeByComparator(function(f:Function) {
+            return f.prototype === d.__proto__;
+        });
+    }
+    
+    /**
+     * Executes the search for a class and returns information about that class.
+     * 
+     * &lt;p&gt;The returned object has the following properties:
+     * &lt;dl&gt;
+     *   &lt;dt&gt;clazz&lt;/dt&gt;
+     *   &lt;dd&gt;The class as {@code Function} that has been searched for.&lt;/dd&gt;
+     *   &lt;dt&gt;name&lt;/dt&gt;
+     *   &lt;dd&gt;The name as {@code String} of the searched for class.&lt;/dd&gt;
+     *   &lt;dt&gt;package&lt;/dt&gt;
+     *   &lt;dd&gt;The package represented by a {@ling PackageInfo} instance the class is
+     *       a member of.&lt;/dd&gt;
+     * &lt;/dl&gt;
+     *
+     * &lt;p&gt;{@code null} will be returned if:
+     * &lt;ul&gt;
+     *   &lt;li&gt;The passed-in comparator {@code v} method is {@code null} or {@code undefined}.&lt;/li&gt;
+     *   &lt;li&gt;The searched for class could not be found.&lt;/li&gt;
+     * &lt;/ul&gt;
+     * 
+     * &lt;p&gt;The search starts on the package returned by the {@link Cache#getRoot} method
+     * of the set cache. If this method returns a package info whose {@code getPackage}
+     * method returns {@code null} or {@code undefined} {@code _global} is used instead.
+     *
+     * &lt;p&gt;The passed-in comparator is invoked for every found class to determine whether
+     * it is the right one or not. The comparator method gets passed the found class and
+     * must return {@code true} or {@code false}. If it returns {@code true} the
+     * algorithm stops and returns the information about this class.
+     * @param v the comparator to determine the correct class
+     * @return an object that contains information about the class
+     * @see #getCache
+     */
+    public function executeByComparator(v:Function) {
+        if (!v) return null;
+        r = null;
+        var b:PackageInfo = getCache().getRoot();
+        var a:Object = b.getPackage();
+        if (!a) a = _global;
+        _global.ASSetPropFlags(a, null, 0, true);
+        _global.ASSetPropFlags(a, ["__proto__", "constructor", "__constructor__", "prototype"], 1, true);
+        findAndStore(b, v);
+        return r;
+    }
+    
+    private function findAndStore(a:PackageInfo, v:Function):Boolean {
+        var p = a.getPackage();
+        var i:String;
+        for (i in p) {
+            var f = p[i];
+            if (typeof(f) == "function") {
+                if (v(f)) {
+                    // flex stores every class in _global and in its actual package
+                    // e.g. org.as2lib.core.BasicClass is stored in _global with name org_as2lib_core_BasicClass
+                    // this if-clause excludes these extra stored classes
+                    if (!eval("_global." + i.split("_").join(".")) || i.indexOf("_") &lt; 0) {
+                        r = new Object();
+                        r.clazz = f;
+                        r.name = i;
+                        r.package = a;
+                        return true;
+                    }
+                }
+            } else if (typeof(f) == "object") {
+                var e:PackageInfo = c.getPackage(f);
+                if (!e) {
+                    e = c.addPackage(new PackageInfo(f, i, a));
+                }
+                if (!e.isParentPackage(a)) {
+                    // todo: replace recursion with loop
+                    if (findAndStore(e, v)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Returns the class info representing the class corresponding to the passed-in
+     * class name {@code n}.
+     * 
+     * &lt;p&gt;The class name must be fully qualified, that means it must consist of the
+     * class's path (namespace) as well as its name. For example 'org.as2lib.core.BasicClass'.
+     *
+     * &lt;p&gt;The search starts on the package returned by the {@link Cache#getRoot} method
+     * of the set cache. If this method returns a package info whose {@code getFullName}
+     * method returns {@code null} or {@code undefined} {@code "_global"} is used instead.
+     * 
+     * @param n the fully qualified name of the class
+     * @return the class info representing the class corresponding to the passed-in name
+     * @throws IllegalArgumentException if the passed-in name is {@code null}, {@code undefined}
+     * or an empty string or if the object corresponding to the passed-in name is not of
+     * type function
+     * @throws ClassNotFoundException if a class with the passed-in name could not be found
+     */
+    public function executeByName(n:String):ClassInfo {
+        if (!n) throw new IllegalArgumentException("The passed-in class name '" + n + "' is not allowed to be null, undefined or an empty string.", this, arguments);
+        var p:PackageInfo = getCache().getRoot();
+        var x:String = p.getFullName();
+        if (!x) x = "_global";
+        var f:Function = eval(x + "." + n);
+        if (!f) throw new ClassNotFoundException("A class with the name '" + n + "' could not be found.", this, arguments);
+        if (typeof(f) != "function") throw new IllegalArgumentException("The object corresponding to the passed-in class name '" + n + "' is not of type function.", this, arguments);
+        var r:ClassInfo = c.getClassByClass(f);
+        if (r) return r;
+        var a:Array = n.split(".");
+        var g:Object = p.getPackage();
+        for (var i:Number = 0; i &lt; a.length; i++) {
+            if (i == a.length-1) {
+                return c.addClass(new ClassInfo(f, a[i], p));
+            } else {
+                g = g[a[i]];
+                p = c.addPackage(new PackageInfo(g, a[i], p));
+            }
+        }
+        return null;
+        // unreachable!!!
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>ClassAlgorithm</code> searches for the class of a specific instance or class<br /> and returns information about that class.</div><p>This class is rather cumbersome to use. It is recommended to use the static<br /> <a href="org_as2lib_env_reflect_ClassInfo.html#forObject">org.as2lib.env.reflect.ClassInfo.forObject</a>, <a href="org_as2lib_env_reflect_ClassInfo.html#forInstance">org.as2lib.env.reflect.ClassInfo.forInstance</a>, <a href="org_as2lib_env_reflect_ClassInfo.html#forClass">org.as2lib.env.reflect.ClassInfo.forClass</a><br /> and <a href="org_as2lib_env_reflect_ClassInfo.html#forName">org.as2lib.env.reflect.ClassInfo.forName</a> methods instead. They offer more sophisticated<br /> return values and do also store <code>ClassInfo</code> instances retrieved by classes<br /> or instances and not only those by name like this algorithm does.<p>To obtain information corresponding to an instance or a class you can use<br /> this class as follows.<br /> <pre><span class="codeKeyword">var</span> myInstance:MyClass = <span class="codeKeyword">new</span> MyClass();
+<span class="codeKeyword">var</span> classAlgorithm:ClassAlgorithm = <span class="codeKeyword">new</span> ClassAlgorithm();
+<span class="codeKeyword">var</span> infoByInstance:<span class="codeIdentifier">Object</span> = classAlgorithm.execute(myInstance);
+<span class="codeKeyword">var</span> infoByClass:<span class="codeIdentifier">Object</span> = classAlgorithm.execute(MyClass);</pre><p>It is also possible to retrieve a class info by name.<pre>classInfoByName:ClassInfo = classAlgorithm.executeByName(<span class="codeString">"MyClass"</span>);</pre><p>If the class is not contained in the root/default package you must specify<br /> the whole path / its namespace.<br /> <pre>classInfoByName:ClassInfo = classAlgorithm.executeByName(<span class="codeString">"org.as2lib.MyClass"</span>);</pre><p>Already retrieved class infos are stored in a cache. There thus exists only<br /> one <code>ClassInfo</code> instance per class. Note that the <a href="org_as2lib_env_reflect_algorithm_ClassAlgorithm.html#execute">execute</a> method<br /> does not return <code>ClassInfo</code> instances and does thus not store the found<br /> information.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#ClassAlgorithm">ClassAlgorithm</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#c">c</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#r">r</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#setCache">setCache</a>
+                </li>
+                <li>
+                  <a href="#getCache">getCache</a>
+                </li>
+                <li>
+                  <a href="#execute">execute</a>
+                </li>
+                <li>
+                  <a href="#executeByClass">executeByClass</a>
+                </li>
+                <li>
+                  <a href="#executeByInstance">executeByInstance</a>
+                </li>
+                <li>
+                  <a href="#executeByComparator">executeByComparator</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#findAndStore">findAndStore</a>
+                </li>
+                <li>
+                  <a href="#executeByName">executeByName</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="ClassAlgorithm">ClassAlgorithm</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>ClassAlgorithm</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>ClassAlgorithm</code> instance.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="c">c</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>c</b>:<a href="org_as2lib_env_reflect_Cache.html">Cache</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The cache to store class and package infos.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="r">r</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>r</b>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The temporary result.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="execute">execute</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>execute</b> (
+</div>
+                <div><span class="code">d)</span></div>
+              </div>
+            </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overloading:</span><div class="item"><a href="org_as2lib_env_reflect_algorithm_ClassAlgorithm.html#executeByClass">executeByClass (d:Function) : </a><br /><a href="org_as2lib_env_reflect_algorithm_ClassAlgorithm.html#executeByInstance">executeByInstance (d) : </a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="executeByClass">executeByClass</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>executeByClass</b> (
+</div>
+                <div><span class="code">d:Function)</span></div>
+              </div>
+            </div>
+            <div class="description">Executes the search for the passed-in class <code>d</code> and returns information<br /> about this class.<p>The returned object has the following properties:<br /> <dl><br />   <dt>clazz</dt><br />   <dd>The class as <code>Function</code> that has been searched for, this is the<br />       passed-in class <code>d</code>.</dd><br />   <dt>name</dt><br />   <dd>The name as <code>String</code> of the searched for class.</dd><br />   <dt>package</dt><br />   <dd>The package represented by a <a href="org_as2lib_env_reflect_PackageInfo.html">org.as2lib.env.reflect.PackageInfo</a> instance the class is<br />       a member of.</dd><br /> </dl><p><code>null</code> will be returned if:<ul><li>The passed-in class <code>d</code> is <code>null</code> or <code>undefined</code>.</li><li>The passed-in class <code>d</code> could not be found.</li></ul><p>The search starts on the package returned by the <a href="org_as2lib_env_reflect_Cache.html#getRoot">org.as2lib.env.reflect.Cache.getRoot</a> method<br /> of the set cache. If this method returns a package info whose <code>getPackage</code><br /> method returns <code>null</code> or <code>undefined</code> <code>_global</code> is used instead.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">d<span class="itemSeparator">:</span></div>
+                    <div>the class to return information about</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an object that contains information about the passed-in class <code>d</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_reflect_algorithm_ClassAlgorithm.html#getCache">getCache</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="executeByComparator">executeByComparator</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>executeByComparator</b> (
+</div>
+                <div><span class="code">v:Function)</span></div>
+              </div>
+            </div>
+            <div class="description">Executes the search for a class and returns information about that class.<p>The returned object has the following properties:<br /> <dl><br />   <dt>clazz</dt><br />   <dd>The class as <code>Function</code> that has been searched for.</dd><br />   <dt>name</dt><br />   <dd>The name as <code>String</code> of the searched for class.</dd><br />   <dt>package</dt><br />   <dd>The package represented by a {@ling PackageInfo} instance the class is<br />       a member of.</dd><br /> </dl><p><code>null</code> will be returned if:<ul><li>The passed-in comparator <code>v</code> method is <code>null</code> or <code>undefined</code>.</li><li>The searched for class could not be found.</li></ul><p>The search starts on the package returned by the <a href="org_as2lib_env_reflect_Cache.html#getRoot">org.as2lib.env.reflect.Cache.getRoot</a> method<br /> of the set cache. If this method returns a package info whose <code>getPackage</code><br /> method returns <code>null</code> or <code>undefined</code> <code>_global</code> is used instead.<p>The passed-in comparator is invoked for every found class to determine whether<br /> it is the right one or not. The comparator method gets passed the found class and<br /> must return <code>true</code> or <code>false</code>. If it returns <code>true</code> the<br /> algorithm stops and returns the information about this class.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">v<span class="itemSeparator">:</span></div>
+                    <div>the comparator to determine the correct class</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an object that contains information about the class</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_reflect_algorithm_ClassAlgorithm.html#getCache">getCache</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="executeByInstance">executeByInstance</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>executeByInstance</b> (
+</div>
+                <div><span class="code">d)</span></div>
+              </div>
+            </div>
+            <div class="description">Executes the search for the class the passed-in object <code>d</code> is an instance<br /> of and returns information about that class.<p>The returned object has the following properties:<br /> <dl><br />   <dt>clazz</dt><br />   <dd>The class as <code>Function</code> that has been searched for.</dd><br />   <dt>name</dt><br />   <dd>The name as <code>String</code> of the searched for class.</dd><br />   <dt>package</dt><br />   <dd>The package represented by a <a href="org_as2lib_env_reflect_PackageInfo.html">org.as2lib.env.reflect.PackageInfo</a> instance the class is<br />       a member of.</dd><br /> </dl><p><code>null</code> will be returned if:<ul><li>The passed-in instance <code>d</code> is <code>null</code> or <code>undefined</code>.</li><li>The class of the passed-in instance could not be found.</li></ul><p>The search starts on the package returned by the <a href="org_as2lib_env_reflect_Cache.html#getRoot">org.as2lib.env.reflect.Cache.getRoot</a> method<br /> of the set cache. If this method returns a package info whose <code>getPackage</code><br /> method returns <code>null</code> or <code>undefined</code> <code>_global</code> is used instead.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">d<span class="itemSeparator">:</span></div>
+                    <div>the instance of the class to return information about</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an object that contains information about the class the passed-in object<br /> <code>d</code> is an instance of</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_env_reflect_algorithm_ClassAlgorithm.html#getCache">getCache</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="executeByName">executeByName</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>executeByName</b> (
+</div>
+                <div><span class="code">n:String) : <a href="org_as2lib_env_reflect_ClassInfo.html">ClassInfo</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the class info representing the class corresponding to the passed-in<br /> class name <code>n</code>.<p>The class name must be fully qualified, that means it must consist of the<br /> class's path (namespace) as well as its name. For example 'org.as2lib.core.BasicClass'.<p>The search starts on the package returned by the <a href="org_as2lib_env_reflect_Cache.html#getRoot">org.as2lib.env.reflect.Cache.getRoot</a> method<br /> of the set cache. If this method returns a package info whose <code>getFullName</code><br /> method returns <code>null</code> or <code>undefined</code> <code>"_global"</code> is used instead.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">n<span class="itemSeparator">:</span></div>
+                    <div>the fully qualified name of the class</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the class info representing the class corresponding to the passed-in name</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if the passed-in name is <code>null</code>, <code>undefined</code><br /> or an empty string or if the object corresponding to the passed-in name is not of<br /> type function<br /><a href="org_as2lib_env_reflect_ClassNotFoundException.html">org.as2lib.env.reflect.ClassNotFoundException</a> if a class with the passed-in name could not be found</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="findAndStore">findAndStore</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>findAndStore</b> (
+
+</div>
+                <div><span class="code">a:<a href="org_as2lib_env_reflect_PackageInfo.html">PackageInfo</a>,
+v:Function) : Boolean</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getCache">getCache</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getCache</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_reflect_Cache.html">Cache</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the cache set via the <a href="org_as2lib_env_reflect_algorithm_ClassAlgorithm.html#setCache">setCache</a> method or the default cache that<br /> is returned by the <a href="org_as2lib_env_reflect_ReflectConfig.html#getCache">org.as2lib.env.reflect.ReflectConfig.getCache</a> method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the currently used cache</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setCache">setCache</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setCache</b> (
+</div>
+                <div><span class="code">cache:<a href="org_as2lib_env_reflect_Cache.html">Cache</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the cache that is used by the <a href="org_as2lib_env_reflect_algorithm_ClassAlgorithm.html#executeByName">executeByName</a> method to look whether<br /> the class the shall be found is already stored.<p>This cache also determines where the search for a class starts.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">cache<span class="itemSeparator">:</span></div>
+                    <div>the new cache</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:26:16</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

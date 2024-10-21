@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>log4f</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>tomcat_java_classes</name>
+			<type>2</type>
+			<location>C:/tomcat/jakarta-tomcat-5.0.27/webapps/flex/WEB-INF/classes</location>
+		</link>
+		<link>
+			<name>tomcat_flex_webapp_root</name>
+			<type>2</type>
+			<location>C:/tomcat/jakarta-tomcat-5.0.27/webapps/flex</location>
+		</link>
+	</linkedResources>
+</projectDescription>

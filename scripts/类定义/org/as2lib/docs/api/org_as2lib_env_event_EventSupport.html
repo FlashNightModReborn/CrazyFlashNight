@@ -1,0 +1,526 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>EventSupport</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_event_EventSupport">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>EventSupport</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_env_log_LogSupport.html">LogSupport</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_env_event_EventListenerSource.html">EventListenerSource</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th>Known subclasses:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_app_exec_AbstractTimeConsumer.html">AbstractTimeConsumer</a>
+                  </li>
+                  <li>
+                    <a href="org_as2lib_app_exec_Processor.html">Processor</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.0</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.event.EventSupport</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Thursday, 13 October 2005, 17:49:14</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+import org.as2lib.env.event.EventListenerSource;
+import org.as2lib.env.log.LogSupport;
+import org.as2lib.env.event.distributor.CompositeEventDistributorControl;
+import org.as2lib.env.event.distributor.SimpleConsumableCompositeEventDistributorControl;
+
+/**
+ * {@code EventSupport} provides simple access to events.
+ * 
+ * &lt;p&gt;To apply event abilities to your class its only necessary to extend
+ * {@code EventSupport}. It holds in the private instance variable
+ * {@code distributorControl} a reference to
+ * {@link SimpleConsumableCompositeEventDistributionControl}.
+ * 
+ * &lt;p&gt;To allow additional listener types to be checked by {@link #addListener},
+ * {@link #addAddListener} its only necessary to add {@code acceptListenerType(AnyType);}
+ * within the constructor of the extended class.
+ * 
+ * &lt;p&gt;It is necessary for sending a event to recieve the matching distributor with
+ * {@code distributorControl.getDistributor(AnyType)} and execute the event to it.
+ * 
+ * &lt;p&gt;Example code:
+ * &lt;code&gt;
+ *   class Controller extends EventSupport {
+ *   
+ *     private var model:Model;
+ *     private var distributor:View;
+ *     
+ *     public function Controller(Void) {
+ *       distributorControl.acceptListenerType(View);
+ *       distributor = distributorControl.getDistributor(View);
+ *     }
+ *     
+ *     public function setTargetModel(model:Model) {
+ *       this.model = model;
+ *       distributor.onTargetModelChanged(this);
+ *     }
+ *     
+ *     public function getTargetModel(Void):Model {
+ *          return model;
+ *     }
+ *   }
+ * &lt;/code&gt;
+ * 
+ * @author Martin Heidegger
+ * @version 1.0
+ */
+class org.as2lib.env.event.EventSupport extends LogSupport implements EventListenerSource {
+    
+    /** Access to event control. */
+    private var distributorControl:CompositeEventDistributorControl;
+    
+    /**
+     * Constructs a new {@code EventSupport} instance.
+     */
+    function EventSupport(Void) {
+        distributorControl = new SimpleConsumableCompositeEventDistributorControl();
+    }
+
+    /**
+     * Adds the passed-in {@code listener} to be executed by events.
+     * 
+     * @param listener the listener to add
+     * @throws IllegalArgumentException if the listener does not match any expected type
+     */
+    public function addListener(listener):Void {
+        distributorControl.addListener(listener);
+    }    
+
+    /**
+     * Adds all listener contained in the passed-in {@code listeners} array.
+     * 
+     * &lt;p&gt;All listeners get added after each other. If one listener does not match
+     * any expected type the rest of the listeners will not be added an a exception
+     * will raise.
+     * 
+     * @param listeners the list of listeners to add
+     * @throws IllegalArgumentException if any listener does not match any expected type
+     */
+    public function addAllListeners(listeners:Array):Void {
+        distributorControl.addAllListeners(listeners);
+    }
+
+
+    /**
+     * Removes the passed-in {@code listener} from beeing executed by events.
+     * 
+     * @param listener the listener to remove
+     */
+    public function removeListener(listener):Void {
+        distributorControl.removeListener(listener);
+    }
+
+    /**
+     * Removes all listeners from beeing executed by events.
+     */
+    public function removeAllListeners(Void):Void {
+        distributorControl.removeAllListeners();
+    }
+
+    /**
+     * Getter for the list of all added listeners.
+     * 
+     * &lt;p&gt;This method returns a copy (not a reference) of the list of all added
+     * listeners.
+     * 
+     * @return list that contains all added listeners
+     */
+    public function getAllListeners(Void):Array {
+        return distributorControl.getAllListeners();
+    }
+
+    /**
+     * Checks if the passed-in {@code listener} has been added.
+     * 
+     * @return {@code true} if the listener has been added
+     */
+    public function hasListener(listener):Boolean {
+        return distributorControl.hasListener(listener);
+    }
+    
+    /**
+     * Internal method to accept a concrete listener type.
+     * 
+     * &lt;p&gt;Any listener added with {@code addListener} will be checked against
+     * all accepted typed and added.
+     * 
+     * @param type to accept as listener
+     */
+    private function acceptListenerType(type:Function):Void {
+        distributorControl.acceptListenerType(type);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>EventSupport</code> provides simple access to events.</div><p>To apply event abilities to your class its only necessary to extend<br /> <code>EventSupport</code>. It holds in the private instance variable<br /> <code>distributorControl</code> a reference to<br /> SimpleConsumableCompositeEventDistributionControl.<p>To allow additional listener types to be checked by <a href="org_as2lib_env_event_EventSupport.html#addListener">addListener</a>,<br /> #addAddListener its only necessary to add <code>acceptListenerType(AnyType);</code><br /> within the constructor of the extended class.<p>It is necessary for sending a event to recieve the matching distributor with<br /> <code>distributorControl.getDistributor(AnyType)</code> and execute the event to it.<p>Example code:<pre><span class="codeKeyword">class</span> Controller <span class="codeKeyword">extends</span> EventSupport {
+
+  <span class="codeKeyword">private</span> <span class="codeKeyword">var</span> model:Model;
+  <span class="codeKeyword">private</span> <span class="codeKeyword">var</span> distributor:View;
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> Controller(<span class="codeIdentifier">Void</span>) {
+    distributorControl.acceptListenerType(View);
+    distributor = distributorControl.getDistributor(View);
+  }
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> setTargetModel(model:Model) {
+    <span class="codeIdentifier">this</span>.model = model;
+    distributor.onTargetModelChanged(<span class="codeIdentifier">this</span>);
+  }
+
+  <span class="codeKeyword">public</span> <span class="codeKeyword">function</span> getTargetModel(<span class="codeIdentifier">Void</span>):Model {
+       <span class="codeKeyword">return</span> model;
+  }
+}</pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#EventSupport">EventSupport</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#distributorControl">distributorControl</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#logger">logger</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class methods inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#getLoggerByClass">getLoggerByClass</a>, <a href="org_as2lib_env_log_LogSupport.html#getLoggerByInstance">getLoggerByInstance</a>, <a href="org_as2lib_env_log_LogSupport.html#getLoggerByScope">getLoggerByScope</a>, <a href="org_as2lib_env_log_LogSupport.html#storeLoggerInPrototype" class="privatInline">storeLoggerInPrototype</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#addListener">addListener</a>
+                </li>
+                <li>
+                  <a href="#addAllListeners">addAllListeners</a>
+                </li>
+                <li>
+                  <a href="#removeListener">removeListener</a>
+                </li>
+                <li>
+                  <a href="#removeAllListeners">removeAllListeners</a>
+                </li>
+                <li>
+                  <a href="#getAllListeners">getAllListeners</a>
+                </li>
+                <li>
+                  <a href="#hasListener">hasListener</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#acceptListenerType">acceptListenerType</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_env_log_LogSupport.html">LogSupport</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_log_LogSupport.html#getLogger">getLogger</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="EventSupport">EventSupport</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>EventSupport</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>EventSupport</code> instance.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="distributorControl">distributorControl</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>distributorControl</b>:<a href="org_as2lib_env_event_distributor_CompositeEventDistributorControl.html">CompositeEventDistributorControl</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Access to event control.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="acceptListenerType">acceptListenerType</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>acceptListenerType</b> (
+</div>
+                <div><span class="code">type:Function) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Internal method to accept a concrete listener type.<p>Any listener added with <code>addListener</code> will be checked against<br /> all accepted typed and added.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">type<span class="itemSeparator">:</span></div>
+                    <div>to accept as listener</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="addAllListeners">addAllListeners</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>addAllListeners</b> (
+</div>
+                <div><span class="code">listeners:Array) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Adds all listener contained in the passed-in <code>listeners</code> array.<p>All listeners get added after each other. If one listener does not match<br /> any expected type the rest of the listeners will not be added an a exception<br /> will raise.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">listeners<span class="itemSeparator">:</span></div>
+                    <div>the list of listeners to add</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if any listener does not match any expected type</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_event_EventListenerSource.html#addAllListeners">EventListenerSource.addAllListeners</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="addListener">addListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>addListener</b> (
+</div>
+                <div><span class="code">listener) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Adds the passed-in <code>listener</code> to be executed by events.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">listener<span class="itemSeparator">:</span></div>
+                    <div>the listener to add</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if the listener does not match any expected type</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_event_EventListenerSource.html#addListener">EventListenerSource.addListener</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getAllListeners">getAllListeners</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getAllListeners</b> (
+</div>
+                <div><span class="code">Void) : Array</span></div>
+              </div>
+            </div>
+            <div class="description">Getter for the list of all added listeners.<p>This method returns a copy (not a reference) of the list of all added<br /> listeners.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">list that contains all added listeners</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_event_EventListenerSource.html#getAllListeners">EventListenerSource.getAllListeners</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="hasListener">hasListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasListener</b> (
+</div>
+                <div><span class="code">listener) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if the passed-in <code>listener</code> has been added.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">listener<span class="itemSeparator">:</span></div>
+                    <div><div class="inheritDoc">the listener to check whether it has been added</div><a class="followInheritDoc" href="org_as2lib_env_event_EventListenerSource.html#hasListener">#</a></div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the listener has been added</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_event_EventListenerSource.html#hasListener">EventListenerSource.hasListener</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="removeAllListeners">removeAllListeners</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>removeAllListeners</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Removes all listeners from beeing executed by events.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_event_EventListenerSource.html#removeAllListeners">EventListenerSource.removeAllListeners</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="removeListener">removeListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>removeListener</b> (
+</div>
+                <div><span class="code">listener) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Removes the passed-in <code>listener</code> from beeing executed by events.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">listener<span class="itemSeparator">:</span></div>
+                    <div>the listener to remove</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_event_EventListenerSource.html#removeListener">EventListenerSource.removeListener</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:24:30</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

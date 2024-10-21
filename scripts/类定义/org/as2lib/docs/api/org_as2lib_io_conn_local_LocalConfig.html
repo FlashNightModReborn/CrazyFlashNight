@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>LocalConfig</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_io_conn_local_LocalConfig">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods</span></span><h1>LocalConfig</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.io.conn.local.LocalConfig</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Friday, 08 April 2005, 12:13:02</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.io.conn.core.server.ServerRegistry;
+import org.as2lib.io.conn.local.server.LocalServerRegistry;
+
+/**
+ * {@code LocalConfig} is the basic configuration class of the Local Connection API.
+ * 
+ * &lt;p&gt;It can be used to configure static parts, that means parts that are shared
+ * globally.
+ *
+ * @author Simon Wacker
+ */
+class org.as2lib.io.conn.local.LocalConfig extends BasicClass {
+    
+    /** Stores the server registry. */
+    private static var serverRegistry:ServerRegistry;
+    
+    /**
+     * Private constructor.
+     */
+    private function LocalConfig(Void) {
+    }
+    
+    /**
+     * Returns the currently used server registry.
+     *
+     * &lt;p&gt;That is either the server registry set via {@link #setServerRegistry} or the
+     * default on which is an instance of class {@link LocalServerRegistry}.
+     * 
+     * @return the currenlty used server registry
+     * @see #setServerRegistry
+     */
+    public static function getServerRegistry(Void):ServerRegistry {
+        if (!serverRegistry) serverRegistry = new LocalServerRegistry();
+        return serverRegistry;
+    }
+    
+    /**
+     * Sets a new server registry.
+     *
+     * &lt;p&gt;If you set a server registry of value {@code null} or {@code undefined}
+     * {@link #getServerRegistry} will return the default server registry.
+     * 
+     * @param newServerRegistry the new server registry
+     * @see #getServerRegistry
+     */
+    public static function setServerRegistry(newServerRegistry:ServerRegistry):Void {
+        serverRegistry = newServerRegistry;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>LocalConfig</code> is the basic configuration class of the Local Connection API.</div><p>It can be used to configure static parts, that means parts that are shared<br /> globally.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Constructor</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#LocalConfig">LocalConfig</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Class properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#serverRegistry">serverRegistry</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#getServerRegistry">getServerRegistry</a>
+                </li>
+                <li>
+                  <a href="#setServerRegistry">setServerRegistry</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="LocalConfig">LocalConfig</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>LocalConfig</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Private constructor.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="serverRegistry">serverRegistry</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>serverRegistry</b>:<a href="org_as2lib_io_conn_core_server_ServerRegistry.html">ServerRegistry</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Stores the server registry.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getServerRegistry">getServerRegistry</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>getServerRegistry</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_io_conn_core_server_ServerRegistry.html">ServerRegistry</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the currently used server registry.<p>That is either the server registry set via <a href="org_as2lib_io_conn_local_LocalConfig.html#setServerRegistry">setServerRegistry</a> or the<br /> default on which is an instance of class <a href="org_as2lib_io_conn_local_server_LocalServerRegistry.html">org.as2lib.io.conn.local.server.LocalServerRegistry</a>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the currenlty used server registry</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_io_conn_local_LocalConfig.html#setServerRegistry">setServerRegistry</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setServerRegistry">setServerRegistry</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>setServerRegistry</b> (
+</div>
+                <div><span class="code">newServerRegistry:<a href="org_as2lib_io_conn_core_server_ServerRegistry.html">ServerRegistry</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets a new server registry.<p>If you set a server registry of value <code>null</code> or <code>undefined</code><br /> <a href="org_as2lib_io_conn_local_LocalConfig.html#getServerRegistry">getServerRegistry</a> will return the default server registry.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">newServerRegistry<span class="itemSeparator">:</span></div>
+                    <div>the new server registry</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_io_conn_local_LocalConfig.html#getServerRegistry">getServerRegistry</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:27:23</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

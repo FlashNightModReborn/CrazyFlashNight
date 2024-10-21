@@ -1,0 +1,881 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>ObjectUtil</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_util_ObjectUtil">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods</span></span><h1>ObjectUtil</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker, Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.util.ObjectUtil</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Wednesday, 21 September 2005, 18:42:40</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.Config;
+import org.as2lib.util.ClassUtil;
+import org.as2lib.util.ArrayUtil;
+import org.as2lib.util.Comparable;
+
+/**
+ * {@code ObjectUtil} contains fundamental methods to efficiently and easily work
+ * with any type of object.
+ * 
+ * @author Simon Wacker
+ * @author Martin Heidegger
+ */
+class org.as2lib.util.ObjectUtil extends BasicClass {
+    
+    /**
+     * Constant for objects of type string.
+     * 
+     * @see #isTypeOf
+     */
+    public static var TYPE_STRING:String = "string";
+    
+    /**
+     * Constant for objects for type number.
+     * 
+     * @see #isTypeOf
+     */
+    public static var TYPE_NUMBER:String = "number";
+    
+    /**
+     * Constant for objects of type object.
+     * 
+     * @see #isTypeOf
+     */
+    public static var TYPE_OBJECT:String = "object";
+    
+    /**
+     * Constant for objects of type boolean.
+     * 
+     * @see #isTypeOf
+     */
+    public static var TYPE_BOOLEAN:String = "boolean";
+    
+    /**
+     * Constant for objects of type movieclip.
+     * 
+     * @see #isTypeOf
+     */
+    public static var TYPE_MOVIECLIP:String = "movieclip";
+    
+    /**
+     * Constant for objects of type function.
+     * 
+     * @see #isTypeOf
+     */
+    public static var TYPE_FUNCTION:String = "function";
+    
+    /**
+     * Constant for the value undefined.
+     * 
+     * @see #isTypeOf
+     */
+    public static var TYPE_UNDEFINED:String = "undefined";
+    
+    /**
+     * Constant for the value null.
+     * 
+     * @see #isTypeOf
+     */
+    public static var TYPE_NULL:String = "null";
+    
+    /**
+     * Stringifies the passed-in {@code object} using the stringifier returned by the
+     * static {@link Config#getObjectStringifier} method.
+     * 
+     * @param object the object to stringify
+     * @return the string representation of the passed-in {@code object}
+     */
+    public static function stringify(object):String {
+        return Config.getObjectStringifier().execute(object);
+    }
+    
+    /**
+     * Checks if the type of the passed-in {@code object} matches the passed-in 
+     * {@code type}.
+     * 
+     * &lt;p&gt;Every value (even {@code null} and {@code undefined}) matches type
+     * {@code Object}.
+     *
+     * &lt;p&gt;Instances as well as their primitive correspondent match the types 
+     * {@code String}, {@code Number} or {@code Boolean}.
+     * 
+     * @param object the object whose type to compare with the passed-in {@code type}
+     * @param type the type to use for the comparison
+     * @return {@code true} if the type of the {@code object} matches the passed-in
+     * {@code type} else {@code false}
+     */
+    public static function typesMatch(object, type:Function):Boolean {
+        if (type === Object) {
+            return true;
+        }
+        if (isPrimitiveType(object)) {
+            var t:String = typeof(object);
+            // Workaround for former used: typesMatch(type(object), object);
+            // Casting is not a good solution, it will break if the Constructor throws a error!
+            // This solution is not the fastest but will not break by any exception.
+            if ((type === String || ClassUtil.isSubClassOf(type, String)) &amp;&amp; t == TYPE_STRING) {
+                return true;
+            }
+            if ((type === Boolean || ClassUtil.isSubClassOf(type, Boolean)) &amp;&amp; t == TYPE_BOOLEAN) {
+                return true;
+            }
+            if ((type === Number || ClassUtil.isSubClassOf(type, Number)) &amp;&amp; t == TYPE_NUMBER) {
+                return true;
+            }
+            return false;
+        } else {
+            return (isInstanceOf(object, type));
+        }
+    }
+    
+    /**
+     * Compares the results of an execution of the {@code typeof} method applied to
+     * both passed-in objects.
+     * 
+     * @param firstObject the first object of the comparison
+     * @param secondObject the second object of the comparison
+     * @return {@code true} if the execution of the {@code typeof} method returns the 
+     * same else {@code false}
+     */
+    public static function compareTypeOf(firstObject, secondObject):Boolean {
+        return (typeof(firstObject) == typeof(secondObject));
+    }
+    
+    /**
+     * Checks if the passed-in {@code object} is a primitive type.
+     *
+     * &lt;p&gt;Primitive types are strings, numbers and booleans that are not created via the
+     * new operator. For example {@code "myString"}, {@code 3} and {@code true} are
+     * primitive types, but {@code new String("myString")}, {@code new Number(3)} and
+     * {@code new Boolean(true)} are not.
+     * 
+     * @param object the object to check whether it is a prmitive type
+     * @return {@code true} if {@code object} is a primitive type else {@code false}
+     */
+    public static function isPrimitiveType(object):Boolean {
+        var t:String = typeof(object);
+        return (t == TYPE_STRING || t == TYPE_NUMBER || t == TYPE_BOOLEAN);
+    }
+    
+    /**
+     * Checks if the result of an execution of the {@code typeof} method on the
+     * passed-in {@code object} matches the passed-in {@code type}.
+     * 
+     * &lt;p&gt;All possible types are available as constants.
+     *
+     * @param object the object whose type to check
+     * @param type the string representation of the type
+     * @return {@code true} if the object is of the given {@code type}
+     * @see #TYPE_STRING
+     * @see #TYPE_NUMBER
+     * @see #TYPE_OBJECT
+     * @see #TYPE_BOOLEAN
+     * @see #TYPE_MOVIECLIP
+     * @see #TYPE_NULL
+     * @see #TYPE_UNDEFINED
+     */
+    public static function isTypeOf(object, type:String):Boolean {
+        return (typeof(object) == type);
+    }
+    
+    /**
+     * Checks if the passed-in {@code object} is an instance of the passed-in
+     * {@code type}.
+     * 
+     * &lt;p&gt;If the passed-in {@code type} is {@code Object}, {@code true} will always be
+     * returned, because every object is an instance of {@code Object}, even {@code null}
+     * and {@code undefined}.
+     * 
+     * @param object the object to check
+     * @param type the type to check whether the {@code object} is an instance of
+     * @return {@code true} if the passed-in {@code object} is an instance of the given
+     * {@code type} else {@code false}
+     */
+    public static function isInstanceOf(object, type:Function):Boolean {
+        if (type === Object) {
+            return true;
+        }
+        return (object instanceof type);
+    }
+    
+    /**
+     * Checks if the passed-in {@code object} is an explicit instance of the passed-in
+     * {@code clazz}.
+     * 
+     * &lt;p&gt;That means that {@code true} will only be returned if the object was instantiated
+     * directly from the given {@code clazz}.
+     * 
+     * @param object the object to check whether it is an explicit instance of {@code clazz}
+     * @param clazz the class to use as the basis for the check
+     * @return {@code true} if the object is an explicit instance of {@code clazz} else
+     * {@code false}
+     */
+    public static function isExplicitInstanceOf(object, clazz:Function):Boolean {
+        if (isPrimitiveType(object)) {
+            if (clazz == String) {
+                return (typeof(object) == TYPE_STRING);
+            }
+            if (clazz == Number) {
+                return (typeof(object) == TYPE_NUMBER);
+            }
+            if (clazz == Boolean) {
+                return (typeof(object) == TYPE_BOOLEAN);
+            }
+        }
+        return (object instanceof clazz    &amp;&amp; !(object.__proto__ instanceof clazz));
+    }
+    
+    /**
+     * Checks if two passed-in parameters are equal.
+     * 
+     * &lt;p&gt;It uses different strategies by the first passed-in {@code obj1}.
+     *   &lt;ul&gt;
+     *     &lt;li&gt;If {@code obj1} is a primitive it compares it with == operator.&lt;/li&gt;
+     *     &lt;li&gt;If {@code obj1} implements {@link Comparable} it calls {@code compare()}
+     *         to compare both passed-in parameters&lt;/li&gt;
+     *     &lt;li&gt;Any different case compares the structure of both objects.&lt;/li&gt;
+     *   &lt;/ul&gt;
+     *   
+     * &lt;p&gt;It compares complex objects (that do not implement {@code Comparable})
+     * only if they are instances of the same class. A different class (even
+     * if its only a extended class) will be handled as not equal.
+     * 
+     * &lt;p&gt;It compares complex objects recursivly. It handles back references in 
+     * a proper way.
+     * 
+     * @param obj1 object to be compared
+     * @param obj2 object to compare with passed-in {@code obj1}
+     * @return {@code true} if both parameters are equal
+     */
+    public static function compare(obj1, obj2):Boolean {
+        return compareRecursive(obj1, obj2, [], []);
+    }
+    
+    /**
+     * Compares recursivly (for objects) if the structure matches.
+     * 
+     * @param obj1 object to compare with a different object.
+     * @param obj2 object to be compared with {@code obj1}.
+     * @param stack1 recursive stack to check endless recursions for the {@code obj1}
+     * @param stack2 recursive stack to check endless recursions for the {@code obj2}
+     * @return {@code true} if both paramerters are equal
+     */
+    private static function compareRecursive(obj1, obj2, stack1:Array, stack2:Array):Boolean {
+        if (typeof obj1 == "object"
+            &amp;&amp; !(   obj1 instanceof String
+                 || obj1 instanceof Number
+                 || obj1 instanceof Boolean)) {
+            if (obj1 === obj2) {
+                return true;
+            }
+            if (obj1 instanceof Comparable) {
+                var c:Comparable = obj1;
+                return c.compare(obj2);
+            }
+            if (obj1.__proto__ == obj2.__proto__) {
+                var index:Number = ArrayUtil.lastIndexOf(stack1, obj1);
+                if (index &gt; -1) {
+                    if (obj2 == stack2[index]) {
+                        return true;
+                    }
+                }
+                stack1.push(obj1);
+                stack2.push(obj2);
+                var i:String;
+                for (i in obj1) {
+                    if (!compareRecursive (obj1[i], obj2[i], stack1, stack2)) {
+                        return false;
+                    }
+                }
+                stack1.pop();
+                stack2.pop();
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return (obj1 == obj2);
+        }
+    }
+    
+    /**
+     * Private constructor.
+     */
+    private function ObjectUtil(Void) {
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>ObjectUtil</code> contains fundamental methods to efficiently and easily work<br /> with any type of object.</div></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Constructor</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#ObjectUtil">ObjectUtil</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li>
+                  <a href="#TYPE_STRING">TYPE_STRING</a>
+                </li>
+                <li>
+                  <a href="#TYPE_NUMBER">TYPE_NUMBER</a>
+                </li>
+                <li>
+                  <a href="#TYPE_OBJECT">TYPE_OBJECT</a>
+                </li>
+                <li>
+                  <a href="#TYPE_BOOLEAN">TYPE_BOOLEAN</a>
+                </li>
+                <li>
+                  <a href="#TYPE_MOVIECLIP">TYPE_MOVIECLIP</a>
+                </li>
+                <li>
+                  <a href="#TYPE_FUNCTION">TYPE_FUNCTION</a>
+                </li>
+                <li>
+                  <a href="#TYPE_UNDEFINED">TYPE_UNDEFINED</a>
+                </li>
+                <li>
+                  <a href="#TYPE_NULL">TYPE_NULL</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#stringify">stringify</a>
+                </li>
+                <li>
+                  <a href="#typesMatch">typesMatch</a>
+                </li>
+                <li>
+                  <a href="#compareTypeOf">compareTypeOf</a>
+                </li>
+                <li>
+                  <a href="#isPrimitiveType">isPrimitiveType</a>
+                </li>
+                <li>
+                  <a href="#isTypeOf">isTypeOf</a>
+                </li>
+                <li>
+                  <a href="#isInstanceOf">isInstanceOf</a>
+                </li>
+                <li>
+                  <a href="#isExplicitInstanceOf">isExplicitInstanceOf</a>
+                </li>
+                <li>
+                  <a href="#compare">compare</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#compareRecursive">compareRecursive</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="ObjectUtil">ObjectUtil</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>ObjectUtil</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Private constructor.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="TYPE_BOOLEAN">TYPE_BOOLEAN</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>TYPE_BOOLEAN</b>:String = <span class="codeString">"boolean"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Constant for objects of type boolean.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_ObjectUtil.html#isTypeOf">isTypeOf</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="TYPE_FUNCTION">TYPE_FUNCTION</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>TYPE_FUNCTION</b>:String = <span class="codeString">"function"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Constant for objects of type function.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_ObjectUtil.html#isTypeOf">isTypeOf</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="TYPE_MOVIECLIP">TYPE_MOVIECLIP</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>TYPE_MOVIECLIP</b>:String = <span class="codeString">"movieclip"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Constant for objects of type movieclip.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_ObjectUtil.html#isTypeOf">isTypeOf</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="TYPE_NULL">TYPE_NULL</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>TYPE_NULL</b>:String = <span class="codeString">"null"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Constant for the value null.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_ObjectUtil.html#isTypeOf">isTypeOf</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="TYPE_NUMBER">TYPE_NUMBER</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>TYPE_NUMBER</b>:String = <span class="codeString">"number"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Constant for objects for type number.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_ObjectUtil.html#isTypeOf">isTypeOf</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="TYPE_OBJECT">TYPE_OBJECT</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>TYPE_OBJECT</b>:String = <span class="codeString">"object"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Constant for objects of type object.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_ObjectUtil.html#isTypeOf">isTypeOf</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="TYPE_STRING">TYPE_STRING</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>TYPE_STRING</b>:String = <span class="codeString">"string"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Constant for objects of type string.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_ObjectUtil.html#isTypeOf">isTypeOf</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="TYPE_UNDEFINED">TYPE_UNDEFINED</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>TYPE_UNDEFINED</b>:String = <span class="codeString">"undefined"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Constant for the value undefined.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_ObjectUtil.html#isTypeOf">isTypeOf</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="compare">compare</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>compare</b> (
+
+</div>
+                <div><span class="code">obj1,
+obj2) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if two passed-in parameters are equal.<p>It uses different strategies by the first passed-in <code>obj1</code>.<ul><li>If <code>obj1</code> is a primitive it compares it with == operator.</li><li>If <code>obj1</code> implements <a href="org_as2lib_util_Comparable.html">Comparable</a> it calls <code>compare()</code><br />         to compare both passed-in parameters</li><li>Any different case compares the structure of both objects.</li></ul><p>It compares complex objects (that do not implement <code>Comparable</code>)<br /> only if they are instances of the same class. A different class (even<br /> if its only a extended class) will be handled as not equal.<p>It compares complex objects recursivly. It handles back references in <br /> a proper way.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">obj1<span class="itemSeparator">:</span></div>
+                    <div>object to be compared</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">obj2<span class="itemSeparator">:</span></div>
+                    <div>object to compare with passed-in <code>obj1</code></div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if both parameters are equal</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="compareRecursive">compareRecursive</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private function <b>compareRecursive</b> (
+
+
+
+</div>
+                <div><span class="code">obj1,
+obj2,
+stack1:Array,
+stack2:Array) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Compares recursivly (for objects) if the structure matches.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">obj1  <span class="itemSeparator">:</span></div>
+                    <div>object to compare with a different object.</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">obj2  <span class="itemSeparator">:</span></div>
+                    <div>object to be compared with <code>obj1</code>.</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">stack1<span class="itemSeparator">:</span></div>
+                    <div>recursive stack to check endless recursions for the <code>obj1</code></div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">stack2<span class="itemSeparator">:</span></div>
+                    <div>recursive stack to check endless recursions for the <code>obj2</code></div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if both paramerters are equal</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="compareTypeOf">compareTypeOf</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>compareTypeOf</b> (
+
+</div>
+                <div><span class="code">firstObject,
+secondObject) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Compares the results of an execution of the <code>typeof</code> method applied to<br /> both passed-in objects.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">firstObject <span class="itemSeparator">:</span></div>
+                    <div>the first object of the comparison</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">secondObject<span class="itemSeparator">:</span></div>
+                    <div>the second object of the comparison</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the execution of the <code>typeof</code> method returns the <br /> same else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isExplicitInstanceOf">isExplicitInstanceOf</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isExplicitInstanceOf</b> (
+
+</div>
+                <div><span class="code">object,
+clazz:Function) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if the passed-in <code>object</code> is an explicit instance of the passed-in<br /> <code>clazz</code>.<p>That means that <code>true</code> will only be returned if the object was instantiated<br /> directly from the given <code>clazz</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">object<span class="itemSeparator">:</span></div>
+                    <div>the object to check whether it is an explicit instance of <code>clazz</code></div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">clazz <span class="itemSeparator">:</span></div>
+                    <div>the class to use as the basis for the check</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the object is an explicit instance of <code>clazz</code> else<br /> <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isInstanceOf">isInstanceOf</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isInstanceOf</b> (
+
+</div>
+                <div><span class="code">object,
+type:Function) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if the passed-in <code>object</code> is an instance of the passed-in<br /> <code>type</code>.<p>If the passed-in <code>type</code> is <code>Object</code>, <code>true</code> will always be<br /> returned, because every object is an instance of <code>Object</code>, even <code>null</code><br /> and <code>undefined</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">object<span class="itemSeparator">:</span></div>
+                    <div>the object to check</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">type  <span class="itemSeparator">:</span></div>
+                    <div>the type to check whether the <code>object</code> is an instance of</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the passed-in <code>object</code> is an instance of the given<br /> <code>type</code> else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isPrimitiveType">isPrimitiveType</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isPrimitiveType</b> (
+</div>
+                <div><span class="code">object) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if the passed-in <code>object</code> is a primitive type.<p>Primitive types are strings, numbers and booleans that are not created via the<br /> new operator. For example <code>"myString"</code>, <code>3</code> and <code>true</code> are<br /> primitive types, but <code>new String("myString")</code>, <code>new Number(3)</code> and<br /> <code>new Boolean(true)</code> are not.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">object<span class="itemSeparator">:</span></div>
+                    <div>the object to check whether it is a prmitive type</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if <code>object</code> is a primitive type else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isTypeOf">isTypeOf</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isTypeOf</b> (
+
+</div>
+                <div><span class="code">object,
+type:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if the result of an execution of the <code>typeof</code> method on the<br /> passed-in <code>object</code> matches the passed-in <code>type</code>.<p>All possible types are available as constants.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">object<span class="itemSeparator">:</span></div>
+                    <div>the object whose type to check</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">type  <span class="itemSeparator">:</span></div>
+                    <div>the string representation of the type</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the object is of the given <code>type</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_ObjectUtil.html#TYPE_STRING">TYPE_STRING</a><br /><a href="org_as2lib_util_ObjectUtil.html#TYPE_NUMBER">TYPE_NUMBER</a><br /><a href="org_as2lib_util_ObjectUtil.html#TYPE_OBJECT">TYPE_OBJECT</a><br /><a href="org_as2lib_util_ObjectUtil.html#TYPE_BOOLEAN">TYPE_BOOLEAN</a><br /><a href="org_as2lib_util_ObjectUtil.html#TYPE_MOVIECLIP">TYPE_MOVIECLIP</a><br /><a href="org_as2lib_util_ObjectUtil.html#TYPE_NULL">TYPE_NULL</a><br /><a href="org_as2lib_util_ObjectUtil.html#TYPE_UNDEFINED">TYPE_UNDEFINED</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="stringify">stringify</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>stringify</b> (
+</div>
+                <div><span class="code">object) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Stringifies the passed-in <code>object</code> using the stringifier returned by the<br /> static <a href="org_as2lib_Config.html#getObjectStringifier">org.as2lib.Config.getObjectStringifier</a> method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">object<span class="itemSeparator">:</span></div>
+                    <div>the object to stringify</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the string representation of the passed-in <code>object</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="typesMatch">typesMatch</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>typesMatch</b> (
+
+</div>
+                <div><span class="code">object,
+type:Function) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if the type of the passed-in <code>object</code> matches the passed-in <br /> <code>type</code>.<p>Every value (even <code>null</code> and <code>undefined</code>) matches type<br /> <code>Object</code>.<p>Instances as well as their primitive correspondent match the types <br /> <code>String</code>, <code>Number</code> or <code>Boolean</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">object<span class="itemSeparator">:</span></div>
+                    <div>the object whose type to compare with the passed-in <code>type</code></div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">type  <span class="itemSeparator">:</span></div>
+                    <div>the type to use for the comparison</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the type of the <code>object</code> matches the passed-in<br /> <code>type</code> else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:31:12</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

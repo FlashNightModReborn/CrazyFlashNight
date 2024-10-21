@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AbstractEventDistributorControl</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_event_distributor_AbstractEventDistributorControl">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>AbstractEventDistributorControl</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html">TypeSafeEventListenerSource</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Known subclasses:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_env_event_distributor_SimpleConsumableEventDistributorControl.html">SimpleConsumableEventDistributorControl</a>
+                  </li>
+                  <li>
+                    <a href="org_as2lib_env_event_distributor_SimpleEventDistributorControl.html">SimpleEventDistributorControl</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.event.distributor.AbstractEventDistributorControl</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Tuesday, 16 August 2005, 21:45:04</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.env.except.AbstractOperationException;
+import org.as2lib.env.event.TypeSafeEventListenerSource;
+
+/**
+ * {@code AbstractEventDistributorControl} offers default implementations of
+ * methods needed when implementing the {@link EventDistributorControl} interface
+ * or any sub-interface.
+ * 
+ * @author Simon Wacker
+ */
+class org.as2lib.env.event.distributor.AbstractEventDistributorControl extends TypeSafeEventListenerSource {
+    
+    /** The distributor to distribute events. */
+    private var d;
+    
+    /**
+     * Constructs a new {@code AbstractEventDistributorControl} instance.
+     *
+     * &lt;p&gt;{@code checkListenerType} is by default set to {@code true}.
+     *
+     * @param listenerType the expected type of listeners
+     * @param checkListenerType determines whether to check that passed-in listeners
+     * are of the expected type
+     * @throws IllegalArgumentException if the passed-in {@code listenerType} is
+     * {@code null} or {@code undefined}
+     */
+    public function AbstractEventDistributorControl(listenerType:Function, checkListenerType:Boolean) {
+        super (listenerType, checkListenerType);
+    }
+    
+    /**
+     * Returns the type of listeners this distributor expects. This is also the type of
+     * the distributor returned by the {@link #getDistributor} method.
+     * 
+     * @return the type of the distributor and listeners
+     */
+    public function getType(Void):Function {
+        return t;
+    }
+    
+    /**
+     * Returns the distributor to distribute the event to all added listeners.
+     *
+     * &lt;p&gt;The returned distributor can be casted to the type specified on construction.
+     * You can then invoke the event method on it to distribute it to all added
+     * listeners. This event distribution approach has the advantage of proper
+     * compile-time type-checking.
+     *
+     * &lt;p&gt;The returned distributor throws an {@link EventExecutionException} on
+     * distribution if an event method of a listener threw an exception.
+     * 
+     * &lt;p&gt;This method does always return the same distributor.
+     * 
+     * @return the distributor to distribute the event
+     */
+    public function getDistributor(Void) {
+        if (!this.d) this.d = createDistributor();
+        return this.d;
+    }
+    
+    /**
+     * Creates a new distributor based on the listener type specified on construction.
+     *
+     * &lt;p&gt;The catching of methods called on the returned distributor takes place using
+     * {@code __resolve}. This method then invokes the {@link #distribute} method with
+     * the name of the called method and the arguments used for the method call.
+     * 
+     * @return the new distributor
+     */
+    private function createDistributor(Void) {
+        var result = new Object();
+        var t:Function = getListenerType();
+        result.__proto__ = t.prototype;
+        result.__constructor__ = t;
+        var e:AbstractEventDistributorControl = this;
+        //var d:Function = e["distribute"];
+        result.__resolve = function(n:String):Function {
+            return (function():Void {
+                //d.apply(e, n, arguments); causes 255 recursion error
+                // e.distribute is not MTASC compatible because "distribute" is private
+                e["distribute"](n, arguments);
+            });
+        };
+        var p:Object = t.prototype;
+        while (p != Object.prototype) {
+            for (var i:String in p) {
+                result[i] = function():Void {
+                    // e.distribute is not MTASC compatible because "distribute" is private
+                    e["distribute"](arguments.callee.n, arguments);
+                };
+                result[i].n = i;
+            }
+            p = p.__proto__;
+        }
+        return result;
+    }
+    
+    /**
+     * Executes the event with the given {@code eventName} on all added listeners, using
+     * the arguments after {@code eventName} as parameters.
+     * 
+     * @param eventName the name of the event method to execute on the added listeners
+     * @param args any number of arguments that are used as parameters on execution of
+     * the event on the listeners
+     * @throws EventExecutionException if an event method on a listener threw an
+     * exception
+     */
+    private function distribute(eventName:String, args:Array):Void {
+        throw new AbstractOperationException("This method is marked as abstract and must be overwritten.", this, arguments);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>AbstractEventDistributorControl</code> offers default implementations of<br /> methods needed when implementing the <a href="org_as2lib_env_event_distributor_EventDistributorControl.html">EventDistributorControl</a> interface<br /> or any sub-interface.</div></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#AbstractEventDistributorControl">AbstractEventDistributorControl</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#d">d</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_env_event_TypeSafeEventListenerSource.html">TypeSafeEventListenerSource</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#c" class="privatInline">c</a>, <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#l" class="privatInline">l</a>, <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#t" class="privatInline">t</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#getType">getType</a>
+                </li>
+                <li>
+                  <a href="#getDistributor">getDistributor</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#createDistributor">createDistributor</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#distribute">distribute</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_env_event_TypeSafeEventListenerSource.html">TypeSafeEventListenerSource</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#addAllListeners">addAllListeners</a>, <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#addListener">addListener</a>, <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#getAllListeners">getAllListeners</a>, <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#getListenerType">getListenerType</a>, <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#hasListener">hasListener</a>, <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#isListenerTypeChecked">isListenerTypeChecked</a>, <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#removeAllListeners">removeAllListeners</a>, <a href="org_as2lib_env_event_TypeSafeEventListenerSource.html#removeListener">removeListener</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="AbstractEventDistributorControl">AbstractEventDistributorControl</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>AbstractEventDistributorControl</b> (
+
+</div>
+                <div><span class="code">listenerType:Function,
+checkListenerType:Boolean)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>AbstractEventDistributorControl</code> instance.<p><code>checkListenerType</code> is by default set to <code>true</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">listenerType     <span class="itemSeparator">:</span></div>
+                    <div>the expected type of listeners</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">checkListenerType<span class="itemSeparator">:</span></div>
+                    <div>determines whether to check that passed-in listeners<br /> are of the expected type</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if the passed-in <code>listenerType</code> is<br /> <code>null</code> or <code>undefined</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="d">d</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>d</b>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The distributor to distribute events.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="createDistributor">createDistributor</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>createDistributor</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Creates a new distributor based on the listener type specified on construction.<p>The catching of methods called on the returned distributor takes place using<br /> <code>__resolve</code>. This method then invokes the <a class="privatInline" href="org_as2lib_env_event_distributor_AbstractEventDistributorControl.html#distribute">distribute</a> method with<br /> the name of the called method and the arguments used for the method call.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the new distributor</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="distribute">distribute</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>distribute</b> (
+
+</div>
+                <div><span class="code">eventName:String,
+args:Array) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Executes the event with the given <code>eventName</code> on all added listeners, using<br /> the arguments after <code>eventName</code> as parameters.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">eventName<span class="itemSeparator">:</span></div>
+                    <div>the name of the event method to execute on the added listeners</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">args     <span class="itemSeparator">:</span></div>
+                    <div>any number of arguments that are used as parameters on execution of<br /> the event on the listeners</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_event_EventExecutionException.html">org.as2lib.env.event.EventExecutionException</a> if an event method on a listener threw an<br /> exception</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getDistributor">getDistributor</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getDistributor</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the distributor to distribute the event to all added listeners.<p>The returned distributor can be casted to the type specified on construction.<br /> You can then invoke the event method on it to distribute it to all added<br /> listeners. This event distribution approach has the advantage of proper<br /> compile-time type-checking.<p>The returned distributor throws an <a href="org_as2lib_env_event_EventExecutionException.html">org.as2lib.env.event.EventExecutionException</a> on<br /> distribution if an event method of a listener threw an exception.<p>This method does always return the same distributor.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the distributor to distribute the event</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getType">getType</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getType</b> (
+</div>
+                <div><span class="code">Void) : Function</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the type of listeners this distributor expects. This is also the type of<br /> the distributor returned by the <a href="org_as2lib_env_event_distributor_AbstractEventDistributorControl.html#getDistributor">getDistributor</a> method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the type of the distributor and listeners</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:24:22</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

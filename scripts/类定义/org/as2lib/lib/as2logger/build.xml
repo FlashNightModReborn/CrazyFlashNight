@@ -1,0 +1,71 @@
+<project name="Logger" default="deploy">
+	<target name="init">
+		<echo message="Initializing as2logger-Project deployment." />
+		<property name="project.title" value="as2logger" />
+		<property name="project.title.full" value="Logging Framework for ActionScript 2.0" />
+		<property name="project.version.major" value="1.0" />
+		<property name="project.type" value="Actionscript" />
+		<property name="project.author" value="Ralf Siegel" />
+		<property name="project.description" value="Logging Framework for ActionScript 2.0" />
+		<property name="project.ui-access" value="After installation the sources can be found in your Flash MX 2004 Classes directory. Use import logging.* to import classes as needed." />
+		<property name="mxi.name" value="as2logger.mxi" />
+		<property name="mxp.name" value="as2logger.mxp" />
+		<property name="sdk.zip" value="as2logger_SDK.zip" />
+		<property name="mxp.zip" value="as2logger_MXP.zip" />
+		<property name="license.name" value="license.txt" />
+		<property name="revision.name" value="revision.txt" />
+	</target>
+	<target name="export" depends="init">		
+		<delete dir="${export.dir}" />
+		<echo message="Exporting latest revision from Subversion repository into ${export.dir}." />
+		<exec executable="svn">
+			<arg line="export ${svn.url} ${export.dir} --force"/>
+		</exec>
+		<exec executable="svnlook" output="${export.dir}/${revision.name}">
+			<arg line="youngest ${svn.dir}" />
+		</exec>
+	</target>
+	<target name="documentation" depends="export">
+		<!-- Assemble Version -->
+		<loadfile srcfile="${export.dir}/${revision.name}" property="project.revision"/>
+		<property name="project.version" value="${project.version.major}.${project.revision}" />
+		<!-- HTML -->
+		<echo message="Generating HTML documentation for version ${project.version} to ${export.dir}/Documentation/API"/>
+		<exec executable="as2doc">
+			<arg line="-s ${export.dir}/Classes -d ${export.dir}/Documentation/API -title '${project.title}' -description '${project.description}' -style ${as2doc.stylesheets.HTML}"/>
+		</exec>
+		<!-- Flash MX 2004-->
+		<echo message="Generating Flash MX 2004 documentation for version ${project.version} to ${export.dir}"/>
+		<exec executable="as2doc">
+			<arg line="-s ${export.dir}/Classes -d ${export.dir} -title '${project.title}' -description '${project.description}' -style ${as2doc.stylesheets.MX2004} -s:mxi.title '${project.title.full}' -s:mxi.version '${project.version}' -s:mxi.type '${project.type}' -s:mxi.author '${project.author}' -s:mxi:description '${project.description}' -s:mxi.ui-access '${project.ui-access}'"/>
+		</exec>
+		<!-- RTF -->
+		<echo message="Generating RTF documentation for version ${project.version} to ${export.dir}/Documentation"/>			
+		<exec executable="as2doc">
+			<arg line="-s ${export.dir}/Classes -d ${export.dir}/Documentation -title '${project.title.full}' -description '${project.description}' -style ${as2doc.stylesheets.RTF} -s:titletext 'Version ${project.version}' -s:author '${project.author}'"/>
+		</exec>
+	</target>
+	<target name="deploy" depends="documentation">
+		<echo message="Zipping project files into ${export.dir}" />
+		<zip zipfile="${deploy.dir}/${sdk.zip}">
+			<zipfileset dir="${export.dir}" />
+		</zip>
+		<delete dir="${deploy.dir}/Documentation/API" />
+		<copy todir="${deploy.dir}/Documentation/API" overwrite="true">
+			<fileset dir="${export.dir}/Documentation/API">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	</target>
+	<target name="package" depends="deploy">
+		<echo message="Packaging extension as defined in ${mxi.name}" />
+		<exec executable="${extensionmanager.exe}" dir="${export.dir}">
+			<arg value="${mxi.name}" />
+		</exec>
+		<zip zipfile="${deploy.dir}/${mxp.zip}" >
+			<zipfileset dir="${export.dir}" includes="${mxp.name}" />
+			<zipfileset dir="${export.dir}" includes="${license.name}" />
+			<zipfileset dir="${export.dir}" includes="${revision.name}" />
+		</zip>
+	</target>
+</project>

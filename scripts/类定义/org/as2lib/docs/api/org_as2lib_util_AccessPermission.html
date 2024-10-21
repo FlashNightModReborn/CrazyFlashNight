@@ -1,0 +1,648 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AccessPermission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_util_AccessPermission">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods</span></span><h1>AccessPermission</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.util.AccessPermission</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Saturday, 02 July 2005, 22:43:52</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+
+/**
+ * {@code AccessPermission} adjusts the access permissions of members like methods
+ * and properties in a specific context.
+ * 
+ * &lt;p&gt;You can hide methods from for..in loops and protect them from deletion and
+ * from being overwritten.
+ *
+ * &lt;p&gt;Note that no matter what access permissions you set they can be overwritten.
+ * 
+ * &lt;p&gt;Also note that the access permissions are not applied to the object but to
+ * the reference to the object. That means that the object can for example be
+ * enumerable in one reference but not in another.
+ * 
+ * &lt;p&gt;Example:
+ * &lt;code&gt;
+ *   var object:Object = new Object();
+ *   object.myProperty = new Object();
+ *   object.mySecondReference = object.myProperty;
+ *   trace("myProperty:          Value: " + object.myProperty);
+ *   trace("mySecondReference:   Value: " + object.mySecondReference);
+ *   AccessPermission.set(object, ["myProperty"], AccessPermission.PROTECT_DELETE);
+ *   trace("myProperty:          Permission: " + AccessPermission.get(object, "myProperty"));
+ *   trace("mySecondReference:   Permission: " + AccessPermission.get(object, "mySecondReference"));
+ *   delete object.myProperty;
+ *   delete object.mySecondReference;
+ *   trace("myProperty:          Value: " + object.myProperty);
+ *   trace("mySecondReference:   Value: " + object.mySecondReference);
+ * &lt;/code&gt;
+ *
+ * &lt;p&gt;Output:
+ * &lt;pre&gt;
+ *   myProperty:          Value: [object Object]
+ *   mySecondReference:   Value: [object Object]
+ *   myProperty:          Permission: 2
+ *   mySecondReference:   Permission: 0
+ *   myProperty:          Value: [object Object]
+ *   mySecondReference:   Value: undefined
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;As you can see, the above statement holds true. We have two references that
+ * reference the same object. We set the access permission of one reference. We can
+ * then not delete the reference the access permission was applied to, but the other
+ * reference.
+ * 
+ * &lt;p&gt;Following is another example with a property in its normal state and another
+ * protected property we applied the {@link #ALLOW_NOTHING} access permission to.
+ *
+ * &lt;p&gt;Example:
+ * &lt;code&gt;
+ *   var object:Object = new Object();
+ *   object.myNormalProperty = "myNormalPropertyValue";
+ *   object.myProtectedProperty = "myProtectedPropertyValue";
+ *   trace("myNormalProperty:      Default Permission: " + AccessPermission.get(object, "myNormalProperty"));
+ *   trace("myProtectedProperty:   Default Permission: " + AccessPermission.get(object, "myProtectedProperty"));
+ *   AccessPermission.set(object, ["myProtectedProperty"], AccessPermission.ALLOW_NOTHING);
+ *   trace("myProtectedProperty:   New Permission: " + AccessPermission.get(object, "myProtectedProperty"));
+ *   object.myNormalProperty = "newMyNormalPropertyValue";
+ *   object.myProtectedProperty = "newMyProtectedPropertyValue";
+ *   trace("myNormalProperty:      Value After Overwriting: " + object.myNormalProperty);
+ *   trace("myProtectedProperty:   Value After Overwriting: " + object.myProtectedProperty);
+ *   for (var i:String in object) {
+ *     trace(i + ":      Found In For..In Loop, Value: " + object[i]);
+ *   }
+ *   delete object.myNormalProperty;
+ *   delete object.myProtectedProperty;
+ *   trace("myNormalProperty:      Value After Deletion: " + object.myNormalProperty);
+ *   trace("myProtectedProperty:   Value After Deletion: " + object.myProtectedProperty);
+ * &lt;/code&gt;
+ *
+ * &lt;p&gt;Output:
+ * &lt;pre&gt;
+ *   myNormalProperty:      Default Permission: 0
+ *   myProtectedProperty:   Default Permission: 0
+ *   myProtectedProperty:   New Permission: 7
+ *   myNormalProperty:      Value After Overwriting: newMyNormalPropertyValue
+ *   myProtectedProperty:   Value After Overwriting: myProtectedPropertyValue
+ *   myNormalProperty:      Found In For..In Loop, Value: newMyNormalPropertyValue
+ *   myNormalProperty:      Value After Deletion: undefined
+ *   myProtectedProperty:   Value After Deletion: myProtectedPropertyValue
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;As you can see the protected property cannot be deleted, overwritten and is
+ * hidden from for..in loops, while the non-protected property can be deleted, can
+ * be overwritten and can be enumerated.
+ * 
+ * &lt;p&gt;Besides the {@link #get} method you can check up on properties for specific
+ * access permissions using the {@link #isEnumerable}, {@link #isDeletable} and
+ * {@link #isOverwritable} methods.
+ *
+ * @author Simon Wacker
+ */
+class org.as2lib.util.AccessPermission extends BasicClass {
+    
+    /**
+     * Allow everything to be done with the object.
+     */
+    public static var ALLOW_ALL:Number = 0;
+    
+    /**
+     * Hide an object from for..in loops.
+     */
+    public static var HIDE:Number = 1;
+    
+    /**
+     * Protect an object from deletion.
+     */
+    public static var PROTECT_DELETE:Number = 2;
+    
+    /**
+     * Protect an object from overwriting.
+     */
+    public static var PROTECT_OVERWRITE:Number = 4;
+    
+    /**
+     * Allow nothing to be done with the object.
+     */
+    public static var ALLOW_NOTHING:Number = 7;
+    
+    /**
+     * Sets the access permission of a reference by an access code.
+     * 
+     * &lt;p&gt;The following access codes are applicable:
+     * &lt;table&gt;
+     *   &lt;tr&gt;
+     *     &lt;th&gt;{@link #HIDE}&lt;/th&gt;
+     *     &lt;td&gt;Hides the reference from for-in loops.&lt;/td&gt;
+     *   &lt;/tr&gt;
+     *   &lt;tr&gt;
+     *     &lt;th&gt;{@link #PROTECT_DELETE}&lt;/th&gt;
+     *     &lt;td&gt;Protects the reference from deletion&lt;/td&gt;
+     *   &lt;/tr&gt;
+     *   &lt;tr&gt;
+     *     &lt;th&gt;{@link #PROTECT_OVERWRITE}&lt;/th&gt;
+     *     &lt;td&gt;Protects the reference from overwriting&lt;/td&gt;
+     *   &lt;/tr&gt;
+     *   &lt;tr&gt;
+     *     &lt;th&gt;{@link #ALLOW_ALL}&lt;/th&gt;
+     *     &lt;td&gt;Allows everything to be done with the reference.&lt;/td&gt;
+     *   &lt;/tr&gt;
+     *   &lt;tr&gt;
+     *     &lt;th&gt;{@link #ALLOW_NOTHING}&lt;/th&gt;
+     *     &lt;td&gt;Allows nothing to be done with the reference.&lt;/td&gt;
+     *   &lt;/tr&gt;
+     * &lt;/table&gt;
+     * 
+     * &lt;p&gt;These access codes can be combined as follows to apply multiple access
+     * permissions.
+     * &lt;code&gt;
+     *   AccessPermission.PROTECT_DELETE | AccessPermission.PROTECT_OVERWRITE
+     * &lt;/code&gt;
+     *
+     * &lt;p&gt;Note that every new invocation of this method simply overwrites the old access
+     * permissions of the reference.
+     * 
+     * @param target the object that holds references to the objects the access permissions
+     * shall be applied to
+     * @param referenceNames the names of the references to apply the access permission to
+     * @param access the access permissions to apply
+     */
+    public static function set(target, referenceNames:Array, access:Number):Void {
+        _global.ASSetPropFlags(target, referenceNames, access, true);
+    }
+    
+    /**
+     * Returns the current access permission of the reference.
+     *
+     * &lt;p&gt;The permission is represented by a {@code Number}. This number is a bitwise
+     * combination of the three access specifier {@link #HIDE}, {@link #PROTECT_DELETE}
+     * and {@link #PROTECT_OVERWRITE}. You can find out what the returned access
+     * permission number means using these constants.
+     * 
+     * @param target the target object that holds the reference
+     * @param referenceName the name of the reference to return the access permission for
+     * @return a number representing the access permission of the reference
+     */
+    public static function get(target, referenceName:String):Number {
+        var result:Number = 0;
+        if (!isEnumerable(target, referenceName)) result |= HIDE;
+        if (!isOverwritable(target, referenceName)) result |= PROTECT_OVERWRITE;
+        if (!isDeletable(target, referenceName)) result |= PROTECT_DELETE;
+        return result;
+    }
+    
+    /**
+     * Returns whether the reference is enumerable.
+     * 
+     * @param target the target object that holds the reference
+     * @param referenceName the name of the reference to return whether it is enumerable
+     * @return {@code true} if the reference is enumerable else {@code false}
+     * @link http://chattyfig.figleaf.com/flashcoders-wiki/index.php?ASSetPropFlags
+     */
+    public static function isEnumerable(target, referenceName:String):Boolean {
+        // Why not use target.isPropertyEnumerable(referenceName)?
+        for (var i:String in target){
+            if (i == referenceName) return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Returns whether the reference is overwritable.
+     * 
+     * @param target the target object that holds the reference
+     * @param referenceName the name of the reference to return whether it is overwritable
+     * @return {@code true} if the reference is overwritable else {@code false}
+     * @link http://chattyfig.figleaf.com/flashcoders-wiki/index.php?ASSetPropFlags
+     */
+    public static function isOverwritable(target, referenceName:String):Boolean {
+        var tmp = target[referenceName];
+        var newVal = (tmp == 0) ? 1 : 0;
+        target[referenceName] = newVal;
+        if(target[referenceName] == newVal){
+            target[referenceName] = tmp;
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    /**
+     * Returns whether the reference is deletable.
+     * 
+     * @param target the target object that holds the reference
+     * @param referenceName the name of the reference to return whether it is deletable
+     * @return {@code true} if the reference is deletable else {@code false}
+     * @link http://chattyfig.figleaf.com/flashcoders-wiki/index.php?ASSetPropFlags
+     */
+    public static function isDeletable(target, referenceName:String):Boolean {
+        var tmp = target[referenceName];
+        if (tmp === undefined) return false;
+        var enumerable:Boolean = isEnumerable(target, referenceName);
+        delete target[referenceName];
+        if(target[referenceName] === undefined){
+            target[referenceName] = tmp;
+            _global.ASSetPropFlags(target, referenceName, !enumerable, 1);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Private constructor.
+     */
+    private function AccessPermission(Void) {
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>AccessPermission</code> adjusts the access permissions of members like methods<br /> and properties in a specific context.</div><p>You can hide methods from for..in loops and protect them from deletion and<br /> from being overwritten.<p>Note that no matter what access permissions you set they can be overwritten.<p>Also note that the access permissions are not applied to the object but to<br /> the reference to the object. That means that the object can for example be<br /> enumerable in one reference but not in another.<p>Example:<pre><span class="codeKeyword">var</span> object:<span class="codeIdentifier">Object</span> = <span class="codeKeyword">new</span> <span class="codeIdentifier">Object</span>();
+object.myProperty = <span class="codeKeyword">new</span> <span class="codeIdentifier">Object</span>();
+object.mySecondReference = object.myProperty;
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myProperty:          Value: "</span> + object.myProperty);
+<span class="codeIdentifier">trace</span>(<span class="codeString">"mySecondReference:   Value: "</span> + object.mySecondReference);
+AccessPermission.<span class="codeIdentifier">set</span>(object, [<span class="codeString">"myProperty"</span>], AccessPermission.PROTECT_DELETE);
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myProperty:          Permission: "</span> + AccessPermission.<span class="codeIdentifier">get</span>(object, <span class="codeString">"myProperty"</span>));
+<span class="codeIdentifier">trace</span>(<span class="codeString">"mySecondReference:   Permission: "</span> + AccessPermission.<span class="codeIdentifier">get</span>(object, <span class="codeString">"mySecondReference"</span>));
+<span class="codeKeyword">delete</span> object.myProperty;
+<span class="codeKeyword">delete</span> object.mySecondReference;
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myProperty:          Value: "</span> + object.myProperty);
+<span class="codeIdentifier">trace</span>(<span class="codeString">"mySecondReference:   Value: "</span> + object.mySecondReference);</pre><p>Output:<pre>myProperty:          Value: [object <span class="codeIdentifier">Object</span>]
+mySecondReference:   Value: [object <span class="codeIdentifier">Object</span>]
+myProperty:          Permission: <span class="codeNumber">2</span>
+mySecondReference:   Permission: <span class="codeNumber">0</span>
+myProperty:          Value: [object <span class="codeIdentifier">Object</span>]
+mySecondReference:   Value: <span class="codeIdentifier">undefined</span></pre><p>As you can see, the above statement holds true. We have two references that<br /> reference the same object. We set the access permission of one reference. We can<br /> then not delete the reference the access permission was applied to, but the other<br /> reference.<p>Following is another example with a property in its normal state and another<br /> protected property we applied the <a href="org_as2lib_util_AccessPermission.html#ALLOW_NOTHING">ALLOW_NOTHING</a> access permission to.<p>Example:<pre><span class="codeKeyword">var</span> object:<span class="codeIdentifier">Object</span> = <span class="codeKeyword">new</span> <span class="codeIdentifier">Object</span>();
+object.myNormalProperty = <span class="codeString">"myNormalPropertyValue"</span>;
+object.myProtectedProperty = <span class="codeString">"myProtectedPropertyValue"</span>;
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myNormalProperty:      Default Permission: "</span> + AccessPermission.<span class="codeIdentifier">get</span>(object, <span class="codeString">"myNormalProperty"</span>));
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myProtectedProperty:   Default Permission: "</span> + AccessPermission.<span class="codeIdentifier">get</span>(object, <span class="codeString">"myProtectedProperty"</span>));
+AccessPermission.<span class="codeIdentifier">set</span>(object, [<span class="codeString">"myProtectedProperty"</span>], AccessPermission.ALLOW_NOTHING);
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myProtectedProperty:   New Permission: "</span> + AccessPermission.<span class="codeIdentifier">get</span>(object, <span class="codeString">"myProtectedProperty"</span>));
+object.myNormalProperty = <span class="codeString">"newMyNormalPropertyValue"</span>;
+object.myProtectedProperty = <span class="codeString">"newMyProtectedPropertyValue"</span>;
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myNormalProperty:      Value After Overwriting: "</span> + object.myNormalProperty);
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myProtectedProperty:   Value After Overwriting: "</span> + object.myProtectedProperty);
+<span class="codeKeyword">for</span> (<span class="codeKeyword">var</span> i:<span class="codeIdentifier">String</span> <span class="codeKeyword">in</span> object) {
+  <span class="codeIdentifier">trace</span>(i + <span class="codeString">":      Found In For..In Loop, Value: "</span> + object[i]);
+}
+<span class="codeKeyword">delete</span> object.myNormalProperty;
+<span class="codeKeyword">delete</span> object.myProtectedProperty;
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myNormalProperty:      Value After Deletion: "</span> + object.myNormalProperty);
+<span class="codeIdentifier">trace</span>(<span class="codeString">"myProtectedProperty:   Value After Deletion: "</span> + object.myProtectedProperty);</pre><p>Output:<pre>myNormalProperty:      Default Permission: <span class="codeNumber">0</span>
+myProtectedProperty:   Default Permission: <span class="codeNumber">0</span>
+myProtectedProperty:   New Permission: <span class="codeNumber">7</span>
+myNormalProperty:      Value After Overwriting: newMyNormalPropertyValue
+myProtectedProperty:   Value After Overwriting: myProtectedPropertyValue
+myNormalProperty:      Found In For..In Loop, Value: newMyNormalPropertyValue
+myNormalProperty:      Value After Deletion: <span class="codeIdentifier">undefined</span>
+myProtectedProperty:   Value After Deletion: myProtectedPropertyValue</pre><p>As you can see the protected property cannot be deleted, overwritten and is<br /> hidden from for..in loops, while the non-protected property can be deleted, can<br /> be overwritten and can be enumerated.<p>Besides the <a href="org_as2lib_util_AccessPermission.html#get">get</a> method you can check up on properties for specific<br /> access permissions using the <a href="org_as2lib_util_AccessPermission.html#isEnumerable">isEnumerable</a>, <a href="org_as2lib_util_AccessPermission.html#isDeletable">isDeletable</a> and<br /> <a href="org_as2lib_util_AccessPermission.html#isOverwritable">isOverwritable</a> methods.</div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Constructor</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#AccessPermission">AccessPermission</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li>
+                  <a href="#ALLOW_ALL">ALLOW_ALL</a>
+                </li>
+                <li>
+                  <a href="#HIDE">HIDE</a>
+                </li>
+                <li>
+                  <a href="#PROTECT_DELETE">PROTECT_DELETE</a>
+                </li>
+                <li>
+                  <a href="#PROTECT_OVERWRITE">PROTECT_OVERWRITE</a>
+                </li>
+                <li>
+                  <a href="#ALLOW_NOTHING">ALLOW_NOTHING</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#set">set</a>
+                </li>
+                <li>
+                  <a href="#get">get</a>
+                </li>
+                <li>
+                  <a href="#isEnumerable">isEnumerable</a>
+                </li>
+                <li>
+                  <a href="#isOverwritable">isOverwritable</a>
+                </li>
+                <li>
+                  <a href="#isDeletable">isDeletable</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="AccessPermission">AccessPermission</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>AccessPermission</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Private constructor.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="ALLOW_ALL">ALLOW_ALL</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>ALLOW_ALL</b>:Number = <span class="codeNumber">0</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Allow everything to be done with the object.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="ALLOW_NOTHING">ALLOW_NOTHING</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>ALLOW_NOTHING</b>:Number = <span class="codeNumber">7</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Allow nothing to be done with the object.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="HIDE">HIDE</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>HIDE</b>:Number = <span class="codeNumber">1</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Hide an object from for..in loops.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="PROTECT_DELETE">PROTECT_DELETE</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>PROTECT_DELETE</b>:Number = <span class="codeNumber">2</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Protect an object from deletion.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="PROTECT_OVERWRITE">PROTECT_OVERWRITE</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>PROTECT_OVERWRITE</b>:Number = <span class="codeNumber">4</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Protect an object from overwriting.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="get">get</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>get</b> (
+
+</div>
+                <div><span class="code">target,
+referenceName:String) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the current access permission of the reference.<p>The permission is represented by a <code>Number</code>. This number is a bitwise<br /> combination of the three access specifier <a href="org_as2lib_util_AccessPermission.html#HIDE">HIDE</a>, <a href="org_as2lib_util_AccessPermission.html#PROTECT_DELETE">PROTECT_DELETE</a><br /> and <a href="org_as2lib_util_AccessPermission.html#PROTECT_OVERWRITE">PROTECT_OVERWRITE</a>. You can find out what the returned access<br /> permission number means using these constants.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">target       <span class="itemSeparator">:</span></div>
+                    <div>the target object that holds the reference</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">referenceName<span class="itemSeparator">:</span></div>
+                    <div>the name of the reference to return the access permission for</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a number representing the access permission of the reference</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isDeletable">isDeletable</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isDeletable</b> (
+
+</div>
+                <div><span class="code">target,
+referenceName:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns whether the reference is deletable.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">target       <span class="itemSeparator">:</span></div>
+                    <div>the target object that holds the reference</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">referenceName<span class="itemSeparator">:</span></div>
+                    <div>the name of the reference to return whether it is deletable</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the reference is deletable else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isEnumerable">isEnumerable</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isEnumerable</b> (
+
+</div>
+                <div><span class="code">target,
+referenceName:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns whether the reference is enumerable.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">target       <span class="itemSeparator">:</span></div>
+                    <div>the target object that holds the reference</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">referenceName<span class="itemSeparator">:</span></div>
+                    <div>the name of the reference to return whether it is enumerable</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the reference is enumerable else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isOverwritable">isOverwritable</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>isOverwritable</b> (
+
+</div>
+                <div><span class="code">target,
+referenceName:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns whether the reference is overwritable.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">target       <span class="itemSeparator">:</span></div>
+                    <div>the target object that holds the reference</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">referenceName<span class="itemSeparator">:</span></div>
+                    <div>the name of the reference to return whether it is overwritable</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the reference is overwritable else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="set">set</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>set</b> (
+
+
+</div>
+                <div><span class="code">target,
+referenceNames:Array,
+access:Number) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the access permission of a reference by an access code.<p>The following access codes are applicable:<table><tr><th><a href="org_as2lib_util_AccessPermission.html#HIDE">HIDE</a></th><td>Hides the reference from for-in loops.</td></tr><tr><th><a href="org_as2lib_util_AccessPermission.html#PROTECT_DELETE">PROTECT_DELETE</a></th><td>Protects the reference from deletion</td></tr><tr><th><a href="org_as2lib_util_AccessPermission.html#PROTECT_OVERWRITE">PROTECT_OVERWRITE</a></th><td>Protects the reference from overwriting</td></tr><tr><th><a href="org_as2lib_util_AccessPermission.html#ALLOW_ALL">ALLOW_ALL</a></th><td>Allows everything to be done with the reference.</td></tr><tr><th><a href="org_as2lib_util_AccessPermission.html#ALLOW_NOTHING">ALLOW_NOTHING</a></th><td>Allows nothing to be done with the reference.</td></tr></table><p>These access codes can be combined as follows to apply multiple access<br /> permissions.<pre>AccessPermission.PROTECT_DELETE | AccessPermission.PROTECT_OVERWRITE</pre><p>Note that every new invocation of this method simply overwrites the old access<br /> permissions of the reference.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">target        <span class="itemSeparator">:</span></div>
+                    <div>the object that holds references to the objects the access permissions<br /> shall be applied to</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">referenceNames<span class="itemSeparator">:</span></div>
+                    <div>the names of the references to apply the access permission to</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">access        <span class="itemSeparator">:</span></div>
+                    <div>the access permissions to apply</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:30:56</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

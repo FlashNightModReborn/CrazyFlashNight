@@ -1,0 +1,684 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>TestSuiteResult</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_test_unit_TestSuiteResult">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>TestSuiteResult</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_test_unit_TestResult.html">TestResult</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.0</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger.</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.test.unit.TestSuiteResult</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Wednesday, 21 September 2005, 18:37:06</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/**
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.data.holder.array.TypedArray;
+import org.as2lib.test.unit.TestResult;
+import org.as2lib.test.unit.TestCaseResult;
+import org.as2lib.test.unit.TestSuite;
+import org.as2lib.util.StringUtil;
+import org.as2lib.data.type.Time;
+
+/**
+ * {@code TestSuiteResult} contains all informations about the execution of a {@code TestSuite}.
+ * 
+ * &lt;p&gt;{@link TestSuite} contains all states of execution of the {@code TestSuite}
+ * and {@code TestSuiteResult} contains all informations about the execution.
+ * 
+ * @author Martin Heidegger.
+ * @version 1.0
+ * @see TestSuite
+ */
+class org.as2lib.test.unit.TestSuiteResult extends BasicClass implements TestResult {
+
+    /** Related {@code TestSuite}. */
+    private var testSuite:TestSuite;
+    
+    /** {@code TestResults} to the {@code TestSuite}. */
+    private var testResults:TypedArray;
+
+    /**
+     * Constructs a new {@code TestSuiteResult}.
+     * 
+     * @param testSuite related {@code TestSuite}
+     */
+    public function TestSuiteResult(testSuite:TestSuite) {
+        this.testSuite = testSuite;
+        testResults = new TypedArray(TestResult);
+        
+        var tests:Array = testSuite.getTests();
+        for (var i:Number=0; i&lt;tests.length; i++) {
+            addTest(tests[i]);
+        }
+    }
+    
+    /**
+     * Adds a {@code TestResult} to the {@code TestSuiteResult}.
+     * 
+     * @param test {@code TestResult} to be added
+     */
+    public function addTest(test:TestResult):Void {
+        testResults.unshift(test);
+    }
+    
+    /**
+     * Returns all {@code TestResult) in a {@link TypedArray} contained in the
+     * {@code TestSuite}.
+     * 
+     * @return list of all {@code TestResult}s
+     */
+    public function getTests(Void):TypedArray {
+        return this.testResults;
+    }
+    
+    /**
+     * Returns the percentage ({@code 0}-{@code 100}) of the added {@code Test}s.
+     * 
+     * @return percentage of execution
+     */
+    public function getPercentage(Void):Number {
+        var result:Number = 0;
+        var unit:Number = 100/this.testResults.length;
+        for (var i:Number = this.testResults.length - 1; i &gt;= 0; i--) {
+            result += (unit/100*this.testResults[i].getPercentage());
+        }
+        return result;
+    }
+    
+    /**
+     * Returns {@code true} if the {@code TestSuite} has been finished.
+     * 
+     * @return {@code true} if the {@code TestSuite} has been finished
+     */
+    public function hasFinished(Void):Boolean {
+        for (var i:Number = this.testResults.length - 1; i &gt;= 0; i--) {
+            if (!this.testResults[i].isFinished()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Returns {@code true} if the {@code TestSuite} has been started.
+     * 
+     * @return {@code true} if the {@code TestSuite} has been started
+     */
+    public function hasStarted(Void):Boolean {
+        for (var i:Number = this.testResults.length - 1; i &gt;= 0; i--) {
+            if (this.testResults[i].hasStarted()) {
+                return true;
+            }
+        }
+        return false;
+    }
+        
+    /**
+     * Returns all {@code TestResult}s for the {@code Test}s contained
+     * within the related {@code TestSuite}.
+     * 
+     * &lt;p&gt;Since its possible to add more than one {@code Test} to a {@code TestSuite}
+     * its necessary to get the {@code TestResult}s to all added {@code Test}s.
+     *
+     * &lt;p&gt;It flattens out all {@code TestResults}, this means it concats all
+     * {@code getTestResults} of every added {@code Test}. 
+     * 
+     * @return all {@code TestResult}s to all contained {@code Test}s
+     */
+    public function getTestResults(Void):TypedArray {
+        var result:TypedArray = new TypedArray(TestResult);
+        for (var i:Number=0; i&lt;this.testResults.length; i++) {
+            // TODO: Bug? Why can't i use .concat ???
+            var testCases:Array = this.testResults[i].getTestResults();
+            for (var j:Number=0; j&lt;testCases.length; j++) {
+                result.push(testCases[j]);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Returns all {@code TestCaseResult}s for the {@code TestCase}s contained
+     * within the related {@code Test}.
+     * 
+     * &lt;p&gt;Since its possible to add more than one {@code Test} to a {@code TestSuite}
+     * its necessary to get the {@code TestResult}s to all added {@code Test}s.
+     * 
+     * &lt;p&gt;{@code TestCase} represents the lowest level of {@code Test} therefor
+     * its important to get all added {@code TestCaseResults} seperatly.
+     *
+     * &lt;p&gt;It flattens out all {@code TestResults}, this means it concats all
+     * {@code getTestCaseResults} of every added {@code Test}. 
+     * 
+     * @return all {@code TestResult}s to all contained {@code Test}s
+     */
+    public function getTestCaseResults(Void):TypedArray {
+        var result:TypedArray = new TypedArray(TestCaseResult);
+        for (var i:Number=0; i&lt;this.testResults.length; i++) {
+            // TODO: Bug? Why can't i use .concat ???
+            var testCases:Array = this.testResults[i].getTestCaseResults();
+            for (var j:Number=0; j&lt;testCases.length; j++) {
+                result.push(testCases[j]);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Retuns the name of the {@code TestSuite}.
+     * 
+     * @return name of the {@code TestSuite}
+     */
+    public function getName(Void):String {
+        return this.getTestSuite().getName();
+    }
+    
+    /**
+     * Returns the total operation time for all methods executed for the
+     * related {@code TestSuite}.
+     * 
+     * @return total operation time of the {@code Test}
+     */
+    public function getOperationTime(Void):Time {
+        var result:Number = 0;
+        for (var i:Number = this.testResults.length - 1; i &gt;= 0; i--) {
+            result += this.testResults[i].getOperationTime();
+        }
+        return new Time(result);
+    }
+    
+    
+    /**
+     * Returns {@code true} if the errors occured during the execution of the
+     * related {@code Test}.
+     * 
+     * @return {@code true} if the errors occured during the execution of the
+     *            related {@code Test}.
+     */
+    public function hasErrors(Void):Boolean {
+        for (var i:Number = this.testResults.length - 1; i &gt;= 0; i--) {
+            if (this.testResults[i].hasErrors()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Returns the related {@coee TestSuite}.
+     * 
+     * @return related {@code TestSuite}
+     */
+    public function getTestSuite(Void):TestSuite {
+        return this.testSuite;
+    }
+
+
+    /**
+     * Extended .toString implementation.
+     * 
+     * @return {@code TestSuiteResult} as well formated {@code String}
+     */
+    public function toString():String {
+        var result:String;
+        var titleLength:Number;
+        result = "*** TestSuite "+getName()+" ("+testResults.length+" Tests) ["+getOperationTime()+"ms] ***";
+        titleLength = result.length;
+        for (var i:Number = 0; i &lt; testResults.length; i++){
+            result += "\n"+StringUtil.addSpaceIndent(this.testResults[i].toString(), 2);
+        }
+        result += "\n"+StringUtil.multiply("*", titleLength);
+        return result;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>TestSuiteResult</code> contains all informations about the execution of a <code>TestSuite</code>.</div><p><a href="org_as2lib_test_unit_TestSuite.html">TestSuite</a> contains all states of execution of the <code>TestSuite</code><br /> and <code>TestSuiteResult</code> contains all informations about the execution.<div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_test_unit_TestSuite.html">TestSuite</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#TestSuiteResult">TestSuiteResult</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#testSuite">testSuite</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#testResults">testResults</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#addTest">addTest</a>
+                </li>
+                <li>
+                  <a href="#getTests">getTests</a>
+                </li>
+                <li>
+                  <a href="#getPercentage">getPercentage</a>
+                </li>
+                <li>
+                  <a href="#hasFinished">hasFinished</a>
+                </li>
+                <li>
+                  <a href="#hasStarted">hasStarted</a>
+                </li>
+                <li>
+                  <a href="#getTestResults">getTestResults</a>
+                </li>
+                <li>
+                  <a href="#getTestCaseResults">getTestCaseResults</a>
+                </li>
+                <li>
+                  <a href="#getName">getName</a>
+                </li>
+                <li>
+                  <a href="#getOperationTime">getOperationTime</a>
+                </li>
+                <li>
+                  <a href="#hasErrors">hasErrors</a>
+                </li>
+                <li>
+                  <a href="#getTestSuite">getTestSuite</a>
+                </li>
+                <li>
+                  <a href="#toString">toString</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="TestSuiteResult">TestSuiteResult</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>TestSuiteResult</b> (
+</div>
+                <div><span class="code">testSuite:<a href="org_as2lib_test_unit_TestSuite.html">TestSuite</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>TestSuiteResult</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">testSuite<span class="itemSeparator">:</span></div>
+                    <div>related <code>TestSuite</code></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="testResults">testResults</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>testResults</b>:<a href="org_as2lib_data_holder_array_TypedArray.html">TypedArray</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description"><code>TestResults</code> to the <code>TestSuite</code>.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="testSuite">testSuite</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>testSuite</b>:<a href="org_as2lib_test_unit_TestSuite.html">TestSuite</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Related <code>TestSuite</code>.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="addTest">addTest</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>addTest</b> (
+</div>
+                <div><span class="code">test:<a href="org_as2lib_test_unit_TestResult.html">TestResult</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Adds a <code>TestResult</code> to the <code>TestSuiteResult</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">test<span class="itemSeparator">:</span></div>
+                    <div><code>TestResult</code> to be added</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getName">getName</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getName</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Retuns the name of the <code>TestSuite</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">name of the <code>TestSuite</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_test_unit_TestResult.html#getName">TestResult.getName</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getOperationTime">getOperationTime</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getOperationTime</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_type_Time.html">Time</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the total operation time for all methods executed for the<br /> related <code>TestSuite</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">total operation time of the <code>Test</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_test_unit_TestResult.html#getOperationTime">TestResult.getOperationTime</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getPercentage">getPercentage</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getPercentage</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the percentage (<code>0</code>-<code>100</code>) of the added <code>Test</code>s.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">percentage of execution</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_test_unit_TestResult.html#getPercentage">TestResult.getPercentage</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getTestCaseResults">getTestCaseResults</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTestCaseResults</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_array_TypedArray.html">TypedArray</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns all <code>TestCaseResult</code>s for the <code>TestCase</code>s contained<br /> within the related <code>Test</code>.<p>Since its possible to add more than one <code>Test</code> to a <code>TestSuite</code><br /> its necessary to get the <code>TestResult</code>s to all added <code>Test</code>s.<p><code>TestCase</code> represents the lowest level of <code>Test</code> therefor<br /> its important to get all added <code>TestCaseResults</code> seperatly.<p>It flattens out all <code>TestResults</code>, this means it concats all<br /> <code>getTestCaseResults</code> of every added <code>Test</code>. </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">all <code>TestResult</code>s to all contained <code>Test</code>s</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_test_unit_TestResult.html#getTestCaseResults">TestResult.getTestCaseResults</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getTestResults">getTestResults</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTestResults</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_array_TypedArray.html">TypedArray</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns all <code>TestResult</code>s for the <code>Test</code>s contained<br /> within the related <code>TestSuite</code>.<p>Since its possible to add more than one <code>Test</code> to a <code>TestSuite</code><br /> its necessary to get the <code>TestResult</code>s to all added <code>Test</code>s.<p>It flattens out all <code>TestResults</code>, this means it concats all<br /> <code>getTestResults</code> of every added <code>Test</code>. </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">all <code>TestResult</code>s to all contained <code>Test</code>s</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_test_unit_TestResult.html#getTestResults">TestResult.getTestResults</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getTests">getTests</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTests</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_array_TypedArray.html">TypedArray</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns all <code>TestResult) in a {@link TypedArray</code> contained in the<br /> <code>TestSuite</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">list of all <code>TestResult</code>s</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getTestSuite">getTestSuite</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTestSuite</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_test_unit_TestSuite.html">TestSuite</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the related {@coee TestSuite}.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">related <code>TestSuite</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="hasErrors">hasErrors</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasErrors</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns <code>true</code> if the errors occured during the execution of the<br /> related <code>Test</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the errors occured during the execution of the<br /> 		   related <code>Test</code>.</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_test_unit_TestResult.html#hasErrors">TestResult.hasErrors</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="hasFinished">hasFinished</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasFinished</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns <code>true</code> if the <code>TestSuite</code> has been finished.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the <code>TestSuite</code> has been finished</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_test_unit_TestResult.html#hasFinished">TestResult.hasFinished</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="hasStarted">hasStarted</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasStarted</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns <code>true</code> if the <code>TestSuite</code> has been started.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the <code>TestSuite</code> has been started</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_test_unit_TestResult.html#hasStarted">TestResult.hasStarted</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toString">toString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>toString</b> (
+</div>
+                <div><span class="code">) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Extended .toString implementation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>TestSuiteResult</code> as well formated <code>String</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_core_BasicClass.html#toString">org.as2lib.core.BasicClass.toString</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_core_BasicInterface.html#toString">org.as2lib.core.BasicInterface.toString</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:30:54</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

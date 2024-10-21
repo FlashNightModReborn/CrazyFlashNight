@@ -1,0 +1,64 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                displayFlareLicense = id; 
+                displayFlareWebsite = id; 
+                displayFlasmLicense = id; 
+                displayFlasmWebsite = id; 
+                displayGNULicense = id; 
+                displaySWFConsoleWebsite = id; 
+                displaySWFToolsWebsite = id; 
+            }; 
+            CLASS = AppController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                clearLog = id; 
+                markLog = id; 
+                runThroughFlare = id; 
+                runThroughFlasm = id; 
+                runThroughSwfdump = id; 
+                saveOutput = id; 
+                toggleLog = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                clearLog = id; 
+                markLog = id; 
+                runThroughFlare = id; 
+                runThroughFlasm = id; 
+                runThroughSwfdump = id; 
+                toggleLog = id; 
+            }; 
+            CLASS = MyDocument; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                oExpandActions = NSButton; 
+                oExpandBoundingBoxes = NSButton; 
+                oExpandHexOutput = NSButton; 
+                oExpandPlacements = NSButton; 
+                oExpandReferredIDs = NSButton; 
+                oExpandText = NSButton; 
+                oFlareTextField = NSTextField; 
+                oFlareWindow = NSWindow; 
+                oFlasmTextView = NSTextView; 
+                oFlasmWindow = NSWindow; 
+                oSplitView = NSSplitView; 
+                oSwfdumpTextField = NSTextField; 
+                oSwfdumpWindow = NSWindow; 
+                oTextField = NSTextField; 
+                oWebView = WebView; 
+                oWindow = NSWindow; 
+            }; 
+            SUPERCLASS = NSDocument; 
+        }
+    ); 
+    IBVersion = 1; 
+}

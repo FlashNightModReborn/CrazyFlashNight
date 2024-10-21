@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>LuminicBoxHandler</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_log_handler_LuminicBoxHandler">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>LuminicBoxHandler</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_env_log_LogHandler.html">LogHandler</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker, Christoph Atteneder</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.log.handler.LuminicBoxHandler</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Thursday, 23 June 2005, 12:20:22</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.log.LogHandler;
+import org.as2lib.env.log.LogMessage;
+import org.as2lib.env.log.LogLevel;
+import org.as2lib.env.log.level.AbstractLogLevel;
+
+import LuminicBox.Log.ConsolePublisher;
+import LuminicBox.Log.LogEvent;
+import LuminicBox.Log.Level;
+
+/**
+ * {@code LuminicBoxHandler} is a wrapper of the {@code ConsolePublisher} class
+ * from the LuminicBox Logging API. It can be used to write log messages to the
+ * LuminicBox console.
+ * 
+ * @author Simon Wacker
+ * @author Christoph Atteneder
+ * @see &lt;a href="http://www.luminicbox.com/dev/flash/log"&gt;LuminicBox Logging API&lt;/a&gt;
+ */
+class org.as2lib.env.log.handler.LuminicBoxHandler extends BasicClass implements LogHandler {
+    
+    /** Holds a luminic box handler. */
+    private static var luminicBoxHandler:LuminicBoxHandler;
+    
+    /**
+     * Returns an instance of this class.
+     *
+     * &lt;p&gt;This method always returns the same instance.
+     *
+     * &lt;p&gt;The {@code maximalInspectionDepth} is only recognized when this method is
+     * invoked the first time.
+     *
+     * @param maximalInspectionDepth (optional) the maximal depth of object inspection
+     * @return a luminic box handler
+     */
+    public static function getInstance(maximalInspectionDepth:Number):LuminicBoxHandler {
+        if (!luminicBoxHandler) luminicBoxHandler = new LuminicBoxHandler(maximalInspectionDepth);
+        return luminicBoxHandler;
+    }
+    
+    /** The wrapped console publisher. */
+    private var consolePublisher:ConsolePublisher;
+    
+    /**    
+     * Constructs a new {@code LuminicBoxHandler} instance.
+     *
+     * &lt;p&gt;You can use one and the same instance for multiple loggers. So think about
+     * using the handler returned by the static {@link #getInstance} method. Using
+     * this instance prevents the instantiation of unnecessary luminic box handlers
+     * and saves storage.
+     *
+     * @param maximalInspectionDepth (optional) the maximal depth of object inspection
+     */
+    public function LuminicBoxHandler(maximalInspectionDepth:Number) {
+        consolePublisher = new ConsolePublisher();
+        if (maximalInspectionDepth != null) {
+            consolePublisher.maxDepth = maximalInspectionDepth;
+        }
+    }
+    
+    /**
+     * Writes directly to the LuminicBox console.
+     *
+     * &lt;p&gt;The {@code ConsolePublisher} determines how the string representation is
+     * constructed.
+     *
+     * @param message the log message to write out
+     */
+    public function write(message:LogMessage):Void {
+        var event:LogEvent = new LogEvent(message.getLoggerName(), message.getMessage(), convertLevel(message.getLevel()));
+        event.time = new Date(message.getTimeStamp());
+        consolePublisher.publish(event);
+    }
+    
+    /**
+     * Converts the As2lib {@code LogLevel} into a LuminicBox {@code Level}.
+     *
+     * @param level the As2lib log level to convert
+     * @return the equivalent LuminicBox level
+     */
+    private function convertLevel(level:LogLevel):Level {
+        switch (level) {
+            case AbstractLogLevel.ALL:
+                return Level.ALL;
+            case AbstractLogLevel.DEBUG:
+                return Level.DEBUG;
+            case AbstractLogLevel.INFO:
+                return Level.INFO;
+            case AbstractLogLevel.WARNING:
+                return Level.WARN;
+            case AbstractLogLevel.ERROR:
+                return Level.ERROR;
+            case AbstractLogLevel.FATAL:
+                return Level.FATAL;
+            case AbstractLogLevel.NONE:
+                return Level.NONE;
+            default:
+                return null;
+        }
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>LuminicBoxHandler</code> is a wrapper of the <code>ConsolePublisher</code> class<br /> from the LuminicBox Logging API.</div> It can be used to write log messages to the<br /> LuminicBox console.<div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="http://www.luminicbox.com/dev/flash/log">LuminicBox Logging API</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#LuminicBoxHandler">LuminicBoxHandler</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Class properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#luminicBoxHandler">luminicBoxHandler</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#consolePublisher">consolePublisher</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#getInstance">getInstance</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#write">write</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#convertLevel">convertLevel</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="LuminicBoxHandler">LuminicBoxHandler</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>LuminicBoxHandler</b> (
+</div>
+                <div><span class="code">maximalInspectionDepth:Number)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>LuminicBoxHandler</code> instance.<p>You can use one and the same instance for multiple loggers. So think about<br /> using the handler returned by the static <a href="org_as2lib_env_log_handler_LuminicBoxHandler.html#getInstance">getInstance</a> method. Using<br /> this instance prevents the instantiation of unnecessary luminic box handlers<br /> and saves storage.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">maximalInspectionDepth<span class="itemSeparator">:</span></div>
+                    <div>(optional) the maximal depth of object inspection</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="luminicBoxHandler">luminicBoxHandler</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>luminicBoxHandler</b>:<a href="org_as2lib_env_log_handler_LuminicBoxHandler.html">LuminicBoxHandler</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Holds a luminic box handler.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="consolePublisher">consolePublisher</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>consolePublisher</b>:ConsolePublisher
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The wrapped console publisher.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getInstance">getInstance</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>getInstance</b> (
+</div>
+                <div><span class="code">maximalInspectionDepth:Number) : <a href="org_as2lib_env_log_handler_LuminicBoxHandler.html">LuminicBoxHandler</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns an instance of this class.<p>This method always returns the same instance.<p>The <code>maximalInspectionDepth</code> is only recognized when this method is<br /> invoked the first time.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">maximalInspectionDepth<span class="itemSeparator">:</span></div>
+                    <div>(optional) the maximal depth of object inspection</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">a luminic box handler</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="convertLevel">convertLevel</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>convertLevel</b> (
+</div>
+                <div><span class="code">level:<a href="org_as2lib_env_log_LogLevel.html">LogLevel</a>) : Level</span></div>
+              </div>
+            </div>
+            <div class="description">Converts the As2lib <code>LogLevel</code> into a LuminicBox <code>Level</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">level<span class="itemSeparator">:</span></div>
+                    <div>the As2lib log level to convert</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the equivalent LuminicBox level</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="write">write</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>write</b> (
+</div>
+                <div><span class="code">message:<a href="org_as2lib_env_log_LogMessage.html">LogMessage</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Writes directly to the LuminicBox console.<p>The <code>ConsolePublisher</code> determines how the string representation is<br /> constructed.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">message<span class="itemSeparator">:</span></div>
+                    <div>the log message to write out</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_env_log_LogHandler.html#write">org.as2lib.env.log.LogHandler.write</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:25:04</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

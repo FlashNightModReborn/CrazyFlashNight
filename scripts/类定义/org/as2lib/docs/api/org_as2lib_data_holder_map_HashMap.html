@@ -1,0 +1,992 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>HashMap</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_data_holder_map_HashMap">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>HashMap</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_data_holder_map_AbstractMap.html">AbstractMap</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_data_holder_Map.html">Map</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker, Michael Herrmann</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.data.holder.map.HashMap</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Saturday, 02 July 2005, 22:43:52</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.data.holder.map.AbstractMap;
+import org.as2lib.data.holder.Map;
+import org.as2lib.data.holder.map.ValueMapIterator;
+import org.as2lib.data.holder.map.KeyMapIterator;
+import org.as2lib.data.holder.Iterator;
+
+/**
+ * {@code HashMap} can be used to map any type of key to any type of value.
+ * 
+ * &lt;p&gt;This class offers ordered mapping functionality. That means that the methods
+ * {@link #getKeys} and {@link #getValues} return the keys and values in the order
+ * they were put to the map and that the iterators returned by the methods
+ * {@link #valueIterator} and {@link #keyIterator} also iterate over the keys and
+ * values in the correct order.
+ *
+ * &lt;p&gt;This map offers two methods that help you find out whether it contains a
+ * specific key or value. These two methods are {@link #containsKey} and
+ * {@link #containsValue}.
+ * 
+ * &lt;p&gt;To get the data stored in this map you can use the {@link #getKeys},
+ * {@link #getValues} and {@link #get} methods. If you want to iterate over the
+ * values of this map you can use the iterators returned by the methods {@link #iterator}
+ * or {@link #valueIterator}. If you want to iterate over the keys you can use the
+ * iterator returned by the {@link #keyIterator} method.
+ *
+ * &lt;p&gt;To add key-value pairs to this map you can use the methods {@link #put} and
+ * {@link #putAll}. The {@code putAll} method lets you add all key-value pairs
+ * contained in the passed-in {@code map} to this map.
+ * 
+ * &lt;p&gt;To remove key-value pairs you can use the methods {@link #remove} and
+ * {@link #clear}. The {@code remove} method deletes only the key-value pair
+ * corresponding to the passed-in {@code key}, while the clear method removes all
+ * key-value pairs.
+ *
+ * &lt;p&gt;There are two more methods you may need. The {@link #isEmpty} and the {@link #size}
+ * method. These methods give you information about whether this map contains any
+ * mappings and how many mappings it contains.
+ *
+ * &lt;p&gt;To change the string representation returned by the {@link #toString}
+ * method you can set your own stringifier using the static
+ * {@link AbstractMap#setStringifier} method.
+ * 
+ * &lt;p&gt;Example:
+ * &lt;code&gt;
+ *   // constructs the map
+ *   var key1:Object = new Object();
+ *   var key2:Object = new Object();
+ *   var key3:Object = new Object();
+ *   var map:Map = new HashMap();
+ *   map.put(key1, "value1");
+ *   map.put(key2, "value2");
+ *   map.put(key3, "value3");
+ *   // uses the map
+ *   trace(map.get(key1));
+ *   trace(map.get(key2));
+ *   trace(map.get(key3));
+ * &lt;/code&gt;
+ *
+ * &lt;p&gt;Output:
+ * &lt;pre&gt;
+ *   value1
+ *   value2
+ *   value3
+ * &lt;/pre&gt;
+ *
+ * @author Simon Wacker
+ * @author Michael Herrmann
+ */
+class org.as2lib.data.holder.map.HashMap extends AbstractMap implements Map {
+    
+    /** Makes the static variables of the super-class accessible through this class. */
+    private static var __proto__:Function = AbstractMap;
+    
+    /** Contains the keys. */
+    private var keys:Array;
+    
+    /** Contains the values. */
+    private var values:Array;
+    
+    /**
+     * Constructs a new {@code HashMap} instance.
+     *
+     * &lt;p&gt;This map iterates over the passed-in source with the for..in loop and uses the
+     * variables' names as key and their values as value. Variables that are hidden from
+     * for..in loops will not be added to this map.
+     * 
+     * @param source (optional) an object that contains key-value pairs to populate this
+     * map with
+     */
+    public function HashMap(source) {
+        keys = new Array();
+        values = new Array();
+        populate(source);
+    }
+
+    /**
+     * Checks if the passed-in {@code key} exists.
+     *
+     * &lt;p&gt;That means whether a value has been mapped to it.
+     *
+     * @param key the key to be checked for availability
+     * @return {@code true} if the {@code key} exists else {@code false}
+     */
+    public function containsKey(key):Boolean {
+        return (findKey(key) &gt; -1);
+    }
+    
+    /**
+     * Checks if the passed-in {@code value} is mapped to a key.
+     * 
+     * @param value the value to be checked for availability
+     * @return {@code true} if the {@code value} is mapped to a key else {@code false}
+     */
+    public function containsValue(value):Boolean {
+        return (findValue(value) &gt; -1);
+    }
+    
+    /**
+     * Returns an array that contains all keys that have a value mapped to it.
+     * 
+     * @return an array that contains all keys
+     */
+    public function getKeys(Void):Array {
+        return keys.slice();
+    }
+    
+    /**
+     * Returns an array that contains all values that are mapped to a key.
+     *
+     * @return an array that contains all mapped values
+     */
+    public function getValues(Void):Array {
+        return values.slice();
+    }
+    
+    /**
+     * Returns the value that is mapped to the passed-in {@code key}.
+     *
+     * @param key the key to return the corresponding value for
+     * @return the value corresponding to the passed-in {@code key}
+     */
+    public function get(key) {
+        return values[findKey(key)];
+    }
+    
+    /**
+     * Maps the given {@code key} to the {@code value}.
+     *
+     * &lt;p&gt;Both {@code key} and {@code value} are allowed to be {@code null} and
+     * {@code undefined}.
+     * 
+     * @param key the key used as identifier for the {@code value}
+     * @param value the value to map to the {@code key}
+     * @return the value that was originally mapped to the {@code key} or {@code undefined}
+     */
+    public function put(key, value) {
+        var result;
+        var i:Number = findKey(key); 
+        if(i &lt; 0) {
+            keys.push(key);
+            values.push(value);
+        } else {
+            result = values[i];
+            values[i] = value;
+        }
+        return result;
+    }
+    
+    /**
+     * Copies all mappings from the passed-in {@code map} to this map.
+     *
+     * @param map the mappings to add to this map
+     */
+    public function putAll(map:Map):Void {
+        var values:Array = map.getValues();
+        var keys:Array = map.getKeys();
+        var l:Number = keys.length;
+        for (var i:Number = 0; i &lt; l; i = i-(-1)) {
+            put(keys[i], values[i]);
+        }
+    }
+    
+    /**
+     * Clears all mappings.
+     */
+    public function clear(Void):Void {
+        keys = new Array();
+        values = new Array();
+    }
+    
+    /**
+     * Removes the mapping from the given {@code key} to the value.
+     *
+     * @param key the key identifying the mapping to remove
+     * @return the value that was originally mapped to the {@code key}
+     */
+    public function remove(key) {
+        var i:Number = findKey(key);
+        if(i &gt; -1) {
+            var result = values[i];
+            values.splice(i, 1);
+            keys.splice(i, 1);
+            return result;
+        }
+        return;
+    }
+    
+    /**
+     * Returns an iterator to iterate over the values of this map.
+     *
+     * @return an iterator to iterate over the values of this map
+     * @see #valueIterator
+     * @see #getValues
+     */
+    public function iterator(Void):Iterator {
+        return new ValueMapIterator(this);
+    }
+    
+    /**
+     * Returns an iterator to iterate over the values of this map.
+     *
+     * @return an iterator to iterate over the values of this map
+     * @see #iterator
+     * @see #getValues
+     */
+    public function valueIterator(Void):Iterator {
+        return iterator();
+    }
+    
+    /**
+     * Returns an iterator to iterate over the keys of this map.
+     *
+     * @return an iterator to iterate over the keys of this map
+     * @see #getKeys
+     */
+    public function keyIterator(Void):Iterator {
+        return new KeyMapIterator(this);
+    }
+
+    /**
+     * Returns the amount of mappings.
+     *
+     * @return the amount of mappings
+     */
+    public function size(Void):Number {
+        return keys.length;
+    }
+    
+    /**
+     * Returns whether this map contains any mappings.
+     * 
+     * @return {@code true} if this map contains no mappings else {@code false}
+     */
+    public function isEmpty(Void):Boolean {
+        return (size() &lt; 1);
+    }
+    
+    /**
+     * Searches for the given {@code value} and returns the index where it is stored.
+     *
+     * @param value the value to search for
+     * @return the index where the {@code value} is stored
+     */
+    private function findValue(value):Number {
+        var l:Number = values.length;
+        while (values[--l] !== value &amp;&amp; l&gt;-1);
+        return l;
+    }
+    
+    /**
+     * Searches for the given {@code key} and returns the index where it is stored.
+     * 
+     * @param key the key to search for
+     * @return the index where the {@code key} is stored
+     */
+    private function findKey(key):Number {
+        var l:Number = keys.length;
+        while (keys[--l] !== key &amp;&amp; l&gt;-1);
+        return l;
+    }
+    
+    /**
+     * Returns the string representation of this map.
+     *
+     * &lt;p&gt;The string representation is obtained using the stringifier returned by the
+     * static {@link AbstractMap#getStringifier} method.
+     * 
+     * @return the string representation of this map
+     */
+    public function toString():String {
+        return getStringifier().execute(this);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>HashMap</code> can be used to map any type of key to any type of value.</div><p>This class offers ordered mapping functionality. That means that the methods<br /> <a href="org_as2lib_data_holder_map_HashMap.html#getKeys">getKeys</a> and <a href="org_as2lib_data_holder_map_HashMap.html#getValues">getValues</a> return the keys and values in the order<br /> they were put to the map and that the iterators returned by the methods<br /> <a href="org_as2lib_data_holder_map_HashMap.html#valueIterator">valueIterator</a> and <a href="org_as2lib_data_holder_map_HashMap.html#keyIterator">keyIterator</a> also iterate over the keys and<br /> values in the correct order.<p>This map offers two methods that help you find out whether it contains a<br /> specific key or value. These two methods are <a href="org_as2lib_data_holder_map_HashMap.html#containsKey">containsKey</a> and<br /> <a href="org_as2lib_data_holder_map_HashMap.html#containsValue">containsValue</a>.<p>To get the data stored in this map you can use the <a href="org_as2lib_data_holder_map_HashMap.html#getKeys">getKeys</a>,<br /> <a href="org_as2lib_data_holder_map_HashMap.html#getValues">getValues</a> and <a href="org_as2lib_data_holder_map_HashMap.html#get">get</a> methods. If you want to iterate over the<br /> values of this map you can use the iterators returned by the methods <a href="org_as2lib_data_holder_map_HashMap.html#iterator">iterator</a><br /> or <a href="org_as2lib_data_holder_map_HashMap.html#valueIterator">valueIterator</a>. If you want to iterate over the keys you can use the<br /> iterator returned by the <a href="org_as2lib_data_holder_map_HashMap.html#keyIterator">keyIterator</a> method.<p>To add key-value pairs to this map you can use the methods <a href="org_as2lib_data_holder_map_HashMap.html#put">put</a> and<br /> <a href="org_as2lib_data_holder_map_HashMap.html#putAll">putAll</a>. The <code>putAll</code> method lets you add all key-value pairs<br /> contained in the passed-in <code>map</code> to this map.<p>To remove key-value pairs you can use the methods <a href="org_as2lib_data_holder_map_HashMap.html#remove">remove</a> and<br /> <a href="org_as2lib_data_holder_map_HashMap.html#clear">clear</a>. The <code>remove</code> method deletes only the key-value pair<br /> corresponding to the passed-in <code>key</code>, while the clear method removes all<br /> key-value pairs.<p>There are two more methods you may need. The <a href="org_as2lib_data_holder_map_HashMap.html#isEmpty">isEmpty</a> and the <a href="org_as2lib_data_holder_map_HashMap.html#size">size</a><br /> method. These methods give you information about whether this map contains any<br /> mappings and how many mappings it contains.<p>To change the string representation returned by the <a href="org_as2lib_data_holder_map_HashMap.html#toString">toString</a><br /> method you can set your own stringifier using the static<br /> <a href="org_as2lib_data_holder_map_AbstractMap.html#setStringifier">AbstractMap.setStringifier</a> method.<p>Example:<pre><span class="codeComment">// constructs the map</span>
+<span class="codeKeyword">var</span> key1:<span class="codeIdentifier">Object</span> = <span class="codeKeyword">new</span> <span class="codeIdentifier">Object</span>();
+<span class="codeKeyword">var</span> key2:<span class="codeIdentifier">Object</span> = <span class="codeKeyword">new</span> <span class="codeIdentifier">Object</span>();
+<span class="codeKeyword">var</span> key3:<span class="codeIdentifier">Object</span> = <span class="codeKeyword">new</span> <span class="codeIdentifier">Object</span>();
+<span class="codeKeyword">var</span> map:Map = <span class="codeKeyword">new</span> HashMap();
+map.put(key1, <span class="codeString">"value1"</span>);
+map.put(key2, <span class="codeString">"value2"</span>);
+map.put(key3, <span class="codeString">"value3"</span>);
+<span class="codeComment">// uses the map</span>
+<span class="codeIdentifier">trace</span>(map.<span class="codeIdentifier">get</span>(key1));
+<span class="codeIdentifier">trace</span>(map.<span class="codeIdentifier">get</span>(key2));
+<span class="codeIdentifier">trace</span>(map.<span class="codeIdentifier">get</span>(key3));</pre><p>Output:<pre>value1
+value2
+value3</pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#HashMap">HashMap</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#__proto__">__proto__</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class properties inherited from <span class="superclass"><a href="org_as2lib_data_holder_map_AbstractMap.html">AbstractMap</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_data_holder_map_AbstractMap.html#stringifier" class="privatInline">stringifier</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#keys">keys</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#values">values</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class methods inherited from <span class="superclass"><a href="org_as2lib_data_holder_map_AbstractMap.html">AbstractMap</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_data_holder_map_AbstractMap.html#getStringifier">getStringifier</a>, <a href="org_as2lib_data_holder_map_AbstractMap.html#setStringifier">setStringifier</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#containsKey">containsKey</a>
+                </li>
+                <li>
+                  <a href="#containsValue">containsValue</a>
+                </li>
+                <li>
+                  <a href="#getKeys">getKeys</a>
+                </li>
+                <li>
+                  <a href="#getValues">getValues</a>
+                </li>
+                <li>
+                  <a href="#get">get</a>
+                </li>
+                <li>
+                  <a href="#put">put</a>
+                </li>
+                <li>
+                  <a href="#putAll">putAll</a>
+                </li>
+                <li>
+                  <a href="#clear">clear</a>
+                </li>
+                <li>
+                  <a href="#remove">remove</a>
+                </li>
+                <li>
+                  <a href="#iterator">iterator</a>
+                </li>
+                <li>
+                  <a href="#valueIterator">valueIterator</a>
+                </li>
+                <li>
+                  <a href="#keyIterator">keyIterator</a>
+                </li>
+                <li>
+                  <a href="#size">size</a>
+                </li>
+                <li>
+                  <a href="#isEmpty">isEmpty</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#findValue">findValue</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#findKey">findKey</a>
+                </li>
+                <li>
+                  <a href="#toString">toString</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_data_holder_map_AbstractMap.html">AbstractMap</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_data_holder_map_AbstractMap.html#populate" class="privatInline">populate</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="HashMap">HashMap</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>HashMap</b> (
+</div>
+                <div><span class="code">source)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>HashMap</code> instance.<p>This map iterates over the passed-in source with the for..in loop and uses the<br /> variables' names as key and their values as value. Variables that are hidden from<br /> for..in loops will not be added to this map.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">source<span class="itemSeparator">:</span></div>
+                    <div>(optional) an object that contains key-value pairs to populate this<br /> map with</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="__proto__">__proto__</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>__proto__</b>:Function = AbstractMap
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Makes the static variables of the super-class accessible through this class.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="keys">keys</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>keys</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Contains the keys.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="values">values</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>values</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Contains the values.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="clear">clear</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>clear</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Clears all mappings.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#clear">org.as2lib.data.holder.Map.clear</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="containsKey">containsKey</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>containsKey</b> (
+</div>
+                <div><span class="code">key) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if the passed-in <code>key</code> exists.<p>That means whether a value has been mapped to it.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">key<span class="itemSeparator">:</span></div>
+                    <div>the key to be checked for availability</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the <code>key</code> exists else <code>false</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#containsKey">org.as2lib.data.holder.Map.containsKey</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="containsValue">containsValue</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>containsValue</b> (
+</div>
+                <div><span class="code">value) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks if the passed-in <code>value</code> is mapped to a key.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">value<span class="itemSeparator">:</span></div>
+                    <div>the value to be checked for availability</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the <code>value</code> is mapped to a key else <code>false</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#containsValue">org.as2lib.data.holder.Map.containsValue</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="findKey">findKey</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>findKey</b> (
+</div>
+                <div><span class="code">key) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Searches for the given <code>key</code> and returns the index where it is stored.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">key<span class="itemSeparator">:</span></div>
+                    <div>the key to search for</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the index where the <code>key</code> is stored</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="findValue">findValue</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>findValue</b> (
+</div>
+                <div><span class="code">value) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Searches for the given <code>value</code> and returns the index where it is stored.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">value<span class="itemSeparator">:</span></div>
+                    <div>the value to search for</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the index where the <code>value</code> is stored</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="get">get</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>get</b> (
+</div>
+                <div><span class="code">key)</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the value that is mapped to the passed-in <code>key</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">key<span class="itemSeparator">:</span></div>
+                    <div>the key to return the corresponding value for</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the value corresponding to the passed-in <code>key</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#get">org.as2lib.data.holder.Map.get</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getKeys">getKeys</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getKeys</b> (
+</div>
+                <div><span class="code">Void) : Array</span></div>
+              </div>
+            </div>
+            <div class="description">Returns an array that contains all keys that have a value mapped to it.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an array that contains all keys</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#getKeys">org.as2lib.data.holder.Map.getKeys</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getValues">getValues</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getValues</b> (
+</div>
+                <div><span class="code">Void) : Array</span></div>
+              </div>
+            </div>
+            <div class="description">Returns an array that contains all values that are mapped to a key.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an array that contains all mapped values</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#getValues">org.as2lib.data.holder.Map.getValues</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isEmpty">isEmpty</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isEmpty</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns whether this map contains any mappings.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if this map contains no mappings else <code>false</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#isEmpty">org.as2lib.data.holder.Map.isEmpty</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="iterator">iterator</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>iterator</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_Iterator.html">Iterator</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns an iterator to iterate over the values of this map.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an iterator to iterate over the values of this map</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_data_holder_map_HashMap.html#valueIterator">valueIterator</a><br /><a href="org_as2lib_data_holder_map_HashMap.html#getValues">getValues</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#iterator">org.as2lib.data.holder.Map.iterator</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="keyIterator">keyIterator</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>keyIterator</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_Iterator.html">Iterator</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns an iterator to iterate over the keys of this map.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an iterator to iterate over the keys of this map</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_data_holder_map_HashMap.html#getKeys">getKeys</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#keyIterator">org.as2lib.data.holder.Map.keyIterator</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="put">put</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>put</b> (
+
+</div>
+                <div><span class="code">key,
+value)</span></div>
+              </div>
+            </div>
+            <div class="description">Maps the given <code>key</code> to the <code>value</code>.<p>Both <code>key</code> and <code>value</code> are allowed to be <code>null</code> and<br /> <code>undefined</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">key  <span class="itemSeparator">:</span></div>
+                    <div>the key used as identifier for the <code>value</code></div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">value<span class="itemSeparator">:</span></div>
+                    <div>the value to map to the <code>key</code></div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the value that was originally mapped to the <code>key</code> or <code>undefined</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#put">org.as2lib.data.holder.Map.put</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="putAll">putAll</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>putAll</b> (
+</div>
+                <div><span class="code">map:<a href="org_as2lib_data_holder_Map.html">Map</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Copies all mappings from the passed-in <code>map</code> to this map.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">map<span class="itemSeparator">:</span></div>
+                    <div>the mappings to add to this map</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#putAll">org.as2lib.data.holder.Map.putAll</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="remove">remove</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>remove</b> (
+</div>
+                <div><span class="code">key)</span></div>
+              </div>
+            </div>
+            <div class="description">Removes the mapping from the given <code>key</code> to the value.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">key<span class="itemSeparator">:</span></div>
+                    <div>the key identifying the mapping to remove</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the value that was originally mapped to the <code>key</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#remove">org.as2lib.data.holder.Map.remove</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="size">size</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>size</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the amount of mappings.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the amount of mappings</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#size">org.as2lib.data.holder.Map.size</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toString">toString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>toString</b> (
+</div>
+                <div><span class="code">) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the string representation of this map.<p>The string representation is obtained using the stringifier returned by the<br /> static <a href="org_as2lib_data_holder_map_AbstractMap.html#getStringifier">AbstractMap.getStringifier</a> method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the string representation of this map</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_core_BasicClass.html#toString">org.as2lib.core.BasicClass.toString</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_core_BasicInterface.html#toString">org.as2lib.core.BasicInterface.toString</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="valueIterator">valueIterator</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>valueIterator</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_data_holder_Iterator.html">Iterator</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns an iterator to iterate over the values of this map.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">an iterator to iterate over the values of this map</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_data_holder_map_HashMap.html#iterator">iterator</a><br /><a href="org_as2lib_data_holder_map_HashMap.html#getValues">getValues</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Map.html#valueIterator">org.as2lib.data.holder.Map.valueIterator</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:52</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

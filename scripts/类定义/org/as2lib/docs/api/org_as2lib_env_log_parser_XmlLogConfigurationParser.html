@@ -1,0 +1,666 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>XmlLogConfigurationParser</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_env_log_parser_XmlLogConfigurationParser">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>XmlLogConfigurationParser</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_env_log_LogConfigurationParser.html">LogConfigurationParser</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.env.log.parser.XmlLogConfigurationParser</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Saturday, 08 October 2005, 20:15:42</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.except.IllegalArgumentException;
+import org.as2lib.env.log.level.AbstractLogLevel;
+import org.as2lib.env.log.LogConfigurationParser;
+import org.as2lib.env.log.LogManager;
+import org.as2lib.env.log.parser.LogConfigurationParseException;
+import org.as2lib.env.reflect.ClassNotFoundException;
+import org.as2lib.env.reflect.NoSuchMethodException;
+import org.as2lib.util.StringUtil;
+
+/**
+ * {@code XmlLogConfigurationParser} parses log configuration files in XML format.
+ * 
+ * &lt;p&gt;The root node of the configuration file must be "&amp;lt;logging&amp;gt;". Its child
+ * nodes must correspond to {@code set*} or {@code add*} methods on the given or
+ * default log manager: {@link #XmlLogConfigurationParser}. There is one exception
+ * to this rule.
+ * 
+ * &lt;p&gt;The register-node in the root-node is treated in a special way. It can be
+ * used to register node names with specific classes. This way you do not have to
+ * specify the class-attribute multiple times for nodes with the same name.
+ * 
+ * &lt;p&gt;Every node except the register- and root-nodes are beans. A bean is in this
+ * case an instance defined in an XML format. To be able to instantiate a bean the
+ * bean class must be set. It is thus necessary to either register node names with
+ * bean classes:
+ * &lt;code&gt;&amp;lt;register name="logger" class="org.as2lib.env.log.logger.SimpleHierarchicalLogger"/&amp;gt;&lt;/code&gt;
+ * 
+ * &lt;p&gt;or to specify the class-attribute in beans:
+ * &lt;code&gt;&amp;lt;logger class="org.as2lib.env.log.logger.TraceLogger"/&amp;gt;&lt;/code&gt;
+ * 
+ * &lt;p&gt;It is also possible to set properties. Properties are basically methods that
+ * follow a specific naming convention. If you specify an attribute named {@code "name"}
+ * your bean class must provide a {@code setName} method. If you specify a child
+ * node named {@code "handler"}, the bean class must provide a {@code addHandler}
+ * or {@code setHandler} method. Child nodes can themselves be beans.
+ * 
+ * &lt;p&gt;The level-attribute is treated in a special way. The level corresponding to
+ * the level name is resolved with the {@link AbstractLogLevel#forName} method.
+ * 
+ * &lt;p&gt;It is also possible to pass constructor arguments. You do this with the
+ * constructor-arg-tag. Note that the order matters! As you can see in the
+ * following example, the constructor-arg can itself be a bean.
+ * 
+ * &lt;code&gt;
+ *   &amp;lt;handler class="org.as2lib.env.log.handler.TraceHandler"&amp;gt;
+ *     &amp;lt;constructor-arg class="org.as2lib.env.log.stringifier.SimpleLogMessageStringifier"/&amp;gt;
+ *   &amp;lt;/handler&amp;gt;
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;If a node- or attribute-value is a primitive type it will automatically
+ * be converted. This means the strings {@code "true"} and {@code "false"} are
+ * converted to the booleans {@code true} and {@code false} respectively. The
+ * strings {@code "1"}, {@code "2"}, ... are converted to numbers. Only if the
+ * node- or attribute-value is non of the above 'special cases' it is used as
+ * string.
+ * 
+ * &lt;code&gt;
+ *   &amp;lt;handler class="org.as2lib.env.log.handler.TraceHandler"&amp;gt;
+ *     &amp;lt;constructor-arg class="org.as2lib.env.log.stringifier.PatternLogMessageStringifier"&amp;gt;
+ *       &amp;lt;constructor-arg&amp;gt;false&amp;lt;/contructor-arg&amp;gt;
+ *       &amp;lt;constructor-arg&amp;gt;true&amp;lt;/contructor-arg&amp;gt;
+ *       &amp;lt;constructor-arg&amp;gt;HH:nn:ss.S&amp;lt;/contructor-arg&amp;gt;
+ *     &amp;lt;/constructor-arg&amp;gt;
+ *   &amp;lt;/handler&amp;gt;
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;Your complete log configuration may look something like this:
+ * &lt;code&gt;
+ *   &amp;lt;logging&amp;gt;
+ *     &amp;lt;register name="logger" class="org.as2lib.env.log.logger.SimpleHierarchicalLogger"/&amp;gt;
+ *     &amp;lt;loggerRepository class="org.as2lib.env.log.repository.LoggerHierarchy"&amp;gt;
+ *       &amp;lt;logger name="com.simonwacker" level="INFO"&amp;gt;
+ *         &amp;lt;handler class="org.as2lib.env.log.handler.DebugItHandler"/&amp;gt;
+ *         &amp;lt;handler class="org.as2lib.env.log.handler.TraceHandler"/&amp;gt;
+ *       &amp;lt;/logger&amp;gt;
+ *       &amp;lt;logger name="com.simonwacker.MyClass" level="ERROR"&amp;gt;
+ *         &amp;lt;handler class="org.as2lib.env.log.handler.SosHandler"/&amp;gt;
+ *       &amp;lt;/logger&amp;gt;
+ *     &amp;lt;/repository&amp;gt;
+ *   &amp;lt;/logging&amp;gt;
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;or this:
+ * &lt;code&gt;
+ *   &amp;lt;logging&amp;gt;
+ *     &amp;lt;logger level="INFO" class="org.as2lib.env.log.logger.TraceLogger"/&amp;gt;
+ *   &amp;lt;/logging&amp;gt;
+ * &lt;/code&gt;
+ * 
+ * @author Simon Wacker
+ */
+class org.as2lib.env.log.parser.XmlLogConfigurationParser extends BasicClass implements LogConfigurationParser {
+    
+    /** Node name class registrations. */
+    private var nodes;
+    
+    /** The manager to configure. */
+    private var manager;
+    
+    /**
+     * Constructs a new {@code XmlLogConfigurationParser} instance.
+     * 
+     * &lt;p&gt;If {@code logManager} is {@code null} or {@code undefined}, {@link LogManager}
+     * will be used by default.
+     * 
+     * @param logManager (optional) the manager to configure with the beans specified
+     * in the log configuration XML-file
+     */
+    public function XmlLogConfigurationParser(logManager) {
+        if (logManager) {
+            this.manager = logManager;
+        } else {
+            this.manager = LogManager;
+        }
+    }
+    
+    /**
+     * Parses the given {@code xmlLogConfiguration}.
+     * 
+     * @param xmlLogConfiguration the XML log configuration to parse
+     * @throws IllegalArgumentException if argument {@code xmlLogConfiguration} is
+     * {@code null} or {@code undefined}
+     * @throws LogConfigurationParseException if the bean definition could not be parsed
+     * because of a malformed xml
+     * @throws ClassNotFoundException if a class corresponding to a given class name could
+     * not be found
+     * @throws NoSuchMethodException if a method with a given name does not exist on the
+     * bean to create
+     */
+    public function parse(xmlLogConfiguration:String):Void {
+        if (xmlLogConfiguration == null) {
+            throw new IllegalArgumentException("Argument 'xmlLogConfiguration' [" + xmlLogConfiguration + "] must not be 'null' nor 'undefined'", this, arguments);
+        }
+        var xml:XML = new XML();
+        xml.ignoreWhite = true;
+        xml.parseXML(xmlLogConfiguration);
+        if (xml.status != 0) {
+            throw new LogConfigurationParseException("XML log configuration [" + xmlLogConfiguration + "] is syntactically malformed.", this, arguments);
+        }
+        nodes = new Object();
+        if (xml.lastChild.nodeName != "logging") {
+            throw new LogConfigurationParseException("There must be a root node named 'logging'.", this, arguments);
+        }
+        var childNodes:Array = xml.firstChild.childNodes;
+        for (var i:Number = 0; i &lt; childNodes.length; i++) {
+            var childNode:XMLNode = childNodes[i];
+            if (childNode.nodeName == "register") {
+                var name:String = childNode.attributes.name;
+                var clazz:String = childNode.attributes["class"];
+                if (name != null &amp;&amp; clazz != null) {
+                    nodes[name] = clazz;
+                }
+            } else {
+                var childName:String = childNode.nodeName;
+                var methodName:String = generateMethodName("set", childName);
+                if (!existsMethod(manager, methodName)) {
+                    methodName = generateMethodName("add", childName);
+                }
+                if (!existsMethod(manager, methodName)) {
+                    throw new NoSuchMethodException("Neither a method with name [" + generateMethodName("set", childName) + "] nor [" + methodName + "] does exist on log manager [" + manager + "].", this, arguments);
+                }
+                var childBean = parseBeanDefinition(childNode);
+                manager[methodName](childBean);
+            }
+        }
+    }
+    
+    /**
+     * Parses the given {@code beanDefinition} and returns the resulting bean.
+     * 
+     * @param beanDefinition the definition to create a bean of
+     * @return the bean resulting from the given {@code beanDefinition}
+     * @throws LogConfigurationParseException if the bean definition could not be parsed
+     * because of for example missing information
+     * @throws ClassNotFoundException if a class corresponding to a given class name could
+     * not be found
+     * @throws NoSuchMethodException if a method with a given name does not exist on the
+     * bean to create
+     */
+    private function parseBeanDefinition(beanDefinition:XMLNode) {
+        if (!beanDefinition) {
+            throw new IllegalArgumentException("Argument 'beanDefinition' [" + beanDefinition + "] must not be 'null' nor 'undefined'", this, arguments);
+        }
+        var result = new Object();
+        var beanName:String = beanDefinition.attributes["class"];
+        if (beanName == null) {
+            beanName = nodes[beanDefinition.nodeName];
+        }
+        if (beanName == null) {
+            throw new LogConfigurationParseException("Node [" + beanDefinition.nodeName + "] has no class. You must either specify the 'class' attribute or register it to a class.", this, arguments);
+        }
+        var beanClass:Function = resolveClass(beanName);
+        if (!beanClass) {
+            throw new ClassNotFoundException("A class corresponding to the class name [" + beanClass + "] of node [" + beanDefinition.nodeName + "] could not be found. You either misspelled the class name or forgot to import the class in your swf.", this, arguments);
+        }
+        result.__proto__ = beanClass.prototype;
+        result.__constructor__ = beanClass;
+        var constructorArguments:Array = new Array();
+        var childNodes:Array = beanDefinition.childNodes;
+        for (var i:Number = 0; i &lt; childNodes.length; i++) {
+            var childNode:XMLNode = childNodes[i];
+            if (childNode.nodeName == "constructor-arg") {
+                if (childNode.firstChild.nodeValue == null) {
+                    constructorArguments.push(parseBeanDefinition(childNode));
+                } else {
+                    constructorArguments.push(convertValue(childNode.firstChild.nodeValue));
+                }
+                childNodes.splice(i, 1);
+                i--;
+            }
+        }
+        beanClass.apply(result, constructorArguments);
+        for (var n:String in beanDefinition.attributes) {
+            if (n == "class") continue;
+            var methodName:String = generateMethodName("set", n);
+            if (!existsMethod(result, methodName)) {
+                throw new NoSuchMethodException("A method with name [" + methodName + "] does not exist on bean of class [" + beanName + "].", this, arguments);
+            }
+            var value:String = beanDefinition.attributes[n];
+            if (n == "level") {
+                result[methodName](AbstractLogLevel.forName(value));
+            } else {
+                result[methodName](convertValue(value));
+            }
+        }
+        for (var i:Number = 0; i &lt; childNodes.length; i++) {
+            var childNode:XMLNode = childNodes[i];
+            var childName:String = childNode.nodeName;
+            var methodName:String = generateMethodName("add", childName);
+            if (!existsMethod(result, methodName)) {
+                methodName = generateMethodName("set", childName);
+            }
+            if (!existsMethod(result, methodName)) {
+                throw new NoSuchMethodException("Neither a method with name [" + generateMethodName("add", childName) + "] nor [" + methodName + "] exists on bean of class [" + beanName + "].", this, arguments);
+            }
+            if (childNode.firstChild.nodeValue == null) {
+                result[methodName](parseBeanDefinition(childNode));
+            } else {
+                result[methodName](convertValue(childNode.firstChild.nodeValue));
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Finds the class for the given {@code className}.
+     * 
+     * @param className the name of the class to find
+     * @return the concrete class corresponding to the given {@code className}
+     */
+    private function resolveClass(className:String):Function {
+        return eval("_global." + className);
+    }
+    
+    /**
+     * Generates a method name given a {@code prefix} and a {@code body}.
+     * 
+     * @param prefix the prefix of the method name
+     * @param body the body of the method name
+     * @return the generated method name
+     */
+    private function generateMethodName(prefix:String, body:String):String {
+        return (prefix + StringUtil.ucFirst(body));
+    }
+    
+    /**
+     * Checks whether a method with the given {@code methodName} exists on the given
+     * {@code object}.
+     * 
+     * @param object the object that may have a method with the given name
+     * @param methodName the name of the method
+     * @return {@code true} if the method exists on the object else {@code false}
+     */
+    private function existsMethod(object, methodName:String):Boolean {
+        try {
+            if (object[methodName]) {
+                return true;
+            }
+        } catch (e) {
+        }
+        return false;
+    }
+    
+    /**
+     * Converts the given {@code value} into its actual type.
+     * 
+     * @param value the value to convert
+     * @return the converted value
+     */
+    private function convertValue(value:String) {
+        if (value == null) return value;
+        if (value == "true") return true;
+        if (value == "false") return false;
+        if (!isNaN(Number(value))) return Number(value);
+        return value;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>XmlLogConfigurationParser</code> parses log configuration files in XML format.</div><p>The root node of the configuration file must be "&lt;logging&gt;". Its child<br /> nodes must correspond to <code>set*</code> or <code>add*</code> methods on the given or<br /> default log manager: <a href="org_as2lib_env_log_parser_XmlLogConfigurationParser.html#XmlLogConfigurationParser">XmlLogConfigurationParser</a>. There is one exception<br /> to this rule.<p>The register-node in the root-node is treated in a special way. It can be<br /> used to register node names with specific classes. This way you do not have to<br /> specify the class-attribute multiple times for nodes with the same name.<p>Every node except the register- and root-nodes are beans. A bean is in this<br /> case an instance defined in an XML format. To be able to instantiate a bean the<br /> bean class must be set. It is thus necessary to either register node names with<br /> bean classes:<br /> <code>&<span class="codeKeyword">lt</span>;register name=<span class="codeString">"logger"</span> <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.logger.SimpleHierarchicalLogger"</span>/&<span class="codeKeyword">gt</span>;</code><p>or to specify the class-attribute in beans:<br /> <code>&<span class="codeKeyword">lt</span>;logger <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.logger.TraceLogger"</span>/&<span class="codeKeyword">gt</span>;</code><p>It is also possible to set properties. Properties are basically methods that<br /> follow a specific naming convention. If you specify an attribute named <code>"name"</code><br /> your bean class must provide a <code>setName</code> method. If you specify a child<br /> node named <code>"handler"</code>, the bean class must provide a <code>addHandler</code><br /> or <code>setHandler</code> method. Child nodes can themselves be beans.<p>The level-attribute is treated in a special way. The level corresponding to<br /> the level name is resolved with the <a href="org_as2lib_env_log_level_AbstractLogLevel.html#forName">org.as2lib.env.log.level.AbstractLogLevel.forName</a> method.<p>It is also possible to pass constructor arguments. You do this with the<br /> constructor-arg-tag. Note that the order matters! As you can see in the<br /> following example, the constructor-arg can itself be a bean.<br /> <pre>&<span class="codeKeyword">lt</span>;handler <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.handler.TraceHandler"</span>&<span class="codeKeyword">gt</span>;
+  &<span class="codeKeyword">lt</span>;constructor-arg <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.stringifier.SimpleLogMessageStringifier"</span>/&<span class="codeKeyword">gt</span>;
+&<span class="codeKeyword">lt</span>;/handler&gt;</pre><p>If a node- or attribute-value is a primitive type it will automatically<br /> be converted. This means the strings <code>"true"</code> and <code>"false"</code> are<br /> converted to the booleans <code>true</code> and <code>false</code> respectively. The<br /> strings <code>"1"</code>, <code>"2"</code>, ... are converted to numbers. Only if the<br /> node- or attribute-value is non of the above 'special cases' it is used as<br /> string.<br /> <pre>&<span class="codeKeyword">lt</span>;handler <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.handler.TraceHandler"</span>&<span class="codeKeyword">gt</span>;
+  &<span class="codeKeyword">lt</span>;constructor-arg <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.stringifier.PatternLogMessageStringifier"</span>&<span class="codeKeyword">gt</span>;
+    &<span class="codeKeyword">lt</span>;constructor-arg&gt;false&lt;/contructor-arg&gt;
+    &<span class="codeKeyword">lt</span>;constructor-arg&gt;true&lt;/contructor-arg&gt;
+    &<span class="codeKeyword">lt</span>;constructor-arg&gt;HH:nn:ss.S&lt;/contructor-arg&gt;
+  &<span class="codeKeyword">lt</span>;/constructor-arg&gt;
+&<span class="codeKeyword">lt</span>;/handler&gt;</pre><p>Your complete log configuration may look something like this:<pre>&<span class="codeKeyword">lt</span>;logging&gt;
+  &<span class="codeKeyword">lt</span>;register name=<span class="codeString">"logger"</span> <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.logger.SimpleHierarchicalLogger"</span>/&<span class="codeKeyword">gt</span>;
+  &<span class="codeKeyword">lt</span>;loggerRepository <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.repository.LoggerHierarchy"</span>&<span class="codeKeyword">gt</span>;
+    &<span class="codeKeyword">lt</span>;logger name=<span class="codeString">"com.simonwacker"</span> level=<span class="codeString">"INFO"</span>&<span class="codeKeyword">gt</span>;
+      &<span class="codeKeyword">lt</span>;handler <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.handler.DebugItHandler"</span>/&<span class="codeKeyword">gt</span>;
+      &<span class="codeKeyword">lt</span>;handler <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.handler.TraceHandler"</span>/&<span class="codeKeyword">gt</span>;
+    &<span class="codeKeyword">lt</span>;/logger&gt;
+    &<span class="codeKeyword">lt</span>;logger name=<span class="codeString">"com.simonwacker.MyClass"</span> level=<span class="codeString">"ERROR"</span>&<span class="codeKeyword">gt</span>;
+      &<span class="codeKeyword">lt</span>;handler <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.handler.SosHandler"</span>/&<span class="codeKeyword">gt</span>;
+    &<span class="codeKeyword">lt</span>;/logger&gt;
+  &<span class="codeKeyword">lt</span>;/repository&gt;
+&<span class="codeKeyword">lt</span>;/logging&gt;</pre><p>or this:<pre>&<span class="codeKeyword">lt</span>;logging&gt;
+  &<span class="codeKeyword">lt</span>;logger level=<span class="codeString">"INFO"</span> <span class="codeKeyword">class</span>=<span class="codeString">"org.as2lib.env.log.logger.TraceLogger"</span>/&<span class="codeKeyword">gt</span>;
+&<span class="codeKeyword">lt</span>;/logging&gt;</pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#XmlLogConfigurationParser">XmlLogConfigurationParser</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#nodes">nodes</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#manager">manager</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#parse">parse</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#parseBeanDefinition">parseBeanDefinition</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#resolveClass">resolveClass</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#generateMethodName">generateMethodName</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#existsMethod">existsMethod</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#convertValue">convertValue</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="XmlLogConfigurationParser">XmlLogConfigurationParser</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>XmlLogConfigurationParser</b> (
+</div>
+                <div><span class="code">logManager)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>XmlLogConfigurationParser</code> instance.<p>If <code>logManager</code> is <code>null</code> or <code>undefined</code>, <a href="org_as2lib_env_log_LogManager.html">org.as2lib.env.log.LogManager</a><br /> will be used by default.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">logManager<span class="itemSeparator">:</span></div>
+                    <div>(optional) the manager to configure with the beans specified<br /> in the log configuration XML-file</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="manager">manager</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>manager</b>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The manager to configure.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="nodes">nodes</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>nodes</b>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Node name class registrations.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="convertValue">convertValue</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>convertValue</b> (
+</div>
+                <div><span class="code">value:String)</span></div>
+              </div>
+            </div>
+            <div class="description">Converts the given <code>value</code> into its actual type.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">value<span class="itemSeparator">:</span></div>
+                    <div>the value to convert</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the converted value</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="existsMethod">existsMethod</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>existsMethod</b> (
+
+</div>
+                <div><span class="code">object,
+methodName:String) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks whether a method with the given <code>methodName</code> exists on the given<br /> <code>object</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">object    <span class="itemSeparator">:</span></div>
+                    <div>the object that may have a method with the given name</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">methodName<span class="itemSeparator">:</span></div>
+                    <div>the name of the method</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if the method exists on the object else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="generateMethodName">generateMethodName</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>generateMethodName</b> (
+
+</div>
+                <div><span class="code">prefix:String,
+body:String) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Generates a method name given a <code>prefix</code> and a <code>body</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">prefix<span class="itemSeparator">:</span></div>
+                    <div>the prefix of the method name</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">body  <span class="itemSeparator">:</span></div>
+                    <div>the body of the method name</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the generated method name</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="parse">parse</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>parse</b> (
+</div>
+                <div><span class="code">xmlLogConfiguration:String) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Parses the given <code>xmlLogConfiguration</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">xmlLogConfiguration<span class="itemSeparator">:</span></div>
+                    <div>the XML log configuration to parse</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if argument <code>xmlLogConfiguration</code> is<br /> <code>null</code> or <code>undefined</code><br /><a href="org_as2lib_env_log_parser_LogConfigurationParseException.html">LogConfigurationParseException</a> if the bean definition could not be parsed<br /> because of a malformed xml<br /><a href="org_as2lib_env_reflect_ClassNotFoundException.html">org.as2lib.env.reflect.ClassNotFoundException</a> if a class corresponding to a given class name could<br /> not be found<br /><a href="org_as2lib_env_reflect_NoSuchMethodException.html">org.as2lib.env.reflect.NoSuchMethodException</a> if a method with a given name does not exist on the<br /> bean to create</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="parseBeanDefinition">parseBeanDefinition</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>parseBeanDefinition</b> (
+</div>
+                <div><span class="code">beanDefinition:XMLNode)</span></div>
+              </div>
+            </div>
+            <div class="description">Parses the given <code>beanDefinition</code> and returns the resulting bean.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">beanDefinition<span class="itemSeparator">:</span></div>
+                    <div>the definition to create a bean of</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the bean resulting from the given <code>beanDefinition</code></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_log_parser_LogConfigurationParseException.html">LogConfigurationParseException</a> if the bean definition could not be parsed<br /> because of for example missing information<br /><a href="org_as2lib_env_reflect_ClassNotFoundException.html">org.as2lib.env.reflect.ClassNotFoundException</a> if a class corresponding to a given class name could<br /> not be found<br /><a href="org_as2lib_env_reflect_NoSuchMethodException.html">org.as2lib.env.reflect.NoSuchMethodException</a> if a method with a given name does not exist on the<br /> bean to create</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="resolveClass">resolveClass</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>resolveClass</b> (
+</div>
+                <div><span class="code">className:String) : Function</span></div>
+              </div>
+            </div>
+            <div class="description">Finds the class for the given <code>className</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">className<span class="itemSeparator">:</span></div>
+                    <div>the name of the class to find</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the concrete class corresponding to the given <code>className</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:26:01</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>ValueMapIterator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_data_holder_map_ValueMapIterator">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>ValueMapIterator</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_data_holder_Iterator.html">Iterator</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker, Michael Hermann</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.data.holder.map.ValueMapIterator</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Wednesday, 06 April 2005, 13:18:24</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.except.IllegalArgumentException;
+import org.as2lib.data.holder.Iterator;
+import org.as2lib.data.holder.array.ArrayIterator;
+import org.as2lib.data.holder.Map;
+
+/**
+ * {@code ValueMapIterator} is used to iterate over the values of a map.
+ * 
+ * &lt;p&gt;This iterator is quite simple to use. There is one method to check whether
+ * there are more elements left to iterate over {@link #hasNext}, one method to get
+ * the next element {@link #next} and one to remove the current element {@link #remove}.
+ *
+ * &lt;p&gt;Example:
+ * &lt;code&gt;
+ *   var map:Map = new HashMap();
+ *   map.put("key1", 1);
+ *   map.put("key2", 2);
+ *   map.put("key3", 3);
+ *   var iterator:Iterator = new ValueMapIterator(map);
+ *   while (iterator.hasNext()) {
+ *       trace(iterator.next());
+ *   }
+ * &lt;/code&gt;
+ *
+ * &lt;p&gt;You normally do not use this class directly, but obtain an iterator that
+ * iterates over the values of a map using the {@link Map#valueIterator} method.
+ * The returned iterator can, but does not have to be an instance of this class.
+ * 
+ * &lt;p&gt;Example:
+ * &lt;code&gt;
+ *   var map:Map = new HashMap();
+ *   // ...
+ *   var iterator:Iterator = map.valueIterator();
+ *   // ...
+ * &lt;/code&gt;
+ *
+ * @author Simon Wacker
+ * @author Michael Hermann
+ */
+class org.as2lib.data.holder.map.ValueMapIterator extends BasicClass implements Iterator {
+    
+    /** The target map to iterate over. */
+    private var target:Map;
+    
+    /** The iterator used as a helper. */
+    private var iterator:ArrayIterator;
+    
+    /** The presently selected key. */
+    private var key;
+    
+    /**
+     * Constructs a new {@code ValueMapIterator} instance.
+     * 
+     * @param target the map to iterate over
+     * @throws IllegalArgumentException if the passed-in {@code target} map is {@code null}
+     * or {@code undefined}
+     */
+    public function ValueMapIterator(target:Map) {
+        if (!target) throw new IllegalArgumentException("The passed-in target map '" + target + "' is not allowed to be null or undefined.", this, arguments);
+        this.target = target;
+        iterator = new ArrayIterator(target.getKeys());
+    }
+    
+    /**
+     * Returns whether there exists another value to iterate over.
+     * 
+     * @return {@code true} if there is at least one value left to iterate over
+     */
+    public function hasNext(Void):Boolean {
+        return iterator.hasNext();
+    }
+    
+    /**
+     * Returns the next value.
+     * 
+     * @return the next value
+     * @throws org.as2lib.data.holder.NoSuchElementException if there is no next value
+     */
+    public function next(Void) {
+        key = iterator.next();
+        return target.get(key);
+    }
+    
+    /**
+     * Removes the currently selected key-value pair from this iterator and from the
+     * map this iterator iterates over.
+     * 
+     * @throws org.as2lib.env.except.IllegalStateException if you try to remove a
+     * key-value pair when none is selected
+     */
+    public function remove(Void):Void {
+        iterator.remove();
+        target.remove(key);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>ValueMapIterator</code> is used to iterate over the values of a map.</div><p>This iterator is quite simple to use. There is one method to check whether<br /> there are more elements left to iterate over <a href="org_as2lib_data_holder_map_ValueMapIterator.html#hasNext">hasNext</a>, one method to get<br /> the next element <a href="org_as2lib_data_holder_map_ValueMapIterator.html#next">next</a> and one to remove the current element <a href="org_as2lib_data_holder_map_ValueMapIterator.html#remove">remove</a>.<p>Example:<pre><span class="codeKeyword">var</span> map:Map = <span class="codeKeyword">new</span> HashMap();
+map.put(<span class="codeString">"key1"</span>, <span class="codeNumber">1</span>);
+map.put(<span class="codeString">"key2"</span>, <span class="codeNumber">2</span>);
+map.put(<span class="codeString">"key3"</span>, <span class="codeNumber">3</span>);
+<span class="codeKeyword">var</span> iterator:Iterator = <span class="codeKeyword">new</span> ValueMapIterator(map);
+<span class="codeKeyword">while</span> (iterator.hasNext()) {
+    <span class="codeIdentifier">trace</span>(iterator.next());
+}</pre><p>You normally do not use this class directly, but obtain an iterator that<br /> iterates over the values of a map using the <a href="org_as2lib_data_holder_Map.html#valueIterator">org.as2lib.data.holder.Map.valueIterator</a> method.<br /> The returned iterator can, but does not have to be an instance of this class.<p>Example:<pre><span class="codeKeyword">var</span> map:Map = <span class="codeKeyword">new</span> HashMap();
+<span class="codeComment">// ...</span>
+<span class="codeKeyword">var</span> iterator:Iterator = map.valueIterator();
+<span class="codeComment">// ...</span></pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#ValueMapIterator">ValueMapIterator</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#target">target</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#iterator">iterator</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#key">key</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#hasNext">hasNext</a>
+                </li>
+                <li>
+                  <a href="#next">next</a>
+                </li>
+                <li>
+                  <a href="#remove">remove</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="ValueMapIterator">ValueMapIterator</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>ValueMapIterator</b> (
+</div>
+                <div><span class="code">target:<a href="org_as2lib_data_holder_Map.html">Map</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>ValueMapIterator</code> instance.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">target<span class="itemSeparator">:</span></div>
+                    <div>the map to iterate over</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if the passed-in <code>target</code> map is <code>null</code><br /> or <code>undefined</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="iterator">iterator</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>iterator</b>:<a href="org_as2lib_data_holder_array_ArrayIterator.html">ArrayIterator</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The iterator used as a helper.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="key">key</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>key</b>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The presently selected key.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="target">target</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>target</b>:<a href="org_as2lib_data_holder_Map.html">Map</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The target map to iterate over.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="hasNext">hasNext</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasNext</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns whether there exists another value to iterate over.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if there is at least one value left to iterate over</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Iterator.html#hasNext">org.as2lib.data.holder.Iterator.hasNext</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="next">next</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>next</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the next value.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the next value</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_data_holder_NoSuchElementException.html">org.as2lib.data.holder.NoSuchElementException</a> if there is no next value</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Iterator.html#next">org.as2lib.data.holder.Iterator.next</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="remove">remove</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>remove</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Removes the currently selected key-value pair from this iterator and from the<br /> map this iterator iterates over.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalStateException.html">org.as2lib.env.except.IllegalStateException</a> if you try to remove a<br /> key-value pair when none is selected</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_data_holder_Iterator.html#remove">org.as2lib.data.holder.Iterator.remove</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:57</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>ServerServiceProxy</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_io_conn_core_server_ServerServiceProxy">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>ServerServiceProxy</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>interface</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicInterface.html">BasicInterface</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implemented by:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_io_conn_local_server_LocalServerServiceProxy.html">LocalServerServiceProxy</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker, Christoph Atteneder</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.io.conn.core.server.ServerServiceProxy</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Friday, 08 April 2005, 12:13:02</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicInterface;
+import org.as2lib.io.conn.core.event.MethodInvocationErrorListener;
+
+/**
+ * {@code ServerServiceProxy} handles client requests to a certain service and its
+ * responses.
+ * 
+ * @author Simon Wacker
+ * @author Christoph Atteneder
+ */
+interface org.as2lib.io.conn.core.server.ServerServiceProxy extends BasicInterface {
+    
+    /**
+     * Runs the service and listens for requests of clients.
+     *
+     * @param host the host to run this service on
+     */
+    public function run(host:String):Void;
+    
+    /**
+     * Stops this service.
+     */
+    public function stop(Void):Void;
+    
+    /**
+     * @overload #invokeMethodByNameAndArguments
+     * @overload #invokeMethodByNameAndArgumentsAndResponseService
+     */
+    public function invokeMethod():Void;
+    
+    /**
+     * Invokes the service method corresponding to the passed-in {@code methodName} on
+     * the actaul service object, passing the content of {@code args} array as parameters.
+     * 
+     * @param methodName the name of the service method to invoke
+     * @param args arguments to pass-to the method
+     */
+    public function invokeMethodByNameAndArguments(methodName:String, args:Array):Void;
+    
+    /**
+     * Invokes the service method corresponding to the passed-in {@code methodName} on
+     * the actual service object and returns the response to the client using the
+     * passed-in {@code responseServiceUrl}.
+     *
+     * @param methodName name of method to invoke on the service
+     * @param args arguments to pass to the method
+     * @param responseServiceUrl the url of response service to which the result is sent
+     */
+    public function invokeMethodByNameAndArgumentsAndResponseService(methodName:String, args:Array, responseServiceUrl:String):Void;
+    
+    /**
+     * Returns the actual service this proxy wraps.
+     *
+     * @return the wrapped service
+     */
+    public function getService(Void);
+    
+    /**
+     * Returns the path on the host of this service.
+     *
+     * @return the path of this service
+     */
+    public function getPath(Void):String;
+    
+    /**
+     * Indicates whether this service is currently running.
+     *
+     * @return {@code true} if this service runs else {@code false}
+     */
+    public function isRunning(Void):Boolean;
+    
+    /**
+     * Adds a new error listener to listen for errors that may occur when trying to
+     * invoke a method on this service.
+     * 
+     * @param errorListener the error listener to add
+     * @see #removeErrorListener
+     */
+    public function addErrorListener(errorListener:MethodInvocationErrorListener):Void;
+    
+    /**
+     * Removes an added error listener.
+     *
+     * @param errorListener the error listener to remove
+     * @see #addErrorListener
+     */
+    public function removeErrorListener(errorListener:MethodInvocationErrorListener):Void;
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>ServerServiceProxy</code> handles client requests to a certain service and its<br /> responses.</div></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#run">run</a>
+                </li>
+                <li>
+                  <a href="#stop">stop</a>
+                </li>
+                <li>
+                  <a href="#invokeMethod">invokeMethod</a>
+                </li>
+                <li>
+                  <a href="#invokeMethodByNameAndArguments">invokeMethodByNameAndArguments</a>
+                </li>
+                <li>
+                  <a href="#invokeMethodByNameAndArgumentsAndResponseService">invokeMethodByNameAndArgumentsAndResponseService</a>
+                </li>
+                <li>
+                  <a href="#getService">getService</a>
+                </li>
+                <li>
+                  <a href="#getPath">getPath</a>
+                </li>
+                <li>
+                  <a href="#isRunning">isRunning</a>
+                </li>
+                <li>
+                  <a href="#addErrorListener">addErrorListener</a>
+                </li>
+                <li>
+                  <a href="#removeErrorListener">removeErrorListener</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicInterface.html">BasicInterface</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicInterface.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="addErrorListener">addErrorListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>addErrorListener</b> (
+</div>
+                <div><span class="code">errorListener:<a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Adds a new error listener to listen for errors that may occur when trying to<br /> invoke a method on this service.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">errorListener<span class="itemSeparator">:</span></div>
+                    <div>the error listener to add</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_io_conn_core_server_ServerServiceProxy.html#removeErrorListener">removeErrorListener</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getPath">getPath</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getPath</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the path on the host of this service.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the path of this service</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getService">getService</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getService</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the actual service this proxy wraps.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the wrapped service</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="invokeMethod">invokeMethod</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>invokeMethod</b> (
+</div>
+                <div><span class="code">) : Void</span></div>
+              </div>
+            </div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overloading:</span><div class="item"><a href="org_as2lib_io_conn_core_server_ServerServiceProxy.html#invokeMethodByNameAndArguments">invokeMethodByNameAndArguments (methodName:String, args:Array) : Void</a><br /><a href="org_as2lib_io_conn_core_server_ServerServiceProxy.html#invokeMethodByNameAndArgumentsAndResponseService">invokeMethodByNameAndArgumentsAndResponseService (methodName:String, args:Array, responseServiceUrl:String) : Void</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="invokeMethodByNameAndArguments">invokeMethodByNameAndArguments</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>invokeMethodByNameAndArguments</b> (
+
+</div>
+                <div><span class="code">methodName:String,
+args:Array) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Invokes the service method corresponding to the passed-in <code>methodName</code> on<br /> the actaul service object, passing the content of <code>args</code> array as parameters.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">methodName<span class="itemSeparator">:</span></div>
+                    <div>the name of the service method to invoke</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">args      <span class="itemSeparator">:</span></div>
+                    <div>arguments to pass-to the method</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="invokeMethodByNameAndArgumentsAndResponseService">invokeMethodByNameAndArgumentsAndResponseService</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>invokeMethodByNameAndArgumentsAndResponseService</b> (
+
+
+</div>
+                <div><span class="code">methodName:String,
+args:Array,
+responseServiceUrl:String) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Invokes the service method corresponding to the passed-in <code>methodName</code> on<br /> the actual service object and returns the response to the client using the<br /> passed-in <code>responseServiceUrl</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">methodName        <span class="itemSeparator">:</span></div>
+                    <div>name of method to invoke on the service</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">args              <span class="itemSeparator">:</span></div>
+                    <div>arguments to pass to the method</div>
+                  </div>
+                  <div class="item">
+                    <div class="floatbox code colorizedCode">responseServiceUrl<span class="itemSeparator">:</span></div>
+                    <div>the url of response service to which the result is sent</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isRunning">isRunning</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isRunning</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Indicates whether this service is currently running.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if this service runs else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="removeErrorListener">removeErrorListener</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>removeErrorListener</b> (
+</div>
+                <div><span class="code">errorListener:<a href="org_as2lib_io_conn_core_event_MethodInvocationErrorListener.html">MethodInvocationErrorListener</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Removes an added error listener.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">errorListener<span class="itemSeparator">:</span></div>
+                    <div>the error listener to remove</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_io_conn_core_server_ServerServiceProxy.html#addErrorListener">addErrorListener</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="run">run</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>run</b> (
+</div>
+                <div><span class="code">host:String) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Runs the service and listens for requests of clients.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">host<span class="itemSeparator">:</span></div>
+                    <div>the host to run this service on</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="stop">stop</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>stop</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Stops this service.</div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:27:13</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

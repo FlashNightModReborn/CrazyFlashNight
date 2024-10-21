@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {handleCommandCompletion = id; launch = id; showWindow = id; }; 
+            CLASS = FlasmController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {oTextView = NSTextView; oWindow = NSWindow; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

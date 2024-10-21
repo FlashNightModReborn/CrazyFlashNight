@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>MtascApplication</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_app_conf_MtascApplication">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, 
+Cl<a href="#Classmethods" accesskey="a">a</a>ss methods</span></span><h1>MtascApplication</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>none</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Version:</th>
+              <td class="classDetails">1.0</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger, Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.app.conf.MtascApplication</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Monday, 04 July 2005, 17:52:54</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import main.Mtasc;
+import main.Configuration;
+
+/**
+ * Default access point for a application with Mtasc.
+ * &lt;p&gt;Use this class for starting up your application with the MTASC compiler found at http://www.mtasc.org.
+ * It will start your MTASC configuration in {@link main.Mtasc} and your configuration for all 
+ * environments in {@link main.Configuration}.
+ * 
+ * &lt;p&gt;Simply use this class as main startup class in the mtasc preferences.
+ * &lt;code&gt;
+ *   [MTASC directory]\mtasc.exe -cp "[your project path]" -cp "[as2lib project path]" org/as2lib/app/conf/MtascApplication.as
+ * &lt;/code&gt;
+ * 
+ * @author Martin Heidegger
+ * @author Simon Wacker
+ * @version 1.0
+ */
+class org.as2lib.app.conf.MtascApplication {
+    
+    /**
+     * Executes the configuration for the mtasc environment in {@link main.Mtasc} and the 
+     * configuration for all environments in {@link main.Configuration}. These are the
+     * {@link Mtasc#init} and {@link Configuration#init} methods.
+     * 
+     * &lt;p&gt;The {@code Mtasc.init} method is passed the {@code container} movie-clip, that
+     * is by default {@code _root} if this class is used as main method for MTASC.
+     * 
+     * @param container the root movie-clip that is passed by MTASC to the main method
+     */
+    public static function main(container:MovieClip):Void {
+        Mtasc.init.apply(Mtasc, arguments);
+        Configuration.init.apply(Configuration, arguments);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary">Default access point for a application with Mtasc.</div><p>Use this class for starting up your application with the MTASC compiler found at <a href="http://www.mtasc.org">http://www.mtasc.org</a>.<br /> It will start your MTASC configuration in <a href="main_Mtasc.html">main.Mtasc</a> and your configuration for all <br /> environments in <a href="main_Configuration.html">main.Configuration</a>.<p>Simply use this class as main startup class in the mtasc preferences.<pre>[MTASC directory]\mtasc.exe -cp <span class="codeString">"[your project path]"</span> -cp <span class="codeString">"[as2lib project path]"</span> org/as2lib/app/conf/MtascApplication.as</pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Class methods</span><ul>
+                <li>
+                  <a href="#main">main</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classmethods">Class methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="main">main</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static function <b>main</b> (
+</div>
+                <div><span class="code">container:MovieClip) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Executes the configuration for the mtasc environment in <a href="main_Mtasc.html">main.Mtasc</a> and the <br /> configuration for all environments in <a href="main_Configuration.html">main.Configuration</a>. These are the<br /> <a href="main_Mtasc.html#init">main.Mtasc.init</a> and <a href="main_Configuration.html#init">main.Configuration.init</a> methods.<p>The <code>Mtasc.init</code> method is passed the <code>container</code> movie-clip, that<br /> is by default <code>_root</code> if this class is used as main method for MTASC.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">container<span class="itemSeparator">:</span></div>
+                    <div>the root movie-clip that is passed by MTASC to the main method</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:23:16</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

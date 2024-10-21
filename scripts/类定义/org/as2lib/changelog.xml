@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog xmlns="as2lib"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="as2lib http://www.as2lib.org/changelog_0.91.xsd">
+  <release name="as2lib 0.9.3" day="13" month="10" year="2005">
+    <year value="2005">
+      <month value="10">
+        <day value="13">
+          <entry type="add" package="org.as2lib.io.file" class="MediaFile"/>
+        </day>
+        <day value="12">
+          <entry type="add" package="org.as2lib.data.holder" class="Properties">Data holder for String properties</entry>
+          <entry type="add" package="org.as2lib.data.holder.properties" class="SimpleProperties"/>
+          <entry type="add" package="org.as2lib.data.holder.properties" class="PropertiesParser"/>
+          <entry type="add" package="org.as2lib.io.file" class="PropertyFileFactory"/>
+          <entry type="add" package="org.as2lib.io.file" class="PropertyFile"/>
+          <entry type="add" package="org.as2lib.util" class="StringUtil" method="escape"/>
+        </day>
+        <day value="11">
+          <entry type="add" package="org.as2lib.io.file" class="LoadStartListener"/>
+          <entry type="add" package="org.as2lib.io.file" class="LoadErrorListener"/>
+          <entry type="add" package="org.as2lib.io.file" class="LoadProgressListener"/>
+          <entry type="add" package="org.as2lib.io.file" class="LoadCompleteListener"/>
+          <entry type="remove" package="org.as2lib.io.file" class="FileListener"/>
+          <entry type="add" package="org.as2lib.io.file" class="CompositeFileFactory">Factory to create different files by their extension</entry>
+          <entry type="add" package="org.as2lib.io.file" class="Loader">Central access to load files</entry>
+          <entry type="add" package="org.as2lib.io.file" class="TextFileFactory">Interface for factories to text file implementations</entry>
+          <entry type="add" package="org.as2lib.io.file" class="SimpleTextFileFactory"/>
+          <entry type="add" package="org.as2lib.io.file" class="XmlFileFactory"/>
+          <entry type="add" package="org.as2lib.io.file" class="TextFileLoader">File loader to load textfiles (former SimpleFile)</entry>
+          <entry type="change" package="org.as2lib.io.file" class="FileLoader">Changed to a generic file loader interface</entry>
+          <entry type="add" package="org.as2lib.io.file" class="TextFile">File extension for text content</entry>
+          <entry type="add" package="org.as2lib.io.file" class="SimpleTextFile"/>
+          <entry type="add" package="org.as2lib.io.file" class="XmlFile"/>
+          <entry type="change" package="org.as2lib.io.file" class="File">Changed to a generic interface</entry>
+          <entry type="add" package="org.as2lib.aop.matcher" class="RegexpMatcher">Matches a join point with a regular expression pattern.</entry>
+          <entry type="add" package="org.as2lib.aop.matcher" class="RegexpMatcher">Matches a join point with a regular expression pattern.</entry>
+        </day>
+      	<day value="10">
+      	  <entry type="enhancement" package="org.as2lib.regexp.node">Access modificators are specified for the class members</entry>
+      	  <entry type="change" package="org.as2lib.regexp" class="Pattern" method="isMatch">
+      	    <change-rename to="matches"></change-rename>
+     	  </entry>
+      	  <entry type="change" package="org.as2lib.regexp" class="Matcher" method="isMatch">
+      	    <change-rename to="matches"></change-rename>
+     	  </entry>
+      	</day>
+        <day value="9">
+          <entry type="add" package="org.as2lib.app.exec" class="BatchStartListener"/>
+          <entry type="add" package="org.as2lib.app.exec" class="BatchFinishListener"/>
+          <entry type="add" package="org.as2lib.app.exec" class="BatchUpdateListener"/>
+          <entry type="add" package="org.as2lib.app.exec" class="BatchErrorListener"/>
+          <entry type="remove" package="org.as2lib.app.exec" class="BatchListener"/>
+          <entry type="add" package="org.as2lib.app.exec" class="ProcessStartListener"/>
+          <entry type="add" package="org.as2lib.app.exec" class="ProcessFinishListener"/>
+          <entry type="add" package="org.as2lib.app.exec" class="ProcessPauseListener"/>
+          <entry type="add" package="org.as2lib.app.exec" class="ProcessResumeListener"/>
+          <entry type="add" package="org.as2lib.app.exec" class="ProcessUpdateListener"/>
+          <entry type="add" package="org.as2lib.app.exec" class="ProcessErrorListener"/>
+          <entry type="remove" package="org.as2lib.app.exec" class="ProcessListener"/>
+        </day>
+        <day value="8">
+          <entry type="add" package="org.as2lib.env.log.parser" class="XmlLogConfigurationParser">Parses xml log configurations.</entry>
+          <entry type="add" package="org.as2lib.env.log" class="LogConfigurationParser">Interface for log configuration parsers.</entry>
+          <entry type="add" package="static org.as2lib.env.log.level" class="AbstractLogLevel" method="forName"></entry>
+        </day>
+        <day value="2">
+          <entry type="add" package="org.as2lib.env.reflect" class="ReflectUtil">Added proper cache for type and method names.</entry>
+        </day>
+      </month>
+      <month value="9">
+        <day value="21">
+          <entry type="add" package="org.as2lib.test.unit" class="TestCaseRunner" />
+          <entry type="add" package="org.as2lib.test.unit" class="TestSuiteRunner" />
+          <entry type="remove" package="org.as2lib.test.unit" class="Test" method="getTestResult" />
+          <entry type="add" package="org.as2lib.test.unit" class="Test" method="getTestRunner" />
+          <entry type="change" package="org.as2lib.test.unit" class="TestRunner">Changed from a concrete class to a interface</entry>
+        </day>
+        <day value="18">
+          <entry type="add" package="org.as2lib.app.exec" class="Processor">Class to process a StepByStepProcess</entry>
+          <entry type="add" package="org.as2lib.app.exec" class="StepByStepProcess">Interface to define step based processing</entry>
+        </day>
+        <day value="13">
+          <entry type="change" package="org.as2lib.io.file" class="BitFormat">
+            <change-rename to="org.as2lib.data.type.Bit" />
+          </entry>
+          <entry type="change" package="org.as2lib.io.file" class="ByteFormat">
+            <change-rename to="org.as2lib.data.type.Byte" />
+          </entry>
+          <entry type="add" package="org.as2lib.data.type" class="Time">Holder for time distances</entry>
+          <entry type="add" package="org.as2lib.env.event" class="EventSupport">Simple access to CompositeEventDistributorControl</entry>
+          <entry type="add" package="org.as2lib.env.log" class="LogSupport">Simple access to logging</entry>
+        </day>
+		<day value="11">
+          <entry type="add" package="org.as2lib.util" class="Comparable">Interface to compare to instances</entry>
+          <entry type="add" package="org.as2lib.util" class="ObjectUtil" method="compare(obj1, obj2):Boolean" />
+        </day>
+        <day value="10">
+          <entry type="add" package="org.as2lib.env.log" class="LogManager" method="getLoggerByObject">Convenience method that releases you from evaluating the logger name yourself.</entry>
+          <entry type="add" package="org.as2lib.util" class="MethodUtil"></entry>
+          <entry type="add" package="org.as2lib.env.except" class="Throwable" method="initErrorCode/getErrorCode">Error code to get localized message to display to users.</entry>
+          <entry type="add" package="org.as2lib.regexp">Regular Expression framework is added.</entry>
+        </day>
+        <day value="9">
+          <entry type="add" package="org.as2lib.env.log" class="LogManager">Enhanced class to allow the following access: 'private static var logger:Logger = LogManager.getLogger("org.as2lib.MyClass");'.</entry>
+        </day>
+        <day value="1">
+          <entry type="bugfix" package="org.as2lib.aop.weaver" class="SimpleWeaver" method="weaveSuperClassConstructor">Fixed bug with super constructors and multiple advices.</entry>
+          <entry type="bugfix" package="org.as2lib.aop.mtacher" class="WildcardMatcher" method="match">Fixed serious bug with often used pattern '..*.*'.</entry>
+          <entry type="bugfix" package="org.as2lib.aop.weaver" class="SimpleWeaver" method="addAspectForAllTypesInPackage/addAdviceForAllTypesInPackage">Fixed serious bug that prevented weaving aspects and advices by types package as affected types.</entry>
+        </day>
+      </month>
+      <month value="8">
+        <day value="23">
+          <entry type="bugfix" package="org.as2lib.aop.weaver" class="SimpleWeaver" method="addAspectForAllTypes/addAdviceForAllTypes">Fixed major bug that resulted in IllegalArgumentException.</entry>
+        </day>
+      </month>
+    </year>
+  </release>
+</changelog>

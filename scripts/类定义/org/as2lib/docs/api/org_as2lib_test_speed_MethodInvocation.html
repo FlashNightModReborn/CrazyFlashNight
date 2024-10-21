@@ -1,0 +1,1040 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>MethodInvocation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_test_speed_MethodInvocation">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>MethodInvocation</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_test_speed_AbstractTestResult.html">AbstractTestResult</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th>Implements:</th>
+              <td>
+                <ul>
+                  <li>
+                    <a href="org_as2lib_test_speed_TestResult.html">TestResult</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Simon Wacker</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.test.speed.MethodInvocation</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Sunday, 29 May 2005, 09:19:44</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.env.except.IllegalArgumentException;
+import org.as2lib.env.reflect.MethodInfo;
+import org.as2lib.env.reflect.ConstructorInfo;
+import org.as2lib.env.reflect.ClassInfo;
+import org.as2lib.test.speed.TestResult;
+import org.as2lib.test.speed.AbstractTestResult;
+
+/**
+ * {@code MethodInvocation} reflects a profiled method invocation.
+ * 
+ * @author Simon Wacker
+ */
+class org.as2lib.test.speed.MethodInvocation extends AbstractTestResult implements TestResult {
+    
+    /** Designates an unknown type in the type signature. */
+    public static var UNKNOWN:String = "[unknown]";
+    
+    /** Designates type {@code Void} in the type signature. */
+    public static var VOID:String = "Void";
+    
+    /** Invoked method. */
+    private var method:MethodInfo;
+    
+    /** Caller of this method invocation. */
+    private var caller:MethodInvocation;
+    
+    /** Time needed for this method invocation. */
+    private var time:Number;
+    
+    /** Arguments used for this method invocation. */
+    private var args:Array;
+    
+    /** Return value of this method invocation. */
+    private var returnValue;
+    
+    /** Exception thrown during this method invocation. */
+    private var exception;
+    
+    /** The previous method invocation. */
+    private var previousMethodInvocation:MethodInvocation;
+    
+    /**
+     * Constructs a new {@code MethodInvocation} instance.
+     * 
+     * @param method the invoked method
+     * @throws IllegalArgumentException if {@code method} is {@code null} or
+     * {@code undefined}
+     */
+    public function MethodInvocation(method:MethodInfo) {
+        if (!method) {
+            throw new IllegalArgumentException("Argument 'method' [" + method + "] must not be 'null' nor 'undefined'.", this, arguments);
+        }
+        this.method = method;
+    }
+    
+    /**
+     * Returns the invoked method.
+     * 
+     * @return the invoked method
+     */
+    public function getMethod(Void):MethodInfo {
+        return this.method;
+    }
+    
+    /**
+     * Returns the name of this method invocation. This is the method's name plus the
+     * signature of this method invocation.
+     * 
+     * @return the name of this method invocation
+     * @see #getMethodName
+     * @see #getMethodSignature
+     */
+    public function getName(Void):String {
+        return (getMethodName() + getSignature());
+    }
+    
+    /**
+     * Returns the full name of the invoked method.
+     * 
+     * @return the full name of the invoked method
+     */
+    public function getMethodName(Void):String {
+        return this.method.getFullName();
+    }
+    
+    /**
+     * Returns the signature of this method invocation.
+     * 
+     * &lt;p&gt;If any information needed to generate the signature is not defined,
+     * {@link #UNKNOWN} is used as placeholder.
+     * 
+     * @return this method invocation's signature
+     */
+    public function getSignature(Void):String {
+        var result:String = "(";
+        if (this.args.length &gt; 0) {
+            for (var i:Number = 0; i &lt; this.args.length; i++) {
+                if (i != 0) {
+                    result += ", ";
+                }
+                result += getFullTypeName(args[i]);
+            }
+        } else {
+            result += "Void";
+        }
+        if (this.method instanceof ConstructorInfo) {
+            result += ")";
+        } else {
+            result += "):";
+            if (this.returnValue === undefined) {
+                result += VOID;
+            } else {
+                result += getFullTypeName(this.returnValue);
+            }
+        }
+        if (!wasSuccessful()) {
+            result += " throws ";
+            result += getFullTypeName(this.exception);
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the fully qualified type name for the passed-in {@code instance}.
+     * 
+     * @param instance the instance to return the type name for
+     * @return the fully qualified type name for the passed-in {@code instance}.
+     */
+    private function getFullTypeName(instance):String {
+        if (instance == null) return UNKNOWN;
+        var typeName:String = ClassInfo.forInstance(instance).getFullName();
+        if (typeName == null) {
+            return UNKNOWN;
+        } else {
+            return typeName;
+        }
+    }
+    
+    /**
+     * Returns the time in milliseconds needed for this method invocation.
+     * 
+     * @return the time in milliseconds needed for this method invocation
+     */
+    public function getTime(Void):Number {
+        return this.time;
+    }
+    
+    /**
+     * Sets the time in milliseconds needed for this method invocation.
+     * 
+     * @param time the time in milliseconds needed for this method invocation
+     */
+    public function setTime(time:Number):Void {
+        this.time = time;
+    }
+    
+    /**
+     * Returns the arguments used for this method invocation.
+     * 
+     * @return the arguments used for this method invocation
+     */
+    public function getArguments(Void):Array {
+        return this.args;
+    }
+    
+    /**
+     * Sets the arguments used for this method invocation.
+     * 
+     * @param args the arguments used for this method invocation
+     */
+    public function setArguments(args:Array):Void {
+        this.args = args;
+    }
+    
+    /**
+     * Returns this method invocation's return value.
+     * 
+     * @return this method invocation's return value
+     */
+    public function getReturnValue(Void) {
+        return this.returnValue;
+    }
+    
+    /**
+     * Sets the return value of this method invocation.
+     * 
+     * @param returnValue the return value of this method invocation
+     */
+    public function setReturnValue(returnValue):Void {
+        this.exception = undefined;
+        this.returnValue = returnValue;
+    }
+    
+    /**
+     * Returns the exception thrown during this method invocation.
+     * 
+     * @return the exception thrown during this method invocation
+     */
+    public function getException(Void) {
+        return this.exception;
+    }
+    
+    /**
+     * Sets the exception thrown during this method invocation.
+     * 
+     * @param exception the exception thrown during this method invocation
+     */
+    public function setException(exception):Void {
+        this.returnValue = undefined;
+        this.exception = exception;
+    }
+    
+    /**
+     * Returns whether this method invocation was successful. Successful means that it
+     * returned a proper return value and did not throw an exception.
+     * 
+     * @return {@code true} if this method invocation was successful else {@code false}
+     */
+    public function wasSuccessful(Void):Boolean {
+        return (this.exception === undefined);
+    }
+    
+    /**
+     * Returns the method invocation that called the method that resulted in this
+     * method invocation.
+     * 
+     * @return the method invocation that called the method that resulted in this
+     * method.
+     */
+    public function getCaller(Void):MethodInvocation {
+        return this.caller;
+    }
+    
+    /**
+     * Sets the method invocation that called the method that resulted in this method
+     * invocation.
+     * 
+     * @param caller the method invocation that called the method that resulted in this
+     * method invocation.
+     */
+    public function setCaller(caller:MethodInvocation):Void {
+        this.caller = caller;
+    }
+    
+    /**
+     * Returns the previous method invocation.
+     * 
+     * @return the previous method invocation
+     */
+    public function getPreviousMethodInvocation(Void):MethodInvocation {
+        return this.previousMethodInvocation;
+    }
+    
+    /**
+     * Sets the previous method invocation.
+     * 
+     * @param previousMethodInvocation the previous method invocation
+     */
+    public function setPreviousMethodInvocation(previousMethodInvocation:MethodInvocation):Void {
+        this.previousMethodInvocation = previousMethodInvocation;
+    }
+    
+    /**
+     * Checks whether this method invocation was invoked before the passed-in
+     * {@code methodInvocation}.
+     * 
+     * @param methodInvocation the method invocation to make the check upon
+     * @return {@code true} if this method invocation was invoked previously to the
+     * passed-in {@code methodInvocation} else {@code false}
+     */
+    public function isPreviousMethodInvocation(methodInvocation:MethodInvocation):Boolean {
+        if (methodInvocation == this) return false;
+        var previousMethodInvocation:MethodInvocation = methodInvocation.getPreviousMethodInvocation();
+        while (previousMethodInvocation) {
+            if (previousMethodInvocation == this) return true;
+            previousMethodInvocation = previousMethodInvocation.getPreviousMethodInvocation();
+        }
+        return false;
+    }
+    
+    /**
+     * Returns the string representation of this method invocation.
+     * 
+     * @param rootTestResult test result that holds the total values needed for
+     * percentage calculations
+     * @return the string representation of this method invocation
+     */
+    public function toString():String {
+        var rootTestResult:TestResult = arguments[0];
+        if (!rootTestResult) rootTestResult = getThis();
+        var result:String = getTimePercentage(rootTestResult.getTime()) + "%";
+        result += ", " + getThis().getTime() + " ms";
+        result += " - " + getName();
+        return result;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>MethodInvocation</code> reflects a profiled method invocation.</div></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#MethodInvocation">MethodInvocation</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li>
+                  <a href="#UNKNOWN">UNKNOWN</a>
+                </li>
+                <li>
+                  <a href="#VOID">VOID</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#method">method</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#caller">caller</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#time">time</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#args">args</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#returnValue">returnValue</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#exception">exception</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#previousMethodInvocation">previousMethodInvocation</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#getMethod">getMethod</a>
+                </li>
+                <li>
+                  <a href="#getName">getName</a>
+                </li>
+                <li>
+                  <a href="#getMethodName">getMethodName</a>
+                </li>
+                <li>
+                  <a href="#getSignature">getSignature</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#getFullTypeName">getFullTypeName</a>
+                </li>
+                <li>
+                  <a href="#getTime">getTime</a>
+                </li>
+                <li>
+                  <a href="#setTime">setTime</a>
+                </li>
+                <li>
+                  <a href="#getArguments">getArguments</a>
+                </li>
+                <li>
+                  <a href="#setArguments">setArguments</a>
+                </li>
+                <li>
+                  <a href="#getReturnValue">getReturnValue</a>
+                </li>
+                <li>
+                  <a href="#setReturnValue">setReturnValue</a>
+                </li>
+                <li>
+                  <a href="#getException">getException</a>
+                </li>
+                <li>
+                  <a href="#setException">setException</a>
+                </li>
+                <li>
+                  <a href="#wasSuccessful">wasSuccessful</a>
+                </li>
+                <li>
+                  <a href="#getCaller">getCaller</a>
+                </li>
+                <li>
+                  <a href="#setCaller">setCaller</a>
+                </li>
+                <li>
+                  <a href="#getPreviousMethodInvocation">getPreviousMethodInvocation</a>
+                </li>
+                <li>
+                  <a href="#setPreviousMethodInvocation">setPreviousMethodInvocation</a>
+                </li>
+                <li>
+                  <a href="#isPreviousMethodInvocation">isPreviousMethodInvocation</a>
+                </li>
+                <li>
+                  <a href="#toString">toString</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_test_speed_AbstractTestResult.html">AbstractTestResult</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_test_speed_AbstractTestResult.html#getThis" class="privatInline">getThis</a>, <a href="org_as2lib_test_speed_AbstractTestResult.html#getTimePercentage">getTimePercentage</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="MethodInvocation">MethodInvocation</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>MethodInvocation</b> (
+</div>
+                <div><span class="code">method:<a href="org_as2lib_env_reflect_MethodInfo.html">MethodInfo</a>)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>MethodInvocation</code> instance.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">method<span class="itemSeparator">:</span></div>
+                    <div>the invoked method</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalArgumentException.html">org.as2lib.env.except.IllegalArgumentException</a> if <code>method</code> is <code>null</code> or<br /> <code>undefined</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="UNKNOWN">UNKNOWN</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>UNKNOWN</b>:String = <span class="codeString">"[unknown]"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Designates an unknown type in the type signature.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="VOID">VOID</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static <b>VOID</b>:String = <span class="codeString">"Void"</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Designates type <code>Void</code> in the type signature.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="args">args</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>args</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Arguments used for this method invocation.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="caller">caller</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>caller</b>:<a href="org_as2lib_test_speed_MethodInvocation.html">MethodInvocation</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Caller of this method invocation.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="exception">exception</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>exception</b>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Exception thrown during this method invocation.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="method">method</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>method</b>:<a href="org_as2lib_env_reflect_MethodInfo.html">MethodInfo</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Invoked method.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="previousMethodInvocation">previousMethodInvocation</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>previousMethodInvocation</b>:<a href="org_as2lib_test_speed_MethodInvocation.html">MethodInvocation</a>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">The previous method invocation.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="returnValue">returnValue</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>returnValue</b>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Return value of this method invocation.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="time">time</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>time</b>:Number
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Time needed for this method invocation.</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getArguments">getArguments</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getArguments</b> (
+</div>
+                <div><span class="code">Void) : Array</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the arguments used for this method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the arguments used for this method invocation</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getCaller">getCaller</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getCaller</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_test_speed_MethodInvocation.html">MethodInvocation</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the method invocation that called the method that resulted in this<br /> method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the method invocation that called the method that resulted in this<br /> method.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getException">getException</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getException</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the exception thrown during this method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the exception thrown during this method invocation</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getFullTypeName">getFullTypeName</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getFullTypeName</b> (
+</div>
+                <div><span class="code">instance) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the fully qualified type name for the passed-in <code>instance</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">instance<span class="itemSeparator">:</span></div>
+                    <div>the instance to return the type name for</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the fully qualified type name for the passed-in <code>instance</code>.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getMethod">getMethod</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getMethod</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_env_reflect_MethodInfo.html">MethodInfo</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the invoked method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the invoked method</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getMethodName">getMethodName</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getMethodName</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the full name of the invoked method.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the full name of the invoked method</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getName">getName</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getName</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the name of this method invocation. This is the method's name plus the<br /> signature of this method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the name of this method invocation</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_test_speed_MethodInvocation.html#getMethodName">getMethodName</a><br />#getMethodSignature</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_test_unit_TestResult.html#getName">org.as2lib.test.unit.TestResult.getName</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getPreviousMethodInvocation">getPreviousMethodInvocation</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getPreviousMethodInvocation</b> (
+</div>
+                <div><span class="code">Void) : <a href="org_as2lib_test_speed_MethodInvocation.html">MethodInvocation</a></span></div>
+              </div>
+            </div>
+            <div class="description">Returns the previous method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the previous method invocation</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getReturnValue">getReturnValue</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getReturnValue</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Returns this method invocation's return value.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">this method invocation's return value</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getSignature">getSignature</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getSignature</b> (
+</div>
+                <div><span class="code">Void) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the signature of this method invocation.<p>If any information needed to generate the signature is not defined,<br /> <a href="org_as2lib_test_speed_MethodInvocation.html#UNKNOWN">UNKNOWN</a> is used as placeholder.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">this method invocation's signature</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getTime">getTime</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTime</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the time in milliseconds needed for this method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the time in milliseconds needed for this method invocation</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item">TestResult#getTime</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="isPreviousMethodInvocation">isPreviousMethodInvocation</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>isPreviousMethodInvocation</b> (
+</div>
+                <div><span class="code">methodInvocation:<a href="org_as2lib_test_speed_MethodInvocation.html">MethodInvocation</a>) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Checks whether this method invocation was invoked before the passed-in<br /> <code>methodInvocation</code>.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">methodInvocation<span class="itemSeparator">:</span></div>
+                    <div>the method invocation to make the check upon</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if this method invocation was invoked previously to the<br /> passed-in <code>methodInvocation</code> else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setArguments">setArguments</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setArguments</b> (
+</div>
+                <div><span class="code">args:Array) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the arguments used for this method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">args<span class="itemSeparator">:</span></div>
+                    <div>the arguments used for this method invocation</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setCaller">setCaller</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setCaller</b> (
+</div>
+                <div><span class="code">caller:<a href="org_as2lib_test_speed_MethodInvocation.html">MethodInvocation</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the method invocation that called the method that resulted in this method<br /> invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">caller<span class="itemSeparator">:</span></div>
+                    <div>the method invocation that called the method that resulted in this<br /> method invocation.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setException">setException</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setException</b> (
+</div>
+                <div><span class="code">exception) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the exception thrown during this method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">exception<span class="itemSeparator">:</span></div>
+                    <div>the exception thrown during this method invocation</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setPreviousMethodInvocation">setPreviousMethodInvocation</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setPreviousMethodInvocation</b> (
+</div>
+                <div><span class="code">previousMethodInvocation:<a href="org_as2lib_test_speed_MethodInvocation.html">MethodInvocation</a>) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the previous method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">previousMethodInvocation<span class="itemSeparator">:</span></div>
+                    <div>the previous method invocation</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setReturnValue">setReturnValue</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setReturnValue</b> (
+</div>
+                <div><span class="code">returnValue) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the return value of this method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">returnValue<span class="itemSeparator">:</span></div>
+                    <div>the return value of this method invocation</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="setTime">setTime</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>setTime</b> (
+</div>
+                <div><span class="code">time:Number) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Sets the time in milliseconds needed for this method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">time<span class="itemSeparator">:</span></div>
+                    <div>the time in milliseconds needed for this method invocation</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toString">toString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>toString</b> (
+</div>
+                <div><span class="code">) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Returns the string representation of this method invocation.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Parameters:</span><div class="item">
+                    <div class="floatbox code colorizedCode">rootTestResult<span class="itemSeparator">:</span></div>
+                    <div>test result that holds the total values needed for<br /> percentage calculations</div>
+                  </div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the string representation of this method invocation</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_core_BasicClass.html#toString">org.as2lib.core.BasicClass.toString</a></div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Specified by:</span><div class="item"><a href="org_as2lib_core_BasicInterface.html#toString">org.as2lib.core.BasicInterface.toString</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="wasSuccessful">wasSuccessful</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>wasSuccessful</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns whether this method invocation was successful. Successful means that it<br /> returned a proper return value and did not throw an exception.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if this method invocation was successful else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:29:35</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<logging>
+	<logger name="global" level="ALL">
+		<publisher name="logging.TraceOutput" formatter="de.audiofarm.code.logger.CustomFormatter"/>
+	</logger>
+</logging>

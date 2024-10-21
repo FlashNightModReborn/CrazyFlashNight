@@ -1,0 +1,696 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>PosixPattern</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_regexp_PosixPattern">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+C<a href="#Classproperties" accesskey="l">l</a>ass properties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>PosixPattern</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_regexp_Pattern.html">Pattern</a> &lt; <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Igor Sadovskiy</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.regexp.PosixPattern</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Friday, 09 September 2005, 18:31:34</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.regexp.AsciiUtil;
+import org.as2lib.regexp.Pattern;
+import org.as2lib.regexp.node.*;
+
+import org.as2lib.util.StringUtil;
+import org.as2lib.data.holder.map.HashMap;
+/**
+ * {@code PosixPattern} provides implementations of the parsing engine for 
+ * POSIX character classes and Unicode blocks and categories.
+ * 
+ * @author Igor Sadovskiy
+ * @see org.as2lib.regexp.Matcher
+ * @see org.as2lib.regexp.Pattern
+ */
+
+
+class org.as2lib.regexp.PosixPattern extends Pattern {
+        
+    private static var families:HashMap = null;
+
+    private static var categories:HashMap = null;
+    
+    private static var familyNames:Array = [ 
+        "BasicLatin",
+        "Latin-1Supplement",
+        "LatinExtended-A",
+        "LatinExtended-Bound",
+        "IPAExtensions",
+        "SpacingModifierLetters",
+        "CombiningDiacriticalMarks",
+        "Greek",
+        "Cyrillic",
+        "Armenian",
+        "Hebrew",
+        "Arabic",
+        "Syriac",
+        "Thaana",
+        "Devanagari",
+        "Bengali",
+        "Gurmukhi",
+        "Gujarati",
+        "Oriya",
+        "Tamil",
+        "Telugu",
+        "Kannada",
+        "Malayalam",
+        "Sinhala",
+        "Thai",
+        "Lao",
+        "Tibetan",
+        "Myanmar",
+        "Georgian",
+        "HangulJamo",
+        "Ethiopic",
+        "Cherokee",
+        "UnifiedCanadianAboriginalSyllabics",
+        "Ogham",
+        "Runic",
+        "Khmer",
+        "Mongolian",
+        "LatinExtendedAdditional",
+        "GreekExtended",
+        "GeneralPunctuation",
+        "SuperscriptsandSubscripts",
+        "CurrencySymbols",
+        "CombiningMarksforSymbols",
+        "LetterlikeSymbols",
+        "NumberForms",
+        "Arrows",
+        "MathematicalOperators",
+        "MiscellaneousTechnical",
+        "ControlPictures",
+        "OpticalCharacterRecognition",
+        "EnclosedAlphanumerics",
+        "BoxDrawing",
+        "BlockElements",
+        "GeometricShapes",
+        "MiscellaneousSymbols",
+        "Dingbats",
+        "BraillePatterns",
+        "CJKRadicalsSupplement",
+        "KangxiRadicals",
+        "IdeographicDescriptionCharacters",
+        "CJKSymbolsandPunctuation",
+        "Hiragana",
+        "Katakana",
+        "Bopomofo",
+        "HangulCompatibilityJamo",
+        "Kanbun",
+        "BopomofoExtended",
+        "EnclosedCJKLettersandMonths",
+        "CJKCompatibility",
+        "CJKUnifiedIdeographsExtensionA",
+        "CJKUnifiedIdeographs",
+        "YiSyllables",
+        "YiRadicals",
+        "HangulSyllables",
+        "HighSurrogates",
+        "HighPrivateUseSurrogates",
+        "LowSurrogates",
+        "PrivateUse",
+        "CJKCompatibilityIdeographs",
+        "AlphabeticPresentationForms",
+        "ArabicPresentationForms-A",
+        "CombiningHalfMarks",
+        "CJKCompatibilityForms",
+        "SmallFormVariants",
+        "ArabicPresentationForms-Bound",
+        "Specials",
+        "HalfwidthandFullwidthForms"
+    ];
+
+    private static var categoryNames:Array = [ 
+        "Cn",                   // UNASSIGNED                = 0,
+        "Lu",                   // UPPERCASE_LETTER            = 1,
+        "Ll",                   // LOWERCASE_LETTER            = 2,
+        "Lt",                   // TITLECASE_LETTER            = 3,
+        "Lm",                   // MODIFIER_LETTER            = 4,
+        "Lo",                   // OTHER_LETTER                = 5,
+        "Mn",                   // NON_SPACING_MARK            = 6,
+        "Me",                   // ENCLOSING_MARK            = 7,
+        "Mc",                   // COMBINING_SPACING_MARK   = 8,
+        "Nd",                   // DECIMAL_DIGIT_NUMBER        = 9,
+        "Nl",                   // LETTER_NUMBER            = 10,
+        "No",                   // OTHER_NUMBER                = 11,
+        "Zs",                   // SPACE_SEPARATOR            = 12,
+        "Zl",                   // LINE_SEPARATOR            = 13,
+        "Zp",                   // PARAGRAPH_SEPARATOR        = 14,
+        "Cc",                   // CNTRL                    = 15,
+        "Cf",                   // FORMAT                    = 16,
+        "Co",                   // PRIVATE_USE                = 18,
+        "Cs",                   // SURROGATE                = 19,
+        "Pd",                   // DASH_PUNCTUATION            = 20,
+        "Ps",                   // START_PUNCTUATION        = 21,
+        "Pe",                   // END_PUNCTUATION            = 22,
+        "Pc",                   // CONNECTOR_PUNCTUATION    = 23,
+        "Po",                   // OTHER_PUNCTUATION        = 24,
+        "Sm",                   // MATH_SYMBOL                = 25,
+        "Sc",                   // CURRENCY_SYMBOL            = 26,
+        "Sk",                   // MODIFIER_SYMBOL            = 27,
+        "So",                   // OTHER_SYMBOL                = 28;
+
+        "L",                    // LETTER
+        "M",                    // MARK
+        "N",                    // NUMBER
+        "Z",                    // SEPARATOR
+        "C",                    // CONTROL
+        "P",                    // PUNCTUATION
+        "S",                    // SYMBOL
+
+        "LD",                   // LETTER_OR_DIGIT
+        "L1",                   // Latin-1
+
+        "all",                  // ALL
+        "ASCII",                // ASCII
+
+        "Alnum",                // Alphanumeric characters.
+        "Alpha",                // Alphabetic characters.
+        "Blank",                // Space and tab characters.
+        "Cntrl",                // Control characters.
+        "Digit",                // Numeric characters.
+        "Graph",                // Characters that are printable and are also visible.
+                                // (A space is printable, but "not visible, while an `a' is both.)
+        "Lower",                // Lower-case alphabetic characters.
+        "Print",                // Printable characters (characters that are not control characters.)
+        "Punct",                // Punctuation characters (characters that are not letter,
+                                // digits, control charact ers, or space characters).
+        "Space",                // Space characters (such as space, tab, and formfeed, to name a few).
+        "Upper",                // Upper-case alphabetic characters.
+        "XDigit"                // Characters that are hexadecimal digits.
+    ];
+
+    private static var familyNodes:Array = [ 
+        new Range(0x0000007F),      // Basic Latin
+        new Range(0x008000FF),      // Latin-1 Supplement
+        new Range(0x0100017F),      // Latin Extended-A
+        new Range(0x0180024F),      // Latin Extended-Bound
+        new Range(0x025002AF),      // IPA Extensions
+        new Range(0x02B002FF),      // Spacing Modifier Letters
+        new Range(0x0300036F),      // Combining Diacritical Marks
+        new Range(0x037003FF),      // Greek
+        new Range(0x040004FF),      // Cyrillic
+        new Range(0x0530058F),      // Armenian
+        new Range(0x059005FF),      // Hebrew
+        new Range(0x060006FF),      // Arabic
+        new Range(0x0700074F),      // Syriac
+        new Range(0x078007BF),      // Thaana
+        new Range(0x0900097F),      // Devanagari
+        new Range(0x098009FF),      // Bengali
+        new Range(0x0A000A7F),      // Gurmukhi
+        new Range(0x0A800AFF),      // Gujarati
+        new Range(0x0B000B7F),      // Oriya
+        new Range(0x0B800BFF),      // Tamil
+        new Range(0x0C000C7F),      // Telugu
+        new Range(0x0C800CFF),      // Kannada
+        new Range(0x0D000D7F),      // Malayalam
+        new Range(0x0D800DFF),      // Sinhala
+        new Range(0x0E000E7F),      // Thai
+        new Range(0x0E800EFF),      // Lao
+        new Range(0x0F000FFF),      // Tibetan
+        new Range(0x1000109F),      // Myanmar
+        new Range(0x10A010FF),      // Georgian
+        new Range(0x110011FF),      // Hangul Jamo
+        new Range(0x1200137F),      // Ethiopic
+        new Range(0x13A013FF),      // Cherokee
+        new Range(0x1400167F),      // Unified Canadian Aboriginal Syllabics
+        new Range(0x1680169F),      // Ogham
+        new Range(0x16A016FF),      // Runic
+        new Range(0x178017FF),      // Khmer
+        new Range(0x180018AF),      // Mongolian
+        new Range(0x1E001EFF),      // Latin Extended Additional
+        new Range(0x1F001FFF),      // Greek Extended
+        new Range(0x2000206F),      // General Punctuation
+        new Range(0x2070209F),      // Superscripts and Subscripts
+        new Range(0x20A020CF),      // Currency Symbols
+        new Range(0x20D020FF),      // Combining Marks for Symbols
+        new Range(0x2100214F),      // Letterlike Symbols
+        new Range(0x2150218F),      // Number Forms
+        new Range(0x219021FF),      // Arrows
+        new Range(0x220022FF),      // Mathematical Operators
+        new Range(0x230023FF),      // Miscellaneous Technical
+        new Range(0x2400243F),      // Control Pictures
+        new Range(0x2440245F),      // Optical Character Recognition
+        new Range(0x246024FF),      // Enclosed Alphanumerics
+        new Range(0x2500257F),      // Box Drawing
+        new Range(0x2580259F),      // Block Elements
+        new Range(0x25A025FF),      // Geometric Shapes
+        new Range(0x260026FF),      // Miscellaneous Symbols
+        new Range(0x270027BF),      // Dingbats
+        new Range(0x280028FF),      // Braille Patterns
+        new Range(0x2E802EFF),      // CJK Radicals Supplement
+        new Range(0x2F002FDF),      // Kangxi Radicals
+        new Range(0x2FF02FFF),      // Ideographic Description Characters
+        new Range(0x3000303F),      // CJK Symbols and Punctuation
+        new Range(0x3040309F),      // Hiragana
+        new Range(0x30A030FF),      // Katakana
+        new Range(0x3100312F),      // Bopomofo
+        new Range(0x3130318F),      // Hangul Compatibility Jamo
+        new Range(0x3190319F),      // Kanbun
+        new Range(0x31A031BF),      // Bopomofo Extended
+        new Range(0x320032FF),      // Enclosed CJK Letters and Months
+        new Range(0x330033FF),      // CJK Compatibility
+        new Range(0x34004DB5),      // CJK Unified Ideographs Extension A
+        new Range(0x4E009FFF),      // CJK Unified Ideographs
+        new Range(0xA000A48F),      // Yi Syllables
+        new Range(0xA490A4CF),      // Yi Radicals
+        new Range(0xAC00D7A3),      // Hangul Syllables
+        new Range(0xD800DB7F),      // High Surrogates
+        new Range(0xDB80DBFF),      // High Private Use Surrogates
+        new Range(0xDC00DFFF),      // Low Surrogates
+        new Range(0xE000F8FF),      // Private Use
+        new Range(0xF900FAFF),      // CJK Compatibility Ideographs
+        new Range(0xFB00FB4F),      // Alphabetic Presentation Forms
+        new Range(0xFB50FDFF),      // Arabic Presentation Forms-A
+        new Range(0xFE20FE2F),      // Combining Half Marks
+        new Range(0xFE30FE4F),      // CJK Compatibility Forms
+        new Range(0xFE50FE6F),      // Small Form Variants
+        new Range(0xFE70FEFE),      // Arabic Presentation Forms-Bound
+        new Specials(),             // Specials
+        new Range(0xFF00FFEF)       // Halfwidth and Fullwidth Forms
+    ];
+
+    private static var categoryNodes:Array = [ 
+        new Category(1&lt;&lt;0),         // UNASSIGNED               = 0,
+        new Category(1&lt;&lt;1),         // UPPERCASE_LETTER            = 1,
+        new Category(1&lt;&lt;2),         // LOWERCASE_LETTER            = 2,
+        new Category(1&lt;&lt;3),         // TITLECASE_LETTER            = 3,
+        new Category(1&lt;&lt;4),         // MODIFIER_LETTER          = 4,
+        new Category(1&lt;&lt;5),         // OTHER_LETTER             = 5,
+        new Category(1&lt;&lt;6),         // NON_SPACING_MARK            = 6,
+        new Category(1&lt;&lt;7),         // ENCLOSING_MARK            = 7,
+        new Category(1&lt;&lt;8),         // COMBINING_SPACING_MARK    = 8,
+        new Category(1&lt;&lt;9),         // DECIMAL_DIGIT_NUMBER     = 9,
+        new Category(1&lt;&lt;10),        // LETTER_NUMBER            = 10,
+        new Category(1&lt;&lt;11),        // OTHER_NUMBER             = 11,
+        new Category(1&lt;&lt;12),        // SPACE_SEPARATOR            = 12,
+        new Category(1&lt;&lt;13),        // LINE_SEPARATOR            = 13,
+        new Category(1&lt;&lt;14),        // PARAGRAPH_SEPARATOR      = 14,
+        new Category(1&lt;&lt;15),        // CNTRL                    = 15,
+        new Category(1&lt;&lt;16),        // FORMAT                    = 16,
+        new Category(1&lt;&lt;18),        // PRIVATE_USE              = 18,
+        new Category(1&lt;&lt;19),        // SURROGATE                = 19,
+        new Category(1&lt;&lt;20),        // DASH_PUNCTUATION            = 20,
+        new Category(1&lt;&lt;21),        // START_PUNCTUATION        = 21,
+        new Category(1&lt;&lt;22),        // END_PUNCTUATION            = 22,
+        new Category(1&lt;&lt;23),        // CONNECTOR_PUNCTUATION    = 23,
+        new Category(1&lt;&lt;24),        // OTHER_PUNCTUATION        = 24,
+        new Category(1&lt;&lt;25),        // MATH_SYMBOL              = 25,
+        new Category(1&lt;&lt;26),        // CURRENCY_SYMBOL            = 26,
+        new Category(1&lt;&lt;27),        // MODIFIER_SYMBOL            = 27,
+        new Category(1&lt;&lt;28),        // OTHER_SYMBOL             = 28;
+
+        new Category(0x0000003E),   // LETTER
+        new Category(0x000001C0),   // MARK
+        new Category(0x00000E00),   // NUMBER
+        new Category(0x00007000),   // SEPARATOR
+        new Category(0x000D8000),   // CONTROL
+        new Category(0x01F00000),   // PUNCTUATION
+        new Category(0x1E000000),   // SYMBOL
+
+        new Category(0x0000023E),   // LETTER_OR_DIGIT
+        new Range(0x000000FF),      // Latin-1
+
+        new All(),                  // ALL
+        new Range(0x0000007F),      // ASCII
+
+        new Posix(AsciiUtil.ALNUM),         // Alphanumeric characters.
+        new Posix(AsciiUtil.ALPHA),         // Alphabetic characters.
+        new Posix(AsciiUtil.BLANK),         // Space and tab characters.
+        new Posix(AsciiUtil.CNTRL),         // Control characters.
+        new Range((0x30&lt;&lt;16)|0x39),            // Numeric characters.
+        new Posix(AsciiUtil.GRAPH),         // Characters that are printable and are also visible.
+                                            // (A space is printable, but "not visible, while an `a' is both.)
+        new Range((0x61&lt;&lt;16)|0x7A),         // Lower-case alphabetic characters.
+        new Range(0x0020007E),              // Printable characters (characters that are not control characters.)
+        new Posix(AsciiUtil.PUNCT),         // Punctuation characters (characters that are not letter,
+                                            // digits, control charact ers, or space characters).
+        new Posix(AsciiUtil.SPACE),         // Space characters (such as space, tab, and formfeed, to name a few).
+        new Range((0x41&lt;&lt;16)|0x5A),            // Upper-case alphabetic characters.
+        new Posix(AsciiUtil.XDIGIT)         // Characters that are hexadecimal digits.
+    ];
+    
+    
+    private function parseFamily(flag:Boolean, singleLetter:Boolean):Node {
+        nextChar();
+        var name: String;
+
+        if (singleLetter) {
+            name = chr(temp[cursor]);
+            readChar();
+        } else {
+            var i:Number = cursor;
+            markChar(0x7D);
+            while(readChar() != 0x7D) {
+                // stuff
+            }
+            markChar(0);
+            var j:Number = cursor;
+            if (j &gt; patternLength) {
+                throwError("Unclosed character family", arguments);
+            }
+            if (i + 1 &gt;= j) {
+                throwError("Empty character family", arguments);
+            }
+            name = fromCharCodeArray(temp.slice(i, j-1));
+        }
+
+        if (StringUtil.startsWith(name, "In")) {
+            name = name.substring(2, name.length);
+            return getFamilyNode(name).dup(flag);
+        }
+        if (StringUtil.startsWith(name, "Is")) {
+            name = name.substring(2, name.length);
+        }
+        return getCategoryNode(name).dup(flag);
+    }
+    
+    private function getFamilyNode(name:String):Node {
+        if (families == null) {
+            var fns:Number = familyNodes.length;
+            families = new HashMap();
+            for (var x=0; x&lt;fns; x++) {
+                families.put(familyNames[x], familyNodes[x]);
+            }
+        }
+        var n:Node = Node(families.get(name));
+        if (n != null) return n;
+
+        throwFamilyError(name, "Unknown character family", arguments);
+    }    
+    
+    private function getCategoryNode(name:String):Node {
+        if (categories == null) {
+            var cns:Number = categoryNodes.length;
+            categories = new HashMap();
+            for (var x=0; x&lt;cns; x++) {
+                categories.put(categoryNames[x], categoryNodes[x]);
+            }
+        }
+        var n:Node = Node(categories.get(name));
+        if (n != null) return n;
+
+        throwFamilyError(name, "Unknown character category", arguments);
+    }
+
+    private function throwFamilyError(name:String, type:String, args:FunctionArguments):Void {
+        throwError(type + " " + chr(0x7B) + name + chr(0x7D), args);
+    }
+    
+    public function PosixPattern(newPattern:String, newFlags:Number) {
+        super(newPattern, newFlags);
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>PosixPattern</code> provides implementations of the parsing engine for <br /> POSIX character classes and Unicode blocks and categories.</div><div class="classFields">
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_regexp_Matcher.html">Matcher</a><br /><a href="org_as2lib_regexp_Pattern.html">Pattern</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#PosixPattern">PosixPattern</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#families">families</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#categories">categories</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#familyNames">familyNames</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#categoryNames">categoryNames</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#familyNodes">familyNodes</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#categoryNodes">categoryNodes</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class properties inherited from <span class="superclass"><a href="org_as2lib_regexp_Pattern.html">Pattern</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_Pattern.html#CASE_INSENSITIVE">CASE_INSENSITIVE</a>, <a href="org_as2lib_regexp_Pattern.html#COMMENTS">COMMENTS</a>, <a href="org_as2lib_regexp_Pattern.html#DOTALL">DOTALL</a>, <a href="org_as2lib_regexp_Pattern.html#MULTILINE">MULTILINE</a>, <a href="org_as2lib_regexp_Pattern.html#UNICODE_CASE">UNICODE_CASE</a>, <a href="org_as2lib_regexp_Pattern.html#UNIX_LINES">UNIX_LINES</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance properties</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance properties inherited from <span class="superclass"><a href="org_as2lib_regexp_Pattern.html">Pattern</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_Pattern.html#buffer" class="privatInline">buffer</a>, <a href="org_as2lib_regexp_Pattern.html#ch">ch</a>, <a href="org_as2lib_regexp_Pattern.html#comp">comp</a>, <a href="org_as2lib_regexp_Pattern.html#cursor" class="privatInline">cursor</a>, <a href="org_as2lib_regexp_Pattern.html#done">done</a>, <a href="org_as2lib_regexp_Pattern.html#endRange">endRange</a>, <a href="org_as2lib_regexp_Pattern.html#first">first</a>, <a href="org_as2lib_regexp_Pattern.html#flags" class="privatInline">flags</a>, <a href="org_as2lib_regexp_Pattern.html#groupCount" class="privatInline">groupCount</a>, <a href="org_as2lib_regexp_Pattern.html#groupNodes" class="privatInline">groupNodes</a>, <a href="org_as2lib_regexp_Pattern.html#localCount" class="privatInline">localCount</a>, <a href="org_as2lib_regexp_Pattern.html#m">m</a>, <a href="org_as2lib_regexp_Pattern.html#matchRoot">matchRoot</a>, <a href="org_as2lib_regexp_Pattern.html#oneLetter">oneLetter</a>, <a href="org_as2lib_regexp_Pattern.html#pattern" class="privatInline">pattern</a>, <a href="org_as2lib_regexp_Pattern.html#patternLength" class="privatInline">patternLength</a>, <a href="org_as2lib_regexp_Pattern.html#prev">prev</a>, <a href="org_as2lib_regexp_Pattern.html#root" class="privatInline">root</a>, <a href="org_as2lib_regexp_Pattern.html#temp" class="privatInline">temp</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Class methods</span><div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Class methods inherited from <span class="superclass"><a href="org_as2lib_regexp_Pattern.html">Pattern</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_Pattern.html#matches">matches</a>, <a href="org_as2lib_regexp_Pattern.html#printObjectTree" class="privatInline">printObjectTree</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#parseFamily">parseFamily</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#getFamilyNode">getFamilyNode</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#getCategoryNode">getCategoryNode</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#throwFamilyError">throwFamilyError</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_regexp_Pattern.html">Pattern</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_regexp_Pattern.html#acceptChar" class="privatInline">acceptChar</a>, <a href="org_as2lib_regexp_Pattern.html#compile" class="privatInline">compile</a>, <a href="org_as2lib_regexp_Pattern.html#getFlags">getFlags</a>, <a href="org_as2lib_regexp_Pattern.html#getMatcher">getMatcher</a>, <a href="org_as2lib_regexp_Pattern.html#getPattern">getPattern</a>, <a href="org_as2lib_regexp_Pattern.html#hasFlag" class="privatInline">hasFlag</a>, <a href="org_as2lib_regexp_Pattern.html#isLineSeparator" class="privatInline">isLineSeparator</a>, <a href="org_as2lib_regexp_Pattern.html#markChar" class="privatInline">markChar</a>, <a href="org_as2lib_regexp_Pattern.html#nextChar" class="privatInline">nextChar</a>, <a href="org_as2lib_regexp_Pattern.html#nextEscapedChar" class="privatInline">nextEscapedChar</a>, <a href="org_as2lib_regexp_Pattern.html#parseExpression" class="privatInline">parseExpression</a>, <a href="org_as2lib_regexp_Pattern.html#parsePastLine" class="privatInline">parsePastLine</a>, <a href="org_as2lib_regexp_Pattern.html#parsePastWhitespace" class="privatInline">parsePastWhitespace</a>, <a href="org_as2lib_regexp_Pattern.html#parseSequence" class="privatInline">parseSequence</a>, <a href="org_as2lib_regexp_Pattern.html#peekChar" class="privatInline">peekChar</a>, <a href="org_as2lib_regexp_Pattern.html#peekPastLine" class="privatInline">peekPastLine</a>, <a href="org_as2lib_regexp_Pattern.html#peekPastWhitespace" class="privatInline">peekPastWhitespace</a>, <a href="org_as2lib_regexp_Pattern.html#readChar" class="privatInline">readChar</a>, <a href="org_as2lib_regexp_Pattern.html#readEscapedChar" class="privatInline">readEscapedChar</a>, <a href="org_as2lib_regexp_Pattern.html#skipChar" class="privatInline">skipChar</a>, <a href="org_as2lib_regexp_Pattern.html#split">split</a>, <a href="org_as2lib_regexp_Pattern.html#throwError" class="privatInline">throwError</a>, <a href="org_as2lib_regexp_Pattern.html#unreadChar" class="privatInline">unreadChar</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="PosixPattern">PosixPattern</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>PosixPattern</b> (
+
+</div>
+                <div><span class="code">newPattern:String,
+newFlags:Number)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Classproperties">Class properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="categories">categories</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>categories</b>:<a href="org_as2lib_data_holder_map_HashMap.html">HashMap</a> = <span class="codeIdentifier">null</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="categoryNames">categoryNames</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>categoryNames</b>:Array = [ <span class="codeString">"Cn"</span>, <span class="codeString">"Lu"</span>, <span class="codeString">"Ll"</span>, <span class="codeString">"Lt"</span>, <span class="codeString">"Lm"</span>, <span class="codeString">"Lo"</span>, <span class="codeString">"Mn"</span>, <span class="codeString">"Me"</span>, <span class="codeString">"Mc"</span>, <span class="codeString">"Nd"</span>, <span class="codeString">"Nl"</span>, <span class="codeString">"No"</span>, <span class="codeString">"Zs"</span>, <span class="codeString">"Zl"</span>, <span class="codeString">"Zp"</span>, <span class="codeString">"Cc"</span>, <span class="codeString">"Cf"</span>, <span class="codeString">"Co"</span>, <span class="codeString">"Cs"</span>, <span class="codeString">"Pd"</span>, <span class="codeString">"Ps"</span>, <span class="codeString">"Pe"</span>, <span class="codeString">"Pc"</span>, <span class="codeString">"Po"</span>, <span class="codeString">"Sm"</span>, <span class="codeString">"Sc"</span>, <span class="codeString">"Sk"</span>, <span class="codeString">"So"</span>, <span class="codeString">"L"</span>, <span class="codeString">"M"</span>, <span class="codeString">"N"</span>, <span class="codeString">"Z"</span>, <span class="codeString">"C"</span>, <span class="codeString">"P"</span>, <span class="codeString">"S"</span>, <span class="codeString">"LD"</span>, <span class="codeString">"L1"</span>, <span class="codeString">"all"</span>, <span class="codeString">"ASCII"</span>, <span class="codeString">"Alnum"</span>, <span class="codeString">"Alpha"</span>, <span class="codeString">"Blank"</span>, <span class="codeString">"Cntrl"</span>, <span class="codeString">"Digit"</span>, <span class="codeString">"Graph"</span>, <span class="codeString">"Lower"</span>, <span class="codeString">"Print"</span>, <span class="codeString">"Punct"</span>, <span class="codeString">"Space"</span>, <span class="codeString">"Upper"</span>, <span class="codeString">"XDigit"</span> ]
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="categoryNodes">categoryNodes</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>categoryNodes</b>:Array = [ <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">0</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">1</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">2</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">3</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">4</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">5</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">6</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">7</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">8</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">9</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">10</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">11</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">12</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">13</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">14</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">15</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">16</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">18</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">19</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">20</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">21</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">22</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">23</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">24</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">25</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">26</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">27</span>), <span class="codeKeyword">new</span> Category(<span class="codeNumber">1</span><<<span class="codeNumber">28</span>), <span class="codeKeyword">new</span> Category(0x0000003E), <span class="codeKeyword">new</span> Category(0x000001C0), <span class="codeKeyword">new</span> Category(0x00000E00), <span class="codeKeyword">new</span> Category(0x00007000), <span class="codeKeyword">new</span> Category(0x000D8000), <span class="codeKeyword">new</span> Category(0x01F00000), <span class="codeKeyword">new</span> Category(0x1E000000), <span class="codeKeyword">new</span> Category(0x0000023E), <span class="codeKeyword">new</span> Range(0x000000FF), <span class="codeKeyword">new</span> All(), <span class="codeKeyword">new</span> Range(0x0000007F), <span class="codeKeyword">new</span> Posix(AsciiUtil.ALNUM), <span class="codeKeyword">new</span> Posix(AsciiUtil.ALPHA), <span class="codeKeyword">new</span> Posix(AsciiUtil.BLANK), <span class="codeKeyword">new</span> Posix(AsciiUtil.CNTRL), <span class="codeKeyword">new</span> Range((0x30<<<span class="codeNumber">16</span>)|0x39), <span class="codeKeyword">new</span> Posix(AsciiUtil.GRAPH), <span class="codeKeyword">new</span> Range((0x61<<<span class="codeNumber">16</span>)|0x7A), <span class="codeKeyword">new</span> Range(0x0020007E), <span class="codeKeyword">new</span> Posix(AsciiUtil.PUNCT), <span class="codeKeyword">new</span> Posix(AsciiUtil.SPACE), <span class="codeKeyword">new</span> Range((0x41<<<span class="codeNumber">16</span>)|0x5A), <span class="codeKeyword">new</span> Posix(AsciiUtil.XDIGIT) ]
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="families">families</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>families</b>:<a href="org_as2lib_data_holder_map_HashMap.html">HashMap</a> = <span class="codeIdentifier">null</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="familyNames">familyNames</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>familyNames</b>:Array = [ <span class="codeString">"BasicLatin"</span>, <span class="codeString">"Latin-1Supplement"</span>, <span class="codeString">"LatinExtended-A"</span>, <span class="codeString">"LatinExtended-Bound"</span>, <span class="codeString">"IPAExtensions"</span>, <span class="codeString">"SpacingModifierLetters"</span>, <span class="codeString">"CombiningDiacriticalMarks"</span>, <span class="codeString">"Greek"</span>, <span class="codeString">"Cyrillic"</span>, <span class="codeString">"Armenian"</span>, <span class="codeString">"Hebrew"</span>, <span class="codeString">"Arabic"</span>, <span class="codeString">"Syriac"</span>, <span class="codeString">"Thaana"</span>, <span class="codeString">"Devanagari"</span>, <span class="codeString">"Bengali"</span>, <span class="codeString">"Gurmukhi"</span>, <span class="codeString">"Gujarati"</span>, <span class="codeString">"Oriya"</span>, <span class="codeString">"Tamil"</span>, <span class="codeString">"Telugu"</span>, <span class="codeString">"Kannada"</span>, <span class="codeString">"Malayalam"</span>, <span class="codeString">"Sinhala"</span>, <span class="codeString">"Thai"</span>, <span class="codeString">"Lao"</span>, <span class="codeString">"Tibetan"</span>, <span class="codeString">"Myanmar"</span>, <span class="codeString">"Georgian"</span>, <span class="codeString">"HangulJamo"</span>, <span class="codeString">"Ethiopic"</span>, <span class="codeString">"Cherokee"</span>, <span class="codeString">"UnifiedCanadianAboriginalSyllabics"</span>, <span class="codeString">"Ogham"</span>, <span class="codeString">"Runic"</span>, <span class="codeString">"Khmer"</span>, <span class="codeString">"Mongolian"</span>, <span class="codeString">"LatinExtendedAdditional"</span>, <span class="codeString">"GreekExtended"</span>, <span class="codeString">"GeneralPunctuation"</span>, <span class="codeString">"SuperscriptsandSubscripts"</span>, <span class="codeString">"CurrencySymbols"</span>, <span class="codeString">"CombiningMarksforSymbols"</span>, <span class="codeString">"LetterlikeSymbols"</span>, <span class="codeString">"NumberForms"</span>, <span class="codeString">"Arrows"</span>, <span class="codeString">"MathematicalOperators"</span>, <span class="codeString">"MiscellaneousTechnical"</span>, <span class="codeString">"ControlPictures"</span>, <span class="codeString">"OpticalCharacterRecognition"</span>, <span class="codeString">"EnclosedAlphanumerics"</span>, <span class="codeString">"BoxDrawing"</span>, <span class="codeString">"BlockElements"</span>, <span class="codeString">"GeometricShapes"</span>, <span class="codeString">"MiscellaneousSymbols"</span>, <span class="codeString">"Dingbats"</span>, <span class="codeString">"BraillePatterns"</span>, <span class="codeString">"CJKRadicalsSupplement"</span>, <span class="codeString">"KangxiRadicals"</span>, <span class="codeString">"IdeographicDescriptionCharacters"</span>, <span class="codeString">"CJKSymbolsandPunctuation"</span>, <span class="codeString">"Hiragana"</span>, <span class="codeString">"Katakana"</span>, <span class="codeString">"Bopomofo"</span>, <span class="codeString">"HangulCompatibilityJamo"</span>, <span class="codeString">"Kanbun"</span>, <span class="codeString">"BopomofoExtended"</span>, <span class="codeString">"EnclosedCJKLettersandMonths"</span>, <span class="codeString">"CJKCompatibility"</span>, <span class="codeString">"CJKUnifiedIdeographsExtensionA"</span>, <span class="codeString">"CJKUnifiedIdeographs"</span>, <span class="codeString">"YiSyllables"</span>, <span class="codeString">"YiRadicals"</span>, <span class="codeString">"HangulSyllables"</span>, <span class="codeString">"HighSurrogates"</span>, <span class="codeString">"HighPrivateUseSurrogates"</span>, <span class="codeString">"LowSurrogates"</span>, <span class="codeString">"PrivateUse"</span>, <span class="codeString">"CJKCompatibilityIdeographs"</span>, <span class="codeString">"AlphabeticPresentationForms"</span>, <span class="codeString">"ArabicPresentationForms-A"</span>, <span class="codeString">"CombiningHalfMarks"</span>, <span class="codeString">"CJKCompatibilityForms"</span>, <span class="codeString">"SmallFormVariants"</span>, <span class="codeString">"ArabicPresentationForms-Bound"</span>, <span class="codeString">"Specials"</span>, <span class="codeString">"HalfwidthandFullwidthForms"</span> ]
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="familyNodes">familyNodes</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">static private <b>familyNodes</b>:Array = [ <span class="codeKeyword">new</span> Range(0x0000007F), <span class="codeKeyword">new</span> Range(0x008000FF), <span class="codeKeyword">new</span> Range(0x0100017F), <span class="codeKeyword">new</span> Range(0x0180024F), <span class="codeKeyword">new</span> Range(0x025002AF), <span class="codeKeyword">new</span> Range(0x02B002FF), <span class="codeKeyword">new</span> Range(0x0300036F), <span class="codeKeyword">new</span> Range(0x037003FF), <span class="codeKeyword">new</span> Range(0x040004FF), <span class="codeKeyword">new</span> Range(0x0530058F), <span class="codeKeyword">new</span> Range(0x059005FF), <span class="codeKeyword">new</span> Range(0x060006FF), <span class="codeKeyword">new</span> Range(0x0700074F), <span class="codeKeyword">new</span> Range(0x078007BF), <span class="codeKeyword">new</span> Range(0x0900097F), <span class="codeKeyword">new</span> Range(0x098009FF), <span class="codeKeyword">new</span> Range(0x0A000A7F), <span class="codeKeyword">new</span> Range(0x0A800AFF), <span class="codeKeyword">new</span> Range(0x0B000B7F), <span class="codeKeyword">new</span> Range(0x0B800BFF), <span class="codeKeyword">new</span> Range(0x0C000C7F), <span class="codeKeyword">new</span> Range(0x0C800CFF), <span class="codeKeyword">new</span> Range(0x0D000D7F), <span class="codeKeyword">new</span> Range(0x0D800DFF), <span class="codeKeyword">new</span> Range(0x0E000E7F), <span class="codeKeyword">new</span> Range(0x0E800EFF), <span class="codeKeyword">new</span> Range(0x0F000FFF), <span class="codeKeyword">new</span> Range(0x1000109F), <span class="codeKeyword">new</span> Range(0x10A010FF), <span class="codeKeyword">new</span> Range(0x110011FF), <span class="codeKeyword">new</span> Range(0x1200137F), <span class="codeKeyword">new</span> Range(0x13A013FF), <span class="codeKeyword">new</span> Range(0x1400167F), <span class="codeKeyword">new</span> Range(0x1680169F), <span class="codeKeyword">new</span> Range(0x16A016FF), <span class="codeKeyword">new</span> Range(0x178017FF), <span class="codeKeyword">new</span> Range(0x180018AF), <span class="codeKeyword">new</span> Range(0x1E001EFF), <span class="codeKeyword">new</span> Range(0x1F001FFF), <span class="codeKeyword">new</span> Range(0x2000206F), <span class="codeKeyword">new</span> Range(0x2070209F), <span class="codeKeyword">new</span> Range(0x20A020CF), <span class="codeKeyword">new</span> Range(0x20D020FF), <span class="codeKeyword">new</span> Range(0x2100214F), <span class="codeKeyword">new</span> Range(0x2150218F), <span class="codeKeyword">new</span> Range(0x219021FF), <span class="codeKeyword">new</span> Range(0x220022FF), <span class="codeKeyword">new</span> Range(0x230023FF), <span class="codeKeyword">new</span> Range(0x2400243F), <span class="codeKeyword">new</span> Range(0x2440245F), <span class="codeKeyword">new</span> Range(0x246024FF), <span class="codeKeyword">new</span> Range(0x2500257F), <span class="codeKeyword">new</span> Range(0x2580259F), <span class="codeKeyword">new</span> Range(0x25A025FF), <span class="codeKeyword">new</span> Range(0x260026FF), <span class="codeKeyword">new</span> Range(0x270027BF), <span class="codeKeyword">new</span> Range(0x280028FF), <span class="codeKeyword">new</span> Range(0x2E802EFF), <span class="codeKeyword">new</span> Range(0x2F002FDF), <span class="codeKeyword">new</span> Range(0x2FF02FFF), <span class="codeKeyword">new</span> Range(0x3000303F), <span class="codeKeyword">new</span> Range(0x3040309F), <span class="codeKeyword">new</span> Range(0x30A030FF), <span class="codeKeyword">new</span> Range(0x3100312F), <span class="codeKeyword">new</span> Range(0x3130318F), <span class="codeKeyword">new</span> Range(0x3190319F), <span class="codeKeyword">new</span> Range(0x31A031BF), <span class="codeKeyword">new</span> Range(0x320032FF), <span class="codeKeyword">new</span> Range(0x330033FF), <span class="codeKeyword">new</span> Range(0x34004DB5), <span class="codeKeyword">new</span> Range(0x4E009FFF), <span class="codeKeyword">new</span> Range(0xA000A48F), <span class="codeKeyword">new</span> Range(0xA490A4CF), <span class="codeKeyword">new</span> Range(0xAC00D7A3), <span class="codeKeyword">new</span> Range(0xD800DB7F), <span class="codeKeyword">new</span> Range(0xDB80DBFF), <span class="codeKeyword">new</span> Range(0xDC00DFFF), <span class="codeKeyword">new</span> Range(0xE000F8FF), <span class="codeKeyword">new</span> Range(0xF900FAFF), <span class="codeKeyword">new</span> Range(0xFB00FB4F), <span class="codeKeyword">new</span> Range(0xFB50FDFF), <span class="codeKeyword">new</span> Range(0xFE20FE2F), <span class="codeKeyword">new</span> Range(0xFE30FE4F), <span class="codeKeyword">new</span> Range(0xFE50FE6F), <span class="codeKeyword">new</span> Range(0xFE70FEFE), <span class="codeKeyword">new</span> Specials(), <span class="codeKeyword">new</span> Range(0xFF00FFEF) ]
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getCategoryNode">getCategoryNode</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getCategoryNode</b> (
+</div>
+                <div><span class="code">name:String) : <a href="org_as2lib_regexp_node_Node.html">Node</a></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="getFamilyNode">getFamilyNode</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>getFamilyNode</b> (
+</div>
+                <div><span class="code">name:String) : <a href="org_as2lib_regexp_node_Node.html">Node</a></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="parseFamily">parseFamily</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>parseFamily</b> (
+
+</div>
+                <div><span class="code">flag:Boolean,
+singleLetter:Boolean) : <a href="org_as2lib_regexp_node_Node.html">Node</a></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="throwFamilyError">throwFamilyError</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private function <b>throwFamilyError</b> (
+
+
+</div>
+                <div><span class="code">name:String,
+type:String,
+args:FunctionArguments) : Void</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:28:43</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

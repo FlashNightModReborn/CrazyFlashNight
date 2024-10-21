@@ -1,0 +1,479 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>StopWatch</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <link rel="stylesheet" type="text/css" href="css/VisDoc.css"/>
+    <script src="js/doc.js" type="text/javascript">//</script>
+  </head>
+  <body pageId="Pageorg_as2lib_util_StopWatch">
+    <div class="VisDoc"><span id="PageTop"><!----></span>
+      <div class="content"><span class="accessKeysInfo"><span class="label"><a href="#" class="accessKeyInfoToggle" onclick="toggleAccessKeyInfo(); return true;">Access keys</a></span><span class="accessKeyLinks" style="display:none;"><a href="#PageTop" accesskey="t">T</a>op, <a href="#Summary" accesskey="s">S</a>ummary, <a href="#Constructor" accesskey="c">C</a>onstructors, 
+Instance <a href="#Instanceproperties" accesskey="p">p</a>roperties, 
+Instance <a href="#Instancemethods" accesskey="m">m</a>ethods</span></span><h1>StopWatch</h1>
+        <div class="classProperties">
+          <table cellspacing="0">
+            <tr>
+              <th>Kind of class:</th>
+              <td>class</td>
+            </tr>
+            <tr>
+              <th>Inherits from:</th>
+              <td>
+                <a href="org_as2lib_core_BasicClass.html">BasicClass</a>
+              </td>
+            </tr>
+            <tr>
+              <th class="classDetails">Author:</th>
+              <td class="classDetails">Martin Heidegger</td>
+            </tr>
+            <tr>
+              <th class="classDetails">Classpath:</th>
+              <td class="classDetails">org.as2lib.util.StopWatch</td>
+            </tr>
+            <tr>
+              <th class="classDetails">File last modified:</th>
+              <td class="classDetails">Friday, 01 July 2005, 19:57:40</td>
+            </tr>
+          </table>
+        </div>
+        <div id="SourceCodeTop" class="sourceCodeView">
+          <div class="links">
+            <a href="#" class="viewSource" onclick="viewSource(); return false;">View source</a><span class="hideSource" style="display:none;">
+              <a href="#" onclick="hideSource(); return false;">Hide source</a><span class="separator">|</span><a href="#EndOfSourceCode">Source end</a></span>
+          </div>
+          <div class="sourceCode" style="display:none;">
+            <pre id="source">/*
+ * Copyright the original author or authors.
+ * 
+ * Licensed under the MOZILLA PUBLIC LICENSE, Version 1.1 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.mozilla.org/MPL/MPL-1.1.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import org.as2lib.core.BasicClass;
+import org.as2lib.env.except.IllegalStateException;
+
+/**
+ * {@code Stopwatch} stops the time.
+ * 
+ * &lt;p&gt;Instantiate this class as follows:
+ * &lt;code&gt;
+ *   import org.as2lib.util.StopWatch;
+ *   var stopWatch:StopWatch = new StopWatch();
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;This will create a still standing stopwatch. You can start and stop the 
+ * stopwatch to record time as you please.
+ * 
+ * &lt;code&gt;
+ *   stopWatch.start();
+ *   // Do something
+ *   stopWatch.stop();
+ * &lt;/code&gt;
+ * 
+ * &lt;p&gt;The recored time is available in milliseconds and seconds.
+ * 
+ * &lt;code&gt;
+ *   trace(stopWatch.getTimeInMilliSeconds() + " ms");
+ *   trace(stopWatch.getTimeInSeconds() + " s");
+ * &lt;/code&gt;
+ * 
+ * @author Martin Heidegger
+ */
+class org.as2lib.util.StopWatch extends BasicClass {
+    
+    /** Starttime of the last start */
+    private var started:Boolean = false;
+    
+    /** Holder for all start-time-keys */
+    private var startTimeKeys:Array;
+    
+    /** Holder for all stop-time-keys */
+    private var stopTimeKeys:Array;
+    
+    /** Total recored run time. */
+    private var runTime:Number = 0;
+    
+    /** 
+     * Constructs a new {@code StopWatch} instance.
+     */
+    public function StopWatch(Void) {
+        reset();
+    }
+    
+    /**
+     * Starts the time recording process.
+     * 
+     * @throws IllegalStateException if the stopwatch has already been started
+     */
+    public function start(Void):Void {
+        if(hasStarted()) {
+            throw new IllegalStateException("Stopwatch is already started.", this, arguments);
+        }
+        started = true;
+        startTimeKeys.push(getTimer());
+    }
+    
+    /**
+     * Stops the time recording process if the process has been started before.
+     * 
+     * @throws IllegalStateException if the stopwatch has not been already started
+     */
+    public function stop(Void):Void {
+        if (!hasStarted()) {
+            throw new IllegalStateException("Stopwatch isn't started yet.", this, arguments);
+        }
+        var stopTime:Number = getTimer();
+        stopTimeKeys[startTimeKeys.length-1] = stopTime;
+        started = false;
+    }
+    
+    /**
+     * Returns whether this stopwatch has been started.
+     * 
+     * @return {@code true} if this stopwatch has been started else {@code false}
+     */
+    public function hasStarted(Void):Boolean {
+        return started;
+    }
+    
+    /**
+     * Resets the stopwatch total running time.
+     */
+    public function reset(Void):Void {
+        startTimeKeys = new Array();
+        stopTimeKeys = new Array();
+        started = false;
+    }
+    
+    /**
+     * Calculates and returns the elapsed time in milliseconds.
+     * 
+     * &lt;p&gt;This stopwatch will not be stopped by calling this method. If this stopwatch
+     * is still running it takes the current time as stoptime for the result.
+     * 
+     * @return the elapsed time in milliseconds
+     * @see #getTimeInSeconds
+     */
+    public function getTimeInMilliSeconds(Void):Number {
+        if (hasStarted()) {
+            stopTimeKeys[startTimeKeys.length-1] = getTimer();
+        }
+        var result:Number = 0;
+        for (var i:Number = 0; i &lt; startTimeKeys.length; i++) {
+            result += (stopTimeKeys[i] - startTimeKeys[i]);
+        }
+        return result;        
+    }
+    
+    /**
+     * Calculates and returns the elapsed time in seconds.
+     * 
+     * &lt;p&gt;This stopwatch will not be stopped by calling this method. If this stopwatch
+     * is still running it takes the current time as stoptime for the result.
+     * 
+     * @return the elapsed time in seconds
+     * @see #getTimeInMilliSeconds.
+     */
+    public function getTimeInSeconds(Void):Number {
+        return getTimeInMilliSeconds()/1000;
+    }
+    
+    /**
+     * Generates a string representation of this stopwatch that includes all start and
+     * stop times in milliseconds.
+     * 
+     * @return the string representation of this stopwatch
+     */
+    public function toString():String {
+        var result:String;
+        result = "\n------- [STOPWATCH] -------";
+        var i:Number;
+        for(i=0; i&lt;startTimeKeys.length; i++) {
+            result += "\n started["+startTimeKeys[i]+"ms] stopped["+stopTimeKeys[i]+"ms]";
+        }
+        if(i==0) {
+            result += "\n never started.";
+        } else {
+            result += "\n\n total runnning time: "+getTimeInMilliSeconds()+"ms";
+        }
+        result += "\n---------------------------\n";
+        return result;
+    }
+    
+}
+</pre>
+          </div>
+          <div class="links"><span class="hideSource" style="display:none;">
+              <a href="#PageTop" onclick="hideSource(); return true;">Hide source</a><span class="separator">|</span><a href="#SourceCodeTop">Source top</a></span><span id="EndOfSourceCode"><!----></span>
+          </div>
+        </div>
+        <div class="classDescription">
+          <div class="descriptionSummary"><code>Stopwatch</code> stops the time.</div><p>Instantiate this class as follows:<pre><span class="codeKeyword">import</span> org.as2lib.util.StopWatch;
+<span class="codeKeyword">var</span> stopWatch:StopWatch = <span class="codeKeyword">new</span> StopWatch();</pre><p>This will create a still standing stopwatch. You can start and stop the <br /> stopwatch to record time as you please.<br /> <pre>stopWatch.start();
+<span class="codeComment">// Do something</span>
+stopWatch.<span class="codeIdentifier">stop</span>();</pre><p>The recored time is available in milliseconds and seconds.<br /> <pre><span class="codeIdentifier">trace</span>(stopWatch.getTimeInMilliSeconds() + <span class="codeString">" ms"</span>);
+<span class="codeIdentifier">trace</span>(stopWatch.getTimeInSeconds() + <span class="codeString">" s"</span>);</pre></div>
+        <div class="summary hasBottomDivider">
+          <h2 class="hasBottomDivider"><span id="Summary">Summary</span></h2>
+          <div class="methodList">
+            <div class="methodSummaryPart"><span class="title">Constructor</span><ul>
+                <li>
+                  <a href="#StopWatch">StopWatch</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart private" style="display:none;"><span class="title">Instance properties</span><ul>
+                <li class="private" style="display:none;">
+                  <a href="#started">started</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#startTimeKeys">startTimeKeys</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#stopTimeKeys">stopTimeKeys</a>
+                </li>
+                <li class="private" style="display:none;">
+                  <a href="#runTime">runTime</a>
+                </li>
+              </ul>
+            </div>
+            <div class="methodSummaryPart"><span class="title">Instance methods</span><ul>
+                <li>
+                  <a href="#start">start</a>
+                </li>
+                <li>
+                  <a href="#stop">stop</a>
+                </li>
+                <li>
+                  <a href="#hasStarted">hasStarted</a>
+                </li>
+                <li>
+                  <a href="#reset">reset</a>
+                </li>
+                <li>
+                  <a href="#getTimeInMilliSeconds">getTimeInMilliSeconds</a>
+                </li>
+                <li>
+                  <a href="#getTimeInSeconds">getTimeInSeconds</a>
+                </li>
+                <li>
+                  <a href="#toString">toString</a>
+                </li>
+              </ul>
+              <div class="boxWithBorder">
+                <div class="boxedElem">
+                  <div class="contentHolder"><span class="title">Instance methods inherited from <span class="superclass"><a href="org_as2lib_core_BasicClass.html">BasicClass</a></span></span>
+                    <div class="item">
+                      <a href="org_as2lib_core_BasicClass.html#toString">toString</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Constructor">Constructor</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="StopWatch">StopWatch</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>StopWatch</b> (
+</div>
+                <div><span class="code">Void)</span></div>
+              </div>
+            </div>
+            <div class="description">Constructs a new <code>StopWatch</code> instance.</div>
+          </div>
+        </div>
+        <div class="methodSection private" style="display:none;">
+          <h2 class="hasBottomDivider"><span id="Instanceproperties">Instance properties</span></h2>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="runTime">runTime</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>runTime</b>:Number = <span class="codeNumber">0</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Total recored run time.</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="started">started</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>started</b>:Boolean = <span class="codeIdentifier">false</span>
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Starttime of the last start</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="startTimeKeys">startTimeKeys</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>startTimeKeys</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Holder for all start-time-keys</div>
+          </div>
+          <div class="method hasBottomDivider private" style="display:none;">
+            <h3 id="stopTimeKeys">stopTimeKeys</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">private <b>stopTimeKeys</b>:Array
+</div>
+                <div><span class="access">(read,write)</span></div>
+              </div>
+            </div>
+            <div class="description">Holder for all stop-time-keys</div>
+          </div>
+        </div>
+        <div class="methodSection">
+          <h2 class="hasBottomDivider"><span id="Instancemethods">Instance methods</span></h2>
+          <div class="method hasBottomDivider">
+            <h3 id="getTimeInMilliSeconds">getTimeInMilliSeconds</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTimeInMilliSeconds</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Calculates and returns the elapsed time in milliseconds.<p>This stopwatch will not be stopped by calling this method. If this stopwatch<br /> is still running it takes the current time as stoptime for the result.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the elapsed time in milliseconds</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_StopWatch.html#getTimeInSeconds">getTimeInSeconds</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="getTimeInSeconds">getTimeInSeconds</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>getTimeInSeconds</b> (
+</div>
+                <div><span class="code">Void) : Number</span></div>
+              </div>
+            </div>
+            <div class="description">Calculates and returns the elapsed time in seconds.<p>This stopwatch will not be stopped by calling this method. If this stopwatch<br /> is still running it takes the current time as stoptime for the result.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the elapsed time in seconds</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">See also:</span><div class="item"><a href="org_as2lib_util_StopWatch.html#getTimeInMilliSeconds">.</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="hasStarted">hasStarted</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>hasStarted</b> (
+</div>
+                <div><span class="code">Void) : Boolean</span></div>
+              </div>
+            </div>
+            <div class="description">Returns whether this stopwatch has been started.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item"><code>true</code> if this stopwatch has been started else <code>false</code></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="reset">reset</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>reset</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Resets the stopwatch total running time.</div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="start">start</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>start</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Starts the time recording process.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalStateException.html">org.as2lib.env.except.IllegalStateException</a> if the stopwatch has already been started</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="stop">stop</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>stop</b> (
+</div>
+                <div><span class="code">Void) : Void</span></div>
+              </div>
+            </div>
+            <div class="description">Stops the time recording process if the process has been started before.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Throws:</span><div class="item"><a href="org_as2lib_env_except_IllegalStateException.html">org.as2lib.env.except.IllegalStateException</a> if the stopwatch has not been already started</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="method hasBottomDivider">
+            <h3 id="toString">toString</h3>
+            <div class="fullMemberString">
+              <div class="clearfix floatholder">
+                <div class="floatbox code">function <b>toString</b> (
+</div>
+                <div><span class="code">) : String</span></div>
+              </div>
+            </div>
+            <div class="description">Generates a string representation of this stopwatch that includes all start and<br /> stop times in milliseconds.</div>
+            <div class="boxWithBorder">
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Returns:</span><div class="item">the string representation of this stopwatch</div>
+                </div>
+              </div>
+              <div class="boxedElem">
+                <div class="contentHolder"><span class="title">Overrides:</span><div class="item"><a href="org_as2lib_core_BasicClass.html#toString">org.as2lib.core.BasicClass.toString</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="docFooter"><span class="copyright">&copy; as2lib, 2005</span><span class="separator">|</span><span class="createdWith">Created with <a href="http://visiblearea.com/visdoc/">VisDoc</a></span><span class="separator">|</span><span class="creationDate">Thursday, 13 October 2005, 19:31:16</span><span class="separator">|</span><a href="#" onclick="showTOC(); return false;" class="showToc">show TOC</a><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a><span class="viewPrivate"><span class="separator">|</span><a href="#PageTop" onclick="showPrivate(); return true;">show private members</a></span><span class="hidePrivate"><span class="separator">|</span><a href="#PageTop" onclick="hidePrivate(); return true;">hide private members</a></span></span><span class="tocFooter">&copy; as2lib, 2005<span class="separator">|</span><a href="#" onclick="hideTOC(); return false;" class="hideToc">hide TOC</a></span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
