@@ -266,7 +266,7 @@
                     </Enemy>
                     <Enemy id="7">
                         <Type>兵种64</Type>
-                        <Interval>30000</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
                     </Enemy>
@@ -402,42 +402,6 @@
                         <Type>兵种66</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
-                        <Level>16</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种47</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>16</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种64</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>16</Level>
-                    </Enemy>
-                    <Enemy id="3">
-                        <Type>兵种65</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>16</Level>
-                    </Enemy>
-                    <Enemy id="4">
-                        <Type>兵种47</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>16</Level>
-                    </Enemy>
-                    <Enemy id="5">
-                        <Type>兵种64</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>16</Level>
-                    </Enemy>
-                    <Enemy id="6">
-                        <Type>兵种65</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
                         <Level>16</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -663,45 +627,9 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种67</Type>
+                        <Type>兵种268</Type>
                         <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>18</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种47</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>18</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种64</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>18</Level>
-                    </Enemy>
-                    <Enemy id="3">
-                        <Type>兵种65</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>18</Level>
-                    </Enemy>
-                    <Enemy id="4">
-                        <Type>兵种47</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>18</Level>
-                    </Enemy>
-                    <Enemy id="5">
-                        <Type>兵种64</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>18</Level>
-                    </Enemy>
-                    <Enemy id="6">
-                        <Type>兵种65</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>18</Level>
                     </Enemy>
                 </EnemyGroup>
