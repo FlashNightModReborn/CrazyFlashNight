@@ -25,11 +25,11 @@ class org.flashNight.naki.DataStructures.TaskIDNode extends TaskNode {
     }
 
     public function toString():String {
-        var taskIDStr:String = this.taskID != null ? this.taskID : "null";
-        var prevTaskIDStr:String = this.prev != null ? this.prev.taskID : "PPPnull";
-        var nextTaskIDStr:String = this.next != null ? this.next.taskID : "NNNnull";
-        var listStr:String = this.list != null ? "ListRef" : "NoListRef";
+        var taskIDStr:String = this.taskID != null ? this.taskID : "N";
+        var prevTaskIDStr:String = this.prev != null ? this.prev.taskID : "P";
+        var nextTaskIDStr:String = this.next != null ? this.next.taskID : "N";
+        var listStr:String = this.list != null ? "L" : "NoListRef";
         
-        return "TaskIDNode [taskID=" + taskIDStr + ", prev=" + prevTaskIDStr + ", next=" + nextTaskIDStr + ", list=" + listStr + "]";
+        return "TaskIDNode [ID " + taskIDStr + ", p " + prevTaskIDStr + ", n " + nextTaskIDStr + ", l " + listStr + "]";
     }
 }
