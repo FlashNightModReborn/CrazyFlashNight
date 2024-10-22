@@ -1,0 +1,674 @@
+{
+  "tasks": [
+    {
+      "id": 20007,
+      "title": "新年限时僵尸副本",
+      "description": "通关【新年限时僵尸副本】，可获得鼠年碎片",
+
+      "get_requirements": [-1],
+      "get_conversation": "$NOTHING_CONVERSATION",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["新年限时僵尸副本#简单"],
+      "finish_conversation": "$NOTHING_CONVERSATION",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#88",
+        "金币#88",
+        "普通hp药剂#10",
+        "普通mp药剂#10",
+        "压缩胶囊之boss大僵尸#1",
+        "鼠年碎片#150",
+        "猪年碎片#150",
+        "狗年碎片#150",
+        "鸡年碎片#150",
+        "猴年新年碎片#150",
+        "羊年新年碎片#150",
+        "红包#10",
+        "福袋#10",
+        "鞭炮#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20008,
+      "title": "万人尸潮斩副本",
+      "description": "通关【万人尸潮斩副本】，体验不一样的快感！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_ZOMBIE_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["万人尸潮斩副本#简单"],
+      "finish_conversation": "$MUSOU_ZOMBIE_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#8888",
+        "金币#8888",
+        "加强抗生素药剂#50",
+        "复活币#30",
+        "加强mp药剂#50",
+        "僵尸克星军牌#1"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20009,
+      "title": "千人尸潮斩副本",
+      "description": "通关【千人尸潮斩副本】，体验不一样的快感！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_ZOMBIE_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["千人尸潮斩副本#简单"],
+      "finish_conversation": "$MUSOU_ZOMBIE_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#888",
+        "金币#888",
+        "加强抗生素药剂#10",
+        "复活币#5",
+        "加强mp药剂#10",
+        "僵尸割草机军牌#1"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20010,
+      "title": "百人尸潮斩副本",
+      "description": "通关【百人尸潮斩副本】，体验不一样的快感！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_ZOMBIE_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["百人尸潮斩副本#简单"],
+      "finish_conversation": "$MUSOU_ZOMBIE_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#88",
+        "金币#88",
+        "加强抗生素药剂#4",
+        "复活币#2",
+        "加强mp药剂#4"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20011,
+      "title": "盗贼百人斩",
+      "description": "通关【盗贼百人斩】，教训一下新来的盗贼！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_THIEVES_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["盗贼百人斩#简单"],
+      "finish_conversation": "$MUSOU_THIEVES_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#2000",
+        "金币#4000",
+        "加强抗生素药剂#5",
+        "复活币#4",
+        "加强mp药剂#5",
+        "材料盒子#2"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20012,
+      "title": "新年限时摇滚公园副本",
+      "description": "通关【新年限时摇滚公园副本】，可获得鼠年碎片",
+
+      "get_requirements": [-1],
+      "get_conversation": "$NOTHING_CONVERSATION",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["摇滚公园#简单"],
+      "finish_conversation": "$NOTHING_CONVERSATION",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#88",
+        "金币#88",
+        "普通hp药剂#20",
+        "普通mp药剂#20",
+        "压缩胶囊之摇滚公园#1",
+        "鼠年碎片#150",
+        "猪年碎片#150",
+        "狗年碎片#150",
+        "鸡年碎片#150",
+        "猴年新年碎片#150",
+        "羊年新年碎片#150",
+        "红包#10",
+        "福袋#10",
+        "鞭炮#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20013,
+      "title": "新年限时黑铁会副本",
+      "description": "通关【新年限时黑铁会副本】，可获得鼠年碎片",
+
+      "get_requirements": [-1],
+      "get_conversation": "$NOTHING_CONVERSATION",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["新年限时黑铁会副本#简单"],
+      "finish_conversation": "$NOTHING_CONVERSATION",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#88",
+        "金币#88",
+        "加强抗生素药剂#20",
+        "加强mp药剂#20",
+        "复活币#10",
+        "压缩胶囊之浮士德#1",
+        "鼠年碎片#150",
+        "猪年碎片#150",
+        "狗年碎片#150",
+        "鸡年碎片#150",
+        "猴年新年碎片#150",
+        "羊年新年碎片#150",
+        "红包#10",
+        "福袋#10",
+        "鞭炮#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20014,
+      "title": "黑铁会百人斩",
+      "description": "通关【黑铁会百人斩】，和黑铁会切磋一下！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_BLACKIRON_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["黑铁会百人斩#简单"],
+      "finish_conversation": "$MUSOU_BLACKIRON_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#10000",
+        "金币#10000",
+        "加强抗生素药剂#7",
+        "复活币#5",
+        "加强mp药剂#7",
+        "材料盒子#3"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20015,
+      "title": "次元塔副本",
+      "description": "通关【次元塔副本】",
+
+      "get_requirements": [-1],
+      "get_conversation": "$BLOODPALACE_GET",
+      "get_npc": "Blue",
+
+      "finish_requirements": ["次元塔副本#简单"],
+      "finish_conversation": "$BLOODPALACE_FINISH",
+      "finish_npc": "Blue",
+
+      "rewards": [
+        "经验值#8888",
+        "金币#8888",
+        "加强抗生素药剂#100",
+        "加强mp药剂#100",
+        "突击步枪钨芯穿甲弹#50",
+        "冲锋枪钢芯穿甲弹#50",
+        "普通hp粉尘#100",
+        "普通mp粉尘#100",
+        "复活币#50",
+        "材料盒子#2",
+        "压缩胶囊之武士铁血#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20016,
+      "title": "远古次元塔副本",
+      "description": "通关【远古次元塔副本】",
+
+      "get_requirements": [-1],
+      "get_conversation": "$BLOODPALACE_2_GET",
+      "get_npc": "Blue",
+
+      "finish_requirements": ["远古次元塔副本#简单"],
+      "finish_conversation": "$BLOODPALACE_2_FINISH",
+      "finish_npc": "Blue",
+
+      "rewards": [
+        "经验值#88888",
+        "金币#88888",
+        "加强抗生素药剂#200",
+        "加强mp药剂#200",
+        "突击步枪钨芯穿甲弹#100",
+        "冲锋枪钢芯穿甲弹#100",
+        "普通hp粉尘#200",
+        "普通mp粉尘#200",
+        "复活币#50",
+        "材料盒子#10",
+        "远古碎片#300"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20017,
+      "title": "新年限时诺亚副本",
+      "description": "通关【新年限时诺亚副本】，可获得鼠年碎片",
+
+      "get_requirements": [-1],
+      "get_conversation": "$NOTHING_CONVERSATION",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["新年限时诺亚副本#简单"],
+      "finish_conversation": "$NOTHING_CONVERSATION",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#88",
+        "金币#88",
+        "加强抗生素药剂#30",
+        "加强mp药剂#30",
+        "复活币#20",
+        "压缩胶囊之硬化僵尸#1",
+        "鼠年碎片#150",
+        "猪年碎片#150",
+        "狗年碎片#150",
+        "鸡年碎片#150",
+        "猴年新年碎片#150",
+        "羊年新年碎片#150",
+        "红包#10",
+        "福袋#10",
+        "鞭炮#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20018,
+      "title": "大战斯巴达300勇士副本",
+      "description": "通关【大战斯巴达300勇士副本】，可获得大量奖励",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_SPARDA_GET",
+      "get_npc": "Blue",
+
+      "finish_requirements": ["大战斯巴达300勇士副本#简单"],
+      "finish_conversation": "$MUSOU_SPARDA_FINISH",
+      "finish_npc": "Blue",
+
+      "rewards": [
+        "经验值#8888",
+        "金币#8888",
+        "加强抗生素药剂#188",
+        "复活币#60",
+        "加强mp药剂#188",
+        "突击步枪钨芯穿甲弹#188",
+        "冲锋枪钢芯穿甲弹#188",
+        "普通hp粉尘#188",
+        "普通mp粉尘#188"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20019,
+      "title": "军阀百人斩",
+      "description": "通关【军阀百人斩】，测试军阀新兵！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_REVOLUTIONISTS_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["军阀百人斩#简单"],
+      "finish_conversation": "$MUSOU_REVOLUTIONISTS_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#3000",
+        "金币#6000",
+        "加强抗生素药剂#6",
+        "复活币#4",
+        "加强mp药剂#6",
+        "材料盒子#2"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20020,
+      "title": "新年限时军阀副本",
+      "description": "通关【新年限时军阀副本】，可获得鼠年碎片",
+
+      "get_requirements": [-1],
+      "get_conversation": "$NOTHING_CONVERSATION",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["新年限时军阀副本#简单"],
+      "finish_conversation": "$NOTHING_CONVERSATION",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+       "经验值#88",
+        "金币#88",
+        "普通hp药剂#15",
+        "普通mp药剂#15",
+        "压缩胶囊之军阀#1",
+        "鼠年碎片#150",
+        "猪年碎片#150",
+        "狗年碎片#150",
+        "鸡年碎片#150",
+        "猴年新年碎片#150",
+        "羊年新年碎片#150",
+        "红包#10",
+        "福袋#10",
+        "鞭炮#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20021,
+      "title": "新年限时熔岩副本",
+      "description": "通关【新年限时熔岩副本】，可获得鼠年碎片",
+
+      "get_requirements": [-1],
+      "get_conversation": "$NOTHING_CONVERSATION",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["新年限时熔岩副本#简单"],
+      "finish_conversation": "$NOTHING_CONVERSATION",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#88",
+        "金币#88",
+        "加强抗生素药剂#45",
+        "加强mp药剂#45",
+        "复活币#35",
+        "压缩胶囊之武士铁血#1",
+        "鼠年碎片#150",
+        "猪年碎片#150",
+        "狗年碎片#150",
+        "鸡年碎片#150",
+        "猴年新年碎片#150",
+        "羊年新年碎片#150",
+        "红包#10",
+        "福袋#10",
+        "鞭炮#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20022,
+      "title": "新年限时雪山副本",
+      "description": "通关【新年限时雪山副本】，可获得鼠年碎片",
+
+      "get_requirements": [-1],
+      "get_conversation": "$NOTHING_CONVERSATION",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["新年限时雪山副本#简单"],
+      "finish_conversation": "$NOTHING_CONVERSATION",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+         "经验值#88",
+        "金币#88",
+        "加强抗生素药剂#40",
+        "加强mp药剂#40",
+        "复活币#30",
+        "压缩胶囊之李小龙#1",
+        "鼠年碎片#150",
+        "猪年碎片#150",
+        "狗年碎片#150",
+        "鸡年碎片#150",
+        "猴年新年碎片#150",
+        "羊年新年碎片#150",
+        "红包#10",
+        "福袋#10",
+        "鞭炮#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20023,
+      "title": "古战场百人斩",
+      "description": "通关【古战场百人斩】，调查古战场里面的生物！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_ANCIENT_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["古战场百人斩#简单"],
+      "finish_conversation": "$MUSOU_ANCIENT_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#50000",
+        "金币#50000",
+        "加强抗生素药剂#11",
+        "复活币#7",
+        "加强mp药剂#11",
+        "材料盒子#5"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20024,
+      "title": "诺亚百人斩",
+      "description": "通关【诺亚百人斩】，调查诺亚异常！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_NOA_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["诺亚百人斩#简单"],
+      "finish_conversation": "$MUSOU_NOA_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#20000",
+        "金币#20000",
+        "加强抗生素药剂#8",
+        "复活币#5",
+        "加强mp药剂#8",
+        "材料盒子#3"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20025,
+      "title": "诺亚千人斩",
+      "description": "通关【诺亚千人斩】，清除所有终结者和诺亚士兵！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_NOA_2_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["诺亚千人斩#简单"],
+      "finish_conversation": "$MUSOU_NOA_2_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#100000",
+        "金币#100000",
+        "加强抗生素药剂#50",
+        "复活币#50",
+        "加强mp药剂#50",
+        "方舟碎片#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20026,
+      "title": "雪山百人斩",
+      "description": "通关【雪山百人斩】，调查雪山崩塌的原因！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_SNOW_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["雪山百人斩#简单"],
+      "finish_conversation": "$MUSOU_SNOW_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+       "经验值#30000",
+        "金币#30000",
+        "加强抗生素药剂#9",
+        "复活币#6",
+        "加强mp药剂#9",
+        "材料盒子#4"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20027,
+      "title": "雪山千人斩",
+      "description": "通关【雪山千人斩】，清除所有终结者和诺亚士兵！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_SNOW_2_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["雪山千人斩#简单"],
+      "finish_conversation": "$MUSOU_SNOW_2_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#200000",
+        "金币#200000",
+        "加强抗生素药剂#50",
+        "复活币#50",
+        "加强mp药剂#50",
+        "方舟碎片#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20028,
+      "title": "熔岩百人斩",
+      "description": "通关【熔岩百人斩】，调查熔岩不稳定的原因！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_VOLCANO_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["熔岩百人斩#简单"],
+      "finish_conversation": "$MUSOU_VOLCANO_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+       "经验值#40000",
+        "金币#40000",
+        "加强抗生素药剂#10",
+        "复活币#6",
+        "加强mp药剂#10",
+        "材料盒子#4"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20029,
+      "title": "熔岩千人斩",
+      "description": "通关【熔岩千人斩】，清除所有终结者和诺亚士兵！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_VOLCANO_2_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["熔岩千人斩#简单"],
+      "finish_conversation": "$MUSOU_VOLCANO_2_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+       "经验值#300000",
+        "金币#300000",
+        "加强抗生素药剂#50",
+        "复活币#50",
+        "加强mp药剂#50",
+        "方舟碎片#10"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20030,
+      "title": "铁血百人斩",
+      "description": "通关【铁血百人斩】，调查外星生物铁血！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_PREDATOR_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["铁血百人斩#简单"],
+      "finish_conversation": "$MUSOU_PREDATOR_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#60000",
+        "金币#60000",
+        "加强抗生素药剂#12",
+        "复活币#7",
+        "加强mp药剂#12",
+        "材料盒子#5"
+      ],
+
+      "chain": "委托"
+    },
+    {
+      "id": 20031,
+      "title": "异形百人斩",
+      "description": "通关【异形百人斩】，抢夺飞船！",
+
+      "get_requirements": [-1],
+      "get_conversation": "$MUSOU_ALIEN_GET",
+      "get_npc": "Andy Law",
+
+      "finish_requirements": ["异形百人斩#简单"],
+      "finish_conversation": "$MUSOU_ALIEN_FINISH",
+      "finish_npc": "Andy Law",
+
+      "rewards": [
+        "经验值#70000",
+        "金币#70000",
+        "加强抗生素药剂#13",
+        "复活币#8",
+        "加强mp药剂#13",
+        "材料盒子#6"
+      ]
+    }
+  ]
+}

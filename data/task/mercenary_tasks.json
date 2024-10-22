@@ -12,6 +12,10 @@
       "finish_requirements": ["通缉任务之李小龙coser#简单"],
       "finish_conversation": "$MERC_LEE_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "16-22",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#80000",
@@ -37,6 +41,10 @@
       "finish_requirements": ["通缉任务之武士铁血#简单"],
       "finish_conversation": "$MERC_SAMURAI_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "16-22",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#80000",
@@ -62,6 +70,10 @@
       "finish_requirements": ["通缉任务之硬化僵尸#简单"],
       "finish_conversation": "$MERC_HAZARDZOMBIE_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "13-18",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#50000",
@@ -87,6 +99,10 @@
       "finish_requirements": ["通缉任务之牛仔#简单"],
       "finish_conversation": "$MERC_COWBOY_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "15-20",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#50000",
@@ -112,6 +128,10 @@
       "finish_requirements": ["通缉任务之魔女#简单"],
       "finish_conversation": "$MERC_WITCH_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "20",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#60000",
@@ -137,6 +157,10 @@
       "finish_requirements": ["通缉任务之浮士德兄弟#简单"],
       "finish_conversation": "$MERC_FAUST_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "15-20",
+      "restricted_level": 8,
+      "deposit": 10000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#50000",
@@ -162,6 +186,10 @@
       "finish_requirements": ["百兽之王副本#简单"],
       "finish_conversation": "$MERC_WERETIGER_FINISH",
       "finish_npc": "Andy Law",
+      "recommended_level": "40-50",
+      "restricted_level": 30,
+      "deposit": 1000,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#200000",
@@ -175,676 +203,6 @@
       ],
 
       "chain": "委托"
-    },
-    {
-      "id": 20007,
-      "title": "新年限时僵尸副本",
-      "description": "通关【新年限时僵尸副本】，可获得鼠年碎片",
-
-      "get_requirements": [-1],
-      "get_conversation": "$NOTHING_CONVERSATION",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["新年限时僵尸副本#简单"],
-      "finish_conversation": "$NOTHING_CONVERSATION",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#88",
-        "金币#88",
-        "普通hp药剂#10",
-        "普通mp药剂#10",
-        "压缩胶囊之boss大僵尸#1",
-        "鼠年碎片#150",
-        "猪年碎片#150",
-        "狗年碎片#150",
-        "鸡年碎片#150",
-        "猴年新年碎片#150",
-        "羊年新年碎片#150",
-        "红包#10",
-        "福袋#10",
-        "鞭炮#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20008,
-      "title": "万人尸潮斩副本",
-      "description": "通关【万人尸潮斩副本】，体验不一样的快感！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_ZOMBIE_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["万人尸潮斩副本#简单"],
-      "finish_conversation": "$MUSOU_ZOMBIE_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#8888",
-        "金币#8888",
-        "加强抗生素药剂#50",
-        "复活币#30",
-        "加强mp药剂#50",
-        "僵尸克星军牌#1"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20009,
-      "title": "千人尸潮斩副本",
-      "description": "通关【千人尸潮斩副本】，体验不一样的快感！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_ZOMBIE_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["千人尸潮斩副本#简单"],
-      "finish_conversation": "$MUSOU_ZOMBIE_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#888",
-        "金币#888",
-        "加强抗生素药剂#10",
-        "复活币#5",
-        "加强mp药剂#10",
-        "僵尸割草机军牌#1"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20010,
-      "title": "百人尸潮斩副本",
-      "description": "通关【百人尸潮斩副本】，体验不一样的快感！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_ZOMBIE_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["百人尸潮斩副本#简单"],
-      "finish_conversation": "$MUSOU_ZOMBIE_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#88",
-        "金币#88",
-        "加强抗生素药剂#4",
-        "复活币#2",
-        "加强mp药剂#4"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20011,
-      "title": "盗贼百人斩",
-      "description": "通关【盗贼百人斩】，教训一下新来的盗贼！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_THIEVES_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["盗贼百人斩#简单"],
-      "finish_conversation": "$MUSOU_THIEVES_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#2000",
-        "金币#4000",
-        "加强抗生素药剂#5",
-        "复活币#4",
-        "加强mp药剂#5",
-        "材料盒子#2"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20012,
-      "title": "新年限时摇滚公园副本",
-      "description": "通关【新年限时摇滚公园副本】，可获得鼠年碎片",
-
-      "get_requirements": [-1],
-      "get_conversation": "$NOTHING_CONVERSATION",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["摇滚公园#简单"],
-      "finish_conversation": "$NOTHING_CONVERSATION",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#88",
-        "金币#88",
-        "普通hp药剂#20",
-        "普通mp药剂#20",
-        "压缩胶囊之摇滚公园#1",
-        "鼠年碎片#150",
-        "猪年碎片#150",
-        "狗年碎片#150",
-        "鸡年碎片#150",
-        "猴年新年碎片#150",
-        "羊年新年碎片#150",
-        "红包#10",
-        "福袋#10",
-        "鞭炮#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20013,
-      "title": "新年限时黑铁会副本",
-      "description": "通关【新年限时黑铁会副本】，可获得鼠年碎片",
-
-      "get_requirements": [-1],
-      "get_conversation": "$NOTHING_CONVERSATION",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["新年限时黑铁会副本#简单"],
-      "finish_conversation": "$NOTHING_CONVERSATION",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#88",
-        "金币#88",
-        "加强抗生素药剂#20",
-        "加强mp药剂#20",
-        "复活币#10",
-        "压缩胶囊之浮士德#1",
-        "鼠年碎片#150",
-        "猪年碎片#150",
-        "狗年碎片#150",
-        "鸡年碎片#150",
-        "猴年新年碎片#150",
-        "羊年新年碎片#150",
-        "红包#10",
-        "福袋#10",
-        "鞭炮#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20014,
-      "title": "黑铁会百人斩",
-      "description": "通关【黑铁会百人斩】，和黑铁会切磋一下！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_BLACKIRON_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["黑铁会百人斩#简单"],
-      "finish_conversation": "$MUSOU_BLACKIRON_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#10000",
-        "金币#10000",
-        "加强抗生素药剂#7",
-        "复活币#5",
-        "加强mp药剂#7",
-        "材料盒子#3"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20015,
-      "title": "次元塔副本",
-      "description": "通关【次元塔副本】",
-
-      "get_requirements": [-1],
-      "get_conversation": "$BLOODPALACE_GET",
-      "get_npc": "Blue",
-
-      "finish_requirements": ["次元塔副本#简单"],
-      "finish_conversation": "$BLOODPALACE_FINISH",
-      "finish_npc": "Blue",
-
-      "rewards": [
-        "经验值#8888",
-        "金币#8888",
-        "加强抗生素药剂#100",
-        "加强mp药剂#100",
-        "突击步枪钨芯穿甲弹#50",
-        "冲锋枪钢芯穿甲弹#50",
-        "普通hp粉尘#100",
-        "普通mp粉尘#100",
-        "复活币#50",
-        "材料盒子#2",
-        "压缩胶囊之武士铁血#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20016,
-      "title": "远古次元塔副本",
-      "description": "通关【远古次元塔副本】",
-
-      "get_requirements": [-1],
-      "get_conversation": "$BLOODPALACE_2_GET",
-      "get_npc": "Blue",
-
-      "finish_requirements": ["远古次元塔副本#简单"],
-      "finish_conversation": "$BLOODPALACE_2_FINISH",
-      "finish_npc": "Blue",
-
-      "rewards": [
-        "经验值#88888",
-        "金币#88888",
-        "加强抗生素药剂#200",
-        "加强mp药剂#200",
-        "突击步枪钨芯穿甲弹#100",
-        "冲锋枪钢芯穿甲弹#100",
-        "普通hp粉尘#200",
-        "普通mp粉尘#200",
-        "复活币#50",
-        "材料盒子#10",
-        "远古碎片#300"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20017,
-      "title": "新年限时诺亚副本",
-      "description": "通关【新年限时诺亚副本】，可获得鼠年碎片",
-
-      "get_requirements": [-1],
-      "get_conversation": "$NOTHING_CONVERSATION",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["新年限时诺亚副本#简单"],
-      "finish_conversation": "$NOTHING_CONVERSATION",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#88",
-        "金币#88",
-        "加强抗生素药剂#30",
-        "加强mp药剂#30",
-        "复活币#20",
-        "压缩胶囊之硬化僵尸#1",
-        "鼠年碎片#150",
-        "猪年碎片#150",
-        "狗年碎片#150",
-        "鸡年碎片#150",
-        "猴年新年碎片#150",
-        "羊年新年碎片#150",
-        "红包#10",
-        "福袋#10",
-        "鞭炮#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20018,
-      "title": "大战斯巴达300勇士副本",
-      "description": "通关【大战斯巴达300勇士副本】，可获得大量奖励",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_SPARDA_GET",
-      "get_npc": "Blue",
-
-      "finish_requirements": ["大战斯巴达300勇士副本#简单"],
-      "finish_conversation": "$MUSOU_SPARDA_FINISH",
-      "finish_npc": "Blue",
-
-      "rewards": [
-        "经验值#8888",
-        "金币#8888",
-        "加强抗生素药剂#188",
-        "复活币#60",
-        "加强mp药剂#188",
-        "突击步枪钨芯穿甲弹#188",
-        "冲锋枪钢芯穿甲弹#188",
-        "普通hp粉尘#188",
-        "普通mp粉尘#188"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20019,
-      "title": "军阀百人斩",
-      "description": "通关【军阀百人斩】，测试军阀新兵！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_REVOLUTIONISTS_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["军阀百人斩#简单"],
-      "finish_conversation": "$MUSOU_REVOLUTIONISTS_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#3000",
-        "金币#6000",
-        "加强抗生素药剂#6",
-        "复活币#4",
-        "加强mp药剂#6",
-        "材料盒子#2"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20020,
-      "title": "新年限时军阀副本",
-      "description": "通关【新年限时军阀副本】，可获得鼠年碎片",
-
-      "get_requirements": [-1],
-      "get_conversation": "$NOTHING_CONVERSATION",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["新年限时军阀副本#简单"],
-      "finish_conversation": "$NOTHING_CONVERSATION",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-       "经验值#88",
-        "金币#88",
-        "普通hp药剂#15",
-        "普通mp药剂#15",
-        "压缩胶囊之军阀#1",
-        "鼠年碎片#150",
-        "猪年碎片#150",
-        "狗年碎片#150",
-        "鸡年碎片#150",
-        "猴年新年碎片#150",
-        "羊年新年碎片#150",
-        "红包#10",
-        "福袋#10",
-        "鞭炮#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20021,
-      "title": "新年限时熔岩副本",
-      "description": "通关【新年限时熔岩副本】，可获得鼠年碎片",
-
-      "get_requirements": [-1],
-      "get_conversation": "$NOTHING_CONVERSATION",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["新年限时熔岩副本#简单"],
-      "finish_conversation": "$NOTHING_CONVERSATION",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#88",
-        "金币#88",
-        "加强抗生素药剂#45",
-        "加强mp药剂#45",
-        "复活币#35",
-        "压缩胶囊之武士铁血#1",
-        "鼠年碎片#150",
-        "猪年碎片#150",
-        "狗年碎片#150",
-        "鸡年碎片#150",
-        "猴年新年碎片#150",
-        "羊年新年碎片#150",
-        "红包#10",
-        "福袋#10",
-        "鞭炮#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20022,
-      "title": "新年限时雪山副本",
-      "description": "通关【新年限时雪山副本】，可获得鼠年碎片",
-
-      "get_requirements": [-1],
-      "get_conversation": "$NOTHING_CONVERSATION",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["新年限时雪山副本#简单"],
-      "finish_conversation": "$NOTHING_CONVERSATION",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-         "经验值#88",
-        "金币#88",
-        "加强抗生素药剂#40",
-        "加强mp药剂#40",
-        "复活币#30",
-        "压缩胶囊之李小龙#1",
-        "鼠年碎片#150",
-        "猪年碎片#150",
-        "狗年碎片#150",
-        "鸡年碎片#150",
-        "猴年新年碎片#150",
-        "羊年新年碎片#150",
-        "红包#10",
-        "福袋#10",
-        "鞭炮#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20023,
-      "title": "古战场百人斩",
-      "description": "通关【古战场百人斩】，调查古战场里面的生物！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_ANCIENT_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["古战场百人斩#简单"],
-      "finish_conversation": "$MUSOU_ANCIENT_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#50000",
-        "金币#50000",
-        "加强抗生素药剂#11",
-        "复活币#7",
-        "加强mp药剂#11",
-        "材料盒子#5"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20024,
-      "title": "诺亚百人斩",
-      "description": "通关【诺亚百人斩】，调查诺亚异常！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_NOA_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["诺亚百人斩#简单"],
-      "finish_conversation": "$MUSOU_NOA_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#20000",
-        "金币#20000",
-        "加强抗生素药剂#8",
-        "复活币#5",
-        "加强mp药剂#8",
-        "材料盒子#3"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20025,
-      "title": "诺亚千人斩",
-      "description": "通关【诺亚千人斩】，清除所有终结者和诺亚士兵！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_NOA_2_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["诺亚千人斩#简单"],
-      "finish_conversation": "$MUSOU_NOA_2_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#100000",
-        "金币#100000",
-        "加强抗生素药剂#50",
-        "复活币#50",
-        "加强mp药剂#50",
-        "方舟碎片#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20026,
-      "title": "雪山百人斩",
-      "description": "通关【雪山百人斩】，调查雪山崩塌的原因！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_SNOW_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["雪山百人斩#简单"],
-      "finish_conversation": "$MUSOU_SNOW_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-       "经验值#30000",
-        "金币#30000",
-        "加强抗生素药剂#9",
-        "复活币#6",
-        "加强mp药剂#9",
-        "材料盒子#4"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20027,
-      "title": "雪山千人斩",
-      "description": "通关【雪山千人斩】，清除所有终结者和诺亚士兵！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_SNOW_2_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["雪山千人斩#简单"],
-      "finish_conversation": "$MUSOU_SNOW_2_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#200000",
-        "金币#200000",
-        "加强抗生素药剂#50",
-        "复活币#50",
-        "加强mp药剂#50",
-        "方舟碎片#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20028,
-      "title": "熔岩百人斩",
-      "description": "通关【熔岩百人斩】，调查熔岩不稳定的原因！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_VOLCANO_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["熔岩百人斩#简单"],
-      "finish_conversation": "$MUSOU_VOLCANO_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-       "经验值#40000",
-        "金币#40000",
-        "加强抗生素药剂#10",
-        "复活币#6",
-        "加强mp药剂#10",
-        "材料盒子#4"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20029,
-      "title": "熔岩千人斩",
-      "description": "通关【熔岩千人斩】，清除所有终结者和诺亚士兵！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_VOLCANO_2_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["熔岩千人斩#简单"],
-      "finish_conversation": "$MUSOU_VOLCANO_2_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-       "经验值#300000",
-        "金币#300000",
-        "加强抗生素药剂#50",
-        "复活币#50",
-        "加强mp药剂#50",
-        "方舟碎片#10"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20030,
-      "title": "铁血百人斩",
-      "description": "通关【铁血百人斩】，调查外星生物铁血！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_PREDATOR_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["铁血百人斩#简单"],
-      "finish_conversation": "$MUSOU_PREDATOR_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#60000",
-        "金币#60000",
-        "加强抗生素药剂#12",
-        "复活币#7",
-        "加强mp药剂#12",
-        "材料盒子#5"
-      ],
-
-      "chain": "委托"
-    },
-    {
-      "id": 20031,
-      "title": "异形百人斩",
-      "description": "通关【异形百人斩】，抢夺飞船！",
-
-      "get_requirements": [-1],
-      "get_conversation": "$MUSOU_ALIEN_GET",
-      "get_npc": "Andy Law",
-
-      "finish_requirements": ["异形百人斩#简单"],
-      "finish_conversation": "$MUSOU_ALIEN_FINISH",
-      "finish_npc": "Andy Law",
-
-      "rewards": [
-        "经验值#70000",
-        "金币#70000",
-        "加强抗生素药剂#13",
-        "复活币#8",
-        "加强mp药剂#13",
-        "材料盒子#6"
-      ]
     },
     {
       "id": 20032,
@@ -885,6 +243,10 @@
       "finish_requirements": ["AVP#简单"],
       "finish_conversation": "$AVP_FINISH",
       "finish_npc": "幸存老兵",
+      "recommended_level": "13-18",
+      "restricted_level": 8,
+      "deposit": 1000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#100000",
@@ -914,6 +276,10 @@
       "finish_requirements": ["生存战#简单"],
       "finish_conversation": "$SURVIVE_MODE_FINISH",
       "finish_npc": "迷之盔甲君",
+      "recommended_level": "15-25",
+      "restricted_level": 12,
+      "deposit": 500,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#200000",
@@ -938,6 +304,10 @@
       "finish_requirements": ["僵尸逆袭#简单"],
       "finish_conversation": "$ZOMBIE_INVASION_FINISH",
       "finish_npc": "前治安官",
+      "recommended_level": "11-15",
+      "restricted_level": 10,
+      "deposit": 1000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#60000",
@@ -967,6 +337,10 @@
       "finish_requirements": ["二战亡灵#简单"],
       "finish_conversation": "$WW2_JAPAN_FINISH",
       "finish_npc": "爱国青年",
+      "recommended_level": "5-10",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#20000",
@@ -991,6 +365,10 @@
       "finish_requirements": ["堕落城的骚动#简单"],
       "finish_conversation": "$SMASHING_GIG_FINISH",
       "finish_npc": "学生妹",
+      "recommended_level": "25-30",
+      "restricted_level": 10,
+      "deposit": 10000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#80000",
@@ -1018,6 +396,10 @@
       "finish_requirements": ["夺取材料#简单"],
       "finish_conversation": "$GEM_HUNT_REVOLUTIONISTS_FINISH",
       "finish_npc": "宝石线人",
+      "recommended_level": "20-30",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#50000",
@@ -1044,6 +426,10 @@
       "finish_requirements": ["制霸黑铁会获强化石#简单"],
       "finish_conversation": "$GEM_HUNT_BLACKIRON_FINISH",
       "finish_npc": "黑铁会外交部长",
+      "recommended_level": "30-35",
+      "restricted_level": 30,
+      "deposit": 5000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#100000",
@@ -1095,6 +481,10 @@
       "finish_requirements": ["古战场#简单"],
       "finish_conversation": "$GEM_HUNT_WITCH_FINISH",
       "finish_npc": "长生军战士",
+      "recommended_level": "30-35",
+      "restricted_level": 25,
+      "deposit": 30000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#10000",
@@ -1148,6 +538,10 @@
       "finish_requirements": ["剑圣的叹息#简单"],
       "finish_conversation": "$SWORDMASTER_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "18-27",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#50000",
@@ -1201,6 +595,10 @@
       "finish_requirements": ["92式装甲副本#简单"],
       "finish_conversation": "$92_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "28-32",
+      "restricted_level": 8,
+      "deposit": 1000,
+      "Kdeposit": 100,
 
       "rewards": [
         "金币#50000",
@@ -1224,6 +622,10 @@
       "finish_requirements": ["圣诞副本#简单"],
       "finish_conversation": "$CHRISTMAS_FINISH",
       "finish_npc": "杰克霜精",
+      "recommended_level": "25-35",
+      "restricted_level": 15,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#50000",
@@ -1248,6 +650,10 @@
       "finish_requirements": ["中秋国庆副本#简单"],
       "finish_conversation": "$MIDAUTUMN_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "12-20",
+      "restricted_level": 8,
+      "deposit": 1000,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#50000",
@@ -1273,6 +679,10 @@
       "finish_requirements": ["通缉任务之尾上世莉架#简单"],
       "finish_conversation": "$MERC_serika_FINISH",
       "finish_npc": "酒保",
+      "recommended_level": "18-30",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#20000",
@@ -1296,6 +706,10 @@
       "finish_requirements": ["挑战Blue#简单"],
       "finish_conversation": "$GEM_PK_BLUE_FINISH",
       "finish_npc": "Blue",
+      "recommended_level": "25-30",
+      "restricted_level": 10,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#5000",
@@ -1319,6 +733,11 @@
       "finish_requirements": ["挑战Andylaw#简单"],
       "finish_conversation": "$GEM_PK_ANDY_FINISH",
       "finish_npc": "Andy Law",
+      "recommended_level": "40-50",
+      "restricted_level": 20,
+      "deposit": 0,
+      "Kdeposit": 0,
+      
 
       "rewards": [
         "金币#50000",
@@ -1345,6 +764,10 @@
       "finish_requirements": ["挑战BPK#简单"],
       "finish_conversation": "$GEM_PK_BPK_FINISH",
       "finish_npc": "Boy",
+      "recommended_level": "30-40",
+      "restricted_level": 10,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "金币#30000",
@@ -1367,6 +790,10 @@
       "finish_requirements": ["挑战战斗天才#地狱"],
       "finish_conversation": "$GEM_PK_JK_FINISH",
       "finish_npc": "武装JK",
+      "recommended_level": "100",
+      "restricted_level": 10,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#5000000"
@@ -1386,6 +813,10 @@
       "finish_requirements": ["与Tomboy切磋#地狱"],
       "finish_conversation": "$GEM_PK_Tomboy_FINISH",
       "finish_npc": "Tomboy",
+      "recommended_level": "15-20",
+      "restricted_level": 1,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#300000"
@@ -1405,6 +836,10 @@
       "finish_requirements": ["挑战黑白女仆（白）#地狱"],
       "finish_conversation": "$GEM_PK_MaidWhite_FINISH",
       "finish_npc": "女仆（白）",
+      "recommended_level": "30-40",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#1800000"
@@ -1424,6 +859,10 @@
       "finish_requirements": ["挑战黑白女仆（黑）#地狱"],
       "finish_conversation": "$GEM_PK_MaidDark_FINISH",
       "finish_npc": "女仆（黑）",
+      "recommended_level": "30-40",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#1800000"
@@ -1443,6 +882,10 @@
       "finish_requirements": ["菲尼克斯Lv16#冒险"],
       "finish_conversation": "$GEM_PK_PHENEX16_FINISH",
       "finish_npc": "迷之盔甲君",
+      "recommended_level": "50-60",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#20000000"
@@ -1462,6 +905,10 @@
       "finish_requirements": ["菲尼克斯Lv10#简单"],
       "finish_conversation": "$GEM_PK_PHENEX10_FINISH",
       "finish_npc": "迷之盔甲君",
+      "recommended_level": "50",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#8000000"
@@ -1481,6 +928,7 @@
       "finish_requirements": ["密林深处#简单"],
       "finish_conversation": "",
       "finish_npc": "文天",
+      "recommended_level": "25",
 
       "rewards": [
         "金币#20000",
@@ -1501,6 +949,10 @@
       "finish_requirements": ["锡蒙利Lv16#修罗"],
       "finish_conversation": "$GEM_PK_Cimejes16_FINISH",
       "finish_npc": "迷之盔甲君",
+      "recommended_level": "80-100",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#35000000"
@@ -1520,6 +972,10 @@
       "finish_requirements": ["锡蒙利Lv10#冒险"],
       "finish_conversation": "$GEM_PK_Cimejes10_FINISH",
       "finish_npc": "迷之盔甲君",
+      "recommended_level": "50",
+      "restricted_level": 8,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#15000000"
@@ -1539,6 +995,10 @@
       "finish_requirements": [ "挑战surveyor#地狱" ],
       "finish_conversation": "$GEM_PK_surveyor_FINISH",
       "finish_npc": "surveyor",
+      "recommended_level": "28-35",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#1300000"
@@ -1558,6 +1018,10 @@
       "finish_requirements": [ "挑战gazer#地狱" ],
       "finish_conversation": "$GEM_PK_gazer_FINISH",
       "finish_npc": "gazer",
+      "recommended_level": "20-30",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#600000"
@@ -1577,6 +1041,10 @@
       "finish_requirements": [ "挑战Itinerant#地狱" ],
       "finish_conversation": "$GEM_PK_Itinerant_FINISH",
       "finish_npc": "Itinerant",
+      "recommended_level": "25-30",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#1000000"
@@ -1596,6 +1064,10 @@
       "finish_requirements": [ "挑战诺艾尔#地狱" ],
       "finish_conversation": "$GEM_PK_noelle_FINISH",
       "finish_npc": "诺艾尔",
+      "recommended_level": "35-45",
+      "restricted_level": 5,
+      "deposit": 0,
+      "Kdeposit": 0,
 
       "rewards": [
         "经验值#2000000"
