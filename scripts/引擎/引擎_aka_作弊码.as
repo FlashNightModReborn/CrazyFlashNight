@@ -1,4 +1,5 @@
-﻿_root.cheatCode = function(作弊码){
+﻿import org.flashNight.gesh.string.EvalParser;
+_root.cheatCode = function(作弊码){
 	
 	
    if(作弊码 == "hardmode")
@@ -56,11 +57,31 @@
 
       _root.最上层发布文字提示("添加一个僵尸！");
    }
+   if(作弊码 == "ultrarapidfire")
+   {
+		for(var key in _root.技能表对象){
+			_root.技能表对象[key].MaxLevel = 99;
+			if(_root.技能表对象[key].CD > 1000){
+				_root.技能表对象[key].CD = 1000;
+			}
+		}
+		for (var i = 1; i < 13; i++)
+		{
+			var 当前技能栏 = _root.玩家信息界面.快捷技能界面["快捷技能栏" + i];
+			if(当前技能栏.冷却时间 > 1000){
+				当前技能栏.冷却时间 = 1000;
+			}
+		}
+		_root.玩家信息界面.刷新技能等级显示();
+		_root.最上层发布文字提示("无限火力开启！");
+		_root.发布消息("开启无限火力模式，所有技能的升级上限提升至99级，cd降低为1秒。部分技能可能产生bug。退出游戏后技能cd恢复正常。");
+   }
 	if(作弊码.indexOf("#code:")>-1){
 		执行代码  = 作弊码.split("#code:")[1];
 		_root.发布消息("执行代码："+执行代码);
-		eval(执行代码);
-		_root.发布消息("执行失败！因为as2不支持eval()直接解析，等fs处理吧");
+		//eval(执行代码);
+		//_root.发布消息("执行失败！因为as2不支持eval()直接解析，等fs处理吧");
+		EvalParser.getPropertyValue(testObj, "user.name");
 	}else if(作弊码.indexOf("#_root.")>-1){
 		执行代码  = 作弊码.split("#_root.")[1].split("=");
 		变量名  = 执行代码[0].split(" ").join("");
@@ -166,6 +187,8 @@
 挑战模式：challengemode
 添加一个僵尸（角斗场无人时可用，其中为数字1）：add1
 变更等级(和对应经验)：#level:15
+变更等级(和对应经验)的简写：..15
+无限火力（可能产生bug）：ultrarapidfire
 
 _root.变量值变更（字符串型）：#_root.abc=AAA
 _root.变量值变更（非字符串型）：#_root.abc=123;int
@@ -177,7 +200,9 @@ _root.函数执行(单参数，传_root.变量)：#func:_root.测试作弊码(_r
 _root.函数执行(多参数均为字符串型)：#func:_root.测试作弊码2(AB,AC)
 _root.函数执行(多参数，指定参数数据类型)：#func:_root.测试作弊码3(123,AC,_root.abc);1:数字,3:变量
 
-变更当前操作单位（未进行操作代码适配的单位无法移动）：#change:主角-尾上世莉架
+变更当前操作单位（未进行操作代码适配的单位无法移动）：
+#change:主角-尾上世莉架  
+#change:主角-文天
 
 */
 _root.测试作弊码 = function(a){
