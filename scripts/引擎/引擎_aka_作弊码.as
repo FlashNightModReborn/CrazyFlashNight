@@ -57,7 +57,7 @@ _root.cheatCode = function(作弊码){
 
       _root.最上层发布文字提示("添加一个僵尸！");
    }
-   if(作弊码 == "ultrarapidfire")
+   if(作弊码 == "ultrarapidfire" || 作弊码 == "fire")
    {
 		for(var key in _root.技能表对象){
 			_root.技能表对象[key].MaxLevel = 99;
@@ -189,6 +189,7 @@ _root.cheatCode = function(作弊码){
 变更等级(和对应经验)：#level:15
 变更等级(和对应经验)的简写：..15
 无限火力（可能产生bug）：ultrarapidfire
+无限火力（可能产生bug）的简写：fire
 
 _root.变量值变更（字符串型）：#_root.abc=AAA
 _root.变量值变更（非字符串型）：#_root.abc=123;int
