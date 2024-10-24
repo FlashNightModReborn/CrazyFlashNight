@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加载 SWF 游戏</title>
+    <style>
+        /* 设置SWF播放器的布局和样式 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000; /* 背景颜色 */
+        }
+        #flashContent {
+            width: 800px;
+            height: 600px; /* SWF 文件显示的大小 */
+        }
+    </style>
+</head>
+<body>
+    <div id="flashContent">
+        <!-- 使用 object 标签加载 SWF 文件 -->
+        <object id="flashObject" type="application/x-shockwave-flash" 
+                data="../scripts/导弹搬运工小游戏.swf" 
+                width="800" height="600">
+            <param name="movie" value="../scripts/导弹搬运工小游戏.swf" />
+            <param name="allowFullScreen" value="true" />
+            <param name="scale" value="exactfit" />
+            <param name="wmode" value="direct" />
+            <param name="allowScriptAccess" value="always" />
+            <!-- 使用 embed 标签做备选方案 -->
+            <embed id="flashEmbed" 
+                   src="../scripts/导弹搬运工小游戏.swf" 
+                   width="800" height="600" allowFullScreen="true" scale="exactfit" wmode="direct" allowScriptAccess="always"></embed>
+        </object>
+    </div>
+
+    <script>
+        // 输出调试信息，确认 SWF 文件加载情况
+        window.onload = function() {
+            var flashObject = document.getElementById('flashObject');
+            if (flashObject && flashObject.data) {
+                console.log("SWF 文件加载路径（object）：", flashObject.data);
+            } else {
+                console.error("SWF 文件加载失败（object）");
+            }
+
+            var flashEmbed = document.getElementById('flashEmbed');
+            if (flashEmbed && flashEmbed.src) {
+                console.log("SWF 文件加载路径（embed）：", flashEmbed.src);
+            } else {
+                console.error("SWF 文件加载失败（embed）");
+            }
+        };
+    </script>
+</body>
+</html>
