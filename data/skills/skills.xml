@@ -172,7 +172,7 @@
     <Skill id="15">
         <Name>兽王崩拳</Name>
         <Type>武术-空手</Type>
-        <Description>兽王的绝学，对敌人的生命上限造成损伤！可自动追踪中近范围内的敌人，优先级：当前敌人→最近敌人。开启技能时，按奔跑键取消追踪，按互动键变更优先级：当前敌人→血量最高敌人，按切换键则忽视当前敌人的优先级。基础强度：高，升级收益：正常。</Description>
+        <Description>兽王的绝学，对敌人的生命上限造成损伤！可自动追踪中近范围内的敌人，优先锁定最近敌人。开启技能时，按奔跑键取消追踪，按互动键优先追踪血量最高敌人。基础强度：高，升级收益：正常。</Description>
         <UnlockLevel>30</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>50</UnlockSP>
