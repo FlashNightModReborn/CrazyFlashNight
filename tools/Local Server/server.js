@@ -5,6 +5,8 @@ const { extractPorts } = require('./config/ports');
 const logger = require('./utils/logger');
 const httpRoutes = require('./routes/httpRoutes');
 const SocketServer = require('./services/socketServer');
+const path = require('path');
+const fs = require('fs');
 
 let portList = extractPorts();
 let usedPorts = new Set();
@@ -78,6 +80,30 @@ app.post('/logBatch', (req, res) => {
 app.post('/testConnection', (req, res) => {
     logger.info('Received testConnection request');
     res.status(200).send('status=success');
+});
+
+// 文件传输接口
+app.get('/getFile', (req, res) => {
+    const relativePath = req.query.path; // 从查询参数中获取相对路径
+    const absolutePath = path.join(__dirname, 'resources', relativePath); // 构建绝对路径
+
+    // 检查文件是否存在
+    fs.access(absolutePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            logger.error(`File not found: ${absolutePath}`);
+            return res.status(404).send('File not found');
+        }
+
+        // 读取文件内容并返回
+        fs.readFile(absolutePath, 'utf8', (err, data) => {
+            if (err) {
+                logger.error(`Error reading file: ${absolutePath}`);
+                return res.status(500).send('Error reading file');
+            }
+            res.set('Content-Type', 'application/xml');
+            res.status(200).send(data);
+        });
+    });
 });
 
 // Start the HTTP server
