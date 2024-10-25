@@ -30,6 +30,17 @@ app.use((req, res, next) => {
     next();
 });
 
+// Serve crossdomain.xml
+app.get('/crossdomain.xml', (req, res) => {
+    res.set('Content-Type', 'application/xml');
+    res.status(200).send(`
+        <?xml version="1.0"?>
+        <cross-domain-policy>
+            <allow-access-from domain="*" />
+        </cross-domain-policy>
+    `);
+});
+
 // Use HTTP routes
 app.use('/', httpRoutes);
 
