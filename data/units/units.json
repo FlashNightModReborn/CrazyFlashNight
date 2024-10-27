@@ -6248,20 +6248,6 @@
     }
   },
   {
-    "id": 394,
-    "spritename": "敌人-诺亚突击兵",
-    "level": 1,
-    "name": "忏悔者",
-    "is_hostile": true,
-    "height": 175,
-    "data": {
-      "primary": null,
-      "secondary": null,
-      "secondary2": null,
-      "melee": null
-    }
-  },
-  {
     "id": 395,
     "spritename": "敌人-防护服士兵",
     "level": 1,
@@ -6294,6 +6280,34 @@
     "spritename": "敌人-鳄嘴兽人",
     "level": 1,
     "name": "鳄嘴兽人",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 398,
+    "spritename": "敌人-诺亚突击兵",
+    "level": 1,
+    "name": "忏悔者",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 399,
+    "spritename": "敌人-诺亚狙击兵",
+    "level": 1,
+    "name": "布道者",
     "is_hostile": true,
     "height": 175,
     "data": {
