@@ -6319,6 +6319,20 @@
   },
   {
     "id": 400,
+    "spritename": "敌人-诺亚重装兵",
+    "level": 1,
+    "name": "卫道士",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 401,
     "spritename": "敌人-防爆服僵尸",
     "level": 1,
     "name": "防爆僵尸",
@@ -6332,7 +6346,7 @@
     }
   },
   {
-    "id": 401,
+    "id": 402,
     "spritename": "敌人-特警僵尸",
     "level": 1,
     "name": "特战僵尸",
