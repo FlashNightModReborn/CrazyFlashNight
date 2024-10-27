@@ -70,6 +70,8 @@
                 <x>778</x>
                 <y>440</y>
                 <Identifier>出生点-钻头</Identifier>
+                <BiasX>20</BiasX>
+                <BiasY>20</BiasY>
             </Point>
             <Point id="1">
                 <x>919</x>
@@ -129,6 +131,14 @@
                         <Quantity>2</Quantity>
                         <Level>18</Level>
                         <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种400</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>18</Level>
+                        <x>1140</x>
+                        <y>374</y>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -416,6 +426,13 @@
                         <Type>兵种7</Type>
                         <Interval>1000</Interval>
                         <Quantity>10</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种400</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
                         <Level>18</Level>
                         <SpawnIndex>3</SpawnIndex>
                     </Enemy>
