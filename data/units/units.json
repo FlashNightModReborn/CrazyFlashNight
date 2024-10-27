@@ -6316,5 +6316,33 @@
       "secondary2": null,
       "melee": null
     }
+  },
+  {
+    "id": 400,
+    "spritename": "敌人-防爆服僵尸",
+    "level": 1,
+    "name": "防爆僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 401,
+    "spritename": "敌人-特警僵尸",
+    "level": 1,
+    "name": "特战僵尸",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
   }
 ]
