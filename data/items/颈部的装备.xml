@@ -194,14 +194,14 @@
     <price>80000</price>
     <description>总有人对于强敌盘踞的巢穴表达不满，并且用高价招募勇士去捣毁他们。
     旧治安官在治安体系崩溃后，依然尝试寻找勇士剿灭&lt;font color=&quot;#b22222&quot;&gt;丧尸&lt;/font&gt;聚集点。这用牙齿制成的染血的项链会证明佩戴者对&lt;font color=&quot;#b22222&quot;&gt;丧尸&lt;/font&gt;的绝对统治。而这染血的项链，也成为了你实力的证明。</description>
-    <level>12</level>
+    <level>11</level>
     <equipped>
       <dressup>
       </dressup>
       <hp>150</hp>
-      <mp>100</mp>
-      <damage>40</damage>
-      <defence>50</defence>
+      <mp>80</mp>
+      <damage>50</damage>
+      <defence>0</defence>
       <bullet>30</bullet>
       <title>屠戮者</title>
     </equipped>
@@ -221,10 +221,10 @@
     <equipped>
       <dressup>
       </dressup>
-      <hp>75</hp>
-      <mp>60</mp>
-      <damage>35</damage>
-      <defence>80</defence>
+      <hp>100</hp>
+      <mp>100</mp>
+      <damage>70</damage>
+      <defence>100</defence>
       <bullet>0</bullet>
       <title>金牌打手</title>
     </equipped>
@@ -244,8 +244,8 @@
     <equipped>
       <dressup>
       </dressup>
-      <hp>150</hp>
-      <mp>150</mp>
+      <hp>200</hp>
+      <mp>200</mp>
       <damage>0</damage>
       <defence>30</defence>
       <bullet>40</bullet>
@@ -270,7 +270,7 @@
       <hp>200</hp>
       <mp>100</mp>
       <damage>30</damage>
-      <defence>75</defence>
+      <defence>120</defence>
       <bullet>50</bullet>
       <title>生存者</title>
     </equipped>
@@ -382,7 +382,7 @@
       </dressup>
       <hp>120</hp>
       <mp>120</mp>
-      <damage>40</damage>
+      <damage>50</damage>
       <defence>100</defence>
       <bullet>100</bullet>
       <title>战斗专家</title>
@@ -403,9 +403,9 @@
       <dressup>
       </dressup>
       <hp>180</hp>
-      <mp>150</mp>
-      <damage>50</damage>
-      <defence>120</defence>
+      <mp>180</mp>
+      <damage>70</damage>
+      <defence>150</defence>
       <bullet>100</bullet>
       <title>战斗狂人</title>
     </equipped>
@@ -1164,9 +1164,10 @@
       <dressup>
       </dressup>
       <hp>180</hp>
-      <mp>150</mp>
+      <mp>180</mp>
       <knifepower>50</knifepower>
-      <defence>120</defence>
+      <damage>20</damage>
+      <defence>150</defence>
       <bullet>100</bullet>
       <title>剑道巨擎</title>
     </equipped>
@@ -1186,9 +1187,10 @@
       <dressup>
       </dressup>
       <hp>180</hp>
-      <mp>150</mp>
+      <mp>180</mp>
       <gunpower>50</gunpower>
-      <defence>120</defence>
+      <damage>20</damage>
+      <defence>150</defence>
       <bullet>100</bullet>
       <title>火力之王</title>
     </equipped>
@@ -1208,9 +1210,10 @@
       <dressup>
       </dressup>
       <hp>180</hp>
-      <mp>150</mp>
+      <mp>180</mp>
       <punch>50</punch>
-      <defence>120</defence>
+      <damage>20</damage>
+      <defence>150</defence>
       <bullet>100</bullet>
       <title>武道宗师</title>
     </equipped>
