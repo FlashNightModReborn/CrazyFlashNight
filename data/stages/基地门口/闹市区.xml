@@ -140,6 +140,13 @@
                         <x>1140</x>
                         <y>374</y>
                     </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种403</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
         </Wave>
@@ -250,6 +257,13 @@
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
+                        <Type>兵种5</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>18</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
                         <Type>兵种400</Type>
                         <Interval>2000</Interval>
                         <Quantity>3</Quantity>
