@@ -69,6 +69,32 @@ class org.flashNight.gesh.object.ObjectUtil {
     }
 
     /**
+     * 遍历对象的每个自有属性并执行提供的回调函数。
+     * 该方法会使用 for...in 遍历对象的所有可枚举属性，但仅对对象的自有属性执行回调，
+     * 避免遍历到从原型链继承的属性。
+     * 
+     * @param obj 要遍历的对象。
+     * @param callback 对每个属性执行的回调函数，格式为 function(key:String, value:Object):Void。
+     * 回调函数将接收两个参数：属性名 (key) 和对应的属性值 (value)。
+     */
+    public static function forEach(obj:Object, callback:Function):Void {
+        // 检查传入的对象是否为 null 或非对象类型，如果是则直接返回
+        if (obj == null || typeof(obj) != "object") {
+            return;
+        }
+
+        // 使用 for...in 结合 hasOwnProperty 遍历对象的自有属性
+        for (var key:String in obj) {
+            // hasOwnProperty 用于确保只遍历对象自身的属性，避免遍历原型链上的继承属性
+            if (obj.hasOwnProperty(key)) {
+                // 对每个自有属性调用回调函数，传递属性名和对应的值
+                callback(key, obj[key]);
+            }
+        }
+    }
+
+
+    /**
      * 比较两个对象，返回它们的差异。
      * @param obj1 第一个对象。
      * @param obj2 第二个对象。
