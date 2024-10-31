@@ -354,7 +354,16 @@ _root.初始化敌人模板 = function()
 		this.新版人物文字信息._x = 人物文字信息._x;
 		this.新版人物文字信息._y = 人物文字信息._y;
 	}
-	
+
+	//应用影子色彩
+	if(this.影子单位){
+		this.影子倍率 = this.影子倍率? this.影子倍率 : 0;
+		this.透明倍率 =  this.透明倍率? this.透明倍率 : 0.7;
+		_root.设置色彩(this,this.影子倍率,this.影子倍率,this.影子倍率,NaN,NaN,NaN,this.透明倍率,0);
+	}else if(this.色彩单位){
+		_root.设置色彩(this,this.红色乘数,this.绿色乘数,this.蓝色乘数,this.红色偏移,this.绿色偏移,this.蓝色偏移,this.透明乘数,this.透明偏移);
+	}
+		
 	//初始化完毕
 	_root.帧计时器.注册目标缓存(this);
 	根据等级初始数值(等级);
