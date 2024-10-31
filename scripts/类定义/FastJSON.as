@@ -1245,7 +1245,217 @@ trace("反序列化 - 标准差: " + fastJsonDeserStats.stdDeviation + " ms");
 
 // 显示示例序列化数据
 trace("\nSerialized data example (Original JSON): " + serializedDataJson);
-trace("Deserialized data example, userName (Original JSON): " + (jsonDeserializeTimes.length > 0 && jsonDeserStats.minTime >= 0 ? originalJSON.parse(serializedDataJson).userName : "null"));
+trace("Deserialized data example, userName (Original JSON): " + (jsonDeserStats.minTime >= 0 ? originalJSON.parse(serializedDataJson).userName : "null"));
+trace("Serialized data example (FastJSON): " + serializedDataFastJSON);
+trace("Deserialized data example, userName (FastJSON): " + (fastJsonDeserStats.minTime >= 0 ? fastJSON.parse(serializedDataFastJSON).userName : "null"));
+
+// --- 扩展测试：缓存无效情况下的性能测试 ---
+
+trace("\n=== 扩展测试：缓存无效情况下的性能测试 ===");
+
+// 定义一个函数，用于生成全新的测试对象
+function generateUniqueObject():Object {
+    var obj:Object = new Object();
+    obj.userId = Math.floor(Math.random() * 100000);
+    obj.userName = "Player" + Math.floor(Math.random() * 1000);
+    obj.level = Math.floor(Math.random() * 100);
+    obj.stats = new Object();
+    obj.stats.hp = Math.floor(Math.random() * 500);
+    obj.stats.mp = Math.floor(Math.random() * 500);
+    obj.stats.attack = Math.floor(Math.random() * 100);
+    obj.stats.defense = Math.floor(Math.random() * 100);
+    
+    // 添加 inventory 数组
+    obj.inventory = new Array();
+    var numItems:Number = Math.floor(Math.random() * 10) + 1; // 1 到 10 个物品
+    for (var m:Number = 0; m < numItems; m++) {
+        var item:Object = new Object();
+        item.id = 100 + m;
+        item.name = "Item" + m;
+        item.quantity = Math.floor(Math.random() * 20) + 1;
+        obj.inventory.push(item);
+    }
+    
+    // 添加 quests 数组
+    obj.quests = new Array();
+    var numQuests:Number = Math.floor(Math.random() * 5) + 1; // 1 到 5 个任务
+    for (m = 0; m < numQuests; m++) {
+        var quest:Object = new Object();
+        quest.id = 200 + m;
+        quest.title = "Quest " + m;
+        quest.progress = new Object();
+        quest.progress.current = Math.floor(Math.random() * 100);
+        quest.progress.total = 100;
+        obj.quests.push(quest);
+    }
+    
+    return obj;
+}
+
+// 定义扩展测试用例数组（每次都是新对象）
+var uniqueTestCases:Array = [];
+for (i = 0; i < 50; i++) { // 创建 50 个唯一测试用例
+    uniqueTestCases.push({input: generateUniqueObject(), description: "Unique object " + (i+1)});
+}
+
+// 执行扩展功能测试
+trace("\n=== 扩展功能测试：缓存无效情况下 ===");
+for (i = 0; i < uniqueTestCases.length; i++) {
+    var uniqueTestCase:Object = uniqueTestCases[i];
+    var uniqueInput:Object = uniqueTestCase.input;
+    var uniqueDescription:String = uniqueTestCase.description;
+    var uniqueOutputJSON:Object;
+    var uniqueOutputFastJSON:Object;
+    var uniqueSerializedJSON:String;
+    var uniqueSerializedFastJSON:String;
+    
+    trace("\n--- Test Case: " + uniqueDescription + " ---");
+    
+    try {
+        // 使用原始 JSON 类序列化
+        uniqueSerializedJSON = originalJSON.stringify(uniqueInput);
+        // 使用原始 JSON 类反序列化
+        uniqueOutputJSON = originalJSON.parse(uniqueSerializedJSON);
+        
+        // 显示原始 JSON 类结果
+        //trace("Original JSON | Serialized: " + uniqueSerializedJSON);
+        //trace("Original JSON | Parsed Output: " + serializeOutput(uniqueOutputJSON));
+    } catch (e:Error) {
+        trace("Original JSON | Error: " + e.message);
+    }
+    
+    try {
+        // 使用 FastJSON 类序列化
+        uniqueSerializedFastJSON = fastJSON.stringify(uniqueInput);
+        // 使用 FastJSON 类反序列化
+        uniqueOutputFastJSON = fastJSON.parse(uniqueSerializedFastJSON);
+        
+        // 显示 FastJSON 类结果
+        //trace("FastJSON     | Serialized: " + uniqueSerializedFastJSON);
+        //trace("FastJSON     | Parsed Output: " + serializeOutput(uniqueOutputFastJSON));
+    } catch (e:Error) {
+        trace("FastJSON     | Error: " + e.message);
+    }
+}
+
+// --- 性能测试：缓存无效情况下的序列化和反序列化时间 ---
+
+// 设置扩展测试迭代次数
+var uniqueNumIterations:Number = 100;
+var jsonSerializeTimesUnique:Array = [];
+var jsonDeserializeTimesUnique:Array = [];
+var fastJsonSerializeTimesUnique:Array = [];
+var fastJsonDeserializeTimesUnique:Array = [];
+
+// 生成独立的序列化和反序列化数据
+var serializedDataJsonUnique:Array = [];
+var serializedDataFastJSONUnique:Array = [];
+
+for (i = 0; i < uniqueNumIterations; i++) {
+    var uniqueObj:Object = generateUniqueObject();
+    try {
+        var serializedJsonUnique:String = originalJSON.stringify(uniqueObj);
+        serializedDataJsonUnique.push(serializedJsonUnique);
+    } catch (e:Error) {
+        serializedDataJsonUnique.push("Error");
+    }
+    
+    try {
+        var serializedFastJSONUnique:String = fastJSON.stringify(uniqueObj);
+        serializedDataFastJSONUnique.push(serializedFastJSONUnique);
+    } catch (e:Error) {
+        serializedDataFastJSONUnique.push("Error");
+    }
+}
+
+// 测试原始 JSON 类性能：序列化（缓存无效）
+trace("\n=== 扩展性能测试：原始 JSON 类序列化（缓存无效） ===");
+for (j = 0; j < uniqueNumIterations; j++) {
+    var startTimeUniqueSer:Number = getTimer();
+
+    // 使用原始 JSON 类序列化
+    var tempSerializedJsonUnique:String = originalJSON.stringify(generateUniqueObject());
+
+    var endTimeUniqueSer:Number = getTimer();
+    jsonSerializeTimesUnique.push(endTimeUniqueSer - startTimeUniqueSer);
+}
+
+// 测试原始 JSON 类性能：反序列化（缓存无效）
+trace("\n=== 扩展性能测试：原始 JSON 类反序列化（缓存无效） ===");
+for (j = 0; j < uniqueNumIterations; j++) {
+    var uniqueSerializedJsonUnique:String = originalJSON.stringify(generateUniqueObject());
+    var startTimeUniqueDeser:Number = getTimer();
+
+    // 使用原始 JSON 类反序列化
+    var tempDeserializedJsonUnique:Object = originalJSON.parse(uniqueSerializedJsonUnique);
+
+    var endTimeUniqueDeser:Number = getTimer();
+    jsonDeserializeTimesUnique.push(endTimeUniqueDeser - startTimeUniqueDeser);
+}
+
+// 测试 FastJSON 类性能：序列化（缓存无效）
+trace("\n=== 扩展性能测试：FastJSON 类序列化（缓存无效） ===");
+for (j = 0; j < uniqueNumIterations; j++) {
+    var startTimeFastSerUnique:Number = getTimer();
+
+    // 使用 FastJSON 类序列化
+    var tempSerializedFastJSONUnique:String = fastJSON.stringify(generateUniqueObject());
+
+    var endTimeFastSerUnique:Number = getTimer();
+    fastJsonSerializeTimesUnique.push(endTimeFastSerUnique - startTimeFastSerUnique);
+}
+
+// 测试 FastJSON 类性能：反序列化（缓存无效）
+trace("\n=== 扩展性能测试：FastJSON 类反序列化（缓存无效） ===");
+for (j = 0; j < uniqueNumIterations; j++) {
+    var uniqueSerializedFastJSONUnique:String = fastJSON.stringify(generateUniqueObject());
+    var startTimeFastDeserUnique:Number = getTimer();
+
+    // 使用 FastJSON 类反序列化
+    var tempDeserializedFastJSONUnique:Object = fastJSON.parse(uniqueSerializedFastJSONUnique);
+
+    var endTimeFastDeserUnique:Number = getTimer();
+    fastJsonDeserializeTimesUnique.push(endTimeFastDeserUnique - startTimeFastDeserUnique);
+}
+
+// 计算并显示扩展测试性能统计
+var jsonSerStatsUnique:Object = calculateStatistics(jsonSerializeTimesUnique);
+var jsonDeserStatsUnique:Object = calculateStatistics(jsonDeserializeTimesUnique);
+trace("\n--- 扩展测试：原始 JSON 类性能统计（缓存无效） ---");
+trace("序列化 - " + uniqueNumIterations + " 次总时间: " + jsonSerStatsUnique.totalTime + " ms");
+trace("序列化 - 平均每次时间: " + jsonSerStatsUnique.avgTime + " ms");
+trace("序列化 - 最大时间: " + jsonSerStatsUnique.maxTime + " ms");
+trace("序列化 - 最小时间: " + jsonSerStatsUnique.minTime + " ms");
+trace("序列化 - 方差: " + jsonSerStatsUnique.variance + " ms^2");
+trace("序列化 - 标准差: " + jsonSerStatsUnique.stdDeviation + " ms");
+
+trace("反序列化 - " + uniqueNumIterations + " 次总时间: " + jsonDeserStatsUnique.totalTime + " ms");
+trace("反序列化 - 平均每次时间: " + jsonDeserStatsUnique.avgTime + " ms");
+trace("反序列化 - 最大时间: " + jsonDeserStatsUnique.maxTime + " ms");
+trace("反序列化 - 最小时间: " + jsonDeserStatsUnique.minTime + " ms");
+trace("反序列化 - 方差: " + jsonDeserStatsUnique.variance + " ms^2");
+trace("反序列化 - 标准差: " + jsonDeserStatsUnique.stdDeviation + " ms");
+
+var fastJsonSerStatsUnique:Object = calculateStatistics(fastJsonSerializeTimesUnique);
+var fastJsonDeserStatsUnique:Object = calculateStatistics(fastJsonDeserializeTimesUnique);
+trace("\n--- 扩展测试：FastJSON 类性能统计（缓存无效） ---");
+trace("序列化 - " + uniqueNumIterations + " 次总时间: " + fastJsonSerStatsUnique.totalTime + " ms");
+trace("序列化 - 平均每次时间: " + fastJsonSerStatsUnique.avgTime + " ms");
+trace("序列化 - 最大时间: " + fastJsonSerStatsUnique.maxTime + " ms");
+trace("序列化 - 最小时间: " + fastJsonSerStatsUnique.minTime + " ms");
+trace("序列化 - 方差: " + fastJsonSerStatsUnique.variance + " ms^2");
+trace("序列化 - 标准差: " + fastJsonSerStatsUnique.stdDeviation + " ms");
+
+trace("反序列化 - " + uniqueNumIterations + " 次总时间: " + fastJsonDeserStatsUnique.totalTime + " ms");
+trace("反序列化 - 平均每次时间: " + fastJsonDeserStatsUnique.avgTime + " ms");
+trace("反序列化 - 最大时间: " + fastJsonDeserStatsUnique.maxTime + " ms");
+trace("反序列化 - 最小时间: " + fastJsonDeserStatsUnique.minTime + " ms");
+trace("反序列化 - 方差: " + fastJsonDeserStatsUnique.variance + " ms^2");
+trace("反序列化 - 标准差: " + fastJsonDeserStatsUnique.stdDeviation + " ms");
+
+// 显示示例序列化数据
+trace("\nSerialized data example (Original JSON): " + serializedDataJson);
+trace("Deserialized data example, userName (Original JSON): " + (jsonDeserStats.minTime >= 0 ? originalJSON.parse(serializedDataJson).userName : "null"));
 trace("Serialized data example (FastJSON): " + serializedDataFastJSON);
 trace("Deserialized data example, userName (FastJSON): " + (fastJsonDeserStats.minTime >= 0 ? fastJSON.parse(serializedDataFastJSON).userName : "null"));
 
