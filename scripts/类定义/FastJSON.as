@@ -1,11 +1,33 @@
-﻿class FastJSON {
-    public var text;
-    public var ch = "";
-    public var at = 0;
+﻿import org.flashNight.naki.DataStructures.Dictionary;
+import org.flashNight.naki.Sort.InsertionSort;
+
+class FastJSON {
+    public var text:String;
+    public var ch:String = "";
+    public var at:Number = 0;
 
     // 最大解析深度以防止栈溢出
-    public var maxDepth = 256; 
-    private var currentDepth = 0;
+    public var maxDepth:Number = 256; 
+    private var currentDepth:Number = 0;
+    
+    // 存储 text.length 的变量
+    private var textLength:Number = 0;
+    
+    // 字符数组缓存
+    private var charArray:Array;
+    
+    // 缓存对象
+    private var parseCache:Object = {};         // 解析缓存
+    private var stringifyCache:Object = {};     // 序列化缓存
+    private var cacheMaxSize:Number = 1000;    // 缓存最大容量
+
+    // 缓存键的插入顺序，用于FIFO清理
+    private var parseCacheKeys:Array = [];
+    private var stringifyCacheKeys:Array = [];
+
+    // 缓存计数器
+    private var parseCacheCount:Number = 0;
+    private var stringifyCacheCount:Number = 0;
 
     /**
      * 构造函数
@@ -15,490 +37,271 @@
     }
 
     /**
+     * 将对象转换为唯一的缓存键
+     * 使用Dictionary.getStaticUID为对象分配唯一UID
+     * 对于基本类型，直接转换为字符串
+     * @param arg 要生成键的对象
+     * @return 生成的唯一键字符串
+     */
+    private function generateCacheKey(arg):String {
+        switch (typeof arg) {
+            case "object":
+                if (arg === null) {
+                    return "null";
+                }
+                return "obj_" + Dictionary.getStaticUID(arg);
+            case "string":
+                return "str_" + arg;
+            case "number":
+                return "num_" + arg;
+            case "boolean":
+                return "bool_" + arg;
+            default:
+                return "undefined";
+        }
+    }
+
+    /**
+     * 清理缓存（FIFO策略）
+     * @param cache 要清理的缓存对象
+     * @param cacheKeys 缓存键的顺序数组
+     * @param cacheCountRef 缓存计数器引用
+     */
+    private function cleanCache(cache:Object, cacheKeys:Array, cacheCountRef:Object):Void {
+        while (cacheCountRef.count > this.cacheMaxSize) {
+            var oldestKey = cacheKeys.shift();
+            if (oldestKey !== undefined) {
+                delete cache[oldestKey];
+                cacheCountRef.count--;
+            }
+        }
+    }
+
+    /**
      * 将 AS2 对象序列化为 FastJSON 字符串
      * @param arg 要序列化的对象
      * @return FastJSON 字符串
      */
-    public function stringify(arg) {
-        var serializedValue;
-        var result = ""; // 直接拼接字符串
-        var index;
-
-        switch (typeof arg) {
-            case "object":
-                if (arg) {
-                    if (arg instanceof Array) {
-                        result = "[";
-                        for (index = 0; index < arg.length; index++) {
-                            serializedValue = this.stringify(arg[index]);
-                            if (index > 0) {
-                                result += ",";
-                            }
-                            result += serializedValue;
-                        }
-                        return result + "]";
-                    }
-                    if (typeof arg.toString != "undefined") {
-                        result = "{";
-                        var isFirst = true;
-                        for (index in arg) {
-                            serializedValue = arg[index];
-                            if (typeof serializedValue != "undefined" && typeof serializedValue != "function") {
-                                if (!isFirst) {
-                                    result += ",";
+    public function stringify(arg):String {
+        var cacheKey:String = this.generateCacheKey(arg);
+        if (this.stringifyCache[cacheKey] != undefined) {
+            return this.stringifyCache[cacheKey];
+        }
+        
+        var stack:Array = []; // 用于迭代序列化的堆栈
+        var resultParts:Array = []; // 使用数组收集序列化片段，提高拼接效率
+        var current:Object = arg;
+        var isFirst:Boolean = true;
+        
+        // 推入初始元素
+        stack.push({type: "value", data: current, parentType: null, isFirst: true});
+        
+        while (stack.length > 0) {
+            var element:Object = stack.pop();
+            var type:String = element.type;
+            var data:Object = element.data;
+            var parentType:String = element.parentType;
+            var currentIsFirst:Boolean = element.isFirst;
+            
+            switch(type) {
+                case "value":
+                    switch(typeof data) {
+                        case "object":
+                            if (data == null) {
+                                resultParts.push("null");
+                            } else if (data instanceof Array) {
+                                resultParts.push("[");
+                                // 推入结束标记
+                                stack.push({type: "closeArray"});
+                                // 逆序推入数组元素
+                                for (var i:Number = data.length - 1; i >= 0; i--) {
+                                    stack.push({type: "value", data: data[i], parentType: "array", isFirst: (i == 0)});
+                                    if (i > 0) {
+                                        stack.push({type: "comma"});
+                                    }
                                 }
-                                isFirst = false;
-                                
-                                // 内联 stringifyString 方法用于序列化键
-                                var keyStr = "\"";
-                                var key = index;
-                                var keyLength = key.length;
-                                var keyIndex = 0;
-                                while (keyIndex < keyLength) {
-                                    var keyChar = key.charAt(keyIndex);
-                                    if (keyChar >= " ") {
-                                        if (keyChar == "\\" || keyChar == "\"") {
-                                            keyStr += "\\" + keyChar;
-                                        } else {
-                                            keyStr += keyChar;
-                                        }
-                                    } else {
-                                        switch (keyChar) {
-                                            case "\b":
-                                                keyStr += "\\b";
-                                                break;
-                                            case "\f":
-                                                keyStr += "\\f";
-                                                break;
-                                            case "\n":
-                                                keyStr += "\\n";
-                                                break;
-                                            case "\r":
-                                                keyStr += "\\r";
-                                                break;
-                                            case "\t":
-                                                keyStr += "\\t";
-                                                break;
-                                            default:
-                                                var keyCharCode = keyChar.charCodeAt();
-                                                var keyHexCode = keyCharCode.toString(16);
-                                                while (keyHexCode.length < 4) {
-                                                    keyHexCode = "0" + keyHexCode;
-                                                }
-                                                keyStr += "\\u" + keyHexCode;
+                            } else {
+                                resultParts.push("{");
+                                // 推入结束标记
+                                stack.push({type: "closeObject"});
+                                // 收集并过滤键
+                                var keys:Array = [];
+                                for (var k:String in data) {
+                                    if (!(k.charAt(0) == "_" && k.charAt(1) == "_")) {
+                                        keys.push(k);
+                                    }
+                                }
+                                // 逆序推入键值对
+                                for (var j:Number = keys.length - 1; j >= 0; j--) {
+                                    var key:String = keys[j];
+                                    var value:Object = data[key];
+                                    if (typeof value != "undefined" && typeof value != "function") {
+                                        stack.push({type: "value", data: value, parentType: "object", isFirst: (j == 0)});
+                                        stack.push({type: "key", data: key});
+                                        if (j > 0) {
+                                            stack.push({type: "comma"});
                                         }
                                     }
-                                    keyIndex += 1;
-                                }
-                                keyStr += "\"";
-                                
-                                // 序列化值
-                                var valueStr = this.stringify(serializedValue);
-                                result += keyStr + ":" + valueStr;
-                            }
-                        }
-                        return result + "}";
-                    }
-                }
-                return "null";
-            case "number":
-                return !isFinite(arg) ? "null" : String(arg);
-            case "string":
-                // 内联 stringifyString 方法
-                var resultStr = "\"";
-                var strLength = arg.length;
-                var strIndex = 0;
-                while (strIndex < strLength) {
-                    var strChar = arg.charAt(strIndex);
-                    if (strChar >= " ") {
-                        if (strChar == "\\" || strChar == "\"") {
-                            resultStr += "\\" + strChar;
-                        } else {
-                            resultStr += strChar;
-                        }
-                    } else {
-                        switch (strChar) {
-                            case "\b":
-                                resultStr += "\\b";
-                                break;
-                            case "\f":
-                                resultStr += "\\f";
-                                break;
-                            case "\n":
-                                resultStr += "\\n";
-                                break;
-                            case "\r":
-                                resultStr += "\\r";
-                                break;
-                            case "\t":
-                                resultStr += "\\t";
-                                break;
-                            default:
-                                var strCharCode = strChar.charCodeAt();
-                                var strHexCode = strCharCode.toString(16);
-                                while (strHexCode.length < 4) {
-                                    strHexCode = "0" + strHexCode;
-                                }
-                                resultStr += "\\u" + strHexCode;
-                        }
-                    }
-                    strIndex += 1;
-                }
-                resultStr += "\"";
-                return resultStr;
-            case "boolean":
-                return String(arg);
-            default:
-                return "null";
-        }
-    }
-
-    /**
-     * 抛出错误
-     * @param message 错误信息
-     */
-    public function error(message) {
-        throw {name: "FastJSONError", message: message, at: this.at - 1, text: this.text};
-    }
-
-    /**
-     * 解析字符串
-     * @return 解析后的字符串
-     */
-    public function str() {
-        var resultParts = [];
-        var unicodeValue;
-
-        if (this.ch == "\"") {
-            resultParts.push(""); // 初始化字符串
-            // 内联 next() 方法
-            if (this.at >= this.text.length) {
-                this.ch = ""; // 表示 EOF
-            } else {
-                this.ch = this.text.charAt(this.at);
-                this.at += 1;
-            }
-            while (this.ch) {
-                if (this.ch == "\"") {
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
-                    }
-                    return resultParts.join("");
-                }
-                if (this.ch == "\\") {
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
-                    }
-                    switch (this.ch) {
-                        case "b":
-                            resultParts.push("\b");
-                            // 内联 next() 方法
-                            if (this.at >= this.text.length) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.text.charAt(this.at);
-                                this.at += 1;
-                            }
-                            break;
-                        case "f":
-                            resultParts.push("\f");
-                            if (this.at >= this.text.length) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.text.charAt(this.at);
-                                this.at += 1;
-                            }
-                            break;
-                        case "n":
-                            resultParts.push("\n");
-                            if (this.at >= this.text.length) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.text.charAt(this.at);
-                                this.at += 1;
-                            }
-                            break;
-                        case "r":
-                            resultParts.push("\r");
-                            if (this.at >= this.text.length) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.text.charAt(this.at);
-                                this.at += 1;
-                            }
-                            break;
-                        case "t":
-                            resultParts.push("\t");
-                            if (this.at >= this.text.length) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.text.charAt(this.at);
-                                this.at += 1;
-                            }
-                            break;
-                        case "u":
-                            unicodeValue = 0;
-                            // 内联 next() 方法
-                            if (this.at >= this.text.length) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.text.charAt(this.at);
-                                this.at += 1;
-                            }
-                            for (var i = 0; i < 4; i++) {
-                                var hexDigit = parseInt(this.ch, 16);
-                                if (!isFinite(hexDigit)) {
-                                    this.error("Invalid Unicode escape sequence");
-                                }
-                                unicodeValue = unicodeValue * 16 + hexDigit;
-                                // 内联 next() 方法
-                                if (this.at >= this.text.length) {
-                                    this.ch = "";
-                                } else {
-                                    this.ch = this.text.charAt(this.at);
-                                    this.at += 1;
                                 }
                             }
-                            resultParts.push(String.fromCharCode(unicodeValue));
+                            break;
+                        case "string":
+                            // 序列化字符串并处理转义
+                            var escStr:String = "\"";
+                            var str = data;
+                            var len:Number = str.length;
+                            for (var si:Number = 0; si < len; si++) {
+                                var c:String = str.charAt(si);
+                                switch(c) {
+                                    case "\\":
+                                    case "\"":
+                                        escStr += "\\" + c;
+                                        break;
+                                    case "\b":
+                                        escStr += "\\b";
+                                        break;
+                                    case "\f":
+                                        escStr += "\\f";
+                                        break;
+                                    case "\n":
+                                        escStr += "\\n";
+                                        break;
+                                    case "\r":
+                                        escStr += "\\r";
+                                        break;
+                                    case "\t":
+                                        escStr += "\\t";
+                                        break;
+                                    default:
+                                        if (c < " ") {
+                                            var cc:Number = c.charCodeAt();
+                                            var hc:String = cc.toString(16);
+                                            while (hc.length < 4) {
+                                                hc = "0" + hc;
+                                            }
+                                            escStr += "\\u" + hc;
+                                        } else {
+                                            escStr += c;
+                                        }
+                                }
+                            }
+                            escStr += "\"";
+                            resultParts.push(escStr);
+                            break;
+                        case "number":
+                            resultParts.push(isFinite(data) ? String(data) : "null");
+                            break;
+                        case "boolean":
+                            resultParts.push(String(data));
                             break;
                         default:
-                            resultParts.push(this.ch);
-                            // 内联 next() 方法
-                            if (this.at >= this.text.length) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.text.charAt(this.at);
-                                this.at += 1;
-                            }
+                            resultParts.push("null");
                     }
-                } else if (this.ch == "") {
-                    this.error("Unterminated string");
-                } else {
-                    resultParts.push(this.ch);
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
+                    break;
+                case "key":
+                    // 序列化键
+                    var keyStr:String = "\"";
+                    var keyVal:String = element.data;
+                    var keyLen:Number = keyVal.length;
+                    for (var ki:Number = 0; ki < keyLen; ki++) {
+                        var kc:String = keyVal.charAt(ki);
+                        switch(kc) {
+                            case "\\":
+                            case "\"":
+                                keyStr += "\\" + kc;
+                                break;
+                            case "\b":
+                                keyStr += "\\b";
+                                break;
+                            case "\f":
+                                keyStr += "\\f";
+                                break;
+                            case "\n":
+                                keyStr += "\\n";
+                                break;
+                            case "\r":
+                                keyStr += "\\r";
+                                break;
+                            case "\t":
+                                keyStr += "\\t";
+                                break;
+                            default:
+                                if (kc < " ") {
+                                    var kcc:Number = kc.charCodeAt();
+                                    var khc:String = kcc.toString(16);
+                                    while (khc.length < 4) {
+                                        khc = "0" + khc;
+                                    }
+                                    keyStr += "\\u" + khc;
+                                } else {
+                                    keyStr += kc;
+                                }
+                        }
                     }
-                }
+                    keyStr += "\"";
+                    resultParts.push(keyStr + ":");
+                    break;
+                case "comma":
+                    resultParts.push(",");
+                    break;
+                case "closeObject":
+                    resultParts.push("}");
+                    break;
+                case "closeArray":
+                    resultParts.push("]");
+                    break;
+                default:
+                    // 不处理其他类型
+                    break;
             }
         }
-        this.error("Bad string");
-    }
-
-    /**
-     * 解析数组
-     * @return 解析后的数组
-     */
-    public function arr() {
-        var array = [];
-        if (this.ch == "[") {
-            // 内联 next() 方法
-            if (this.at >= this.text.length) {
-                this.ch = "";
-            } else {
-                this.ch = this.text.charAt(this.at);
-                this.at += 1;
-            }
-
-            // 内联 white() 方法
-            while (this.ch <= " " && this.ch != "") {
-                // 内联 next() 方法
-                if (this.at >= this.text.length) {
-                    this.ch = "";
-                } else {
-                    this.ch = this.text.charAt(this.at);
-                    this.at += 1;
-                }
-            }
-
-            if (this.ch == "]") {
-                // 内联 next() 方法
-                if (this.at >= this.text.length) {
-                    this.ch = "";
-                } else {
-                    this.ch = this.text.charAt(this.at);
-                    this.at += 1;
-                }
-                return array;
-            }
-            while (this.ch) {
-                array.push(this.value());
-                // 内联 white() 方法
-                while (this.ch <= " " && this.ch != "") {
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
-                    }
-                }
-                if (this.ch == "]") {
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
-                    }
-                    return array;
-                }
-                if (this.ch != ",") {
-                    this.error("Expected ',' or ']'");
-                }
-                // 内联 next() 方法
-                if (this.at >= this.text.length) {
-                    this.ch = "";
-                } else {
-                    this.ch = this.text.charAt(this.at);
-                    this.at += 1;
-                }
-                // 内联 white() 方法
-                while (this.ch <= " " && this.ch != "") {
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
-                    }
-                }
-            }
-            this.error("Unterminated array");
+        
+        var result:String = resultParts.join("");
+        
+        // 缓存序列化结果
+        this.stringifyCache[cacheKey] = result;
+        this.stringifyCacheKeys.push(cacheKey);
+        this.stringifyCacheCount++;
+        
+        // 检查并清理缓存
+        if (this.stringifyCacheCount > this.cacheMaxSize) {
+            this.cleanCache(this.stringifyCache, this.stringifyCacheKeys, {count: this.stringifyCacheCount});
+            this.stringifyCacheCount = this.stringifyCacheKeys.length;
         }
-        this.error("Bad array");
+        
+        return result;
     }
 
-    /**
-     * 解析对象
-     * @return 解析后的对象
-     */
-    public function obj() {
-        var object = {};
-        var key;
 
-        if (this.ch == "{") {
-            // 内联 next() 方法
-            if (this.at >= this.text.length) {
-                this.ch = "";
-            } else {
-                this.ch = this.text.charAt(this.at);
-                this.at += 1;
-            }
-
-            // 内联 white() 方法
-            while (this.ch <= " " && this.ch != "") {
-                // 内联 next() 方法
-                if (this.at >= this.text.length) {
-                    this.ch = "";
-                } else {
-                    this.ch = this.text.charAt(this.at);
-                    this.at += 1;
-                }
-            }
-
-            if (this.ch == "}") {
-                // 内联 next() 方法
-                if (this.at >= this.text.length) {
-                    this.ch = "";
-                } else {
-                    this.ch = this.text.charAt(this.at);
-                    this.at += 1;
-                }
-                return object;
-            }
-            while (this.ch) {
-                key = this.str();
-                // 内联 white() 方法
-                while (this.ch <= " " && this.ch != "") {
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
-                    }
-                }
-                if (this.ch != ":") {
-                    this.error("Expected ':' after key");
-                }
-                // 内联 next() 方法
-                if (this.at >= this.text.length) {
-                    this.ch = "";
-                } else {
-                    this.ch = this.text.charAt(this.at);
-                    this.at += 1;
-                }
-                object[key] = this.value();
-                // 内联 white() 方法
-                while (this.ch <= " " && this.ch != "") {
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
-                    }
-                }
-                if (this.ch == "}") {
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
-                    }
-                    return object;
-                }
-                if (this.ch != ",") {
-                    this.error("Expected ',' or '}'");
-                }
-                // 内联 next() 方法
-                if (this.at >= this.text.length) {
-                    this.ch = "";
-                } else {
-                    this.ch = this.text.charAt(this.at);
-                    this.at += 1;
-                }
-                // 内联 white() 方法
-                while (this.ch <= " " && this.ch != "") {
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.text.charAt(this.at);
-                        this.at += 1;
-                    }
-                }
-            }
-            this.error("Unterminated object");
-        }
-        this.error("Bad object");
-    }
 
     /**
      * 解析值
      * @return 解析后的值
      */
     public function value() {
+        var result;
+        var numberStr:String;
+        var word:String;
+        var numValue:Number;
+        var numValueDefault:Number;
+        var unicodeValue:Number;
+        var hexDigit:Number;
+        var keyChar:String;
+        var keyCharCode:Number;
+        var keyHexCode:String;
+        var strChar:String;
+        var strCharCode:Number;
+        var strHexCode:String;
+        var i:Number;
+        var len:Number;
+
         // 内联 white() 方法
         while (this.ch <= " " && this.ch != "") {
             // 内联 next() 方法
-            if (this.at >= this.text.length) {
+            if (this.at >= this.textLength) {
                 this.ch = "";
             } else {
-                this.ch = this.text.charAt(this.at);
+                this.ch = this.charArray[this.at];
                 this.at += 1;
             }
         }
@@ -507,186 +310,542 @@
         if (this.currentDepth > this.maxDepth) {
             this.error("Maximum parsing depth exceeded");
         }
-        var result;
 
         switch (this.ch) {
             case "{":
-                result = this.obj();
-                break;
-            case "[":
-                result = this.arr();
-                break;
-            case "\"":
-                result = this.str();
-                break;
-            case "-":
-                // 内联 num() 方法
-                var numberStr = "-";
+                // 解析对象
+                var object:Object = {};
                 // 内联 next() 方法
-                if (this.at >= this.text.length) {
+                if (this.at >= this.textLength) {
                     this.ch = "";
                 } else {
-                    this.ch = this.text.charAt(this.at);
+                    this.ch = this.charArray[this.at];
+                    this.at += 1;
+                }
+
+                // 内联 white() 方法
+                while (this.ch <= " " && this.ch != "") {
+                    // 内联 next() 方法
+                    if (this.at >= this.textLength) {
+                        this.ch = "";
+                    } else {
+                        this.ch = this.charArray[this.at];
+                        this.at += 1;
+                    }
+                }
+
+                if (this.ch == "}") {
+                    // 内联 next() 方法
+                    if (this.at >= this.textLength) {
+                        this.ch = "";
+                    } else {
+                        this.ch = this.charArray[this.at];
+                        this.at += 1;
+                    }
+                    this.currentDepth -= 1;
+                    return object;
+                }
+                while (this.ch) {
+                    // 解析键
+                    if (this.ch != "\"") {
+                        this.error("Expected '\"' at the beginning of a key");
+                    }
+                    var keyStrParts:Array = [];
+                    // 初始化字符串解析
+                    // 内联 str() 方法逻辑
+                    // Assuming the current character is the starting quote
+                    // Move past the opening quote
+                    if (this.at >= this.textLength) {
+                        this.ch = "";
+                    } else {
+                        this.ch = this.charArray[this.at];
+                        this.at += 1;
+                    }
+                    while (this.ch) {
+                        if (this.ch == "\"") {
+                            // Move past the closing quote
+                            if (this.at >= this.textLength) {
+                                this.ch = "";
+                            } else {
+                                this.ch = this.charArray[this.at];
+                                this.at += 1;
+                            }
+                            break;
+                        }
+                        if (this.ch == "\\") {
+                            // Move past the backslash
+                            if (this.at >= this.textLength) {
+                                this.ch = "";
+                            } else {
+                                this.ch = this.charArray[this.at];
+                                this.at += 1;
+                            }
+                            switch (this.ch) {
+                                case "b":
+                                    keyStrParts.push("\b");
+                                    break;
+                                case "f":
+                                    keyStrParts.push("\f");
+                                    break;
+                                case "n":
+                                    keyStrParts.push("\n");
+                                    break;
+                                case "r":
+                                    keyStrParts.push("\r");
+                                    break;
+                                case "t":
+                                    keyStrParts.push("\t");
+                                    break;
+                                case "u":
+                                    unicodeValue = 0;
+                                    for (i = 0; i < 4; i++) {
+                                        if (this.at >= this.textLength) {
+                                            this.ch = "";
+                                        } else {
+                                            this.ch = this.charArray[this.at];
+                                            this.at += 1;
+                                        }
+                                        hexDigit = parseInt(this.ch, 16);
+                                        if (!isFinite(hexDigit)) {
+                                            this.error("Invalid Unicode escape sequence");
+                                        }
+                                        unicodeValue = unicodeValue * 16 + hexDigit;
+                                    }
+                                    keyStrParts.push(String.fromCharCode(unicodeValue));
+                                    continue;
+                                default:
+                                    keyStrParts.push(this.ch);
+                                    break;
+                            }
+                            // Move to the next character after escape
+                            if (this.at >= this.textLength) {
+                                this.ch = "";
+                            } else {
+                                this.ch = this.charArray[this.at];
+                                this.at += 1;
+                            }
+                        } else {
+                            keyStrParts.push(this.ch);
+                            // Move to the next character
+                            if (this.at >= this.textLength) {
+                                this.ch = "";
+                            } else {
+                                this.ch = this.charArray[this.at];
+                                this.at += 1;
+                            }
+                        }
+                    }
+                    var key:String = keyStrParts.join("");
+
+                    // 内联 white() 方法
+                    while (this.ch <= " " && this.ch != "") {
+                        // 内联 next() 方法
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                    }
+                    if (this.ch != ":") {
+                        this.error("Expected ':' after key");
+                    }
+                    // Move past ':'
+                    if (this.at >= this.textLength) {
+                        this.ch = "";
+                    } else {
+                        this.ch = this.charArray[this.at];
+                        this.at += 1;
+                    }
+
+                    // Parse the value
+                    result = this.value();
+                    object[key] = result;
+
+                    // 内联 white() 方法
+                    while (this.ch <= " " && this.ch != "") {
+                        // 内联 next() 方法
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                    }
+
+                    if (this.ch == "}") {
+                        // Move past '}'
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                        this.currentDepth -= 1;
+                        return object;
+                    }
+                    if (this.ch != ",") {
+                        this.error("Expected ',' or '}'");
+                    }
+                    // Move past ','
+                    if (this.at >= this.textLength) {
+                        this.ch = "";
+                    } else {
+                        this.ch = this.charArray[this.at];
+                        this.at += 1;
+                    }
+
+                    // 内联 white() 方法
+                    while (this.ch <= " " && this.ch != "") {
+                        // 内联 next() 方法
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                    }
+                }
+                this.error("Unterminated object");
+                break;
+            case "[":
+                // 解析数组
+                var array:Array = [];
+                // Move past '['
+                if (this.at >= this.textLength) {
+                    this.ch = "";
+                } else {
+                    this.ch = this.charArray[this.at];
+                    this.at += 1;
+                }
+
+                // 内联 white() 方法
+                while (this.ch <= " " && this.ch != "") {
+                    // Move past whitespace
+                    if (this.at >= this.textLength) {
+                        this.ch = "";
+                    } else {
+                        this.ch = this.charArray[this.at];
+                        this.at += 1;
+                    }
+                }
+
+                if (this.ch == "]") {
+                    // Move past ']'
+                    if (this.at >= this.textLength) {
+                        this.ch = "";
+                    } else {
+                        this.ch = this.charArray[this.at];
+                        this.at += 1;
+                    }
+                    this.currentDepth -= 1;
+                    return array;
+                }
+                while (this.ch) {
+                    // Parse the value
+                    array.push(this.value());
+
+                    // 内联 white() 方法
+                    while (this.ch <= " " && this.ch != "") {
+                        // Move past whitespace
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                    }
+
+                    if (this.ch == "]") {
+                        // Move past ']'
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                        this.currentDepth -= 1;
+                        return array;
+                    }
+                    if (this.ch != ",") {
+                        this.error("Expected ',' or ']'");
+                    }
+                    // Move past ','
+                    if (this.at >= this.textLength) {
+                        this.ch = "";
+                    } else {
+                        this.ch = this.charArray[this.at];
+                        this.at += 1;
+                    }
+
+                    // 内联 white() 方法
+                    while (this.ch <= " " && this.ch != "") {
+                        // Move past whitespace
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                    }
+                }
+                this.error("Unterminated array");
+                break;
+            case "\"":
+                // 解析字符串
+                var resultStrParts:Array = [];
+                // Move past opening quote
+                if (this.at >= this.textLength) {
+                    this.ch = "";
+                } else {
+                    this.ch = this.charArray[this.at];
+                    this.at += 1;
+                }
+                while (this.ch) {
+                    if (this.ch == "\"") {
+                        // Move past closing quote
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                        break;
+                    }
+                    if (this.ch == "\\") {
+                        // Move past backslash
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                        switch (this.ch) {
+                            case "b":
+                                resultStrParts.push("\b");
+                                break;
+                            case "f":
+                                resultStrParts.push("\f");
+                                break;
+                            case "n":
+                                resultStrParts.push("\n");
+                                break;
+                            case "r":
+                                resultStrParts.push("\r");
+                                break;
+                            case "t":
+                                resultStrParts.push("\t");
+                                break;
+                            case "u":
+                                unicodeValue = 0;
+                                for (i = 0; i < 4; i++) {
+                                    if (this.at >= this.textLength) {
+                                        this.ch = "";
+                                    } else {
+                                        this.ch = this.charArray[this.at];
+                                        this.at += 1;
+                                    }
+                                    hexDigit = parseInt(this.ch, 16);
+                                    if (!isFinite(hexDigit)) {
+                                        this.error("Invalid Unicode escape sequence");
+                                    }
+                                    unicodeValue = unicodeValue * 16 + hexDigit;
+                                }
+                                resultStrParts.push(String.fromCharCode(unicodeValue));
+                                continue;
+                            default:
+                                resultStrParts.push(this.ch);
+                                break;
+                        }
+                        // Move to the next character after escape
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                    } else {
+                        resultStrParts.push(this.ch);
+                        // Move to the next character
+                        if (this.at >= this.textLength) {
+                            this.ch = "";
+                        } else {
+                            this.ch = this.charArray[this.at];
+                            this.at += 1;
+                        }
+                    }
+                }
+                this.currentDepth -= 1;
+                return resultStrParts.join("");
+            case "-":
+                // 解析负数
+                numberStr = "-";
+                // Move past '-'
+                if (this.at >= this.textLength) {
+                    this.ch = "";
+                } else {
+                    this.ch = this.charArray[this.at];
                     this.at += 1;
                 }
                 while (this.ch >= "0" && this.ch <= "9") {
                     numberStr += this.ch;
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
+                    // Move to next character
+                    if (this.at >= this.textLength) {
                         this.ch = "";
                     } else {
-                        this.ch = this.text.charAt(this.at);
+                        this.ch = this.charArray[this.at];
                         this.at += 1;
                     }
                 }
                 if (this.ch == ".") {
                     numberStr += ".";
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
+                    // Move past '.'
+                    if (this.at >= this.textLength) {
                         this.ch = "";
                     } else {
-                        this.ch = this.text.charAt(this.at);
+                        this.ch = this.charArray[this.at];
                         this.at += 1;
                     }
                     while (this.ch >= "0" && this.ch <= "9") {
                         numberStr += this.ch;
-                        // 内联 next() 方法
-                        if (this.at >= this.text.length) {
+                        // Move to next character
+                        if (this.at >= this.textLength) {
                             this.ch = "";
                         } else {
-                            this.ch = this.text.charAt(this.at);
+                            this.ch = this.charArray[this.at];
                             this.at += 1;
                         }
                     }
                 }
                 if (this.ch == "e" || this.ch == "E") {
                     numberStr += this.ch;
-                    // 内联 next() 方法
-                    if (this.at >= this.text.length) {
+                    // Move past 'e' or 'E'
+                    if (this.at >= this.textLength) {
                         this.ch = "";
                     } else {
-                        this.ch = this.text.charAt(this.at);
+                        this.ch = this.charArray[this.at];
                         this.at += 1;
                     }
                     if (this.ch == "-" || this.ch == "+") {
                         numberStr += this.ch;
-                        // 内联 next() 方法
-                        if (this.at >= this.text.length) {
+                        // Move past '-' or '+'
+                        if (this.at >= this.textLength) {
                             this.ch = "";
                         } else {
-                            this.ch = this.text.charAt(this.at);
+                            this.ch = this.charArray[this.at];
                             this.at += 1;
                         }
                     }
                     while (this.ch >= "0" && this.ch <= "9") {
                         numberStr += this.ch;
-                        // 内联 next() 方法
-                        if (this.at >= this.text.length) {
+                        // Move to next character
+                        if (this.at >= this.textLength) {
                             this.ch = "";
                         } else {
-                            this.ch = this.text.charAt(this.at);
+                            this.ch = this.charArray[this.at];
                             this.at += 1;
                         }
                     }
                 }
-                var numValue = Number(numberStr);
+                numValue = Number(numberStr);
                 if (isNaN(numValue)) {
                     this.error("Bad number");
                 }
-                result = numValue;
-                break;
+                this.currentDepth -= 1;
+                return numValue;
             default:
                 if (this.ch >= "0" && this.ch <= "9") {
-                    // 内联 num() 方法
-                    var numberStrDefault = "";
+                    // 解析正数
+                    var numberStrDefault:String = "";
                     while (this.ch >= "0" && this.ch <= "9") {
                         numberStrDefault += this.ch;
-                        // 内联 next() 方法
-                        if (this.at >= this.text.length) {
+                        // Move to next character
+                        if (this.at >= this.textLength) {
                             this.ch = "";
                         } else {
-                            this.ch = this.text.charAt(this.at);
+                            this.ch = this.charArray[this.at];
                             this.at += 1;
                         }
                     }
                     if (this.ch == ".") {
                         numberStrDefault += ".";
-                        // 内联 next() 方法
-                        if (this.at >= this.text.length) {
+                        // Move past '.'
+                        if (this.at >= this.textLength) {
                             this.ch = "";
                         } else {
-                            this.ch = this.text.charAt(this.at);
+                            this.ch = this.charArray[this.at];
                             this.at += 1;
                         }
                         while (this.ch >= "0" && this.ch <= "9") {
                             numberStrDefault += this.ch;
-                            // 内联 next() 方法
-                            if (this.at >= this.text.length) {
+                            // Move to next character
+                            if (this.at >= this.textLength) {
                                 this.ch = "";
                             } else {
-                                this.ch = this.text.charAt(this.at);
+                                this.ch = this.charArray[this.at];
                                 this.at += 1;
                             }
                         }
                     }
                     if (this.ch == "e" || this.ch == "E") {
                         numberStrDefault += this.ch;
-                        // 内联 next() 方法
-                        if (this.at >= this.text.length) {
+                        // Move past 'e' or 'E'
+                        if (this.at >= this.textLength) {
                             this.ch = "";
                         } else {
-                            this.ch = this.text.charAt(this.at);
+                            this.ch = this.charArray[this.at];
                             this.at += 1;
                         }
                         if (this.ch == "-" || this.ch == "+") {
                             numberStrDefault += this.ch;
-                            // 内联 next() 方法
-                            if (this.at >= this.text.length) {
+                            // Move past '-' or '+'
+                            if (this.at >= this.textLength) {
                                 this.ch = "";
                             } else {
-                                this.ch = this.text.charAt(this.at);
+                                this.ch = this.charArray[this.at];
                                 this.at += 1;
                             }
                         }
                         while (this.ch >= "0" && this.ch <= "9") {
                             numberStrDefault += this.ch;
-                            // 内联 next() 方法
-                            if (this.at >= this.text.length) {
+                            // Move to next character
+                            if (this.at >= this.textLength) {
                                 this.ch = "";
                             } else {
-                                this.ch = this.text.charAt(this.at);
+                                this.ch = this.charArray[this.at];
                                 this.at += 1;
                             }
                         }
                     }
-                    var numValueDefault = Number(numberStrDefault);
+                    numValueDefault = Number(numberStrDefault);
                     if (isNaN(numValueDefault)) {
                         this.error("Bad number");
                     }
-                    result = numValueDefault;
+                    this.currentDepth -= 1;
+                    return numValueDefault;
                 } else if (this.ch >= "a" && this.ch <= "z") {
-                    // 内联 word() 方法
-                    var word = "";
+                    // 解析字面量：true, false, null
+                    word = "";
                     while (this.ch >= "a" && this.ch <= "z") {
                         word += this.ch;
-                        // 内联 next() 方法
-                        if (this.at >= this.text.length) {
+                        // Move to next character
+                        if (this.at >= this.textLength) {
                             this.ch = "";
                         } else {
-                            this.ch = this.text.charAt(this.at);
+                            this.ch = this.charArray[this.at];
                             this.at += 1;
                         }
                     }
                     switch (word) {
                         case "true":
-                            result = true;
-                            break;
+                            this.currentDepth -= 1;
+                            return true;
                         case "false":
-                            result = false;
-                            break;
+                            this.currentDepth -= 1;
+                            return false;
                         case "null":
-                            result = null;
-                            break;
+                            this.currentDepth -= 1;
+                            return null;
                         default:
                             this.error("Unexpected token: " + word);
                     }
@@ -695,7 +854,7 @@
                 }
         }
         this.currentDepth -= 1;
-        return result;
+        return null; // 为了避免编译警告
     }
 
     /**
@@ -703,20 +862,36 @@
      * @param inputText 要解析的 FastJSON 字符串
      * @return 解析后的 AS2 对象
      */
-    public function parse(inputText) {
+    public function parse(inputText:String) {
+        // 检查解析缓存
+        var cacheKey:String = this.generateCacheKey(inputText);
+        if (this.parseCache[cacheKey] != undefined) {
+            return this.parseCache[cacheKey];
+        }
+
         this.text = inputText;
         this.at = 0;
         this.ch = " ";
         this.currentDepth = 0; // 重置深度计数器
+        this.textLength = this.text.length; // 将 length 缓存为局部变量
+        this.charArray = this.text.split(""); // 初始化字符数组
+
+        // 内联 next() 方法
+        if (this.at >= this.textLength) {
+            this.ch = "";
+        } else {
+            this.ch = this.charArray[this.at];
+            this.at += 1;
+        }
 
         var result = this.value();
         // 内联 white() 方法
         while (this.ch <= " " && this.ch != "") {
             // 内联 next() 方法
-            if (this.at >= this.text.length) {
+            if (this.at >= this.textLength) {
                 this.ch = "";
             } else {
-                this.ch = this.text.charAt(this.at);
+                this.ch = this.charArray[this.at];
                 this.at += 1;
             }
         }
@@ -724,18 +899,33 @@
             this.error("Unexpected trailing characters");
         }
 
+        // 缓存解析结果
+        this.parseCache[cacheKey] = result;
+        this.parseCacheKeys.push(cacheKey);
+        this.parseCacheCount++;
+
+        // 检查并清理缓存
+        if (this.parseCacheCount > this.cacheMaxSize) {
+            this.cleanCache(this.parseCache, this.parseCacheKeys, {count: this.parseCacheCount});
+            // 更新 parseCacheCount
+            this.parseCacheCount = this.parseCacheKeys.length;
+        }
+
         return result;
     }
 
     /**
-     * 获取下一个字符
-     * @return 当前字符
+     * 抛出错误
+     * @param message 错误信息
      */
-    // 已经内联到各个方法中，不再需要单独的 next() 方法
+    public function error(message:String):Void {
+        throw {name: "FastJSONError", message: message, at: this.at - 1, text: this.text};
+    }
 }
 
-/*
 
+
+/*
 // --- 测试 JSON 和 FastJSON 类的正确性和性能 ---
 
 // 定义测试数据
