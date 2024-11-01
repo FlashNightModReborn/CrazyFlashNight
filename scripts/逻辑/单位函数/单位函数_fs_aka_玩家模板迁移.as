@@ -521,7 +521,7 @@ _root.刷新人物装扮 = function(目标)
 	目标人物.伤害加成 = 0;//equipped.damage
 	目标人物.重量 = 0;//weight
 	目标人物.空手攻击力 = _root.根据等级计算值(目标人物.空手攻击力_min, 目标人物.空手攻击力_max, 目标人物.等级); //equipped.punch
-	目标人物.内力 = 65 + Math.floor(目标人物.等级 * 0.6); //equipped.force
+	目标人物.内力 = 65 + Math.floor(目标人物.等级 * 0.56); //equipped.force
 	目标人物.装备刀锋利度加成 = 0; //equipped.knifepower
 	目标人物.装备枪械威力加成 = 0; //equipped.gunpower
 	
