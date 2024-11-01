@@ -1,6 +1,6 @@
 ﻿import org.flashNight.neur.Event.Delegate;
 import org.flashNight.neur.Event.EventBus;
-import JSON; // 导入您的 JSON 类
+import FastJSON; 
 
 class org.flashNight.neur.Server.ServerManager {
     public static var instance:ServerManager;
@@ -32,7 +32,7 @@ class org.flashNight.neur.Server.ServerManager {
     public var isSocketConnected:Boolean = false; // 用于跟踪连接状态
 
     // JSON parser instance
-    private var jsonParser:JSON;
+    private var jsonParser:FastJSON;
 
     // 构造函数
     public function ServerManager() {
@@ -55,7 +55,7 @@ class org.flashNight.neur.Server.ServerManager {
         eventBus.subscribe("frameUpdate", onFrameUpdate, this);
 
         // Initialize JSON parser
-        jsonParser = new JSON(true); // 传入 true 以启用宽容模式
+        jsonParser = new FastJSON(); // 传入 true 以启用宽容模式
     }
 
     // 获取单例实例
@@ -353,12 +353,6 @@ class org.flashNight.neur.Server.ServerManager {
         data = data.split('\0').join('');
 
         var response:Object = jsonParser.parse(data);
-        if (jsonParser.errors.length > 0) {
-            trace("JSON parsing errors: " + jsonParser.errors);
-            // 处理解析错误
-            // 可以根据需要决定如何处理，这里暂时记录错误并返回
-            return;
-        }
 
         if (response.success) {
             // 处理成功的结果
