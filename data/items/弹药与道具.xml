@@ -1887,4 +1887,37 @@
       <clean>50</clean>
     </data>
   </item>
+  <item>
+    <id>2517</id>
+    <name>地瓜手雷</name>
+    <displayname>地瓜手雷</displayname>
+    <icon>地瓜手雷</icon>
+    <type>消耗品</type>
+    <use>手雷</use>
+    <weight>1</weight>
+    <price>2500</price>
+    <description>破片手雷，爆炸范围更大</description>
+    <level>15</level>
+    <data>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>10</interval>
+      <velocity>25</velocity>
+      <bullet>地瓜手雷</bullet>
+      <sound>
+      </sound>
+      <muzzle>
+      </muzzle>
+      <bullethit>
+      </bullethit>
+      <clipname>地瓜手雷</clipname>
+      <bulletsize>50</bulletsize>
+      <power>2500</power>
+      <impact>1</impact>
+    </data>
+    <equipped>
+      <dressup>手雷-地瓜手雷</dressup>
+    </equipped>
+  </item>
 </root>
