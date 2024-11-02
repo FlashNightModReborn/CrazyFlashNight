@@ -119,7 +119,7 @@ _root.刀口触发特效.黑铁的剑特效 = function(状态名)
     Z轴坐标 = shootY = this.自机._y;
     _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
 
-    if (_root.成功率(15))
+    if (_root.成功率(20))
     {
         var range = 4;
         var xOffset = (Math.random() - 0.5) * 2 * range;
