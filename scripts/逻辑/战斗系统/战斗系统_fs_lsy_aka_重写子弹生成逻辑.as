@@ -85,11 +85,14 @@ _root.子弹区域shoot传递 = function(Obj){
 	
 	Obj.近战检测 = Obj.子弹种类.indexOf("近战") != -1;//额外控制是否鞭尸
 	Obj.联弹检测 = Obj.子弹种类.indexOf("联弹") != -1;//判断是否解析子弹种类分割
-	Obj.穿刺检测 = Obj.子弹种类.indexOf("穿刺") != -1;//判断是否短路消耗霰弹值
-	Obj.透明检测 = Obj.子弹种类 === "近战子弹" || Obj.子弹种类 === "近战联弹" || Obj.子弹种类 === "透明子弹";//判断生成子弹时是否使用带线框的Object而非MovieClip
+	Obj.穿刺检测 =  Obj.穿刺检测 || Obj.子弹种类.indexOf("穿刺") != -1;//判断是否短路消耗霰弹值
+	Obj.透明检测 = Obj.透明检测 || Obj.子弹种类 === "近战子弹" || Obj.子弹种类 === "近战联弹" || Obj.子弹种类 === "透明子弹";//判断生成子弹时是否使用带线框的Object而非MovieClip
+	Obj.手雷检测 = Obj.手雷检测 || Obj.子弹种类.indexOf("手雷") != -1;//判断是否为手雷
+	Obj.爆炸检测 = Obj.爆炸检测 || Obj.子弹种类.indexOf("爆炸") != -1;//判断是否为爆炸
 	Obj.固伤 = isNaN(Obj.固伤) ? 0 : Obj.固伤;//未初始化则为0
 	Obj.命中率 = isNaN(Obj.命中率) ? 发射对象.命中率 : Obj.命中率;
 	Obj.最小霰弹值 = isNaN(Obj.最小霰弹值) ? 1 : Obj.最小霰弹值;//未初始化则为0
+	Obj.远距离消失 = !Obj.手雷检测 && !Obj.爆炸检测;
 	
 	var 子弹实例种类;
 	var 联弹霰弹值;
@@ -678,7 +681,7 @@ _root.子弹基础运动控制 = function(子弹:MovieClip){
 		子弹._x += 子弹.xmov;
 		子弹._y += 子弹.ymov;
 	}
-	if (Math.abs(子弹._x - _root.gameworld[子弹.发射者名]._x) > 800 || Math.abs(子弹._y - _root.gameworld[子弹.发射者名]._y) > 800)
+	if (子弹.远距离消失 && Math.abs(子弹._x - _root.gameworld[子弹.发射者名]._x) > 900 || Math.abs(子弹._y - _root.gameworld[子弹.发射者名]._y) > 900)
 	{
 		子弹.removeMovieClip();
 	}
