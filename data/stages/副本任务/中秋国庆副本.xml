@@ -197,21 +197,36 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.3,透明倍率:0.9</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.3</影子倍率>
+                            <透明倍率>0.9</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种64</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.3,透明倍率:0.9</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.3</影子倍率>
+                            <透明倍率>0.9</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>0</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.3,透明倍率:0.9</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.3</影子倍率>
+                            <透明倍率>0.9</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -225,42 +240,72 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.3,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.3</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.3,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.3</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种64</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.3,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.2</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种65</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.3,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.2</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种64</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.3,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.3</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种65</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.3,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.3</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -270,39 +315,16 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种47</Type>
-                        <Interval>500</Interval>
-                        <Quantity>7</Quantity>
-                        <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.2,透明倍率:0.8</Parameters>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="3">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种64</Type>
-                        <Interval>500</Interval>
-                        <Quantity>7</Quantity>
-                        <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.2,透明倍率:0.8</Parameters>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="4">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
                         <Type>兵种270</Type>
                         <Interval>2000</Interval>
                         <Quantity>2</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:残月之影,影子单位:true,影子倍率:0.2,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>残月之影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.2</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -321,11 +343,54 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
+                        <Type>兵种47</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>16</Level>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种64</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>16</Level>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
                         <Quantity>7</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -339,77 +404,127 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种64</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种47</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种64</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种65</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种47</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="7">
                         <Type>兵种64</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="8">
                         <Type>兵种65</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0.1</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
-            <SubWave id="2">
+            <SubWave id="4">
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种66</Type>
+                        <Type>兵种268</Type>
                         <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>16</Level>
-                        <Parameters>名字:满月之影,影子单位:true,影子倍率:0.1,透明倍率:0.7</Parameters>
+                        <Quantity>3</Quantity>
+                        <Level>18</Level>
+                        <Parameters>
+                            <名字>满月之影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.7</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -432,21 +547,36 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:1</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>1</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种64</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:1</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>1</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:1</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>1</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -460,63 +590,108 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种64</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种47</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种64</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种65</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种47</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="7">
                         <Type>兵种64</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="8">
                         <Type>兵种65</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.8</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.8</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -530,7 +705,12 @@
                         <Interval>500</Interval>
                         <Quantity>10</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -544,7 +724,12 @@
                         <Interval>500</Interval>
                         <Quantity>10</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -558,63 +743,108 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种64</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种47</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种64</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种65</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种47</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="7">
                         <Type>兵种64</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="8">
                         <Type>兵种65</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:月影,影子单位:true,影子倍率:0,透明倍率:0.5</Parameters>
+                        <Parameters>
+                            <名字>月影</名字>
+                            <影子单位>true</影子单位>
+                            <影子倍率>0</影子倍率>
+                            <透明倍率>0.5</透明倍率>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -624,11 +854,47 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种268</Type>
-                        <Interval>500</Interval>
-                        <Quantity>3</Quantity>
+                        <Type>兵种261</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
                         <Level>18</Level>
-                        <Parameters>名字:血月之影,影子单位:true,影子倍率:0,透明倍率:0.7</Parameters>
+                        <Parameters>
+                            <名字>血月之影</名字>
+                            <色彩单位>true</色彩单位>
+                            <红色乘数>0.1</红色乘数>
+                            <绿色乘数>0</绿色乘数>
+                            <蓝色乘数>0</蓝色乘数>
+                            <红色偏移>0</红色偏移>
+                            <绿色偏移>0</绿色偏移>
+                            <蓝色偏移>0</蓝色偏移>
+                            <透明乘数>0.7</透明乘数>
+                            <透明偏移>0</透明偏移>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="6">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种66</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>18</Level>
+                        <Parameters>
+                            <名字>血月之影</名字>
+                            <色彩单位>true</色彩单位>
+                            <红色乘数>0.1</红色乘数>
+                            <绿色乘数>0</绿色乘数>
+                            <蓝色乘数>0</蓝色乘数>
+                            <红色偏移>0</红色偏移>
+                            <绿色偏移>0</绿色偏移>
+                            <蓝色偏移>0</蓝色偏移>
+                            <透明乘数>0.7</透明乘数>
+                            <透明偏移>0</透明偏移>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
