@@ -30,7 +30,7 @@ var connectionInterval = setInterval(function() {
     if (manager.isSocketConnected) {
         clearInterval(connectionInterval);
         trace("Sending message to XMLSocket server...");
-        manager.sendSocketMessage("Hello XMLSocket Server");
+        manager.sendSocketMessage('{"message":"Hello XMLSocket Server"}');
         
         // 发送 eval 任务
         trace("Sending eval task...");
@@ -65,3 +65,45 @@ for (var j:Number = 0; j < 300; j++) { // 模拟 300 帧，重连间隔为 300 �
 // Step 7: 发送任务后等待结果
 // 由于是异步操作，结果将在 onSocketData 中处理
 trace("Testing complete. Awaiting asynchronous task results.");
+
+// 其他测试步骤保持不变...
+
+// Step 8: 测试音频控制任务
+trace("Testing audio control tasks...");
+
+// 播放音频
+trace("Sending audio play task...");
+var playOptions:Object = new Object();
+playOptions.volume = 0.5; // 设置初始音量
+playOptions.loop = true; // 设置循环播放
+manager.executeAudioTask("play", "path/to/your/audio.mp3", playOptions);
+
+// 调整音量
+setTimeout(function() {
+    trace("Sending audio setVolume task...");
+    var volumeOptions:Object = new Object();
+    volumeOptions.volume = 0.8; // 调整音量至 80%
+    manager.executeAudioTask("setVolume", null, volumeOptions);
+}, 2000); // 等待 2 秒后调整音量
+
+// 暂停音频
+setTimeout(function() {
+    trace("Sending audio pause task...");
+    manager.executeAudioTask("pause", null, null);
+}, 5000); // 等待 5 秒后暂停音频
+
+// 继续播放音频
+setTimeout(function() {
+    trace("Sending audio play task to resume...");
+    manager.executeAudioTask("play", null, null);
+}, 7000); // 等待 2 秒后继续播放
+
+// 停止音频
+setTimeout(function() {
+    trace("Sending audio stop task...");
+    manager.executeAudioTask("stop", null, null);
+}, 10000); // 等待 3 秒后停止音频
+
+// Step 9: 测试完成，等待异步任务结果
+trace("Audio testing complete. Awaiting asynchronous task results.");
+

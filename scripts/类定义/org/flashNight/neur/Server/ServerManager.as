@@ -355,18 +355,19 @@ class org.flashNight.neur.Server.ServerManager {
         var response:Object = jsonParser.parse(data);
 
         if (response.success) {
-            // 处理成功的结果
-            if (response.result !== undefined) {
+            if (response.task == "audio") {
+                // 处理音频任务的成功响应
+                trace("Audio task succeeded: " + response.message);
+            } else {
+                // 处理其他任务的成功响应
                 trace("Task succeeded. Result: " + response.result);
-            }
-            if (response.match !== undefined) {
-                trace("Regex Match Result: " + response.match);
             }
         } else {
             // 处理错误信息
             trace("Task failed. Error: " + response.error);
         }
     }
+
 
     public function onSocketClose():Void {
         trace("XMLSocket connection closed");
@@ -388,11 +389,13 @@ class org.flashNight.neur.Server.ServerManager {
     // 删除自定义的 JSON 序列化和解析函数
 
     // 使用 JSON 类进行序列化
-    public function sendTaskToNode(taskType:String, payload:String, extra:Object):Void {
+    public function sendTaskToNode(taskType:String, payload:Object, extra:Object):Void {
         var message:Object = new Object();
         message.task = taskType;
         message.payload = payload;
-        message.extra = extra;
+        if (extra != null) {
+            message.extra = extra;
+        }
 
         var messageString:String = jsonParser.stringify(message);
         if (messageString == null) {
@@ -402,6 +405,7 @@ class org.flashNight.neur.Server.ServerManager {
 
         sendSocketMessage(messageString);
     }
+
 
     // 具体任务执行函数
 
@@ -431,4 +435,19 @@ class org.flashNight.neur.Server.ServerManager {
     public function heavyComputation(data:String):Void {
         sendSocketMessage(data);
     }
+
+    // 执行音频任务
+    public function executeAudioTask(action:String, src:String, options:Object):Void {
+        var payload:Object = new Object();
+        payload.action = action;
+        if (src != null) {
+            payload.src = src;
+        }
+        if (options != null) {
+            payload.options = options;
+        }
+
+        sendTaskToNode("audio", payload, null);
+    }
+
 }
