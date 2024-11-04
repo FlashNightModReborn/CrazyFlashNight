@@ -4,6 +4,8 @@ const logger = require('../utils/logger');
 const handleEvalTask = require('../controllers/evalTask');
 const handleRegexTask = require('../controllers/regexTask');
 const handleComputationTask = require('../controllers/computationTask');
+const handleAudioTask = require('../controllers/audioTask');
+
 
 const policyResponse = '<cross-domain-policy><allow-access-from domain="*" to-ports="*" /></cross-domain-policy>\0';
 
@@ -126,9 +128,11 @@ class SocketServer {
                 return handleRegexTask(payload, extra);
             case 'computation':
                 return handleComputationTask(payload, extra);
+            case 'audio':
+                return handleAudioTask(payload);
             default:
                 return JSON.stringify({ success: false, error: 'Unknown task type' });
-        }
+        }        
     }
 }
 
