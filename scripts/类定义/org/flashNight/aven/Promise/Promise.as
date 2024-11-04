@@ -245,5 +245,124 @@ class org.flashNight.aven.Promise.Promise {
         result += "]";
         return result;
     }
-}
 
+    // ---------------------- 静态方法部分 ----------------------
+
+    /**
+     * Promise.resolve 静态方法
+     * @param value 要解析的值
+     * @return 一个以给定值解析后的 Promise
+     */
+    public static function resolve(value:Object):Promise {
+        return new Promise(function(resolve:Function, reject:Function):Void {
+            resolve(value);
+        });
+    }
+
+    /**
+     * Promise.reject 静态方法
+     * @param reason 要拒绝的原因
+     * @return 一个以给定原因拒绝的 Promise
+     */
+    public static function reject(reason:Object):Promise {
+        return new Promise(function(resolve:Function, reject:Function):Void {
+            reject(reason);
+        });
+    }
+
+    /**
+     * Promise.all 静态方法
+     * @param promises 一个包含多个 Promise 的数组
+     * @return 一个新的 Promise，当所有输入的 Promise 都成功时解析为结果数组，若有任意一个失败则拒绝
+     */
+    public static function all(promises:Array):Promise {
+        return new Promise(function(resolve:Function, reject:Function):Void {
+            if (promises.length === 0) {
+                resolve([]);
+                return;
+            }
+
+            var results:Array = [];
+            var completed:Number = 0;
+            var hasRejected:Boolean = false;
+
+            for (var i:Number = 0; i < promises.length; i++) {
+                (function(index:Number):Void {
+                    var p:Promise = promises[index];
+                    Promise.resolve(p).then(function(value:Object):Void {
+                        if (hasRejected) return;
+                        results[index] = value;
+                        completed++;
+                        if (completed === promises.length) {
+                            resolve(results);
+                        }
+                    }, function(reason:Object):Void {
+                        if (hasRejected) return;
+                        hasRejected = true;
+                        reject(reason);
+                    });
+                })(i);
+            }
+        });
+    }
+
+    /**
+     * Promise.race 静态方法
+     * @param promises 一个包含多个 Promise 的数组
+     * @return 一个新的 Promise，当任意一个输入的 Promise 首先完成（成功或失败）时，立即解析或拒绝
+     */
+    public static function race(promises:Array):Promise {
+        return new Promise(function(resolve:Function, reject:Function):Void {
+            if (promises.length === 0) {
+                // 如果传入的数组为空，则 Promise 永远不会完成
+                return;
+            }
+
+            for (var i:Number = 0; i < promises.length; i++) {
+                (function(p:Promise):Void {
+                    Promise.resolve(p).then(function(value:Object):Void {
+                        resolve(value);
+                    }, function(reason:Object):Void {
+                        reject(reason);
+                    });
+                })(promises[i]);
+            }
+        });
+    }
+
+    /**
+     * Promise.allSettled 静态方法
+     * @param promises 一个包含多个 Promise 的数组
+     * @return 一个新的 Promise，当所有输入的 Promise 都完成（无论成功或失败）时，解析为结果数组
+     */
+    public static function allSettled(promises:Array):Promise {
+        return new Promise(function(resolve:Function, reject:Function):Void {
+            if (promises.length === 0) {
+                resolve([]);
+                return;
+            }
+
+            var results:Array = [];
+            var completed:Number = 0;
+
+            for (var i:Number = 0; i < promises.length; i++) {
+                (function(index:Number):Void {
+                    var p:Promise = promises[index];
+                    Promise.resolve(p).then(function(value:Object):Void {
+                        results[index] = { status: "fulfilled", value: value };
+                        completed++;
+                        if (completed === promises.length) {
+                            resolve(results);
+                        }
+                    }, function(reason:Object):Void {
+                        results[index] = { status: "rejected", reason: reason };
+                        completed++;
+                        if (completed === promises.length) {
+                            resolve(results);
+                        }
+                    });
+                })(i);
+            }
+        });
+    }
+}
