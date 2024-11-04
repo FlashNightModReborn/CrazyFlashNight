@@ -14,7 +14,8 @@ _root.战宠进阶函数.凑数组的 = {
 	条件:function(){
 		return false;
 	},
-	执行:null
+	执行:null,
+	单位进阶执行:null
 }
 
 _root.战宠进阶函数.基础训练 = {
@@ -32,6 +33,7 @@ _root.战宠进阶函数.基础训练 = {
 	消耗K点:0,
 	消耗道具:[],
 	次数上限:1,
+	详情页:true,
 	条件:function(){
 		if( this.当前宠物信息[1] < 10){
 			this.失败提示 = "";
@@ -65,13 +67,7 @@ _root.战宠进阶函数.基础训练 = {
 		this.韧性系数 += 10;
 	}
 }
-// _root.战宠进阶函数.基础训练.条件 = function(){
-// 	return true;
-// }
 
-// _root.战宠进阶函数.基础训练.执行 = function(){
-// 	return true;
-// }
 
 _root.战宠进阶函数.切换发型 = {
 	初始化:function(){
@@ -99,6 +95,7 @@ _root.战宠进阶函数.切换发型 = {
 		}
    		_root.删除场景宠物();
    		_root.加载宠物(_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y);
-		this.JK.gotoAndStop(this.当前宠物属性.发色);
+		//this.JK.gotoAndStop(this.当前宠物属性.发色);
+		_root.宠物信息界面["宠物信息显示框"+this.宠物信息数组号].宠物头像.JK.gotoAndStop(this.当前宠物属性.发色);
 	}
 }
