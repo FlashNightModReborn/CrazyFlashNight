@@ -1,0 +1,48 @@
+{
+  "name": "audio-context",
+  "description": "A WebAudio Context singleton",
+  "version": "1.0.3",
+  "scripts": {
+    "test": "browserify test.js | tape-run && node test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/audiojs/audio-context.git"
+  },
+  "homepage": "https://github.com/audiojs/audio-context",
+  "devDependencies": {
+    "browserify": "^15.1.0",
+    "is-browser": "^2.0.1",
+    "tape": "*",
+    "tape-run": "^3.0.0"
+  },
+  "keywords": [
+    "webaudio",
+    "audio",
+    "audiojs",
+    "context",
+    "singleton"
+  ],
+  "author": {
+    "name": "Julian Gruber",
+    "email": "mail@juliangruber.com",
+    "url": "http://juliangruber.com"
+  },
+  "license": "MIT",
+  "testling": {
+    "files": "test.js",
+    "browsers": [
+      "ie/8..latest",
+      "firefox/17..latest",
+      "firefox/nightly",
+      "chrome/22..latest",
+      "chrome/canary",
+      "opera/12..latest",
+      "opera/next",
+      "safari/5.1..latest",
+      "ipad/6.0..latest",
+      "iphone/6.0..latest",
+      "android-browser/4.2..latest"
+    ]
+  }
+}
