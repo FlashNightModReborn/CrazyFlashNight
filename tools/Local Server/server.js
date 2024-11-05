@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const app = express();
 const { extractPorts } = require('./config/ports');
@@ -7,28 +6,45 @@ const httpRoutes = require('./routes/httpRoutes');
 const SocketServer = require('./services/socketServer');
 const path = require('path');
 const fs = require('fs');
+const { JSDOM } = require('jsdom');
+const webAudioAPI = require('node-web-audio-api');
 
+// 浏览器环境模拟
+const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
+global.window = dom.window;
+global.document = dom.window.document;
+global.navigator = {
+    userAgent: 'node.js',
+    platform: 'Node'
+};
+global.AudioContext = webAudioAPI.AudioContext;
+global.WebAudioContext = webAudioAPI.WebAudioContext;
+global.localStorage = {
+    getItem: () => null,
+    setItem: () => {}
+};
+global.window.addEventListener = () => {};
+global.document.addEventListener = () => {};
+global.document.removeEventListener = () => {};
+
+// 提取端口列表和最大重试次数，支持环境变量配置
 let portList = extractPorts();
 let usedPorts = new Set();
 let portIndex = 0;
-let retryCount = 0;
-const maxRetries = 5;
+const maxRetries = process.env.MAX_RETRIES || 5;
 
-// Initialize variables
-let server; // HTTP server instance
-let socketServer; // SocketServer instance
+// 初始化服务器变量
+let server;
+let socketServer;
 
-// Middleware and configurations
+// 中间件和配置
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS settings
+// CORS 设置
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
 
@@ -43,10 +59,10 @@ app.get('/crossdomain.xml', (req, res) => {
     `);
 });
 
-// Use HTTP routes
+// 使用 HTTP 路由
 app.use('/', httpRoutes);
 
-// Provide the current XMLSocket port to the client
+// 获取 XMLSocket 端口的接口
 app.get('/getSocketPort', (req, res) => {
     res.set('Content-Type', 'application/x-www-form-urlencoded');
     if (socketServer && socketServer.socketPort) {
@@ -56,27 +72,25 @@ app.get('/getSocketPort', (req, res) => {
     }
 });
 
-// Handle AS2 client batch log messages
+// 处理批量日志
 app.post('/logBatch', (req, res) => {
     const frame = req.body.frame;
     const messages = req.body.messages;
 
     if (frame !== undefined && messages) {
         const messageArray = messages.split('|');
-
         messageArray.forEach((msg) => {
             if (msg.trim() !== '') {
                 logger.info(`[F: ${frame}] ${msg}`);
             }
         });
-
         res.status(200).send('Messages logged');
     } else {
         res.status(400).send('Frame or messages not received');
     }
 });
 
-// Connection test endpoint
+// 连接测试接口
 app.post('/testConnection', (req, res) => {
     logger.info('Received testConnection request');
     res.status(200).send('status=success');
@@ -84,17 +98,14 @@ app.post('/testConnection', (req, res) => {
 
 // 文件传输接口
 app.get('/getFile', (req, res) => {
-    const relativePath = req.query.path; // 从查询参数中获取相对路径
-    const absolutePath = path.join(__dirname, 'resources', relativePath); // 构建绝对路径
+    const relativePath = req.query.path;
+    const absolutePath = path.join(__dirname, 'resources', relativePath);
 
-    // 检查文件是否存在
     fs.access(absolutePath, fs.constants.F_OK, (err) => {
         if (err) {
             logger.error(`File not found: ${absolutePath}`);
             return res.status(404).send('File not found');
         }
-
-        // 读取文件内容并返回
         fs.readFile(absolutePath, 'utf8', (err, data) => {
             if (err) {
                 logger.error(`Error reading file: ${absolutePath}`);
@@ -106,12 +117,11 @@ app.get('/getFile', (req, res) => {
     });
 });
 
-// Start the HTTP server
+// 启动 HTTP 服务器
 function startServer() {
     if (portIndex >= portList.length) {
         logger.error('No available ports found for HTTP server.');
         process.exit(1);
-        return;
     }
 
     const port = portList[portIndex];
@@ -128,7 +138,7 @@ function startServer() {
         usedPorts.add(port);
         retryCount = 0;
 
-        // Start XMLSocket server
+        // 启动 XMLSocket 服务器
         socketServer = new SocketServer(portList, usedPorts);
         socketServer.startSocketServer(port, (success) => {
             if (success) {
@@ -158,7 +168,7 @@ function startServer() {
     });
 }
 
-// Graceful shutdown
+// 平滑关闭
 function gracefulShutdown() {
     logger.info('Shutting down servers gracefully...');
     if (server) {
@@ -178,10 +188,11 @@ function gracefulShutdown() {
     }
 }
 
+// 处理系统信号
 process.on('SIGTERM', gracefulShutdown);
 process.on('SIGINT', gracefulShutdown);
 
-// Error handling
+// 错误处理
 process.on('uncaughtException', (err) => {
     logger.error('Uncaught Exception: ' + err.message);
     logger.error(err.stack);
@@ -191,5 +202,5 @@ process.on('unhandledRejection', (reason, promise) => {
     logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-// Start the server
+// 启动服务器
 startServer();
