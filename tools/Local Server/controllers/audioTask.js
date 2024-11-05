@@ -9,10 +9,14 @@ function handleAudioTask(payload) {
     try {
         switch (action) {
             case 'play': {
+                // 判断是否为 WAV 文件，并使用不同的解码策略
                 const instance = audioCache.getOrCreate(src, options);
-                instance.play();
-                currentSources[src] = { instance, options, state: 'playing' };
-                return JSON.stringify({ success: true, message: `Audio started playing for ${src}` });
+                if (instance) {
+                    instance.play();
+                    currentSources[src] = { instance, options, state: 'playing' };
+                    return JSON.stringify({ success: true, message: `Audio started playing for ${src}` });
+                }
+                return JSON.stringify({ success: false, error: `Failed to create audio instance for ${src}` });
             }
 
             case 'pause': {

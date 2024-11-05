@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const app = express();
 const { extractPorts } = require('./config/ports');
@@ -6,26 +7,10 @@ const httpRoutes = require('./routes/httpRoutes');
 const SocketServer = require('./services/socketServer');
 const path = require('path');
 const fs = require('fs');
-const { JSDOM } = require('jsdom');
-const webAudioAPI = require('node-web-audio-api');
 
-// 浏览器环境模拟
-const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
-global.window = dom.window;
-global.document = dom.window.document;
-global.navigator = {
-    userAgent: 'node.js',
-    platform: 'Node'
-};
-global.AudioContext = webAudioAPI.AudioContext;
-global.WebAudioContext = webAudioAPI.WebAudioContext;
-global.localStorage = {
-    getItem: () => null,
-    setItem: () => {}
-};
-global.window.addEventListener = () => {};
-global.document.addEventListener = () => {};
-global.document.removeEventListener = () => {};
+// 引入模拟的浏览器环境
+require('./utils/browserEnv');
+
 
 // 提取端口列表和最大重试次数，支持环境变量配置
 let portList = extractPorts();
