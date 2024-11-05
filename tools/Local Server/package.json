@@ -1,9 +1,11 @@
 {
   "description": "",
   "dependencies": {
+    "async-lock": "^1.4.1",
     "express": "^4.19.2",
     "howler": "^2.2.4",
     "mongodb": "^6.5.0",
+    "node-web-audio-api": "^0.21.3",
     "vm2": "^3.9.19",
     "winston": "^3.13.0",
     "winston-daily-rotate-file": "^5.0.0",
