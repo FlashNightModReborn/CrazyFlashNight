@@ -310,108 +310,448 @@ class FastJSON {
      * @return 解析后的值
      */
     public function value() {
+        var stackTypes:Array = new Array(64); // 预分配堆栈容量
+        var stackData:Array = new Array(64);
+        var stackPtr:Number = 0;
+
         var result;
         var numberStr:String;
         var word:String;
         var numValue:Number;
-        var numValueDefault:Number;
         var unicodeValue:Number;
         var hexDigit:Number;
-        var keyChar:String;
-        var keyCharCode:Number;
-        var keyHexCode:String;
-        var strChar:String;
-        var strCharCode:Number;
-        var strHexCode:String;
-        var i:Number;
-        var len:Number;
+        var ch:String = this.ch;
+        var at:Number = this.at;
+        var textLength:Number = this.textLength;
+        var charArray:Array = this.charArray;
+        var currentDepth:Number = this.currentDepth;
 
         // 内联 white() 方法
-        while (this.ch <= " " && this.ch != "") {
+        while (ch <= " " && ch != "") {
             // 内联 next() 方法
-            if (this.at >= this.textLength) {
-                this.ch = "";
+            if (at >= textLength) {
+                ch = "";
             } else {
-                this.ch = this.charArray[this.at];
-                this.at += 1;
+                ch = charArray[at];
+                at += 1;
             }
         }
 
-        this.currentDepth += 1;
-        if (this.currentDepth > this.maxDepth) {
-            this.error("Maximum parsing depth exceeded");
-        }
+        // 初始化堆栈
+        stackTypes[stackPtr] = 0; // VALUE
+        stackData[stackPtr++] = null; // 初始值
 
-        switch (this.ch) {
-            case "{":
-                // 解析对象
-                var object:Object = {};
-                // 内联 next() 方法
-                if (this.at >= this.textLength) {
-                    this.ch = "";
-                } else {
-                    this.ch = this.charArray[this.at];
-                    this.at += 1;
+        var key:String;
+        var object:Object;
+        var array:Array;
+        var tempValue;
+        var keyStrParts:Array;
+        var resultStrParts:Array;
+        var i:Number;
+        var len:Number;
+
+        while (stackPtr > 0) {
+            // 弹出堆栈顶部元素
+            stackPtr--;
+            var type:Number = stackTypes[stackPtr];
+            var data = stackData[stackPtr];
+
+            if (type === 0) { // VALUE
+                currentDepth += 1;
+                if (currentDepth > this.maxDepth) {
+                    this.error("Maximum parsing depth exceeded");
                 }
 
-                // 内联 white() 方法
-                while (this.ch <= " " && this.ch != "") {
+                if (ch === "{") {
+                    object = {};
                     // 内联 next() 方法
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
+                    if (at >= textLength) {
+                        ch = "";
                     } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
+                        ch = charArray[at];
+                        at += 1;
                     }
-                }
-
-                if (this.ch == "}") {
+                    // 内联 white() 方法
+                    while (ch <= " " && ch != "") {
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                    }
+                    if (ch == "}") {
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                        currentDepth -= 1;
+                        tempValue = object;
+                        continue;
+                    }
+                    // 推入对象开始状态
+                    stackTypes[stackPtr] = 1; // OBJECT_BEGIN
+                    stackData[stackPtr++] = object;
+                } else if (ch === "[") {
+                    array = [];
                     // 内联 next() 方法
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
+                    if (at >= textLength) {
+                        ch = "";
                     } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
+                        ch = charArray[at];
+                        at += 1;
                     }
-                    this.currentDepth -= 1;
-                    return object;
-                }
-                while (this.ch) {
-                    // 解析键
-                    if (this.ch != "\"") {
-                        this.error("Expected '\"' at the beginning of a key");
+                    // 内联 white() 方法
+                    while (ch <= " " && ch != "") {
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
                     }
-                    var keyStrParts:Array = [];
-                    // 初始化字符串解析
-                    // 内联 str() 方法逻辑
-                    // Assuming the current character is the starting quote
-                    // Move past the opening quote
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
+                    if (ch == "]") {
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                        currentDepth -= 1;
+                        tempValue = array;
+                        continue;
+                    }
+                    // 推入数组开始状态
+                    stackTypes[stackPtr] = 2; // ARRAY_BEGIN
+                    stackData[stackPtr++] = array;
+                } else if (ch === "\"") {
+                    resultStrParts = [];
+                    // 内联 next() 方法，跳过开头的引号
+                    if (at >= textLength) {
+                        ch = "";
                     } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
+                        ch = charArray[at];
+                        at += 1;
                     }
-                    while (this.ch) {
-                        if (this.ch == "\"") {
-                            // Move past the closing quote
-                            if (this.at >= this.textLength) {
-                                this.ch = "";
+                    while (ch) {
+                        if (ch == "\"") {
+                            // 内联 next() 方法，跳过结尾的引号
+                            if (at >= textLength) {
+                                ch = "";
                             } else {
-                                this.ch = this.charArray[this.at];
-                                this.at += 1;
+                                ch = charArray[at];
+                                at += 1;
                             }
                             break;
                         }
-                        if (this.ch == "\\") {
-                            // Move past the backslash
-                            if (this.at >= this.textLength) {
-                                this.ch = "";
+                        if (ch == "\\") {
+                            // 内联 next() 方法，处理转义字符
+                            if (at >= textLength) {
+                                ch = "";
                             } else {
-                                this.ch = this.charArray[this.at];
-                                this.at += 1;
+                                ch = charArray[at];
+                                at += 1;
                             }
-                            switch (this.ch) {
+                            switch (ch) {
+                                case "b":
+                                    resultStrParts.push("\b");
+                                    break;
+                                case "f":
+                                    resultStrParts.push("\f");
+                                    break;
+                                case "n":
+                                    resultStrParts.push("\n");
+                                    break;
+                                case "r":
+                                    resultStrParts.push("\r");
+                                    break;
+                                case "t":
+                                    resultStrParts.push("\t");
+                                    break;
+                                case "u":
+                                    unicodeValue = 0;
+                                    for (i = 0; i < 4; i++) {
+                                        if (at >= textLength) {
+                                            ch = "";
+                                        } else {
+                                            ch = charArray[at];
+                                            at += 1;
+                                        }
+                                        hexDigit = parseInt(ch, 16);
+                                        if (!isFinite(hexDigit)) {
+                                            this.error("Invalid Unicode escape sequence");
+                                        }
+                                        unicodeValue = unicodeValue * 16 + hexDigit;
+                                    }
+                                    resultStrParts.push(String.fromCharCode(unicodeValue));
+                                    continue;
+                                default:
+                                    resultStrParts.push(ch);
+                                    break;
+                            }
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                        } else {
+                            resultStrParts.push(ch);
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                        }
+                    }
+                    tempValue = resultStrParts.join("");
+                    currentDepth -= 1;
+                    continue;
+                } else if (ch === "-") {
+                    // 解析负数
+                    numberStr = "-";
+                    // 内联 next() 方法
+                    if (at >= textLength) {
+                        ch = "";
+                    } else {
+                        ch = charArray[at];
+                        at += 1;
+                    }
+                    while (ch >= "0" && ch <= "9") {
+                        numberStr += ch;
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                    }
+                    if (ch == ".") {
+                        numberStr += ".";
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                        while (ch >= "0" && ch <= "9") {
+                            numberStr += ch;
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                        }
+                    }
+                    if (ch == "e" || ch == "E") {
+                        numberStr += ch;
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                        if (ch == "-" || ch == "+") {
+                            numberStr += ch;
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                        }
+                        while (ch >= "0" && ch <= "9") {
+                            numberStr += ch;
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                        }
+                    }
+                    numValue = Number(numberStr);
+                    if (isNaN(numValue)) {
+                        this.error("Bad number");
+                    }
+                    tempValue = numValue;
+                    currentDepth -= 1;
+                    continue;
+                } else if (ch >= "0" && ch <= "9") {
+                    // 解析正数
+                    numberStr = "";
+                    while (ch >= "0" && ch <= "9") {
+                        numberStr += ch;
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                    }
+                    if (ch == ".") {
+                        numberStr += ".";
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                        while (ch >= "0" && ch <= "9") {
+                            numberStr += ch;
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                        }
+                    }
+                    if (ch == "e" || ch == "E") {
+                        numberStr += ch;
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                        if (ch == "-" || ch == "+") {
+                            numberStr += ch;
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                        }
+                        while (ch >= "0" && ch <= "9") {
+                            numberStr += ch;
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                        }
+                    }
+                    numValue = Number(numberStr);
+                    if (isNaN(numValue)) {
+                        this.error("Bad number");
+                    }
+                    tempValue = numValue;
+                    currentDepth -= 1;
+                    continue;
+                } else if (ch >= "a" && ch <= "z") {
+                    // 解析字面量：true, false, null
+                    word = "";
+                    while (ch >= "a" && ch <= "z") {
+                        word += ch;
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                    }
+                    if (word == "true") {
+                        tempValue = true;
+                        currentDepth -= 1;
+                        continue;
+                    } else if (word == "false") {
+                        tempValue = false;
+                        currentDepth -= 1;
+                        continue;
+                    } else if (word == "null") {
+                        tempValue = null;
+                        currentDepth -= 1;
+                        continue;
+                    } else {
+                        this.error("Unexpected token: " + word);
+                    }
+                } else {
+                    this.error("Unexpected character: " + ch);
+                }
+            } else if (type === 1) { // OBJECT_BEGIN
+                object = data;
+                // 处理键值对
+                while (true) {
+                    // 内联 white() 方法
+                    while (ch <= " " && ch != "") {
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                    }
+                    if (ch == "}") {
+                        // 内联 next() 方法
+                        if (at >= textLength) {
+                            ch = "";
+                        } else {
+                            ch = charArray[at];
+                            at += 1;
+                        }
+                        currentDepth -= 1;
+                        tempValue = object;
+                        break;
+                    }
+                    if (ch != "\"") {
+                        this.error("Expected '\"' at the beginning of a key");
+                    }
+                    // 解析键
+                    keyStrParts = [];
+                    // 内联 next() 方法，跳过开头的引号
+                    if (at >= textLength) {
+                        ch = "";
+                    } else {
+                        ch = charArray[at];
+                        at += 1;
+                    }
+                    while (ch) {
+                        if (ch == "\"") {
+                            // 内联 next() 方法，跳过结尾的引号
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                            break;
+                        }
+                        if (ch == "\\") {
+                            // 内联 next() 方法，处理转义字符
+                            if (at >= textLength) {
+                                ch = "";
+                            } else {
+                                ch = charArray[at];
+                                at += 1;
+                            }
+                            switch (ch) {
                                 case "b":
                                     keyStrParts.push("\b");
                                     break;
@@ -430,13 +770,13 @@ class FastJSON {
                                 case "u":
                                     unicodeValue = 0;
                                     for (i = 0; i < 4; i++) {
-                                        if (this.at >= this.textLength) {
-                                            this.ch = "";
+                                        if (at >= textLength) {
+                                            ch = "";
                                         } else {
-                                            this.ch = this.charArray[this.at];
-                                            this.at += 1;
+                                            ch = charArray[at];
+                                            at += 1;
                                         }
-                                        hexDigit = parseInt(this.ch, 16);
+                                        hexDigit = parseInt(ch, 16);
                                         if (!isFinite(hexDigit)) {
                                             this.error("Invalid Unicode escape sequence");
                                         }
@@ -445,448 +785,202 @@ class FastJSON {
                                     keyStrParts.push(String.fromCharCode(unicodeValue));
                                     continue;
                                 default:
-                                    keyStrParts.push(this.ch);
+                                    keyStrParts.push(ch);
                                     break;
                             }
-                            // Move to the next character after escape
-                            if (this.at >= this.textLength) {
-                                this.ch = "";
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
                             } else {
-                                this.ch = this.charArray[this.at];
-                                this.at += 1;
+                                ch = charArray[at];
+                                at += 1;
                             }
                         } else {
-                            keyStrParts.push(this.ch);
-                            // Move to the next character
-                            if (this.at >= this.textLength) {
-                                this.ch = "";
+                            keyStrParts.push(ch);
+                            // 内联 next() 方法
+                            if (at >= textLength) {
+                                ch = "";
                             } else {
-                                this.ch = this.charArray[this.at];
-                                this.at += 1;
+                                ch = charArray[at];
+                                at += 1;
                             }
                         }
                     }
-                    var key:String = keyStrParts.join("");
+                    key = keyStrParts.join("");
 
                     // 内联 white() 方法
-                    while (this.ch <= " " && this.ch != "") {
+                    while (ch <= " " && ch != "") {
                         // 内联 next() 方法
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
+                        if (at >= textLength) {
+                            ch = "";
                         } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
+                            ch = charArray[at];
+                            at += 1;
                         }
                     }
-                    if (this.ch != ":") {
+                    if (ch != ":") {
                         this.error("Expected ':' after key");
                     }
-                    // Move past ':'
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
+                    // 内联 next() 方法，跳过 ':'
+                    if (at >= textLength) {
+                        ch = "";
                     } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
-                    }
-
-                    // Parse the value
-                    result = this.value();
-                    object[key] = result;
-
-                    // 内联 white() 方法
-                    while (this.ch <= " " && this.ch != "") {
-                        // 内联 next() 方法
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                    }
-
-                    if (this.ch == "}") {
-                        // Move past '}'
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                        this.currentDepth -= 1;
-                        return object;
-                    }
-                    if (this.ch != ",") {
-                        this.error("Expected ',' or '}'");
-                    }
-                    // Move past ','
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
+                        ch = charArray[at];
+                        at += 1;
                     }
 
                     // 内联 white() 方法
-                    while (this.ch <= " " && this.ch != "") {
+                    while (ch <= " " && ch != "") {
                         // 内联 next() 方法
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
+                        if (at >= textLength) {
+                            ch = "";
                         } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
+                            ch = charArray[at];
+                            at += 1;
                         }
+                    }
+
+                    // 推入对象值状态
+                    stackTypes[stackPtr] = 5; // OBJECT_VALUE
+                    stackData[stackPtr++] = {object: object, key: key};
+
+                    // 推入值状态
+                    stackTypes[stackPtr] = 0; // VALUE
+                    stackData[stackPtr++] = null;
+                    break; // 跳出循环，等待值解析
+                }
+            } else if (type === 5) { // OBJECT_VALUE
+                var objInfo = data;
+                object = objInfo.object;
+                key = objInfo.key;
+                object[key] = tempValue;
+
+                // 内联 white() 方法
+                while (ch <= " " && ch != "") {
+                    // 内联 next() 方法
+                    if (at >= textLength) {
+                        ch = "";
+                    } else {
+                        ch = charArray[at];
+                        at += 1;
                     }
                 }
-                this.error("Unterminated object");
-                break;
-            case "[":
-                // 解析数组
-                var array:Array = [];
-                // Move past '['
-                if (this.at >= this.textLength) {
-                    this.ch = "";
+
+                if (ch == "}") {
+                    // 内联 next() 方法，跳过 '}'
+                    if (at >= textLength) {
+                        ch = "";
+                    } else {
+                        ch = charArray[at];
+                        at += 1;
+                    }
+                    currentDepth -= 1;
+                    tempValue = object;
+                    continue;
+                }
+                if (ch != ",") {
+                    this.error("Expected ',' or '}'");
+                }
+                // 内联 next() 方法，跳过 ','
+                if (at >= textLength) {
+                    ch = "";
                 } else {
-                    this.ch = this.charArray[this.at];
-                    this.at += 1;
+                    ch = charArray[at];
+                    at += 1;
                 }
 
                 // 内联 white() 方法
-                while (this.ch <= " " && this.ch != "") {
-                    // Move past whitespace
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
+                while (ch <= " " && ch != "") {
+                    // 内联 next() 方法
+                    if (at >= textLength) {
+                        ch = "";
                     } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
+                        ch = charArray[at];
+                        at += 1;
                     }
                 }
 
-                if (this.ch == "]") {
-                    // Move past ']'
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
+                // 继续处理下一个键值对
+                // 推入对象开始状态
+                stackTypes[stackPtr] = 1; // OBJECT_BEGIN
+                stackData[stackPtr++] = object;
+            } else if (type === 2) { // ARRAY_BEGIN
+                array = data;
+
+                // 推入数组值状态
+                stackTypes[stackPtr] = 7; // ARRAY_VALUE
+                stackData[stackPtr++] = array;
+
+                // 推入值状态
+                stackTypes[stackPtr] = 0; // VALUE
+                stackData[stackPtr++] = null;
+            } else if (type === 7) { // ARRAY_VALUE
+                array = data;
+                array.push(tempValue);
+
+                // 内联 white() 方法
+                while (ch <= " " && ch != "") {
+                    // 内联 next() 方法
+                    if (at >= textLength) {
+                        ch = "";
                     } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
-                    }
-                    this.currentDepth -= 1;
-                    return array;
-                }
-                while (this.ch) {
-                    // Parse the value
-                    array.push(this.value());
-
-                    // 内联 white() 方法
-                    while (this.ch <= " " && this.ch != "") {
-                        // Move past whitespace
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                    }
-
-                    if (this.ch == "]") {
-                        // Move past ']'
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                        this.currentDepth -= 1;
-                        return array;
-                    }
-                    if (this.ch != ",") {
-                        this.error("Expected ',' or ']'");
-                    }
-                    // Move past ','
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
-                    }
-
-                    // 内联 white() 方法
-                    while (this.ch <= " " && this.ch != "") {
-                        // Move past whitespace
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
+                        ch = charArray[at];
+                        at += 1;
                     }
                 }
-                this.error("Unterminated array");
-                break;
-            case "\"":
-                // 解析字符串
-                var resultStrParts:Array = [];
-                // Move past opening quote
-                if (this.at >= this.textLength) {
-                    this.ch = "";
+
+                if (ch == "]") {
+                    // 内联 next() 方法，跳过 ']'
+                    if (at >= textLength) {
+                        ch = "";
+                    } else {
+                        ch = charArray[at];
+                        at += 1;
+                    }
+                    currentDepth -= 1;
+                    tempValue = array;
+                    continue;
+                }
+                if (ch != ",") {
+                    this.error("Expected ',' or ']'");
+                }
+                // 内联 next() 方法，跳过 ','
+                if (at >= textLength) {
+                    ch = "";
                 } else {
-                    this.ch = this.charArray[this.at];
-                    this.at += 1;
+                    ch = charArray[at];
+                    at += 1;
                 }
-                while (this.ch) {
-                    if (this.ch == "\"") {
-                        // Move past closing quote
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                        break;
-                    }
-                    if (this.ch == "\\") {
-                        // Move past backslash
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                        switch (this.ch) {
-                            case "b":
-                                resultStrParts.push("\b");
-                                break;
-                            case "f":
-                                resultStrParts.push("\f");
-                                break;
-                            case "n":
-                                resultStrParts.push("\n");
-                                break;
-                            case "r":
-                                resultStrParts.push("\r");
-                                break;
-                            case "t":
-                                resultStrParts.push("\t");
-                                break;
-                            case "u":
-                                unicodeValue = 0;
-                                for (i = 0; i < 4; i++) {
-                                    if (this.at >= this.textLength) {
-                                        this.ch = "";
-                                    } else {
-                                        this.ch = this.charArray[this.at];
-                                        this.at += 1;
-                                    }
-                                    hexDigit = parseInt(this.ch, 16);
-                                    if (!isFinite(hexDigit)) {
-                                        this.error("Invalid Unicode escape sequence");
-                                    }
-                                    unicodeValue = unicodeValue * 16 + hexDigit;
-                                }
-                                resultStrParts.push(String.fromCharCode(unicodeValue));
-                                continue;
-                            default:
-                                resultStrParts.push(this.ch);
-                                break;
-                        }
-                        // Move to the next character after escape
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
+
+                // 内联 white() 方法
+                while (ch <= " " && ch != "") {
+                    // 内联 next() 方法
+                    if (at >= textLength) {
+                        ch = "";
                     } else {
-                        resultStrParts.push(this.ch);
-                        // Move to the next character
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
+                        ch = charArray[at];
+                        at += 1;
                     }
                 }
-                this.currentDepth -= 1;
-                return resultStrParts.join("");
-            case "-":
-                // 解析负数
-                numberStr = "-";
-                // Move past '-'
-                if (this.at >= this.textLength) {
-                    this.ch = "";
-                } else {
-                    this.ch = this.charArray[this.at];
-                    this.at += 1;
-                }
-                while (this.ch >= "0" && this.ch <= "9") {
-                    numberStr += this.ch;
-                    // Move to next character
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
-                    }
-                }
-                if (this.ch == ".") {
-                    numberStr += ".";
-                    // Move past '.'
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
-                    }
-                    while (this.ch >= "0" && this.ch <= "9") {
-                        numberStr += this.ch;
-                        // Move to next character
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                    }
-                }
-                if (this.ch == "e" || this.ch == "E") {
-                    numberStr += this.ch;
-                    // Move past 'e' or 'E'
-                    if (this.at >= this.textLength) {
-                        this.ch = "";
-                    } else {
-                        this.ch = this.charArray[this.at];
-                        this.at += 1;
-                    }
-                    if (this.ch == "-" || this.ch == "+") {
-                        numberStr += this.ch;
-                        // Move past '-' or '+'
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                    }
-                    while (this.ch >= "0" && this.ch <= "9") {
-                        numberStr += this.ch;
-                        // Move to next character
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                    }
-                }
-                numValue = Number(numberStr);
-                if (isNaN(numValue)) {
-                    this.error("Bad number");
-                }
-                this.currentDepth -= 1;
-                return numValue;
-            default:
-                if (this.ch >= "0" && this.ch <= "9") {
-                    // 解析正数
-                    var numberStrDefault:String = "";
-                    while (this.ch >= "0" && this.ch <= "9") {
-                        numberStrDefault += this.ch;
-                        // Move to next character
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                    }
-                    if (this.ch == ".") {
-                        numberStrDefault += ".";
-                        // Move past '.'
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                        while (this.ch >= "0" && this.ch <= "9") {
-                            numberStrDefault += this.ch;
-                            // Move to next character
-                            if (this.at >= this.textLength) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.charArray[this.at];
-                                this.at += 1;
-                            }
-                        }
-                    }
-                    if (this.ch == "e" || this.ch == "E") {
-                        numberStrDefault += this.ch;
-                        // Move past 'e' or 'E'
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                        if (this.ch == "-" || this.ch == "+") {
-                            numberStrDefault += this.ch;
-                            // Move past '-' or '+'
-                            if (this.at >= this.textLength) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.charArray[this.at];
-                                this.at += 1;
-                            }
-                        }
-                        while (this.ch >= "0" && this.ch <= "9") {
-                            numberStrDefault += this.ch;
-                            // Move to next character
-                            if (this.at >= this.textLength) {
-                                this.ch = "";
-                            } else {
-                                this.ch = this.charArray[this.at];
-                                this.at += 1;
-                            }
-                        }
-                    }
-                    numValueDefault = Number(numberStrDefault);
-                    if (isNaN(numValueDefault)) {
-                        this.error("Bad number");
-                    }
-                    this.currentDepth -= 1;
-                    return numValueDefault;
-                } else if (this.ch >= "a" && this.ch <= "z") {
-                    // 解析字面量：true, false, null
-                    word = "";
-                    while (this.ch >= "a" && this.ch <= "z") {
-                        word += this.ch;
-                        // Move to next character
-                        if (this.at >= this.textLength) {
-                            this.ch = "";
-                        } else {
-                            this.ch = this.charArray[this.at];
-                            this.at += 1;
-                        }
-                    }
-                    switch (word) {
-                        case "true":
-                            this.currentDepth -= 1;
-                            return true;
-                        case "false":
-                            this.currentDepth -= 1;
-                            return false;
-                        case "null":
-                            this.currentDepth -= 1;
-                            return null;
-                        default:
-                            this.error("Unexpected token: " + word);
-                    }
-                } else {
-                    this.error("Unexpected character: " + this.ch);
-                }
+
+                // 推入数组值状态
+                stackTypes[stackPtr] = 7; // ARRAY_VALUE
+                stackData[stackPtr++] = array;
+
+                // 推入值状态
+                stackTypes[stackPtr] = 0; // VALUE
+                stackData[stackPtr++] = null;
+            }
         }
-        this.currentDepth -= 1;
-        return null; // 为了避免编译警告
+
+        // 更新解析器状态
+        this.ch = ch;
+        this.at = at;
+        this.currentDepth = currentDepth;
+
+        return tempValue;
     }
+
 
     /**
      * 解析 FastJSON 文本
