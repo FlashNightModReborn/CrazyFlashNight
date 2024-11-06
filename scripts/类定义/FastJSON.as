@@ -310,6 +310,8 @@ class FastJSON {
      * @return 解析后的值
      */
     public function value() {
+        // 定义堆栈类型常量（直接使用硬编码数值）
+        // 0: VALUE, 1: OBJECT_BEGIN, 2: ARRAY_BEGIN, 5: OBJECT_VALUE, 7: ARRAY_VALUE
         var stackTypes:Array = new Array(64); // 预分配堆栈容量
         var stackData:Array = new Array(64);
         var stackPtr:Number = 0;
