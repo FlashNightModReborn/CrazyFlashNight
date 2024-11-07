@@ -332,6 +332,7 @@ class FastJSON {
             return this.parseCache[cacheKey];
         }
 
+        // 初始化解析器状态
         this.text = inputText;
         this.at = 0;
         this.ch = " ";
@@ -343,8 +344,7 @@ class FastJSON {
         if (this.at >= this.textLength) {
             this.ch = "";
         } else {
-            this.ch = this.charArray[this.at];
-            this.at += 1;
+            this.ch = this.charArray[this.at++];
         }
 
         // 定义堆栈类型常量（直接使用硬编码数值）
@@ -367,12 +367,10 @@ class FastJSON {
 
         // 内联 white() 方法
         while (currentCh <= " " && currentCh != "") {
-            // 内联 next() 方法
             if (currentAt >= currentTextLength) {
                 currentCh = "";
             } else {
-                currentCh = currentCharArray[currentAt];
-                currentAt += 1;
+                currentCh = currentCharArray[currentAt++];
             }
         }
 
@@ -407,17 +405,14 @@ class FastJSON {
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                     // 内联 white() 方法
                     while (currentCh <= " " && currentCh != "") {
-                        // 内联 next() 方法
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                     }
                     if (currentCh == "}") {
@@ -425,8 +420,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                         currentDepthCounter -= 1;
                         tempValue = object;
@@ -441,17 +435,14 @@ class FastJSON {
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                     // 内联 white() 方法
                     while (currentCh <= " " && currentCh != "") {
-                        // 内联 next() 方法
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                     }
                     if (currentCh == "]") {
@@ -459,8 +450,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                         currentDepthCounter -= 1;
                         tempValue = array;
@@ -475,8 +465,7 @@ class FastJSON {
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                     while (currentCh) {
                         if (currentCh == "\"") {
@@ -484,8 +473,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                             break;
                         }
@@ -494,8 +482,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                             switch (currentCh) {
                                 case "b":
@@ -519,8 +506,7 @@ class FastJSON {
                                         if (currentAt >= currentTextLength) {
                                             currentCh = "";
                                         } else {
-                                            currentCh = currentCharArray[currentAt];
-                                            currentAt += 1;
+                                            currentCh = currentCharArray[currentAt++];
                                         }
                                         hexDigit = parseInt(currentCh, 16);
                                         if (!isFinite(hexDigit)) {
@@ -538,8 +524,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         } else {
                             resultStrParts.push(currentCh);
@@ -547,8 +532,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         }
                     }
@@ -562,8 +546,7 @@ class FastJSON {
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                     while (currentCh >= "0" && currentCh <= "9") {
                         numberStr += currentCh;
@@ -571,8 +554,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                     }
                     if (currentCh == ".") {
@@ -581,8 +563,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                         while (currentCh >= "0" && currentCh <= "9") {
                             numberStr += currentCh;
@@ -590,8 +571,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         }
                     }
@@ -601,8 +581,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                         if (currentCh == "-" || currentCh == "+") {
                             numberStr += currentCh;
@@ -610,8 +589,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         }
                         while (currentCh >= "0" && currentCh <= "9") {
@@ -620,8 +598,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         }
                     }
@@ -641,8 +618,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                     }
                     if (currentCh == ".") {
@@ -651,8 +627,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                         while (currentCh >= "0" && currentCh <= "9") {
                             numberStr += currentCh;
@@ -660,8 +635,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         }
                     }
@@ -671,8 +645,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                         if (currentCh == "-" || currentCh == "+") {
                             numberStr += currentCh;
@@ -680,8 +653,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         }
                         while (currentCh >= "0" && currentCh <= "9") {
@@ -690,8 +662,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         }
                     }
@@ -711,8 +682,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                     }
                     if (word == "true") {
@@ -739,12 +709,10 @@ class FastJSON {
                 while (true) {
                     // 内联 white() 方法
                     while (currentCh <= " " && currentCh != "") {
-                        // 内联 next() 方法
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                     }
                     if (currentCh == "}") {
@@ -752,8 +720,7 @@ class FastJSON {
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                         currentDepthCounter -= 1;
                         tempValue = object;
@@ -768,8 +735,7 @@ class FastJSON {
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                     while (currentCh) {
                         if (currentCh == "\"") {
@@ -777,8 +743,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                             break;
                         }
@@ -787,8 +752,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                             switch (currentCh) {
                                 case "b":
@@ -812,8 +776,7 @@ class FastJSON {
                                         if (currentAt >= currentTextLength) {
                                             currentCh = "";
                                         } else {
-                                            currentCh = currentCharArray[currentAt];
-                                            currentAt += 1;
+                                            currentCh = currentCharArray[currentAt++];
                                         }
                                         hexDigit = parseInt(currentCh, 16);
                                         if (!isFinite(hexDigit)) {
@@ -831,8 +794,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         } else {
                             keyStrParts.push(currentCh);
@@ -840,8 +802,7 @@ class FastJSON {
                             if (currentAt >= currentTextLength) {
                                 currentCh = "";
                             } else {
-                                currentCh = currentCharArray[currentAt];
-                                currentAt += 1;
+                                currentCh = currentCharArray[currentAt++];
                             }
                         }
                     }
@@ -849,12 +810,10 @@ class FastJSON {
 
                     // 内联 white() 方法
                     while (currentCh <= " " && currentCh != "") {
-                        // 内联 next() 方法
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                     }
                     if (currentCh != ":") {
@@ -864,18 +823,15 @@ class FastJSON {
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
 
                     // 内联 white() 方法
                     while (currentCh <= " " && currentCh != "") {
-                        // 内联 next() 方法
                         if (currentAt >= currentTextLength) {
                             currentCh = "";
                         } else {
-                            currentCh = currentCharArray[currentAt];
-                            currentAt += 1;
+                            currentCh = currentCharArray[currentAt++];
                         }
                     }
 
@@ -896,12 +852,10 @@ class FastJSON {
 
                 // 内联 white() 方法
                 while (currentCh <= " " && currentCh != "") {
-                    // 内联 next() 方法
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                 }
 
@@ -910,8 +864,7 @@ class FastJSON {
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                     currentDepthCounter -= 1;
                     tempValue = object;
@@ -924,18 +877,15 @@ class FastJSON {
                 if (currentAt >= currentTextLength) {
                     currentCh = "";
                 } else {
-                    currentCh = currentCharArray[currentAt];
-                    currentAt += 1;
+                    currentCh = currentCharArray[currentAt++];
                 }
 
                 // 内联 white() 方法
                 while (currentCh <= " " && currentCh != "") {
-                    // 内联 next() 方法
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                 }
 
@@ -959,12 +909,10 @@ class FastJSON {
 
                 // 内联 white() 方法
                 while (currentCh <= " " && currentCh != "") {
-                    // 内联 next() 方法
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                 }
 
@@ -973,8 +921,7 @@ class FastJSON {
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                     currentDepthCounter -= 1;
                     tempValue = array;
@@ -987,18 +934,15 @@ class FastJSON {
                 if (currentAt >= currentTextLength) {
                     currentCh = "";
                 } else {
-                    currentCh = currentCharArray[currentAt];
-                    currentAt += 1;
+                    currentCh = currentCharArray[currentAt++];
                 }
 
                 // 内联 white() 方法
                 while (currentCh <= " " && currentCh != "") {
-                    // 内联 next() 方法
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
                     } else {
-                        currentCh = currentCharArray[currentAt];
-                        currentAt += 1;
+                        currentCh = currentCharArray[currentAt++];
                     }
                 }
 
@@ -1023,8 +967,7 @@ class FastJSON {
             if (this.at >= this.textLength) {
                 this.ch = "";
             } else {
-                this.ch = this.charArray[this.at];
-                this.at += 1;
+                this.ch = this.charArray[this.at++];
             }
         }
         if (this.ch) {
