@@ -1426,9 +1426,7 @@
       <damage>25</damage>
       <defence>120</defence>
       <bullet>0</bullet>
-      <magicdefence>
-        <毒>10</毒>
-      </magicdefence>
+      <magicdefence>{"毒":10}</magicdefence>
     </equipped>
   </item>
   <item>
@@ -1449,9 +1447,7 @@
       <damage>25</damage>
       <defence>160</defence>
       <bullet>0</bullet>
-      <magicdefence>
-        <毒>20</毒>
-      </magicdefence>
+      <magicdefence>{"毒":20}</magicdefence>
     </equipped>
   </item>
    <item>
@@ -1558,9 +1554,7 @@
       <damage>25</damage>
       <defence>90</defence>
       <bullet>0</bullet>
-      <magicdefence>
-        <毒>30</毒>
-      </magicdefence>
+      <magicdefence>{"毒":30}</magicdefence>
     </equipped>
   </item>
   <item>
@@ -1667,9 +1661,7 @@
       <damage>25</damage>
       <defence>290</defence>
       <bullet>0</bullet>
-      <magicdefence>
-        <电>20</电>
-      </magicdefence>
+      <magicdefence>{"电":20}</magicdefence>
     </equipped>
   </item>
   <item>
@@ -1691,9 +1683,7 @@
       <damage>25</damage>
       <defence>290</defence>
       <bullet>0</bullet>
-      <magicdefence>
-        <电>20</电>
-      </magicdefence>
+      <magicdefence>{"电":20}</magicdefence>
     </equipped>
       </item>
     <item>
@@ -1716,9 +1706,7 @@
       <damage>25</damage>
       <defence>270</defence>
       <bullet>0</bullet>
-      <magicdefence>
-        <电>20</电>
-      </magicdefence>
+      <magicdefence>{"电":20}</magicdefence>
     </equipped>
   </item>
   <item>
@@ -1740,9 +1728,7 @@
       <damage>25</damage>
       <defence>270</defence>
       <bullet>0</bullet>
-      <magicdefence>
-        <电>15</电>
-      </magicdefence>
+      <magicdefence>{"电":15}</magicdefence>
     </equipped>
   </item>
   <item>
@@ -1764,9 +1750,7 @@
       <damage>25</damage>
       <defence>270</defence>
       <bullet>0</bullet>
-      <magicdefence>
-        <电>15</电>
-      </magicdefence>
+      <magicdefence>{"电":15}</magicdefence>
     </equipped>
   </item>
   <item>
@@ -2213,6 +2197,254 @@
     <equipped>
       <dressup>枪-手枪-短剑印花集</dressup>
       <criticalhit>15</criticalhit>
+    </equipped>
+  </item>
+   <item>
+    <id>6073</id>
+    <name>M82A1狙击步枪</name>
+    <displayname>M82A1狙击步枪</displayname>
+    <icon>M82A1狙击步枪</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>12</weight>
+    <price>1</price>
+    <description>&#10;      巴雷特半自动反器材步枪战术版，由巴雷特加装配件改进而成。射程远、精度高、威力大。&#10;巴雷特最大及最成功的订单紧接在1990年，美军宣布全面采用M82A1，以用于科威特的沙漠之盾和沙漠风暴行动。作为美军唯一的「特殊用途狙击步枪」，时至21世纪，战场上仍能见到它的身影。&#10; </description>
+<level>50</level>
+    <data>
+      <capacity>8</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>1000</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>80</velocity>
+      <bullet>巴雷特子弹</bullet>
+      <bulletrename>强力穿刺子弹</bulletrename>
+      <sound>re_sniper_Barret.wav</sound>
+      <muzzle>巴雷特枪火</muzzle>
+      <bullethit>战术巴雷特击中特效</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>55</bulletsize>
+      <power>3600</power>
+      <impact>1</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-M82A1狙击步枪</dressup>
+        <accuracy>35</accuracy>
+      <criticalhit>满血暴击</criticalhit>
+    </equipped>
+  </item>
+   <item>
+    <id>6074</id>
+    <name>AWM狙击步枪</name>
+    <displayname>AWM狙击步枪</displayname>
+    <icon>AWM狙击步枪</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>8</weight>
+    <price>180000</price>
+    <description>AWM是英国精密国际研发的北极作战系列的栓式狙击步枪，于1997年开始服役。
+AWM原来以狩猎为主，后来普及军事层面，采用旋转后拉式枪机，供弹方式为可拆卸式弹匣。它不但适合北极寒冷地域使用，在-40℃条件下仍可靠地工作，在炎热潮湿气候条件下的性能也相当优良。</description>
+     <level>35</level>
+    <data>
+      <capacity>9</capacity>
+      <split>1</split>
+      <diffusion>1</diffusion>
+      <interval>1000</interval>
+      <singleshoot>true</singleshoot>
+      <velocity>50</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>awp1.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>狙击步枪通用弹药</clipname>
+      <bulletsize>65</bulletsize>
+      <power>2500</power>
+      <impact>2</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-AWM狙击步枪</dressup>
+      <accuracy>30</accuracy>
+      <criticalhit>满血暴击</criticalhit>
+    </equipped>
+  </item>
+   <item>
+    <id>6075</id>
+    <name>M4A1科技白</name>
+    <displayname>M4A1科技白</displayname>
+    <icon>M4A1科技白</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>9</weight>
+    <price>33000</price>
+    <description>&#10;      M4A1由美国的柯特公司于1984年研发。作为美军制式步枪的同时，也广获各国军队及执法机关采用。  该枪根据美军特种部队的作战需要改进而得，采用全自动射击模式，射程、射速与杀伤力都相当优秀。&#10;    </description>
+    <level>35</level>
+    <data>
+      <capacity>50</capacity>
+      <split>1</split>
+      <diffusion>4</diffusion>
+      <interval>110</interval>
+      <velocity>35</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>re_Rifle_m16_tac.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>220</power>
+      <impact>50</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-M4A1科技白</dressup>
+    </equipped>
+  </item>
+   <item>
+    <id>6076</id>
+    <name>AK74金线</name>
+    <displayname>AK74金线</displayname>
+    <icon>AK74金线</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>9</weight>
+    <price>50000</price>
+    <description>&#10;      AK74突击步枪，由卡拉希尼柯夫在1974年设计，于伊热夫斯克机器制造厂和图拉兵工厂批量制造。&#10;首次露面于1974年11月7日莫斯科红场阅兵仪式当中，自1980年代开始一直是苏联军队的制式装备。&#10;——直到苏联解体。&#10;    </description>
+    <level>35</level>
+    <data>
+      <capacity>50</capacity>
+      <split>1</split>
+      <diffusion>6</diffusion>
+      <interval>130</interval>
+      <velocity>35</velocity>
+      <bullet>穿刺子弹</bullet>
+      <sound>re_Rifle_ak74.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>突击步枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>260</power>
+      <impact>35</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-AK74金线</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>6077</id>
+    <name>Milkor MGL榴弹发射器</name>
+    <displayname>Milkor MGL榴弹发射器</displayname>
+    <icon>Milkor MGL榴弹发射器</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>8</weight>
+    <price>13000</price>
+    <description>Milkor MGL榴弹发射器至今已经被超过30个国家所采用，并参与过从丛林到沙漠等不同恶劣环境下的实战。与其他40mm榴弹发射器相比，MGL有6发容弹量，在伏击或快速通过城市的战斗中相当有用。</description>
+    <level>24</level>
+    <data>
+      <capacity>6</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>1000</interval>
+      <velocity>17</velocity>
+      <bullet>榴弹</bullet>
+      <sound>re_GL_ChinaLake.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>榴弹弹药</clipname>
+      <bulletsize>40</bulletsize>
+      <power>1400</power>
+      <impact>0</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-Milkor MGL榴弹发射器</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>6078</id>
+    <name>M79式榴弹发射器</name>
+    <displayname>M79式榴弹发射器</displayname>
+    <icon>M79式榴弹发射器</icon>
+    <type>武器</type>
+    <use>长枪</use>
+    <weight>8</weight>
+    <price>52000</price>
+    <description>M79式榴弹发射器是一种单发射击、枪管滑动开膛、后膛装填的肩射武器，结构简单坚固，使用方便， 射击精度 较好。</description>
+    <level>12</level>
+    <data>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>1000</interval>
+      <velocity>19</velocity>
+      <bullet>榴弹</bullet>
+      <sound>re_GL_ChinaLake.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>榴弹弹药</clipname>
+      <bulletsize>40</bulletsize>
+      <power>1100</power>
+      <impact>0</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-M79式榴弹发射器</dressup>
+    </equipped>
+  </item>
+    <item>
+    <id>6079</id>
+    <name>M79式榴弹发射器副武器版本</name>
+    <displayname>M79式榴弹发射器副武器版本</displayname>
+    <icon>M79式榴弹发射器</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>8</weight>
+    <price>52000</price>
+    <description>M79式榴弹发射器是一种单发射击、枪管滑动开膛、后膛装填的肩射武器，结构简单坚固，使用方便， 射击精度 较好。</description>
+    <level>16</level>
+    <data>
+      <capacity>1</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>1000</interval>
+      <velocity>19</velocity>
+      <bullet>榴弹</bullet>
+      <sound>re_GL_ChinaLake.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>榴弹弹药</clipname>
+      <bulletsize>40</bulletsize>
+      <power>1100</power>
+      <impact>0</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-M79式榴弹发射器</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>6080</id>
+    <name>Milkor MGL榴弹发射器副武器版本</name>
+    <displayname>Milkor MGL榴弹发射器</displayname>
+    <icon>Milkor MGL榴弹发射器</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>8</weight>
+    <price>13000</price>
+    <description>Milkor MGL榴弹发射器至今已经被超过30个国家所采用，并参与过从丛林到沙漠等不同恶劣环境下的实战。与其他40mm榴弹发射器相比，MGL有6发容弹量，在伏击或快速通过城市的战斗中相当有用。</description>
+    <level>33</level>
+    <data>
+      <capacity>6</capacity>
+      <split>1</split>
+      <diffusion>5</diffusion>
+      <interval>1000</interval>
+      <velocity>17</velocity>
+      <bullet>榴弹</bullet>
+      <sound>re_GL_ChinaLake.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>榴弹弹药</clipname>
+      <bulletsize>40</bulletsize>
+      <power>1400</power>
+      <impact>0</impact>
+    </data>
+    <equipped>
+      <dressup>枪-长枪-Milkor MGL榴弹发射器</dressup>
     </equipped>
   </item>
 </root>
