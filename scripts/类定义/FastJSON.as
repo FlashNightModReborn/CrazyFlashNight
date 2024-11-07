@@ -44,21 +44,23 @@ class FastJSON {
      * @return 生成的唯一键字符串
      */
     private function generateCacheKey(arg):String {
-        switch (typeof arg) {
-            case "object":
-                if (arg === null) {
-                    return "null";
-                }
-                return "obj_" + Dictionary.getStaticUID(arg);
-            case "string":
-                return "str_" + arg;
-            case "number":
-                return "num_" + arg;
-            case "boolean":
-                return "bool_" + arg;
-            default:
-                return "undefined";
+        var type:String = typeof arg;
+
+        // Directly return strings and booleans as-is, without prefixes
+        if (type === "string" || type === "boolean") {
+            return String(arg);
+        } else if (type === "number") {
+            return "num_" + arg;
+        } else if (type === "object") {
+            if (arg === null) {
+                return "null";
+            }
+            // Use UID for objects with a prefix "obj_" to differentiate from numbers
+            return "obj_" + Dictionary.getStaticUID(arg);
         }
+
+        // Handle undefined and other unexpected types with a clear prefix
+        return "undefined";
     }
 
     /**
@@ -68,14 +70,27 @@ class FastJSON {
      * @param cacheCountRef 缓存计数器引用
      */
     private function cleanCache(cache:Object, cacheKeys:Array, cacheCountRef:Object):Void {
-        while (cacheCountRef.count > this.cacheMaxSize) {
-            var oldestKey = cacheKeys.shift();
+        // Localize the count for faster access
+        var count:Number = cacheCountRef.count;
+        
+        // Calculate the number of items to remove in one step
+        var itemsToRemove:Number = count - this.cacheMaxSize;
+
+        // Remove entries in batches to improve performance
+        for (var i:Number = 0; i < itemsToRemove; i++) {
+            var oldestKey = cacheKeys[i];
             if (oldestKey !== undefined) {
                 delete cache[oldestKey];
-                cacheCountRef.count--;
             }
         }
+
+        // Adjust the array and reset the keys cache
+        cacheKeys.splice(0, itemsToRemove);
+
+        // Update the count reference
+        cacheCountRef.count = cacheKeys.length;
     }
+
 
     /**
      * 将 AS2 对象序列化为 FastJSON 字符串
@@ -306,685 +321,6 @@ class FastJSON {
     }
 
     /**
-     * 解析值
-     * @return 解析后的值
-     */
-    public function value() {
-        // 定义堆栈类型常量（直接使用硬编码数值）
-        // 0: VALUE, 1: OBJECT_BEGIN, 2: ARRAY_BEGIN, 5: OBJECT_VALUE, 7: ARRAY_VALUE
-        var stackTypes:Array = new Array(64); // 预分配堆栈容量
-        var stackData:Array = new Array(64);
-        var stackPtr:Number = 0;
-
-        var result;
-        var numberStr:String;
-        var word:String;
-        var numValue:Number;
-        var unicodeValue:Number;
-        var hexDigit:Number;
-        var ch:String = this.ch;
-        var at:Number = this.at;
-        var textLength:Number = this.textLength;
-        var charArray:Array = this.charArray;
-        var currentDepth:Number = this.currentDepth;
-
-        // 内联 white() 方法
-        while (ch <= " " && ch != "") {
-            // 内联 next() 方法
-            if (at >= textLength) {
-                ch = "";
-            } else {
-                ch = charArray[at];
-                at += 1;
-            }
-        }
-
-        // 初始化堆栈
-        stackTypes[stackPtr] = 0; // VALUE
-        stackData[stackPtr++] = null; // 初始值
-
-        var key:String;
-        var object:Object;
-        var array:Array;
-        var tempValue;
-        var keyStrParts:Array;
-        var resultStrParts:Array;
-        var i:Number;
-        var len:Number;
-
-        while (stackPtr > 0) {
-            // 弹出堆栈顶部元素
-            stackPtr--;
-            var type:Number = stackTypes[stackPtr];
-            var data = stackData[stackPtr];
-
-            if (type === 0) { // VALUE
-                currentDepth += 1;
-                if (currentDepth > this.maxDepth) {
-                    this.error("Maximum parsing depth exceeded");
-                }
-
-                if (ch === "{") {
-                    object = {};
-                    // 内联 next() 方法
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                    // 内联 white() 方法
-                    while (ch <= " " && ch != "") {
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                    }
-                    if (ch == "}") {
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                        currentDepth -= 1;
-                        tempValue = object;
-                        continue;
-                    }
-                    // 推入对象开始状态
-                    stackTypes[stackPtr] = 1; // OBJECT_BEGIN
-                    stackData[stackPtr++] = object;
-                } else if (ch === "[") {
-                    array = [];
-                    // 内联 next() 方法
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                    // 内联 white() 方法
-                    while (ch <= " " && ch != "") {
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                    }
-                    if (ch == "]") {
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                        currentDepth -= 1;
-                        tempValue = array;
-                        continue;
-                    }
-                    // 推入数组开始状态
-                    stackTypes[stackPtr] = 2; // ARRAY_BEGIN
-                    stackData[stackPtr++] = array;
-                } else if (ch === "\"") {
-                    resultStrParts = [];
-                    // 内联 next() 方法，跳过开头的引号
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                    while (ch) {
-                        if (ch == "\"") {
-                            // 内联 next() 方法，跳过结尾的引号
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                            break;
-                        }
-                        if (ch == "\\") {
-                            // 内联 next() 方法，处理转义字符
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                            switch (ch) {
-                                case "b":
-                                    resultStrParts.push("\b");
-                                    break;
-                                case "f":
-                                    resultStrParts.push("\f");
-                                    break;
-                                case "n":
-                                    resultStrParts.push("\n");
-                                    break;
-                                case "r":
-                                    resultStrParts.push("\r");
-                                    break;
-                                case "t":
-                                    resultStrParts.push("\t");
-                                    break;
-                                case "u":
-                                    unicodeValue = 0;
-                                    for (i = 0; i < 4; i++) {
-                                        if (at >= textLength) {
-                                            ch = "";
-                                        } else {
-                                            ch = charArray[at];
-                                            at += 1;
-                                        }
-                                        hexDigit = parseInt(ch, 16);
-                                        if (!isFinite(hexDigit)) {
-                                            this.error("Invalid Unicode escape sequence");
-                                        }
-                                        unicodeValue = unicodeValue * 16 + hexDigit;
-                                    }
-                                    resultStrParts.push(String.fromCharCode(unicodeValue));
-                                    continue;
-                                default:
-                                    resultStrParts.push(ch);
-                                    break;
-                            }
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        } else {
-                            resultStrParts.push(ch);
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        }
-                    }
-                    tempValue = resultStrParts.join("");
-                    currentDepth -= 1;
-                    continue;
-                } else if (ch === "-") {
-                    // 解析负数
-                    numberStr = "-";
-                    // 内联 next() 方法
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                    while (ch >= "0" && ch <= "9") {
-                        numberStr += ch;
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                    }
-                    if (ch == ".") {
-                        numberStr += ".";
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                        while (ch >= "0" && ch <= "9") {
-                            numberStr += ch;
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        }
-                    }
-                    if (ch == "e" || ch == "E") {
-                        numberStr += ch;
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                        if (ch == "-" || ch == "+") {
-                            numberStr += ch;
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        }
-                        while (ch >= "0" && ch <= "9") {
-                            numberStr += ch;
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        }
-                    }
-                    numValue = Number(numberStr);
-                    if (isNaN(numValue)) {
-                        this.error("Bad number");
-                    }
-                    tempValue = numValue;
-                    currentDepth -= 1;
-                    continue;
-                } else if (ch >= "0" && ch <= "9") {
-                    // 解析正数
-                    numberStr = "";
-                    while (ch >= "0" && ch <= "9") {
-                        numberStr += ch;
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                    }
-                    if (ch == ".") {
-                        numberStr += ".";
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                        while (ch >= "0" && ch <= "9") {
-                            numberStr += ch;
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        }
-                    }
-                    if (ch == "e" || ch == "E") {
-                        numberStr += ch;
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                        if (ch == "-" || ch == "+") {
-                            numberStr += ch;
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        }
-                        while (ch >= "0" && ch <= "9") {
-                            numberStr += ch;
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        }
-                    }
-                    numValue = Number(numberStr);
-                    if (isNaN(numValue)) {
-                        this.error("Bad number");
-                    }
-                    tempValue = numValue;
-                    currentDepth -= 1;
-                    continue;
-                } else if (ch >= "a" && ch <= "z") {
-                    // 解析字面量：true, false, null
-                    word = "";
-                    while (ch >= "a" && ch <= "z") {
-                        word += ch;
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                    }
-                    if (word == "true") {
-                        tempValue = true;
-                        currentDepth -= 1;
-                        continue;
-                    } else if (word == "false") {
-                        tempValue = false;
-                        currentDepth -= 1;
-                        continue;
-                    } else if (word == "null") {
-                        tempValue = null;
-                        currentDepth -= 1;
-                        continue;
-                    } else {
-                        this.error("Unexpected token: " + word);
-                    }
-                } else {
-                    this.error("Unexpected character: " + ch);
-                }
-            } else if (type === 1) { // OBJECT_BEGIN
-                object = data;
-                // 处理键值对
-                while (true) {
-                    // 内联 white() 方法
-                    while (ch <= " " && ch != "") {
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                    }
-                    if (ch == "}") {
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                        currentDepth -= 1;
-                        tempValue = object;
-                        break;
-                    }
-                    if (ch != "\"") {
-                        this.error("Expected '\"' at the beginning of a key");
-                    }
-                    // 解析键
-                    keyStrParts = [];
-                    // 内联 next() 方法，跳过开头的引号
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                    while (ch) {
-                        if (ch == "\"") {
-                            // 内联 next() 方法，跳过结尾的引号
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                            break;
-                        }
-                        if (ch == "\\") {
-                            // 内联 next() 方法，处理转义字符
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                            switch (ch) {
-                                case "b":
-                                    keyStrParts.push("\b");
-                                    break;
-                                case "f":
-                                    keyStrParts.push("\f");
-                                    break;
-                                case "n":
-                                    keyStrParts.push("\n");
-                                    break;
-                                case "r":
-                                    keyStrParts.push("\r");
-                                    break;
-                                case "t":
-                                    keyStrParts.push("\t");
-                                    break;
-                                case "u":
-                                    unicodeValue = 0;
-                                    for (i = 0; i < 4; i++) {
-                                        if (at >= textLength) {
-                                            ch = "";
-                                        } else {
-                                            ch = charArray[at];
-                                            at += 1;
-                                        }
-                                        hexDigit = parseInt(ch, 16);
-                                        if (!isFinite(hexDigit)) {
-                                            this.error("Invalid Unicode escape sequence");
-                                        }
-                                        unicodeValue = unicodeValue * 16 + hexDigit;
-                                    }
-                                    keyStrParts.push(String.fromCharCode(unicodeValue));
-                                    continue;
-                                default:
-                                    keyStrParts.push(ch);
-                                    break;
-                            }
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        } else {
-                            keyStrParts.push(ch);
-                            // 内联 next() 方法
-                            if (at >= textLength) {
-                                ch = "";
-                            } else {
-                                ch = charArray[at];
-                                at += 1;
-                            }
-                        }
-                    }
-                    key = keyStrParts.join("");
-
-                    // 内联 white() 方法
-                    while (ch <= " " && ch != "") {
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                    }
-                    if (ch != ":") {
-                        this.error("Expected ':' after key");
-                    }
-                    // 内联 next() 方法，跳过 ':'
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-
-                    // 内联 white() 方法
-                    while (ch <= " " && ch != "") {
-                        // 内联 next() 方法
-                        if (at >= textLength) {
-                            ch = "";
-                        } else {
-                            ch = charArray[at];
-                            at += 1;
-                        }
-                    }
-
-                    // 推入对象值状态
-                    stackTypes[stackPtr] = 5; // OBJECT_VALUE
-                    stackData[stackPtr++] = {object: object, key: key};
-
-                    // 推入值状态
-                    stackTypes[stackPtr] = 0; // VALUE
-                    stackData[stackPtr++] = null;
-                    break; // 跳出循环，等待值解析
-                }
-            } else if (type === 5) { // OBJECT_VALUE
-                var objInfo = data;
-                object = objInfo.object;
-                key = objInfo.key;
-                object[key] = tempValue;
-
-                // 内联 white() 方法
-                while (ch <= " " && ch != "") {
-                    // 内联 next() 方法
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                }
-
-                if (ch == "}") {
-                    // 内联 next() 方法，跳过 '}'
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                    currentDepth -= 1;
-                    tempValue = object;
-                    continue;
-                }
-                if (ch != ",") {
-                    this.error("Expected ',' or '}'");
-                }
-                // 内联 next() 方法，跳过 ','
-                if (at >= textLength) {
-                    ch = "";
-                } else {
-                    ch = charArray[at];
-                    at += 1;
-                }
-
-                // 内联 white() 方法
-                while (ch <= " " && ch != "") {
-                    // 内联 next() 方法
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                }
-
-                // 继续处理下一个键值对
-                // 推入对象开始状态
-                stackTypes[stackPtr] = 1; // OBJECT_BEGIN
-                stackData[stackPtr++] = object;
-            } else if (type === 2) { // ARRAY_BEGIN
-                array = data;
-
-                // 推入数组值状态
-                stackTypes[stackPtr] = 7; // ARRAY_VALUE
-                stackData[stackPtr++] = array;
-
-                // 推入值状态
-                stackTypes[stackPtr] = 0; // VALUE
-                stackData[stackPtr++] = null;
-            } else if (type === 7) { // ARRAY_VALUE
-                array = data;
-                array.push(tempValue);
-
-                // 内联 white() 方法
-                while (ch <= " " && ch != "") {
-                    // 内联 next() 方法
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                }
-
-                if (ch == "]") {
-                    // 内联 next() 方法，跳过 ']'
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                    currentDepth -= 1;
-                    tempValue = array;
-                    continue;
-                }
-                if (ch != ",") {
-                    this.error("Expected ',' or ']'");
-                }
-                // 内联 next() 方法，跳过 ','
-                if (at >= textLength) {
-                    ch = "";
-                } else {
-                    ch = charArray[at];
-                    at += 1;
-                }
-
-                // 内联 white() 方法
-                while (ch <= " " && ch != "") {
-                    // 内联 next() 方法
-                    if (at >= textLength) {
-                        ch = "";
-                    } else {
-                        ch = charArray[at];
-                        at += 1;
-                    }
-                }
-
-                // 推入数组值状态
-                stackTypes[stackPtr] = 7; // ARRAY_VALUE
-                stackData[stackPtr++] = array;
-
-                // 推入值状态
-                stackTypes[stackPtr] = 0; // VALUE
-                stackData[stackPtr++] = null;
-            }
-        }
-
-        // 更新解析器状态
-        this.ch = ch;
-        this.at = at;
-        this.currentDepth = currentDepth;
-
-        return tempValue;
-    }
-
-
-    /**
      * 解析 FastJSON 文本
      * @param inputText 要解析的 FastJSON 字符串
      * @return 解析后的 AS2 对象
@@ -1011,8 +347,677 @@ class FastJSON {
             this.at += 1;
         }
 
-        var result = this.value();
+        // 定义堆栈类型常量（直接使用硬编码数值）
+        // 0: VALUE, 1: OBJECT_BEGIN, 2: ARRAY_BEGIN, 5: OBJECT_VALUE, 7: ARRAY_VALUE
+        var stackTypes:Array = new Array(64); // 预分配堆栈容量
+        var stackData:Array = new Array(64);
+        var stackPtr:Number = 0;
+
+        var result;
+        var numberStr:String;
+        var word:String;
+        var numValue:Number;
+        var unicodeValue:Number;
+        var hexDigit:Number;
+        var currentCh:String = this.ch;
+        var currentAt:Number = this.at;
+        var currentTextLength:Number = this.textLength;
+        var currentCharArray:Array = this.charArray;
+        var currentDepthCounter:Number = this.currentDepth;
+
         // 内联 white() 方法
+        while (currentCh <= " " && currentCh != "") {
+            // 内联 next() 方法
+            if (currentAt >= currentTextLength) {
+                currentCh = "";
+            } else {
+                currentCh = currentCharArray[currentAt];
+                currentAt += 1;
+            }
+        }
+
+        // 初始化堆栈
+        stackTypes[stackPtr] = 0; // VALUE
+        stackData[stackPtr++] = null; // 初始值
+
+        var key:String;
+        var object:Object;
+        var array:Array;
+        var tempValue;
+        var keyStrParts:Array;
+        var resultStrParts:Array;
+        var i:Number;
+        var len:Number;
+
+        while (stackPtr > 0) {
+            // 弹出堆栈顶部元素
+            stackPtr--;
+            var type:Number = stackTypes[stackPtr];
+            var data = stackData[stackPtr];
+
+            if (type === 0) { // VALUE
+                currentDepthCounter += 1;
+                if (currentDepthCounter > this.maxDepth) {
+                    this.error("Maximum parsing depth exceeded");
+                }
+
+                if (currentCh === "{") {
+                    object = {};
+                    // 内联 next() 方法
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                    // 内联 white() 方法
+                    while (currentCh <= " " && currentCh != "") {
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                    }
+                    if (currentCh == "}") {
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                        currentDepthCounter -= 1;
+                        tempValue = object;
+                        continue;
+                    }
+                    // 推入对象开始状态
+                    stackTypes[stackPtr] = 1; // OBJECT_BEGIN
+                    stackData[stackPtr++] = object;
+                } else if (currentCh === "[") {
+                    array = [];
+                    // 内联 next() 方法
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                    // 内联 white() 方法
+                    while (currentCh <= " " && currentCh != "") {
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                    }
+                    if (currentCh == "]") {
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                        currentDepthCounter -= 1;
+                        tempValue = array;
+                        continue;
+                    }
+                    // 推入数组开始状态
+                    stackTypes[stackPtr] = 2; // ARRAY_BEGIN
+                    stackData[stackPtr++] = array;
+                } else if (currentCh === "\"") {
+                    resultStrParts = [];
+                    // 内联 next() 方法，跳过开头的引号
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                    while (currentCh) {
+                        if (currentCh == "\"") {
+                            // 内联 next() 方法，跳过结尾的引号
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                            break;
+                        }
+                        if (currentCh == "\\") {
+                            // 内联 next() 方法，处理转义字符
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                            switch (currentCh) {
+                                case "b":
+                                    resultStrParts.push("\b");
+                                    break;
+                                case "f":
+                                    resultStrParts.push("\f");
+                                    break;
+                                case "n":
+                                    resultStrParts.push("\n");
+                                    break;
+                                case "r":
+                                    resultStrParts.push("\r");
+                                    break;
+                                case "t":
+                                    resultStrParts.push("\t");
+                                    break;
+                                case "u":
+                                    unicodeValue = 0;
+                                    for (i = 0; i < 4; i++) {
+                                        if (currentAt >= currentTextLength) {
+                                            currentCh = "";
+                                        } else {
+                                            currentCh = currentCharArray[currentAt];
+                                            currentAt += 1;
+                                        }
+                                        hexDigit = parseInt(currentCh, 16);
+                                        if (!isFinite(hexDigit)) {
+                                            this.error("Invalid Unicode escape sequence");
+                                        }
+                                        unicodeValue = unicodeValue * 16 + hexDigit;
+                                    }
+                                    resultStrParts.push(String.fromCharCode(unicodeValue));
+                                    continue;
+                                default:
+                                    resultStrParts.push(currentCh);
+                                    break;
+                            }
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        } else {
+                            resultStrParts.push(currentCh);
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        }
+                    }
+                    tempValue = resultStrParts.join("");
+                    currentDepthCounter -= 1;
+                    continue;
+                } else if (currentCh === "-") {
+                    // 解析负数
+                    numberStr = "-";
+                    // 内联 next() 方法
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                    while (currentCh >= "0" && currentCh <= "9") {
+                        numberStr += currentCh;
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                    }
+                    if (currentCh == ".") {
+                        numberStr += ".";
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                        while (currentCh >= "0" && currentCh <= "9") {
+                            numberStr += currentCh;
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        }
+                    }
+                    if (currentCh == "e" || currentCh == "E") {
+                        numberStr += currentCh;
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                        if (currentCh == "-" || currentCh == "+") {
+                            numberStr += currentCh;
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        }
+                        while (currentCh >= "0" && currentCh <= "9") {
+                            numberStr += currentCh;
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        }
+                    }
+                    numValue = Number(numberStr);
+                    if (isNaN(numValue)) {
+                        this.error("Bad number");
+                    }
+                    tempValue = numValue;
+                    currentDepthCounter -= 1;
+                    continue;
+                } else if (currentCh >= "0" && currentCh <= "9") {
+                    // 解析正数
+                    numberStr = "";
+                    while (currentCh >= "0" && currentCh <= "9") {
+                        numberStr += currentCh;
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                    }
+                    if (currentCh == ".") {
+                        numberStr += ".";
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                        while (currentCh >= "0" && currentCh <= "9") {
+                            numberStr += currentCh;
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        }
+                    }
+                    if (currentCh == "e" || currentCh == "E") {
+                        numberStr += currentCh;
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                        if (currentCh == "-" || currentCh == "+") {
+                            numberStr += currentCh;
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        }
+                        while (currentCh >= "0" && currentCh <= "9") {
+                            numberStr += currentCh;
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        }
+                    }
+                    numValue = Number(numberStr);
+                    if (isNaN(numValue)) {
+                        this.error("Bad number");
+                    }
+                    tempValue = numValue;
+                    currentDepthCounter -= 1;
+                    continue;
+                } else if (currentCh >= "a" && currentCh <= "z") {
+                    // 解析字面量：true, false, null
+                    word = "";
+                    while (currentCh >= "a" && currentCh <= "z") {
+                        word += currentCh;
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                    }
+                    if (word == "true") {
+                        tempValue = true;
+                        currentDepthCounter -= 1;
+                        continue;
+                    } else if (word == "false") {
+                        tempValue = false;
+                        currentDepthCounter -= 1;
+                        continue;
+                    } else if (word == "null") {
+                        tempValue = null;
+                        currentDepthCounter -= 1;
+                        continue;
+                    } else {
+                        this.error("Unexpected token: " + word);
+                    }
+                } else {
+                    this.error("Unexpected character: " + currentCh);
+                }
+            } else if (type === 1) { // OBJECT_BEGIN
+                object = data;
+                // 处理键值对
+                while (true) {
+                    // 内联 white() 方法
+                    while (currentCh <= " " && currentCh != "") {
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                    }
+                    if (currentCh == "}") {
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                        currentDepthCounter -= 1;
+                        tempValue = object;
+                        break;
+                    }
+                    if (currentCh != "\"") {
+                        this.error("Expected '\"' at the beginning of a key");
+                    }
+                    // 解析键
+                    keyStrParts = [];
+                    // 内联 next() 方法，跳过开头的引号
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                    while (currentCh) {
+                        if (currentCh == "\"") {
+                            // 内联 next() 方法，跳过结尾的引号
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                            break;
+                        }
+                        if (currentCh == "\\") {
+                            // 内联 next() 方法，处理转义字符
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                            switch (currentCh) {
+                                case "b":
+                                    keyStrParts.push("\b");
+                                    break;
+                                case "f":
+                                    keyStrParts.push("\f");
+                                    break;
+                                case "n":
+                                    keyStrParts.push("\n");
+                                    break;
+                                case "r":
+                                    keyStrParts.push("\r");
+                                    break;
+                                case "t":
+                                    keyStrParts.push("\t");
+                                    break;
+                                case "u":
+                                    unicodeValue = 0;
+                                    for (i = 0; i < 4; i++) {
+                                        if (currentAt >= currentTextLength) {
+                                            currentCh = "";
+                                        } else {
+                                            currentCh = currentCharArray[currentAt];
+                                            currentAt += 1;
+                                        }
+                                        hexDigit = parseInt(currentCh, 16);
+                                        if (!isFinite(hexDigit)) {
+                                            this.error("Invalid Unicode escape sequence");
+                                        }
+                                        unicodeValue = unicodeValue * 16 + hexDigit;
+                                    }
+                                    keyStrParts.push(String.fromCharCode(unicodeValue));
+                                    continue;
+                                default:
+                                    keyStrParts.push(currentCh);
+                                    break;
+                            }
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        } else {
+                            keyStrParts.push(currentCh);
+                            // 内联 next() 方法
+                            if (currentAt >= currentTextLength) {
+                                currentCh = "";
+                            } else {
+                                currentCh = currentCharArray[currentAt];
+                                currentAt += 1;
+                            }
+                        }
+                    }
+                    key = keyStrParts.join("");
+
+                    // 内联 white() 方法
+                    while (currentCh <= " " && currentCh != "") {
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                    }
+                    if (currentCh != ":") {
+                        this.error("Expected ':' after key");
+                    }
+                    // 内联 next() 方法，跳过 ':'
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+
+                    // 内联 white() 方法
+                    while (currentCh <= " " && currentCh != "") {
+                        // 内联 next() 方法
+                        if (currentAt >= currentTextLength) {
+                            currentCh = "";
+                        } else {
+                            currentCh = currentCharArray[currentAt];
+                            currentAt += 1;
+                        }
+                    }
+
+                    // 推入对象值状态
+                    stackTypes[stackPtr] = 5; // OBJECT_VALUE
+                    stackData[stackPtr++] = {object: object, key: key};
+
+                    // 推入值状态
+                    stackTypes[stackPtr] = 0; // VALUE
+                    stackData[stackPtr++] = null;
+                    break; // 跳出循环，等待值解析
+                }
+            } else if (type === 5) { // OBJECT_VALUE
+                var objInfo = data;
+                object = objInfo.object;
+                key = objInfo.key;
+                object[key] = tempValue;
+
+                // 内联 white() 方法
+                while (currentCh <= " " && currentCh != "") {
+                    // 内联 next() 方法
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                }
+
+                if (currentCh == "}") {
+                    // 内联 next() 方法，跳过 '}'
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                    currentDepthCounter -= 1;
+                    tempValue = object;
+                    continue;
+                }
+                if (currentCh != ",") {
+                    this.error("Expected ',' or '}'");
+                }
+                // 内联 next() 方法，跳过 ','
+                if (currentAt >= currentTextLength) {
+                    currentCh = "";
+                } else {
+                    currentCh = currentCharArray[currentAt];
+                    currentAt += 1;
+                }
+
+                // 内联 white() 方法
+                while (currentCh <= " " && currentCh != "") {
+                    // 内联 next() 方法
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                }
+
+                // 继续处理下一个键值对
+                // 推入对象开始状态
+                stackTypes[stackPtr] = 1; // OBJECT_BEGIN
+                stackData[stackPtr++] = object;
+            } else if (type === 2) { // ARRAY_BEGIN
+                array = data;
+
+                // 推入数组值状态
+                stackTypes[stackPtr] = 7; // ARRAY_VALUE
+                stackData[stackPtr++] = array;
+
+                // 推入值状态
+                stackTypes[stackPtr] = 0; // VALUE
+                stackData[stackPtr++] = null;
+            } else if (type === 7) { // ARRAY_VALUE
+                array = data;
+                array.push(tempValue);
+
+                // 内联 white() 方法
+                while (currentCh <= " " && currentCh != "") {
+                    // 内联 next() 方法
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                }
+
+                if (currentCh == "]") {
+                    // 内联 next() 方法，跳过 ']'
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                    currentDepthCounter -= 1;
+                    tempValue = array;
+                    continue;
+                }
+                if (currentCh != ",") {
+                    this.error("Expected ',' or ']'");
+                }
+                // 内联 next() 方法，跳过 ','
+                if (currentAt >= currentTextLength) {
+                    currentCh = "";
+                } else {
+                    currentCh = currentCharArray[currentAt];
+                    currentAt += 1;
+                }
+
+                // 内联 white() 方法
+                while (currentCh <= " " && currentCh != "") {
+                    // 内联 next() 方法
+                    if (currentAt >= currentTextLength) {
+                        currentCh = "";
+                    } else {
+                        currentCh = currentCharArray[currentAt];
+                        currentAt += 1;
+                    }
+                }
+
+                // 推入数组值状态
+                stackTypes[stackPtr] = 7; // ARRAY_VALUE
+                stackData[stackPtr++] = array;
+
+                // 推入值状态
+                stackTypes[stackPtr] = 0; // VALUE
+                stackData[stackPtr++] = null;
+            }
+        }
+
+        // 更新解析器状态
+        this.ch = currentCh;
+        this.at = currentAt;
+        this.currentDepth = currentDepthCounter;
+
+        // 内联 white() 方法，确保解析结束后没有多余字符
         while (this.ch <= " " && this.ch != "") {
             // 内联 next() 方法
             if (this.at >= this.textLength) {
@@ -1027,7 +1032,7 @@ class FastJSON {
         }
 
         // 缓存解析结果
-        this.parseCache[cacheKey] = result;
+        this.parseCache[cacheKey] = tempValue;
         this.parseCacheKeys.push(cacheKey);
         this.parseCacheCount++;
 
@@ -1038,8 +1043,9 @@ class FastJSON {
             this.parseCacheCount = this.parseCacheKeys.length;
         }
 
-        return result;
+        return tempValue;
     }
+
 
     /**
      * 抛出错误
