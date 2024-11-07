@@ -50,7 +50,9 @@
       <damage>100</damage>
       <defence>400</defence>
       <punch>200</punch>
-      <magicdefence>{"全属性":10}</magicdefence>
+      <magicdefence>
+        <全属性>10</全属性>
+      </magicdefence>
       <bullet>0</bullet>
       <title>&lt;FONT COLOR='#FFCC00'&gt;余烬队长&lt;/FONT&gt;</title>
     </equipped>
@@ -103,7 +105,9 @@
       <damage>100</damage>
       <defence>200</defence>
       <punch>200</punch>
-      <magicdefence>{"毒":-30}</magicdefence>
+      <magicdefence>
+        <毒>-30</毒>
+      </magicdefence>
       <lazymiss>20</lazymiss>
       <bullet>50</bullet>
       <title>&lt;FONT COLOR='#FF0000'&gt;余烬攻坚&lt;/FONT&gt;</title>
@@ -156,7 +160,9 @@
       <mp>250</mp>
       <damage>20</damage>
       <defence>100</defence>
-      <magicdefence>{"全属性":-80}</magicdefence>
+      <magicdefence>
+        <全属性>-80</全属性>
+      </magicdefence>
       <bullet>0</bullet>
       <title>&lt;FONT COLOR='#009900'&gt;余烬后勤&lt;/FONT&gt;</title>
     </equipped>
@@ -281,7 +287,9 @@
       </dressup>
       <hp>1061</hp>
       <mp>1061</mp>
-      <magicdefence>{"全属性":20}</magicdefence>
+      <magicdefence>
+        <全属性>20</全属性>
+      </magicdefence>
       <damage>100</damage>
       <punch>165</punch>
       <defence>730</defence>
@@ -423,7 +431,9 @@
       <force>30</force>
       <punch>30</punch>
       <defence>20</defence>
-      <magicdefence>{"全属性":20}</magicdefence>
+      <magicdefence>
+        <全属性>20</全属性>
+      </magicdefence>
       <toughness>200</toughness>
       <bullet>100</bullet>
       <title>中坚精锐</title>
@@ -448,7 +458,9 @@
       <damage>25</damage>
       <knifepower>50</knifepower>
       <defence>20</defence>
-      <magicdefence>{"全属性":10}</magicdefence>
+      <magicdefence>
+        <全属性>10</全属性>
+      </magicdefence>
       <toughness>200</toughness>
       <bullet>100</bullet>
       <title>中坚精锐</title>

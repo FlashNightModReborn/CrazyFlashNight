@@ -382,7 +382,9 @@
       <defence>-666</defence>
       <bullet>0</bullet>
       <title>真实的代价</title>
-	  <magicdefence>{"真实":-99}</magicdefence>
+      <magicdefence>
+        <真实>-99</真实>
+      </magicdefence>
     </equipped>
   </item>
     <item>
@@ -407,7 +409,10 @@
 	  <gunpower>50</gunpower>
       <defence>230</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":15,"蚀":10}</magicdefence>
+      <magicdefence>
+        <毒>15</毒>
+        <蚀>10</蚀>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -431,7 +436,10 @@
 	  <gunpower>50</gunpower>
       <defence>245</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":15,"蚀":10}</magicdefence>
+      <magicdefence>
+        <毒>15</毒>
+        <蚀>10</蚀>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -455,7 +463,10 @@
 	  <gunpower>50</gunpower>
       <defence>245</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":15,"蚀":10}</magicdefence>
+      <magicdefence>
+        <毒>15</毒>
+        <蚀>10</蚀>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -479,7 +490,10 @@
 	  <gunpower>50</gunpower>
       <defence>210</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":15,"蚀":10}</magicdefence>
+      <magicdefence>
+        <毒>15</毒>
+        <蚀>10</蚀>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -503,7 +517,10 @@
 	  <gunpower>50</gunpower>
       <defence>210</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":15,"蚀":10}</magicdefence>
+      <magicdefence>
+        <毒>15</毒>
+        <蚀>10</蚀>
+      </magicdefence>
     </equipped>
   </item>
     <item>
@@ -528,7 +545,9 @@
       <defence>100</defence>
       <bullet>0</bullet>
       <title>&lt;FONT COLOR='#C80000'&gt;“X”的归还&lt;/FONT&gt;</title>
-	  <magicdefence>{"基础":10}</magicdefence>
+	  <magicdefence>
+        <基础>10</基础>
+      </magicdefence>
     </equipped>
   </item>
     <item>
@@ -551,7 +570,14 @@
       <punch>100</punch>
       <defence>800</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":20,"蚀":5,"冷":5,"热":5,"冲":5,"波":5}</magicdefence>
+      <magicdefence>
+        <毒>20</毒>
+        <蚀>5</蚀>
+        <冷>5</冷>
+        <热>5</热>
+        <冲>5</冲>
+        <波>5</波>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -573,7 +599,14 @@
       <force>100</force>
       <defence>750</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":20,"蚀":5,"冷":5,"热":5,"冲":5,"波":5}</magicdefence>
+      <magicdefence>
+        <毒>20</毒>
+        <蚀>5</蚀>
+        <冷>5</冷>
+        <热>5</热>
+        <冲>5</冲>
+        <波>5</波>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -595,7 +628,14 @@
       <punch>50</punch>
       <defence>900</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":20,"蚀":5,"冷":5,"热":5,"冲":5,"波":5}</magicdefence>
+      <magicdefence>
+        <毒>20</毒>
+        <蚀>5</蚀>
+        <冷>5</冷>
+        <热>5</热>
+        <冲>5</冲>
+        <波>5</波>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -617,7 +657,14 @@
       <punch>150</punch>
       <defence>700</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":20,"蚀":5,"冷":5,"热":5,"冲":5,"波":5}</magicdefence>
+      <magicdefence>
+        <毒>20</毒>
+        <蚀>5</蚀>
+        <冷>5</冷>
+        <热>5</热>
+        <冲>5</冲>
+        <波>5</波>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -639,7 +686,14 @@
       <punch>100</punch>
       <defence>800</defence>
       <bullet>0</bullet>
-      <magicdefence>{"毒":20,"蚀":5,"冷":5,"热":5,"冲":5,"波":5}</magicdefence>
+      <magicdefence>
+        <毒>20</毒>
+        <蚀>5</蚀>
+        <冷>5</冷>
+        <热>5</热>
+        <冲>5</冲>
+        <波>5</波>
+      </magicdefence>
     </equipped>
   </item>
 <item>
@@ -1281,7 +1335,9 @@
       <defence>200</defence>
       <bullet>0</bullet>
       <title>&lt;FONT COLOR='#C80000'&gt;前朝遗老&lt;/FONT&gt;</title>
-	  <magicdefence>{"基础":20}</magicdefence>
+	  <magicdefence>
+        <基础>20</基础>
+      </magicdefence>
     </equipped>
   </item>
 </root>

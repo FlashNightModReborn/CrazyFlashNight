@@ -185,7 +185,8 @@
 	if (物品数据.equipped.magicdefence !== undefined && 物品数据.equipped.magicdefence !== 0)
 	{
 		//文本数据.push("魔法抗性：<BR>");
-		var 魔法抗性对象 = _root.json_parser.parse(物品数据.equipped.magicdefence );
+		//var 魔法抗性对象 = _root.json_parser.parse(物品数据.equipped.magicdefence );
+		var 魔法抗性对象 = 物品数据.equipped.magicdefence;
 		if(魔法抗性对象){
 			for(var key in 魔法抗性对象){
 				var 抗性种类 = key == "基础" ? "能量" : key;

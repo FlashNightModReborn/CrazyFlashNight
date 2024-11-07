@@ -21,7 +21,11 @@
       <defence>600</defence>
       <toughness>300</toughness>
       <lazymiss>20</lazymiss>
-      <magicdefence>{"全属性":30,"冲":-20,"电":-10}</magicdefence>
+      <magicdefence>
+        <全属性>30</全属性>
+        <冲>-20</冲>
+        <电>-10</电>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -45,7 +49,11 @@
       <defence>600</defence>
       <toughness>300</toughness>
       <lazymiss>20</lazymiss>
-      <magicdefence>{"全属性":30,"冲":-20,"电":-10}</magicdefence>
+      <magicdefence>
+        <全属性>30</全属性>
+        <冲>-20</冲>
+        <电>-10</电>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -68,7 +76,11 @@
       <mp>0</mp>
       <damage>0</damage>
       <defence>600</defence>
-      <magicdefence>{"全属性":20,"冲":-10,"电":0}</magicdefence>
+      <magicdefence>
+        <全属性>20</全属性>
+        <冲>-10</冲>
+        <电>0</电>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -91,7 +103,10 @@
       <mp>0</mp>
       <damage>50</damage>
       <defence>150</defence>
-      <magicdefence>{"全属性":20,"冲":-20}</magicdefence>
+      <magicdefence>
+        <全属性>20</全属性>
+        <冲>-20</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -113,7 +128,10 @@
       <mp>0</mp>
       <damage>50</damage>
       <defence>200</defence>
-      <magicdefence>{"全属性":20,"冲":-20}</magicdefence>
+      <magicdefence>
+        <全属性>20</全属性>
+        <冲>-20</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -135,7 +153,10 @@
       <mp>0</mp>
       <damage>50</damage>
       <defence>200</defence>
-      <magicdefence>{"全属性":20,"冲":-20}</magicdefence>
+      <magicdefence>
+        <全属性>20</全属性>
+        <冲>-20</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -434,7 +455,10 @@
       <mp>0</mp>
       <damage>0</damage>
       <defence>300</defence>
-      <magicdefence>{"全属性":30,"冲":-20}</magicdefence>
+      <magicdefence>
+        <全属性>30</全属性>
+        <冲>-20</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -458,7 +482,10 @@
       <toughness>500</toughness>
       <punch>50</punch>
       <defence>500</defence>
-      <magicdefence>{"全属性":30,"冲":-20}</magicdefence>
+      <magicdefence>
+        <全属性>30</全属性>
+        <冲>-20</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -583,7 +610,10 @@
       <damage>0</damage>
       <punch>50</punch>
       <defence>500</defence>
-      <magicdefence>{"全属性":5,"冲":0}</magicdefence>
+      <magicdefence>
+        <全属性>5</全属性>
+        <冲>0</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -608,7 +638,10 @@
       <defence>500</defence>
       <toughness>200</toughness>
       <lazymiss>15</lazymiss>
-      <magicdefence>{"全属性":10,"冲":0}</magicdefence>
+      <magicdefence>
+        <全属性>10</全属性>
+        <冲>0</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -655,7 +688,10 @@
       <defence>500</defence>
       <toughness>200</toughness>
       <lazymiss>15</lazymiss>
-      <magicdefence>{"全属性":10,"冲":0}</magicdefence>
+      <magicdefence>
+        <全属性>10</全属性>
+        <冲>0</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -677,7 +713,10 @@
       <mp>50</mp>
       <damage>0</damage>
       <defence>200</defence>
-      <magicdefence>{"全属性":20,"冲":-20}</magicdefence>
+      <magicdefence>
+        <全属性>20</全属性>
+        <冲>-20</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -698,7 +737,10 @@
       <mp>50</mp>
       <damage>0</damage>
       <defence>250</defence>
-      <magicdefence>{"全属性":20,"冲":-20}</magicdefence>
+      <magicdefence>
+        <全属性>20</全属性>
+        <冲>-20</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -719,7 +761,10 @@
       <mp>50</mp>
       <damage>0</damage>
       <defence>250</defence>
-      <magicdefence>{"全属性":20,"冲":-20}</magicdefence>
+      <magicdefence>
+        <全属性>20</全属性>
+        <冲>-20</冲>
+      </magicdefence>
       <bullet>0</bullet>
     </equipped>
   </item>

@@ -78,7 +78,11 @@
       <gunpower>100</gunpower>
       <knifepower>100</knifepower>
       <defence>670</defence>
-      <magicdefence>{"热":20,"冷":30,"波":30}</magicdefence>
+      <magicdefence>
+        <热>20</热>
+        <冷>30</冷>
+        <波>30</波>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -101,7 +105,9 @@
       <gunpower>100</gunpower>
       <knifepower>100</knifepower>
       <defence>750</defence>
-      <magicdefence>{"全属性":10}</magicdefence>
+      <magicdefence>
+        <全属性>10</全属性>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -123,7 +129,9 @@
       <gunpower>100</gunpower>
       <knifepower>100</knifepower>
       <defence>750</defence>
-      <magicdefence>{"全属性":10}</magicdefence>
+      <magicdefence>
+        <全属性>10</全属性>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -145,7 +153,11 @@
       <gunpower>100</gunpower>
       <knifepower>100</knifepower>
       <defence>670</defence>
-      <magicdefence>{"蚀":20,"冲":30,"波":30}</magicdefence>
+      <magicdefence>
+        <蚀>20</蚀>
+        <冲>30</冲>
+        <波>30</波>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -167,7 +179,11 @@
       <gunpower>100</gunpower>
       <knifepower>100</knifepower>
       <defence>670</defence>
-      <magicdefence>{"基础":10,"毒":25,"电":35}</magicdefence>
+      <magicdefence>
+        <基础>10</基础>
+        <毒>25</毒>
+        <电>35</电>
+      </magicdefence>
     </equipped>
   </item>
 </root>

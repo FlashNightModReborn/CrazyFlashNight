@@ -684,7 +684,8 @@ _root.刷新人物装扮 = function(目标)
 		目标人物.根据模式重新读取武器加成(目标人物.攻击模式);
 		if (装备0号数据.magicdefence != undefined)
 		{
-			var 魔法抗性对象 = _root.json_parser.parse(装备0号数据.magicdefence);
+			var 魔法抗性对象 = 装备0号数据.magicdefence;
+			//var 魔法抗性对象 = _root.json_parser.parse(装备0号数据.magicdefence);
 			if(魔法抗性对象){
 				for(var key in 魔法抗性对象){
 					//var 目标人物魔法抗性 = 目标人物.魔法抗性[key];

@@ -628,7 +628,10 @@
       <defence>500</defence>
       <bullet>0</bullet>
       <title>&lt;FONT COLOR='#FFCC00'&gt;角斗高手&lt;/FONT&gt;</title>
-      <magicdefence>{"基础":50,"冲":20}</magicdefence>
+      <magicdefence>
+        <基础>50</基础>
+        <冲>20</冲>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -651,7 +654,10 @@
       <defence>1000</defence>
       <bullet>0</bullet>
       <title>&lt;FONT COLOR='#C80000'&gt;角斗王者&lt;/FONT&gt;</title>
-      <magicdefence>{"基础":70,"冲":35}</magicdefence>
+      <magicdefence>
+        <基础>70</基础>
+        <冲>35</冲>
+      </magicdefence>
     </equipped>
   </item>
   <item>
