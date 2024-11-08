@@ -113,27 +113,27 @@ if (task != null) {
 import org.flashNight.naki.DataStructures.*;
 
 class org.flashNight.naki.DataStructures.TaskMinHeap {
-    private var heap:Array;       // 用于存储堆中节点的数组
-    private var taskMap:Object;   // 用于快速查找任务的映射
-    private var heapSize:Number;  // 当前堆的大小
+    private var heap:Array;       // Used to store the heap nodes
+    private var taskMap:Object;   // Maps taskID to HeapNode for quick lookup
+    private var heapSize:Number;  // Current size of the heap
+    // D is hardcoded to 4
 
-    // 构造函数，初始化堆和任务映射
+    // Constructor
     public function TaskMinHeap() {
         this.heap = [];
         this.taskMap = {};
         this.heapSize = 0;
     }
 
-    // 插入新任务到堆中
+    // Inserts a new task into the heap
     public function insert(taskID:String, priority:Number):Void {
         var existingNode:HeapNode = this.taskMap[taskID];
         if (existingNode != null) {
             // Update the existing task's priority and rebalance the heap
-            //  trace("Insert detected duplicate taskID, updating priority for " + taskID);
             this.update(taskID, priority);
             return;
         }
-        
+
         var node:HeapNode = new HeapNode(taskID, priority);
         this.heap[this.heapSize] = node;
         this.taskMap[taskID] = node;
@@ -141,13 +141,12 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
         this.heapSize++;
     }
 
-
-    // 根据 taskID 查找任务
+    // Finds a task by taskID
     public function find(taskID:String):HeapNode {
         return this.taskMap[taskID];
     }
 
-    // 查看堆顶任务
+    // Peeks at the minimum task in the heap
     public function peekMin():HeapNode {
         if (this.heapSize == 0) {
             return null;
@@ -155,66 +154,72 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
         return this.heap[0];
     }
 
-    // 根据 taskID 移除特定任务
+    // Removes a task by taskID
     public function remove(taskID:String):Void {
         var node:HeapNode = this.taskMap[taskID];
         if (node == null) {
-            return;  // 如果任务不存在，直接返回
+            return;  // Task does not exist
         }
 
-        var index:Number = this.findIndexByTaskID(taskID);
-        //  trace("Removing taskID: " + taskID + " at index: " + index);
+        // Inline customIndexOf logic to find index
+        var index:Number = -1;
+        for (var i:Number = 0; i < this.heapSize; i++) {
+            if (this.heap[i] == node) { // Compare object references
+                index = i;
+                break;
+            }
+        }
         if (index == -1) {
-            return;  // 如果找不到节点，直接返回
+            return;  // Node not found
         }
 
         this.heapSize--;
-        if (index != this.heapSize) {  // 如果不是最后一个节点
+        if (index != this.heapSize) {  // If not the last node
             var lastNode:HeapNode = this.heap[this.heapSize];
             this.heap[index] = lastNode;
             this.taskMap[lastNode.taskID] = lastNode;
-            //  trace("Replaced with lastNode: " + lastNode.taskID + " with priority: " + lastNode.priority);
 
-            var parentIndex:Number = (index - 1) >> 1;
-            if (parentIndex >= 0 && this.heap[parentIndex].priority > lastNode.priority) {
-                //  trace("Bubbling up node: " + lastNode.taskID);
+            var parentIndex:Number = (index - 1) >> 2; // Optimized division by 4
+            if (index > 0 && this.heap[parentIndex].priority > lastNode.priority) {
                 this.bubbleUp(index);
             } else {
-                //  trace("Bubbling down node: " + lastNode.taskID);
                 this.bubbleDown(index);
             }
         }
-        delete this.taskMap[taskID];  // 删除 taskMap 中的对应项
-        //  trace("Task removed: " + taskID);
+        delete this.taskMap[taskID];  // Remove from taskMap
     }
 
-    // 更新任务的优先级
+    // Updates the priority of a task
     public function update(taskID:String, newPriority:Number):Void {
         var node:HeapNode = this.taskMap[taskID];
         if (node == null) {
-            return;  // 如果任务不存在，直接返回
+            return;  // Task does not exist
         }
 
-        var index:Number = this.findIndexByTaskID(taskID);
-        //  trace("Updating taskID: " + taskID + " at index: " + index + " from priority: " + node.priority + " to: " + newPriority);
+        // Inline customIndexOf logic to find index
+        var index:Number = -1;
+        for (var i:Number = 0; i < this.heapSize; i++) {
+            if (this.heap[i] == node) { // Compare object references
+                index = i;
+                break;
+            }
+        }
         if (index == -1) {
-            return;  // 如果找不到节点，直接返回
+            return;  // Node not found
         }
 
         var oldPriority:Number = node.priority;
         node.priority = newPriority;
 
         if (newPriority < oldPriority) {
-            //  trace("Bubbling up node: " + taskID);
             this.bubbleUp(index);
         } else if (newPriority > oldPriority) {
-            //  trace("Bubbling down node: " + taskID);
             this.bubbleDown(index);
         }
-        // 如果优先级未改变，则无需重新平衡
+        // No need to rebalance if priority is unchanged
     }
 
-    // 当任务被取出执行
+    // Extracts the minimum task from the heap
     public function extractMin():HeapNode {
         if (this.heapSize == 0) {
             return null;
@@ -231,60 +236,44 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
         return minNode;
     }
 
-    // 上浮操作，维护堆的性质
+    // Bubble up operation to maintain heap property
     private function bubbleUp(index:Number):Void {
         var node:HeapNode = this.heap[index];
         while (index > 0) {
-            var parentIndex:Number = (index - 1) >> 1;
+            var parentIndex:Number = (index - 1) >> 2; // Division by 4 using bitwise shift
             var parentNode:HeapNode = this.heap[parentIndex];
             if (node.priority >= parentNode.priority) {
-                break;  // 如果当前节点的优先级不小于父节点，退出循环
+                break;  // Node is in correct position
             }
-            this.heap[index] = parentNode;  // 上浮当前节点
+            this.heap[index] = parentNode;
             index = parentIndex;
         }
-        this.heap[index] = node;  // 将节点放在最终确定的位置
+        this.heap[index] = node;
     }
 
-    // 下沉操作，维护堆的性质
+    // Bubble down operation to maintain heap property
     private function bubbleDown(index:Number):Void {
         var node:HeapNode = this.heap[index];
-        var halfSize:Number = this.heapSize >> 1; // 只需要遍历到最后一个父节点
-        while (index < halfSize) {
-            var left:Number = (index << 1) + 1;
-            var right:Number = left + 1;
-            var smallest:Number = left;
-
-            if (right < this.heapSize && this.heap[right].priority < this.heap[left].priority) {
-                smallest = right;
+        while (true) {
+            var minIndex:Number = index;
+            // Loop through all 4 children
+            for (var i:Number = 1; i <= 4; i++) {
+                var childIndex:Number = (index << 2) + i; // Multiplication by 4 using bitwise shift
+                if (childIndex < this.heapSize) {
+                    if (this.heap[childIndex].priority < this.heap[minIndex].priority) {
+                        minIndex = childIndex;
+                    }
+                } else {
+                    break; // No more children
+                }
             }
-
-            if (this.heap[smallest].priority >= node.priority) {
-                break;  // 如果当前节点已经是最小，退出循环
+            if (minIndex == index) {
+                break; // Node is in correct position
             }
-
-            this.heap[index] = this.heap[smallest];  // 下沉节点
-            index = smallest;
+            // Swap with smallest child
+            this.heap[index] = this.heap[minIndex];
+            index = minIndex;
         }
-        this.heap[index] = node;  // 将节点放在最终确定的位置
-    }
-
-    // 自定义的 indexOf 方法，用于 AS2
-    private function customIndexOf(node:HeapNode):Number {
-        for (var i:Number = 0; i < this.heapSize; i++) {
-            if (this.heap[i] == node) { // 使用 == 比较对象引用
-                return i;
-            }
-        }
-        return -1; // 如果未找到，返回-1
-    }
-
-    // 查找任务在堆中的索引
-    private function findIndexByTaskID(taskID:String):Number {
-        var node:HeapNode = this.taskMap[taskID];
-        if (node == null) {
-            return -1;
-        }
-        return this.customIndexOf(node);
+        this.heap[index] = node;
     }
 }
