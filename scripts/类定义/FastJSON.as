@@ -161,13 +161,11 @@ class FastJSON {
 
                     var index:Number = 0;
                     for (var key:String in data) {
-                        if (!(key.charAt(0) == "_" && key.charAt(1) == "_")) {
-                            var value:Object = data[key];
-                            if (typeof value !== "undefined" && typeof value !== "function") {
-                                propertyKeys[index] = key;
-                                propertyValues[index] = value;
-                                index++;
-                            }
+                        var value:Object = data[key];
+                        if (typeof value !== "undefined" && typeof value !== "function") {
+                            propertyKeys[index] = key;
+                            propertyValues[index] = value;
+                            index++;
                         }
                     }
 
