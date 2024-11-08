@@ -112,168 +112,350 @@ if (task != null) {
 
 import org.flashNight.naki.DataStructures.*;
 
+/**
+ * @class TaskMinHeap
+ * @package org.flashNight.naki.DataStructures
+ * @description 这是一个四叉最小堆（4-ary Min Heap）的实现，用于管理任务（Task）的优先级。
+ *              通过预分配堆数组、内联化冒泡操作以及手动展开循环等优化手段，提高了堆的性能。
+ */
 class org.flashNight.naki.DataStructures.TaskMinHeap {
-    private var heap:Array;       // Used to store the heap nodes
-    private var taskMap:Object;   // Maps taskID to HeapNode for quick lookup
-    private var heapSize:Number;  // Current size of the heap
-    // D is hardcoded to 4
+    private var heap:Array;       // 用于存储堆节点的数组
+    private var taskMap:Object;   // 映射 taskID 到 HeapNode 对象，便于快速查找
+    private var heapSize:Number;  // 当前堆的大小（节点数量）
 
-    // Constructor
+    // D 被硬编码为 4，表示四叉堆（每个节点最多有 4 个子节点）
+
+    /**
+     * @constructor
+     * @description 构造函数，初始化堆数组、任务映射表和堆大小。
+     */
     public function TaskMinHeap() {
-        this.heap = [];
-        this.taskMap = {};
-        this.heapSize = 0;
+        this.heap = new Array(128); // 预分配堆数组大小，提高性能，避免频繁扩展
+        this.taskMap = {};          // 初始化任务映射表为空对象
+        this.heapSize = 0;          // 初始堆大小为 0
     }
 
-    // Inserts a new task into the heap
+    /**
+     * @method insert
+     * @description 向堆中插入一个新任务。如果任务已存在，则更新其优先级并重新平衡堆。
+     * @param {String} taskID - 任务的唯一标识符
+     * @param {Number} priority - 任务的优先级（数值越小，优先级越高）
+     */
     public function insert(taskID:String, priority:Number):Void {
         var existingNode:HeapNode = this.taskMap[taskID];
         if (existingNode != null) {
-            // Update the existing task's priority and rebalance the heap
+            // 如果任务已存在，更新其优先级并重新平衡堆
             this.update(taskID, priority);
             return;
         }
 
+        // 创建一个新的 HeapNode 节点
         var node:HeapNode = new HeapNode(taskID, priority);
-        this.heap[this.heapSize] = node;
-        this.taskMap[taskID] = node;
-        this.bubbleUp(this.heapSize);
-        this.heapSize++;
+        this.heap[this.heapSize] = node;    // 将新节点添加到堆的末尾
+        this.taskMap[taskID] = node;        // 在映射表中记录 taskID 对应的节点
+        var index:Number = this.heapSize;   // 当前节点的索引
+        this.heapSize++;                     // 堆大小增加
+
+        // 内联化的冒泡上升（bubbleUp）逻辑，用于维护堆的最小堆性质
+        var currentIndex:Number = index;
+        var currentNode:HeapNode = node;
+        while (currentIndex > 0) {
+            // 计算父节点的索引，四叉堆中父节点索引为 (currentIndex - 1) >> 2
+            var parentIndex:Number = (currentIndex - 1) >> 2; // 相当于除以 4
+            var parentNode:HeapNode = this.heap[parentIndex];
+            if (currentNode.priority >= parentNode.priority) {
+                break; // 当前节点已在正确位置，无需进一步交换
+            }
+            // 将父节点下移到当前节点的位置
+            this.heap[currentIndex] = parentNode;
+            this.taskMap[parentNode.taskID] = parentNode; // 更新映射表中父节点的引用
+            currentIndex = parentIndex; // 更新当前索引为父节点索引，继续向上检查
+        }
+        this.heap[currentIndex] = currentNode; // 将当前节点放置在正确位置
     }
 
-    // Finds a task by taskID
+    /**
+     * @method find
+     * @description 根据 taskID 查找对应的 HeapNode 节点。
+     * @param {String} taskID - 任务的唯一标识符
+     * @returns {HeapNode} - 返回对应的 HeapNode 节点，如果不存在则返回 null
+     */
     public function find(taskID:String):HeapNode {
         return this.taskMap[taskID];
     }
 
-    // Peeks at the minimum task in the heap
+    /**
+     * @method peekMin
+     * @description 查看堆中的最小任务（优先级最高的任务），但不移除它。
+     * @returns {HeapNode} - 返回堆顶的 HeapNode 节点，如果堆为空则返回 null
+     */
     public function peekMin():HeapNode {
         if (this.heapSize == 0) {
-            return null;
+            return null; // 堆为空，返回 null
         }
-        return this.heap[0];
+        return this.heap[0]; // 返回堆顶节点
     }
 
-    // Removes a task by taskID
+    /**
+     * @method remove
+     * @description 根据 taskID 从堆中移除指定的任务，并重新平衡堆。
+     * @param {String} taskID - 任务的唯一标识符
+     */
     public function remove(taskID:String):Void {
         var node:HeapNode = this.taskMap[taskID];
         if (node == null) {
-            return;  // Task does not exist
+            return;  // 任务不存在，直接返回
         }
 
-        // Inline customIndexOf logic to find index
+        // 在堆数组中查找节点的索引
         var index:Number = -1;
         for (var i:Number = 0; i < this.heapSize; i++) {
-            if (this.heap[i] == node) { // Compare object references
+            if (this.heap[i] == node) { // 比较对象引用
                 index = i;
                 break;
             }
         }
         if (index == -1) {
-            return;  // Node not found
+            return;  // 节点未找到，直接返回
         }
 
-        this.heapSize--;
-        if (index != this.heapSize) {  // If not the last node
-            var lastNode:HeapNode = this.heap[this.heapSize];
-            this.heap[index] = lastNode;
-            this.taskMap[lastNode.taskID] = lastNode;
+        this.heapSize--; // 堆大小减少
+        if (index != this.heapSize) {  // 如果要移除的节点不是堆中的最后一个节点
+            var lastNode:HeapNode = this.heap[this.heapSize]; // 获取最后一个节点
+            this.heap[index] = lastNode; // 将最后一个节点移动到要移除的位置
+            this.taskMap[lastNode.taskID] = lastNode; // 更新映射表中最后一个节点的引用
 
-            var parentIndex:Number = (index - 1) >> 2; // Optimized division by 4
+            // 计算父节点的索引
+            var parentIndex:Number = (index - 1) >> 2; // 相当于除以 4
             if (index > 0 && this.heap[parentIndex].priority > lastNode.priority) {
-                this.bubbleUp(index);
+                // 如果最后一个节点的优先级比父节点低，则需要进行冒泡上升
+                var currentIndex:Number = index;
+                var currentNode:HeapNode = lastNode;
+                while (currentIndex > 0) {
+                    var parentIdx:Number = (currentIndex - 1) >> 2; // 父节点索引
+                    var parentN:HeapNode = this.heap[parentIdx];
+                    if (currentNode.priority >= parentN.priority) {
+                        break; // 当前节点已在正确位置
+                    }
+                    // 将父节点下移到当前节点的位置
+                    this.heap[currentIndex] = parentN;
+                    this.taskMap[parentN.taskID] = parentN; // 更新映射表中父节点的引用
+                    currentIndex = parentIdx; // 更新当前索引为父节点索引，继续向上检查
+                }
+                this.heap[currentIndex] = currentNode; // 将当前节点放置在正确位置
             } else {
-                this.bubbleDown(index);
+                // 否则，进行冒泡下降
+                var currentIdx:Number = index;
+                var currentN:HeapNode = lastNode;
+                while (true) {
+                    var minIdx:Number = currentIdx;
+                    var baseChildIdx:Number = (currentIdx << 2); // 计算子节点的基准索引，相当于 currentIdx * 4
+
+                    // 手动展开循环，比较四个子节点，找出最小的子节点
+                    var childIdx1:Number = baseChildIdx + 1;
+                    if (childIdx1 < this.heapSize) {
+                        if (this.heap[childIdx1].priority < this.heap[minIdx].priority) {
+                            minIdx = childIdx1;
+                        }
+
+                        var childIdx2:Number = childIdx1 + 1;
+                        if (childIdx2 < this.heapSize) {
+                            if (this.heap[childIdx2].priority < this.heap[minIdx].priority) {
+                                minIdx = childIdx2;
+                            }
+
+                            var childIdx3:Number = childIdx2 + 1;
+                            if (childIdx3 < this.heapSize) {
+                                if (this.heap[childIdx3].priority < this.heap[minIdx].priority) {
+                                    minIdx = childIdx3;
+                                }
+
+                                var childIdx4:Number = childIdx3 + 1;
+                                if (childIdx4 < this.heapSize) {
+                                    if (this.heap[childIdx4].priority < this.heap[minIdx].priority) {
+                                        minIdx = childIdx4;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (minIdx == currentIdx) {
+                        break; // 当前节点已在正确位置，无需进一步交换
+                    }
+
+                    // 将当前节点与最小的子节点交换
+                    var smallestChild:HeapNode = this.heap[minIdx];
+                    this.heap[currentIdx] = smallestChild;
+                    this.taskMap[smallestChild.taskID] = smallestChild; // 更新映射表中子节点的引用
+                    currentIdx = minIdx; // 更新当前索引为最小子节点索引，继续向下检查
+                }
+                this.heap[currentIdx] = currentN; // 将当前节点放置在正确位置
             }
         }
-        delete this.taskMap[taskID];  // Remove from taskMap
+        delete this.taskMap[taskID];  // 从映射表中删除该任务
     }
 
-    // Updates the priority of a task
+    /**
+     * @method update
+     * @description 更新指定任务的优先级，并重新平衡堆。
+     * @param {String} taskID - 任务的唯一标识符
+     * @param {Number} newPriority - 新的优先级
+     */
     public function update(taskID:String, newPriority:Number):Void {
         var node:HeapNode = this.taskMap[taskID];
         if (node == null) {
-            return;  // Task does not exist
+            return;  // 任务不存在，直接返回
         }
 
-        // Inline customIndexOf logic to find index
+        // 在堆数组中查找节点的索引
         var index:Number = -1;
         for (var i:Number = 0; i < this.heapSize; i++) {
-            if (this.heap[i] == node) { // Compare object references
+            if (this.heap[i] == node) { // 比较对象引用
                 index = i;
                 break;
             }
         }
         if (index == -1) {
-            return;  // Node not found
+            return;  // 节点未找到，直接返回
         }
 
-        var oldPriority:Number = node.priority;
-        node.priority = newPriority;
+        var oldPriority:Number = node.priority; // 记录旧的优先级
+        node.priority = newPriority;            // 更新优先级
 
         if (newPriority < oldPriority) {
-            this.bubbleUp(index);
+            // 如果新的优先级更高（数值更小），进行冒泡上升
+            var currentIndexU:Number = index;
+            var currentNodeU:HeapNode = node;
+            while (currentIndexU > 0) {
+                var parentIndexU:Number = (currentIndexU - 1) >> 2; // 父节点索引
+                var parentNodeU:HeapNode = this.heap[parentIndexU];
+                if (currentNodeU.priority >= parentNodeU.priority) {
+                    break; // 当前节点已在正确位置
+                }
+                // 将父节点下移到当前节点的位置
+                this.heap[currentIndexU] = parentNodeU;
+                this.taskMap[parentNodeU.taskID] = parentNodeU; // 更新映射表中父节点的引用
+                currentIndexU = parentIndexU; // 更新当前索引为父节点索引，继续向上检查
+            }
+            this.heap[currentIndexU] = currentNodeU; // 将当前节点放置在正确位置
         } else if (newPriority > oldPriority) {
-            this.bubbleDown(index);
+            // 如果新的优先级更低（数值更大），进行冒泡下降
+            var currentIdxD:Number = index;
+            var currentNodeD:HeapNode = node;
+            while (true) {
+                var minIdxD:Number = currentIdxD;
+                var baseChildIdxD:Number = (currentIdxD << 2); // 计算子节点的基准索引，相当于 currentIdxD * 4
+
+                // 手动展开循环，比较四个子节点，找出最小的子节点
+                var childIdx1D:Number = baseChildIdxD + 1;
+                if (childIdx1D < this.heapSize) {
+                    if (this.heap[childIdx1D].priority < this.heap[minIdxD].priority) {
+                        minIdxD = childIdx1D;
+                    }
+
+                    var childIdx2D:Number = childIdx1D + 1;
+                    if (childIdx2D < this.heapSize) {
+                        if (this.heap[childIdx2D].priority < this.heap[minIdxD].priority) {
+                            minIdxD = childIdx2D;
+                        }
+
+                        var childIdx3D:Number = childIdx2D + 1;
+                        if (childIdx3D < this.heapSize) {
+                            if (this.heap[childIdx3D].priority < this.heap[minIdxD].priority) {
+                                minIdxD = childIdx3D;
+                            }
+
+                            var childIdx4D:Number = childIdx3D + 1;
+                            if (childIdx4D < this.heapSize) {
+                                if (this.heap[childIdx4D].priority < this.heap[minIdxD].priority) {
+                                    minIdxD = childIdx4D;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (minIdxD == currentIdxD) {
+                    break; // 当前节点已在正确位置，无需进一步交换
+                }
+
+                // 将当前节点与最小的子节点交换
+                var smallestChildD:HeapNode = this.heap[minIdxD];
+                this.heap[currentIdxD] = smallestChildD;
+                this.taskMap[smallestChildD.taskID] = smallestChildD; // 更新映射表中子节点的引用
+                currentIdxD = minIdxD; // 更新当前索引为最小子节点索引，继续向下检查
+            }
+            this.heap[currentIdxD] = currentNodeD; // 将当前节点放置在正确位置
         }
-        // No need to rebalance if priority is unchanged
+        // 如果优先级未变化，无需重新平衡堆
     }
 
-    // Extracts the minimum task from the heap
+    /**
+     * @method extractMin
+     * @description 移除并返回堆中的最小任务（优先级最高的任务）。
+     * @returns {HeapNode} - 返回被移除的最小任务节点，如果堆为空则返回 null
+     */
     public function extractMin():HeapNode {
         if (this.heapSize == 0) {
-            return null;
+            return null; // 堆为空，返回 null
         }
-        var minNode:HeapNode = this.heap[0];
-        this.heapSize--;
+        var minNode:HeapNode = this.heap[0]; // 获取堆顶的最小节点
+        this.heapSize--;                      // 堆大小减少
         if (this.heapSize > 0) {
-            var lastNode:HeapNode = this.heap[this.heapSize];
-            this.heap[0] = lastNode;
-            this.taskMap[lastNode.taskID] = lastNode;
-            this.bubbleDown(0);
-        }
-        delete this.taskMap[minNode.taskID];
-        return minNode;
-    }
+            var lastNode:HeapNode = this.heap[this.heapSize]; // 获取最后一个节点
+            this.heap[0] = lastNode;                         // 将最后一个节点移动到堆顶
+            this.taskMap[lastNode.taskID] = lastNode;         // 更新映射表中最后一个节点的引用
 
-    // Bubble up operation to maintain heap property
-    private function bubbleUp(index:Number):Void {
-        var node:HeapNode = this.heap[index];
-        while (index > 0) {
-            var parentIndex:Number = (index - 1) >> 2; // Division by 4 using bitwise shift
-            var parentNode:HeapNode = this.heap[parentIndex];
-            if (node.priority >= parentNode.priority) {
-                break;  // Node is in correct position
-            }
-            this.heap[index] = parentNode;
-            index = parentIndex;
-        }
-        this.heap[index] = node;
-    }
+            // 内联化的冒泡下降（bubbleDown）逻辑，手动展开循环以减少开销
+            var currentIdxE:Number = 0;
+            var currentNodeE:HeapNode = lastNode;
+            while (true) {
+                var minIdxE:Number = currentIdxE;
+                var baseChildIdxE:Number = (currentIdxE << 2); // 计算子节点的基准索引，相当于 currentIdxE * 4
 
-    // Bubble down operation to maintain heap property
-    private function bubbleDown(index:Number):Void {
-        var node:HeapNode = this.heap[index];
-        while (true) {
-            var minIndex:Number = index;
-            // Loop through all 4 children
-            for (var i:Number = 1; i <= 4; i++) {
-                var childIndex:Number = (index << 2) + i; // Multiplication by 4 using bitwise shift
-                if (childIndex < this.heapSize) {
-                    if (this.heap[childIndex].priority < this.heap[minIndex].priority) {
-                        minIndex = childIndex;
+                // 手动展开循环，比较四个子节点，找出最小的子节点
+                var childIdx1E:Number = baseChildIdxE + 1;
+                if (childIdx1E < this.heapSize) {
+                    if (this.heap[childIdx1E].priority < this.heap[minIdxE].priority) {
+                        minIdxE = childIdx1E;
                     }
-                } else {
-                    break; // No more children
+
+                    var childIdx2E:Number = childIdx1E + 1;
+                    if (childIdx2E < this.heapSize) {
+                        if (this.heap[childIdx2E].priority < this.heap[minIdxE].priority) {
+                            minIdxE = childIdx2E;
+                        }
+
+                        var childIdx3E:Number = childIdx2E + 1;
+                        if (childIdx3E < this.heapSize) {
+                            if (this.heap[childIdx3E].priority < this.heap[minIdxE].priority) {
+                                minIdxE = childIdx3E;
+                            }
+
+                            var childIdx4E:Number = childIdx3E + 1;
+                            if (childIdx4E < this.heapSize) {
+                                if (this.heap[childIdx4E].priority < this.heap[minIdxE].priority) {
+                                    minIdxE = childIdx4E;
+                                }
+                            }
+                        }
+                    }
                 }
+
+                if (minIdxE == currentIdxE) {
+                    break; // 当前节点已在正确位置，无需进一步交换
+                }
+
+                // 将当前节点与最小的子节点交换
+                var smallestChildE:HeapNode = this.heap[minIdxE];
+                this.heap[currentIdxE] = smallestChildE;
+                this.taskMap[smallestChildE.taskID] = smallestChildE; // 更新映射表中子节点的引用
+                currentIdxE = minIdxE; // 更新当前索引为最小子节点索引，继续向下检查
             }
-            if (minIndex == index) {
-                break; // Node is in correct position
-            }
-            // Swap with smallest child
-            this.heap[index] = this.heap[minIndex];
-            index = minIndex;
+            this.heap[currentIdxE] = currentNodeE; // 将当前节点放置在正确位置
         }
-        this.heap[index] = node;
+        delete this.taskMap[minNode.taskID]; // 从映射表中删除被移除的最小节点
+        return minNode; // 返回被移除的最小节点
     }
 }
