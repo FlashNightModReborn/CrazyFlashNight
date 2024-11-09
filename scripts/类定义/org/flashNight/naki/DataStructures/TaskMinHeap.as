@@ -109,14 +109,14 @@ if (task != null) {
 此类可以作为基础数据结构，扩展用于实现更多复杂的任务调度系统，如带有定时器的优先队列或多任务系统中的任务管理模块。
 
 */
-
 import org.flashNight.naki.DataStructures.*;
 
 /**
  * @class TaskMinHeap
  * @package org.flashNight.naki.DataStructures
  * @description 这是一个四叉最小堆（4-ary Min Heap）的实现，用于管理任务（Task）的优先级。
- *              通过预分配堆数组、内联化冒泡操作以及手动展开循环等优化手段，提高了堆的性能。
+ *              通过预分配堆数组、内联化冒泡操作、手动展开循环、减少局部变量以及缓存优先级等优化手段，
+ *              进一步减少逻辑判断和变量声明带来的开销，提高了堆的性能。
  */
 class org.flashNight.naki.DataStructures.TaskMinHeap {
     private var heap:Array;       // 用于存储堆节点的数组
@@ -159,13 +159,22 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
         // 内联化的冒泡上升（bubbleUp）逻辑，用于维护堆的最小堆性质
         var currentIndex:Number = index;
         var currentNode:HeapNode = node;
+        var currentPriority:Number = currentNode.priority; // 缓存当前节点的优先级
+
+        var parentIndex:Number;
+        var parentNode:HeapNode;
+        var parentPriority:Number;
+
         while (currentIndex > 0) {
             // 计算父节点的索引，四叉堆中父节点索引为 (currentIndex - 1) >> 2
-            var parentIndex:Number = (currentIndex - 1) >> 2; // 相当于除以 4
-            var parentNode:HeapNode = this.heap[parentIndex];
-            if (currentNode.priority >= parentNode.priority) {
+            parentIndex = (currentIndex - 1) >> 2; // 相当于除以 4
+            parentNode = this.heap[parentIndex];
+            parentPriority = parentNode.priority; // 缓存父节点的优先级
+
+            if (currentPriority >= parentPriority) {
                 break; // 当前节点已在正确位置，无需进一步交换
             }
+
             // 将父节点下移到当前节点的位置
             this.heap[currentIndex] = parentNode;
             this.taskMap[parentNode.taskID] = parentNode; // 更新映射表中父节点的引用
@@ -227,16 +236,27 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
 
             // 计算父节点的索引
             var parentIndex:Number = (index - 1) >> 2; // 相当于除以 4
-            if (index > 0 && this.heap[parentIndex].priority > lastNode.priority) {
-                // 如果最后一个节点的优先级比父节点低，则需要进行冒泡上升
+            var lastPriority:Number = lastNode.priority; // 缓存最后一个节点的优先级
+
+            if (index > 0 && this.heap[parentIndex].priority > lastPriority) {
+                // 如果最后一个节点的优先级更高（数值更小），进行冒泡上升
                 var currentIndex:Number = index;
                 var currentNode:HeapNode = lastNode;
+                var currentPriority:Number = lastPriority; // 缓存当前节点的优先级
+
+                var parentIdx:Number;
+                var parentN:HeapNode;
+                var parentPriorityU:Number;
+
                 while (currentIndex > 0) {
-                    var parentIdx:Number = (currentIndex - 1) >> 2; // 父节点索引
-                    var parentN:HeapNode = this.heap[parentIdx];
-                    if (currentNode.priority >= parentN.priority) {
+                    parentIdx = (currentIndex - 1) >> 2; // 父节点索引
+                    parentN = this.heap[parentIdx];
+                    parentPriorityU = parentN.priority; // 缓存父节点的优先级
+
+                    if (currentPriority >= parentPriorityU) {
                         break; // 当前节点已在正确位置
                     }
+
                     // 将父节点下移到当前节点的位置
                     this.heap[currentIndex] = parentN;
                     this.taskMap[parentN.taskID] = parentN; // 更新映射表中父节点的引用
@@ -246,38 +266,128 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
             } else {
                 // 否则，进行冒泡下降
                 var currentIdx:Number = index;
-                var currentN:HeapNode = lastNode;
+                var currentNode:HeapNode = lastNode;
+                var currentPriorityD:Number = lastPriority; // 缓存当前节点的优先级
+
+                var minIdx:Number;
+                var baseChildIdx:Number;
+                var remaining:Number;
+                var childIdx:Number;
+                var childNode:HeapNode;
+                var childPriority:Number;
+                var minPriority:Number;
+
                 while (true) {
-                    var minIdx:Number = currentIdx;
-                    var baseChildIdx:Number = (currentIdx << 2); // 计算子节点的基准索引，相当于 currentIdx * 4
+                    minIdx = currentIdx;
+                    baseChildIdx = (currentIdx << 2); // currentIdx * 4
 
-                    // 手动展开循环，比较四个子节点，找出最小的子节点
-                    var childIdx1:Number = baseChildIdx + 1;
-                    if (childIdx1 < this.heapSize) {
-                        if (this.heap[childIdx1].priority < this.heap[minIdx].priority) {
-                            minIdx = childIdx1;
+                    // 计算剩余元素数量
+                    remaining = this.heapSize - baseChildIdx - 1;
+
+                    minPriority = currentPriorityD;
+
+                    // 手动展开所有可能的子节点比较，按照子节点数量从多到少的顺序，减少逻辑判断次数
+                    if (remaining >= 4) {
+                        // 子节点数量为 4
+                        childIdx = baseChildIdx + 1;
+
+                        // 比较第一个子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
                         }
+                        childIdx++;
 
-                        var childIdx2:Number = childIdx1 + 1;
-                        if (childIdx2 < this.heapSize) {
-                            if (this.heap[childIdx2].priority < this.heap[minIdx].priority) {
-                                minIdx = childIdx2;
-                            }
-
-                            var childIdx3:Number = childIdx2 + 1;
-                            if (childIdx3 < this.heapSize) {
-                                if (this.heap[childIdx3].priority < this.heap[minIdx].priority) {
-                                    minIdx = childIdx3;
-                                }
-
-                                var childIdx4:Number = childIdx3 + 1;
-                                if (childIdx4 < this.heapSize) {
-                                    if (this.heap[childIdx4].priority < this.heap[minIdx].priority) {
-                                        minIdx = childIdx4;
-                                    }
-                                }
-                            }
+                        // 比较第二个子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
                         }
+                        childIdx++;
+
+                        // 比较第三个子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
+                        }
+                        childIdx++;
+
+                        // 比较第四个子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
+                        }
+                    } else if (remaining == 3) {
+                        // 子节点数量为 3
+                        childIdx = baseChildIdx + 1;
+
+                        // 比较第一个子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
+                        }
+                        childIdx++;
+
+                        // 比较第二个子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
+                        }
+                        childIdx++;
+
+                        // 比较第三个子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
+                        }
+                    } else if (remaining == 2) {
+                        // 子节点数量为 2
+                        childIdx = baseChildIdx + 1;
+
+                        // 比较第一个子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
+                        }
+                        childIdx++;
+
+                        // 比较第二个子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
+                        }
+                    } else if (remaining == 1) {
+                        // 子节点数量为 1
+                        childIdx = baseChildIdx + 1;
+
+                        // 比较唯一的子节点
+                        childNode = this.heap[childIdx];
+                        childPriority = childNode.priority;
+                        if (childPriority < minPriority) {
+                            minIdx = childIdx;
+                            minPriority = childPriority;
+                        }
+                    } else {
+                        // 无子节点，退出循环
+                        break;
                     }
 
                     if (minIdx == currentIdx) {
@@ -289,11 +399,12 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                     this.heap[currentIdx] = smallestChild;
                     this.taskMap[smallestChild.taskID] = smallestChild; // 更新映射表中子节点的引用
                     currentIdx = minIdx; // 更新当前索引为最小子节点索引，继续向下检查
+                    currentPriorityD = minPriority; // 更新当前节点的优先级
                 }
-                this.heap[currentIdx] = currentN; // 将当前节点放置在正确位置
+                this.heap[currentIdx] = currentNode; // 将当前节点放置在正确位置
             }
+            delete this.taskMap[taskID];  // 从映射表中删除该任务
         }
-        delete this.taskMap[taskID];  // 从映射表中删除该任务
     }
 
     /**
@@ -325,68 +436,168 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
 
         if (newPriority < oldPriority) {
             // 如果新的优先级更高（数值更小），进行冒泡上升
-            var currentIndexU:Number = index;
-            var currentNodeU:HeapNode = node;
-            while (currentIndexU > 0) {
-                var parentIndexU:Number = (currentIndexU - 1) >> 2; // 父节点索引
-                var parentNodeU:HeapNode = this.heap[parentIndexU];
-                if (currentNodeU.priority >= parentNodeU.priority) {
+            var currentIndex:Number = index;
+            var currentNode:HeapNode = node;
+            var currentPriority:Number = newPriority; // 缓存当前节点的优先级
+
+            var parentIndex:Number;
+            var parentNode:HeapNode;
+            var parentPriority:Number;
+
+            while (currentIndex > 0) {
+                parentIndex = (currentIndex - 1) >> 2; // 父节点索引
+                parentNode = this.heap[parentIndex];
+                parentPriority = parentNode.priority; // 缓存父节点的优先级
+
+                if (currentPriority >= parentPriority) {
                     break; // 当前节点已在正确位置
                 }
+
                 // 将父节点下移到当前节点的位置
-                this.heap[currentIndexU] = parentNodeU;
-                this.taskMap[parentNodeU.taskID] = parentNodeU; // 更新映射表中父节点的引用
-                currentIndexU = parentIndexU; // 更新当前索引为父节点索引，继续向上检查
+                this.heap[currentIndex] = parentNode;
+                this.taskMap[parentNode.taskID] = parentNode; // 更新映射表中父节点的引用
+                currentIndex = parentIndex; // 更新当前索引为父节点索引，继续向上检查
             }
-            this.heap[currentIndexU] = currentNodeU; // 将当前节点放置在正确位置
+            this.heap[currentIndex] = currentNode; // 将当前节点放置在正确位置
         } else if (newPriority > oldPriority) {
             // 如果新的优先级更低（数值更大），进行冒泡下降
-            var currentIdxD:Number = index;
-            var currentNodeD:HeapNode = node;
+            var currentIdx:Number = index;
+            var currentNode:HeapNode = node;
+            var currentPriority:Number = newPriority; // 缓存当前节点的优先级
+
+            var minIdx:Number;
+            var baseChildIdx:Number;
+            var remaining:Number;
+            var childIdx:Number;
+            var childNode:HeapNode;
+            var childPriority:Number;
+            var minPriority:Number;
+
             while (true) {
-                var minIdxD:Number = currentIdxD;
-                var baseChildIdxD:Number = (currentIdxD << 2); // 计算子节点的基准索引，相当于 currentIdxD * 4
+                minIdx = currentIdx;
+                baseChildIdx = (currentIdx << 2); // currentIdx * 4
 
-                // 手动展开循环，比较四个子节点，找出最小的子节点
-                var childIdx1D:Number = baseChildIdxD + 1;
-                if (childIdx1D < this.heapSize) {
-                    if (this.heap[childIdx1D].priority < this.heap[minIdxD].priority) {
-                        minIdxD = childIdx1D;
+                // 计算剩余元素数量
+                remaining = this.heapSize - baseChildIdx - 1;
+
+                minPriority = currentPriority;
+
+                // 手动展开所有可能的子节点比较，按照子节点数量从多到少的顺序，减少逻辑判断次数
+                if (remaining >= 4) {
+                    // 子节点数量为 4
+                    childIdx = baseChildIdx + 1;
+
+                    // 比较第一个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
                     }
+                    childIdx++;
 
-                    var childIdx2D:Number = childIdx1D + 1;
-                    if (childIdx2D < this.heapSize) {
-                        if (this.heap[childIdx2D].priority < this.heap[minIdxD].priority) {
-                            minIdxD = childIdx2D;
-                        }
-
-                        var childIdx3D:Number = childIdx2D + 1;
-                        if (childIdx3D < this.heapSize) {
-                            if (this.heap[childIdx3D].priority < this.heap[minIdxD].priority) {
-                                minIdxD = childIdx3D;
-                            }
-
-                            var childIdx4D:Number = childIdx3D + 1;
-                            if (childIdx4D < this.heapSize) {
-                                if (this.heap[childIdx4D].priority < this.heap[minIdxD].priority) {
-                                    minIdxD = childIdx4D;
-                                }
-                            }
-                        }
+                    // 比较第二个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
                     }
+                    childIdx++;
+
+                    // 比较第三个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                    childIdx++;
+
+                    // 比较第四个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                } else if (remaining == 3) {
+                    // 子节点数量为 3
+                    childIdx = baseChildIdx + 1;
+
+                    // 比较第一个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                    childIdx++;
+
+                    // 比较第二个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                    childIdx++;
+
+                    // 比较第三个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                } else if (remaining == 2) {
+                    // 子节点数量为 2
+                    childIdx = baseChildIdx + 1;
+
+                    // 比较第一个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                    childIdx++;
+
+                    // 比较第二个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                } else if (remaining == 1) {
+                    // 子节点数量为 1
+                    childIdx = baseChildIdx + 1;
+
+                    // 比较唯一的子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                } else {
+                    // 无子节点，退出循环
+                    break;
                 }
 
-                if (minIdxD == currentIdxD) {
+                if (minIdx == currentIdx) {
                     break; // 当前节点已在正确位置，无需进一步交换
                 }
 
                 // 将当前节点与最小的子节点交换
-                var smallestChildD:HeapNode = this.heap[minIdxD];
-                this.heap[currentIdxD] = smallestChildD;
-                this.taskMap[smallestChildD.taskID] = smallestChildD; // 更新映射表中子节点的引用
-                currentIdxD = minIdxD; // 更新当前索引为最小子节点索引，继续向下检查
+                var smallestChild:HeapNode = this.heap[minIdx];
+                this.heap[currentIdx] = smallestChild;
+                this.taskMap[smallestChild.taskID] = smallestChild; // 更新映射表中子节点的引用
+                currentIdx = minIdx; // 更新当前索引为最小子节点索引，继续向下检查
+                currentPriority = minPriority; // 更新当前节点的优先级
             }
-            this.heap[currentIdxD] = currentNodeD; // 将当前节点放置在正确位置
+            this.heap[currentIdx] = currentNode; // 将当前节点放置在正确位置
         }
         // 如果优先级未变化，无需重新平衡堆
     }
@@ -401,61 +612,193 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
             return null; // 堆为空，返回 null
         }
         var minNode:HeapNode = this.heap[0]; // 获取堆顶的最小节点
-        this.heapSize--;                      // 堆大小减少
+        this.heapSize--;                     // 堆大小减少
         if (this.heapSize > 0) {
             var lastNode:HeapNode = this.heap[this.heapSize]; // 获取最后一个节点
             this.heap[0] = lastNode;                         // 将最后一个节点移动到堆顶
-            this.taskMap[lastNode.taskID] = lastNode;         // 更新映射表中最后一个节点的引用
+            this.taskMap[lastNode.taskID] = lastNode;        // 更新映射表中最后一个节点的引用
 
-            // 内联化的冒泡下降（bubbleDown）逻辑，手动展开循环以减少开销
-            var currentIdxE:Number = 0;
-            var currentNodeE:HeapNode = lastNode;
+            // 内联化的冒泡下降（bubbleDown）逻辑，手动展开所有可能的子节点比较，减少逻辑判断次数
+            var currentIdx:Number = 0;
+            var currentNode:HeapNode = lastNode;
+            var currentPriority:Number = lastNode.priority; // 缓存当前节点的优先级
+
+            var minIdx:Number;
+            var baseChildIdx:Number;
+            var remaining:Number;
+            var childIdx:Number;
+            var childNode:HeapNode;
+            var childPriority:Number;
+            var minPriority:Number;
+
             while (true) {
-                var minIdxE:Number = currentIdxE;
-                var baseChildIdxE:Number = (currentIdxE << 2); // 计算子节点的基准索引，相当于 currentIdxE * 4
+                minIdx = currentIdx;
+                baseChildIdx = (currentIdx << 2); // currentIdx * 4
 
-                // 手动展开循环，比较四个子节点，找出最小的子节点
-                var childIdx1E:Number = baseChildIdxE + 1;
-                if (childIdx1E < this.heapSize) {
-                    if (this.heap[childIdx1E].priority < this.heap[minIdxE].priority) {
-                        minIdxE = childIdx1E;
+                // 计算剩余元素数量
+                remaining = this.heapSize - baseChildIdx - 1;
+
+                minPriority = currentPriority;
+
+                // 手动展开所有可能的子节点比较，按照子节点数量从多到少的顺序，减少逻辑判断次数
+                if (remaining >= 4) {
+                    // 子节点数量为 4
+                    childIdx = baseChildIdx + 1;
+
+                    // 比较第一个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
                     }
+                    childIdx++;
 
-                    var childIdx2E:Number = childIdx1E + 1;
-                    if (childIdx2E < this.heapSize) {
-                        if (this.heap[childIdx2E].priority < this.heap[minIdxE].priority) {
-                            minIdxE = childIdx2E;
-                        }
-
-                        var childIdx3E:Number = childIdx2E + 1;
-                        if (childIdx3E < this.heapSize) {
-                            if (this.heap[childIdx3E].priority < this.heap[minIdxE].priority) {
-                                minIdxE = childIdx3E;
-                            }
-
-                            var childIdx4E:Number = childIdx3E + 1;
-                            if (childIdx4E < this.heapSize) {
-                                if (this.heap[childIdx4E].priority < this.heap[minIdxE].priority) {
-                                    minIdxE = childIdx4E;
-                                }
-                            }
-                        }
+                    // 比较第二个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
                     }
+                    childIdx++;
+
+                    // 比较第三个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                    childIdx++;
+
+                    // 比较第四个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                } else if (remaining == 3) {
+                    // 子节点数量为 3
+                    childIdx = baseChildIdx + 1;
+
+                    // 比较第一个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                    childIdx++;
+
+                    // 比较第二个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                    childIdx++;
+
+                    // 比较第三个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                } else if (remaining == 2) {
+                    // 子节点数量为 2
+                    childIdx = baseChildIdx + 1;
+
+                    // 比较第一个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                    childIdx++;
+
+                    // 比较第二个子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                } else if (remaining == 1) {
+                    // 子节点数量为 1
+                    childIdx = baseChildIdx + 1;
+
+                    // 比较唯一的子节点
+                    childNode = this.heap[childIdx];
+                    childPriority = childNode.priority;
+                    if (childPriority < minPriority) {
+                        minIdx = childIdx;
+                        minPriority = childPriority;
+                    }
+                } else {
+                    // 无子节点，退出循环
+                    break;
                 }
 
-                if (minIdxE == currentIdxE) {
+                if (minIdx == currentIdx) {
                     break; // 当前节点已在正确位置，无需进一步交换
                 }
 
                 // 将当前节点与最小的子节点交换
-                var smallestChildE:HeapNode = this.heap[minIdxE];
-                this.heap[currentIdxE] = smallestChildE;
-                this.taskMap[smallestChildE.taskID] = smallestChildE; // 更新映射表中子节点的引用
-                currentIdxE = minIdxE; // 更新当前索引为最小子节点索引，继续向下检查
+                var smallestChild:HeapNode = this.heap[minIdx];
+                this.heap[currentIdx] = smallestChild;
+                this.taskMap[smallestChild.taskID] = smallestChild; // 更新映射表中子节点的引用
+                currentIdx = minIdx; // 更新当前索引为最小子节点索引，继续向下检查
+                currentPriority = minPriority; // 更新当前节点的优先级
             }
-            this.heap[currentIdxE] = currentNodeE; // 将当前节点放置在正确位置
+            this.heap[currentIdx] = currentNode; // 将当前节点放置在正确位置
         }
         delete this.taskMap[minNode.taskID]; // 从映射表中删除被移除的最小节点
         return minNode; // 返回被移除的最小节点
     }
 }
+
+
+/*
+
+var test:org.flashNight.naki.DataStructures.TaskMinHeapTest = new org.flashNight.naki.DataStructures.TaskMinHeapTest();
+test.runFunctionTests();
+test.runPerformanceTests();
+
+
+*/
+
+
+
+/*
+
+=== Running Functional Tests ===
+PASS: Insert operations maintain correct min heap
+PASS: Find operation correctly locates existing task
+PASS: Find operation correctly returns null for non-existent task
+PASS: PeekMin correctly identifies the minimum priority task
+PASS: PeekMin returns null for empty heap
+PASS: Remove operation correctly deletes the specified task and updates the min heap
+PASS: Update operation correctly updates the task priority and rebalances the heap
+PASS: ExtractMin correctly removes and returns the minimum priority task
+PASS: ExtractMin correctly updates the heap after multiple extractions
+PASS: Remove operation handles non-existent task IDs gracefully
+PASS: Update operation handles non-existent task IDs gracefully
+PASS: Insert operation updates the priority for duplicate task IDs if allowed
+=== Functional Tests Completed ===
+
+=== Running Performance Tests ===
+Insert Performance: 61 ms for 10,000 inserts
+Find Performance: 10 ms for 10,000 finds
+PeekMin Performance: 8 ms for 10,000 peek operations
+Remove and Update Performance: 2857 ms for 5,000 removals and updates
+Update Performance: 3241 ms for 5,000 updates
+Extract Performance: 49 ms to empty the heap
+=== Performance Tests Completed ===
+
+
+*/
