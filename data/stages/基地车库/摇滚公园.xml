@@ -521,11 +521,11 @@ SubWave的必要参数：
                     </Enemy>
                     <Enemy>
                         <Type>兵种160</Type>
-                        <Interval>300000</Interval>
+                        <Interval>210000</Interval>
                         <Quantity>1</Quantity>
                         <Level>60</Level>
                         <SpawnIndex>1</SpawnIndex>
-                        <DifficultyMax>简单</DifficultyMax>
+                        <DifficultyMax>地狱</DifficultyMax>
                         <!-- 以下对话现在没用，触发不了-->
 						<Dialogue>
 							<SubDialogue id="0">
