@@ -89,6 +89,7 @@ _root.子弹区域shoot传递 = function(Obj){
 	Obj.透明检测 = Obj.透明检测 || Obj.子弹种类 === "近战子弹" || Obj.子弹种类 === "近战联弹" || Obj.子弹种类 === "透明子弹";//判断生成子弹时是否使用带线框的Object而非MovieClip
 	Obj.手雷检测 = Obj.手雷检测 || Obj.子弹种类.indexOf("手雷") != -1;//判断是否为手雷
 	Obj.爆炸检测 = Obj.爆炸检测 || Obj.子弹种类.indexOf("爆炸") != -1;//判断是否为爆炸
+	Obj.普通检测 = !Obj.穿刺检测 && !Obj.爆炸检测  && !Obj.穿刺检测 && ( Obj.近战检测 ||  Obj.透明检测 || Obj.子弹种类.indexOf("普通") > -1  || Obj.子弹种类.indexOf("能量子弹") > -1 || Obj.子弹种类=="精制子弹")
 	Obj.固伤 = isNaN(Obj.固伤) ? 0 : Obj.固伤;//未初始化则为0
 	Obj.命中率 = isNaN(Obj.命中率) ? 发射对象.命中率 : Obj.命中率;
 	Obj.最小霰弹值 = isNaN(Obj.最小霰弹值) ? 1 : Obj.最小霰弹值;//未初始化则为0
@@ -355,7 +356,8 @@ _root.子弹生命周期 = function()
 				{
 					淬毒量 = this.毒;
 					//if(this.穿刺检测){
-					if(!this.穿刺检测 && this.子弹实例种类.indexOf("爆炸") == -1 && ( this.近战检测 || this.透明检测 || this.子弹实例种类.indexOf("普通") > -1  || this.子弹实例种类.indexOf("能量子弹") > -1 )){
+					//if(!this.穿刺检测 && this.子弹实例种类.indexOf("爆炸") == -1 && ( this.近战检测 || this.透明检测 || this.子弹实例种类.indexOf("普通") > -1  || this.子弹实例种类.indexOf("能量子弹") > -1 )){
+					if(this.普通检测){
 						淬毒量 *= 1;
 					}else{
 						淬毒量 *= 0.3;
