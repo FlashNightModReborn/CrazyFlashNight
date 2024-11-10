@@ -115,7 +115,7 @@ import org.flashNight.naki.DataStructures.*;
  * @class TaskMinHeap
  * @package org.flashNight.naki.DataStructures
  * @description 这是一个四叉最小堆（4-ary Min Heap）的实现，用于管理任务（Task）的优先级。
- *              通过预分配堆数组、内联化冒泡操作、手动展开循环、减少局部变量以及缓存优先级等优化手段，
+ *              通过预分配堆数组、内联化冒泡操作、手动展开循环、减少局部变量、优化自增操作以及缓存优先级等优化手段，
  *              进一步减少逻辑判断和变量声明带来的开销，提高了堆的性能。
  */
 class org.flashNight.naki.DataStructures.TaskMinHeap {
@@ -154,7 +154,7 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
         this.heap[this.heapSize] = node;    // 将新节点添加到堆的末尾
         this.taskMap[taskID] = node;        // 在映射表中记录 taskID 对应的节点
         var index:Number = this.heapSize;   // 当前节点的索引
-        this.heapSize++;                     // 堆大小增加
+        this.heapSize++;                    // 堆大小增加
 
         // 内联化的冒泡上升（bubbleUp）逻辑，用于维护堆的最小堆性质
         var currentIndex:Number = index;
@@ -267,7 +267,7 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                 // 否则，进行冒泡下降
                 var currentIdx:Number = index;
                 var currentNode:HeapNode = lastNode;
-                var currentPriorityD:Number = lastPriority; // 缓存当前节点的优先级
+                var currentPriority:Number = lastPriority; // 缓存当前节点的优先级
 
                 var minIdx:Number;
                 var baseChildIdx:Number;
@@ -284,7 +284,7 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                     // 计算剩余元素数量
                     remaining = this.heapSize - baseChildIdx - 1;
 
-                    minPriority = currentPriorityD;
+                    minPriority = currentPriority;
 
                     // 手动展开所有可能的子节点比较，按照子节点数量从多到少的顺序，减少逻辑判断次数
                     if (remaining >= 4) {
@@ -292,37 +292,34 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                         childIdx = baseChildIdx + 1;
 
                         // 比较第一个子节点
-                        childNode = this.heap[childIdx];
+                        childNode = this.heap[childIdx++];
                         childPriority = childNode.priority;
                         if (childPriority < minPriority) {
-                            minIdx = childIdx;
+                            minIdx = childIdx - 1;
                             minPriority = childPriority;
                         }
-                        childIdx++;
 
                         // 比较第二个子节点
-                        childNode = this.heap[childIdx];
+                        childNode = this.heap[childIdx++];
                         childPriority = childNode.priority;
                         if (childPriority < minPriority) {
-                            minIdx = childIdx;
+                            minIdx = childIdx - 1;
                             minPriority = childPriority;
                         }
-                        childIdx++;
 
                         // 比较第三个子节点
-                        childNode = this.heap[childIdx];
+                        childNode = this.heap[childIdx++];
                         childPriority = childNode.priority;
                         if (childPriority < minPriority) {
-                            minIdx = childIdx;
+                            minIdx = childIdx - 1;
                             minPriority = childPriority;
                         }
-                        childIdx++;
 
                         // 比较第四个子节点
-                        childNode = this.heap[childIdx];
+                        childNode = this.heap[childIdx++];
                         childPriority = childNode.priority;
                         if (childPriority < minPriority) {
-                            minIdx = childIdx;
+                            minIdx = childIdx - 1;
                             minPriority = childPriority;
                         }
                     } else if (remaining == 3) {
@@ -330,28 +327,26 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                         childIdx = baseChildIdx + 1;
 
                         // 比较第一个子节点
-                        childNode = this.heap[childIdx];
+                        childNode = this.heap[childIdx++];
                         childPriority = childNode.priority;
                         if (childPriority < minPriority) {
-                            minIdx = childIdx;
+                            minIdx = childIdx - 1;
                             minPriority = childPriority;
                         }
-                        childIdx++;
 
                         // 比较第二个子节点
-                        childNode = this.heap[childIdx];
+                        childNode = this.heap[childIdx++];
                         childPriority = childNode.priority;
                         if (childPriority < minPriority) {
-                            minIdx = childIdx;
+                            minIdx = childIdx - 1;
                             minPriority = childPriority;
                         }
-                        childIdx++;
 
                         // 比较第三个子节点
-                        childNode = this.heap[childIdx];
+                        childNode = this.heap[childIdx++];
                         childPriority = childNode.priority;
                         if (childPriority < minPriority) {
-                            minIdx = childIdx;
+                            minIdx = childIdx - 1;
                             minPriority = childPriority;
                         }
                     } else if (remaining == 2) {
@@ -359,19 +354,18 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                         childIdx = baseChildIdx + 1;
 
                         // 比较第一个子节点
-                        childNode = this.heap[childIdx];
+                        childNode = this.heap[childIdx++];
                         childPriority = childNode.priority;
                         if (childPriority < minPriority) {
-                            minIdx = childIdx;
+                            minIdx = childIdx - 1;
                             minPriority = childPriority;
                         }
-                        childIdx++;
 
                         // 比较第二个子节点
-                        childNode = this.heap[childIdx];
+                        childNode = this.heap[childIdx++];
                         childPriority = childNode.priority;
                         if (childPriority < minPriority) {
-                            minIdx = childIdx;
+                            minIdx = childIdx - 1;
                             minPriority = childPriority;
                         }
                     } else if (remaining == 1) {
@@ -399,12 +393,12 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                     this.heap[currentIdx] = smallestChild;
                     this.taskMap[smallestChild.taskID] = smallestChild; // 更新映射表中子节点的引用
                     currentIdx = minIdx; // 更新当前索引为最小子节点索引，继续向下检查
-                    currentPriorityD = minPriority; // 更新当前节点的优先级
+                    currentPriority = minPriority; // 更新当前节点的优先级
                 }
                 this.heap[currentIdx] = currentNode; // 将当前节点放置在正确位置
             }
-            delete this.taskMap[taskID];  // 从映射表中删除该任务
         }
+        delete this.taskMap[taskID];  // 从映射表中删除该任务
     }
 
     /**
@@ -488,37 +482,34 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                     childIdx = baseChildIdx + 1;
 
                     // 比较第一个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第二个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第三个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第四个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
                 } else if (remaining == 3) {
@@ -526,28 +517,26 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                     childIdx = baseChildIdx + 1;
 
                     // 比较第一个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第二个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第三个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
                 } else if (remaining == 2) {
@@ -555,19 +544,18 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                     childIdx = baseChildIdx + 1;
 
                     // 比较第一个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第二个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
                 } else if (remaining == 1) {
@@ -646,37 +634,34 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                     childIdx = baseChildIdx + 1;
 
                     // 比较第一个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第二个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第三个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第四个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
                 } else if (remaining == 3) {
@@ -684,28 +669,26 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                     childIdx = baseChildIdx + 1;
 
                     // 比较第一个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第二个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第三个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
                 } else if (remaining == 2) {
@@ -713,19 +696,18 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
                     childIdx = baseChildIdx + 1;
 
                     // 比较第一个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
-                    childIdx++;
 
                     // 比较第二个子节点
-                    childNode = this.heap[childIdx];
+                    childNode = this.heap[childIdx++];
                     childPriority = childNode.priority;
                     if (childPriority < minPriority) {
-                        minIdx = childIdx;
+                        minIdx = childIdx - 1;
                         minPriority = childPriority;
                     }
                 } else if (remaining == 1) {
