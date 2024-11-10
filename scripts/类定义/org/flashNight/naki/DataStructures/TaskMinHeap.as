@@ -1,115 +1,4 @@
-﻿/*
-# TaskMinHeap 类
-
-## 简介
-
-`TaskMinHeap` 是一个最小堆实现，用于管理基于任务优先级的调度。该类允许你插入、查找、更新和删除任务，并且能够高效地获取优先级最低的任务。通过维护一个堆结构，`TaskMinHeap` 保证了在 `O(log n)` 时间复杂度内完成插入和删除操作，是实现任务调度、优先队列等场景的理想选择。
-
-## 特性
-
-- **插入任务**：可以根据任务 ID 和优先级插入新任务。
-- **删除任务**：根据任务 ID 从堆中移除特定任务。
-- **更新优先级**：动态调整任务的优先级，并维护堆的性质。
-- **获取最小任务**：快速获取并移除优先级最低的任务。
-- **查看堆顶任务**：无需移除即可查看优先级最低的任务。
-- **任务查找**：可以根据任务 ID 快速查找到对应的任务节点。
-
-## 使用方法
-
-### 1. 创建实例
-
-首先，导入 `TaskMinHeap` 类并创建一个实例。
-
-```actionscript
-import org.flashNight.naki.DataStructures.TaskMinHeap;
-
-var taskHeap:TaskMinHeap = new TaskMinHeap();
-```
-
-### 2. 插入任务
-
-使用 `insert` 方法插入一个新任务，需要指定任务 ID 和优先级。
-
-```actionscript
-taskHeap.insert("task1", 10);
-taskHeap.insert("task2", 5);
-```
-
-### 3. 获取并执行优先级最低的任务
-
-使用 `extractMin` 方法获取并移除优先级最低的任务。
-
-```actionscript
-var minTask:HeapNode = taskHeap.extractMin();
-trace("Executing task: " + minTask.taskID + " with priority: " + minTask.priority);
-```
-
-### 4. 更新任务的优先级
-
-使用 `update` 方法更新某个任务的优先级。
-
-```actionscript
-taskHeap.update("task1", 3);
-```
-
-### 5. 删除特定任务
-
-使用 `remove` 方法根据任务 ID 删除任务。
-
-```actionscript
-taskHeap.remove("task2");
-```
-
-### 6. 查看堆顶任务
-
-使用 `peekMin` 方法查看当前堆顶任务（优先级最低），但不移除它。
-
-```actionscript
-var topTask:HeapNode = taskHeap.peekMin();
-trace("Top task: " + topTask.taskID + " with priority: " + topTask.priority);
-```
-
-### 7. 查找任务
-
-使用 `find` 方法根据任务 ID 查找任务节点。
-
-```actionscript
-var task:HeapNode = taskHeap.find("task1");
-if (task != null) {
-    trace("Found task: " + task.taskID + " with priority: " + task.priority);
-} else {
-    trace("Task not found.");
-}
-```
-
-## 代码结构
-
-- `heap:Array`：存储堆中节点的数组。
-- `taskMap:Object`：用于快速查找任务的映射。
-- `insert(taskID:String, priority:Number):Void`：插入新任务。
-- `remove(taskID:String):Void`：根据任务 ID 移除特定任务。
-- `update(taskID:String, newPriority:Number):Void`：更新任务的优先级。
-- `extractMin():HeapNode`：获取并移除优先级最低的任务。
-- `peekMin():HeapNode`：查看优先级最低的任务，但不移除它。
-- `find(taskID:String):HeapNode`：根据任务 ID 查找任务节点。
-- `bubbleUp(index:Number):Void`：上浮操作，维护堆的性质。
-- `bubbleDown(index:Number):Void`：下沉操作，维护堆的性质。
-- `swap(index1:Number, index2:Number):Void`：交换堆中两个节点的位置。
-- `rebalance(node:HeapNode):Void`：重新平衡堆。
-- `findIndexByTaskID(taskID:String):Number`：查找任务在堆中的索引。
-
-## 注意事项
-
-1. **`trace` 调试**：在代码中，所有的 `trace` 语句默认是被注释掉的。可以在需要调试时解除注释以查看详细的运行时信息。
-2. **索引更新**：堆的上浮和下沉操作会自动维护节点的索引，确保堆的性质不被破坏。
-3. **优先级更新**：在使用 `update` 方法更新任务优先级时，堆会自动重新平衡，以确保最小堆的结构。
-
-## 扩展
-
-此类可以作为基础数据结构，扩展用于实现更多复杂的任务调度系统，如带有定时器的优先队列或多任务系统中的任务管理模块。
-
-*/
-import org.flashNight.naki.DataStructures.*;
+﻿import org.flashNight.naki.DataStructures.*;
 
 /**
  * @class TaskMinHeap
@@ -745,42 +634,14 @@ class org.flashNight.naki.DataStructures.TaskMinHeap {
 }
 
 
-/*
-
-var test:org.flashNight.naki.DataStructures.TaskMinHeapTest = new org.flashNight.naki.DataStructures.TaskMinHeapTest();
-test.runFunctionTests();
-test.runPerformanceTests();
-
-
-*/
 
 
 
-/*
-
-=== Running Functional Tests ===
-PASS: Insert operations maintain correct min heap
-PASS: Find operation correctly locates existing task
-PASS: Find operation correctly returns null for non-existent task
-PASS: PeekMin correctly identifies the minimum priority task
-PASS: PeekMin returns null for empty heap
-PASS: Remove operation correctly deletes the specified task and updates the min heap
-PASS: Update operation correctly updates the task priority and rebalances the heap
-PASS: ExtractMin correctly removes and returns the minimum priority task
-PASS: ExtractMin correctly updates the heap after multiple extractions
-PASS: Remove operation handles non-existent task IDs gracefully
-PASS: Update operation handles non-existent task IDs gracefully
-PASS: Insert operation updates the priority for duplicate task IDs if allowed
-=== Functional Tests Completed ===
-
-=== Running Performance Tests ===
-Insert Performance: 61 ms for 10,000 inserts
-Find Performance: 10 ms for 10,000 finds
-PeekMin Performance: 8 ms for 10,000 peek operations
-Remove and Update Performance: 2857 ms for 5,000 removals and updates
-Update Performance: 3241 ms for 5,000 updates
-Extract Performance: 49 ms to empty the heap
-=== Performance Tests Completed ===
 
 
-*/
+
+
+
+
+
+
