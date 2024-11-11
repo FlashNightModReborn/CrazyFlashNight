@@ -233,11 +233,11 @@ PASS: Insert operation updates the priority for duplicate task IDs if allowed
 === Functional Tests Completed ===
 
 === Running Performance Tests ===
-Insert Performance: 61 ms for 10,000 inserts
-Find Performance: 10 ms for 10,000 finds
-PeekMin Performance: 8 ms for 10,000 peek operations
-Remove and Update Performance: 2857 ms for 5,000 removals and updates
-Update Performance: 3241 ms for 5,000 updates
-Extract Performance: 49 ms to empty the heap
+Insert Performance: 128 ms for 10,000 inserts
+Find Performance: 19 ms for 10,000 finds
+PeekMin Performance: 18 ms for 10,000 peek operations
+Remove and Update Performance: 6660 ms for 5,000 removals and updates
+Update Performance: 7623 ms for 5,000 updates
+Extract Performance: 111 ms to empty the heap
 === Performance Tests Completed ===
 
