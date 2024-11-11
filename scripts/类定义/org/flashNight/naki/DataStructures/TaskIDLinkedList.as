@@ -4,6 +4,10 @@ class org.flashNight.naki.DataStructures.TaskIDLinkedList {
     private var head:TaskIDNode = null;
     private var tail:TaskIDNode = null;
 
+    public function TaskIDLinkedList() {
+    }
+
+
     // 在链表尾部添加一个新节点
     public function addLast(taskID:String):TaskIDNode {
         return appendNode(new TaskIDNode(taskID));
