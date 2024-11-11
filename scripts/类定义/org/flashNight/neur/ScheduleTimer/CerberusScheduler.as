@@ -3,7 +3,6 @@ import org.flashNight.neur.TimeWheel.*;
 /*
 # CerberusScheduler（地狱三头犬调度器）使用说明
 
-这东西的路径：org.flashNight.neur.ScheduleTimer.CerberusScheduler
 
 ## 概述
 
