@@ -62,6 +62,9 @@ _root.loaders.push(function ()
         tmpDict.手枪2 = !this.units[i].data.secondary2 ? "" : this.units[i].data.secondary2;
         tmpDict.刀 = !this.units[i].data.melee ? "" : this.units[i].data.melee;
         tmpDict.手雷 = !this.units[i].data.grenade ? "" : this.units[i].data.grenade;
+        if(this.units[i].pet_attr ){
+            tmpDict.宠物属性 = this.units[i].pet_attr ;
+        }
         if (this.units[i].NPC != undefined)
         {
             tmpDict.NPC = this.units[i].NPC;
