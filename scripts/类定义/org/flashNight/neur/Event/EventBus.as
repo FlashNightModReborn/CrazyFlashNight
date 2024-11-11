@@ -4,37 +4,67 @@ import org.flashNight.naki.DataStructures.Dictionary;
 /**
  * EventBus 类用于事件的订阅、发布和管理。
  * 采用饿汉式单例模式，确保在类加载时实例化。
- * 该类支持高效的事件管理，通过回调池和监听器字典进行优化，避免重复订阅和频繁内存分配。
+ * 通过预分配数组大小、索引操作和循环展开等优化措施，提高了性能。
  */
 class org.flashNight.neur.Event.EventBus {
     private var listeners:Object;          // 存储事件监听器，结构为事件名 -> { callbacks: { callbackID: poolIndex }, funcToID: { funcID: callbackID }, count: Number }
     private var pool:Array;                // 回调函数池，用于存储回调函数的索引位置
     private var availSpace:Array;          // 可用索引列表，存储空闲的池位置
-    private var tempArgs:Array = [];       // 参数缓存区，重用避免频繁创建
-    private var tempCallbacks:Array = [];  // 重用的回调函数存储数组
+    private var availSpaceTop:Number;      // 可用索引列表的栈顶指针
+    private var tempArgs:Array;            // 参数缓存区，重用避免频繁创建
+    private var tempCallbacks:Array;       // 重用的回调函数存储数组
+    private var tempCallbacksCount:Number; // tempCallbacks 数组中的有效元素计数
 
     // 静态实例，类加载时初始化，采用饿汉式单例模式
     private static var instance:EventBus = new EventBus();
 
     /**
      * 私有化构造函数，防止外部直接创建对象。
-     * 初始化回调池，并为可用空间列表预分配 1024 个空闲位置，以减少运行时扩展的开销。
+     * 初始化回调池，并为可用空间列表预分配固定大小，以减少运行时扩展的开销。
      */
     private function EventBus() {
-        this.listeners = {};           // 初始化监听器字典，用于存储各事件及其关联的回调函数
-        this.pool = [];                // 初始化回调函数池
-        this.availSpace = [];          // 初始化可用索引列表，用于记录回调函数池中空闲的位置
+        this.listeners = {};
+        var initialCapacity:Number = 1024;
 
-        // 预分配 1024 个空闲池位，减少运行时扩展的开销
-        for (var i:Number = 0; i < 1024; i++) {
-            this.pool.push(null);
-            this.availSpace.push(i);
+        // 预创建数组大小，避免动态扩容
+        this.pool = new Array(initialCapacity);
+        this.availSpace = new Array(initialCapacity);
+        this.availSpaceTop = initialCapacity;
+        this.tempArgs = new Array(10);          // 假设最大参数数量为 10，可根据需要调整
+        this.tempCallbacks = new Array(initialCapacity);
+        this.tempCallbacksCount = 0;
+
+        // 使用循环展开初始化 pool 和 availSpace 数组
+        var unrollFactor:Number = 8;
+        var i:Number = 0;
+        for (; i + unrollFactor <= initialCapacity; i += unrollFactor) {
+            this.pool[i] = null;
+            this.pool[i + 1] = null;
+            this.pool[i + 2] = null;
+            this.pool[i + 3] = null;
+            this.pool[i + 4] = null;
+            this.pool[i + 5] = null;
+            this.pool[i + 6] = null;
+            this.pool[i + 7] = null;
+
+            this.availSpace[i] = i;
+            this.availSpace[i + 1] = i + 1;
+            this.availSpace[i + 2] = i + 2;
+            this.availSpace[i + 3] = i + 3;
+            this.availSpace[i + 4] = i + 4;
+            this.availSpace[i + 5] = i + 5;
+            this.availSpace[i + 6] = i + 6;
+            this.availSpace[i + 7] = i + 7;
+        }
+        // 处理剩余的元素
+        for (; i < initialCapacity; i++) {
+            this.pool[i] = null;
+            this.availSpace[i] = i;
         }
     }
 
     /**
      * 初始化方法，用于初始化静态实例。
-     * 此方法显式调用一次，后续直接返回唯一的实例，不再重复初始化。
      * 
      * @return EventBus 单例实例
      */
@@ -54,61 +84,46 @@ class org.flashNight.neur.Event.EventBus {
 
     /**
      * 订阅事件，将回调函数与特定事件绑定。
-     * 每个回调函数会生成一个唯一的 ID，并与事件名进行关联，避免重复订阅。
      * 
      * @param eventName 事件名称
      * @param callback 要订阅的回调函数
      * @param scope 回调函数执行时的作用域
      */
     public function subscribe(eventName:String, callback:Function, scope:Object):Void {
-        // 如果事件监听器不存在，初始化监听器结构
         if (!this.listeners[eventName]) {
-            this.listeners[eventName] = { callbacks: {}, funcToID: {}, count: 0 };  // 初始化监听器对象，包含回调字典、函数 ID 映射和计数器
+            this.listeners[eventName] = { callbacks: {}, funcToID: {}, count: 0 };
         }
 
         var listenersForEvent:Object = this.listeners[eventName];
         var funcToID:Object = listenersForEvent.funcToID;
 
-        // 使用 Dictionary 静态方法为回调函数生成唯一的 ID
         var funcID:String = String(Dictionary.getStaticUID(callback));
 
-        // 如果该回调函数已存在，避免重复订阅
         if (funcToID[funcID] != undefined) {
             return;
         }
 
-        // 使用 Dictionary 生成回调函数的唯一 ID
         var callbackID:Number = Dictionary.getStaticUID(callback);
-
-        // 创建与作用域绑定的包装回调函数
         var wrappedCallback:Function = Delegate.create(scope, callback);
 
-        // 从可用索引列表中分配一个空闲的位置给新的回调函数
         var allocIndex:Number;
-        if (this.availSpace.length > 0) {
-            allocIndex = Number(this.availSpace.pop());
+        if (this.availSpaceTop > 0) {
+            allocIndex = this.availSpace[--this.availSpaceTop];
             this.pool[allocIndex] = wrappedCallback;
         } else {
-            // 如果池已满，采用双倍扩展策略扩展池的容量
-            var newCapacity:Number = this.pool.length * 2;
-            for (var j:Number = this.pool.length; j < newCapacity; j++) {
-                this.pool.push(null);
-                this.availSpace.push(j);
-            }
-            allocIndex = Number(this.availSpace.pop());
+            // 扩展容量
+            this.expandPool();
+            allocIndex = this.availSpace[--this.availSpaceTop];
             this.pool[allocIndex] = wrappedCallback;
         }
 
-        // 将回调 ID 和分配的索引位置存储起来
         listenersForEvent.callbacks[callbackID] = allocIndex;
         funcToID[funcID] = callbackID;
-
-        listenersForEvent.count++;  // 增加该事件的回调计数
+        listenersForEvent.count++;
     }
 
     /**
      * 取消订阅事件，移除指定的回调函数。
-     * 通过回调函数的唯一 ID 定位并移除回调。
      * 
      * @param eventName 事件名称
      * @param callback 要取消的回调函数
@@ -118,25 +133,21 @@ class org.flashNight.neur.Event.EventBus {
         if (!listenersForEvent) return;
 
         var funcToID:Object = listenersForEvent.funcToID;
-
-        // 获取回调函数的唯一 ID
         var funcID:String = String(Dictionary.getStaticUID(callback));
-
         var callbackID:Number = funcToID[funcID];
+
         if (callbackID == undefined) return;
 
-        // 根据回调 ID 获取索引位置并释放该回调
         var allocIndex:Number = listenersForEvent.callbacks[callbackID];
         if (allocIndex != undefined) {
             this.pool[allocIndex] = null;
-            this.availSpace.push(allocIndex);
+            this.availSpace[this.availSpaceTop++] = allocIndex;
             delete listenersForEvent.callbacks[callbackID];
             delete funcToID[funcID];
         }
 
-        listenersForEvent.count--;  // 减少该事件的回调计数
+        listenersForEvent.count--;
 
-        // 如果没有剩余的回调函数，则删除该事件的监听器对象
         if (listenersForEvent.count === 0) {
             delete this.listeners[eventName];
         }
@@ -154,36 +165,34 @@ class org.flashNight.neur.Event.EventBus {
         var callbacks:Object = listenersForEvent.callbacks;
         var poolRef:Array = this.pool;
 
-        this.tempCallbacks.length = 0;  // 清空并重用临时回调数组
+        // 重置 tempCallbacksCount
+        this.tempCallbacksCount = 0;
 
-        // 将所有回调函数存入 tempCallbacks 数组
+        // 收集回调函数，使用索引方式
         for (var cbID:String in callbacks) {
             var index:Number = callbacks[cbID];
             var callback:Function = poolRef[index];
             if (callback != null) {
-                this.tempCallbacks.push(callback);
+                this.tempCallbacks[this.tempCallbacksCount++] = callback;
             }
         }
 
-        var callbackCount:Number = this.tempCallbacks.length;
         var hasArguments:Boolean = arguments.length >= 2;
+        var argsLength:Number = arguments.length - 1;
 
-        // 如果存在额外参数，则将参数存入 tempArgs 缓存区
+        // 如果有参数，使用索引方式复制参数到 tempArgs
         if (hasArguments) {
-            this.tempArgs.length = 0;
-            var argsLen:Number = arguments.length;
-            for (var i:Number = 1; i < argsLen; i++) {
-                this.tempArgs.push(arguments[i]);
+            for (var i:Number = 0; i < argsLength; i++) {
+                this.tempArgs[i] = arguments[i + 1];
             }
         }
 
-        // 倒序遍历并执行回调函数，确保回调函数正确响应事件
-        for (var j:Number = callbackCount - 1; j >= 0; j--) {
+        // 倒序执行回调函数
+        for (var j:Number = this.tempCallbacksCount - 1; j >= 0; j--) {
             var cb:Function = this.tempCallbacks[j];
             try {
                 if (hasArguments) {
-                    // 手动展开常见参数情况，避免使用 apply 带来的性能损耗
-                    switch (this.tempArgs.length) {
+                    switch (argsLength) {
                         case 0: cb(); break;
                         case 1: cb(this.tempArgs[0]); break;
                         case 2: cb(this.tempArgs[0], this.tempArgs[1]); break;
@@ -192,7 +201,9 @@ class org.flashNight.neur.Event.EventBus {
                         case 5: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4]); break;
                         case 6: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4], this.tempArgs[5]); break;
                         case 7: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4], this.tempArgs[5], this.tempArgs[6]); break;
-                        default: cb.apply(null, this.tempArgs);  // 参数超过 7 个时，使用 apply
+                        case 8: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4], this.tempArgs[5], this.tempArgs[6], this.tempArgs[7]); break;
+                        case 9: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4], this.tempArgs[5], this.tempArgs[6], this.tempArgs[7], this.tempArgs[8]); break;
+                        default: cb.apply(null, this.tempArgs.slice(0, argsLength));
                     }
                 } else {
                     cb();
@@ -214,56 +225,47 @@ class org.flashNight.neur.Event.EventBus {
         var self:EventBus = this;
         var originalCallback:Function = callback;
 
-        // 为回调函数生成唯一 ID
         var funcID:String = String(Dictionary.getStaticUID(originalCallback));
 
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
-            listenersForEvent = { callbacks: {}, funcToID: {}, count: 0 };  // 初始化事件的监听器对象
+            listenersForEvent = { callbacks: {}, funcToID: {}, count: 0 };
             this.listeners[eventName] = listenersForEvent;
         }
 
         var funcToID:Object = listenersForEvent.funcToID;
 
-        // 避免重复订阅
         if (funcToID[funcID] != undefined) {
             return;
         }
 
         var callbackID:Number = Dictionary.getStaticUID(originalCallback);
 
-        // 创建一次性回调的包装函数，执行后自动取消订阅
         var wrappedOnceCallback:Function = function() {
             originalCallback.apply(scope, arguments);
-            self.unsubscribe(eventName, originalCallback);  // 回调执行后自动取消订阅
+            self.unsubscribe(eventName, originalCallback);
         };
 
-        // 使用 Delegate.create 创建包装后的回调函数
         var wrappedCallback:Function = Delegate.create(scope, wrappedOnceCallback);
 
         var allocIndex:Number;
-        if (this.availSpace.length > 0) {
-            allocIndex = Number(this.availSpace.pop());
+        if (this.availSpaceTop > 0) {
+            allocIndex = this.availSpace[--this.availSpaceTop];
             this.pool[allocIndex] = wrappedCallback;
         } else {
-            // 如果池已满，扩展容量并分配新的索引位置
-            var newCapacity:Number = this.pool.length * 2;
-            for (var j:Number = this.pool.length; j < newCapacity; j++) {
-                this.pool.push(null);
-                this.availSpace.push(j);
-            }
-            allocIndex = Number(this.availSpace.pop());
+            // 扩展容量
+            this.expandPool();
+            allocIndex = this.availSpace[--this.availSpaceTop];
             this.pool[allocIndex] = wrappedCallback;
         }
 
         listenersForEvent.callbacks[callbackID] = allocIndex;
         funcToID[funcID] = callbackID;
-        listenersForEvent.count++;  // 增加该事件的回调计数
+        listenersForEvent.count++;
     }
 
     /**
      * 销毁事件总线，释放所有监听器和回调函数。
-     * 清理回调池、可用索引列表及临时缓存，防止内存泄漏。
      */
     public function destroy():Void {
         for (var eventName:String in this.listeners) {
@@ -272,27 +274,69 @@ class org.flashNight.neur.Event.EventBus {
                 var index:Number = listenersForEvent.callbacks[cbID];
                 if (index != undefined) {
                     this.pool[index] = null;
-                    this.availSpace.push(index);
+                    this.availSpace[this.availSpaceTop++] = index;
                 }
             }
             delete this.listeners[eventName];
         }
 
         // 清空回调池中的所有剩余回调
-        for (var i:Number = this.pool.length - 1; i >= 0; i--) {
+        var poolLength:Number = this.pool.length;
+        for (var i:Number = 0; i < poolLength; i++) {
             if (this.pool[i] != null) {
                 this.pool[i] = null;
-                this.availSpace.push(i);
+                this.availSpace[this.availSpaceTop++] = i;
             }
         }
 
         this.listeners = {};
-
-        // 清空 Delegate 缓存中的包装回调函数
         Delegate.clearCache();
+        this.tempArgs = [];
+        this.tempCallbacks = [];
+        this.tempCallbacksCount = 0;
+    }
 
-        // 清空临时参数和回调数组
-        this.tempArgs.length = 0;
-        this.tempCallbacks.length = 0;
+    /**
+     * 扩展回调池和可用空间数组的容量。
+     * 采用倍增策略，减少频繁扩容的开销。
+     */
+    private function expandPool():Void {
+        var oldCapacity:Number = this.pool.length;
+        var newCapacity:Number = oldCapacity * 2;
+
+        // 预创建新的数组并复制旧数据
+        var newPool:Array = new Array(newCapacity);
+        var newAvailSpace:Array = new Array(newCapacity);
+
+        // 使用循环展开复制数组元素
+        var unrollFactor:Number = 8;
+        var i:Number = 0;
+        for (; i + unrollFactor <= oldCapacity; i += unrollFactor) {
+            newPool[i] = this.pool[i];
+            newPool[i + 1] = this.pool[i + 1];
+            newPool[i + 2] = this.pool[i + 2];
+            newPool[i + 3] = this.pool[i + 3];
+            newPool[i + 4] = this.pool[i + 4];
+            newPool[i + 5] = this.pool[i + 5];
+            newPool[i + 6] = this.pool[i + 6];
+            newPool[i + 7] = this.pool[i + 7];
+        }
+        for (; i < oldCapacity; i++) {
+            newPool[i] = this.pool[i];
+        }
+
+        // 初始化新扩展的部分
+        for (i = oldCapacity; i < newCapacity; i++) {
+            newPool[i] = null;
+            newAvailSpace[this.availSpaceTop++] = i;
+        }
+
+        // 复制旧的可用空间索引
+        for (i = 0; i < this.availSpaceTop; i++) {
+            newAvailSpace[i] = this.availSpace[i];
+        }
+
+        this.pool = newPool;
+        this.availSpace = newAvailSpace;
     }
 }
