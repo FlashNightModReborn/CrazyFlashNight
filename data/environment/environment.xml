@@ -1141,6 +1141,43 @@
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
+    <!-- 下水道-->
+    <Environment>
+        <BackgroundURL>堕落城下水道入口.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1810</Xmax>
+        <Ymin>570</Ymin>
+        <Ymax>880</Ymax>
+        <Width>2000</Width>
+        <Height>900</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>堕落城下水道过道1.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1240</Xmax>
+        <Ymin>380</Ymin>
+        <Ymax>590</Ymax>
+        <Width>1380</Width>
+        <Height>590</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <DoorDirection>上</DoorDirection>
+        <MaxIllumination>2</MaxIllumination>
+        <MinIllumination>0</MinIllumination>
+    </Environment>
+    <Environment>
+        <BackgroundURL>堕落城下水道过道2.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>20</Xmin>
+        <Xmax>1680</Xmax>
+        <Ymin>450</Ymin>
+        <Ymax>670</Ymax>
+        <Width>1750</Width>
+        <Height>740</Height>
+        <MaxIllumination>2</MaxIllumination>
+        <MinIllumination>0</MinIllumination>
+    </Environment>
     <!-- 次元塔-->
     <Environment>
         <BackgroundURL>ciyuanta_BG.swf</BackgroundURL>
