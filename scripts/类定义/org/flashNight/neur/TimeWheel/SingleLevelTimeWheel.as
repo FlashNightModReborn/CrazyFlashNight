@@ -17,7 +17,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     public function getTimeWheelStatus():Object {
         var taskCounts:Array = [];
         for (var i:Number = 0; i < wheelSize; i++) {
-            taskCounts.push(slots[i] != null ? slots[i].length : 0);
+            taskCounts.push(slots[i] != null ? slots[i].getSize() : 0); // 使用 getSize() 代替 length
         }
         return {
             currentPointer: this.currentPointer,
@@ -79,24 +79,26 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     }
 
     private function addTimer(node:TaskIDNode, delay:Number):TaskIDNode {
-        // Calculate the slot index based on the currentPointer and delay
-        var slotIndex:Number = (currentPointer + delay) % wheelSize;
-        /*
+        // 规范化延迟，确保 slotIndex 非负且小于 wheelSize
+        var normalizedDelay:Number = ((delay % wheelSize) + wheelSize) % wheelSize;
+        var slotIndex:Number = (currentPointer + normalizedDelay) % wheelSize;
+
         // Log the calculated slot index and delay details
-        trace("Adding task with ID: " + node.taskID);
-        trace(" - Current pointer: " + currentPointer);
-        trace(" - Delay: " + delay);
-        trace(" - Calculated slot index: " + slotIndex);
-        */
+        //  trace("Adding task with ID: " + node.taskID);
+        //  trace(" - Current pointer: " + currentPointer);
+        //  trace(" - Delay: " + delay);
+        //  trace(" - Normalized delay: " + normalizedDelay);
+        //  trace(" - Calculated slot index: " + slotIndex);
+
         // Retrieve the slot and add the node
         var slot:TaskIDLinkedList = getSlot(slotIndex);
         slot.appendNode(node);
         node.slotIndex = slotIndex; // Record the slot index
-        /*
+
         // Log the slot status after insertion
-        trace(" - Task added to slot index: " + slotIndex);
-        trace(" - Number of tasks in slot after insertion: " + slot.getSize());
-        */
+        //  trace(" - Task added to slot index: " + slotIndex);
+        //  trace(" - Number of tasks in slot after insertion: " + slot.getSize());
+
         return node;
     }
 
@@ -119,7 +121,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
     }
 
     public function removeTimerByNode(node:TaskIDNode):Void {
-        var slot:TaskIDLinkedList = getSlot(node.slotIndex);
+        var slot:TaskIDLinkedList = slots[node.slotIndex];
         if (slot != null) {
             slot.remove(node); // 利用链表性质，直接操作节点
             recycleNode(node);
@@ -135,7 +137,8 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheel implements ITimeWheel {
 
     public function rescheduleTimerByNode(node:TaskIDNode, newDelay:Number):Void {
         var oldSlotIndex:Number = node.slotIndex;
-        var newSlotIndex:Number = (currentPointer + newDelay) % wheelSize;
+        var normalizedDelay:Number = ((newDelay % wheelSize) + wheelSize) % wheelSize;
+        var newSlotIndex:Number = (currentPointer + normalizedDelay) % wheelSize;
 
         if (oldSlotIndex != newSlotIndex) {
             removeTimerByNode(node); // 仅在槽位不同的情况下移除并重新添加

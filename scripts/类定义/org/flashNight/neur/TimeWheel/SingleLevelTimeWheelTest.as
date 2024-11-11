@@ -52,7 +52,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 测试通过任务ID添加定时器
     private function testAddTimerByID():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
         wheel.addTimerByID("task1", 5);
         wheel.addTimerByID("task2", 3);
         
@@ -63,7 +63,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 测试通过节点添加定时器
     private function testAddTimerByNode():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
         var node:TaskIDNode = new TaskIDNode("task3");
         wheel.addTimerByNode(node, 7);
         
@@ -73,7 +73,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 测试通过任务ID移除定时器
     private function testRemoveTimerByID():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
         wheel.addTimerByID("task1", 5);
         wheel.addTimerByID("task2", 3);
         wheel.removeTimerByID("task2");
@@ -84,7 +84,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 测试通过节点移除定时器
     private function testRemoveTimerByNode():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
         var node:TaskIDNode = wheel.addTimerByID("task1", 5);
         wheel.removeTimerByNode(node);
 
@@ -94,7 +94,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 测试通过任务ID重新调度定时器
     private function testRescheduleTimerByID():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
         wheel.addTimerByID("task1", 5);
         wheel.rescheduleTimerByID("task1", 8);
 
@@ -104,7 +104,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 测试通过节点重新调度定时器
     private function testRescheduleTimerByNode():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
         var node:TaskIDNode = wheel.addTimerByID("task2", 2);
         wheel.rescheduleTimerByNode(node, 6);
 
@@ -114,7 +114,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 测试时间轮的tick功能
     private function testTick():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
         wheel.addTimerByID("task1", 0);
         wheel.addTimerByID("task2", 1);
 
@@ -127,25 +127,25 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 测试获取时间轮状态的方法
     private function testGetTimeWheelStatus():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
         wheel.addTimerByID("task1", 2);
         var status:Object = wheel.getTimeWheelStatus();
         assert(status.currentPointer == 0, "getTimeWheelStatus returns correct currentPointer");
-        assert(status.wheelSize == 10, "getTimeWheelStatus returns correct wheelSize");
+        assert(status.wheelSize == 30, "getTimeWheelStatus returns correct wheelSize");
         assert(status.taskCounts[2] == 1, "getTimeWheelStatus returns correct taskCounts");
     }
 
     // 测试获取时间轮数据的方法
     private function testGetTimeWheelData():Void {
-        resetWheel(15);
+        resetWheel(30); // 固定时间轮大小为30
         var data:Object = wheel.getTimeWheelData();
         assert(data.currentPointer == 0, "getTimeWheelData returns correct currentPointer");
-        assert(data.wheelSize == 15, "getTimeWheelData returns correct wheelSize");
+        assert(data.wheelSize == 30, "getTimeWheelData returns correct wheelSize");
     }
 
     // 测试节点池相关的方法
     private function testNodePoolMethods():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
         var initialPoolSize:Number = wheel.getNodePoolSize();
         wheel.fillNodePool(5);
         var afterFillSize:Number = wheel.getNodePoolSize();
@@ -158,7 +158,7 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 测试边界情况和异常处理
     private function testEdgeCases():Void {
-        resetWheel(10);
+        resetWheel(30); // 固定时间轮大小为30
 
         // 移除不存在的任务
         wheel.removeTimerByID("nonExistentTask");
@@ -171,15 +171,15 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
         // 添加负延迟的任务
         wheel.addTimerByID("negativeDelayTask", -1);
         var status:Object = wheel.getTimeWheelStatus();
-        assert(status.taskCounts[9] == 1, "addTimerByID with negative delay wraps around correctly");
+        assert(status.taskCounts[29] == 1, "addTimerByID with negative delay wraps around correctly");
 
         // 延迟超过轮子大小的任务
-        wheel.addTimerByID("largeDelayTask", 15);
+        wheel.addTimerByID("largeDelayTask", 35); // 35 % 30 = 5
         status = wheel.getTimeWheelStatus();
         assert(status.taskCounts[5] == 1, "addTimerByID with large delay wraps around correctly");
 
         // 多次tick超过轮子大小
-        for (var i:Number = 0; i < 20; i++) {
+        for (var i:Number = 0; i < 60; i++) { // 60 ticks, wheelSize = 30, should wrap around twice
             wheel.tick();
         }
         assert(wheel.getTimeWheelStatus().currentPointer == 0, "tick wraps around wheel correctly after multiple overflows");
@@ -187,25 +187,25 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 添加定时器的性能测试（手动展开循环）
     private function testAddTimerPerformance():Void {
-        resetWheel(1000);
+        resetWheel(30); // 固定时间轮大小为30
         var startTime:Number = getTimer();
         var i:Number = 0;
         var limit:Number = 10000;
 
         // 手动展开循环，每次处理4个添加操作
         while (i < limit) {
-            wheel.addTimerByID("task" + i, Math.floor(Math.random() * 1000));
+            wheel.addTimerByID("task" + i, Math.floor(Math.random() * 30));
             i++;
             if (i < limit) {
-                wheel.addTimerByID("task" + i, Math.floor(Math.random() * 1000));
+                wheel.addTimerByID("task" + i, Math.floor(Math.random() * 30));
                 i++;
             }
             if (i < limit) {
-                wheel.addTimerByID("task" + i, Math.floor(Math.random() * 1000));
+                wheel.addTimerByID("task" + i, Math.floor(Math.random() * 30));
                 i++;
             }
             if (i < limit) {
-                wheel.addTimerByID("task" + i, Math.floor(Math.random() * 1000));
+                wheel.addTimerByID("task" + i, Math.floor(Math.random() * 30));
                 i++;
             }
         }
@@ -216,10 +216,10 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
 
     // 移除定时器的性能测试（手动展开循环）
     private function testRemoveTimerPerformance():Void {
-        resetWheel(1000);
+        resetWheel(30); // 固定时间轮大小为30
         var insertLimit:Number = 5000;
         for (var i:Number = 0; i < insertLimit; i++) {
-            wheel.addTimerByID("task" + i, Math.floor(Math.random() * 1000));
+            wheel.addTimerByID("task" + i, Math.floor(Math.random() * 30));
         }
 
         var startTime:Number = getTimer();
@@ -248,17 +248,17 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
         trace("Remove Timer Performance: " + (endTime - startTime) + " ms for 5,000 removals (loop unrolled by 4)");
     }
 
-    // tick操作的性能测试（手动展开循环）
+    // tick操作的性能测试（手动展开循环，扩展到10000次）
     private function testTickPerformance():Void {
-        resetWheel(1000);
-        var insertLimit:Number = 5000;
+        resetWheel(30); // 固定时间轮大小为30
+        var insertLimit:Number = 10000;
         for (var i:Number = 0; i < insertLimit; i++) {
-            wheel.addTimerByID("task" + i, Math.floor(Math.random() * 1000));
+            wheel.addTimerByID("task" + i, Math.floor(Math.random() * 30));
         }
 
         var startTime:Number = getTimer();
         var k:Number = 0;
-        var tickLimit:Number = 1000;
+        var tickLimit:Number = 10000;
 
         // 手动展开循环，每次处理4个tick操作
         while (k < tickLimit) {
@@ -279,12 +279,12 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
         }
 
         var endTime:Number = getTimer();
-        trace("Tick Performance: " + (endTime - startTime) + " ms for 1,000 ticks (loop unrolled by 4)");
+        trace("Tick Performance: " + (endTime - startTime) + " ms for 10,000 ticks (loop unrolled by 4)");
     }
 
     // 节点池方法的性能测试（手动展开循环）
     private function testNodePoolPerformance():Void {
-        resetWheel(1000);
+        resetWheel(30); // 固定时间轮大小为30
         var startTime:Number = getTimer();
 
         var fillLimit:Number = 10000;
@@ -310,5 +310,42 @@ class org.flashNight.neur.TimeWheel.SingleLevelTimeWheelTest {
         var endTime:Number = getTimer();
         trace("fillNodePool Performance: " + (midTime - startTime) + " ms for filling 10,000 nodes (loop unrolled by 4)");
         trace("trimNodePool Performance: " + (endTime - midTime) + " ms for trimming to 1,000 nodes (loop unrolled by 4)");
+    }
+
+    // 增强的准确性评估测试
+    private function testPracticalTaskCombinations():Void {
+        resetWheel(30); // 固定时间轮大小为30
+
+        // 添加多个任务到不同的槽位
+        wheel.addTimerByID("taskA", 5);
+        wheel.addTimerByID("taskB", 10);
+        wheel.addTimerByID("taskC", 15);
+        wheel.addTimerByID("taskD", 25);
+        wheel.addTimerByID("taskE", 30); // 30 % 30 = 0
+        wheel.addTimerByID("taskF", -5); // (-5 % 30 + 30) % 30 = 25
+
+        var status:Object = wheel.getTimeWheelStatus();
+        assert(status.taskCounts[0] == 1, "Practical Task Combination: taskE placed at slot 0");
+        assert(status.taskCounts[5] == 1, "Practical Task Combination: taskA placed at slot 5");
+        assert(status.taskCounts[10] == 1, "Practical Task Combination: taskB placed at slot 10");
+        assert(status.taskCounts[15] == 1, "Practical Task Combination: taskC placed at slot 15");
+        assert(status.taskCounts[25] == 2, "Practical Task Combination: taskD and taskF placed at slot 25");
+
+        // Reschedule some tasks
+        wheel.rescheduleTimerByID("taskA", 20);
+        wheel.rescheduleTimerByID("taskB", -10); // (-10 % 30 + 30) % 30 = 20
+
+        status = wheel.getTimeWheelStatus();
+        assert(status.taskCounts[5] == 0, "Practical Task Combination: taskA removed from slot 5");
+        assert(status.taskCounts[10] == 0, "Practical Task Combination: taskB removed from slot 10");
+        assert(status.taskCounts[20] == 2, "Practical Task Combination: taskA and taskB placed at slot 20");
+        assert(status.taskCounts[25] == 2, "Practical Task Combination: taskD and taskF remain at slot 25");
+    }
+
+    // 运行增强的准确性评估测试
+    private function runAdditionalAccuracyTests():Void {
+        trace("=== Running Practical Task Combinations Test ===");
+        testPracticalTaskCombinations();
+        trace("=== Practical Task Combinations Test Completed ===\n");
     }
 }
