@@ -8,7 +8,7 @@ import org.flashNight.neur.TimeWheel.*;
  * CerberusSchedulerTest 类
  * 
  * 用于测试 CerberusScheduler 的准确性和性能，包括插入、删除、查找、重新调度等操作。
- * 实现了不同的日志级别（INFO、DEBUG、ERROR）以控制和过滤日志输出。
+ * 通过维护一个 id-node 哈希表，避免线性查找，实现常数级性能。
  */
 class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
     private var scheduler:CerberusScheduler;
@@ -18,8 +18,6 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
     private var executedTasksCount:Number;
     private var taskTable:Array;
     private var frameCountDisplay:TextField;
-    private var deletedTasks:Array;
-    private var rescheduledTasks:Array;
 
     private var enableDeleteTasksTest:Boolean;
     private var enableRescheduleTasksTest:Boolean;
@@ -30,6 +28,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
     // 性能测试相关变量
     private var performanceTestResults:Array;
+
+    // 维护一个 id-node 哈希表，避免线性查找
+    private var idNodeTable:Object;
 
     // 日志级别定义
     private static var LOG_LEVEL_INFO:Number = 1;
@@ -44,8 +45,6 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         // 初始化变量
         this.scheduler = new CerberusScheduler();
         this.taskTable = [];
-        this.deletedTasks = [];
-        this.rescheduledTasks = [];
         this.performanceTestResults = [];
 
         this.currentFrame = 0;
@@ -53,6 +52,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
         this.enableDeleteTasksTest = true;
         this.enableRescheduleTasksTest = true;
+
+        // 初始化 id-node 哈希表
+        this.idNodeTable = {};
 
         // 使用默认参数初始化调度器
         this.scheduler.initialize(150, 60, 60, 30, 0.1);
@@ -76,8 +78,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         var taskID:String = "testTask";
         var delayInFrames:Number = 100;
 
-        this.addTaskToTable(taskID, this.currentFrame + delayInFrames);
-        this.scheduler.evaluateAndInsertTask(taskID, delayInFrames);
+        var node:TaskIDNode = this.scheduler.evaluateAndInsertTask(taskID, delayInFrames);
+        this.addTaskToTable(taskID, node, this.currentFrame + delayInFrames);
         this.log("testMethodAccuracy: 插入任务 " + taskID + " 延迟 " + delayInFrames + " 帧", LOG_LEVEL_INFO);
 
         // 等待任务执行，通过 tick() 方法的执行来验证
@@ -97,8 +99,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         for (var i:Number = 0; i < numberOfTasks; i++) {
             var taskID:String = "perfInsertTask" + i;
             var delayInFrames:Number = Math.floor(Math.random() * 10000); // 随机延迟，限制在10,000帧以内
-            this.scheduler.evaluateAndInsertTask(taskID, delayInFrames);
-            this.addTaskToTable(taskID, this.currentFrame + delayInFrames);
+            var node:TaskIDNode = this.scheduler.evaluateAndInsertTask(taskID, delayInFrames);
+            this.addTaskToTable(taskID, node, this.currentFrame + delayInFrames);
         }
         var insertEndTime:Number = getTimer();
         var insertTotalTime:Number = insertEndTime - insertStartTime;
@@ -108,7 +110,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         var findStartTime:Number = getTimer();
         for (var j:Number = 0; j < numberOfTasks; j++) {
             var findTaskID:String = "perfInsertTask" + Math.floor(Math.random() * numberOfTasks);
-            var node:TaskIDNode = this.scheduler.findTaskInTable(findTaskID);
+            var node:TaskIDNode = this.idNodeTable[findTaskID];
             // 可选：验证找到的节点是否正确
         }
         var findEndTime:Number = getTimer();
@@ -120,7 +122,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         for (var k:Number = 0; k < numberOfTasks; k++) {
             var rescheduleTaskID:String = "perfInsertTask" + k;
             var newDelayInFrames:Number = Math.floor(Math.random() * 10000);
-            this.scheduler.rescheduleTaskByID(rescheduleTaskID, newDelayInFrames);
+            var node:TaskIDNode = this.idNodeTable[rescheduleTaskID];
+            this.scheduler.rescheduleTaskByNode(node, newDelayInFrames);
             var newExpectedFrame:Number = this.currentFrame + newDelayInFrames;
             this.updateExpectedFrame(rescheduleTaskID, newExpectedFrame);
         }
@@ -132,8 +135,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         var deleteStartTime:Number = getTimer();
         for (var l:Number = 0; l < numberOfTasks; l++) {
             var deleteTaskID:String = "perfInsertTask" + l;
-            this.scheduler.removeTaskByID(deleteTaskID);
-            this.deletedTasks.push(deleteTaskID);
+            var node:TaskIDNode = this.idNodeTable[deleteTaskID];
+            this.scheduler.removeTaskByNode(node);
+            this.removeTaskFromTable(deleteTaskID);
         }
         var deleteEndTime:Number = getTimer();
         var deleteTotalTime:Number = deleteEndTime - deleteStartTime;
@@ -158,7 +162,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
     }
 
     /**
-     * 评估 tick 方法的性能表现
+     * 评估 tick 方法的性能表现，并同时进行 CRUD 操作
      * @param numberOfTasks 要调度的任务数量
      */
     public function testTickPerformance(numberOfTasks:Number):Void {
@@ -169,8 +173,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         for (var i:Number = 0; i < numberOfTasks; i++) {
             var taskID:String = "tickPerfTask" + i;
             var delayInFrames:Number = Math.floor(Math.random() * 10000); // 随机延迟，限制在10,000帧以内
-            this.scheduler.evaluateAndInsertTask(taskID, delayInFrames);
-            this.addTaskToTable(taskID, this.currentFrame + delayInFrames);
+            var node:TaskIDNode = this.scheduler.evaluateAndInsertTask(taskID, delayInFrames);
+            this.addTaskToTable(taskID, node, this.currentFrame + delayInFrames);
         }
         var insertEndTime:Number = getTimer();
         var insertTotalTime:Number = insertEndTime - insertStartTime;
@@ -181,8 +185,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
         // 记录所有任务的预期执行帧
         var maxExpectedFrame:Number = 0;
-        for (var j:Number = 0; j < this.taskTable.length; j++) {
-            var expectedFrame:Number = this.taskTable[j].expectedFrame;
+        for (var taskID:String in this.idNodeTable) {
+            var expectedFrame:Number = this.taskTable[this.getTaskIndex(taskID)].expectedFrame;
             if (expectedFrame > maxExpectedFrame) {
                 maxExpectedFrame = expectedFrame;
             }
@@ -190,15 +194,23 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
         // 模拟 tick 直到所有任务执行完毕或达到最大帧数
         while (this.executedTasksCount < this.taskTable.length && this.currentFrame <= maxExpectedFrame) {
+            // 执行 tick
             var tasks:TaskIDLinkedList = this.scheduler.tick();
             if (tasks != null) {
                 var node:TaskIDNode = tasks.getFirst();
                 while (node != null) {
+                    // this.log("执行任务: " + node.taskID + " 在帧: " + this.currentFrame, LOG_LEVEL_DEBUG);
                     this.executedTasksCount++;
                     this.updateActualFrame(node.taskID, this.currentFrame);
+                    // 从哈希表中移除已执行的任务
+                    this.removeTaskFromTable(node.taskID);
                     node = node.next;
                 }
             }
+
+            // 执行随机 CRUD 操作
+            this.performRandomCRUD();
+
             this.currentFrame++;
         }
 
@@ -270,6 +282,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
                 this.log("执行任务: " + node.taskID + " 在帧: " + this.currentFrame, LOG_LEVEL_DEBUG);
                 this.executedTasksCount++;
                 this.updateActualFrame(node.taskID, this.currentFrame);
+                // 从哈希表中移除已执行的任务
+                this.removeTaskFromTable(node.taskID);
                 node = node.next;
             }
         }
@@ -309,7 +323,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         }
 
         // 限制最大帧数为10,000，以避免无限运行
-        if (this.currentFrame > 10000) {
+        if (this.currentFrame > 10) {
             _root.onEnterFrame = undefined; // 强制结束测试
             this.log("测试已达到最大帧数，强制结束。", LOG_LEVEL_ERROR);
             this.displayPerformanceTestResults();
@@ -339,14 +353,14 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
             // 第三级时间轮任务
             {taskID: "task7", delayInFrames: 1801, expectedFrame: this.currentFrame + 1801},
-            {taskID: "task8", delayInFrames: 36000, expectedFrame: this.currentFrame + 36000}, // 调整到10,000帧以内
-            {taskID: "task9", delayInFrames: 72000, expectedFrame: this.currentFrame + 72000}, // 调整到10,000帧以内
-            {taskID: "task17", delayInFrames: 54000, expectedFrame: this.currentFrame + 54000}, // 调整到10,000帧以内
+            {taskID: "task8", delayInFrames: 36000, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
+            {taskID: "task9", delayInFrames: 72000, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
+            {taskID: "task17", delayInFrames: 54000, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
 
             // 最小堆任务
-            {taskID: "task10", delayInFrames: 108000, expectedFrame: this.currentFrame + 108000}, // 调整到10,000帧以内
-            {taskID: "task11", delayInFrames: 108001, expectedFrame: this.currentFrame + 108001}, // 调整到10,000帧以内
-            {taskID: "task18", delayInFrames: 200000, expectedFrame: this.currentFrame + 200000}, // 调整到10,000帧以内
+            {taskID: "task10", delayInFrames: 108000, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
+            {taskID: "task11", delayInFrames: 108001, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
+            {taskID: "task18", delayInFrames: 200000, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
 
             // 并发任务
             {taskID: "task12", delayInFrames: 150, expectedFrame: this.currentFrame + 150},
@@ -355,12 +369,12 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
             // 边界情况
             {taskID: "task19", delayInFrames: 149, expectedFrame: this.currentFrame + 149}, // 与 task2 同时
-            {taskID: "task20", delayInFrames: 108001, expectedFrame: this.currentFrame + 108001}, // 调整到10,000帧以内
+            {taskID: "task20", delayInFrames: 108001, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
 
             // 精度阈值测试
             {taskID: "task21", delayInFrames: 1650, expectedFrame: this.currentFrame + 1650}, // 接近第二级阈值但有精度问题
-            {taskID: "task22", delayInFrames: 36600, expectedFrame: this.currentFrame + 36600}, // 调整到10,000帧以内
-            {taskID: "task23", delayInFrames: 36601, expectedFrame: this.currentFrame + 36601}, // 调整到10,000帧以内
+            {taskID: "task22", delayInFrames: 36600, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
+            {taskID: "task23", delayInFrames: 36601, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
 
             // 更多边界测试
             {taskID: "task24", delayInFrames: 499, expectedFrame: this.currentFrame + 499},
@@ -369,9 +383,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             {taskID: "task27", delayInFrames: 1799, expectedFrame: this.currentFrame + 1799},
             {taskID: "task28", delayInFrames: 1800, expectedFrame: this.currentFrame + 1800},
             {taskID: "task29", delayInFrames: 1801, expectedFrame: this.currentFrame + 1801},
-            {taskID: "task30", delayInFrames: 71999, expectedFrame: this.currentFrame + 71999}, // 调整到10,000帧以内
-            {taskID: "task31", delayInFrames: 72000, expectedFrame: this.currentFrame + 72000}, // 调整到10,000帧以内
-            {taskID: "task32", delayInFrames: 72001, expectedFrame: this.currentFrame + 72001}, // 调整到10,000帧以内
+            {taskID: "task30", delayInFrames: 71999, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
+            {taskID: "task31", delayInFrames: 72000, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
+            {taskID: "task32", delayInFrames: 72001, expectedFrame: this.currentFrame + 10000}, // 调整到10,000帧以内
 
             // 精度阈值任务
             {taskID: "task33", delayInFrames: 599, expectedFrame: this.currentFrame + 599},
@@ -380,7 +394,6 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             // 边界测试任务
             {taskID: "task35", delayInFrames: 0, expectedFrame: this.currentFrame}, // 0帧延迟，立即执行
             {taskID: "task36", delayInFrames: 1, expectedFrame: this.currentFrame + 1}, // 1帧延迟，立即执行
-            // 将 task37 的延迟从1000000帧调整为10000帧以内
             {taskID: "task37", delayInFrames: 10000, expectedFrame: this.currentFrame + 10000} // 极大延迟调整为10,000帧
         ];
 
@@ -392,8 +405,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
                 task.expectedFrame = this.currentFrame + 10000;
                 this.log("调整任务 " + task.taskID + " 的延迟到10,000帧以内", LOG_LEVEL_DEBUG);
             }
-            this.addTaskToTable(task.taskID, task.expectedFrame);
-            this.scheduler.evaluateAndInsertTask(task.taskID, task.delayInFrames);
+            var node:TaskIDNode = this.scheduler.evaluateAndInsertTask(task.taskID, task.delayInFrames);
+            this.addTaskToTable(task.taskID, node, task.expectedFrame);
             this.log(task.taskID + " 插入延迟 " + task.delayInFrames + " 帧，预期在帧 " + task.expectedFrame + " 执行", LOG_LEVEL_DEBUG);
         }
     }
@@ -426,19 +439,36 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
                 task.expectedFrame = this.currentFrame + 10000;
                 this.log("调整任务 " + task.taskID + " 的延迟到10,000帧以内", LOG_LEVEL_DEBUG);
             }
-            this.addTaskToTable(task.taskID, task.expectedFrame);
-            this.scheduler.evaluateAndInsertTask(task.taskID, task.delayInFrames);
+            var node:TaskIDNode = this.scheduler.evaluateAndInsertTask(task.taskID, task.delayInFrames);
+            this.addTaskToTable(task.taskID, node, task.expectedFrame);
             this.log(task.taskID + " 插入延迟 " + task.delayInFrames + " 帧，预期在帧 " + task.expectedFrame + " 执行", LOG_LEVEL_DEBUG);
         }
     }
 
     /**
-     * 添加任务到任务表
+     * 添加任务到任务表和 id-node 哈希表
      * @param taskID        任务ID
+     * @param node          任务节点
      * @param expectedFrame 预期执行帧
      */
-    private function addTaskToTable(taskID:String, expectedFrame:Number):Void {
+    private function addTaskToTable(taskID:String, node:TaskIDNode, expectedFrame:Number):Void {
         this.taskTable.push({taskID: taskID, expectedFrame: expectedFrame, actualFrame: null});
+        this.idNodeTable[taskID] = node;
+    }
+
+    /**
+     * 从任务表和 id-node 哈希表中移除任务
+     * @param taskID 任务ID
+     */
+    private function removeTaskFromTable(taskID:String):Void {
+        delete this.idNodeTable[taskID];
+        // 从任务表中移除
+        for (var i:Number = 0; i < this.taskTable.length; i++) {
+            if (this.taskTable[i].taskID == taskID) {
+                this.taskTable.splice(i, 1);
+                break;
+            }
+        }
     }
 
     /**
@@ -447,11 +477,132 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
      * @param actualFrame 实际执行帧
      */
     private function updateActualFrame(taskID:String, actualFrame:Number):Void {
+        var index:Number = this.getTaskIndex(taskID);
+        if (index != -1) {
+            this.taskTable[index].actualFrame = actualFrame;
+        }
+    }
+
+    /**
+     * 获取任务在 taskTable 中的索引
+     * @param taskID 任务ID
+     * @return 任务在 taskTable 中的索引，若未找到返回 -1
+     */
+    private function getTaskIndex(taskID:String):Number {
         for (var i:Number = 0; i < this.taskTable.length; i++) {
             if (this.taskTable[i].taskID == taskID) {
-                this.taskTable[i].actualFrame = actualFrame;
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 执行随机 CRUD 操作，根据比例插入 50%、删除 20%、重新调度 20%、查找 10%
+     */
+    private function performRandomCRUD():Void {
+        var rand:Number = Math.random();
+
+        if (rand < 0.5) {
+            // 插入 50%
+            this.randomInsert();
+        } else if (rand < 0.7) {
+            // 删除 20%
+            this.randomDelete();
+        } else if (rand < 0.9) {
+            // 重新调度 20%
+            this.randomReschedule();
+        } else {
+            // 查找 10%
+            this.randomFind();
+        }
+    }
+
+    /**
+     * 随机插入一个新任务
+     */
+    private function randomInsert():Void {
+        var taskID:String = "randomInsertTask" + getTimer() + Math.floor(Math.random() * 1000);
+        var delayInFrames:Number = Math.floor(Math.random() * 10000);
+        var node:TaskIDNode = this.scheduler.evaluateAndInsertTask(taskID, delayInFrames);
+        this.addTaskToTable(taskID, node, this.currentFrame + delayInFrames);
+        // this.log("随机插入任务: " + taskID + " 延迟 " + delayInFrames + " 帧，预期在帧 " + (this.currentFrame + delayInFrames) + " 执行", LOG_LEVEL_DEBUG);
+    }
+
+    /**
+     * 随机删除一个现有任务
+     */
+    private function randomDelete():Void {
+        var keys:Array = [];
+        for (var key:String in this.idNodeTable) {
+            keys.push(key);
+        }
+        if (keys.length == 0) {
+            return; // 无任务可删除
+        }
+        var randomIndex:Number = Math.floor(Math.random() * keys.length);
+        var taskID:String = keys[randomIndex];
+        var node:TaskIDNode = this.idNodeTable[taskID];
+        this.scheduler.removeTaskByNode(node);
+        this.removeTaskFromTable(taskID);
+        // this.log("随机删除任务: " + taskID, LOG_LEVEL_DEBUG);
+    }
+
+    /**
+     * 随机重新调度一个现有任务
+     */
+    private function randomReschedule():Void {
+        var keys:Array = [];
+        for (var key:String in this.idNodeTable) {
+            keys.push(key);
+        }
+        if (keys.length == 0) {
+            return; // 无任务可重新调度
+        }
+        var randomIndex:Number = Math.floor(Math.random() * keys.length);
+        var taskID:String = keys[randomIndex];
+        var node:TaskIDNode = this.idNodeTable[taskID];
+        var newDelayInFrames:Number = Math.floor(Math.random() * 10000);
+        this.scheduler.rescheduleTaskByNode(node, newDelayInFrames);
+        var newExpectedFrame:Number = this.currentFrame + newDelayInFrames;
+        this.updateExpectedFrame(taskID, newExpectedFrame);
+        // this.log("随机重新调度任务: " + taskID + " 新延迟: " + newDelayInFrames + " 帧，预期在帧 " + newExpectedFrame + " 执行", LOG_LEVEL_DEBUG);
+    }
+
+    /**
+     * 更新任务的预期执行帧
+     * @param taskID           任务ID
+     * @param newExpectedFrame 新预期执行帧
+     */
+    private function updateExpectedFrame(taskID:String, newExpectedFrame:Number):Void {
+        for (var i:Number = 0; i < this.taskTable.length; i++) {
+            if (this.taskTable[i].taskID == taskID) {
+                this.taskTable[i].expectedFrame = newExpectedFrame;
                 break;
             }
+        }
+    }
+
+
+    /**
+     * 随机查找一个现有任务
+     */
+    private function randomFind():Void {
+        var keys:Array = [];
+        for (var key:String in this.idNodeTable) {
+            keys.push(key);
+        }
+        if (keys.length == 0) {
+            return; // 无任务可查找
+        }
+        var randomIndex:Number = Math.floor(Math.random() * keys.length);
+        var taskID:String = keys[randomIndex];
+        var node:TaskIDNode = this.idNodeTable[taskID];
+        // 可选：验证找到的节点是否正确
+        if (node != null && node.taskID == taskID) {
+            // this.log("随机查找任务成功: " + taskID, LOG_LEVEL_DEBUG);
+        } else {
+            this.log("随机查找任务失败: " + taskID, LOG_LEVEL_ERROR);
         }
     }
 
@@ -475,28 +626,13 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         var displayedTasksCount:Number = 0;
         for (var i:Number = 0; i < this.taskTable.length && displayedTasksCount < displayLimit; i++) {
             var task:Object = this.taskTable[i];
-            if (task.actualFrame == null || this.currentFrame - task.actualFrame < displayLimit) { // 仅显示最近执行或未执行的任务
-                var difference:Number = (task.actualFrame != null) ? (task.actualFrame - task.expectedFrame) : 0;
-                var differenceText:String = (task.actualFrame != null) ? difference.toString() : "Pending";
-                displayText += task.taskID + "\t" + task.expectedFrame + "\t" + (task.actualFrame != null ? task.actualFrame : "待执行") + "\t" + differenceText + "\n";
-                displayedTasksCount++;
-            }
+            var difference:Number = (task.actualFrame != null) ? (task.actualFrame - task.expectedFrame) : 0;
+            var differenceText:String = (task.actualFrame != null) ? difference.toString() : "Pending";
+            displayText += task.taskID + "\t" + task.expectedFrame + "\t" + (task.actualFrame != null ? task.actualFrame : "待执行") + "\t" + differenceText + "\n";
+            displayedTasksCount++;
         }
         if (this.taskTable.length > displayLimit) {
             displayText += "...\n仅显示前 " + displayLimit + " 个任务\n";
-        }
-
-        // 显示已删除的任务（数量限制）
-        displayText += "\n已删除的任务 (最多显示 " + displayLimit + "):\n";
-        for (var j:Number = 0; j < this.deletedTasks.length && j < displayLimit; j++) {
-            displayText += this.deletedTasks[j] + "\n";
-        }
-
-        // 显示已重新调度的任务（数量限制）
-        displayText += "\n已重新调度的任务 (最多显示 " + displayLimit + "):\n";
-        for (var k:Number = 0; k < this.rescheduledTasks.length && k < displayLimit; k++) {
-            var rescheduled:Object = this.rescheduledTasks[k];
-            displayText += rescheduled.taskID + "\t新预期帧: " + rescheduled.newExpectedFrame + "\n";
         }
 
         // 显示性能测试结果
@@ -538,8 +674,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
         for (var i:Number = 0; i < deleteTasksConfig.length; i++) {
             var taskID:String = deleteTasksConfig[i];
-            this.scheduler.removeTaskByID(taskID);
-            this.deletedTasks.push(taskID);
+            var node:TaskIDNode = this.idNodeTable[taskID];
+            this.scheduler.removeTaskByNode(node);
+            this.removeTaskFromTable(taskID);
             this.log("已删除任务: " + taskID, LOG_LEVEL_DEBUG);
         }
     }
@@ -563,27 +700,14 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
                 task.newDelayInFrames = 10000;
                 this.log("调整重新调度任务 " + task.taskID + " 的新延迟到10,000帧以内", LOG_LEVEL_DEBUG);
             }
-            this.scheduler.rescheduleTaskByID(task.taskID, task.newDelayInFrames);
+            var node:TaskIDNode = this.idNodeTable[task.taskID];
+            this.scheduler.rescheduleTaskByNode(node, task.newDelayInFrames);
             var newExpectedFrame:Number = this.currentFrame + task.newDelayInFrames;
-            this.rescheduledTasks.push({taskID: task.taskID, newExpectedFrame: newExpectedFrame});
             this.updateExpectedFrame(task.taskID, newExpectedFrame);
             this.log("重新调度任务: " + task.taskID + " 新延迟: " + task.newDelayInFrames + " 帧，预期在帧 " + newExpectedFrame + " 执行", LOG_LEVEL_DEBUG);
         }
     }
 
-    /**
-     * 更新任务的预期执行帧
-     * @param taskID           任务ID
-     * @param newExpectedFrame 新预期执行帧
-     */
-    private function updateExpectedFrame(taskID:String, newExpectedFrame:Number):Void {
-        for (var i:Number = 0; i < this.taskTable.length; i++) {
-            if (this.taskTable[i].taskID == taskID) {
-                this.taskTable[i].expectedFrame = newExpectedFrame;
-                break;
-            }
-        }
-    }
 
     // ==========================
     // 日志函数
