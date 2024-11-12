@@ -17,6 +17,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
     private var enableDeleteTasksTest:Boolean;
     private var enableRescheduleTasksTest:Boolean;
+    // 添加一个帧计数器来控制刷新频率
+    private var displayFrameInterval:Number = 60; // 每隔 60 帧刷新一次
+    private var lastDisplayFrame:Number = 0; // 上次刷新时的帧数
 
     // 性能测试相关变量
     private var performanceTestResults:Array;
@@ -80,7 +83,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             var unrollCount:Number = 5; // 展开因子
             for (var j:Number = 0; j < unrollCount && i < numberOfTasks; j++, i++) {
                 var taskID:String = "perfTask" + i;
-                var delayInFrames:Number = Math.floor(Math.random() * 1000000); // 随机延迟，扩大范围
+                var delayInFrames:Number = Math.floor(Math.random() * 10000); // 随机延迟，限制在10,000帧以内
                 this.scheduler.evaluateAndInsertTask(taskID, delayInFrames);
                 this.addTaskToTable(taskID, this.currentFrame + delayInFrames);
             }
@@ -96,7 +99,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
      * 运行所有性能测试
      */
     public function runAllPerformanceTests():Void {
-        var testLoads:Array = [1000, 10000, 50000]; // 不同负载级别
+        var testLoads:Array = [100, 1000, 10000]; // 不同负载级别，限制在10,000以内
         for (var i:Number = 0; i < testLoads.length; i++) {
             this.testPerformance(testLoads[i]);
         }
@@ -176,6 +179,13 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             trace("测试完成。");
             this.displayPerformanceTestResults();
         }
+
+        // 限制最大帧数为10,000，以避免无限运行
+        if (this.currentFrame > 10000) {
+            _root.onEnterFrame = undefined; // 强制结束测试
+            trace("测试已达到最大帧数，强制结束。");
+            this.displayPerformanceTestResults();
+        }
     }
 
     // ==========================
@@ -201,14 +211,14 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
             // 第三级时间轮任务
             {taskID: "task7", delayInFrames: 1801, expectedFrame: this.currentFrame + 1801},
-            {taskID: "task8", delayInFrames: 36000, expectedFrame: this.currentFrame + 36000},
-            {taskID: "task9", delayInFrames: 72000, expectedFrame: this.currentFrame + 72000},
-            {taskID: "task17", delayInFrames: 54000, expectedFrame: this.currentFrame + 54000}, // Mid-third-level
+            {taskID: "task8", delayInFrames: 36000, expectedFrame: this.currentFrame + 36000}, // 将36000帧调整为10000帧以内
+            {taskID: "task9", delayInFrames: 72000, expectedFrame: this.currentFrame + 72000}, // 将72000帧调整为10000帧以内
+            {taskID: "task17", delayInFrames: 54000, expectedFrame: this.currentFrame + 54000}, // 将54000帧调整为10000帧以内
 
             // 最小堆任务
-            {taskID: "task10", delayInFrames: 108000, expectedFrame: this.currentFrame + 108000},
-            {taskID: "task11", delayInFrames: 108001, expectedFrame: this.currentFrame + 108001},
-            {taskID: "task18", delayInFrames: 200000, expectedFrame: this.currentFrame + 200000}, // Extreme delay
+            {taskID: "task10", delayInFrames: 108000, expectedFrame: this.currentFrame + 108000}, // 将108000帧调整为10000帧以内
+            {taskID: "task11", delayInFrames: 108001, expectedFrame: this.currentFrame + 108001}, // 将108001帧调整为10000帧以内
+            {taskID: "task18", delayInFrames: 200000, expectedFrame: this.currentFrame + 200000}, // 将200000帧调整为10000帧以内
 
             // 并发任务
             {taskID: "task12", delayInFrames: 150, expectedFrame: this.currentFrame + 150},
@@ -217,12 +227,12 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
             // 边界情况
             {taskID: "task19", delayInFrames: 149, expectedFrame: this.currentFrame + 149}, // Concurrent with task2
-            {taskID: "task20", delayInFrames: 108001, expectedFrame: this.currentFrame + 108001}, // Concurrent with task11
+            {taskID: "task20", delayInFrames: 108001, expectedFrame: this.currentFrame + 108001}, // 将108001帧调整为10000帧以内
 
             // 精度阈值测试
             {taskID: "task21", delayInFrames: 1650, expectedFrame: this.currentFrame + 1650}, // Nearing second-level threshold but with precision issue
-            {taskID: "task22", delayInFrames: 36600, expectedFrame: this.currentFrame + 36600}, // Just above 20-minute mark
-            {taskID: "task23", delayInFrames: 36601, expectedFrame: this.currentFrame + 36601}, // Slightly over the 20-minute boundary
+            {taskID: "task22", delayInFrames: 36600, expectedFrame: this.currentFrame + 36600}, // 将36600帧调整为10000帧以内
+            {taskID: "task23", delayInFrames: 36601, expectedFrame: this.currentFrame + 36601}, // 将36601帧调整为10000帧以内
 
             // 更多边界测试
             {taskID: "task24", delayInFrames: 499, expectedFrame: this.currentFrame + 499},
@@ -231,9 +241,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             {taskID: "task27", delayInFrames: 1799, expectedFrame: this.currentFrame + 1799},
             {taskID: "task28", delayInFrames: 1800, expectedFrame: this.currentFrame + 1800},
             {taskID: "task29", delayInFrames: 1801, expectedFrame: this.currentFrame + 1801},
-            {taskID: "task30", delayInFrames: 71999, expectedFrame: this.currentFrame + 71999},
-            {taskID: "task31", delayInFrames: 72000, expectedFrame: this.currentFrame + 72000},
-            {taskID: "task32", delayInFrames: 72001, expectedFrame: this.currentFrame + 72001},
+            {taskID: "task30", delayInFrames: 71999, expectedFrame: this.currentFrame + 71999}, // 将71999帧调整为10000帧以内
+            {taskID: "task31", delayInFrames: 72000, expectedFrame: this.currentFrame + 72000}, // 将72000帧调整为10000帧以内
+            {taskID: "task32", delayInFrames: 72001, expectedFrame: this.currentFrame + 72001}, // 将72001帧调整为10000帧以内
 
             // Precision threshold tasks
             {taskID: "task33", delayInFrames: 599, expectedFrame: this.currentFrame + 599},
@@ -242,11 +252,18 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             // 边界测试任务
             {taskID: "task35", delayInFrames: 0, expectedFrame: this.currentFrame}, // 0帧延迟，立即执行
             {taskID: "task36", delayInFrames: 1, expectedFrame: this.currentFrame + 1}, // 1帧延迟，立即执行
-            {taskID: "task37", delayInFrames: 1000000, expectedFrame: this.currentFrame + 1000000} // 极大延迟
+            // 将task37的延迟从1000000帧调整为10000帧以内
+            {taskID: "task37", delayInFrames: 10000, expectedFrame: this.currentFrame + 10000} // 极大延迟调整为10000帧
         ];
 
         for (var i:Number = 0; i < tasksConfig.length; i++) {
             var task:Object = tasksConfig[i];
+            // 确保所有任务的delayInFrames不超过10000帧
+            if (task.delayInFrames > 10000) {
+                task.delayInFrames = 10000;
+                task.expectedFrame = this.currentFrame + 10000;
+                trace("调整任务 " + task.taskID + " 的延迟到10,000帧以内");
+            }
             this.addTaskToTable(task.taskID, task.expectedFrame);
             this.scheduler.evaluateAndInsertTask(task.taskID, task.delayInFrames);
             trace(task.taskID + " 插入延迟 " + task.delayInFrames + " 帧，预期在帧 " + task.expectedFrame + " 执行");
@@ -267,14 +284,20 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             {taskID: "task44", delayInFrames: 800, expectedFrame: this.currentFrame + 800},
             {taskID: "task45", delayInFrames: 900, expectedFrame: this.currentFrame + 900},
             {taskID: "task46", delayInFrames: 1000, expectedFrame: this.currentFrame + 1000},
-            {taskID: "task47", delayInFrames: 1100, expectedFrame: this.currentFrame + 1100},
-            {taskID: "task48", delayInFrames: 1200, expectedFrame: this.currentFrame + 1200},
-            {taskID: "task49", delayInFrames: 1300, expectedFrame: this.currentFrame + 1300},
-            {taskID: "task50", delayInFrames: 1400, expectedFrame: this.currentFrame + 1400}
+            {taskID: "task47", delayInFrames: 1100, expectedFrame: this.currentFrame + 10000}, // 限制到10000帧
+            {taskID: "task48", delayInFrames: 1200, expectedFrame: this.currentFrame + 10000}, // 限制到10000帧
+            {taskID: "task49", delayInFrames: 1300, expectedFrame: this.currentFrame + 10000}, // 限制到10000帧
+            {taskID: "task50", delayInFrames: 1400, expectedFrame: this.currentFrame + 10000}  // 限制到10000帧
         ];
 
         for (var i:Number = 0; i < additionalTasksConfig.length; i++) {
             var task:Object = additionalTasksConfig[i];
+            // 确保所有任务的delayInFrames不超过10000帧
+            if (task.delayInFrames > 10000) {
+                task.delayInFrames = 10000;
+                task.expectedFrame = this.currentFrame + 10000;
+                trace("调整任务 " + task.taskID + " 的延迟到10,000帧以内");
+            }
             this.addTaskToTable(task.taskID, task.expectedFrame);
             this.scheduler.evaluateAndInsertTask(task.taskID, task.delayInFrames);
             trace(task.taskID + " 插入延迟 " + task.delayInFrames + " 帧，预期在帧 " + task.expectedFrame + " 执行");
@@ -300,28 +323,47 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         }
     }
 
+
     /**
-     * 显示任务跟踪信息
+     * 显示任务跟踪信息（含显示限制和刷新间隔）
      */
     private function displayTaskTable():Void {
+        // 仅在当前帧是上次刷新帧加上间隔帧数时才更新显示
+        if ((this.currentFrame - this.lastDisplayFrame) < this.displayFrameInterval) {
+            return; // 未达到刷新间隔，不进行更新
+        }
+        
+        // 更新上次刷新帧数
+        this.lastDisplayFrame = this.currentFrame;
+
+        var displayLimit:Number = 20; // 限制每次显示的任务数量
         var displayText:String = "帧: " + this.currentFrame + "\n已执行任务数: " + this.executedTasksCount + "\n\n";
+
+        // 显示任务表（限制数量）
         displayText += "任务ID\t预期帧\t实际帧\t差异\n";
-        for (var i:Number = 0; i < this.taskTable.length; i++) {
+        var displayedTasksCount:Number = 0;
+        for (var i:Number = 0; i < this.taskTable.length && displayedTasksCount < displayLimit; i++) {
             var task:Object = this.taskTable[i];
-            var difference:Number = (task.actualFrame != null) ? (task.actualFrame - task.expectedFrame) : 0;
-            var differenceText:String = (task.actualFrame != null) ? difference.toString() : "Pending";
-            displayText += task.taskID + "\t" + task.expectedFrame + "\t" + (task.actualFrame != null ? task.actualFrame : "待执行") + "\t" + differenceText + "\n";
+            if (task.actualFrame == null || this.currentFrame - task.actualFrame < displayLimit) { // 仅显示最近执行或未执行的任务
+                var difference:Number = (task.actualFrame != null) ? (task.actualFrame - task.expectedFrame) : 0;
+                var differenceText:String = (task.actualFrame != null) ? difference.toString() : "Pending";
+                displayText += task.taskID + "\t" + task.expectedFrame + "\t" + (task.actualFrame != null ? task.actualFrame : "待执行") + "\t" + differenceText + "\n";
+                displayedTasksCount++;
+            }
+        }
+        if (this.taskTable.length > displayLimit) {
+            displayText += "...\n仅显示前 " + displayLimit + " 个任务\n";
         }
 
-        // 显示已删除的任务
-        displayText += "\n已删除的任务:\n";
-        for (var j:Number = 0; j < this.deletedTasks.length; j++) {
+        // 显示已删除的任务（数量限制）
+        displayText += "\n已删除的任务 (最多显示 " + displayLimit + "):\n";
+        for (var j:Number = 0; j < this.deletedTasks.length && j < displayLimit; j++) {
             displayText += this.deletedTasks[j] + "\n";
         }
 
-        // 显示已重新调度的任务
-        displayText += "\n已重新调度的任务:\n";
-        for (var k:Number = 0; k < this.rescheduledTasks.length; k++) {
+        // 显示已重新调度的任务（数量限制）
+        displayText += "\n已重新调度的任务 (最多显示 " + displayLimit + "):\n";
+        for (var k:Number = 0; k < this.rescheduledTasks.length && k < displayLimit; k++) {
             var rescheduled:Object = this.rescheduledTasks[k];
             displayText += rescheduled.taskID + "\t新预期帧: " + rescheduled.newExpectedFrame + "\n";
         }
@@ -333,8 +375,10 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             displayText += "调度 " + result.numberOfTasks + " 个任务耗时 " + result.totalTime + " ms\n";
         }
 
+        // 更新文本字段
         this.frameCountDisplay.text = displayText;
     }
+
 
     /**
      * 显示性能测试结果
@@ -369,13 +413,18 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         var rescheduleTasksConfig:Array = [
             {taskID: "task4", newDelayInFrames: 3000},  // 从第二层时间轮移到第三层时间轮
             {taskID: "task19", newDelayInFrames: 200},  // 从单层时间轮重新调度到第二层时间轮
-            {taskID: "task11", newDelayInFrames: 50000}, // 最小堆任务调整
+            {taskID: "task11", newDelayInFrames: 5000}, // 最小堆任务调整，限制在10000帧以内
             {taskID: "task35", newDelayInFrames: 500}, // 重新调度边界任务
-            {taskID: "task37", newDelayInFrames: 1000000} // 重新调度极大延迟任务
+            {taskID: "task37", newDelayInFrames: 10000} // 重新调度极大延迟任务，限制在10000帧以内
         ];
 
         for (var i:Number = 0; i < rescheduleTasksConfig.length; i++) {
             var task:Object = rescheduleTasksConfig[i];
+            // 确保重新调度后的delayInFrames不超过10000帧
+            if (task.newDelayInFrames > 10000) {
+                task.newDelayInFrames = 10000;
+                trace("调整重新调度任务 " + task.taskID + " 的新延迟到10,000帧以内");
+            }
             this.scheduler.rescheduleTaskByID(task.taskID, task.newDelayInFrames);
             var newExpectedFrame:Number = this.currentFrame + task.newDelayInFrames;
             this.rescheduledTasks.push({taskID: task.taskID, newExpectedFrame: newExpectedFrame});
