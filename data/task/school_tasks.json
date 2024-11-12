@@ -1,16 +1,16 @@
 {
     "tasks": [
         {
-            "id": 20001,
-            "title": "$SIDE_TITLE_20001",
-            "description": "$SIDE_DESCRIPTION_20001",
+            "id": 30001,
+            "title": "$SIDE_TITLE_30001",
+            "description": "$SIDE_DESCRIPTION_30001",
 
             "get_requirements": [27],
-            "get_conversation": "$SIDE_GET_20001",
+            "get_conversation": "$SIDE_GET_30001",
             "get_npc": "Shop Girl",
 
             "finish_requirements": [],
-            "finish_conversation": "$SIDE_FINISH_20001",
+            "finish_conversation": "$SIDE_FINISH_30001",
             "finish_npc": "Bat",
             "rewards": [
                 "金币#5000",
@@ -23,18 +23,18 @@
             "chain":"大学#1"
         },
         {
-            "id": 20002,
-            "title": "$SIDE_TITLE_20002",
-            "description": "$SIDE_DESCRIPTION_20002",
+            "id": 30002,
+            "title": "$SIDE_TITLE_30002",
+            "description": "$SIDE_DESCRIPTION_30002",
 
-            "get_requirements": [20001],
-            "get_conversation": "$SIDE_GET_20002",
+            "get_requirements": [30001],
+            "get_conversation": "$SIDE_GET_30002",
             "get_npc": "Bat",
 
             "finish_requirements": [
                 "大学城周边#简单"
             ],
-            "finish_conversation": "$SIDE_FINISH_20002",
+            "finish_conversation": "$SIDE_FINISH_30002",
             "finish_npc": "Bat",
             "rewards": [
                 "金币#15000",
@@ -47,16 +47,16 @@
             "chain":"大学#2"
         },
         {
-            "id": 20003,
-            "title": "$SIDE_TITLE_20003",
-            "description": "$SIDE_DESCRIPTION_20003",
+            "id": 30003,
+            "title": "$SIDE_TITLE_30003",
+            "description": "$SIDE_DESCRIPTION_30003",
 
-            "get_requirements": [20002],
-            "get_conversation": "$SIDE_GET_20003",
+            "get_requirements": [30002],
+            "get_conversation": "$SIDE_GET_30003",
             "get_npc": "Bat",
 
             "finish_requirements": [],
-            "finish_conversation": "$SIDE_FINISH_20003",
+            "finish_conversation": "$SIDE_FINISH_30003",
             "finish_npc": "Tomboy",
             "rewards": [
                 "金币#5000",
@@ -69,18 +69,18 @@
             "chain":"大学#3"
         },
         {
-            "id": 20004,
-            "title": "$SIDE_TITLE_20004",
-            "description": "$SIDE_DESCRIPTION_20004",
+            "id": 30004,
+            "title": "$SIDE_TITLE_30004",
+            "description": "$SIDE_DESCRIPTION_30004",
 
-            "get_requirements": [20003],
-            "get_conversation": "$SIDE_GET_20004",
+            "get_requirements": [30003],
+            "get_conversation": "$SIDE_GET_30004",
             "get_npc": "Tomboy",
 
             "finish_requirements": [
                 "堕落城下水道入口#简单"
             ],
-            "finish_conversation": "$SIDE_FINISH_20004",
+            "finish_conversation": "$SIDE_FINISH_30004",
             "finish_npc": "Tomboy",
             "rewards": [
                 "金币#40000",
@@ -93,16 +93,16 @@
             "chain":"大学#4"
         },
         {
-            "id": 20005,
-            "title": "$SIDE_TITLE_20005",
-            "description": "$SIDE_DESCRIPTION_20005",
+            "id": 30005,
+            "title": "$SIDE_TITLE_30005",
+            "description": "$SIDE_DESCRIPTION_30005",
 
-            "get_requirements": [20004],
-            "get_conversation": "$SIDE_GET_20005",
+            "get_requirements": [30004],
+            "get_conversation": "$SIDE_GET_30005",
             "get_npc": "Tomboy",
 
             "finish_requirements": [],
-            "finish_conversation": "$SIDE_FINISH_20005",
+            "finish_conversation": "$SIDE_FINISH_30005",
             "finish_npc": "Shop Girl",
             "rewards": [
                 "金币#5000",
