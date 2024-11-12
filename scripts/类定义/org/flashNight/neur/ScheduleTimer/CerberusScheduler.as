@@ -1034,7 +1034,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @param taskID    要查找的任务ID
      * @return          找到的任务节点，或 null
      */
-    private function findTaskInTable(taskID:String):TaskIDNode {
+    public function findTaskInTable(taskID:String):TaskIDNode {
         return this.taskTable[taskID] || null;
     }
 
@@ -1173,6 +1173,30 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             this.removeTaskFromTable(currentNode.taskID);  // 从哈希表中移除任务
             currentNode = currentNode.next;
         }
+    }
+
+    /**
+     * 获取单层时间轮
+     * @return 单层时间轮实例
+     */
+    public function getSingleLevelTimeWheel():SingleLevelTimeWheel {
+        return this.singleLevelTimeWheel;
+    }
+
+    /**
+     * 获取第二级时间轮
+     * @return 第二级时间轮实例
+     */
+    public function getSecondLevelTimeWheel():SingleLevelTimeWheel {
+        return this.secondLevelTimeWheel;
+    }
+
+    /**
+     * 获取第三级时间轮
+     * @return 第三级时间轮实例
+     */
+    public function getThirdLevelTimeWheel():SingleLevelTimeWheel {
+        return this.thirdLevelTimeWheel;
     }
 }
 
