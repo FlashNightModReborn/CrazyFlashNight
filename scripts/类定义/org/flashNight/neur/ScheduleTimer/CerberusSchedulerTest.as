@@ -276,17 +276,20 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
         // 优化：使用循环展开执行 tick
         var tickChunkSize:Number = 8;
+        var tickFramesProcessed:Number = 0; // 记录处理的帧数
         while (this.currentFrame <= maxExpectedFrame) {
             var tickStartTime:Number = getTimer();
             // 执行 tick
             var tasksExecuted:TaskIDLinkedList = this.scheduler.tick();
             var tickEndTime:Number = getTimer();
-            tickTotalTime += (tickEndTime - tickStartTime);
+            var tickDuration:Number = tickEndTime - tickStartTime;
+            tickTotalTime += tickDuration;
+            tickFramesProcessed++; // 每次循环处理一帧
 
             if (tasksExecuted != null) {
                 var node:TaskIDNode = tasksExecuted.getFirst();
                 while (node != null) {
-                    this.log("执行任务: " + node.taskID + " 在帧: " + this.currentFrame, LOG_LEVEL_DEBUG);
+                    // this.log("执行任务: " + node.taskID + " 在帧: " + this.currentFrame, LOG_LEVEL_DEBUG);
                     this.executedTasksCount++;
                     this.updateActualFrame(node.taskID, this.currentFrame);
                     // 从哈希表中移除已执行的任务
@@ -300,16 +303,22 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
 
         this.log("Tick performance for " + numberOfTasks + " tasks took " + tickTotalTime + " ms", LOG_LEVEL_INFO);
 
+        // 计算每帧平均 tick 耗时
+        var averageTickTime:Number = (tickFramesProcessed > 0) ? (tickTotalTime / tickFramesProcessed) : 0;
+        this.log("Average Tick Time per Frame: " + averageTickTime + " ms", LOG_LEVEL_INFO); // 新增日志输出
+
         // 记录性能测试结果
         this.performanceTestResults.push({
             numberOfTasks: numberOfTasks,
-            tickTime: tickTotalTime
+            tickTime: tickTotalTime,
+            averageTickTime: averageTickTime // 新增平均 tick 耗时
         });
 
         // 总结 tick 性能测试结果的日志输出
         this.log("Tick performance test for " + numberOfTasks + " tasks completed.", LOG_LEVEL_INFO);
         this.log("Detailed Tick Performance Report:\n" +
-                "Tick Time: " + tickTotalTime + " ms\n", LOG_LEVEL_INFO);
+                "Tick Time: " + tickTotalTime + " ms\n" +
+                "Average Tick Time per Frame: " + averageTickTime + " ms\n", LOG_LEVEL_INFO); // 新增平均 tick 耗时的输出
     }
 
     /**
@@ -320,9 +329,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         var currentLoad:Number = 100; // 起始负载级别
 
         // 循环生成负载级别，直到达到或超过限制
-        while (currentLoad <= 3000) {
+        while (currentLoad <= 100000) {
             testLoads.push(currentLoad);
-            currentLoad += 100;
+            currentLoad *= 3;
             currentLoad = Math.floor(currentLoad);
         }
 
@@ -701,7 +710,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             if (result.insertTime != undefined) { // 传统CRUD测试
                 displayText += "任务数: " + result.numberOfTasks + " | 插入耗时: " + result.insertTime + "ms | 查找耗时: " + result.findTime + "ms | 重新调度耗时: " + result.rescheduleTime + "ms | 删除耗时: " + result.deleteTime + "ms\n";
             } else if (result.tickTime != undefined) { // tick性能测试
-                displayText += "任务数: " + result.numberOfTasks + " | Tick耗时: " + result.tickTime + " ms\n";
+                // 新增显示平均 tick 耗时
+                var avgTickTimeText:String = (result.averageTickTime != undefined) ? " | 平均 Tick 耗时: " + result.averageTickTime + " ms" : "";
+                displayText += "任务数: " + result.numberOfTasks + " | Tick耗时: " + result.tickTime + " ms" + avgTickTimeText + "\n";
             }
         }
 
@@ -719,7 +730,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
             if (result.insertTime != undefined) { // 传统CRUD测试
                 summaryText += "任务数: " + result.numberOfTasks + " | 插入耗时: " + result.insertTime + "ms | 查找耗时: " + result.findTime + "ms | 重新调度耗时: " + result.rescheduleTime + "ms | 删除耗时: " + result.deleteTime + "ms\n";
             } else if (result.tickTime != undefined) { // tick性能测试
-                summaryText += "任务数: " + result.numberOfTasks + " | Tick耗时: " + result.tickTime + " ms\n";
+                // 新增显示平均 tick 耗时
+                var avgTickTimeSummary:String = (result.averageTickTime != undefined) ? " | 平均 Tick 耗时: " + result.averageTickTime + " ms" : "";
+                summaryText += "任务数: " + result.numberOfTasks + " | Tick耗时: " + result.tickTime + " ms" + avgTickTimeSummary + "\n";
             }
         }
         this.log(summaryText, LOG_LEVEL_INFO);
