@@ -699,27 +699,46 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @return                 插入的任务节点
      */
     public function evaluateAndInsertTask(taskID:String, delayInFrames:Number):TaskIDNode {
+        // 变量局部化，缓存频繁访问的属性
+        var framesPerSecond:Number = this.framesPerSecond;
+        var singleWheelMaxFrames:Number = this.singleWheelMaxFrames;
+        var firstWhileSecond:Number = this.firstWhileSecond;
+        var secondLevelMaxSeconds:Number = this.secondLevelMaxSeconds;
+        var multiLevelCounter:Number = this.multiLevelCounter;
+        var precisionThreshold:Number = this.precisionThreshold;
+        var secondLevelCounter:Number = this.secondLevelCounter;
+        var secondLevelCounterLimit:Number = this.secondLevelCounterLimit;
+        var thirdLevelMaxMinutes:Number = this.thirdLevelMaxMinutes;
+
+        // 创建节点对象
         var node:TaskIDNode = new TaskIDNode(taskID);
 
         // 1. 检查任务是否适合单层时间轮
-        if (delayInFrames < this.singleWheelMaxFrames) {
+        if (delayInFrames < singleWheelMaxFrames) {
             // 无精度损失，直接插入单层时间轮
-            var insertedNode = addToSingleLevelByNode(node, delayInFrames);
+            var insertedNode:TaskIDNode = addToSingleLevelByNode(node, delayInFrames);
             return insertedNode;
         }
 
         // 2. 将延迟转换为秒，用于第二级时间轮
-        var delayInSeconds:Number = delayInFrames / this.framesPerSecond;
+        var delayInSeconds:Number = delayInFrames / framesPerSecond;
 
         // 3. 检查任务是否适合第二级时间轮
-        if (delayInSeconds >= this.firstWhileSecond && delayInSeconds < this.secondLevelMaxSeconds) {
-            // 评估插入到槽位 N-1 和 N 的精度损失
-            var delaySlot:Number = Math.floor(delayInSeconds); // 槽位索引
-            var executionTimeAtNMinus1:Number = (delaySlot - 1) + this.multiLevelCounter / this.framesPerSecond;
-            var executionTimeAtN:Number = delaySlot + this.multiLevelCounter / this.framesPerSecond;
+        if (delayInSeconds >= firstWhileSecond && delayInSeconds < secondLevelMaxSeconds) {
+            // 使用位运算替代 Math.floor
+            var delaySlot:Number = delayInSeconds | 0; // 槽位索引
 
-            var precisionLossAtNMinus1:Number = Math.abs(executionTimeAtNMinus1 - delayInSeconds);
-            var precisionLossAtN:Number = Math.abs(executionTimeAtN - delayInSeconds);
+            // 计算执行时间
+            var multiLevelCounterDivFPS:Number = multiLevelCounter / framesPerSecond;
+            var executionTimeAtNMinus1:Number = (delaySlot - 1) + multiLevelCounterDivFPS;
+            var executionTimeAtN:Number = delaySlot + multiLevelCounterDivFPS;
+
+            // 使用条件判断替代 Math.abs
+            var diffAtNMinus1:Number = executionTimeAtNMinus1 - delayInSeconds;
+            var precisionLossAtNMinus1:Number = (diffAtNMinus1 < 0) ? -diffAtNMinus1 : diffAtNMinus1;
+
+            var diffAtN:Number = executionTimeAtN - delayInSeconds;
+            var precisionLossAtN:Number = (diffAtN < 0) ? -diffAtN : diffAtN;
 
             // 选择精度损失最小的槽位
             var bestSlot:Number;
@@ -733,8 +752,8 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             }
 
             // 决定是使用时间轮还是最小堆
-            if (minPrecisionLoss <= this.precisionThreshold) {
-                var insertedNode = addToSecondLevelByNode(node, bestSlot);
+            if (minPrecisionLoss <= precisionThreshold) {
+                var insertedNode:TaskIDNode = addToSecondLevelByNode(node, bestSlot);
                 return insertedNode;
             }
         }
@@ -743,14 +762,22 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
         var delayInMinutes:Number = delayInSeconds / 60;
 
         // 5. 检查任务是否适合第三级时间轮
-        if (delayInMinutes >= 1 && delayInMinutes < this.thirdLevelMaxMinutes) {
-            // 评估插入到槽位 N-1 和 N 的精度损失
-            var delaySlot:Number = Math.floor(delayInMinutes); // 槽位索引
-            var executionTimeAtNMinus1:Number = (delaySlot - 1) * 60 + (this.secondLevelCounter * this.secondLevelCounterLimit + this.multiLevelCounter) / this.framesPerSecond;
-            var executionTimeAtN:Number = delaySlot * 60 + (this.secondLevelCounter * this.secondLevelCounterLimit + this.multiLevelCounter) / this.framesPerSecond;
+        if (delayInMinutes >= 1 && delayInMinutes < thirdLevelMaxMinutes) {
+            // 使用位运算替代 Math.floor
+            var delaySlot:Number = delayInMinutes | 0; // 槽位索引
 
-            var precisionLossAtNMinus1:Number = Math.abs(executionTimeAtNMinus1 - delayInSeconds);
-            var precisionLossAtN:Number = Math.abs(executionTimeAtN - delayInSeconds);
+            // 计算执行时间
+            var baseCounterFrames:Number = (secondLevelCounter * secondLevelCounterLimit) + multiLevelCounter;
+            var baseCounterSeconds:Number = baseCounterFrames / framesPerSecond;
+            var executionTimeAtNMinus1:Number = (delaySlot - 1) * 60 + baseCounterSeconds;
+            var executionTimeAtN:Number = delaySlot * 60 + baseCounterSeconds;
+
+            // 使用条件判断替代 Math.abs
+            var diffAtNMinus1:Number = executionTimeAtNMinus1 - delayInSeconds;
+            var precisionLossAtNMinus1:Number = (diffAtNMinus1 < 0) ? -diffAtNMinus1 : diffAtNMinus1;
+
+            var diffAtN:Number = executionTimeAtN - delayInSeconds;
+            var precisionLossAtN:Number = (diffAtN < 0) ? -diffAtN : diffAtN;
 
             // 选择精度损失最小的槽位
             var bestSlot:Number;
@@ -764,15 +791,17 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             }
 
             // 决定是使用时间轮还是最小堆
-            if (minPrecisionLoss <= this.precisionThreshold) {
-                var insertedNode = addToThirdLevelByNode(node, bestSlot);
+            if (minPrecisionLoss <= precisionThreshold) {
+                var insertedNode:TaskIDNode = addToThirdLevelByNode(node, bestSlot);
                 return insertedNode;
             }
         }
 
         // 6. 如果精度要求无法满足，插入到最小堆
-        return addToMinHeapByNode(node, delayInFrames);
+        var insertedNode:TaskIDNode = addToMinHeapByNode(node, delayInFrames);
+        return insertedNode;
     }
+
 
     // ==========================
     // 时间推进与任务执行
