@@ -196,7 +196,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         // 记录 tick 执行开始时间
         var tickTotalTime:Number = 0;
         var totalTasks:Number = numberOfTasks;
-        var maxExpectedFrame:Number = 10000; // 最大帧数限制
+        var maxExpectedFrame:Number = numberOfTasks; // 最大帧数限制
 
         // 模拟 tick 直到达到最大帧数
         while (this.currentFrame <= maxExpectedFrame) {
@@ -228,7 +228,17 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
      * 运行所有性能测试
      */
     public function runAllPerformanceTests():Void {
-        var testLoads:Array = [100, 1000, 10000]; // 不同负载级别，限制在10,000以内
+        var testLoads:Array = []; // 初始化负载级别列表
+        var currentLoad:Number = 100; // 起始负载级别
+
+        // 循环生成负载级别，直到达到或超过限制
+        while (currentLoad <= 200000) {
+            testLoads.push(currentLoad);
+            currentLoad *= 1.618;
+            currentLoad = Math.floor(currentLoad);
+        }
+
+        // 遍历负载级别列表，进行性能测试
         for (var i:Number = 0; i < testLoads.length; i++) {
             this.testPerformance(testLoads[i]);
             this.testTickPerformance(testLoads[i]);
