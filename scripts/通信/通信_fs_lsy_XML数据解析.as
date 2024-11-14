@@ -347,7 +347,7 @@ _root.解析单次对话 = function(对话列表:Array){
 		sentence.push(charsplit[1] != undefined ? charsplit[1] : "普通");
 		*/
 		var 对话对象 = _root.解析敌人属性(对话);
-		输出对话[i] = {name:对话.Name, title:对话.Title, char:对话.Char, text:对话.Text, target:对话对象};
+		输出对话[i] = {name:对话.Name, title:对话.Title, char:对话.Char, text:对话.Text, target:对话对象, imageurl:对话.ImageUrl};
 	}
 	return 输出对话;
 }

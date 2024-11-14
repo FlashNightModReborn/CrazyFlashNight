@@ -72,6 +72,7 @@ _root.组装单次对话 = function(arr:Array){
 		对话[3] = arr[i].text;
 		对话[4] = char[1] ? char[1] : "普通";
 		对话[5] = arr[i].target;
+		对话[6] = arr[i].imageurl;
 		输出对话[i] = 对话;
 	}
 	return 输出对话;
