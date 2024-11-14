@@ -1,267 +1,437 @@
 ﻿/*
-
 ---
-
-#### 1. 类简介
-`FrameTaskMinHeap` 是一个基于帧的任务调度管理器，它使用最小堆结构来高效地优先处理和执行任务。通过最小堆保持任务按帧索引排序，允许对大量任务进行有效的调度。任务以帧为单位进行延迟执行，适合游戏等需要基于帧定时操作的场景。
-
+#### 1. Class Overview
+`FrameTaskMinHeap` has been upgraded to a 4-ary heap structure to improve task scheduling performance. Additionally, by manually inlining private methods, we've reduced the number of function calls and minimized array indexing operations, further enhancing performance.
 ---
-
-#### 2. 类的私有属性与实现
-
-- **`heap:Array`**  
-  - 用于存储帧索引的最小堆数组。每个帧索引对应一个或多个任务。堆的性质保证了最小帧索引总是位于堆顶。
-  
-- **`frameMap:Object`**  
-  - 将帧索引映射到 `TaskIDLinkedList` 链表。每个帧索引对应一个任务链表，用来存储该帧的任务节点。
-  
-- **`frameIndexToHeapIndex:Object`**  
-  - 帧索引映射到堆中的索引位置，用来跟踪帧在堆中的位置，以便快速更新或删除帧任务。
-  
-- **`currentFrame:Number`**  
-  - 当前正在处理的帧索引，任务调度基于此值进行帧延迟计算。
-  
-- **`nodePool:Array`**  
-  - 一个可重用的 `TaskIDNode` 实例池，用于减少频繁创建和销毁节点带来的性能开销。未使用的节点会被回收到池中以供以后重用。
-
-##### 私有方法
-
-1. **`initializeNodePool(size:Number):Void`**  
-   初始化 `nodePool`，预分配 `size` 数量的 `TaskIDNode` 节点，减少运行时的内存分配开销。
-
-2. **`getNode(taskID:String):TaskIDNode`**  
-   从节点池中获取一个可用节点，若池中为空则新建一个节点。此节点被用于存储新的任务。
-
-3. **`recycleNode(node:TaskIDNode):Void`**  
-   将已完成或被移除的节点重置，并返回节点池，以便后续任务重用。
-
-4. **`bubbleUp(index:Number):Void`**  
-   维护最小堆的性质，通过上浮操作使插入的帧索引回到正确位置，确保堆的有序性。
-
-5. **`bubbleDown(index:Number):Void`**  
-   通过下沉操作，维护堆的性质，处理删除任务或堆顶任务完成后的堆调整。
-
-6. **`swap(i:Number, j:Number):Void`**  
-   交换堆中两个帧索引的位置，并同步更新它们在 `frameIndexToHeapIndex` 中的映射关系。
-
----
-
-#### 3. 类的公共方法与属性
-
-- **`FrameTaskMinHeap()`**
-  - 构造函数，用于初始化 `FrameTaskMinHeap` 的堆数组、帧映射表、节点池等。默认预分配100个 `TaskIDNode` 节点以供重用。
-
-- **`insert(taskID:String, delay:Number):Void`**  
-  插入一个新的任务，该任务将在 `delay` 帧后执行。方法会计算任务的目标帧索引，并将任务添加到 `frameMap` 对应的链表中，同时维护最小堆的结构。
-
-- **`insertNode(node:TaskIDNode, delay:Number):Void`**  
-  与 `insert` 方法类似，但允许直接插入已经存在的任务节点。该方法用于任务的重新安排或复杂调度场景。
-
-- **`addTimerByID(taskID:String, delay:Number):TaskIDNode`**  
-  创建并插入一个新的任务，返回该任务的 `TaskIDNode` 节点。便于后续操作，如取消或重新安排任务。
-
-- **`addTimerByNode(node:TaskIDNode, delay:Number):TaskIDNode`**  
-  允许基于已有的任务节点设置计时器，并返回该节点。
-
-- **`removeById(taskID:String):Void`**  
-  根据任务 ID 移除指定任务。如果找到该任务，将调用 `removeNode` 方法从调度中移除。
-
-- **`removeDirectly(node:TaskIDNode):Void`**  
-  直接移除指定的任务节点，省去查找任务 ID 的步骤。
-
-- **`removeNode(node:TaskIDNode):Void`**  
-  移除给定的任务节点，维护帧链表与最小堆的正确性，并将节点回收到节点池中以便重用。
-
-- **`findNodeById(taskID:String):TaskIDNode`**  
-  在所有预定任务中搜索指定任务 ID 的节点，返回找到的节点或者 `null`。
-
-- **`rescheduleTimerByID(taskID:String, newDelay:Number):Void`**  
-  重新安排指定任务，使其在新的延迟时间后执行。此方法先移除当前任务，再将其重新插入到新的帧索引中。
-
-- **`rescheduleTimerByNode(node:TaskIDNode, newDelay:Number):Void`**  
-  类似于 `rescheduleTimerByID`，但操作的目标是现有的任务节点。
-
-- **`tick():TaskIDLinkedList`**  
-  推进帧计数，并处理到期的任务。返回到期任务的链表，供外部调用处理。
-
-- **`peekMin():Object`**  
-  查看最小帧索引对应的任务信息，而不移除它。用于查询最早的任务及其帧索引。
-
-- **`extractTasksAtMinFrame():TaskIDLinkedList`**  
-  提取并移除最早帧的任务链表，维护堆结构，并返回该帧的任务。
-
----
-
-#### 4. 示例用法
-
-```actionscript
-import org.flashNight.naki.DataStructures.*;
-
-// 创建一个 FrameTaskMinHeap 实例
-var taskScheduler:FrameTaskMinHeap = new FrameTaskMinHeap();
-
-// 添加一个任务ID为 "task1"，延迟 5 帧执行
-taskScheduler.addTimerByID("task1", 5);
-
-// 模拟帧推进，并执行到期任务
-for (var i:Number = 0; i < 10; i++) {
-    trace("当前帧: " + i);
-    var dueTasks:TaskIDLinkedList = taskScheduler.tick();
-    if (dueTasks != null) {
-        trace("到期任务: " + dueTasks.toString());
-    }
-}
-
-// 移除任务
-taskScheduler.removeById("task1");
-
-// 重新安排任务
-taskScheduler.rescheduleTimerByID("task1", 10);
-```
-
----
-
 */
 import org.flashNight.naki.DataStructures.*;
 
-// 使用最小堆结构管理基于帧的任务调度，以高效地优先处理和执行任务
 class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
-    private var heap:Array;                     // 存储帧索引的最小堆数组
-    private var frameMap:Object;                // 将帧索引映射到任务的链表
-    private var frameIndexToHeapIndex:Object;   // 将帧索引映射到堆中的索引
-    public var currentFrame:Number;            // 跟踪当前帧数
-    private var nodePool:Array;                 // 可重用的TaskIDNode实例池
+    private var heap:Array;                     // Stores frame indices in the 4-ary heap array
+    private var frameMap:Object;                // Maps frame indices to task linked lists
+    private var frameIndexToHeapIndex:Object;   // Maps frame indices to indices in the heap
+    public var currentFrame:Number;             // Tracks the current frame number
+    private var nodePool:Array;                 // Reusable pool of TaskIDNode instances
+    private var poolSize:Number;                // Current number of nodes in the node pool
+    private var heapSize:Number;                // Current size of the heap
 
-    // 构造函数：初始化最小堆及相关结构
+    // Constructor: initializes the 4-ary heap and related structures
     public function FrameTaskMinHeap() {
         this.heap = [];
         this.frameMap = {};
         this.frameIndexToHeapIndex = {};
         this.currentFrame = 0;
-        initializeNodePool(100);  // 预分配100个节点以便重用
-    }
+        this.nodePool = [];
+        this.poolSize = 0;
+        this.heapSize = 0;                      // Initialize the heap size
 
-    // 初始化节点池，预分配指定数量的TaskIDNode对象
-    private function initializeNodePool(size:Number):Void {
-        nodePool = [];
-        for (var i:Number = 0; i < size; i++) {
-            nodePool.push(new TaskIDNode(null));  // 初始化时不指定任务ID
+        // Manually inlined initializeNodePool(128);
+        for (var i:Number = 0; i < 128; i++) {
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);  // Initialize without specifying a task ID
         }
     }
 
-    // 从节点池中获取一个节点或在池为空时创建一个新节点
-    private function getNode(taskID:String):TaskIDNode {
-        if (nodePool.length > 0) {
-            var node:TaskIDNode = TaskIDNode(nodePool.pop());
-            node.reset(taskID);  // 重新初始化节点的任务ID
-            return node;
-        } else {
-            return new TaskIDNode(taskID);  // 池为空时直接创建新节点
-        }
-    }
-
-    // 重置节点并将其返回到节点池中以便未来重用
-    private function recycleNode(node:TaskIDNode):Void {
-        node.reset(null);  // 清除任务ID及其他属性
-        nodePool.push(node);
-    }
-
-
-    // 查询节点池的大小
+    // Query the size of the node pool
     public function getNodePoolSize():Number {
-        return this.nodePool.length;
+        return this.poolSize;
     }
 
-    // 填充节点池：向节点池中增加指定数量的空闲节点
+    // Fill the node pool by adding a specified number of idle nodes
     public function fillNodePool(size:Number):Void {
         for (var i:Number = 0; i < size; i++) {
-            this.nodePool.push(new TaskIDNode(null));  // 添加空节点
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);  // Add empty nodes
         }
     }
 
-    // 缩小节点池的大小
+    // Reduce the size of the node pool
     public function trimNodePool(size:Number):Void {
-        if (this.nodePool.length > size) {
-            this.nodePool.length = size;  // 直接调整数组长度，超出的部分会被自动移除
+        if (this.poolSize > size) {
+            this.poolSize = size;  // Directly adjust the size of the pool
         }
     }
 
-    // 在指定延迟后安排新任务的执行
+    // Schedule the execution of a new task after a specified delay
     public function insert(taskID:String, delay:Number):Void {
-        var frameIndex:Number = this.currentFrame + delay;  // 计算目标帧索引
-        if (!frameMap[frameIndex]) {
-            frameMap[frameIndex] = new TaskIDLinkedList();
-            heap.push(frameIndex);
-            frameIndexToHeapIndex[frameIndex] = heap.length - 1;
-            this.bubbleUp(heap.length - 1);  // 维护堆的性质
+        var frameIndex:Number = this.currentFrame + delay;  // Calculate the target frame index
+        if (!this.frameMap[frameIndex]) {
+            this.frameMap[frameIndex] = new TaskIDLinkedList();
+            this.heap[this.heapSize++] = frameIndex;       // Insert using heapSize
+
+            var heapIndex:Number = this.heapSize - 1;
+            this.frameIndexToHeapIndex[frameIndex] = heapIndex;
+
+            // Manually inlined bubbleUp(heapIndex);
+            var currentIndex:Number = heapIndex;
+            var currentValue:Number = this.heap[currentIndex];
+
+            while (currentIndex > 0) {
+                var parentIndex:Number = (currentIndex - 1) >> 2;  // Equivalent to Math.floor((currentIndex - 1) / 4)
+                var parentValue:Number = this.heap[parentIndex];
+
+                if (currentValue < parentValue) {
+                    // Swap using temporary variables to reduce array accesses
+                    this.heap[currentIndex] = parentValue;
+                    this.heap[parentIndex] = currentValue;
+
+                    // Update frameIndexToHeapIndex mapping
+                    this.frameIndexToHeapIndex[currentValue] = parentIndex;
+                    this.frameIndexToHeapIndex[parentValue] = currentIndex;
+
+                    // Update index to continue bubbling up
+                    currentIndex = parentIndex;
+                    currentValue = this.heap[currentIndex];
+                } else {
+                    break;
+                }
+            }
         }
-        var newNode:TaskIDNode = getNode(taskID);
-        newNode.slotIndex = frameIndex;  // 存储帧索引到节点中
-        frameMap[frameIndex].appendNode(newNode);  // 将节点添加到链表中
+
+        // Manually inlined getNode(taskID);
+        var newNode:TaskIDNode;
+        if (this.poolSize > 0) {
+            newNode = TaskIDNode(this.nodePool[--this.poolSize]);
+            newNode.reset(taskID);  // Reinitialize the node's task ID
+        } else {
+            newNode = new TaskIDNode(taskID);  // Create a new node if the pool is empty
+        }
+
+        // Manually inlined insertNode(node, delay);
+        newNode.slotIndex = frameIndex;                   // Store the frame index in the node
+        this.frameMap[frameIndex].appendNode(newNode);    // Add the node to the linked list
     }
 
-    // 直接插入已存在的节点，并在指定延迟后执行
+    // Directly insert an existing node and schedule it after a specified delay
     public function insertNode(node:TaskIDNode, delay:Number):Void {
         var frameIndex:Number = this.currentFrame + delay;
-        if (!frameMap[frameIndex]) {
-            frameMap[frameIndex] = new TaskIDLinkedList();
-            heap.push(frameIndex);
-            frameIndexToHeapIndex[frameIndex] = heap.length - 1;
-            this.bubbleUp(heap.length - 1);
+        if (!this.frameMap[frameIndex]) {
+            this.frameMap[frameIndex] = new TaskIDLinkedList();
+            this.heap[this.heapSize++] = frameIndex;       // Insert using heapSize
+
+            var heapIndex:Number = this.heapSize - 1;
+            this.frameIndexToHeapIndex[frameIndex] = heapIndex;
+
+            // Manually inlined bubbleUp(heapIndex);
+            var currentIndex:Number = heapIndex;
+            var currentValue:Number = this.heap[currentIndex];
+
+            while (currentIndex > 0) {
+                var parentIndex:Number = (currentIndex - 1) >> 2;
+                var parentValue:Number = this.heap[parentIndex];
+
+                if (currentValue < parentValue) {
+                    this.heap[currentIndex] = parentValue;
+                    this.heap[parentIndex] = currentValue;
+
+                    this.frameIndexToHeapIndex[currentValue] = parentIndex;
+                    this.frameIndexToHeapIndex[parentValue] = currentIndex;
+
+                    currentIndex = parentIndex;
+                    currentValue = this.heap[currentIndex];
+                } else {
+                    break;
+                }
+            }
         }
         node.slotIndex = frameIndex;
-        frameMap[frameIndex].appendNode(node);
+        this.frameMap[frameIndex].appendNode(node);
     }
 
-    // 根据任务ID添加计时器，创建一个新节点
+    // Add a timer by task ID, creating a new node
     public function addTimerByID(taskID:String, delay:Number):TaskIDNode {
-        var node:TaskIDNode = getNode(taskID);
-        insertNode(node, delay);
+        // Manually inlined getNode(taskID);
+        var node:TaskIDNode;
+        if (this.poolSize > 0) {
+            node = TaskIDNode(this.nodePool[--this.poolSize]);
+            node.reset(taskID);  // Reinitialize the node's task ID
+        } else {
+            node = new TaskIDNode(taskID);  // Create a new node if the pool is empty
+        }
+
+        // Manually inlined insertNode(node, delay);
+        var frameIndex:Number = this.currentFrame + delay;  // Calculate the target frame index
+        if (!this.frameMap[frameIndex]) {
+            this.frameMap[frameIndex] = new TaskIDLinkedList();
+            this.heap[this.heapSize++] = frameIndex;       // Insert using heapSize
+
+            var heapIndex:Number = this.heapSize - 1;
+            this.frameIndexToHeapIndex[frameIndex] = heapIndex;
+
+            // Manually inlined bubbleUp(heapIndex);
+            var currentIndex:Number = heapIndex;
+            var currentValue:Number = this.heap[currentIndex];
+
+            while (currentIndex > 0) {
+                var parentIndex:Number = (currentIndex - 1) >> 2;  // Equivalent to Math.floor((currentIndex - 1) / 4)
+                var parentValue:Number = this.heap[parentIndex];
+
+                if (currentValue < parentValue) {
+                    // Swap using temporary variables to reduce array accesses
+                    this.heap[currentIndex] = parentValue;
+                    this.heap[parentIndex] = currentValue;
+
+                    // Update frameIndexToHeapIndex mapping
+                    this.frameIndexToHeapIndex[currentValue] = parentIndex;
+                    this.frameIndexToHeapIndex[parentValue] = currentIndex;
+
+                    // Update index to continue bubbling up
+                    currentIndex = parentIndex;
+                    currentValue = this.heap[currentIndex];
+                } else {
+                    break;
+                }
+            }
+        }
+
+        node.slotIndex = frameIndex;                   // Store the frame index in the node
+        this.frameMap[frameIndex].appendNode(node);    // Add the node to the linked list
+
         return node;
     }
 
-    // 根据节点直接添加计时器
+    // Directly add a timer using a node
     public function addTimerByNode(node:TaskIDNode, delay:Number):TaskIDNode {
-        insertNode(node, delay);
+        // Manually inlined insertNode(node, delay);
+        var frameIndex:Number = this.currentFrame + delay;
+        if (!this.frameMap[frameIndex]) {
+            this.frameMap[frameIndex] = new TaskIDLinkedList();
+            this.heap[this.heapSize++] = frameIndex;       // Insert using heapSize
+
+            var heapIndex:Number = this.heapSize - 1;
+            this.frameIndexToHeapIndex[frameIndex] = heapIndex;
+
+            // Manually inlined bubbleUp(heapIndex);
+            var currentIndex:Number = heapIndex;
+            var currentValue:Number = this.heap[currentIndex];
+
+            while (currentIndex > 0) {
+                var parentIndex:Number = (currentIndex - 1) >> 2;
+                var parentValue:Number = this.heap[parentIndex];
+
+                if (currentValue < parentValue) {
+                    this.heap[currentIndex] = parentValue;
+                    this.heap[parentIndex] = currentValue;
+
+                    this.frameIndexToHeapIndex[currentValue] = parentIndex;
+                    this.frameIndexToHeapIndex[parentValue] = currentIndex;
+
+                    currentIndex = parentIndex;
+                    currentValue = this.heap[currentIndex];
+                } else {
+                    break;
+                }
+            }
+        }
+        node.slotIndex = frameIndex;
+        this.frameMap[frameIndex].appendNode(node);
+
         return node;
     }
 
-    // 根据任务ID从调度系统中移除任务
+    // Remove a task from the scheduling system by task ID
     public function removeById(taskID:String):Void {
         var node:TaskIDNode = findNodeById(taskID);
         if (node != null) {
-            removeNode(node);
-        }
-    }
+            // Manually inlined removeNode(node);
+            var frameIndex:Number = node.slotIndex;
+            var list:TaskIDLinkedList = this.frameMap[frameIndex];
+            list.remove(node);
+            if (list.getFirst() == null) {  // Check if the linked list is empty
+                var heapIndex:Number = this.frameIndexToHeapIndex[frameIndex];
+                var lastIndex:Number = this.heapSize - 1;
+                if (heapIndex != lastIndex) {
+                    // Cache the values to reduce array indexing
+                    var valueAtHeapIndex:Number = this.heap[heapIndex];
+                    var valueAtLastIndex:Number = this.heap[lastIndex];
 
-    // 直接从调度系统中移除节点
-    public function removeDirectly(node:TaskIDNode):Void {
-        removeNode(node);
-    }
+                    // Swap using temporary variables to reduce array accesses
+                    this.heap[heapIndex] = valueAtLastIndex;
+                    this.heap[lastIndex] = valueAtHeapIndex;
 
-    // 移除节点的核心方法，处理链表和堆的更新
-    public function removeNode(node:TaskIDNode):Void {
-        var frameIndex:Number = node.slotIndex;
-        var list:TaskIDLinkedList = frameMap[frameIndex];
-        list.remove(node);
-        if (list.getFirst() == null) {  // 检查链表是否为空
-            var index:Number = frameIndexToHeapIndex[frameIndex];
-            swap(index, heap.length - 1);  // 与最后一个项交换
-            delete frameIndexToHeapIndex[frameIndex];
-            frameIndexToHeapIndex[heap[index]] = index;
-            heap.pop();  // 移除最后一个项
-            if (index < heap.length) {
-                bubbleDown(index);  // 维护堆的性质
+                    // Update frameIndexToHeapIndex mapping
+                    this.frameIndexToHeapIndex[valueAtLastIndex] = heapIndex;
+                    this.frameIndexToHeapIndex[valueAtHeapIndex] = lastIndex;
+                }
+                // Cache the new heapSize
+                var newHeapSize:Number = this.heapSize - 1;
+                this.heapSize = newHeapSize;
+
+                // Maintain the heap property by inlining bubbleDown and bubbleUp
+                if (heapIndex < newHeapSize) {
+                    // Manually inlined bubbleDown(heapIndex);
+                    var currentIndex:Number = heapIndex;
+                    var currentValue:Number = this.heap[currentIndex];
+                    var heapSizeLocal:Number = this.heapSize;
+
+                    while (true) {
+                        var smallestIndex:Number = currentIndex;
+                        var smallestValue:Number = currentValue;
+
+                        for (var j:Number = 1; j <= 4; j++) {
+                            var childIndex:Number = (currentIndex << 2) + j;
+                            if (childIndex >= heapSizeLocal) break;
+
+                            var childValue:Number = this.heap[childIndex];
+                            if (childValue < smallestValue) {
+                                smallestIndex = childIndex;
+                                smallestValue = childValue;
+                            }
+                        }
+
+                        if (smallestIndex != currentIndex) {
+                            this.heap[currentIndex] = smallestValue;
+                            this.heap[smallestIndex] = currentValue;
+
+                            this.frameIndexToHeapIndex[smallestValue] = currentIndex;
+                            this.frameIndexToHeapIndex[currentValue] = smallestIndex;
+
+                            currentIndex = smallestIndex;
+                            currentValue = this.heap[currentIndex];
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Manually inlined bubbleUp(heapIndex);
+                    currentIndex = heapIndex;
+                    currentValue = this.heap[currentIndex];
+
+                    while (currentIndex > 0) {
+                        var parentIndex:Number = (currentIndex - 1) >> 2;
+                        var parentValue:Number = this.heap[parentIndex];
+
+                        if (currentValue < parentValue) {
+                            this.heap[currentIndex] = parentValue;
+                            this.heap[parentIndex] = currentValue;
+
+                            this.frameIndexToHeapIndex[currentValue] = parentIndex;
+                            this.frameIndexToHeapIndex[parentValue] = currentIndex;
+
+                            currentIndex = parentIndex;
+                            currentValue = this.heap[currentIndex];
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                // Delete the mapping
+                delete this.frameIndexToHeapIndex[frameIndex];
+
+                // Manually inlined recycleNode(node);
+                node.reset(null);  // Clear the task ID and other properties
+                this.nodePool[this.poolSize++] = node;  // Add the node back to the pool
+
+            } else {
+                // Manually inlined recycleNode(node);
+                node.reset(null);  // Clear the task ID and other properties
+                this.nodePool[this.poolSize++] = node;  // Add the node back to the pool
             }
         }
-        recycleNode(node);  // 回收节点以便重用
+    }
+    // Directly remove a node from the scheduling system
+    public function removeDirectly(node:TaskIDNode):Void {
+        // Manually inlined removeNode(node);
+        var frameIndex:Number = node.slotIndex;
+        var list:TaskIDLinkedList = this.frameMap[frameIndex];
+        list.remove(node);
+        if (list.getFirst() == null) {  // Check if the linked list is empty
+            var heapIndex:Number = this.frameIndexToHeapIndex[frameIndex];
+            var lastIndex:Number = this.heapSize - 1;
+            if (heapIndex != lastIndex) {
+                // Cache the values to reduce array indexing
+                var valueAtHeapIndex:Number = this.heap[heapIndex];
+                var valueAtLastIndex:Number = this.heap[lastIndex];
+
+                // Swap using temporary variables to reduce array accesses
+                this.heap[heapIndex] = valueAtLastIndex;
+                this.heap[lastIndex] = valueAtHeapIndex;
+
+                // Update frameIndexToHeapIndex mapping
+                this.frameIndexToHeapIndex[valueAtLastIndex] = heapIndex;
+                this.frameIndexToHeapIndex[valueAtHeapIndex] = lastIndex;
+            }
+            // Cache the new heapSize
+            var newHeapSize:Number = this.heapSize - 1;
+            this.heapSize = newHeapSize;
+
+            // Maintain the heap property by inlining bubbleDown and bubbleUp
+            if (heapIndex < newHeapSize) {
+                // Manually inlined bubbleDown(heapIndex);
+                var currentIndex:Number = heapIndex;
+                var currentValue:Number = this.heap[currentIndex];
+                var heapSizeLocal:Number = this.heapSize;
+
+                while (true) {
+                    var smallestIndex:Number = currentIndex;
+                    var smallestValue:Number = currentValue;
+
+                    for (var j:Number = 1; j <= 4; j++) {
+                        var childIndex:Number = (currentIndex << 2) + j;
+                        if (childIndex >= heapSizeLocal) break;
+
+                        var childValue:Number = this.heap[childIndex];
+                        if (childValue < smallestValue) {
+                            smallestIndex = childIndex;
+                            smallestValue = childValue;
+                        }
+                    }
+
+                    if (smallestIndex != currentIndex) {
+                        this.heap[currentIndex] = smallestValue;
+                        this.heap[smallestIndex] = currentValue;
+
+                        this.frameIndexToHeapIndex[smallestValue] = currentIndex;
+                        this.frameIndexToHeapIndex[currentValue] = smallestIndex;
+
+                        currentIndex = smallestIndex;
+                        currentValue = this.heap[currentIndex];
+                    } else {
+                        break;
+                    }
+                }
+
+                // Manually inlined bubbleUp(heapIndex);
+                currentIndex = heapIndex;
+                currentValue = this.heap[currentIndex];
+
+                while (currentIndex > 0) {
+                    var parentIndex:Number = (currentIndex - 1) >> 2;
+                    var parentValue:Number = this.heap[parentIndex];
+
+                    if (currentValue < parentValue) {
+                        this.heap[currentIndex] = parentValue;
+                        this.heap[parentIndex] = currentValue;
+
+                        this.frameIndexToHeapIndex[currentValue] = parentIndex;
+                        this.frameIndexToHeapIndex[parentValue] = currentIndex;
+
+                        currentIndex = parentIndex;
+                        currentValue = this.heap[currentIndex];
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            // Delete the mapping
+            delete this.frameIndexToHeapIndex[frameIndex];
+
+            // Manually inlined recycleNode(node);
+            node.reset(null);  // Clear the task ID and other properties
+            this.nodePool[this.poolSize++] = node;  // Add the node back to the pool
+
+        } else {
+            // Manually inlined recycleNode(node);
+            node.reset(null);  // Clear the task ID and other properties
+            this.nodePool[this.poolSize++] = node;  // Add the node back to the pool
+        }
     }
 
-    // 跨所有预定任务搜索指定任务ID的节点
+    // Search across all scheduled tasks for a node with the specified task ID
     public function findNodeById(taskID:String):TaskIDNode {
-        for (var i:Number = 0; i < heap.length; i++) {
-            var frameIndex:Number = heap[i];
-            var list:TaskIDLinkedList = frameMap[frameIndex];
+        for (var i:Number = 0; i < this.heapSize; i++) {
+            var frameIndex:Number = this.heap[i];
+            var list:TaskIDLinkedList = this.frameMap[frameIndex];
             var currentNode:TaskIDNode = list.getFirst();
             while (currentNode != null) {
                 if (currentNode.taskID == taskID) {
@@ -273,100 +443,351 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
         return null;
     }
 
-    // 将现有任务根据新的延迟重新安排
+    // Reschedule an existing task based on a new delay
     public function rescheduleTimerByID(taskID:String, newDelay:Number):Void {
         var node:TaskIDNode = findNodeById(taskID);
         if (node != null) {
-            removeNode(node);
-            node.reset(taskID);
-            insertNode(node, newDelay);
+            // Manually inlined removeNode(node);
+            var frameIndex:Number = node.slotIndex;
+            var list:TaskIDLinkedList = this.frameMap[frameIndex];
+            list.remove(node);
+            if (list.getFirst() == null) {  // Check if the linked list is empty
+                var heapIndex:Number = this.frameIndexToHeapIndex[frameIndex];
+                var lastIndex:Number = this.heapSize - 1;
+                if (heapIndex != lastIndex) {
+                    // Cache the values to reduce array indexing
+                    var valueAtHeapIndex:Number = this.heap[heapIndex];
+                    var valueAtLastIndex:Number = this.heap[lastIndex];
+
+                    // Swap using temporary variables to reduce array accesses
+                    this.heap[heapIndex] = valueAtLastIndex;
+                    this.heap[lastIndex] = valueAtHeapIndex;
+
+                    // Update frameIndexToHeapIndex mapping
+                    this.frameIndexToHeapIndex[valueAtLastIndex] = heapIndex;
+                    this.frameIndexToHeapIndex[valueAtHeapIndex] = lastIndex;
+                }
+                // Cache the new heapSize
+                var newHeapSize:Number = this.heapSize - 1;
+                this.heapSize = newHeapSize;
+
+                // Maintain the heap property by inlining bubbleDown and bubbleUp
+                if (heapIndex < newHeapSize) {
+                    // Manually inlined bubbleDown(heapIndex);
+                    var currentIndex:Number = heapIndex;
+                    var currentValue:Number = this.heap[currentIndex];
+                    var heapSizeLocal:Number = this.heapSize;
+
+                    while (true) {
+                        var smallestIndex:Number = currentIndex;
+                        var smallestValue:Number = currentValue;
+
+                        for (var j:Number = 1; j <= 4; j++) {
+                            var childIndex:Number = (currentIndex << 2) + j;
+                            if (childIndex >= heapSizeLocal) break;
+
+                            var childValue:Number = this.heap[childIndex];
+                            if (childValue < smallestValue) {
+                                smallestIndex = childIndex;
+                                smallestValue = childValue;
+                            }
+                        }
+
+                        if (smallestIndex != currentIndex) {
+                            this.heap[currentIndex] = smallestValue;
+                            this.heap[smallestIndex] = currentValue;
+
+                            this.frameIndexToHeapIndex[smallestValue] = currentIndex;
+                            this.frameIndexToHeapIndex[currentValue] = smallestIndex;
+
+                            currentIndex = smallestIndex;
+                            currentValue = this.heap[currentIndex];
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Manually inlined bubbleUp(heapIndex);
+                    currentIndex = heapIndex;
+                    currentValue = this.heap[currentIndex];
+
+                    while (currentIndex > 0) {
+                        var parentIndex:Number = (currentIndex - 1) >> 2;
+                        var parentValue:Number = this.heap[parentIndex];
+
+                        if (currentValue < parentValue) {
+                            this.heap[currentIndex] = parentValue;
+                            this.heap[parentIndex] = currentValue;
+
+                            this.frameIndexToHeapIndex[currentValue] = parentIndex;
+                            this.frameIndexToHeapIndex[parentValue] = currentIndex;
+
+                            currentIndex = parentIndex;
+                            currentValue = this.heap[currentIndex];
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                // Delete the mapping
+                delete this.frameIndexToHeapIndex[frameIndex];
+
+                // Manually inlined recycleNode(node);
+                node.reset(null);  // Clear the task ID and other properties
+                this.nodePool[this.poolSize++] = node;  // Add the node back to the pool
+
+            } else {
+                // Manually inlined recycleNode(node);
+                node.reset(null);  // Clear the task ID and other properties
+                this.nodePool[this.poolSize++] = node;  // Add the node back to the pool
+            }
+
+            // Manually inlined insertNode(node, newDelay);
+            var newFrameIndex:Number = this.currentFrame + newDelay;
+            if (!this.frameMap[newFrameIndex]) {
+                this.frameMap[newFrameIndex] = new TaskIDLinkedList();
+                this.heap[this.heapSize++] = newFrameIndex;       // Insert using heapSize
+
+                var newHeapIndex:Number = this.heapSize - 1;
+                this.frameIndexToHeapIndex[newFrameIndex] = newHeapIndex;
+
+                // Manually inlined bubbleUp(newHeapIndex);
+                var currentIndexNew:Number = newHeapIndex;
+                var currentValueNew:Number = this.heap[currentIndexNew];
+
+                while (currentIndexNew > 0) {
+                    var parentIndexNew:Number = (currentIndexNew - 1) >> 2;
+                    var parentValueNew:Number = this.heap[parentIndexNew];
+
+                    if (currentValueNew < parentValueNew) {
+                        this.heap[currentIndexNew] = parentValueNew;
+                        this.heap[parentIndexNew] = currentValueNew;
+
+                        this.frameIndexToHeapIndex[currentValueNew] = parentIndexNew;
+                        this.frameIndexToHeapIndex[parentValueNew] = currentIndexNew;
+
+                        currentIndexNew = parentIndexNew;
+                        currentValueNew = this.heap[currentIndexNew];
+                    } else {
+                        break;
+                    }
+                }
+            }
+            node.slotIndex = newFrameIndex;
+            this.frameMap[newFrameIndex].appendNode(node);
         }
     }
-
-    // 将节点移动到新的延迟以重新安排任务
+    // Reschedule a task by moving the node to a new delay
     public function rescheduleTimerByNode(node:TaskIDNode, newDelay:Number):Void {
         if (node != null) {
-            removeNode(node);
-            insertNode(node, newDelay);
+            // Manually inlined removeNode(node);
+            var frameIndex:Number = node.slotIndex;
+            var list:TaskIDLinkedList = this.frameMap[frameIndex];
+            list.remove(node);
+            if (list.getFirst() == null) {  // Check if the linked list is empty
+                var heapIndex:Number = this.frameIndexToHeapIndex[frameIndex];
+                var lastIndex:Number = this.heapSize - 1;
+                if (heapIndex != lastIndex) {
+                    // Cache the values to reduce array indexing
+                    var valueAtHeapIndex:Number = this.heap[heapIndex];
+                    var valueAtLastIndex:Number = this.heap[lastIndex];
+
+                    // Swap using temporary variables to reduce array accesses
+                    this.heap[heapIndex] = valueAtLastIndex;
+                    this.heap[lastIndex] = valueAtHeapIndex;
+
+                    // Update frameIndexToHeapIndex mapping
+                    this.frameIndexToHeapIndex[valueAtLastIndex] = heapIndex;
+                    this.frameIndexToHeapIndex[valueAtHeapIndex] = lastIndex;
+                }
+                // Cache the new heapSize
+                var newHeapSize:Number = this.heapSize - 1;
+                this.heapSize = newHeapSize;
+
+                // Maintain the heap property by inlining bubbleDown and bubbleUp
+                if (heapIndex < newHeapSize) {
+                    // Manually inlined bubbleDown(heapIndex);
+                    var currentIndex:Number = heapIndex;
+                    var currentValue:Number = this.heap[currentIndex];
+                    var heapSizeLocal:Number = this.heapSize;
+
+                    while (true) {
+                        var smallestIndex:Number = currentIndex;
+                        var smallestValue:Number = currentValue;
+
+                        for (var j:Number = 1; j <= 4; j++) {
+                            var childIndex:Number = (currentIndex << 2) + j;
+                            if (childIndex >= heapSizeLocal) break;
+
+                            var childValue:Number = this.heap[childIndex];
+                            if (childValue < smallestValue) {
+                                smallestIndex = childIndex;
+                                smallestValue = childValue;
+                            }
+                        }
+
+                        if (smallestIndex != currentIndex) {
+                            this.heap[currentIndex] = smallestValue;
+                            this.heap[smallestIndex] = currentValue;
+
+                            this.frameIndexToHeapIndex[smallestValue] = currentIndex;
+                            this.frameIndexToHeapIndex[currentValue] = smallestIndex;
+
+                            currentIndex = smallestIndex;
+                            currentValue = this.heap[currentIndex];
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Manually inlined bubbleUp(heapIndex);
+                    currentIndex = heapIndex;
+                    currentValue = this.heap[currentIndex];
+
+                    while (currentIndex > 0) {
+                        var parentIndex:Number = (currentIndex - 1) >> 2;
+                        var parentValue:Number = this.heap[parentIndex];
+
+                        if (currentValue < parentValue) {
+                            this.heap[currentIndex] = parentValue;
+                            this.heap[parentIndex] = currentValue;
+
+                            this.frameIndexToHeapIndex[currentValue] = parentIndex;
+                            this.frameIndexToHeapIndex[parentValue] = currentIndex;
+
+                            currentIndex = parentIndex;
+                            currentValue = this.heap[currentIndex];
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                // Delete the mapping
+                delete this.frameIndexToHeapIndex[frameIndex];
+
+                // Manually inlined recycleNode(node);
+                node.reset(null);  // Clear the task ID and other properties
+                this.nodePool[this.poolSize++] = node;  // Add the node back to the pool
+
+            } else {
+                // Manually inlined recycleNode(node);
+                node.reset(null);  // Clear the task ID and other properties
+                this.nodePool[this.poolSize++] = node;  // Add the node back to the pool
+            }
+
+            // Manually inlined insertNode(node, newDelay);
+            var newFrameIndex:Number = this.currentFrame + newDelay;
+            if (!this.frameMap[newFrameIndex]) {
+                this.frameMap[newFrameIndex] = new TaskIDLinkedList();
+                this.heap[this.heapSize++] = newFrameIndex;       // Insert using heapSize
+
+                var newHeapIndex:Number = this.heapSize - 1;
+                this.frameIndexToHeapIndex[newFrameIndex] = newHeapIndex;
+
+                // Manually inlined bubbleUp(newHeapIndex);
+                var currentIndexNew:Number = newHeapIndex;
+                var currentValueNew:Number = this.heap[currentIndexNew];
+
+                while (currentIndexNew > 0) {
+                    var parentIndexNew:Number = (currentIndexNew - 1) >> 2;
+                    var parentValueNew:Number = this.heap[parentIndexNew];
+
+                    if (currentValueNew < parentValueNew) {
+                        this.heap[currentIndexNew] = parentValueNew;
+                        this.heap[parentIndexNew] = currentValueNew;
+
+                        this.frameIndexToHeapIndex[currentValueNew] = parentIndexNew;
+                        this.frameIndexToHeapIndex[parentValueNew] = currentIndexNew;
+
+                        currentIndexNew = parentIndexNew;
+                        currentValueNew = this.heap[currentIndexNew];
+                    } else {
+                        break;
+                    }
+                }
+            }
+            node.slotIndex = newFrameIndex;
+            this.frameMap[newFrameIndex].appendNode(node);
         }
     }
-
-    // 处理到期的任务，并推进帧计数
+    // Process due tasks and advance the frame count
     public function tick():TaskIDLinkedList {
         this.currentFrame++;
-        if (heap.length > 0 && heap[0] <= this.currentFrame) {
-            return this.extractTasksAtMinFrame();
+        if (this.heapSize > 0 && this.heap[0] <= this.currentFrame) {
+            return extractTasksAtMinFrame();
         }
         return null;
     }
 
-    // 不移除地返回最早帧的任务信息
+    // Peek at the tasks at the earliest frame without removing them
     public function peekMin():Object {
-        if (heap.length == 0) return null;
-        return {frame: heap[0], tasks: frameMap[heap[0]]};
+        if (this.heapSize == 0) return null;
+        var heapZero:Number = this.heap[0];
+        return {frame: heapZero, tasks: this.frameMap[heapZero]};
     }
 
-    // 提取并移除最早帧的任务
+    // Extract and remove tasks at the earliest frame
     public function extractTasksAtMinFrame():TaskIDLinkedList {
-        if (heap.length == 0) return null;
-        var minFrame:Number = heap[0];
-        swap(0, heap.length - 1);
-        heap.pop();
-        this.bubbleDown(0);
-        var tasks:TaskIDLinkedList = frameMap[minFrame];
-        delete frameMap[minFrame];
+        if (this.heapSize == 0) return null;
+        var minFrame:Number = this.heap[0];
+        var lastIndex:Number = this.heapSize - 1;
+        if (lastIndex > 0) {
+            // Cache the values to reduce array indexing
+            var valueAt0:Number = this.heap[0];
+            var valueAtLast:Number = this.heap[lastIndex];
+
+            // Swap using temporary variables to reduce array accesses
+            this.heap[0] = valueAtLast;
+            this.heap[lastIndex] = valueAt0;
+
+            // Update frameIndexToHeapIndex mapping
+            this.frameIndexToHeapIndex[valueAtLast] = 0;
+            this.frameIndexToHeapIndex[valueAt0] = lastIndex;
+        }
+        // Cache the new heapSize
+        var newHeapSize:Number = this.heapSize - 1;
+        this.heapSize = newHeapSize;
+
+        if (newHeapSize > 0) {
+            // Manually inlined bubbleDown(0);
+            var currentIndex:Number = 0;
+            var currentValue:Number = this.heap[currentIndex];
+            var heapSizeLocal:Number = this.heapSize;
+
+            while (true) {
+                var smallestIndex:Number = currentIndex;
+                var smallestValue:Number = currentValue;
+
+                for (var j:Number = 1; j <= 4; j++) {
+                    var childIndex:Number = (currentIndex << 2) + j;
+                    if (childIndex >= heapSizeLocal) break;
+
+                    var childValue:Number = this.heap[childIndex];
+                    if (childValue < smallestValue) {
+                        smallestIndex = childIndex;
+                        smallestValue = childValue;
+                    }
+                }
+
+                if (smallestIndex != currentIndex) {
+                    this.heap[currentIndex] = smallestValue;
+                    this.heap[smallestIndex] = currentValue;
+
+                    this.frameIndexToHeapIndex[smallestValue] = currentIndex;
+                    this.frameIndexToHeapIndex[currentValue] = smallestIndex;
+
+                    currentIndex = smallestIndex;
+                    currentValue = this.heap[currentIndex];
+                } else {
+                    break;
+                }
+            }
+        }
+
+        var tasks:TaskIDLinkedList = this.frameMap[minFrame];
+        delete this.frameMap[minFrame];
         return tasks;
-    }
-
-    // 维护最小堆性质，通过上浮新加入或更新的节点
-    private function bubbleUp(index:Number):Void {
-        while (index > 0) {
-            var parentIndex:Number = (index - 1) >> 1;
-            if (heap[index] < heap[parentIndex]) {
-                swap(index, parentIndex);
-                index = parentIndex;
-            } else {
-                break;
-            }
-        }
-    }
-
-    // 维护最小堆性质，通过下沉可能出现顺序错误的节点
-    private function bubbleDown(index:Number):Void {
-        var length:Number = heap.length;
-        var element:Number = heap[index];
-        var leftChildIndex:Number, rightChildIndex:Number, smallerChildIndex:Number;
-
-        while (true) {
-            leftChildIndex = (index << 1) + 1;  // 计算左子节点索引
-            rightChildIndex = leftChildIndex + 1;  // 计算右子节点索引
-            smallerChildIndex = index;
-
-            if (leftChildIndex < length && heap[leftChildIndex] < element) {
-                smallerChildIndex = leftChildIndex;
-            }
-
-            if (rightChildIndex < length && heap[rightChildIndex] < heap[smallerChildIndex]) {
-                smallerChildIndex = rightChildIndex;
-            }
-
-            if (smallerChildIndex != index) {
-                swap(index, smallerChildIndex);
-                index = smallerChildIndex;
-                element = heap[index];  // 更新当前元素为交换后的元素
-            } else {
-                break;
-            }
-        }
-    }
-
-    // 交换堆中的两个元素，并更新帧索引到堆索引的映射
-    private function swap(i:Number, j:Number):Void {
-        var temp:Number = heap[i];
-        heap[i] = heap[j];
-        heap[j] = temp;
-        
-        frameIndexToHeapIndex[heap[i]] = i;
-        frameIndexToHeapIndex[heap[j]] = j;
     }
 }
