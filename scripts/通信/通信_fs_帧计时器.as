@@ -416,9 +416,14 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     _root.显示列表.播放列表();
 }, _root.帧计时器);
 
+// 监听面板是否初始化，初始化完成后自动取消订阅
 _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
-    _root.UI系统.虚拟币刷新();
-    _root.UI系统.金钱刷新();
+    var 系统 = _root.UI系统;
+    if(系统.虚拟币刷新() or 系统.金钱刷新())
+    {
+        _root.帧计时器.eventBus.unsubscribe("frameUpdate");
+    }
+
 }, _root.帧计时器);
 
 _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
@@ -427,7 +432,7 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
 
 _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     var tasks = this.ScheduleTimer.tick();
-    this.server.sendServerMessage("schedule tasks");
+    // this.server.sendServerMessage("schedule tasks");
     if (tasks != null) {
         var node = tasks.getFirst();
         while (node != null) {
