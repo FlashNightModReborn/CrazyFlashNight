@@ -1146,11 +1146,11 @@
         <BackgroundURL>堕落城下水道入口.swf</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
-        <Xmax>1810</Xmax>
-        <Ymin>570</Ymin>
-        <Ymax>880</Ymax>
-        <Width>2000</Width>
-        <Height>900</Height>
+        <Xmax>1580</Xmax>
+        <Ymin>480</Ymin>
+        <Ymax>720</Ymax>
+        <Width>2030</Width>
+        <Height>765</Height>
     </Environment>
     <Environment>
         <BackgroundURL>堕落城下水道过道1.swf</BackgroundURL>
@@ -1170,18 +1170,18 @@
         <BackgroundURL>堕落城下水道过道2.swf</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>20</Xmin>
-        <Xmax>1680</Xmax>
-        <Ymin>450</Ymin>
-        <Ymax>670</Ymax>
-        <Width>1750</Width>
-        <Height>740</Height>
+        <Xmax>1300</Xmax>
+        <Ymin>360</Ymin>
+        <Ymax>500</Ymax>
+        <Width>1350</Width>
+        <Height>600</Height>
         <MaxIllumination>2</MaxIllumination>
         <MinIllumination>0</MinIllumination>
         <Elements>
             <Element>
                 <url>flashswf/backgrounds/elements/下水道过道护栏.swf</url>
-                <x>-84</x>
-                <y>685</y>
+                <x>0</x>
+                <y>515</y>
             </Element>
         </Elements>
     </Environment>
