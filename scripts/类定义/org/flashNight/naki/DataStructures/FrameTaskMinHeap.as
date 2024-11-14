@@ -129,7 +129,7 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
     private var heap:Array;                     // 存储帧索引的最小堆数组
     private var frameMap:Object;                // 将帧索引映射到任务的链表
     private var frameIndexToHeapIndex:Object;   // 将帧索引映射到堆中的索引
-    private var currentFrame:Number;            // 跟踪当前帧数
+    public var currentFrame:Number;            // 跟踪当前帧数
     private var nodePool:Array;                 // 可重用的TaskIDNode实例池
 
     // 构造函数：初始化最小堆及相关结构
