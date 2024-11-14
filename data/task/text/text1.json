@@ -125,7 +125,15 @@
             "name": "Andy Law",
             "title": "东区最强战士",
             "char": "Andy Law",
-            "text": "的确。你去旁边的军火库里找shopgirl，她会给你指条明路的。"
+            "text": "的确。你去旁边的军火库里找shopgirl，她会给你指条明路的。",
+            "imageurl": "flashswf/images/task_images/军火库提示.png"
+        },
+        {
+            "name": "Andy Law",
+            "title": "东区最强战士",
+            "char": "Andy Law#微笑",
+            "text": "她负责我们这里的一部分后勤与外交工作，和她打好关系，你以后不会吃亏的。",
+            "imageurl": "close"
         }
     ],
     "$MAIN_FINISH_2": [
@@ -179,13 +187,15 @@
             "name": "Shop Girl",
             "title": "军火商",
             "char": "shopgirl#微笑",
-            "text": "之后去找那个对着沙袋打拳的教官blue吧，把牛肉罐头给他，他会介绍给你工作，你就可以用贵金属本位的钱来跟我换武器了。"
+            "text": "之后去找那个对着沙袋打拳的教官blue吧，把牛肉罐头给他，他会介绍给你工作，你就可以用贵金属本位的钱来跟我换武器了。",
+            "imageurl": "flashswf/images/task_images/blue提示.png"
         },
         {
             "name": "$PC",
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
-            "text": "但是，为什么不能直接用牛肉罐头找你换武器呢？"
+            "text": "但是，为什么不能直接用牛肉罐头找你换武器呢？",
+            "imageurl": "close"
         },
         {
             "name": "Shop Girl",
@@ -197,7 +207,15 @@
             "name": "Shop Girl",
             "title": "军火商",
             "char": "shopgirl#微笑",
-            "text": "另外，超市里翻找补给是很费事的，你最好去雇一条幸存者养的狗，能够帮到你很多。点击上方的【战宠】按钮就能够雇佣了。"
+            "text": "另外，超市里翻找补给是很费事的，你最好去雇一条幸存者养的狗，能够帮到你很多。（点击上方的【战宠】按钮进行雇佣）",
+            "imageurl": "flashswf/images/task_images/战宠提示.png"
+        },
+        {
+            "name": "Shop Girl",
+            "title": "军火商",
+            "char": "shopgirl#微笑",
+            "text": "末世里单打独斗风险不低，要更讲究策略才对。",
+            "imageurl": "close"
         }
     ],
     "$MAIN_FINISH_3": [
