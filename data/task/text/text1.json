@@ -18,19 +18,22 @@
             "name": "$PC",
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
-            "text": "画面右下角的红色图标表示有任务可以提交。"
+            "text": "画面右下角的红色图标表示有任务可以提交。",
+            "imageurl": "flashswf/images/task_images/感叹号提示.png"
         },
         {
             "name": "$PC",
             "title": "$PC_TITLE",
             "char": "$PC_CHAR",
-            "text": "也可以点击画面下方的任务栏按钮查看当前任务信息。"
+            "text": "也可以点击画面下方的任务栏按钮查看当前任务信息。",
+            "imageurl": "flashswf/images/task_images/任务栏提示.png"
         },
         {
             "name": "重置组",
             "title": "重置组",
             "char": "",
-            "text": "你正在游玩闪客快打7重置版，该改版无需任何购买，请千万不要上当受骗被倒卖的骗了。具体改版内容请自己体验或查阅改动说明文档。"
+            "text": "你正在游玩闪客快打7重置版，该改版无需任何购买，请千万不要上当受骗被倒卖的骗了。具体改版内容请自己体验或查阅改动说明文档。",
+            "imageurl": "close"
         }
     ],
     "$MAIN_FINISH_0": [
@@ -84,13 +87,15 @@
             "name": "Andy Law",
             "title": "东区最强战士",
             "char": "Andy Law",
-            "text": "那可不是什么室内健身场所，是我们在废城郊区围起来的一块地，引入少数丧尸来作为战斗对象。"
+            "text": "那可不是什么室内健身场所，是我们在废城郊区围起来的一块地，引入少数丧尸来作为战斗对象。",
+            "imageurl": "flashswf/images/task_images/新手练习场提示.png"
         },
         {
             "name": "Andy Law",
             "title": "东区最强战士",
             "char": "Andy Law",
-            "text": "消灭它们，展示你的实力，获得相应的奖励，这是我们A兵团的规矩。"
+            "text": "消灭它们，展示你的实力，获得相应的奖励，这是我们A兵团的规矩。",
+            "imageurl": "close"
         },
         {
             "name": "$PC",
