@@ -46,11 +46,17 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
         this.poolSize = 0;
         this.heapSize = 0;
 
-        // 预分配128个节点到节点池中
-        for (var i:Number = 0; i < 128; i++) {
+        // 循环展开，批量添加节点到节点池中
+        var i:Number = 0;
+        while (i < 128) {
             this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            i += 4;
         }
     }
+
 
     /**
      * 查询节点池的大小
@@ -64,10 +70,33 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
      * @param size 要添加的节点数量
      */
     public function fillNodePool(size:Number):Void {
-        for (var i:Number = 0; i < size; i++) {
+        var n:Number = Math.floor(size / 8); // 每组包含 8 次操作
+        var remainder:Number = size % 8; // 处理不足 8 次的剩余部分
+
+        // 处理剩余部分
+        switch (remainder) {
+            case 7: this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            case 6: this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            case 5: this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            case 4: this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            case 3: this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            case 2: this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            case 1: this.nodePool[this.poolSize++] = new TaskIDNode(null);
+        }
+
+        // 处理完整的 8 次分组
+        while (n-- > 0) {
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
+            this.nodePool[this.poolSize++] = new TaskIDNode(null);
             this.nodePool[this.poolSize++] = new TaskIDNode(null);
         }
     }
+
 
     /**
      * 减少节点池的大小
@@ -87,17 +116,17 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
     public function insert(taskID:String, delay:Number):Void {
         var frameIndex:Number = this.currentFrame + delay; // 计算任务应执行的帧索引
         var locFrameMap = this.frameMap;
+        var linkedList = locFrameMap[frameIndex];
 
         // 如果该帧索引还没有任务，需插入到堆中
-        if (!locFrameMap[frameIndex]) {
+        if (!linkedList) {
 
             var locHeap = this.heap;
             var locFrameIndexToHeapIndex = this.frameIndexToHeapIndex;
-            locFrameMap[frameIndex] = new TaskIDLinkedList(); // 创建新的任务链表
-            locHeap[this.heapSize] = frameIndex; // 将帧索引插入堆的末尾
-            var heapIndex:Number = this.heapSize;
-
-            this.heapSize++;
+            var heapIndex:Number = this.heapSize++;
+            linkedList = locFrameMap[frameIndex] = new TaskIDLinkedList(); // 创建新的任务链表
+            locHeap[heapIndex] = frameIndex; // 将帧索引插入堆的末尾
+            
             locFrameIndexToHeapIndex[frameIndex] = heapIndex; // 更新帧索引到堆索引的映射
 
             // 内联的bubbleUp操作，使用循环展开和逻辑分支优化
@@ -117,11 +146,11 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
                 }
 
                 // 使用链式赋值交换heap[currentIndex]和heap[parentIndex]，避免使用临时变量
-                var heapCurrentIndex = locHeap[currentIndex] = locHeap[parentIndex] + (locHeap[parentIndex] = locHeap[currentIndex]) - locHeap[parentIndex];
+                var heapParentIndexCache = locHeap[parentIndex];
                 
                 // 更新frameIndexToHeapIndex中的索引
-                locFrameIndexToHeapIndex[heapCurrentIndex] = currentIndex;
-                locFrameIndexToHeapIndex[locHeap[parentIndex]] = parentIndex;
+                locFrameIndexToHeapIndex[locHeap[currentIndex] = locHeap[parentIndex] = heapParentIndexCache] = currentIndex;
+                locFrameIndexToHeapIndex[heapParentIndexCache] = parentIndex;
 
                 // 更新currentIndex到parentIndex，继续向上调整
                 currentIndex = parentIndex;
@@ -143,7 +172,7 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
 
         // 设置节点的slotIndex并将其添加到对应帧的任务链表中
         newNode.slotIndex = frameIndex;
-        locFrameMap[frameIndex].appendNode(newNode);
+        linkedList.appendNode(newNode);
     }
 
     /**
@@ -154,15 +183,16 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
     public function insertNode(node:TaskIDNode, delay:Number):Void {
         var frameIndex:Number = this.currentFrame + delay;
         var locFrameMap = this.frameMap;
-
+        var linkedList = locFrameMap[frameIndex];
         // 如果该帧索引尚未存在，则需要将其插入堆中
-        if (!locFrameMap[frameIndex]) {
+        if (!linkedList) {
             var locHeap = this.heap;
             var locFrameIndexToHeapIndex = this.frameIndexToHeapIndex;
-            locFrameMap[frameIndex] = new TaskIDLinkedList();
-            locHeap[this.heapSize] = frameIndex;
-            var heapIndex:Number = this.heapSize;
-            this.heapSize++;
+            var heapIndex:Number = this.heapSize++;
+
+            linkedList = locFrameMap[frameIndex] = new TaskIDLinkedList();
+            locHeap[heapIndex] = frameIndex;
+            
             locFrameIndexToHeapIndex[frameIndex] = heapIndex;
 
             // 内联的bubbleUp操作，优化同上
@@ -181,11 +211,12 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
                 }
 
                 // 使用链式赋值交换
-                var heapCurrentIndex = locHeap[currentIndex] = locHeap[parentIndex] + (locHeap[parentIndex] = locHeap[currentIndex]) - locHeap[parentIndex];
+                var heapCurrentIndexCache = locHeap[currentIndex];
+                var heapParentIndexCache = locHeap[parentIndex];
                 
                 // 更新索引映射
-                locFrameIndexToHeapIndex[heapCurrentIndex] = currentIndex;
-                locFrameIndexToHeapIndex[locHeap[parentIndex]] = parentIndex;
+                locFrameIndexToHeapIndex[locHeap[currentIndex] = locHeap[parentIndex] = heapCurrentIndexCache] = currentIndex;
+                locFrameIndexToHeapIndex[heapCurrentIndexCache] = parentIndex;
 
                 // 更新currentIndex到parentIndex
                 currentIndex = parentIndex;
@@ -198,7 +229,7 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
 
         // 设置节点的slotIndex并将其添加到对应帧的任务链表中
         node.slotIndex = frameIndex;
-        locFrameMap[frameIndex].appendNode(node);
+        linkedList.appendNode(node);
     }
 
     /**
@@ -219,15 +250,16 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
         // 调度任务，与insert方法类似
         var frameIndex:Number = this.currentFrame + delay;
         var locFrameMap = this.frameMap;
+        var linkedList = locFrameMap[frameIndex];
 
-        if (!locFrameMap[frameIndex]) {
+        if (!linkedList) {
             var locHeap = this.heap;
             var locFrameIndexToHeapIndex = this.frameIndexToHeapIndex;
+            var heapIndex:Number = this.heapSize++;
 
-            locFrameMap[frameIndex] = new TaskIDLinkedList();
-            locHeap[this.heapSize] = frameIndex;
-            var heapIndex:Number = this.heapSize;
-            this.heapSize++;
+            linkedList = locFrameMap[frameIndex] = new TaskIDLinkedList();
+            locHeap[heapIndex] = frameIndex;
+            
             locFrameIndexToHeapIndex[frameIndex] = heapIndex;
 
             // 内联的bubbleUp操作，优化同上
@@ -246,11 +278,12 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
                 }
 
                 // 使用链式赋值交换
-                var heapCurrentIndex = locHeap[currentIndex] = locHeap[parentIndex] + (locHeap[parentIndex] = locHeap[currentIndex]) - locHeap[parentIndex];
+                var heapCurrentIndexCache = locHeap[currentIndex];
+                var heapParentIndexCache = locHeap[parentIndex];
                 
                 // 更新索引映射
-                locFrameIndexToHeapIndex[heapCurrentIndex] = currentIndex;
-                locFrameIndexToHeapIndex[locHeap[parentIndex]] = parentIndex;
+                locFrameIndexToHeapIndex[locHeap[currentIndex] = locHeap[parentIndex] = heapCurrentIndexCache] = currentIndex;
+                locFrameIndexToHeapIndex[heapCurrentIndexCache] = parentIndex;
 
                 // 更新currentIndex到parentIndex
                 currentIndex = parentIndex;
@@ -263,7 +296,7 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
 
         // 设置节点的slotIndex并将其添加到对应帧的任务链表中
         node.slotIndex = frameIndex;
-        locFrameMap[frameIndex].appendNode(node);
+        linkedList.appendNode(node);
 
         return node;
     }
@@ -277,15 +310,17 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
     public function addTimerByNode(node:TaskIDNode, delay:Number):TaskIDNode {
         var frameIndex:Number = this.currentFrame + delay;
         var locFrameMap = this.frameMap;
+        var linkedList = locFrameMap[frameIndex];
 
         // 如果该帧索引尚未存在，则需插入到堆中
-        if (!locFrameMap[frameIndex]) {
+        if (!linkedList) {
             var locHeap = this.heap;
             var locFrameIndexToHeapIndex = this.frameIndexToHeapIndex;
-            locFrameMap[frameIndex] = new TaskIDLinkedList();
-            locHeap[this.heapSize] = frameIndex;
-            var heapIndex:Number = this.heapSize;
-            this.heapSize++;
+            var heapIndex:Number = this.heapSize++;
+
+            linkedList = locFrameMap[frameIndex] = new TaskIDLinkedList();
+            locHeap[heapIndex] = frameIndex;
+            
             locFrameIndexToHeapIndex[frameIndex] = heapIndex;
 
             // 内联的bubbleUp操作，优化同上
@@ -304,11 +339,12 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
                 }
 
                 // 使用链式赋值交换
-                var heapCurrentIndex = locHeap[currentIndex] = locHeap[parentIndex] + (locHeap[parentIndex] = locHeap[currentIndex]) - locHeap[parentIndex];
+                var heapCurrentIndexCache = locHeap[currentIndex];
+                var heapParentIndexCache = locHeap[parentIndex];
                 
                 // 更新索引映射
-                locFrameIndexToHeapIndex[heapCurrentIndex] = currentIndex;
-                locFrameIndexToHeapIndex[locHeap[parentIndex]] = parentIndex;   
+                locFrameIndexToHeapIndex[locHeap[currentIndex] = locHeap[parentIndex] = heapCurrentIndexCache] = currentIndex;
+                locFrameIndexToHeapIndex[heapCurrentIndexCache] = parentIndex;   
 
                 // 更新currentIndex到parentIndex
                 currentIndex = parentIndex;
@@ -321,7 +357,7 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
 
         // 设置节点的slotIndex并将其添加到对应帧的任务链表中
         node.slotIndex = frameIndex;
-        locFrameMap[frameIndex].appendNode(node);
+        linkedList.appendNode(node);
 
         return node;
     }
@@ -372,127 +408,114 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
             locHeap[lastIndex] = null;
             delete locFrameIndexToHeapIndex[frameIndex];
 
-            if (heapIndex < this.heapSize) {
-                // 如果移动后的元素不是堆末尾元素，需重新平衡堆
-                var currentIndex:Number = heapIndex;
-                var currentValue:Number = locHeap[currentIndex];
+            if (heapIndex < lastIndex) {
+                // 根据堆大小选择不同的平衡策略
+                if (this.heapSize > 1024) {
+                    // **采用分层调整策略**
+                    var currentIndex:Number = heapIndex;
+                    var currentValue:Number = lastValue;
 
-                var minIndex:Number;
-                var baseChildIndex:Number;
-                var remaining:Number;
-                var childIndex:Number;
-                var childValue:Number;
-                var minValue:Number;
+                    while (true) {
+                        var baseChildIndex:Number = (currentIndex << 2) + 1; // 第一个子节点索引
+                        if (baseChildIndex >= this.heapSize) break; // 无子节点
 
-                while (true) {
-                    minIndex = currentIndex;
-                    baseChildIndex = (currentIndex << 2); // 相当于currentIndex * 4
-                    remaining = this.heapSize - baseChildIndex;
+                        var minIndex:Number = currentIndex;
+                        var minValue:Number = currentValue;
 
-                    minValue = currentValue;
+                        // 批量遍历4个子节点，找出最小值及其索引
+                        for (var i:Number = 0; i < 4; i++) {
+                            var childIndex:Number = baseChildIndex + i;
+                            if (childIndex >= this.heapSize) break;
+                            var childValue:Number = locHeap[childIndex];
+                            if (childValue < minValue) {
+                                minValue = childValue;
+                                minIndex = childIndex;
+                            }
+                        }
 
-                    if (remaining >= 5) { // 当前节点有4个子节点
+                        if (minIndex == currentIndex) {
+                            break; // 当前节点已在正确位置
+                        }
+
+                        // 交换当前节点与最小子节点，采用链式赋值优化
+                        locHeap[currentIndex] = minValue;
+                        locHeap[minIndex] = currentValue;
+
+                        // 更新 frameIndexToHeapIndex 映射
+                        locFrameIndexToHeapIndex[minValue] = currentIndex;
+                        locFrameIndexToHeapIndex[currentValue] = minIndex;
+
+                        // 继续调整交换后的子节点
+                        currentIndex = minIndex;
+                        currentValue = lastValue;
+                    }
+                } else {
+                    // **继续使用现有的逐层调整策略**
+                    var currentIndex:Number = heapIndex;
+                    var currentValue:Number = locHeap[currentIndex];
+
+                    var minIndex:Number;
+                    var baseChildIndex:Number;
+                    var remaining:Number;
+                    var childIndex:Number;
+                    var childValue:Number;
+                    var minValue:Number;
+
+                    while (true) {
+                        minIndex = currentIndex;
+                        baseChildIndex = (currentIndex << 2); // 相当于currentIndex * 4
+                        remaining = lastIndex - baseChildIndex;
+
+                        minValue = currentValue;
                         childIndex = baseChildIndex;
 
-                        // 循环展开处理4个子节点
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
+                        if (remaining >= 5) { // 当前节点有4个子节点
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                        } else if (remaining == 4) { // 当前节点有3个子节点
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                        } else if (remaining == 3) { // 当前节点有2个子节点
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                        } else if (remaining == 2) { // 当前节点有1个子节点
+                            minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
                         }
 
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
+                        if (minIndex == currentIndex) {
+                            break; // 当前节点已在正确位置
                         }
 
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
+                        // 使用链式赋值交换 heap[currentIndex] 和 heap[minIndex]
+                        var heapCurrentIndexCache:Number = locHeap[currentIndex];
+                        var locCurrentIndex:Number = locHeap[currentIndex] = locHeap[minIndex] + (locHeap[minIndex] = heapCurrentIndexCache) - heapCurrentIndexCache;
 
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
+                        // 更新 frameIndexToHeapIndex 中的索引
+                        locFrameIndexToHeapIndex[locCurrentIndex] = currentIndex;
+                        locFrameIndexToHeapIndex[heapCurrentIndexCache] = minIndex;
 
-                    } else if (remaining == 4) { // 当前节点有3个子节点
-                        childIndex = baseChildIndex;
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                    } else if (remaining == 3) { // 当前节点有2个子节点
-                        childIndex = baseChildIndex;
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                    } else if (remaining == 2) { // 当前节点有1个子节点
-                        childIndex = baseChildIndex;
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
+                        // 更新 currentIndex 和 currentValue，继续向下调整
+                        currentIndex = minIndex;
+                        currentValue = locCurrentIndex;
                     }
 
-                    if (minIndex == currentIndex) {
-                        break; // 当前节点已在正确位置
-                    }
-
-                    // 使用链式赋值交换heap[currentIndex]和heap[minIndex]
-                    locHeap[currentIndex] = locHeap[minIndex] + (locHeap[minIndex] = locHeap[currentIndex]) - locHeap[minIndex];
-                    
-                    // 更新frameIndexToHeapIndex中的索引
-                    locFrameIndexToHeapIndex[locHeap[currentIndex]] = currentIndex;
-                    locFrameIndexToHeapIndex[locHeap[minIndex]] = minIndex;
-
-                    // 更新currentIndex和currentValue，继续向下调整
-                    currentIndex = minIndex;
-                    currentValue = locHeap[currentIndex];
+                    // 确认 currentIndex 的值并更新映射
+                    locHeap[currentIndex] = currentValue;
+                    locFrameIndexToHeapIndex[currentValue] = currentIndex;
                 }
-
-                // 确认currentIndex的值并更新映射
-                locHeap[currentIndex] = currentValue;
-                locFrameIndexToHeapIndex[currentValue] = currentIndex;
             }
 
-            delete locFrameMap[frameIndex]; // 从frameMap中删除该帧索引
+            delete locFrameMap[frameIndex]; // 从 frameMap 中删除该帧索引
         }
 
         // 回收节点，准备复用
         node.reset(null);
         this.nodePool[this.poolSize++] = node;
     }
+
 
 
     /**
@@ -503,12 +526,11 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
     public function findNodeById(taskID:String):TaskIDNode {
         var locHeap = this.heap;
         var locFrameMap = this.frameMap;
+        var heapSize = this.heapSize;
 
         // 遍历堆中的所有帧索引
-        for (var i:Number = 0; i < this.heapSize; i++) {
-            var frameIndex:Number = locHeap[i];
-            var list:TaskIDLinkedList = locFrameMap[frameIndex];
-            var currentNode:TaskIDNode = list.getFirst();
+        for (var i:Number = 0; i < heapSize; i++) {
+            var currentNode:TaskIDNode = locFrameMap[locHeap[i]].getFirst();
 
             // 遍历每个帧索引下的任务链表
             while (currentNode != null) {
@@ -590,7 +612,7 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
             locHeap[lastIndex] = null; // 移除最后一个元素的引用
             delete locFrameIndexToHeapIndex[minFrame];
 
-            if (this.heapSize > 0) {
+            if (lastIndex > 0) {
                 // 重新平衡堆，确保堆的最小性质
                 var currentIndex:Number = 0;
                 var currentValue:Number = locHeap[currentIndex];
@@ -605,82 +627,26 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
                 while (true) {
                     minIndex = currentIndex;
                     baseChildIndex = (currentIndex << 2); // 相当于currentIndex * 4
-                    remaining = this.heapSize - baseChildIndex;
+                    remaining = lastIndex - baseChildIndex;
 
                     minValue = currentValue;
 
+                    childIndex = baseChildIndex;
+
                     if (remaining >= 5) { // 当前节点有4个子节点
-                        childIndex = baseChildIndex;
-
-                        // 循环展开处理4个子节点
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
                     } else if (remaining == 4) { // 当前节点有3个子节点
-                        childIndex = baseChildIndex;
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
                     } else if (remaining == 3) { // 当前节点有2个子节点
-                        childIndex = baseChildIndex;
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
-
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
                     } else if (remaining == 2) { // 当前节点有1个子节点
-                        childIndex = baseChildIndex;
-
-                        childValue = locHeap[++childIndex];
-                        if (childValue < minValue) {
-                            minIndex = childIndex;
-                            minValue = childValue;
-                        }
+                        minIndex = (locHeap[++childIndex] < minValue ? (minValue = locHeap[childIndex], childIndex) : minIndex);
                     }
 
                     if (minIndex == currentIndex) {
@@ -688,15 +654,16 @@ class org.flashNight.naki.DataStructures.FrameTaskMinHeap {
                     }
 
                     // 使用链式赋值交换heap[currentIndex]和heap[minIndex]
-                    locHeap[currentIndex] = locHeap[minIndex] + (locHeap[minIndex] = locHeap[currentIndex]) - locHeap[minIndex];
+                    var locCurrentIndexCache = locHeap[currentIndex];
+                    var locCurrentIndex = locHeap[currentIndex] = locHeap[minIndex] = locCurrentIndexCache;
                     
                     // 更新frameIndexToHeapIndex中的索引
-                    locFrameIndexToHeapIndex[locHeap[currentIndex]] = currentIndex;
-                    locFrameIndexToHeapIndex[locHeap[minIndex]] = minIndex;
+                    locFrameIndexToHeapIndex[locCurrentIndex] = currentIndex;
+                    locFrameIndexToHeapIndex[locCurrentIndex] = minIndex;
 
                     // 更新currentIndex和currentValue，继续向下调整
                     currentIndex = minIndex;
-                    currentValue = locHeap[currentIndex];
+                    currentValue = locCurrentIndex;
                 }
 
                 // 确认currentIndex的值并更新映射
