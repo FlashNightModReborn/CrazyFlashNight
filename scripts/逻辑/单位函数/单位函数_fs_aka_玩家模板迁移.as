@@ -747,8 +747,8 @@ _root.刷新人物装扮 = function(目标)
 	目标人物.手枪2动作类型 = 手枪2数据.actiontype;
 	目标人物.手雷动作类型 = _root.getItemData(手雷).actiontype;
 	
-	//计算统一调控的伤害加成
-	if(_root.isChallengeMode()){
+	//计算统一调控的伤害加成，目前屏蔽高等级加成
+	if(true || _root.isChallengeMode()){
 		目标人物.hp攻击加成 = 0;
 		目标人物.mp攻击加成 = 0;
 		目标人物.长枪额外攻击加成倍率 = 0;
