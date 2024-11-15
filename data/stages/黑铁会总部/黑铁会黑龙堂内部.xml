@@ -8,39 +8,49 @@
         <Description>黑铁会老大的嫡系亲信，和心爱的战马一起所向披靡。Lee突入进去后杳无音信，不知情况如何？</Description>
     </StageInfo>
     <Rewards>
-        <Reward id="0">
+        <Reward>
             <Name>抗生素</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>30</QuantityMax>
         </Reward>
-        <Reward id="1">
-            <Name>普通hp药剂</Name>
-            <AcquisitionProbability>2</AcquisitionProbability>
-            <QuantityMax>15</QuantityMax>
-        </Reward>
-        <Reward id="2">
+        <Reward>
             <Name>普通mp药剂</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>15</QuantityMax>
         </Reward>
-        <Reward id="3">
+        <Reward>
             <Name>普通hp粉尘</Name>
             <AcquisitionProbability>10</AcquisitionProbability>
             <QuantityMax>1</QuantityMax>
         </Reward>
-        <Reward id="4">
+        <Reward>
             <Name>复活币</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>10</QuantityMax>
         </Reward>
-        <Reward id="5">
+        <Reward>
             <Name>黑龙令</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>3</QuantityMax>
         </Reward>
-        <Reward id="6">
+        <Reward>
             <Name>电脑芯片</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>粘土</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>硼砂</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>石灰</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>3</QuantityMax>
         </Reward>
     </Rewards>

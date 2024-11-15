@@ -8,40 +8,45 @@
         <Description>黑铁会堂主翅虎所在之地，作为三大堂主之一，战力不可小觑。</Description>
     </StageInfo>
     <Rewards>
-        <Reward id="0">
+        <Reward>
             <Name>抗生素</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>20</QuantityMax>
         </Reward>
-        <Reward id="1">
-            <Name>普通hp药剂</Name>
-            <AcquisitionProbability>2</AcquisitionProbability>
-            <QuantityMax>10</QuantityMax>
-        </Reward>
-        <Reward id="2">
+        <Reward>
             <Name>普通mp药剂</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>10</QuantityMax>
         </Reward>
-        <Reward id="3">
+        <Reward>
             <Name>普通hp粉尘</Name>
             <AcquisitionProbability>10</AcquisitionProbability>
             <QuantityMax>1</QuantityMax>
         </Reward>
-        <Reward id="4">
+        <Reward>
             <Name>复活币</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>5</QuantityMax>
         </Reward>
-        <Reward id="5">
+        <Reward>
             <Name>翅虎令</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>3</QuantityMax>
         </Reward>
-        <Reward id="6">
+        <Reward>
             <Name>战术背带</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>5</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>硫酸盐</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>铝粉</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
         </Reward>
     </Rewards>
     <SubStage id="0">

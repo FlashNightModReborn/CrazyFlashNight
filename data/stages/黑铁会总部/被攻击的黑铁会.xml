@@ -8,25 +8,35 @@
         <Description>黑铁会被不明部队攻击，危在旦夕。</Description>
     </StageInfo>
     <Rewards>
-        <Reward id="0">
+        <Reward>
             <Name>抗生素</Name>
-            <AcquisitionProbability>8</AcquisitionProbability>
-            <QuantityMax>1</QuantityMax>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
         </Reward>
-        <Reward id="1">
-            <Name>普通hp药剂</Name>
-            <AcquisitionProbability>2</AcquisitionProbability>
-            <QuantityMax>5</QuantityMax>
-        </Reward>
-        <Reward id="2">
+        <Reward>
             <Name>普通mp药剂</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>5</QuantityMax>
         </Reward>
-        <Reward id="3">
+        <Reward>
             <Name>普通hp粉尘</Name>
             <AcquisitionProbability>10</AcquisitionProbability>
             <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>黄铜</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>汞合金</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>蜡</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
         </Reward>
     </Rewards>
     <SubStage id="0">

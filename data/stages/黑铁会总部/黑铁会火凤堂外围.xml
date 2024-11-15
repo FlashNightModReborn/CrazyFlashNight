@@ -8,37 +8,32 @@
         <Description>黑铁会火凤堂外围地带，火凤堂主厌恶外人，故守卫森严。一队A兵团突击队与你同行，清理出一条通往内部的道路。</Description>
     </StageInfo>
     <Rewards>
-        <Reward id="0">
+        <Reward>
             <Name>抗生素</Name>
-            <AcquisitionProbability>8</AcquisitionProbability>
-            <QuantityMax>1</QuantityMax>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
         </Reward>
-        <Reward id="1">
-            <Name>普通hp药剂</Name>
-            <AcquisitionProbability>2</AcquisitionProbability>
-            <QuantityMax>5</QuantityMax>
-        </Reward>
-        <Reward id="2">
+        <Reward>
             <Name>普通mp药剂</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>5</QuantityMax>
         </Reward>
-        <Reward id="3">
+        <Reward>
             <Name>普通hp粉尘</Name>
             <AcquisitionProbability>10</AcquisitionProbability>
             <QuantityMax>1</QuantityMax>
         </Reward>
-        <Reward id="4">
+        <Reward>
             <Name>资料</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>10</QuantityMax>
         </Reward>
-        <Reward id="5">
+        <Reward>
             <Name>火凤堂徽章</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>5</QuantityMax>
         </Reward>
-        <Reward id="6">
+        <Reward>
             <Name>高耐力橡胶</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>4</QuantityMax>

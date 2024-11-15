@@ -8,30 +8,35 @@
         <Description>传闻黑铁会老大，剑锋飘逸，杀人无形，不知是真是假？</Description>
     </StageInfo>
     <Rewards>
-        <Reward id="0">
+        <Reward>
             <Name>抗生素</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>20</QuantityMax>
+            <QuantityMax>30</QuantityMax>
         </Reward>
-        <Reward id="1">
-            <Name>普通hp药剂</Name>
-            <AcquisitionProbability>2</AcquisitionProbability>
-            <QuantityMax>25</QuantityMax>
-        </Reward>
-        <Reward id="2">
+        <Reward>
             <Name>普通mp药剂</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>25</QuantityMax>
         </Reward>
-        <Reward id="3">
+        <Reward>
             <Name>普通hp粉尘</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>20</QuantityMax>
         </Reward>
-        <Reward id="4">
+        <Reward>
             <Name>复活币</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>王水</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>碱液</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
         </Reward>
     </Rewards>
     <SubStage id="0">

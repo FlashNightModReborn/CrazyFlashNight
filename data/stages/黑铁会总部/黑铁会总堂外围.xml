@@ -8,40 +8,45 @@
         <Description>进入黑铁会总堂前的最后一道关口，重兵把守！</Description>
     </StageInfo>
     <Rewards>
-        <Reward id="0">
+        <Reward>
             <Name>抗生素</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>20</QuantityMax>
+            <QuantityMax>25</QuantityMax>
         </Reward>
-        <Reward id="1">
-            <Name>普通hp药剂</Name>
-            <AcquisitionProbability>2</AcquisitionProbability>
-            <QuantityMax>20</QuantityMax>
-        </Reward>
-        <Reward id="2">
+        <Reward >
             <Name>普通mp药剂</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>20</QuantityMax>
         </Reward>
-        <Reward id="3">
+        <Reward>
             <Name>普通hp粉尘</Name>
             <AcquisitionProbability>10</AcquisitionProbability>
             <QuantityMax>1</QuantityMax>
         </Reward>
-        <Reward id="4">
+        <Reward>
             <Name>复活币</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>10</QuantityMax>
         </Reward>
-        <Reward id="5">
+        <Reward>
             <Name>加长弹匣</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>3</QuantityMax>
         </Reward>
-        <Reward id="6">
+        <Reward>
             <Name>黑铁会信物</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>8</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>锌棒</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>王水</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>3</QuantityMax>
         </Reward>
     </Rewards>
     <SubStage id="0">
