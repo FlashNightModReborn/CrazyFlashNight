@@ -121,6 +121,23 @@ _root.加载我方人物 = function(地点X, 地点Y)
 	_root.加载佣兵(地点X,地点Y);
 	_root.加载宠物(地点X,地点Y);
 }
+_root.加载主角和战宠 = function(地点X, 地点Y)
+{
+	if (_root.特殊操作单位)
+	{
+		var 当前操作单位 = _root.特殊操作单位;
+	}
+	else
+	{
+		//当前操作单位 = "主角-" + _root.性别;
+		var 当前操作单位 = "主角-男";//主角模型已经统一
+	}
+	_root.gameworld.attachMovie(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{_x:地点X, _y:地点Y, 是否为敌人:false, 身高:_root.身高, 名字:_root.角色名, 等级:_root.等级, 性别:_root.性别, 用户ID:_root.accId, 是否允许掉装备:false});
+	_root.玩家信息界面.刷新hp显示();
+	_root.玩家信息界面.刷新mp显示();
+	_root.添加其他玩家();
+	_root.加载宠物(地点X,地点Y);
+}
 
 _root.加载佣兵 = function(地点X, 地点Y)
 {
