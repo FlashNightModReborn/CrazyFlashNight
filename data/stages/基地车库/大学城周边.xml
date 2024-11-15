@@ -15,11 +15,6 @@
             <QuantityMax>1</QuantityMax>
         </Reward>
         <Reward>
-            <Name>普通hp药剂</Name>
-            <AcquisitionProbability>5</AcquisitionProbability>
-            <QuantityMax>3</QuantityMax>
-        </Reward>
-        <Reward>
             <Name>普通mp药剂</Name>
             <AcquisitionProbability>5</AcquisitionProbability>
             <QuantityMax>3</QuantityMax>
@@ -53,6 +48,11 @@
             <Name>螺丝套件</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>黄铜</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>2</QuantityMax>
         </Reward>
     </Rewards>
     <SubStage id="0">
