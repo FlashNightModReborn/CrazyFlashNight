@@ -268,16 +268,16 @@
     <icon>黑色重甲</icon>
     <type>防具</type>
     <use>上装装备</use>
-    <weight>60</weight>
-    <price>3145600</price>
+    <weight>70</weight>
+    <price>535600</price>
     <description>由铁板和钢块在烧炼后反复敲槌锻打而组成的厚重铠甲。盔甲的正面看起来能够抵挡任何攻击，无惧丧尸和战斗中袭来的流弹。但它也有着沉重的代价，穿戴者必须付出巨大的力气才能在战场上行动。而既然是以压迫灵与肉的方式来提供身躯的短暂庇护，那还是尽快寻找更合适的选择为妙。</description>
-    <level>45</level>
+    <level>50</level>
     <equipped>
       <dressup>变装-黑色重甲</dressup>
-      <hp>600</hp>
+      <hp>800</hp>
       <mp>0</mp>
       <damage>0</damage>
-      <defence>1000</defence>
+      <defence>1250</defence>
       <bullet>0</bullet>
     </equipped>
   </item>
@@ -1797,7 +1797,7 @@
     <type>防具</type>
     <use>上装装备</use>
     <weight>1</weight>
-    <price>550000</price>
+    <price>533000</price>
     <description>附着于皮肤上的奇异纹路，据说由&lt;font color=&quot;#ff00ff&quot;&gt;诺亚方舟&lt;/font&gt;的技术所创造。在制作上似乎利用了纳米材料和生物技术。此物只在皮肤与空气大面积接触时被激活，因而只能在防弹衣之间二者择其一。虽然代价巨大，但倘若激活，这些纹路也能赋予使用者与代价相匹配的肌肉活性和耐受力，以及远超猛兽的爆发力。</description>
     <level>50</level>
     <equipped>
@@ -1806,7 +1806,7 @@
       <mp>359</mp>
       <force>100</force>
       <punch>70</punch>
-      <knifepower>110</knifepower>
+      <knifepower>100</knifepower>
       <damage>100</damage>
       <defence>5</defence>
       <bullet>0</bullet>
