@@ -782,7 +782,12 @@
     <actiontype>刀剑</actiontype>
     <weight>4</weight>
     <price>30000</price>
-    <skill>&lt;font color=&quot;#FFCC00&quot;&gt;【主动战技】&lt;/font&gt;手持该武器时可以使用弧光斩。&lt;BR&gt;&lt;font color=&quot;#FFCC00&quot;&gt;【战技信息】&lt;/font&gt;冷却9秒，消耗40MP。</skill>
+    <skill>
+      <skillname>弧光斩</skillname>
+      <description>手持该武器时可以使用弧光斩。</description>
+      <cd>9000</cd>
+      <mp>50</mp>
+    </skill>
     <description>本是当代人还原的古代兵器，最终却成为了这片末日废土之中的防身之物。</description>
     <level>9</level>
     <data>
@@ -805,7 +810,12 @@
     <actiontype>刀剑</actiontype>
     <weight>4</weight>
     <price>30000</price>
-    <skill>&lt;font color=&quot;#FFCC00&quot;&gt;【主动战技】&lt;/font&gt;手持该武器时可以使用弧光斩。&lt;BR&gt;&lt;font color=&quot;#FFCC00&quot;&gt;【战技信息】&lt;/font&gt;冷却9秒，消耗40MP。</skill>
+    <skill>
+      <skillname>弧光斩</skillname>
+      <description>手持该武器时可以使用弧光斩。</description>
+      <cd>9000</cd>
+      <mp>50</mp>
+    </skill>
     <description>七星剑起源于中国古代的七宿文化，象征着对天空和宇宙的崇敬与敬畏。它不仅是勇气的象征，也是自信的体现，鼓励人们在面对困难时勇敢前行，坚持信念和目标。</description>
     <level>9</level>
     <data>
