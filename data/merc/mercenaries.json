@@ -17,7 +17,7 @@
       "primary": -1,
       "secondary1": 274,
       "secondary2": 274,
-      "melee": 410,
+      "melee": 22000,
       "grenade": 4
     }
   },
@@ -40,6 +40,28 @@
       "secondary1": -1,
       "secondary2": -1,
       "melee": 404,
+      "grenade": -1
+    }
+  },
+  {
+    "level": 1,
+    "name": "蓝环酱",
+    "id": 5611,
+    "height": 150,
+    "face": 0,
+    "hair": 28,
+    "gender": 0,
+    "equipment": {
+      "head": 159,
+      "body": 168,
+      "hand": 158,
+      "leg": 167,
+      "foot": 154,
+      "neck": 5508,
+      "primary": 5509,
+      "secondary1": 5510,
+      "secondary2": 5510,
+      "melee": -1,
       "grenade": -1
     }
   },
@@ -176,7 +198,7 @@
     }
   },
   {
-    "level": 8,
+    "level": 10,
     "name": "血手",
     "id": 238,
     "height": 181,
@@ -210,7 +232,7 @@
       "body": 110,
       "hand": 117,
       "leg": 111,
-      "foot": 115,
+      "foot": 136,
       "neck": 502,
       "primary": 257,
       "secondary1": 275,
@@ -286,7 +308,7 @@
     }
   },
   {
-    "level": 16,
+    "level": 11,
     "name": "雷霆",
     "id": 241,
     "height": 170,
@@ -295,7 +317,7 @@
     "gender": 1,
     "equipment": {
       "head": -1,
-      "body": 133,
+      "body": 137,
       "hand": 142,
       "leg": 103,
       "foot": 104,
@@ -364,7 +386,7 @@
       "body": 174,
       "hand": 158,
       "leg": 173,
-      "foot": 250,
+      "foot": 150,
       "neck": 512,
       "primary": 253,
       "secondary1": 286,
@@ -462,7 +484,7 @@
     }
   },
   {
-    "level": 17,
+    "level": 18,
     "name": "荒狼",
     "id": 248,
     "height": 181,
@@ -528,7 +550,7 @@
     }
   },
   {
-    "level": 20,
+    "level": 22,
     "name": "陈骋",
     "id": 251,
     "height": 170,
@@ -543,8 +565,8 @@
       "foot": 470,
       "neck": 492,
       "primary": 256,
-      "secondary1": 287,
-      "secondary2": 287,
+      "secondary1": 679,
+      "secondary2": 679,
       "melee": 407,
       "grenade": 33
     }
@@ -726,7 +748,7 @@
     }
   },
   {
-    "level": 17,
+    "level": 20,
     "name": "王女",
     "id": 258,
     "height": 150,
@@ -748,7 +770,7 @@
     }
   },
   {
-    "level": 10,
+    "level": 8,
     "name": "萝丝",
     "id": 259,
     "height": 160,
@@ -756,9 +778,9 @@
     "hair": 30,
     "gender": 0,
     "equipment": {
-      "head": 64,
+      "head": -1,
       "body": 166,
-      "hand": 130,
+      "hand": 142,
       "leg": 175,
       "foot": 154,
       "neck": 510,
@@ -814,7 +836,7 @@
     }
   },
   {
-    "level": 33,
+    "level": 36,
     "name": "寒冬",
     "id": 262,
     "height": 178,
@@ -1065,7 +1087,7 @@
     "gender": 0,
     "equipment": {
       "head": 10065,
-      "body": 537,
+      "body": 462,
       "hand": 469,
       "leg": 6036,
       "foot": 182,
@@ -1086,7 +1108,7 @@
     "hair": 11,
     "gender": 1,
     "equipment": {
-      "head": 11112,
+      "head": 10112,
       "body": 10031,
       "hand": -1,
       "leg": 10032,
@@ -1144,7 +1166,7 @@
     }
   },
   {
-    "level": 17,
+    "level": 20,
     "name": "BErminAtoR-贝斯手",
     "id":5509,
     "height": 150,
@@ -1188,7 +1210,7 @@
     }
   },
   {
-    "level": 10,
+    "level": 12,
     "name": "刘沛松",
     "id":5511,
     "height": 180,
@@ -1210,7 +1232,7 @@
     }
   },
   {
-    "level": 10,
+    "level": 12,
     "name": "荘臣",
     "id":5512,
     "height": 185,
@@ -1222,7 +1244,7 @@
       "body": 10074,
       "hand": 10003,
       "leg": 10011,
-      "foot": 11012,
+      "foot": 10012,
       "neck": 501,
       "primary": -1,
       "secondary1": -1,
@@ -1232,7 +1254,7 @@
     }
   },
   {
-    "level": 6,
+    "level": 7,
     "name": "阿龙",
     "id":5513,
     "height": 172,
@@ -1313,14 +1335,14 @@
       "foot": 491,
       "neck": -1,
       "primary": -1,
-      "secondary1": 272,
+      "secondary1": 269,
       "secondary2": -1,
       "melee": 410,
       "grenade": -1
     }
   },
   {
-    "level": 8,
+    "level": 10,
     "name": "喜欢医闹？",
     "id": 5517,
     "height": 175,
@@ -1386,7 +1408,7 @@
     }
   },
   {
-    "level": 27,
+    "level": 30,
     "name": "C国队长",
     "id":5520,
     "height": 178,
@@ -1394,11 +1416,11 @@
     "hair": 6,
     "gender": 1,
     "equipment": {
-      "head": 11067,
-      "body": 11076,
-      "hand": 11080,
-      "leg": 11077,
-      "foot": 11078,
+      "head": 10567,
+      "body": 10576,
+      "hand": 10580,
+      "leg": 10577,
+      "foot": 10578,
       "neck": 511,
       "primary": 6005,
       "secondary1": 6008,
@@ -1417,10 +1439,10 @@
     "gender": 1,
     "equipment": {
       "head": -1,
-      "body": 11027,
-      "hand": 11029,
-      "leg": 11028,
-      "foot": 11093,
+      "body": 10027,
+      "hand": 10029,
+      "leg": 10028,
+      "foot": 10093,
       "neck": 5506,
       "primary": -1,
       "secondary1": 683,
@@ -1439,10 +1461,10 @@
     "gender": 0,
     "equipment": {
       "head": -1,
-      "body": 11024,
+      "body": 10024,
       "hand": 36,
-      "leg": 11025,
-      "foot": 11026,
+      "leg": 10025,
+      "foot": 10026,
       "neck": 5506,
       "primary": -1,
       "secondary1": -1,
@@ -1461,10 +1483,10 @@
     "gender": 0,
     "equipment": {
       "head": -1,
-      "body": 11049,
+      "body": 10049,
       "hand": -1,
-      "leg": 11050,
-      "foot": 11051,
+      "leg": 10050,
+      "foot": 10051,
       "neck": 5506,
       "primary": -1,
       "secondary1": 6024,
@@ -1496,7 +1518,7 @@
     }
   },
   {
-    "level": 20,
+    "level": 21,
     "name": "猎狐者",
     "id": 5525,
     "height": 165,
@@ -1518,7 +1540,7 @@
     }
   },
   {
-    "level": 41,
+    "level": 50,
     "name": "魅影",
     "id": 5526,
     "height": 168,
@@ -1540,7 +1562,7 @@
     }
   },
   {
-    "level": 27,
+    "level": 31,
     "name": "彗星",
     "id": 5528,
     "height": 165,
@@ -1550,7 +1572,7 @@
     "equipment": {
       "head": 628,
       "body": 187,
-      "hand": 11003,
+      "hand": 10503,
       "leg": 399,
       "foot": 540,
       "neck": 5507,
@@ -1628,7 +1650,7 @@
     }
   },
   {
-    "level": 27,
+    "level": 35,
     "name": "黑蜂",
     "id": 5531,
     "height": 160,
@@ -1660,7 +1682,7 @@
     "equipment": {
       "head": 247,
       "body": 248,
-      "hand": 591,
+      "hand": 586,
       "leg": 249,
       "foot": 250,
       "neck": 515,
@@ -1672,7 +1694,7 @@
     }
   },
   {
-    "level": 11,
+    "level": 13,
     "name": "斑纹",
     "id":5533,
     "height": 175,
@@ -1682,7 +1704,7 @@
     "equipment": { 
       "head": 203,
       "body": 125,
-      "hand": 201,
+      "hand": 119,
       "leg": 198,
       "foot": 115,
       "neck": 501,
@@ -1694,7 +1716,7 @@
     }
   },
   {
-    "level": 16,
+    "level": 20,
     "name": "小樱",
     "id": 5534,
     "height": 156,
@@ -1716,7 +1738,7 @@
     }
   },
   {
-    "level": 17,
+    "level": 21,
     "name": "安德森",
     "id":5535,
     "height": 182,
@@ -1796,7 +1818,7 @@
       "leg": 194,
       "foot": 115,
       "neck": 508,
-      "primary": 279,
+      "primary": 715,
       "secondary1": 287,
       "secondary2": -1,
       "melee": 6014,
@@ -1812,8 +1834,8 @@
     "hair": 43,
     "gender": 1,
     "equipment": {
-      "head": 11064,
-      "body": 11010,
+      "head": 10564,
+      "body": 10510,
       "hand": -1,
       "leg": 200,
       "foot": 201,
@@ -1826,7 +1848,7 @@
     }
   },
   {
-    "level": 41,
+    "level": 45,
     "name": "威克钛手",
     "id":5540,
     "height": 180,
@@ -1862,7 +1884,7 @@
       "leg": 449,
       "foot": 540,
       "neck": 510,
-      "primary": 566,
+      "primary": 259,
       "secondary1": -1,
       "secondary2": -1,
       "melee": 430,
@@ -1936,7 +1958,7 @@
     }
   },
   {
-    "level": 12,
+    "level": 13,
     "name": "利剑",
     "id":5545,
     "height": 180,
@@ -2034,7 +2056,7 @@
     "equipment": {
       "head": 6019,
       "body": 10096,
-      "hand": 240,
+      "hand": 362,
       "leg": 10002,
       "foot": 250,
       "neck": 504,
@@ -2056,7 +2078,7 @@
     "equipment": {
       "head": 835,
       "body": 836,
-      "hand": 11007,
+      "hand": 10007,
       "leg": 483,
       "foot": 839,
       "neck": 510,
@@ -2090,7 +2112,7 @@
     }
   },
   {
-    "level": 18,
+    "level": 26,
     "name": "万宝路",
     "id":5552,
     "height": 179,
@@ -2099,10 +2121,10 @@
     "gender": 1,
     "equipment": {
       "head": 6039,
-      "body": 482,
-      "hand": 484,
-      "leg": 837,
-      "foot": 485,
+      "body": 462,
+      "hand": 464,
+      "leg": 463,
+      "foot": 465,
       "neck": 509,
       "primary": 6007,
       "secondary1": 273,
@@ -2142,7 +2164,7 @@
     "hair": 13,
     "gender": 0,
     "equipment": {
-      "head": 11059,
+      "head": 10559,
       "body": 462,
       "hand": 842,
       "leg": 841,
@@ -2208,11 +2230,11 @@
     "hair": 52,
     "gender": 0,
     "equipment": {
-      "head": 11000,
+      "head": 10500,
       "body": 243,
       "hand": 464,
       "leg": 483,
-      "foot": 11012,
+      "foot": 10512,
       "neck": 505,
       "primary": 294,
       "secondary1": -1,
@@ -2222,7 +2244,7 @@
     }
   },
   {
-    "level": 10,
+    "level": 12,
     "name": "红衫",
     "id":5558,
     "height": 170,
@@ -2244,7 +2266,7 @@
     }
   },
   {
-    "level": 30,
+    "level": 36,
     "name": "雷云",
     "id": 5559,
     "height": 177,
@@ -2266,7 +2288,7 @@
     }
   },
   {
-    "level": 30,
+    "level": 37,
     "name": "执行者",
     "id": 5560,
     "height": 165,
@@ -2288,7 +2310,7 @@
     }
   },
   {
-    "level": 34,
+    "level": 36,
     "name": "白幽灵",
     "id": 5561,
     "height": 170,
@@ -2310,7 +2332,7 @@
     }
   },
   {
-    "level": 24,
+    "level": 25,
     "name": "诸葛叁",
     "id":5562,
     "height": 170,
@@ -2318,7 +2340,7 @@
     "hair": 13,
     "gender": 1,
     "equipment": {
-      "head": 11069,
+      "head": 10569,
       "body": 467,
       "hand": 464,
       "leg": 11011,
@@ -2332,7 +2354,7 @@
     }
   },
   {
-    "level": 32,
+    "level": 33,
     "name": "门神",
     "id":5563,
     "height": 187,
@@ -2346,7 +2368,7 @@
       "leg": 543,
       "foot": 541,
       "neck": 522,
-      "primary": 278,
+      "primary": 294,
       "secondary1": 751,
       "secondary2": 751,
       "melee": 1501,
@@ -2376,7 +2398,7 @@
     }
   },
   {
-    "level": 19,
+    "level": 22,
     "name": "大表哥",
     "id": 5565,
     "height": 182,
@@ -2398,7 +2420,7 @@
     }
   },
   {
-    "level": 18,
+    "level": 21,
     "name": "老藏",
     "id": 5566,
     "height": 173,
@@ -2541,7 +2563,7 @@
       "head": 242,
       "body": 537,
       "hand": 245,
-      "leg": 11008,
+      "leg": 10508,
       "foot": 540,
       "neck": 515,
       "primary": 304,
@@ -2574,7 +2596,7 @@
     }
   },
   {
-    "level": 40,
+    "level": 48,
     "name": "疫医",
     "id": 5574,
     "height": 178,
@@ -2662,7 +2684,7 @@
     }
   },
   {
-    "level": 11,
+    "level": 12,
     "name": "黑桃A",
     "id": 5578,
     "height": 157,
@@ -2728,7 +2750,7 @@
     }
   },
   {
-    "level": 15,
+    "level": 16,
     "name": "讥笑怪咖",
     "id": 5581,
     "height": 175,
@@ -2750,7 +2772,7 @@
     }
   },
   {
-    "level": 17,
+    "level": 20,
     "name": "卤蛋头 零充",
     "id": 5582,
     "height": 180,
@@ -2760,8 +2782,8 @@
     "equipment": {
       "head": 10066,
       "body": 57,
-      "hand": 11090,
-      "leg": 11011,
+      "hand": 10090,
+      "leg": 10011,
       "foot": 10012,
       "neck": 503,
       "primary": -1,
@@ -2804,7 +2826,7 @@
     "equipment": {
       "head": 10070,
       "body": 10071,
-      "hand": 11090,
+      "hand": 10090,
       "leg": 10072,
       "foot": 10004,
       "neck": 504,
@@ -2816,7 +2838,7 @@
     }
   },
   {
-    "level": 23,
+    "level": 25,
     "name": "手好小哦",
     "id": 5585,
     "height": 175,
@@ -2824,11 +2846,11 @@
     "hair": 45,
     "gender": 1,
     "equipment": {
-      "head": 11065,
-      "body": 11037,
-      "hand": 11029,
-      "leg": 11038,
-      "foot": 11039,
+      "head": 10065,
+      "body": 10037,
+      "hand": 10029,
+      "leg": 10038,
+      "foot": 10039,
       "neck": 578,
       "primary": 283,
       "secondary1": 273,
@@ -2882,7 +2904,7 @@
     }
   },
   {
-    "level": 27,
+    "level": 35,
     "name": "天火",
     "id":5588,
     "height": 182,
@@ -2904,7 +2926,7 @@
     }
   },
   {
-    "level": 27,
+    "level": 35,
     "name": "苏打",
     "id":5589,
     "height": 179,
@@ -2948,7 +2970,7 @@
     }
   },
   {
-    "level": 48,
+    "level": 50,
     "name": "清水結衣酱",
     "id":5591,
     "height": 150,
@@ -3110,13 +3132,13 @@
     "hair": 7,
     "gender": 1,
     "equipment": {
-      "head": 11088,
+      "head": -1,
       "body": 6054,
       "hand": 547,
       "leg": 548,
       "foot": 546,
       "neck": 5506,
-      "primary": 13005,
+      "primary": 8025,
       "secondary1": 13008,
       "secondary2": 13008,
       "melee": 640,
@@ -3124,7 +3146,7 @@
     }
   },
   {
-    "level": 10,
+    "level": 12,
     "name": "洋葱头",
     "id":5599,
     "height": 158,
@@ -3388,28 +3410,6 @@
     }
   },
   {
-    "level": 1,
-    "name": "蓝环酱",
-    "id": 5611,
-    "height": 150,
-    "face": 0,
-    "hair": 28,
-    "gender": 0,
-    "equipment": {
-      "head": 159,
-      "body": 168,
-      "hand": 158,
-      "leg": 167,
-      "foot": 154,
-      "neck": 5508,
-      "primary": 5509,
-      "secondary1": 5510,
-      "secondary2": 5510,
-      "melee": -1,
-      "grenade": -1
-    }
-  },
-  {
     "level": 100,
     "name": "土豪猪",
     "id":5612,
@@ -3446,7 +3446,7 @@
       "leg": 435,
       "foot": 6043,
       "neck": 5506,
-      "primary": 525,
+      "primary": 5001,
       "secondary1": -1,
       "secondary2": -1,
       "melee": 6000,
