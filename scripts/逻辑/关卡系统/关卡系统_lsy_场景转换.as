@@ -299,10 +299,12 @@ _root.跳转地图 = function(跳转帧)
 {
 	var 游戏世界 = _root.gameworld;
 	_root.常用工具函数.释放对象绘图内存(游戏世界);
+	_root.当前为战斗地图 = false;
 	for (var i = 0; i < _root.初期关卡列表.length; i++)
 	{
 		if (_root.关卡标志 == _root.初期关卡列表[i])
 		{
+			_root.当前为战斗地图 = true;
 			_root.gotoAndPlay("初期关卡");
 			return;
 		}

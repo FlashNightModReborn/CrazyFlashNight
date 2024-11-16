@@ -2,6 +2,7 @@
 
 _root.开启生存模式 = function(模式)
 {
+	_root.当前为战斗地图 = true;
 	//_root.d_波次._visible = _root.调试模式;
 	//_root.d_剩余敌人数._visible = _root.调试模式;
 	_root.d_倒计时显示._visible = false;
@@ -201,6 +202,7 @@ _root.开启生存模式 = function(模式)
 
 _root.生存模式关闭 = function()
 {
+	_root.当前为战斗地图 = false;
 	_root.d_剩余敌人数._visible = false;
 	_root.帧计时器.移除任务(_root.生存模式OBJ.波次时钟);
 	var 时钟 = _root.生存模式OBJ.时钟;
