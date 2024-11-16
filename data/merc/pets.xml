@@ -1514,4 +1514,31 @@
         <KPrice>0</KPrice>
         <IncreasePrice>0</IncreasePrice>
     </Pet>
+    <!-- 未实装先放着-->
+    <Pet>
+        <id>98</id>
+        <Name>试验体α</Name>
+        <Identifier>敌人-黑铁会改造人</Identifier>
+        <Height>175</Height>
+        <InitialLevel>1</InitialLevel>
+        <UnlockLevel>10</UnlockLevel>
+        <UnlockTask>90</UnlockTask>
+        <Unique>false</Unique>
+        <Price>235000</Price>
+        <KPrice>0</KPrice>
+        <IncreasePrice>285000</IncreasePrice>
+    </Pet>
+    <Pet>
+        <id>99</id>
+        <Name>地狱三头犬</Name>
+        <Identifier>敌人-诺亚地狱三头犬</Identifier>
+        <Height>175</Height>
+        <InitialLevel>1</InitialLevel>
+        <UnlockLevel>10</UnlockLevel>
+        <UnlockTask>100</UnlockTask>
+        <Unique>true</Unique>
+        <Price>0</Price>
+        <KPrice>13000</KPrice>
+        <IncreasePrice>0</IncreasePrice>
+    </Pet>
 </Pets>
