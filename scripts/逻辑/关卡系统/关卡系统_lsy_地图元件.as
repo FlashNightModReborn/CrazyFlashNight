@@ -32,7 +32,6 @@ _root.初始化出生点 = function(){
 	var 游戏世界 = _root.gameworld;
 	if(this.area){
 		var rect = this.area.getRect(游戏世界);
-		_root.发布消息(rect.xMin);
 		var 地图 = 游戏世界.地图;
 		地图.beginFill(0x000000);
 		地图.moveTo(rect.xMin, rect.yMin);
