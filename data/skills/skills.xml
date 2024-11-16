@@ -95,7 +95,7 @@
     <Skill id="8">
         <Name>寸拳</Name>
         <Type>武术-空手</Type>
-        <Description>咏春拳绝招，强劲的拳！</Description>
+        <Description>咏春拳绝招，强劲的拳！技能发动时按住奔跑键时可以前冲。</Description>
         <UnlockLevel>1</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>10</UnlockSP>
@@ -258,15 +258,15 @@
         <MP>200</MP>
     </Skill>
     <Skill id="23">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
+        <Name>迅斩</Name>
+        <Type>剑术-锋利度</Type>
+        <Description>迅速的一斩！可有效削弱敌方韧性，技能发动时按住奔跑键时可以前冲。</Description>
         <UnlockLevel>1</UnlockLevel>
         <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
-        <CD>0</CD>
-        <MP>0</MP>
+        <UnlockSP>15</UnlockSP>
+        <UpgradeSP>15</UpgradeSP>
+        <CD>5000</CD>
+        <MP>20</MP>
     </Skill>
     <Skill id="24">
         <Name>震地</Name>
@@ -742,13 +742,13 @@
         <MP>0</MP>
     </Skill>
     <Skill id="67">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
+        <Name>独行者</Name>
+        <Type>被动</Type>
+        <Description>被动技能学习后可获得被动效果，点击可启用或停用。被动效果：战宠与佣兵均不出战时，自身的属性提高。每升一级提升30防御、50HP、50MP、10伤害加成。初始收益：中等。升级收益：中等。</Description>
         <UnlockLevel>1</UnlockLevel>
         <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <UnlockSP>30</UnlockSP>
+        <UpgradeSP>30</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>

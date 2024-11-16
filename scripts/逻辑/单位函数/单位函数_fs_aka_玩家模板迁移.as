@@ -913,6 +913,7 @@ _root.刷新人物装扮 = function(目标)
 		//刷新战技UI
 		_root.人物必要信息界面.刷新();
 	}
+	目标人物.读取基础被动效果();
 	目标人物.buff.初始();
 	目标人物.buff.更新();
 	if(目标人物.变形手枪){
@@ -2596,6 +2597,38 @@ _root.主角函数.装载主动战技 = function(战技信息, 攻击模式){
 	if(当前战技.战技函数.初始化) 当前战技.战技函数.初始化(this);
 	this.主动战技[攻击模式] = 当前战技;
 }
+_root.主角函数.读取基础被动效果 = function(){
+	if(this.被动技能.独行者 && this.被动技能.独行者.启用){
+		var 是否独行 = true;
+		
+		for (var i = 0; i < _root.宠物信息.length; i++)
+		{
+			var 当前宠物信息 = _root.宠物信息[i];
+			if (当前宠物信息[4] == 1)
+			{
+				是否独行 = false;
+				break;
+			}
+		}
+		for(var i = 0; i < _root.佣兵个数限制; i++)
+		{
+			var 同伴信息 = _root.同伴数据[i];
+			if (_root.佣兵是否出战信息[i] == 1 && 同伴信息[1] != undefined && 同伴信息[1] != "undefined")
+			{
+				是否独行 = false;
+				break;
+			}
+		}
+		if(是否独行){
+			if (this.hp == this.hp满血值) this.hp += this.被动技能.独行者.等级 * 50;
+			this.hp满血值 += this.被动技能.独行者.等级 * 50;
+			if (this.mp == this.mp满血值) this.mp += this.被动技能.独行者.等级 * 50;
+			this.mp满血值 += this.被动技能.独行者.等级 * 50;
+			this.伤害加成 += this.被动技能.独行者.等级 * 10;
+			this.防御力 += this.被动技能.独行者.等级 * 30;
+		}
+	}
+}
 
 _root.主角函数.读取被动效果 = function(){
 	if(this.被动技能.移动射击 && this.被动技能.移动射击.启用){
@@ -2814,6 +2847,7 @@ _root.初始化玩家模板 = function()
 	this.装载生命周期函数 = _root.主角函数.装载生命周期函数;
 	this.完成生命周期函数装载 = _root.主角函数.完成生命周期函数装载;
 	this.读取被动效果 = _root.主角函数.读取被动效果;
+	this.读取基础被动效果 = _root.主角函数.读取基础被动效果;
 	this.按距离索敌 = _root.主角函数.按距离索敌;
 	this.jetpack = _root.jetpack;
 	this.jetpackCheck = _root.jetpackCheck;
