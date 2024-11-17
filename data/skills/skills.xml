@@ -116,7 +116,7 @@
     </Skill>
     <Skill id="10">
         <Name>踩人</Name>
-        <Type>武术-空手/内力</Type>
+        <Type>武术-空手&amp;内力</Type>
         <Description>使用的格斗技，对倒地的敌人致命一击！</Description>
         <UnlockLevel>1</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -127,7 +127,7 @@
     </Skill>
     <Skill id="11">
         <Name>日字冲拳</Name>
-        <Type>武术-空手/内力</Type>
+        <Type>武术-空手&amp;内力</Type>
         <Description>咏春拳绝招，用快速的拳封住敌人的进攻，通过发劲技巧使冲击力越过敌人护甲造成内伤！</Description>
         <UnlockLevel>10</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -182,7 +182,7 @@
     </Skill>
     <Skill id="16">
         <Name>瞬步斩</Name>
-        <Type>剑术-锋利度/内力</Type>
+        <Type>剑术-锋利度&amp;内力</Type>
         <Description>快速移动的同时，进行连续斩击！</Description>
         <UnlockLevel>10</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -193,7 +193,7 @@
     </Skill>
     <Skill id="17">
         <Name>凶斩</Name>
-        <Type>剑术-锋利度/内力</Type>
+        <Type>剑术-锋利度&amp;内力</Type>
         <Description>用全身力气的斩击！</Description>
         <UnlockLevel>15</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -204,7 +204,7 @@
     </Skill>
     <Skill id="18">
         <Name>火舞旋风</Name>
-        <Type>剑术-锋利度/内力</Type>
+        <Type>剑术-锋利度&amp;内力</Type>
         <Description>使用武器挥出旋转气流，可消耗火焰喷射器燃料罐附加火焰伤害！升级将明显提升伤害。基础强度：可用，升级收益：正常。</Description>
         <UnlockLevel>20</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -226,7 +226,7 @@
     </Skill>
     <Skill id="20">
         <Name>龙斩</Name>
-        <Type>剑术-锋利度/内力</Type>
+        <Type>剑术-锋利度&amp;内力</Type>
         <Description>强力清怪技能！</Description>
         <UnlockLevel>30</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -534,8 +534,8 @@
     </Skill>
     <Skill id="48">
         <Name>升龙拳</Name>
-        <Type>被动/主动</Type>
-        <Description>被动/主动类技能装备时才会触发被动效果。被动效果：装备该技能后在地面空手战斗时J+K可以使用上勾拳，技能升级可以略微增加伤害。同时可以装备于技能栏主动释放升龙拳，可以快速提升高度且将敌方向上击飞。主动技基础强度：可用，主动技升级收益：正常。</Description>
+        <Type>被动&amp;主动</Type>
+        <Description>被动&amp;主动类技能装备时才会触发被动效果。被动效果：装备该技能后在地面空手战斗时J+K可以使用上勾拳，技能升级可以略微增加伤害。同时可以装备于技能栏主动释放升龙拳，可以快速提升高度且将敌方向上击飞。主动技基础强度：可用，主动技升级收益：正常。</Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>15</UnlockSP>
@@ -611,7 +611,7 @@
     </Skill>
     <Skill id="55">
         <Name>径庭拳/黑闪</Name>
-        <Type>武术-空手/内力</Type>
+        <Type>武术-空手&amp;内力</Type>
         <Description>可以使用两种不同的方式运用内力。在挥出拳头之后的0.3秒内再次按下技能键可以触发径庭拳，通过空手攻击力额外对对手造成多段120%的伤害。如果未在0.3s内再次按下技能键，则有小概率触发黑闪，通过内力额外造成2.5次方的高额伤害，升级增加触发概率。基础强度：高，升级收益：正常。</Description>
         <UnlockLevel>35</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -622,8 +622,8 @@
     </Skill>
     <Skill id="56">
         <Name>移动射击</Name>
-        <Type>被动/主动</Type>
-        <Description>被动/主动类技能装备时才会触发被动效果。被动效果：装备技能后可在前后移动时射击或换弹，同时可以装备于技能栏主动释放上下移动射击：一段时间内可在上下移动时射击或换弹。技能升级可以略微减小移动射击时的散射度，并增加上下移动的持续时间。基础强度：高，升级收益：正常。</Description>
+        <Type>被动&amp;主动</Type>
+        <Description>被动&amp;主动类技能装备时才会触发被动效果。被动效果：装备技能后可在前后移动时射击或换弹，同时可以装备于技能栏主动释放上下移动射击：一段时间内可在上下移动时射击或换弹。技能升级可以略微减小移动射击时的散射度，并增加上下移动的持续时间。基础强度：高，升级收益：正常。</Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>10</MaxLevel>
         <UnlockSP>35</UnlockSP>
