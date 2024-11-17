@@ -6225,7 +6225,7 @@
     "level": 2,
     "name": "诺艾尔",
     "is_hostile": false,
-    "height": 170,
+    "height": 175,
     "data": {
       "primary": null,
       "secondary": null,
@@ -6253,7 +6253,7 @@
     "level": 1,
     "name": "血鼠",
     "is_hostile": true,
-    "height": 155,
+    "height": 175,
     "data": {
       "primary": null,
       "secondary": null,
@@ -6267,7 +6267,7 @@
     "level": 1,
     "name": "清道夫",
     "is_hostile": true,
-    "height": 180,
+    "height": 175,
     "data": {
       "primary": null,
       "secondary": null,
@@ -6406,6 +6406,20 @@
     "spritename": "敌人-诺亚地狱三头犬",
     "level": 1,
     "name": "刻耳柏洛斯",
+    "is_hostile": true,
+    "height": 175,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 406,
+    "spritename": "敌人-高级防护服士兵",
+    "level": 1,
+    "name": "A级清道夫",
     "is_hostile": true,
     "height": 175,
     "data": {
