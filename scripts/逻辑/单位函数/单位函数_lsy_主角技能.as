@@ -579,7 +579,7 @@ _root.技能函数.迅斩攻击 = function()
 {
 	var 子弹参数 = new Object();
 	
-	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性数组[13] * 0.35 * (5 + _parent.技能等级);
+	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性数组[13] * 0.5 * (3 + _parent.技能等级);
 	// if (_parent.mp攻击加成)
 	// {
 	// 	子弹参数.子弹威力 += _parent.mp攻击加成;
