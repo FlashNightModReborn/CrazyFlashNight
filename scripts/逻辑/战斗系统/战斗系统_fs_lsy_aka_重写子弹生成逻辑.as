@@ -668,6 +668,9 @@ _root.子弹生命周期 = function()
 		this.击中地图 = true;
 		this.霰弹值 = 1;
 		_root.效果(this.击中地图效果,this._x,this._y);
+		if(this.击中时触发函数){
+			this.击中时触发函数();
+		}
 		this.gotoAndPlay("消失");
 	}
 
@@ -683,7 +686,7 @@ _root.子弹基础运动控制 = function(子弹:MovieClip){
 		子弹._x += 子弹.xmov;
 		子弹._y += 子弹.ymov;
 	}
-	if (子弹.远距离消失 && Math.abs(子弹._x - _root.gameworld[子弹.发射者名]._x) > 900 || Math.abs(子弹._y - _root.gameworld[子弹.发射者名]._y) > 900)
+	if (子弹.远距离消失 && (Math.abs(子弹._x - _root.gameworld[子弹.发射者名]._x) > 900 || Math.abs(子弹._y - _root.gameworld[子弹.发射者名]._y) > 900))
 	{
 		子弹.removeMovieClip();
 	}
