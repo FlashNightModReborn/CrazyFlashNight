@@ -562,7 +562,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
     // ==========================
     // 三内核数据结构
     // ==========================
-
+    
     /** 单层时间轮，处理短期任务（例如0-149帧的任务） */
     private var singleLevelTimeWheel:SingleLevelTimeWheel;
 
@@ -590,7 +590,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
     // ==========================
     // 时间轮参数
     // ==========================
-
+    
     /** 每秒帧数，决定时间轮的粒度 */
     private var framesPerSecond:Number;
 
@@ -609,21 +609,33 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
     // ==========================
     // 精度评估阈值
     // ==========================
-
-    /** 允许的最大精度偏差（10%） */
+    
+    /** 允许的最大精度偏差（相对百分比，例如0.1表示10%） */
     private var precisionThreshold:Number;
+
+    /** 第二级时间轮的最大绝对精度损失（秒） */
+    private var maxPrecisionLossSecondLevel:Number;
+
+    /** 第三级时间轮的最大绝对精度损失（秒） */
+    private var maxPrecisionLossThirdLevel:Number;
+
+    /** 插入第二级时间轮所需的最小延迟时间（秒） */
+    private var minDelaySecondLevel:Number;
+
+    /** 插入第三级时间轮所需的最小延迟时间（秒） */
+    private var minDelayThirdLevel:Number;
 
     // ==========================
     // 哈希表，用于任务节点的快速查找和操作
     // ==========================
-
+    
     /** 任务哈希表，用于通过任务ID快速查找任务节点 */
     private var taskTable:Object;
 
     // ==========================
     // 初始化函数
     // ==========================
-
+    
     /**
      * 初始化调度器，设置并配置各个参数
      * 
@@ -631,7 +643,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @param multiLevelSecondsSize     第二级时间轮的大小（秒数）
      * @param multiLevelMinutesSize     第三级时间轮的大小（分钟数）
      * @param framesPerSecond           每秒帧数（FPS）
-     * @param precisionThreshold        精度阈值（允许的最大偏差）
+     * @param precisionThreshold        精度阈值（允许的最大偏差，相对百分比）
      */
     public function initialize(singleWheelSize:Number, 
                                multiLevelSecondsSize:Number, 
@@ -653,7 +665,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             framesPerSecond = 30;  // 默认每秒帧数
         }
         if (precisionThreshold == undefined) {
-            precisionThreshold = 0.1;  // 默认精度阈值
+            precisionThreshold = 0.1;  // 默认精度阈值（10%）
         }
 
         // 初始化单层时间轮
@@ -685,6 +697,18 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
         this.singleWheelMaxFrames = singleWheelSize;         // 单层时间轮最大帧数
         this.secondLevelMaxSeconds = multiLevelSecondsSize;  // 第二级时间轮最大秒数
         this.thirdLevelMaxMinutes = multiLevelMinutesSize;   // 第三级时间轮最大分钟数
+
+        // ==========================
+        // 添加的部分：预计算精度相关参数
+        // ==========================
+
+        // 设置第二级和第三级时间轮的最大绝对精度损失（根据时间轮的槽位大小）
+        this.maxPrecisionLossSecondLevel = 0.5;  // 假设第二级时间轮槽位大小为1秒，最大精度损失为0.5秒
+        this.maxPrecisionLossThirdLevel = 30;    // 假设第三级时间轮槽位大小为60秒，最大精度损失为30秒
+
+        // 预计算插入时间轮所需的最小延迟阈值（基于相对精度阈值）
+        this.minDelaySecondLevel = this.maxPrecisionLossSecondLevel / this.precisionThreshold; // 例如 0.5 / 0.1 = 5 秒
+        this.minDelayThirdLevel = this.maxPrecisionLossThirdLevel / this.precisionThreshold;   // 例如 30 / 0.1 = 300 秒（5 分钟）
     }
 
     // ==========================
@@ -699,108 +723,37 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
      * @return                 插入的任务节点
      */
     public function evaluateAndInsertTask(taskID:String, delayInFrames:Number):TaskIDNode {
-        // 变量局部化，缓存频繁访问的属性
-        var framesPerSecond:Number = this.framesPerSecond;
-        var singleWheelMaxFrames:Number = this.singleWheelMaxFrames;
-        var firstWhileSecond:Number = this.firstWhileSecond;
-        var secondLevelMaxSeconds:Number = this.secondLevelMaxSeconds;
-        var multiLevelCounter:Number = this.multiLevelCounter;
-        var precisionThreshold:Number = this.precisionThreshold;
-        var secondLevelCounter:Number = this.secondLevelCounter;
-        var secondLevelCounterLimit:Number = this.secondLevelCounterLimit;
-        var thirdLevelMaxMinutes:Number = this.thirdLevelMaxMinutes;
-
         // 创建节点对象
         var node:TaskIDNode = new TaskIDNode(taskID);
 
-        // 1. 检查任务是否适合单层时间轮
-        if (delayInFrames < singleWheelMaxFrames) {
-            // 无精度损失，直接插入单层时间轮
-            var insertedNode:TaskIDNode = addToSingleLevelByNode(node, delayInFrames);
-            return insertedNode;
-        }
-
-        // 2. 将延迟转换为秒，用于第二级时间轮
-        var delayInSeconds:Number = delayInFrames / framesPerSecond;
-
-        // 3. 检查任务是否适合第二级时间轮
-        if (delayInSeconds >= firstWhileSecond && delayInSeconds < secondLevelMaxSeconds) {
-            // 使用位运算替代 Math.floor
-            var delaySlot:Number = delayInSeconds | 0; // 槽位索引
-
-            // 计算执行时间
-            var multiLevelCounterDivFPS:Number = multiLevelCounter / framesPerSecond;
-            var executionTimeAtNMinus1:Number = (delaySlot - 1) + multiLevelCounterDivFPS;
-            var executionTimeAtN:Number = delaySlot + multiLevelCounterDivFPS;
-
-            // 使用条件判断替代 Math.abs
-            var diffAtNMinus1:Number = executionTimeAtNMinus1 - delayInSeconds;
-            var precisionLossAtNMinus1:Number = (diffAtNMinus1 < 0) ? -diffAtNMinus1 : diffAtNMinus1;
-
-            var diffAtN:Number = executionTimeAtN - delayInSeconds;
-            var precisionLossAtN:Number = (diffAtN < 0) ? -diffAtN : diffAtN;
-
-            // 选择精度损失最小的槽位
-            var bestSlot:Number;
-            var minPrecisionLoss:Number;
-            if (precisionLossAtNMinus1 < precisionLossAtN) {
-                bestSlot = delaySlot - 1;
-                minPrecisionLoss = precisionLossAtNMinus1;
-            } else {
-                bestSlot = delaySlot;
-                minPrecisionLoss = precisionLossAtN;
-            }
-
-            // 决定是使用时间轮还是最小堆
-            if (minPrecisionLoss <= precisionThreshold) {
-                var insertedNode:TaskIDNode = addToSecondLevelByNode(node, bestSlot);
-                return insertedNode;
-            }
-        }
-
-        // 4. 将延迟转换为分钟，用于第三级时间轮
+        // 将延迟转换为秒和分钟
+        var delayInSeconds:Number = delayInFrames / this.framesPerSecond;
         var delayInMinutes:Number = delayInSeconds / 60;
 
-        // 5. 检查任务是否适合第三级时间轮
-        if (delayInMinutes >= 1 && delayInMinutes < thirdLevelMaxMinutes) {
-            // 使用位运算替代 Math.floor
-            var delaySlot:Number = delayInMinutes | 0; // 槽位索引
-
-            // 计算执行时间
-            var baseCounterFrames:Number = (secondLevelCounter * secondLevelCounterLimit) + multiLevelCounter;
-            var baseCounterSeconds:Number = baseCounterFrames / framesPerSecond;
-            var executionTimeAtNMinus1:Number = (delaySlot - 1) * 60 + baseCounterSeconds;
-            var executionTimeAtN:Number = delaySlot * 60 + baseCounterSeconds;
-
-            // 使用条件判断替代 Math.abs
-            var diffAtNMinus1:Number = executionTimeAtNMinus1 - delayInSeconds;
-            var precisionLossAtNMinus1:Number = (diffAtNMinus1 < 0) ? -diffAtNMinus1 : diffAtNMinus1;
-
-            var diffAtN:Number = executionTimeAtN - delayInSeconds;
-            var precisionLossAtN:Number = (diffAtN < 0) ? -diffAtN : diffAtN;
-
-            // 选择精度损失最小的槽位
-            var bestSlot:Number;
-            var minPrecisionLoss:Number;
-            if (precisionLossAtNMinus1 < precisionLossAtN) {
-                bestSlot = delaySlot - 1;
-                minPrecisionLoss = precisionLossAtNMinus1;
-            } else {
-                bestSlot = delaySlot;
-                minPrecisionLoss = precisionLossAtN;
-            }
-
-            // 决定是使用时间轮还是最小堆
-            if (minPrecisionLoss <= precisionThreshold) {
-                var insertedNode:TaskIDNode = addToThirdLevelByNode(node, bestSlot);
-                return insertedNode;
-            }
+        // 1. 检查任务是否适合单层时间轮
+        if (delayInFrames < this.singleWheelMaxFrames) {
+            // 直接插入单层时间轮
+            return addToSingleLevelByNode(node, delayInFrames);
         }
 
-        // 6. 如果精度要求无法满足，插入到最小堆
-        var insertedNode:TaskIDNode = addToMinHeapByNode(node, delayInFrames);
-        return insertedNode;
+        // 2. 检查任务是否适合第二级时间轮
+        if (delayInSeconds >= this.minDelaySecondLevel && delayInSeconds < this.secondLevelMaxSeconds) {
+            // 计算槽位索引
+            var delaySlot:Number = Math.floor(delayInSeconds);
+            return addToSecondLevelByNode(node, delaySlot);
+        }
+
+        // 3. 检查任务是否适合第三级时间轮
+        if (delayInMinutes >= this.minDelayThirdLevel / 60 && delayInMinutes < this.thirdLevelMaxMinutes) {
+            // 计算槽位索引
+            var delaySlot:Number = Math.floor(delayInMinutes);
+            return addToThirdLevelByNode(node, delaySlot);
+        }
+
+        // 4. 如果精度要求无法满足，插入到最小堆
+        return addToMinHeapByNode(node, delayInFrames);
     }
+
 
 
     // ==========================
