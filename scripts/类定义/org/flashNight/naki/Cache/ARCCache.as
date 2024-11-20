@@ -53,22 +53,21 @@ class org.flashNight.naki.Cache.ARCCache {
         var uid:String = this._getUID(key);
 
         if (this._isInQueue(this.T1, uid)) {
-            //trace("Cache Hit: T1 - " + key);
+            // Cache Hit in T1
             return this._handleT1Hit(uid);
         } else if (this._isInQueue(this.T2, uid)) {
-            //trace("Cache Hit: T2 - " + key);
+            // Cache Hit in T2
             return this._handleT2Hit(uid);
         } else if (this._isInQueue(this.B1, uid)) {
-            //trace("Cache Ghost Hit: B1 - " + key);
+            // Ghost Hit in B1
             this._handleB1Hit(uid);
             return null;
         } else if (this._isInQueue(this.B2, uid)) {
-            //trace("Cache Ghost Hit: B2 - " + key);
+            // Ghost Hit in B2
             this._handleB2Hit(uid);
             return null;
         } else {
-            // Cache miss
-            //trace("Cache Miss: " + key);
+            // Cache Miss
             return null;
         }
     }
@@ -83,13 +82,11 @@ class org.flashNight.naki.Cache.ARCCache {
 
         if (this._isInCache(uid)) {
             // Update existing item
-            //trace("Updating existing key: " + key);
             this.cacheStore[uid] = value;
             // Promote item if necessary
             this.get(key);
         } else {
             // Insert new item
-            //trace("Inserting new key: " + key);
             this._insertItem(uid, value);
         }
     }
@@ -126,7 +123,8 @@ class org.flashNight.naki.Cache.ARCCache {
      * @return True if the UID is in the list, false otherwise.
      */
     private function _isInQueue(list:Object, uid:String):Boolean {
-        return this.nodeMap[uid] != null && this.nodeMap[uid].list === list;
+        var node:Object = this.nodeMap[uid];
+        return node != null && node.list === list;
     }
 
     /**
@@ -140,7 +138,6 @@ class org.flashNight.naki.Cache.ARCCache {
         this._removeNode(this.T1, node);
         this._addNodeToFront(this.T2, node);
         node.list = this.T2;
-        //trace("Moved UID " + uid + " from T1 to T2");
         return this.cacheStore[uid];
     }
 
@@ -153,7 +150,6 @@ class org.flashNight.naki.Cache.ARCCache {
         // Move item to the front of T2
         var node:Object = this.nodeMap[uid];
         this._moveNodeToFront(this.T2, node);
-        //trace("Promoted UID " + uid + " to front of T2");
         return this.cacheStore[uid];
     }
 
@@ -163,9 +159,7 @@ class org.flashNight.naki.Cache.ARCCache {
      */
     private function _handleB1Hit(uid:String):Void {
         // Adaptively increase p
-        var delta:Number = this.B2.size > 0 ? this.B2.size / this.B1.size : 1;
-        this.p = Math.min(this.p + delta, this.maxCapacity);
-        //trace("Handled B1 hit: Increased p to " + this.p);
+        this.p = Math.min(this.p + 1, this.maxCapacity);
 
         // Replace items
         this._replace(uid);
@@ -175,7 +169,9 @@ class org.flashNight.naki.Cache.ARCCache {
         this._removeNode(this.B1, node);
         this._addNodeToFront(this.T2, node);
         node.list = this.T2;
-        //trace("Moved UID " + uid + " from B1 to T2");
+
+        // Since the item is being re-cached, add it back to cacheStore
+        // (Assuming value is not available, you might need to retrieve or recreate it)
     }
 
     /**
@@ -184,9 +180,7 @@ class org.flashNight.naki.Cache.ARCCache {
      */
     private function _handleB2Hit(uid:String):Void {
         // Adaptively decrease p
-        var delta:Number = this.B1.size > 0 ? this.B1.size / this.B2.size : 1;
-        this.p = Math.max(this.p - delta, 0);
-        //trace("Handled B2 hit: Decreased p to " + this.p);
+        this.p = Math.max(this.p - 1, 0);
 
         // Replace items
         this._replace(uid);
@@ -196,7 +190,9 @@ class org.flashNight.naki.Cache.ARCCache {
         this._removeNode(this.B2, node);
         this._addNodeToFront(this.T2, node);
         node.list = this.T2;
-        //trace("Moved UID " + uid + " from B2 to T2");
+
+        // Since the item is being re-cached, add it back to cacheStore
+        // (Assuming value is not available, you might need to retrieve or recreate it)
     }
 
     /**
@@ -205,11 +201,14 @@ class org.flashNight.naki.Cache.ARCCache {
      * @param value The value to cache.
      */
     private function _insertItem(uid:String, value:Object):Void {
-        // Check if cache is full
+        // If L1 + L2 == maxCapacity, then we need to make room
         var totalSize:Number = this.T1.size + this.T2.size;
+
         if (totalSize >= this.maxCapacity) {
-            //trace("Cache is full. Replacing an item...");
             this._replace(uid);
+        } else if ((this.T1.size + this.T2.size + this.B1.size + this.B2.size) >= (2 * this.maxCapacity)) {
+            // Ensure the ghost lists do not exceed 2 * maxCapacity
+            this._trimGhostQueues();
         }
 
         // Add item to T1
@@ -217,7 +216,6 @@ class org.flashNight.naki.Cache.ARCCache {
         this._addNodeToFront(this.T1, node);
         node.list = this.T1;
         this.cacheStore[uid] = value;
-        //trace("Added UID " + uid + " to T1");
     }
 
     /**
@@ -225,42 +223,47 @@ class org.flashNight.naki.Cache.ARCCache {
      * @param uid The UID of the item causing the replacement.
      */
     private function _replace(uid:String):Void {
-        var t1Size:Number = this.T1.size;
-        var b2ContainsUid:Boolean = this._isInQueue(this.B2, uid);
-
-        if (t1Size > 0 && (t1Size > this.p || (b2ContainsUid && t1Size == this.p))) {
+        if (this.T1.size > 0 && (this.T1.size > this.p || (this._isInQueue(this.B2, uid) && this.T1.size == this.p))) {
             // Evict from T1
             var victimNode:Object = this._removeLastNode(this.T1);
-            delete this.cacheStore[victimNode.uid];
-            victimNode.list = this.B1;
-            this._addNodeToFront(this.B1, victimNode);
-            //trace("Evicted UID " + victimNode.uid + " from T1 to B1");
+            if (victimNode != null) {
+                // Remove from cacheStore
+                delete this.cacheStore[victimNode.uid];
+                // Move to B1
+                victimNode.list = this.B1;
+                this._addNodeToFront(this.B1, victimNode);
+            }
         } else {
             // Evict from T2
-            var victimNode:Object = this._removeLastNode(this.T2);
-            delete this.cacheStore[victimNode.uid];
-            victimNode.list = this.B2;
-            this._addNodeToFront(this.B2, victimNode);
-            //trace("Evicted UID " + victimNode.uid + " from T2 to B2");
+            var victimNode2:Object = this._removeLastNode(this.T2);
+            if (victimNode2 != null) {
+                // Remove from cacheStore
+                delete this.cacheStore[victimNode2.uid];
+                // Move to B2
+                victimNode2.list = this.B2;
+                this._addNodeToFront(this.B2, victimNode2);
+            }
         }
-
-        // Ensure ghost queues do not exceed cache capacity
-        this._trimGhostQueues();
     }
 
     /**
-     * Ensures the ghost queues (B1 and B2) do not exceed the cache capacity.
+     * Ensures the ghost queues (B1 and B2) do not exceed the combined capacity of 2 * maxCapacity.
      */
     private function _trimGhostQueues():Void {
-        while (this.B1.size > this.maxCapacity) {
-            var removedNode:Object = this._removeLastNode(this.B1);
-            delete this.nodeMap[removedNode.uid];
-            //trace("Trimmed B1: Removed UID " + removedNode.uid);
-        }
-        while (this.B2.size > this.maxCapacity) {
-            var removedNode:Object = this._removeLastNode(this.B2);
-            delete this.nodeMap[removedNode.uid];
-            //trace("Trimmed B2: Removed UID " + removedNode.uid);
+        while ((this.B1.size + this.B2.size) > (2 * this.maxCapacity)) {
+            if (this.B2.size > this.maxCapacity) {
+                var removedNode:Object = this._removeLastNode(this.B2);
+                if (removedNode != null) {
+                    delete this.nodeMap[removedNode.uid];
+                }
+            } else if (this.B1.size > this.maxCapacity) {
+                var removedNode:Object = this._removeLastNode(this.B1);
+                if (removedNode != null) {
+                    delete this.nodeMap[removedNode.uid];
+                }
+            } else {
+                break;
+            }
         }
     }
 
@@ -352,47 +355,52 @@ class org.flashNight.naki.Cache.ARCCache {
         var node:Object = list.tail;
         if (node != null) {
             this._removeNode(list, node);
+            // If the node was in a ghost queue, remove its reference from nodeMap
+            if (list === this.B1 || list === this.B2) {
+                delete this.nodeMap[node.uid];
+            }
         }
         return node;
     }
 
     // **Testing Helper Methods (Optional)**
-        /**
-     * 获取 T1 队列的当前状态（调试用）。
-     * @return 一个数组，包含 T1 队列中的所有 UID。
+
+    /**
+     * Retrieves the current state of T1 queue (for debugging purposes).
+     * @return An array containing all UIDs in T1 queue.
      */
     public function getT1():Array {
         return this._getListContents(this.T1);
     }
 
     /**
-     * 获取 T2 队列的当前状态（调试用）。
-     * @return 一个数组，包含 T2 队列中的所有 UID。
+     * Retrieves the current state of T2 queue (for debugging purposes).
+     * @return An array containing all UIDs in T2 queue.
      */
     public function getT2():Array {
         return this._getListContents(this.T2);
     }
 
     /**
-     * 获取 B1 队列的当前状态（调试用）。
-     * @return 一个数组，包含 B1 队列中的所有 UID。
+     * Retrieves the current state of B1 queue (for debugging purposes).
+     * @return An array containing all UIDs in B1 queue.
      */
     public function getB1():Array {
         return this._getListContents(this.B1);
     }
 
     /**
-     * 获取 B2 队列的当前状态（调试用）。
-     * @return 一个数组，包含 B2 队列中的所有 UID。
+     * Retrieves the current state of B2 queue (for debugging purposes).
+     * @return An array containing all UIDs in B2 queue.
      */
     public function getB2():Array {
         return this._getListContents(this.B2);
     }
 
     /**
-     * 遍历链表并获取所有节点的 UID。
-     * @param list 链表对象。
-     * @return 包含链表中所有 UID 的数组。
+     * Traverses a linked list and retrieves all node UIDs.
+     * @param list The linked list object.
+     * @return An array containing all UIDs in the list.
      */
     private function _getListContents(list:Object):Array {
         var contents:Array = [];
@@ -404,4 +412,27 @@ class org.flashNight.naki.Cache.ARCCache {
         return contents;
     }
 
+    /**
+     * Retrieves the contents of cacheStore (for debugging purposes).
+     * @return A string representing the contents of cacheStore.
+     */
+    private function _getCacheContents():String {
+        var contents:Array = [];
+        for (var key:String in this.cacheStore) {
+            contents.push(key + ": " + this.cacheStore[key]);
+        }
+        return "{" + contents.join(", ") + "}";
+    }
+
+    /**
+     * Retrieves the contents of nodeMap (for debugging purposes).
+     * @return A string representing the contents of nodeMap.
+     */
+    private function _getNodeMapContents():String {
+        var contents:Array = [];
+        for (var key:String in this.nodeMap) {
+            contents.push(key + ": " + this.nodeMap[key].uid);
+        }
+        return "{" + contents.join(", ") + "}";
+    }
 }

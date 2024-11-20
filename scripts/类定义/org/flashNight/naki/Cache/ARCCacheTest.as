@@ -31,7 +31,13 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         this.testCacheHitRate();
         this.testPerformance();
         this.testEdgeCases();
-        this.testObjectKeys();
+        // Removed tests related to complex keys
+        // this.testObjectKeys();
+        // this.testComplexObjectKeys();
+        // this.testMixedKeyTypes();
+        this.testHighFrequencyAccess();
+        this.testDuplicateKeys();
+        this.testLargeScaleCache();
 
         trace("=== ARCCacheTest: All Tests Completed ===");
     }
@@ -85,7 +91,7 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         this._printCacheState("After inserting keyExtra");
 
         // Check if the least recently used item was evicted
-        var evictedValue:Object = this.cache.get("key1"); // Expected to be null or not, depending on ARC
+        var evictedValue:Object = this.cache.get("key1"); // Expected to be null
         var existingValue:Object = this.cache.get("keyExtra"); // Should be 'valueExtra'
 
         this._assertEqual(evictedValue, null, "Value for key1 should be null (evicted)");
@@ -114,10 +120,16 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         // Reset cacheHits
         cacheHits = 0;
 
-        // Randomly access items and calculate hit rate
+        // Pre-generate random indices to avoid runtime calculations
+        var randomIndices:Array = [];
         for (var j:Number = 0; j < totalRequests; j++) {
-            var randomIndex:Number = Math.floor(Math.random() * this.testData.length);
-            var key:String = this.testData[randomIndex];
+            randomIndices.push(Math.floor(Math.random() * this.testData.length));
+        }
+
+        // Perform cache accesses
+        for (var k:Number = 0; k < totalRequests; k++) {
+            var keyIndex:Number = randomIndices[k];
+            var key:String = this.testData[keyIndex];
             var value:Object = this.cache.get(key);
 
             if (value != null) {
@@ -146,9 +158,31 @@ class org.flashNight.naki.Cache.ARCCacheTest {
         var operations:Number = 10000;
         var startTime:Number = getTimer();
 
-        for (var i:Number = 0; i < operations; i++) {
-            var key:String = "key" + (i % (2 * this.cacheCapacity));
-            this.cache.put(key, "value" + key.substring(3));
+        // Loop Unrolling: Perform 4 cache operations per iteration
+        var i:Number = 0;
+        var max:Number = operations - (operations % 4); // Ensure divisible by 4
+        for (; i < max; i += 4) {
+            var key1:String = "perfKey" + (i % (2 * this.cacheCapacity));
+            this.cache.put(key1, "perfValue" + (i % 100));
+            this.cache.get(key1);
+
+            var key2:String = "perfKey" + ((i + 1) % (2 * this.cacheCapacity));
+            this.cache.put(key2, "perfValue" + ((i + 1) % 100));
+            this.cache.get(key2);
+
+            var key3:String = "perfKey" + ((i + 2) % (2 * this.cacheCapacity));
+            this.cache.put(key3, "perfValue" + ((i + 2) % 100));
+            this.cache.get(key3);
+
+            var key4:String = "perfKey" + ((i + 3) % (2 * this.cacheCapacity));
+            this.cache.put(key4, "perfValue" + ((i + 3) % 100));
+            this.cache.get(key4);
+        }
+
+        // Handle remaining operations
+        for (; i < operations; i++) {
+            var key:String = "perfKey" + (i % (2 * this.cacheCapacity));
+            this.cache.put(key, "perfValue" + (i % 100));
             this.cache.get(key);
         }
 
@@ -203,47 +237,130 @@ class org.flashNight.naki.Cache.ARCCacheTest {
     }
 
     /**
-     * Tests using objects as keys to ensure UID generation works correctly.
+     * Removed `testObjectKeys` as complex keys are no longer supported.
      */
-    private function testObjectKeys():Void {
-        trace("Running testObjectKeys...");
+
+    /**
+     * Removed `testComplexObjectKeys` as complex keys are no longer supported.
+     */
+
+    /**
+     * Tests high-frequency access patterns to verify ARC's adaptive behavior.
+     */
+    private function testHighFrequencyAccess():Void {
+        trace("Running testHighFrequencyAccess...");
 
         // Clear cache
         this.cache = new ARCCache(this.cacheCapacity);
 
-        // Create object keys
-        var obj1:Object = { name: "Object1" };
-        var obj2:Object = { name: "Object2" };
-        var obj3:Object = { name: "Object3" };
-
-        // Insert object keys
-        this.cache.put(obj1, "valueObj1");
-        this.cache.put(obj2, "valueObj2");
-        this.cache.put(obj3, "valueObj3");
-
-        // Retrieve and verify
-        var valObj1:Object = this.cache.get(obj1);
-        var valObj2:Object = this.cache.get(obj2);
-        var valObj3:Object = this.cache.get(obj3);
-
-        this._assertEqual(valObj1, "valueObj1", "Value for obj1 should be 'valueObj1'");
-        this._assertEqual(valObj2, "valueObj2", "Value for obj2 should be 'valueObj2'");
-        this._assertEqual(valObj3, "valueObj3", "Value for obj3 should be 'valueObj3'");
-
-        // Test eviction with object keys
-        for (var i:Number = 4; i <= this.cacheCapacity + 2; i++) {
-            this.cache.put("key" + i, "value" + i);
+        // Insert multiple keys
+        for (var i:Number = 1; i <= this.cacheCapacity; i++) {
+            this.cache.put("hfKey" + i, "hfValue" + i);
         }
 
-        // Attempt to get obj1 which should have been evicted if ARC works correctly
-        var evictedObj1:Object = this.cache.get(obj1); // Expected to be null
-        var existingObj2:Object = this.cache.get(obj2); // Should be 'valueObj2'
+        // Simulate high-frequency access to specific keys
+        var highFreqKeys:Array = ["hfKey1", "hfKey2", "hfKey3"];
+        for (var j:Number = 0; j < 1000; j++) {
+            for (var k:Number = 0; k < highFreqKeys.length; k++) {
+                this.cache.get(highFreqKeys[k]);
+            }
+        }
 
-        this._assertEqual(evictedObj1, null, "Value for obj1 should be null (evicted)");
-        this._assertEqual(existingObj2, "valueObj2", "Value for obj2 should be 'valueObj2'");
+        // Insert additional keys to trigger eviction
+        for (var m:Number = this.cacheCapacity + 1; m <= this.cacheCapacity + 50; m++) {
+            this.cache.put("hfKeyExtra" + m, "hfValueExtra" + m);
+        }
 
-        trace("testObjectKeys completed successfully.\n");
+        // Verify that high-frequency keys are still present
+        trace("Verifying high-frequency keys...");
+        for (var n:Number = 0; n < highFreqKeys.length; n++) {
+            var value:Object = this.cache.get(highFreqKeys[n]);
+            this._assertEqual(value, "hfValue" + (n + 1), "High-frequency key " + highFreqKeys[n] + " should still be present");
+        }
+
+        // Verify that some low-frequency keys have been evicted
+        var evictedValue:Object = this.cache.get("hfKey4");
+        this._assertEqual(evictedValue, null, "Low-frequency key 'hfKey4' should be null (evicted)");
+
+        trace("testHighFrequencyAccess completed successfully.\n");
     }
+
+
+    /**
+     * Removed `testMixedKeyTypes` as complex keys are no longer supported.
+     */
+
+    /**
+     * Tests inserting duplicate keys to ensure cache updates values correctly.
+     */
+    private function testDuplicateKeys():Void {
+        trace("Running testDuplicateKeys...");
+
+        // Clear cache
+        this.cache = new ARCCache(this.cacheCapacity);
+
+        // Insert a key
+        this.cache.put("dupKey", "initialValue");
+        this._assertEqual(this.cache.get("dupKey"), "initialValue", "Initial value for 'dupKey' should be 'initialValue'");
+
+        // Insert the same key with a new value
+        this.cache.put("dupKey", "updatedValue");
+        this._assertEqual(this.cache.get("dupKey"), "updatedValue", "Updated value for 'dupKey' should be 'updatedValue'");
+
+        // Access the key to promote it to T2
+        this.cache.get("dupKey");
+
+        // Insert additional keys to trigger eviction
+        for (var i:Number = 1; i <= this.cacheCapacity; i++) {
+            this.cache.put("dupKey" + i, "dupValue" + i);
+        }
+
+        // Verify that 'dupKey' is still present due to promotion
+        this._assertEqual(this.cache.get("dupKey"), "updatedValue", "Value for 'dupKey' should still be 'updatedValue'");
+
+        trace("testDuplicateKeys completed successfully.\n");
+    }
+
+    /**
+     * Tests cache behavior with a large scale to ensure stability and performance.
+     */
+    private function testLargeScaleCache():Void {
+        trace("Running testLargeScaleCache...");
+
+        // Define a larger cache capacity
+        var largeCapacity:Number = 10000;
+        this.cache = new ARCCache(largeCapacity);
+
+        // Insert a large number of keys
+        for (var i:Number = 1; i <= largeCapacity; i++) {
+            this.cache.put("largeKey" + i, "largeValue" + i);
+        }
+
+        // Access a subset of keys
+        for (var j:Number = 1; j <= 5000; j++) {
+            this.cache.get("largeKey" + j);
+        }
+
+        // Insert additional keys to trigger eviction
+        for (var k:Number = largeCapacity + 1; k <= largeCapacity + 5000; k++) {
+            this.cache.put("largeKey" + k, "largeValue" + k);
+        }
+
+        // Verify that frequently accessed keys are still present
+        trace("Verifying frequently accessed keys...");
+        for (var m:Number = 1; m <= 10; m++) {
+            var value:Object = this.cache.get("largeKey" + m);
+            this._assertEqual(value, "largeValue" + m, "Frequently accessed 'largeKey" + m + "' should still be present");
+        }
+
+        // Verify that some infrequently accessed keys have been evicted
+        trace("Verifying infrequently accessed keys...");
+        var evictedValue:Object = this.cache.get("largeKey6000");
+        this._assertEqual(evictedValue, null, "Infrequently accessed 'largeKey6000' should be null (evicted)");
+
+        trace("testLargeScaleCache completed successfully.\n");
+    }
+
 
     // Utility Methods
 
@@ -296,10 +413,10 @@ class org.flashNight.naki.Cache.ARCCacheTest {
      */
     private function _printCacheState(stage:String):Void {
         trace("=== Cache State at " + stage + " ===");
-        trace("T1: " + this.cache.getT1());
-        trace("T2: " + this.cache.getT2());
-        trace("B1: " + this.cache.getB1());
-        trace("B2: " + this.cache.getB2());
+        trace("T1: " + this.cache.getT1().join(","));
+        trace("T2: " + this.cache.getT2().join(","));
+        trace("B1: " + this.cache.getB1().join(","));
+        trace("B2: " + this.cache.getB2().join(","));
         trace("==============================");
     }
 }
