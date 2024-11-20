@@ -274,3 +274,81 @@ var cacheTest = new org.flashNight.naki.Cache.ARCCacheTest(100);
 
 // Run all tests
 cacheTest.runTests();
+
+
+
+
+
+
+
+
+
+=== ARCCacheTest: Starting Tests ===
+Running testPutAndGet...
+Assertion Passed: Value for key1 should be 'value1'
+Assertion Passed: Value for key2 should be 'value2'
+Assertion Passed: Value for key3 should be 'value3'
+testPutAndGet completed successfully.
+
+Running testCacheEviction...
+=== Cache State at After inserting keyExtra ===
+T1: _keyExtra,_key100,_key99,_key98,_key97,_key96,_key95,_key94,_key93,_key92,_key91,_key90,_key89,_key88,_key87,_key86,_key85,_key84,_key83,_key82,_key81,_key80,_key79,_key78,_key77,_key76,_key75,_key74,_key73,_key72,_key71,_key70,_key69,_key68,_key67,_key66,_key65,_key64,_key63,_key62,_key61,_key60,_key59,_key58,_key57,_key56,_key55,_key54,_key53,_key52,_key51,_key50,_key49,_key48,_key47,_key46,_key45,_key44,_key43,_key42,_key41,_key40,_key39,_key38,_key37,_key36,_key35,_key34,_key33,_key32,_key31,_key30,_key29,_key28,_key27,_key26,_key25,_key24,_key23,_key22,_key21,_key20,_key19,_key18,_key17,_key16,_key15,_key14,_key13,_key12,_key11,_key10,_key9,_key8,_key7,_key6,_key5,_key3
+T2: _key4,_key2
+B1: _key1
+B2: 
+==============================
+Assertion Passed: Value for key1 should be null (evicted)
+Assertion Passed: Value for keyExtra should be 'valueExtra'
+testCacheEviction completed successfully.
+
+Running testCacheHitRate...
+Cache Hit Rate: 65.5%
+Assertion Passed: Cache hit rate should be between 0% and 100%
+testCacheHitRate completed successfully.
+
+Running testPerformance...
+Performed 10000 cache operations in 211 ms.
+Cache Operations per Second: 47393.36492891
+
+Assertion Passed: Operations per second should be greater than 0
+testPerformance completed successfully.
+
+Running testEdgeCases...
+Assertion Passed: Value for null key should be null
+Assertion Passed: Value for undefined key should be undefined
+Assertion Passed: Value for 'key@#' should be 'value@#'
+Assertion Passed: Value for empty string key should be 'emptyKey'
+Assertion Passed: Value for numeric key 123 should be 'numericKey'
+testEdgeCases completed successfully.
+
+Running testHighFrequencyAccess...
+Verifying high-frequency keys...
+Assertion Passed: High-frequency key hfKey1 should still be present
+Assertion Passed: High-frequency key hfKey2 should still be present
+Assertion Passed: High-frequency key hfKey3 should still be present
+Assertion Passed: Low-frequency key 'hfKey4' should be null (evicted)
+testHighFrequencyAccess completed successfully.
+
+Running testDuplicateKeys...
+Assertion Passed: Initial value for 'dupKey' should be 'initialValue'
+Assertion Passed: Updated value for 'dupKey' should be 'updatedValue'
+Assertion Passed: Value for 'dupKey' should still be 'updatedValue'
+testDuplicateKeys completed successfully.
+
+Running testLargeScaleCache...
+Verifying frequently accessed keys...
+Assertion Passed: Frequently accessed 'largeKey1' should still be present
+Assertion Passed: Frequently accessed 'largeKey2' should still be present
+Assertion Passed: Frequently accessed 'largeKey3' should still be present
+Assertion Passed: Frequently accessed 'largeKey4' should still be present
+Assertion Passed: Frequently accessed 'largeKey5' should still be present
+Assertion Passed: Frequently accessed 'largeKey6' should still be present
+Assertion Passed: Frequently accessed 'largeKey7' should still be present
+Assertion Passed: Frequently accessed 'largeKey8' should still be present
+Assertion Passed: Frequently accessed 'largeKey9' should still be present
+Assertion Passed: Frequently accessed 'largeKey10' should still be present
+Verifying infrequently accessed keys...
+Assertion Passed: Infrequently accessed 'largeKey6000' should be null (evicted)
+testLargeScaleCache completed successfully.
+
+=== ARCCacheTest: All Tests Completed ===
