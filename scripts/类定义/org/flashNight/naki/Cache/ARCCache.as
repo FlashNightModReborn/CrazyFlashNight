@@ -1,406 +1,633 @@
 ﻿/**
- * ARCCache Class
- * Implements the Adaptive Replacement Cache algorithm in AS2 using linked lists.
+ * ARCCache 类
+ * 使用链表在 AS2 中实现自适应替换缓存（Adaptive Replacement Cache）算法。
+ * 该类经过性能优化，牺牲了一定的代码可读性，因此注释将详细解释每个代码块的功能和背后的原理。
  */
 import org.flashNight.naki.DataStructures.*;
 
 class org.flashNight.naki.Cache.ARCCache {
-    // Maximum capacity of the cache
+    // 缓存的最大容量
     private var maxCapacity:Number;
 
-    // Balancing parameter between T1 and T2
+    // T1 和 T2 队列之间的平衡参数
     private var p:Number;
 
-    // Cache queues represented as linked lists
-    private var T1:Object; // Recently used items (cold)
-    private var T2:Object; // Frequently used items (hot)
-    private var B1:Object; // Ghost entries evicted from T1
-    private var B2:Object; // Ghost entries evicted from T2
+    // 缓存队列，使用链表表示
+    private var T1:Object; // 最近使用的项目（冷数据）
+    private var T2:Object; // 频繁使用的项目（热数据）
+    private var B1:Object; // 从 T1 中移除的幽灵条目
+    private var B2:Object; // 从 T2 中移除的幽灵条目
 
-    // Storage for cached items
-    private var cacheStore:Object; // Maps UID to value
+    // 存储缓存的实际数据
+    private var cacheStore:Object; // 将 UID 映射到具体的值
 
-    // Node mapping for quick access
-    private var nodeMap:Object; // Maps UID to node in the queue
+    // 节点映射，用于快速访问
+    private var nodeMap:Object; // 将 UID 映射到队列中的节点
 
-    // Constructor
+    // 构造函数
     /**
-     * Initializes the ARCCache with a specified capacity.
-     * @param capacity Maximum number of items the cache can hold.
+     * 使用指定的容量初始化 ARCCache。
+     * @param capacity 缓存可以容纳的最大项目数。
      */
     public function ARCCache(capacity:Number) {
-        this.maxCapacity = capacity;
-        this.p = 0; // Initial balancing parameter
+        this.maxCapacity = capacity; // 设置缓存的最大容量
+        this.p = 0; // 初始化平衡参数 p
 
-        // Initialize queues as linked lists
-        this.T1 = this._createLinkedList();
-        this.T2 = this._createLinkedList();
-        this.B1 = this._createLinkedList();
-        this.B2 = this._createLinkedList();
+        // 初始化四个缓存队列，使用链表结构
+        this.T1 = { head: null, tail: null, size: 0 }; // 冷数据队列
+        this.T2 = { head: null, tail: null, size: 0 }; // 热数据队列
+        this.B1 = { head: null, tail: null, size: 0 }; // 冷数据的幽灵队列
+        this.B2 = { head: null, tail: null, size: 0 }; // 热数据的幽灵队列
 
-        // Initialize cache storage and node mapping
-        this.cacheStore = {}; // Object to store cached values by UID
-        this.nodeMap = {}; // Object to store nodes by UID
+        // 初始化缓存存储和节点映射
+        this.cacheStore = {}; // 用于存储实际的缓存值，键为 UID
+        this.nodeMap = {}; // 用于快速查找节点，键为 UID
     }
 
-    // Public Methods
+    // 公共方法
     /**
-     * Retrieves an item from the cache.
-     * @param key The key (object or primitive) of the item to retrieve.
-     * @return The cached value, or null if not found.
+     * 从缓存中检索一个项目。
+     * @param key 要检索的项目的键（对象或原始类型）。
+     * @return 缓存的值，如果未找到则返回 null。
      */
     public function get(key:Object):Object {
-        var uid:String = this._getUID(key);
-
-        if (this._isInQueue(this.T1, uid)) {
-            // Cache Hit in T1
-            return this._handleT1Hit(uid);
-        } else if (this._isInQueue(this.T2, uid)) {
-            // Cache Hit in T2
-            return this._handleT2Hit(uid);
-        } else if (this._isInQueue(this.B1, uid)) {
-            // Ghost Hit in B1
-            this._handleB1Hit(uid);
-            return null;
-        } else if (this._isInQueue(this.B2, uid)) {
-            // Ghost Hit in B2
-            this._handleB2Hit(uid);
-            return null;
+        var uid:String;
+        // 根据键的类型生成唯一标识符 UID
+        if (typeof key == "object" || typeof key == "function") {
+            uid = "_" + Dictionary.getStaticUID(key); // 对象类型，使用静态 UID
         } else {
-            // Cache Miss
+            uid = "_" + key; // 原始类型，直接转换为字符串
+        }
+
+        // 从节点映射中获取对应的节点
+        var node:Object = this.nodeMap[uid];
+
+        // 为了提高性能，将频繁访问的属性局部化，减少解引用开销
+        var localT1:Object = this.T1;
+        var localT2:Object = this.T2;
+        var localB1:Object = this.B1;
+        var localB2:Object = this.B2;
+        var localCacheStore:Object = this.cacheStore;
+
+        // 检查节点是否存在于缓存或幽灵列表中
+        if (node != null) {
+            var nodeList:Object = node.list;
+            if (nodeList === localT1) {
+                // 命中 T1 队列（冷数据）
+
+                // 从 T1 中移除节点
+                var prevNode:Object = node.prev;
+                var nextNode:Object = node.next;
+
+                if (prevNode != null) {
+                    prevNode.next = nextNode;
+                } else {
+                    localT1.head = nextNode;
+                }
+
+                if (nextNode != null) {
+                    nextNode.prev = prevNode;
+                } else {
+                    localT1.tail = prevNode;
+                }
+
+                // 更新 T1 队列的大小
+                localT1.size--;
+
+                // 将节点添加到 T2 的头部
+                node.prev = null;
+                node.next = localT2.head;
+                if (localT2.head != null) {
+                    localT2.head.prev = node;
+                } else {
+                    localT2.tail = node;
+                }
+                localT2.head = node;
+                localT2.size++;
+
+                // 更新节点所在的列表引用
+                node.list = localT2;
+
+                // 返回缓存的值
+                return localCacheStore[uid];
+
+            } else if (nodeList === localT2) {
+                // 命中 T2 队列（热数据）
+
+                // 从 T2 中移除节点
+                prevNode = node.prev;
+                nextNode = node.next;
+
+                if (prevNode != null) {
+                    prevNode.next = nextNode;
+                } else {
+                    localT2.head = nextNode;
+                }
+
+                if (nextNode != null) {
+                    nextNode.prev = prevNode;
+                } else {
+                    localT2.tail = prevNode;
+                }
+
+                // 更新 T2 队列的大小
+                localT2.size--;
+
+                // 将节点重新添加到 T2 的头部（提升优先级）
+                node.prev = null;
+                node.next = localT2.head;
+                if (localT2.head != null) {
+                    localT2.head.prev = node;
+                } else {
+                    localT2.tail = node;
+                }
+                localT2.head = node;
+                localT2.size++;
+
+                // 返回缓存的值
+                return localCacheStore[uid];
+
+            } else if (nodeList === localB1) {
+                // 命中 B1 幽灵队列
+
+                // 自适应地增加参数 p，倾向于增加 T1 的容量
+                this.p = (this.p < this.maxCapacity) ? (this.p + 1) : this.maxCapacity;
+
+                // 根据 ARC 策略进行替换
+                if (localT1.size > this.p || (localT1.size == this.p && localB2.size > 0)) {
+                    // 从 T1 中移除尾部节点
+                    var victimNode:Object = localT1.tail;
+                    if (victimNode != null) {
+                        var victimPrev:Object = victimNode.prev;
+                        var victimNext:Object = victimNode.next;
+
+                        if (victimPrev != null) {
+                            victimPrev.next = victimNext;
+                        } else {
+                            localT1.head = victimNext;
+                        }
+
+                        if (victimNext != null) {
+                            victimNext.prev = victimPrev;
+                        } else {
+                            localT1.tail = victimPrev;
+                        }
+
+                        localT1.size--;
+
+                        // 从缓存存储中移除
+                        delete localCacheStore[victimNode.uid];
+
+                        // 将受害者节点添加到 B1 幽灵队列的头部
+                        victimNode.list = localB1;
+                        victimNode.prev = null;
+                        victimNode.next = localB1.head;
+                        if (localB1.head != null) {
+                            localB1.head.prev = victimNode;
+                        } else {
+                            localB1.tail = victimNode;
+                        }
+                        localB1.head = victimNode;
+                        localB1.size++;
+                    }
+                } else {
+                    // 从 T2 中移除尾部节点
+                    var victimNode2:Object = localT2.tail;
+                    if (victimNode2 != null) {
+                        var victim2Prev:Object = victimNode2.prev;
+                        var victim2Next:Object = victimNode2.next;
+
+                        if (victim2Prev != null) {
+                            victim2Prev.next = victim2Next;
+                        } else {
+                            localT2.head = victim2Next;
+                        }
+
+                        if (victim2Next != null) {
+                            victim2Next.prev = victim2Prev;
+                        } else {
+                            localT2.tail = victim2Prev;
+                        }
+
+                        localT2.size--;
+
+                        // 从缓存存储中移除
+                        delete localCacheStore[victimNode2.uid];
+
+                        // 将受害者节点添加到 B2 幽灵队列的头部
+                        victimNode2.list = localB2;
+                        victimNode2.prev = null;
+                        victimNode2.next = localB2.head;
+                        if (localB2.head != null) {
+                            localB2.head.prev = victimNode2;
+                        } else {
+                            localB2.tail = victimNode2;
+                        }
+                        localB2.head = victimNode2;
+                        localB2.size++;
+                    }
+                }
+
+                // 将命中的节点从 B1 移动到 T2 的头部
+                var b1Prev:Object = node.prev;
+                var b1Next:Object = node.next;
+
+                if (b1Prev != null) {
+                    b1Prev.next = b1Next;
+                } else {
+                    localB1.head = b1Next;
+                }
+
+                if (b1Next != null) {
+                    b1Next.prev = b1Prev;
+                } else {
+                    localB1.tail = b1Prev;
+                }
+
+                localB1.size--;
+
+                node.prev = null;
+                node.next = localT2.head;
+                if (localT2.head != null) {
+                    localT2.head.prev = node;
+                } else {
+                    localT2.tail = node;
+                }
+                localT2.head = node;
+                localT2.size++;
+
+                node.list = localT2;
+
+                // 返回 null，因为幽灵队列中不存储实际的值
+                return null;
+
+            } else if (nodeList === localB2) {
+                // 命中 B2 幽灵队列
+
+                // 自适应地减少参数 p，倾向于增加 T2 的容量
+                this.p = (this.p > 0) ? (this.p - 1) : 0;
+
+                // 根据 ARC 策略进行替换
+                if (localT1.size > this.p || (localT1.size == this.p && localB2.size > 0)) {
+                    // 从 T1 中移除尾部节点
+                    victimNode = localT1.tail;
+                    if (victimNode != null) {
+                        victimPrev = victimNode.prev;
+                        victimNext = victimNode.next;
+
+                        if (victimPrev != null) {
+                            victimPrev.next = victimNext;
+                        } else {
+                            localT1.head = victimNext;
+                        }
+
+                        if (victimNext != null) {
+                            victimNext.prev = victimPrev;
+                        } else {
+                            localT1.tail = victimPrev;
+                        }
+
+                        localT1.size--;
+
+                        // 从缓存存储中移除
+                        delete localCacheStore[victimNode.uid];
+
+                        // 将受害者节点添加到 B1 幽灵队列的头部
+                        victimNode.list = localB1;
+                        victimNode.prev = null;
+                        victimNode.next = localB1.head;
+                        if (localB1.head != null) {
+                            localB1.head.prev = victimNode;
+                        } else {
+                            localB1.tail = victimNode;
+                        }
+                        localB1.head = victimNode;
+                        localB1.size++;
+                    }
+                } else {
+                    // 从 T2 中移除尾部节点
+                    victimNode2 = localT2.tail;
+                    if (victimNode2 != null) {
+                        victim2Prev = victimNode2.prev;
+                        victim2Next = victimNode2.next;
+
+                        if (victim2Prev != null) {
+                            victim2Prev.next = victim2Next;
+                        } else {
+                            localT2.head = victim2Next;
+                        }
+
+                        if (victim2Next != null) {
+                            victim2Next.prev = victim2Prev;
+                        } else {
+                            localT2.tail = victim2Prev;
+                        }
+
+                        localT2.size--;
+
+                        // 从缓存存储中移除
+                        delete localCacheStore[victimNode2.uid];
+
+                        // 将受害者节点添加到 B2 幽灵队列的头部
+                        victimNode2.list = localB2;
+                        victimNode2.prev = null;
+                        victimNode2.next = localB2.head;
+                        if (localB2.head != null) {
+                            localB2.head.prev = victimNode2;
+                        } else {
+                            localB2.tail = victimNode2;
+                        }
+                        localB2.head = victimNode2;
+                        localB2.size++;
+                    }
+                }
+
+                // 将命中的节点从 B2 移动到 T2 的头部
+                var b2Prev:Object = node.prev;
+                var b2Next:Object = node.next;
+
+                if (b2Prev != null) {
+                    b2Prev.next = b2Next;
+                } else {
+                    localB2.head = b2Next;
+                }
+
+                if (b2Next != null) {
+                    b2Next.prev = b2Prev;
+                } else {
+                    localB2.tail = b2Prev;
+                }
+
+                localB2.size--;
+
+                node.prev = null;
+                node.next = localT2.head;
+                if (localT2.head != null) {
+                    localT2.head.prev = node;
+                } else {
+                    localT2.tail = node;
+                }
+                localT2.head = node;
+                localT2.size++;
+
+                node.list = localT2;
+
+                // 返回 null，因为幽灵队列中不存储实际的值
+                return null;
+            } else {
+                // 不在任何已知的队列中，缓存未命中
+                return null;
+            }
+        } else {
+            // 节点不存在，缓存未命中
             return null;
         }
     }
 
     /**
-     * Inserts an item into the cache.
-     * @param key The key (object or primitive) of the item to cache.
-     * @param value The value to associate with the key.
+     * 将一个项目插入到缓存中。
+     * @param key 要缓存的项目的键（对象或原始类型）。
+     * @param value 与键关联的值。
      */
     public function put(key:Object, value:Object):Void {
-        var uid:String = this._getUID(key);
+        var uid:String;
+        // 根据键的类型生成唯一标识符 UID
+        if (typeof key == "object" || typeof key == "function") {
+            uid = "_" + Dictionary.getStaticUID(key); // 对象类型，使用静态 UID
+        } else {
+            uid = "_" + key; // 原始类型，直接转换为字符串
+        }
 
-        if (this._isInCache(uid)) {
-            // Update existing item
+        var node:Object = this.nodeMap[uid];
+        var inT1:Boolean = (node != null) && (node.list === this.T1);
+        var inT2:Boolean = (node != null) && (node.list === this.T2);
+
+        if (inT1 || inT2) {
+            // 如果项目已存在于缓存中，更新其值
+
             this.cacheStore[uid] = value;
-            // Promote item if necessary
+
+            // 通过调用 get 方法提升其优先级
             this.get(key);
         } else {
-            // Insert new item
-            this._insertItem(uid, value);
-        }
-    }
+            // 项目不在缓存中，需要插入
 
-    // Private Helper Methods
+            // 局部化引用，减少解引用开销
+            var localT1:Object = this.T1;
+            var localT2:Object = this.T2;
+            var localB1:Object = this.B1;
+            var localB2:Object = this.B2;
+            var localCacheStore:Object = this.cacheStore;
+            var localNodeMap:Object = this.nodeMap;
 
-    /**
-     * Generates or retrieves the UID for a key.
-     * @param key The key to get UID for.
-     * @return The UID associated with the key.
-     */
-    private function _getUID(key:Object):String {
-        if (typeof key == "object" || typeof key == "function") {
-            return "_" + Dictionary.getStaticUID(key); // Prefix to avoid conflicts
-        } else {
-            // For primitive types, use a unique string representation
-            return "_" + key;
-        }
-    }
+            var totalSize:Number = localT1.size + localT2.size;
 
-    /**
-     * Checks if a UID is in any of the cache queues.
-     * @param uid The UID to check.
-     * @return True if the UID is in T1 or T2, false otherwise.
-     */
-    private function _isInCache(uid:String):Boolean {
-        return this._isInQueue(this.T1, uid) || this._isInQueue(this.T2, uid);
-    }
+            if (totalSize >= this.maxCapacity) {
+                // 缓存已满，需要替换
 
-    /**
-     * Checks if a UID is in a specific queue.
-     * @param list The linked list to check.
-     * @param uid The UID to look for.
-     * @return True if the UID is in the list, false otherwise.
-     */
-    private function _isInQueue(list:Object, uid:String):Boolean {
-        var node:Object = this.nodeMap[uid];
-        return node != null && node.list === list;
-    }
+                var inB2:Boolean = (node != null) && (node.list === localB2);
 
-    /**
-     * Handles a cache hit in T1.
-     * @param uid The UID of the item.
-     * @return The cached value.
-     */
-    private function _handleT1Hit(uid:String):Object {
-        // Move item from T1 to T2
-        var node:Object = this.nodeMap[uid];
-        this._removeNode(this.T1, node);
-        this._addNodeToFront(this.T2, node);
-        node.list = this.T2;
-        return this.cacheStore[uid];
-    }
+                if (localT1.size > this.p || (inB2 && localT1.size == this.p)) {
+                    // 从 T1 中移除尾部节点
+                    var victimNode:Object = localT1.tail;
+                    if (victimNode != null) {
+                        var victimPrev:Object = victimNode.prev;
+                        var victimNext:Object = victimNode.next;
 
-    /**
-     * Handles a cache hit in T2.
-     * @param uid The UID of the item.
-     * @return The cached value.
-     */
-    private function _handleT2Hit(uid:String):Object {
-        // Move item to the front of T2
-        var node:Object = this.nodeMap[uid];
-        this._moveNodeToFront(this.T2, node);
-        return this.cacheStore[uid];
-    }
+                        if (victimPrev != null) {
+                            victimPrev.next = victimNext;
+                        } else {
+                            localT1.head = victimNext;
+                        }
 
-    /**
-     * Handles a hit in the ghost queue B1.
-     * @param uid The UID of the item.
-     */
-    private function _handleB1Hit(uid:String):Void {
-        // Adaptively increase p
-        this.p = Math.min(this.p + 1, this.maxCapacity);
+                        if (victimNext != null) {
+                            victimNext.prev = victimPrev;
+                        } else {
+                            localT1.tail = victimPrev;
+                        }
 
-        // Replace items
-        this._replace(uid);
+                        localT1.size--;
 
-        // Move uid from B1 to T2
-        var node:Object = this.nodeMap[uid];
-        this._removeNode(this.B1, node);
-        this._addNodeToFront(this.T2, node);
-        node.list = this.T2;
+                        // 从缓存存储中移除
+                        delete localCacheStore[victimNode.uid];
 
-        // Since the item is being re-cached, add it back to cacheStore
-        // (Assuming value is not available, you might need to retrieve or recreate it)
-    }
+                        // 将受害者节点添加到 B1 幽灵队列的头部
+                        victimNode.list = localB1;
+                        victimNode.prev = null;
+                        victimNode.next = localB1.head;
+                        if (localB1.head != null) {
+                            localB1.head.prev = victimNode;
+                        } else {
+                            localB1.tail = victimNode;
+                        }
+                        localB1.head = victimNode;
+                        localB1.size++;
+                    }
+                } else {
+                    // 从 T2 中移除尾部节点
+                    var victimNode2:Object = localT2.tail;
+                    if (victimNode2 != null) {
+                        var victim2Prev:Object = victimNode2.prev;
+                        var victim2Next:Object = victimNode2.next;
 
-    /**
-     * Handles a hit in the ghost queue B2.
-     * @param uid The UID of the item.
-     */
-    private function _handleB2Hit(uid:String):Void {
-        // Adaptively decrease p
-        this.p = Math.max(this.p - 1, 0);
+                        if (victim2Prev != null) {
+                            victim2Prev.next = victim2Next;
+                        } else {
+                            localT2.head = victim2Next;
+                        }
 
-        // Replace items
-        this._replace(uid);
+                        if (victim2Next != null) {
+                            victim2Next.prev = victim2Prev;
+                        } else {
+                            localT2.tail = victim2Prev;
+                        }
 
-        // Move uid from B2 to T2
-        var node:Object = this.nodeMap[uid];
-        this._removeNode(this.B2, node);
-        this._addNodeToFront(this.T2, node);
-        node.list = this.T2;
+                        localT2.size--;
 
-        // Since the item is being re-cached, add it back to cacheStore
-        // (Assuming value is not available, you might need to retrieve or recreate it)
-    }
+                        // 从缓存存储中移除
+                        delete localCacheStore[victimNode2.uid];
 
-    /**
-     * Inserts a new item into the cache.
-     * @param uid The UID of the item.
-     * @param value The value to cache.
-     */
-    private function _insertItem(uid:String, value:Object):Void {
-        // If L1 + L2 == maxCapacity, then we need to make room
-        var totalSize:Number = this.T1.size + this.T2.size;
-
-        if (totalSize >= this.maxCapacity) {
-            this._replace(uid);
-        } else if ((this.T1.size + this.T2.size + this.B1.size + this.B2.size) >= (2 * this.maxCapacity)) {
-            // Ensure the ghost lists do not exceed 2 * maxCapacity
-            this._trimGhostQueues();
-        }
-
-        // Add item to T1
-        var node:Object = this._createNode(uid);
-        this._addNodeToFront(this.T1, node);
-        node.list = this.T1;
-        this.cacheStore[uid] = value;
-    }
-
-    /**
-     * Replaces items in the cache based on ARC policy.
-     * @param uid The UID of the item causing the replacement.
-     */
-    private function _replace(uid:String):Void {
-        if (this.T1.size > 0 && (this.T1.size > this.p || (this._isInQueue(this.B2, uid) && this.T1.size == this.p))) {
-            // Evict from T1
-            var victimNode:Object = this._removeLastNode(this.T1);
-            if (victimNode != null) {
-                // Remove from cacheStore
-                delete this.cacheStore[victimNode.uid];
-                // Move to B1
-                victimNode.list = this.B1;
-                this._addNodeToFront(this.B1, victimNode);
-            }
-        } else {
-            // Evict from T2
-            var victimNode2:Object = this._removeLastNode(this.T2);
-            if (victimNode2 != null) {
-                // Remove from cacheStore
-                delete this.cacheStore[victimNode2.uid];
-                // Move to B2
-                victimNode2.list = this.B2;
-                this._addNodeToFront(this.B2, victimNode2);
-            }
-        }
-    }
-
-    /**
-     * Ensures the ghost queues (B1 and B2) do not exceed the combined capacity of 2 * maxCapacity.
-     */
-    private function _trimGhostQueues():Void {
-        while ((this.B1.size + this.B2.size) > (2 * this.maxCapacity)) {
-            if (this.B2.size > this.maxCapacity) {
-                var removedNode:Object = this._removeLastNode(this.B2);
-                if (removedNode != null) {
-                    delete this.nodeMap[removedNode.uid];
+                        // 将受害者节点添加到 B2 幽灵队列的头部
+                        victimNode2.list = localB2;
+                        victimNode2.prev = null;
+                        victimNode2.next = localB2.head;
+                        if (localB2.head != null) {
+                            localB2.head.prev = victimNode2;
+                        } else {
+                            localB2.tail = victimNode2;
+                        }
+                        localB2.head = victimNode2;
+                        localB2.size++;
+                    }
                 }
-            } else if (this.B1.size > this.maxCapacity) {
-                var removedNode:Object = this._removeLastNode(this.B1);
-                if (removedNode != null) {
-                    delete this.nodeMap[removedNode.uid];
+
+            } else if ((localT1.size + localT2.size + localB1.size + localB2.size) >= (2 * this.maxCapacity)) {
+                // 确保幽灵队列的总大小不超过 2 倍的缓存容量
+
+                while ((localB1.size + localB2.size) > (2 * this.maxCapacity)) {
+                    if (localB2.size > this.maxCapacity) {
+                        // 从 B2 中移除尾部节点
+                        var removedNode:Object = localB2.tail;
+                        if (removedNode != null) {
+                            var b2Prev:Object = removedNode.prev;
+                            var b2Next:Object = removedNode.next;
+
+                            if (b2Prev != null) {
+                                b2Prev.next = b2Next;
+                            } else {
+                                localB2.head = b2Next;
+                            }
+
+                            if (b2Next != null) {
+                                b2Next.prev = b2Prev;
+                            } else {
+                                localB2.tail = b2Prev;
+                            }
+
+                            localB2.size--;
+
+                            // 从节点映射中移除
+                            delete localNodeMap[removedNode.uid];
+                        }
+                    } else if (localB1.size > this.maxCapacity) {
+                        // 从 B1 中移除尾部节点
+                        var removedNode2:Object = localB1.tail;
+                        if (removedNode2 != null) {
+                            var b1Prev:Object = removedNode2.prev;
+                            var b1Next:Object = removedNode2.next;
+
+                            if (b1Prev != null) {
+                                b1Prev.next = b1Next;
+                            } else {
+                                localB1.head = b1Next;
+                            }
+
+                            if (b1Next != null) {
+                                b1Next.prev = b1Prev;
+                            } else {
+                                localB1.tail = b1Prev;
+                            }
+
+                            localB1.size--;
+
+                            // 从节点映射中移除
+                            delete localNodeMap[removedNode2.uid];
+                        }
+                    } else {
+                        break;
+                    }
                 }
+            }
+
+            // 创建一个新节点
+            var newNode:Object = {
+                uid: uid,
+                prev: null,
+                next: null,
+                list: null
+            };
+            localNodeMap[uid] = newNode;
+
+            // 将新节点添加到 T1 的头部
+            newNode.prev = null;
+            newNode.next = localT1.head;
+            if (localT1.head != null) {
+                localT1.head.prev = newNode;
             } else {
-                break;
+                localT1.tail = newNode;
             }
+            localT1.head = newNode;
+            localT1.size++;
+
+            // 指定节点所属的列表为 T1
+            newNode.list = localT1;
+
+            // 在缓存存储中保存值
+            localCacheStore[uid] = value;
         }
     }
 
-    // Linked List Operations
+    // **测试辅助方法（可选）**
+
+    // 测试辅助方法保持不变，因为它们不是性能关键点
+    // 并且不影响缓存操作的运行效率
 
     /**
-     * Creates a new linked list.
-     * @return A new linked list object.
-     */
-    private function _createLinkedList():Object {
-        var list:Object = {
-            head: null,
-            tail: null,
-            size: 0
-        };
-        return list;
-    }
-
-    /**
-     * Creates a new node for the linked list.
-     * @param uid The UID of the item.
-     * @return A new node object.
-     */
-    private function _createNode(uid:String):Object {
-        var node:Object = {
-            uid: uid,
-            prev: null,
-            next: null,
-            list: null
-        };
-        this.nodeMap[uid] = node;
-        return node;
-    }
-
-    /**
-     * Adds a node to the front of the linked list.
-     * @param list The linked list to add to.
-     * @param node The node to add.
-     */
-    private function _addNodeToFront(list:Object, node:Object):Void {
-        node.prev = null;
-        node.next = list.head;
-        if (list.head != null) {
-            list.head.prev = node;
-        } else {
-            list.tail = node;
-        }
-        list.head = node;
-        list.size++;
-    }
-
-    /**
-     * Removes a node from its linked list.
-     * @param list The linked list to remove from.
-     * @param node The node to remove.
-     */
-    private function _removeNode(list:Object, node:Object):Void {
-        if (node.prev != null) {
-            node.prev.next = node.next;
-        } else {
-            list.head = node.next;
-        }
-        if (node.next != null) {
-            node.next.prev = node.prev;
-        } else {
-            list.tail = node.prev;
-        }
-        node.prev = null;
-        node.next = null;
-        list.size--;
-    }
-
-    /**
-     * Moves a node to the front of its linked list.
-     * @param list The linked list to operate on.
-     * @param node The node to move.
-     */
-    private function _moveNodeToFront(list:Object, node:Object):Void {
-        this._removeNode(list, node);
-        this._addNodeToFront(list, node);
-    }
-
-    /**
-     * Removes and returns the last node from a linked list.
-     * @param list The linked list to remove from.
-     * @return The node that was removed.
-     */
-    private function _removeLastNode(list:Object):Object {
-        var node:Object = list.tail;
-        if (node != null) {
-            this._removeNode(list, node);
-            // If the node was in a ghost queue, remove its reference from nodeMap
-            if (list === this.B1 || list === this.B2) {
-                delete this.nodeMap[node.uid];
-            }
-        }
-        return node;
-    }
-
-    // **Testing Helper Methods (Optional)**
-
-    /**
-     * Retrieves the current state of T1 queue (for debugging purposes).
-     * @return An array containing all UIDs in T1 queue.
+     * 获取 T1 队列的当前状态（用于调试）。
+     * @return 包含 T1 队列中所有 UID 的数组。
      */
     public function getT1():Array {
         return this._getListContents(this.T1);
     }
 
     /**
-     * Retrieves the current state of T2 queue (for debugging purposes).
-     * @return An array containing all UIDs in T2 queue.
+     * 获取 T2 队列的当前状态（用于调试）。
+     * @return 包含 T2 队列中所有 UID 的数组。
      */
     public function getT2():Array {
         return this._getListContents(this.T2);
     }
 
     /**
-     * Retrieves the current state of B1 queue (for debugging purposes).
-     * @return An array containing all UIDs in B1 queue.
+     * 获取 B1 队列的当前状态（用于调试）。
+     * @return 包含 B1 队列中所有 UID 的数组。
      */
     public function getB1():Array {
         return this._getListContents(this.B1);
     }
 
     /**
-     * Retrieves the current state of B2 queue (for debugging purposes).
-     * @return An array containing all UIDs in B2 queue.
+     * 获取 B2 队列的当前状态（用于调试）。
+     * @return 包含 B2 队列中所有 UID 的数组。
      */
     public function getB2():Array {
         return this._getListContents(this.B2);
     }
 
     /**
-     * Traverses a linked list and retrieves all node UIDs.
-     * @param list The linked list object.
-     * @return An array containing all UIDs in the list.
+     * 遍历链表并检索所有节点的 UID。
+     * @param list 链表对象。
+     * @return 包含链表中所有 UID 的数组。
      */
     private function _getListContents(list:Object):Array {
         var contents:Array = [];
@@ -413,8 +640,8 @@ class org.flashNight.naki.Cache.ARCCache {
     }
 
     /**
-     * Retrieves the contents of cacheStore (for debugging purposes).
-     * @return A string representing the contents of cacheStore.
+     * 获取缓存存储的内容（用于调试）。
+     * @return 表示缓存存储内容的字符串。
      */
     private function _getCacheContents():String {
         var contents:Array = [];
@@ -425,8 +652,8 @@ class org.flashNight.naki.Cache.ARCCache {
     }
 
     /**
-     * Retrieves the contents of nodeMap (for debugging purposes).
-     * @return A string representing the contents of nodeMap.
+     * 获取节点映射的内容（用于调试）。
+     * @return 表示节点映射内容的字符串。
      */
     private function _getNodeMapContents():String {
         var contents:Array = [];
