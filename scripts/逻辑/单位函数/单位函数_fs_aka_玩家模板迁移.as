@@ -1591,10 +1591,13 @@ _root.主角函数.动画完毕 = function()
 	}
 	if (_root.技能浮空 && this._name === _root.控制目标)
 	{
-		_root.是否阴影 = true;
+		// _root.是否阴影 = true;
 		if (攻击模式 === "空手" || 攻击模式 === "兵器")
 		{
 			状态改变(攻击模式 + "跳");
+			return;
+		}else{
+			状态改变("空手跳");
 			return;
 		}
 	}
