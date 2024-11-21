@@ -1597,7 +1597,8 @@
       "secondary2": -1,
       "melee": -1,
       "grenade": -1
-    }
+    },
+    "price":0.6
   },
   {
     "level": 31,
@@ -3856,6 +3857,98 @@
       "secondary1": 712,
       "secondary2":712,
       "melee": 422,
+      "grenade": -1
+
+    }
+  },
+  {
+    "level": 17,
+    "name": "侵蚀",
+    "id": 5626,
+    "height": 170,
+    "face": 1,
+    "hair": 9,
+    "gender": 1,
+    "equipment": {
+      "head": 628,
+      "body": 2611,
+      "hand": 2613,
+      "leg": 2612,
+      "foot": 2615,
+      "neck": 509,
+      "primary": 6023,
+      "secondary1": 6025,
+      "secondary2":6025,
+      "melee": 1510,
+      "grenade": -1
+
+    }
+  },
+  {
+    "level": 27,
+    "name": "前清道夫",
+    "id": 5627,
+    "height": 175,
+    "face": 0,
+    "hair": 22,
+    "gender": 0,
+    "equipment": {
+      "head": 2616,
+      "body": 2617,
+      "hand": 2619,
+      "leg": 2618,
+      "foot": 2620,
+      "neck": 513,
+      "primary": -1,
+      "secondary1": 13008,
+      "secondary2":13008,
+      "melee": 1525,
+      "grenade": -1
+
+    }
+  },
+  {
+    "level": 37,
+    "name": "前A级清道夫",
+    "id": 5628,
+    "height": 190,
+    "face": 1,
+    "hair": 15,
+    "gender": 1,
+    "equipment": {
+      "head": 2621,
+      "body": 2622,
+      "hand": 2624,
+      "leg": 2623,
+      "foot": 2625,
+      "neck": 516,
+      "primary": 264,
+      "secondary1": -1,
+      "secondary2":-1,
+      "melee": 1511,
+      "grenade": -1
+
+    }
+  },
+  {
+    "level": 56,
+    "name": "白绝",
+    "id": 5629,
+    "height": 180,
+    "face": 0,
+    "hair": 45,
+    "gender": 0,
+    "equipment": {
+      "head": 603,
+      "body": 604,
+      "hand": 605,
+      "leg": 606,
+      "foot": 607,
+      "neck": 500,
+      "primary": 567,
+      "secondary1": -1,
+      "secondary2":-1,
+      "melee": 609,
       "grenade": -1
 
     }
