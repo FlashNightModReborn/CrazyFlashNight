@@ -98,6 +98,9 @@
       <damage>0</damage>
       <defence>32</defence>
       <bullet>0</bullet>
+      <magicdefence>
+        <毒>10</毒>
+      </magicdefence>
     </equipped>
   </item>
   <item>
@@ -4893,7 +4896,7 @@
     <price>100000</price>
     <description>面具整体采用回火钢锻造而成，可抵御流弹对面部的威胁；眼部则加装了红色防雾玻璃，兜帽与束发保证了佩戴者的生物信息不被泄露。
     黑暗提供庇护，也是众生归宿。
-&lt;font color=&quot;#66cc66&quot;&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，开启亮度等级为0~4。</description>
+&lt;font color=&quot;#66cc66&quot;&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，开启亮度等级为0~2。</description>
     <level>31</level>
     <helmet>true</helmet>
     <equipped>
@@ -4911,7 +4914,7 @@
           <initParam>
             <visual>夜视仪</visual>
             <min>0</min>
-            <max>4</max>
+            <max>2</max>
           </initParam>
         </init>
         <cycle>
@@ -4919,7 +4922,7 @@
           <cycleParam>
             <visual>夜视仪</visual>
             <min>0</min>
-            <max>4</max>
+            <max>2</max>
           </cycleParam>
         </cycle>
       </attr_0>

@@ -845,92 +845,6 @@
             </Material>
         </Item>
         <Item id="45">
-            <Title>战斗狂人军牌改装图纸</Title>
-            <Name>战斗狂人军牌</Name>
-            <Price>10000</Price>
-            <KPrice>0</KPrice>
-            <Material>
-                <Name>战斗专家军牌</Name>
-                <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>高强度合金</Name>
-                <Quantity>10</Quantity>
-            </Material>
-            <Material>
-                <Name>不锈钢材</Name>
-                <Quantity>10</Quantity>
-            </Material>
-            <Material>
-                <Name>碳纤维布料</Name>
-                <Quantity>2</Quantity>
-            </Material>
-        </Item>
-        <Item id="46">
-            <Title>冷兵器大加成项链改装图纸</Title>
-            <Name>冷兵器大加成项链</Name>
-            <Price>10000</Price>
-            <KPrice>0</KPrice>
-            <Material>
-                <Name>冷兵器中加成项链</Name>
-                <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>高强度合金</Name>
-                <Quantity>10</Quantity>
-            </Material>
-            <Material>
-                <Name>高耐力橡胶</Name>
-                <Quantity>10</Quantity>
-            </Material>
-        </Item>
-        <Item id="47">
-            <Title>枪械大加成项链改装图纸</Title>
-            <Name>枪械大加成项链</Name>
-            <Price>10000</Price>
-            <KPrice>0</KPrice>
-            <Material>
-                <Name>枪械中加成项链</Name>
-                <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>高强度合金</Name>
-                <Quantity>10</Quantity>
-            </Material>
-            <Material>
-                <Name>高耐力橡胶</Name>
-                <Quantity>10</Quantity>
-            </Material>
-        </Item>
-        <Item id="48">
-            <Title>空手大加成项链改装图纸</Title>
-            <Name>空手大加成项链</Name>
-            <Price>10000</Price>
-            <KPrice>0</KPrice>
-            <Material>
-                <Name>空手中加成项链</Name>
-                <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>高强度合金</Name>
-                <Quantity>10</Quantity>
-            </Material>
-            <Material>
-                <Name>高耐力橡胶</Name>
-                <Quantity>10</Quantity>
-            </Material>
-        </Item>
-        <Item id="49">
-            <Title>极品UZI战术版打造图纸</Title>
-            <Name>极品UZI战术版</Name>
-            <Price>888</Price>
-            <KPrice>4999</KPrice>
-            <Material>
-                <Name>UZI战术版</Name>
-                <Quantity>1</Quantity>
-            </Material>
-        </Item>
-        <Item id="50">
             <Title>牛仔上衣改装图纸</Title>
             <Name>牛仔上衣</Name>
             <Price>10000</Price>
@@ -952,7 +866,7 @@
                 <Quantity>1</Quantity>
             </Material>
         </Item>
-        <Item id="51">
+        <Item id="46">
             <Title>牛仔手套改装图纸</Title>
             <Name>牛仔手套</Name>
             <Price>10000</Price>
@@ -974,7 +888,7 @@
                 <Quantity>1</Quantity>
             </Material>
         </Item>
-        <Item id="52">
+        <Item id="47">
             <Title>牛仔裤子改装图纸</Title>
             <Name>牛仔裤子</Name>
             <Price>10000</Price>
@@ -996,7 +910,7 @@
                 <Quantity>1</Quantity>
             </Material>
         </Item>
-        <Item id="53">
+        <Item id="48">
             <Title>牛仔皮鞋改装图纸</Title>
             <Name>牛仔皮鞋</Name>
             <Price>10000</Price>
@@ -1018,25 +932,17 @@
                 <Quantity>1</Quantity>
             </Material>
         </Item>
-        <Item id="54">
-            <Title>AK74改装图纸</Title>
-            <Name>AK74战术版</Name>
-            <Price>60000</Price>
-            <KPrice>3000</KPrice>
+        <Item id="49">
+            <Title>温切斯特改装图纸</Title>
+            <Name>牛仔的温切斯特</Name>
+            <Price>50000</Price>
+            <KPrice>1000</KPrice>
             <Material>
-                <Name>AK74</Name>
-                <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>战术版AK200</Name>
-                <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>战术导轨</Name>
+                <Name>牛仔装备碎片</Name>
                 <Quantity>5</Quantity>
             </Material>
             <Material>
-                <Name>高强度合金</Name>
+                <Name>战术导轨</Name>
                 <Quantity>5</Quantity>
             </Material>
             <Material>
@@ -1051,179 +957,181 @@
                 <Name>烈性火药</Name>
                 <Quantity>10</Quantity>
             </Material>
+        </Item>
+        <Item id="50">
+            <Title>A级防化服头套改装图纸</Title>
+            <Name>A级防化服头套</Name>
+            <Price>50000</Price>
+            <KPrice>0</KPrice>
             <Material>
-                <Name>传动装置</Name>
-                <Quantity>2</Quantity>
+                <Name>B级防化服头套</Name>
+                <Quantity>5</Quantity>
             </Material>
             <Material>
-                <Name>镭射瞄准具</Name>
-                <Quantity>2</Quantity>
+                <Name>碳纤维布料</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>强力胶</Name>
+                <Quantity>5</Quantity>
+            </Material>
+        </Item>
+        <Item id="51">
+            <Title>A级防化服上装改装图纸</Title>
+            <Name>A级防化服上装</Name>
+            <Price>50000</Price>
+            <KPrice>0</KPrice>
+            <Material>
+                <Name>B级防化服上装</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>碳纤维布料</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>强力胶</Name>
+                <Quantity>5</Quantity>
+            </Material>
+        </Item>
+        <Item id="52">
+            <Title>A级防化服下装改装图纸</Title>
+            <Name>A级防化服下装</Name>
+            <Price>50000</Price>
+            <KPrice>0</KPrice>
+            <Material>
+                <Name>B级防化服下装</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>碳纤维布料</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>强力胶</Name>
+                <Quantity>5</Quantity>
+            </Material>
+        </Item>
+        <Item id="53">
+            <Title>A级防化服手套改装图纸</Title>
+            <Name>A级防化服手套</Name>
+            <Price>50000</Price>
+            <KPrice>0</KPrice>
+            <Material>
+                <Name>B级防化服手套</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>碳纤维布料</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>强力胶</Name>
+                <Quantity>5</Quantity>
+            </Material>
+        </Item>
+        <Item id="54">
+            <Title>A级防化服鞋改装图纸</Title>
+            <Name>A级防化服鞋</Name>
+            <Price>50000</Price>
+            <KPrice>0</KPrice>
+            <Material>
+                <Name>B级防化服鞋</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>碳纤维布料</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>强力胶</Name>
+                <Quantity>5</Quantity>
             </Material>
         </Item>
         <Item id="55">
-            <Title>M4A1改装图纸</Title>
-            <Name>M4A1战术版</Name>
-            <Price>60000</Price>
-            <KPrice>3000</KPrice>
+            <Title>战斗狂人军牌改装图纸</Title>
+            <Name>战斗狂人军牌</Name>
+            <Price>10000</Price>
+            <KPrice>0</KPrice>
             <Material>
-                <Name>M4A1</Name>
+                <Name>战斗专家军牌</Name>
                 <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>M4A1改</Name>
-                <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>战术导轨</Name>
-                <Quantity>5</Quantity>
             </Material>
             <Material>
                 <Name>高强度合金</Name>
-                <Quantity>5</Quantity>
-            </Material>
-            <Material>
-                <Name>强化金属管</Name>
-                <Quantity>5</Quantity>
-            </Material>
-            <Material>
-                <Name>枪械内构强化套件</Name>
-                <Quantity>5</Quantity>
-            </Material>
-            <Material>
-                <Name>烈性火药</Name>
                 <Quantity>10</Quantity>
             </Material>
             <Material>
-                <Name>加长弹匣</Name>
-                <Quantity>5</Quantity>
+                <Name>不锈钢材</Name>
+                <Quantity>10</Quantity>
             </Material>
             <Material>
-                <Name>镭射瞄准具</Name>
+                <Name>碳纤维布料</Name>
                 <Quantity>2</Quantity>
             </Material>
         </Item>
         <Item id="56">
-            <Title>WA2000改装图纸</Title>
-            <Name>WA2000</Name>
-            <Price>35000</Price>
+            <Title>冷兵器大加成项链改装图纸</Title>
+            <Name>冷兵器大加成项链</Name>
+            <Price>10000</Price>
             <KPrice>0</KPrice>
             <Material>
-                <Name>AWP</Name>
+                <Name>冷兵器中加成项链</Name>
                 <Quantity>1</Quantity>
             </Material>
             <Material>
-                <Name>上色涂料</Name>
+                <Name>高强度合金</Name>
                 <Quantity>10</Quantity>
             </Material>
             <Material>
-                <Name>可塑式钢板</Name>
-                <Quantity>5</Quantity>
-            </Material>
-            <Material>
-                <Name>强化金属管</Name>
-                <Quantity>5</Quantity>
-            </Material>
-            <Material>
-                <Name>战术导轨</Name>
-                <Quantity>2</Quantity>
-            </Material>
-            <Material>
-                <Name>突击型光学瞄具</Name>
-                <Quantity>2</Quantity>
+                <Name>高耐力橡胶</Name>
+                <Quantity>10</Quantity>
             </Material>
         </Item>
         <Item id="57">
-            <Title>双管白火铳改装图纸</Title>
-            <Name>双管白火铳</Name>
-            <Price>5000</Price>
-            <KPrice>10000</KPrice>
+            <Title>枪械大加成项链改装图纸</Title>
+            <Name>枪械大加成项链</Name>
+            <Price>10000</Price>
+            <KPrice>0</KPrice>
             <Material>
-                <Name>双管白火铳制作图纸</Name>
+                <Name>枪械中加成项链</Name>
                 <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>白火铳</Name>
-                <Quantity>2</Quantity>
-            </Material>
-            <Material>
-                <Name>可塑式钢板</Name>
-                <Quantity>10</Quantity>
-            </Material>
-            <Material>
-                <Name>枪械内构强化套件</Name>
-                <Quantity>10</Quantity>
             </Material>
             <Material>
                 <Name>高强度合金</Name>
                 <Quantity>10</Quantity>
             </Material>
             <Material>
-                <Name>烈性火药</Name>
+                <Name>高耐力橡胶</Name>
                 <Quantity>10</Quantity>
-            </Material>
-            <Material>
-                <Name>加长弹匣</Name>
-                <Quantity>2</Quantity>
-            </Material>
-            <Material>
-                <Name>突击型光学瞄具</Name>
-                <Quantity>2</Quantity>
             </Material>
         </Item>
         <Item id="58">
-            <Title>黄金QBZ改装图纸</Title>
-            <Name>黄金QBZ</Name>
-            <Price>100000</Price>
-            <KPrice>2000</KPrice>
+            <Title>空手大加成项链改装图纸</Title>
+            <Name>空手大加成项链</Name>
+            <Price>10000</Price>
+            <KPrice>0</KPrice>
             <Material>
-                <Name>QBZ95</Name>
+                <Name>空手中加成项链</Name>
                 <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>国庆纪念币</Name>
-                <Quantity>10</Quantity>
-            </Material>
-            <Material>
-                <Name>上色涂料</Name>
-                <Quantity>5</Quantity>
             </Material>
             <Material>
                 <Name>高强度合金</Name>
                 <Quantity>10</Quantity>
             </Material>
             <Material>
-                <Name>枪械内构强化套件</Name>
+                <Name>高耐力橡胶</Name>
                 <Quantity>10</Quantity>
-            </Material>
-            <Material>
-                <Name>强化金属管</Name>
-                <Quantity>5</Quantity>
-            </Material>
-            <Material>
-                <Name>烈性火药</Name>
-                <Quantity>5</Quantity>
-            </Material>
-            <Material>
-                <Name>镭射瞄准具</Name>
-                <Quantity>2</Quantity>
             </Material>
         </Item>
         <Item id="59">
-            <Title>异形女王毒刺打造图纸</Title>
-            <Name>异形女王毒刺</Name>
-            <Price>50000</Price>
-            <KPrice>0</KPrice>
+            <Title>极品UZI战术版打造图纸</Title>
+            <Name>极品UZI战术版</Name>
+            <Price>888</Price>
+            <KPrice>4999</KPrice>
             <Material>
-                <Name>异形毒刺</Name>
+                <Name>UZI战术版</Name>
                 <Quantity>1</Quantity>
-            </Material>
-            <Material>
-                <Name>异形龙骨碎片</Name>
-                <Quantity>80</Quantity>
-            </Material>
-            <Material>
-                <Name>高强度合金</Name>
-                <Quantity>10</Quantity>
             </Material>
         </Item>
         <Item id="60">
@@ -1337,112 +1245,180 @@
             </Material>
         </Item>
         <Item id="65">
-            <Title>兽王战甲盔打造图纸</Title>
-            <Name>兽王战甲盔</Name>
-            <Price>20000</Price>
-            <KPrice>4000</KPrice>
+            <Title>AK74改装图纸</Title>
+            <Name>AK74战术版</Name>
+            <Price>60000</Price>
+            <KPrice>3000</KPrice>
             <Material>
-                <Name>兽王虎甲盔</Name>
+                <Name>AK74</Name>
                 <Quantity>1</Quantity>
             </Material>
             <Material>
-                <Name>兽王碎片</Name>
-                <Quantity>50</Quantity>
+                <Name>战术版AK200</Name>
+                <Quantity>1</Quantity>
             </Material>
             <Material>
-                <Name>烈炎矿石</Name>
-                <Quantity>30</Quantity>
+                <Name>战术导轨</Name>
+                <Quantity>5</Quantity>
             </Material>
             <Material>
-                <Name>冰魄矿石</Name>
+                <Name>高强度合金</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>强化金属管</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>枪械内构强化套件</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>烈性火药</Name>
                 <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>传动装置</Name>
+                <Quantity>2</Quantity>
+            </Material>
+            <Material>
+                <Name>镭射瞄准具</Name>
+                <Quantity>2</Quantity>
             </Material>
         </Item>
         <Item id="66">
-            <Title>兽王战甲打造图纸</Title>
-            <Name>兽王战甲</Name>
-            <Price>20000</Price>
-            <KPrice>4000</KPrice>
+            <Title>M4A1改装图纸</Title>
+            <Name>M4A1战术版</Name>
+            <Price>60000</Price>
+            <KPrice>3000</KPrice>
             <Material>
-                <Name>兽王虎甲</Name>
+                <Name>M4A1</Name>
                 <Quantity>1</Quantity>
             </Material>
             <Material>
-                <Name>兽王碎片</Name>
-                <Quantity>50</Quantity>
+                <Name>M4A1改</Name>
+                <Quantity>1</Quantity>
             </Material>
             <Material>
-                <Name>烈炎矿石</Name>
-                <Quantity>30</Quantity>
+                <Name>战术导轨</Name>
+                <Quantity>5</Quantity>
             </Material>
             <Material>
-                <Name>冰魄矿石</Name>
+                <Name>高强度合金</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>强化金属管</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>枪械内构强化套件</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>烈性火药</Name>
                 <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>加长弹匣</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>镭射瞄准具</Name>
+                <Quantity>2</Quantity>
             </Material>
         </Item>
         <Item id="67">
-            <Title>兽王战甲手套打造图纸</Title>
-            <Name>兽王战甲手套</Name>
-            <Price>20000</Price>
-            <KPrice>4000</KPrice>
+            <Title>双管白火铳改装图纸</Title>
+            <Name>双管白火铳</Name>
+            <Price>5000</Price>
+            <KPrice>10000</KPrice>
             <Material>
-                <Name>兽王虎甲手套</Name>
+                <Name>双管白火铳制作图纸</Name>
                 <Quantity>1</Quantity>
             </Material>
             <Material>
-                <Name>兽王碎片</Name>
-                <Quantity>50</Quantity>
+                <Name>白火铳</Name>
+                <Quantity>2</Quantity>
             </Material>
             <Material>
-                <Name>烈炎矿石</Name>
-                <Quantity>30</Quantity>
-            </Material>
-            <Material>
-                <Name>冰魄矿石</Name>
+                <Name>可塑式钢板</Name>
                 <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>枪械内构强化套件</Name>
+                <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>高强度合金</Name>
+                <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>烈性火药</Name>
+                <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>加长弹匣</Name>
+                <Quantity>2</Quantity>
+            </Material>
+            <Material>
+                <Name>突击型光学瞄具</Name>
+                <Quantity>2</Quantity>
             </Material>
         </Item>
         <Item id="68">
-            <Title>兽王战甲腿甲打造图纸</Title>
-            <Name>兽王战甲腿甲</Name>
-            <Price>20000</Price>
-            <KPrice>4000</KPrice>
+            <Title>黄金QBZ改装图纸</Title>
+            <Name>黄金QBZ</Name>
+            <Price>100000</Price>
+            <KPrice>2000</KPrice>
             <Material>
-                <Name>兽王虎甲腿甲</Name>
+                <Name>QBZ95</Name>
                 <Quantity>1</Quantity>
             </Material>
             <Material>
-                <Name>兽王碎片</Name>
-                <Quantity>50</Quantity>
-            </Material>
-            <Material>
-                <Name>烈炎矿石</Name>
-                <Quantity>30</Quantity>
-            </Material>
-            <Material>
-                <Name>冰魄矿石</Name>
+                <Name>国庆纪念币</Name>
                 <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>上色涂料</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>高强度合金</Name>
+                <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>枪械内构强化套件</Name>
+                <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>强化金属管</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>烈性火药</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>镭射瞄准具</Name>
+                <Quantity>2</Quantity>
             </Material>
         </Item>
         <Item id="69">
-            <Title>兽王战甲鞋打造图纸</Title>
-            <Name>兽王战甲鞋</Name>
-            <Price>20000</Price>
-            <KPrice>4000</KPrice>
+            <Title>异形女王毒刺打造图纸</Title>
+            <Name>异形女王毒刺</Name>
+            <Price>50000</Price>
+            <KPrice>0</KPrice>
             <Material>
-                <Name>兽王虎甲鞋</Name>
+                <Name>异形毒刺</Name>
                 <Quantity>1</Quantity>
             </Material>
             <Material>
-                <Name>兽王碎片</Name>
-                <Quantity>50</Quantity>
+                <Name>异形龙骨碎片</Name>
+                <Quantity>80</Quantity>
             </Material>
             <Material>
-                <Name>烈炎矿石</Name>
-                <Quantity>30</Quantity>
-            </Material>
-            <Material>
-                <Name>冰魄矿石</Name>
+                <Name>高强度合金</Name>
                 <Quantity>10</Quantity>
             </Material>
         </Item>
@@ -1781,16 +1757,6 @@
             </Material>
         </Item>
         <Item id="87">
-            <Title>强化13的k5项链打造图纸</Title>
-            <Name>诛神项链</Name>
-            <Price>2020</Price>
-            <KPrice>1</KPrice>
-            <Material>
-                <Name>K5项链</Name>
-                <Quantity>13</Quantity>
-            </Material>
-        </Item>
-        <Item id="88">
             <Title>诛神短剑打造图纸</Title>
             <Name>诛神短剑</Name>
             <Price>2020</Price>
@@ -1812,7 +1778,7 @@
                 <Quantity>10</Quantity>
             </Material>
         </Item>
-        <Item id="89">
+        <Item id="88">
             <Title>诛神短枪打造图纸</Title>
             <Name>诛神短枪</Name>
             <Price>2020</Price>
@@ -1832,6 +1798,16 @@
             <Material>
                 <Name>兽王碎片</Name>
                 <Quantity>10</Quantity>
+            </Material>
+        </Item>
+        <Item id="89">
+            <Title>强化13的k5项链打造图纸</Title>
+            <Name>诛神项链</Name>
+            <Price>2020</Price>
+            <KPrice>1</KPrice>
+            <Material>
+                <Name>K5项链</Name>
+                <Quantity>13</Quantity>
             </Material>
         </Item>
         <Item id="90">
@@ -2133,6 +2109,116 @@
             </Material>
         </Item>
         <Item id="105">
+            <Title>兽王战甲盔打造图纸</Title>
+            <Name>兽王战甲盔</Name>
+            <Price>20000</Price>
+            <KPrice>4000</KPrice>
+            <Material>
+                <Name>兽王虎甲盔</Name>
+                <Quantity>1</Quantity>
+            </Material>
+            <Material>
+                <Name>兽王碎片</Name>
+                <Quantity>50</Quantity>
+            </Material>
+            <Material>
+                <Name>烈炎矿石</Name>
+                <Quantity>30</Quantity>
+            </Material>
+            <Material>
+                <Name>冰魄矿石</Name>
+                <Quantity>10</Quantity>
+            </Material>
+        </Item>
+        <Item id="106">
+            <Title>兽王战甲打造图纸</Title>
+            <Name>兽王战甲</Name>
+            <Price>20000</Price>
+            <KPrice>4000</KPrice>
+            <Material>
+                <Name>兽王虎甲</Name>
+                <Quantity>1</Quantity>
+            </Material>
+            <Material>
+                <Name>兽王碎片</Name>
+                <Quantity>50</Quantity>
+            </Material>
+            <Material>
+                <Name>烈炎矿石</Name>
+                <Quantity>30</Quantity>
+            </Material>
+            <Material>
+                <Name>冰魄矿石</Name>
+                <Quantity>10</Quantity>
+            </Material>
+        </Item>
+        <Item id="107">
+            <Title>兽王战甲手套打造图纸</Title>
+            <Name>兽王战甲手套</Name>
+            <Price>20000</Price>
+            <KPrice>4000</KPrice>
+            <Material>
+                <Name>兽王虎甲手套</Name>
+                <Quantity>1</Quantity>
+            </Material>
+            <Material>
+                <Name>兽王碎片</Name>
+                <Quantity>50</Quantity>
+            </Material>
+            <Material>
+                <Name>烈炎矿石</Name>
+                <Quantity>30</Quantity>
+            </Material>
+            <Material>
+                <Name>冰魄矿石</Name>
+                <Quantity>10</Quantity>
+            </Material>
+        </Item>
+        <Item id="108">
+            <Title>兽王战甲腿甲打造图纸</Title>
+            <Name>兽王战甲腿甲</Name>
+            <Price>20000</Price>
+            <KPrice>4000</KPrice>
+            <Material>
+                <Name>兽王虎甲腿甲</Name>
+                <Quantity>1</Quantity>
+            </Material>
+            <Material>
+                <Name>兽王碎片</Name>
+                <Quantity>50</Quantity>
+            </Material>
+            <Material>
+                <Name>烈炎矿石</Name>
+                <Quantity>30</Quantity>
+            </Material>
+            <Material>
+                <Name>冰魄矿石</Name>
+                <Quantity>10</Quantity>
+            </Material>
+        </Item>
+        <Item id="109">
+            <Title>兽王战甲鞋打造图纸</Title>
+            <Name>兽王战甲鞋</Name>
+            <Price>20000</Price>
+            <KPrice>4000</KPrice>
+            <Material>
+                <Name>兽王虎甲鞋</Name>
+                <Quantity>1</Quantity>
+            </Material>
+            <Material>
+                <Name>兽王碎片</Name>
+                <Quantity>50</Quantity>
+            </Material>
+            <Material>
+                <Name>烈炎矿石</Name>
+                <Quantity>30</Quantity>
+            </Material>
+            <Material>
+                <Name>冰魄矿石</Name>
+                <Quantity>10</Quantity>
+            </Material>
+        </Item>
+        <Item id="110">
             <Title>Andy装头改装图纸</Title>
             <Name>Andy装头</Name>
             <Price>5000</Price>
@@ -2142,7 +2228,7 @@
                 <Quantity>5</Quantity>
             </Material>
         </Item>
-        <Item id="106">
+        <Item id="111">
             <Title>Andy上装改装图纸</Title>
             <Name>Andy上装</Name>
             <Price>5000</Price>
@@ -2152,7 +2238,7 @@
                 <Quantity>5</Quantity>
             </Material>
         </Item>
-        <Item id="107">
+        <Item id="112">
             <Title>Andy下装改装图纸</Title>
             <Name>Andy下装</Name>
             <Price>5000</Price>
@@ -2162,7 +2248,7 @@
                 <Quantity>5</Quantity>
             </Material>
         </Item>
-        <Item id="108">
+        <Item id="113">
             <Title>Andy装手套改装图纸</Title>
             <Name>Andy装手套</Name>
             <Price>5000</Price>
@@ -2172,7 +2258,7 @@
                 <Quantity>5</Quantity>
             </Material>
         </Item>
-        <Item id="109">
+        <Item id="114">
             <Title>Andy装鞋改装图纸</Title>
             <Name>Andy装鞋</Name>
             <Price>5000</Price>
@@ -2182,7 +2268,7 @@
                 <Quantity>5</Quantity>
             </Material>
         </Item>
-        <Item id="110">
+        <Item id="115">
             <Title>P90改装图纸</Title>
             <Name>P90战术版</Name>
             <Price>30000</Price>
@@ -2208,7 +2294,7 @@
                 <Quantity>1</Quantity>
             </Material>
         </Item>
-        <Item id="111">
+        <Item id="116">
             <Title>QBZ95制作图纸</Title>
             <Name>QBZ95</Name>
             <Price>20000</Price>
@@ -2234,7 +2320,7 @@
                 <Quantity>5</Quantity>
             </Material>
         </Item>
-        <Item id="112">
+        <Item id="117">
             <Title>LS06制作图纸</Title>
             <Name>LS06</Name>
             <Price>10000</Price>
@@ -2260,7 +2346,37 @@
                 <Quantity>2</Quantity>
             </Material>
         </Item>
-        <Item id="113">
+        <Item id="118">
+            <Title>WA2000改装图纸</Title>
+            <Name>WA2000</Name>
+            <Price>35000</Price>
+            <KPrice>0</KPrice>
+            <Material>
+                <Name>AWP</Name>
+                <Quantity>1</Quantity>
+            </Material>
+            <Material>
+                <Name>上色涂料</Name>
+                <Quantity>10</Quantity>
+            </Material>
+            <Material>
+                <Name>可塑式钢板</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>强化金属管</Name>
+                <Quantity>5</Quantity>
+            </Material>
+            <Material>
+                <Name>战术导轨</Name>
+                <Quantity>2</Quantity>
+            </Material>
+            <Material>
+                <Name>突击型光学瞄具</Name>
+                <Quantity>2</Quantity>
+            </Material>
+        </Item>
+        <Item id="119">
             <Title>未羊项链打造图纸</Title>
             <Name>未羊项链</Name>
             <Price>50000</Price>
@@ -2270,7 +2386,7 @@
                 <Quantity>2015</Quantity>
             </Material>
         </Item>
-        <Item id="114">
+        <Item id="120">
             <Title>申猴项链打造图纸</Title>
             <Name>申猴项链</Name>
             <Price>50000</Price>
@@ -2280,7 +2396,7 @@
                 <Quantity>2016</Quantity>
             </Material>
         </Item>
-        <Item id="115">
+        <Item id="121">
             <Title>酉鸡项链打造图纸</Title>
             <Name>酉鸡项链</Name>
             <Price>50000</Price>
@@ -2290,7 +2406,7 @@
                 <Quantity>2017</Quantity>
             </Material>
         </Item>
-        <Item id="116">
+        <Item id="122">
             <Title>戌狗项链打造图纸</Title>
             <Name>戌狗项链</Name>
             <Price>50000</Price>
@@ -2300,7 +2416,7 @@
                 <Quantity>2018</Quantity>
             </Material>
         </Item>
-        <Item id="117">
+        <Item id="123">
             <Title>亥猪项链打造图纸</Title>
             <Name>亥猪项链</Name>
             <Price>50000</Price>
@@ -2310,7 +2426,7 @@
                 <Quantity>2019</Quantity>
             </Material>
         </Item>
-        <Item id="118">
+        <Item id="124">
             <Title>子鼠项链打造图纸</Title>
             <Name>子鼠项链</Name>
             <Price>50000</Price>
@@ -2320,7 +2436,7 @@
                 <Quantity>2020</Quantity>
             </Material>
         </Item>
-        <Item id="119">
+        <Item id="125">
             <Title>烈焰斩马刀改装图纸</Title>
             <Name>烈焰斩马刀</Name>
             <Price>10000</Price>
@@ -2342,7 +2458,7 @@
                 <Quantity>2</Quantity>
             </Material>
         </Item>
-        <Item id="120">
+        <Item id="126">
             <Title>远古忍者盔打造图纸</Title>
             <Name>远古忍者盔</Name>
             <Price>50000</Price>
@@ -2376,7 +2492,7 @@
                 <Quantity>30</Quantity>
             </Material>
         </Item>
-        <Item id="121">
+        <Item id="127">
             <Title>远古忍者甲打造图纸</Title>
             <Name>远古忍者甲</Name>
             <Price>50000</Price>
@@ -2410,7 +2526,7 @@
                 <Quantity>30</Quantity>
             </Material>
         </Item>
-        <Item id="122">
+        <Item id="128">
             <Title>远古忍者手套打造图纸</Title>
             <Name>远古忍者手套</Name>
             <Price>50000</Price>
@@ -2444,7 +2560,7 @@
                 <Quantity>30</Quantity>
             </Material>
         </Item>
-        <Item id="123">
+        <Item id="129">
             <Title>远古忍者腿甲打造图纸</Title>
             <Name>远古忍者腿甲</Name>
             <Price>50000</Price>
@@ -2478,7 +2594,7 @@
                 <Quantity>30</Quantity>
             </Material>
         </Item>
-        <Item id="124">
+        <Item id="130">
             <Title>远古忍者鞋打造图纸</Title>
             <Name>远古忍者鞋</Name>
             <Price>50000</Price>
@@ -2512,7 +2628,7 @@
                 <Quantity>30</Quantity>
             </Material>
         </Item>
-        <Item id="125">
+        <Item id="131">
             <Title>忍者执剑打造图纸</Title>
             <Name>忍者执剑</Name>
             <Price>80000</Price>
@@ -2546,7 +2662,7 @@
                 <Quantity>30</Quantity>
             </Material>
         </Item>
-        <Item id="126">
+        <Item id="132">
             <Title>战术巴雷特打造图纸</Title>
             <Name>战术巴雷特</Name>
             <Price>50000</Price>
@@ -2564,7 +2680,7 @@
                 <Quantity>5</Quantity>
             </Material>
         </Item>
-        <Item id="127">
+        <Item id="133">
             <Title>炎魔盔改装图纸</Title>
             <Name>炎魔盔</Name>
             <Price>10000</Price>
@@ -2582,7 +2698,7 @@
                 <Quantity>50</Quantity>
             </Material>
         </Item>
-        <Item id="128">
+        <Item id="134">
             <Title>炎魔甲改装图纸</Title>
             <Name>炎魔甲</Name>
             <Price>10000</Price>
@@ -2600,7 +2716,7 @@
                 <Quantity>50</Quantity>
             </Material>
         </Item>
-        <Item id="129">
+        <Item id="135">
             <Title>炎魔手套改装图纸</Title>
             <Name>炎魔手套</Name>
             <Price>10000</Price>
@@ -2618,7 +2734,7 @@
                 <Quantity>50</Quantity>
             </Material>
         </Item>
-        <Item id="130">
+        <Item id="136">
             <Title>炎魔腿甲改装图纸</Title>
             <Name>炎魔腿甲</Name>
             <Price>10000</Price>
@@ -2636,7 +2752,7 @@
                 <Quantity>50</Quantity>
             </Material>
         </Item>
-        <Item id="131">
+        <Item id="137">
             <Title>炎魔鞋改装图纸</Title>
             <Name>炎魔鞋</Name>
             <Price>10000</Price>
@@ -2654,7 +2770,7 @@
                 <Quantity>50</Quantity>
             </Material>
         </Item>
-        <Item id="132">
+        <Item id="138">
             <Title>炎魔枪A100改装图纸</Title>
             <Name>炎魔枪A100</Name>
             <Price>10000</Price>
@@ -2672,7 +2788,7 @@
                 <Quantity>80</Quantity>
             </Material>
         </Item>
-        <Item id="133">
+        <Item id="139">
             <Title>炎魔枪B100改装图纸</Title>
             <Name>炎魔枪B100</Name>
             <Price>10000</Price>
@@ -2690,7 +2806,7 @@
                 <Quantity>80</Quantity>
             </Material>
         </Item>
-        <Item id="134">
+        <Item id="140">
             <Title>炎魔斩</Title>
             <Name>炎魔斩new</Name>
             <Price>10000</Price>
@@ -2708,7 +2824,7 @@
                 <Quantity>80</Quantity>
             </Material>
         </Item>
-        <Item id="135">
+        <Item id="141">
             <Title>冰魄神斩改装图纸</Title>
             <Name>冰魄神斩</Name>
             <Price>5000</Price>
@@ -2726,7 +2842,7 @@
                 <Quantity>20</Quantity>
             </Material>
         </Item>
-        <Item id="136">
+        <Item id="142">
             <Title>极品巨兽改装图纸</Title>
             <Name>极品巨兽</Name>
             <Price>5000</Price>
@@ -2744,7 +2860,7 @@
                 <Quantity>20</Quantity>
             </Material>
         </Item>
-        <Item id="137">
+        <Item id="143">
             <Title>蓝晶面具改装图纸</Title>
             <Name>蓝晶面具</Name>
             <Price>5000</Price>
@@ -2762,7 +2878,7 @@
                 <Quantity>10</Quantity>
             </Material>
         </Item>
-        <Item id="138">
+        <Item id="144">
             <Title>蓝晶战斗服改装图纸</Title>
             <Name>蓝晶战斗服</Name>
             <Price>5000</Price>
@@ -2780,7 +2896,7 @@
                 <Quantity>10</Quantity>
             </Material>
         </Item>
-        <Item id="139">
+        <Item id="145">
             <Title>蓝晶手套改装图纸</Title>
             <Name>蓝晶手套</Name>
             <Price>5000</Price>
@@ -2798,7 +2914,7 @@
                 <Quantity>10</Quantity>
             </Material>
         </Item>
-        <Item id="140">
+        <Item id="146">
             <Title>蓝晶下装改装图纸</Title>
             <Name>蓝晶下装</Name>
             <Price>5000</Price>
@@ -2816,7 +2932,7 @@
                 <Quantity>10</Quantity>
             </Material>
         </Item>
-        <Item id="141">
+        <Item id="147">
             <Title>蓝晶鞋改装图纸</Title>
             <Name>蓝晶鞋</Name>
             <Price>5000</Price>
