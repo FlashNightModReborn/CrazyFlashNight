@@ -930,7 +930,7 @@
       "melee": 453,
       "grenade": -1
     },
-    "price":1.1
+    "price":1.2
   },
   {
     "level": 42,
@@ -3115,6 +3115,28 @@
   },
   {
     "level": 100,
+    "name": "【幻之羽翼】流年",
+    "id": 56,
+    "height": 175,
+    "face": 1,
+    "hair": -1,
+    "gender": 1,
+    "equipment": {
+      "head": 614,
+      "body": 615,
+      "hand": 616,
+      "leg": 617,
+      "foot": 618,
+      "neck": 621,
+      "primary": 619,
+      "secondary1": 623,
+      "secondary2": 623,
+      "melee": 620,
+      "grenade": 583
+    }
+  },
+  {
+    "level": 100,
     "name": "金色风暴",
     "id":5594,
     "height": 185,
@@ -3816,25 +3838,26 @@
     "price":1.5
   },
   {
-    "level": 100,
-    "name": "【幻之羽翼】流年",
-    "id": 56,
-    "height": 175,
+    "level": 40,
+    "name": "亚瑟摩根",
+    "id": 5625,
+    "height": 180,
     "face": 1,
-    "hair": -1,
+    "hair": 33,
     "gender": 1,
     "equipment": {
-      "head": 614,
-      "body": 615,
-      "hand": 616,
-      "leg": 617,
-      "foot": 618,
-      "neck": 621,
-      "primary": 619,
-      "secondary1": 623,
-      "secondary2": 623,
-      "melee": 620,
-      "grenade": 583
+      "head": 1536,
+      "body": 1537,
+      "hand": 1539,
+      "leg": 1538,
+      "foot": 1540,
+      "neck": 1012,
+      "primary": 711,
+      "secondary1": 712,
+      "secondary2":712,
+      "melee": 422,
+      "grenade": -1
+
     }
   }
 ]
