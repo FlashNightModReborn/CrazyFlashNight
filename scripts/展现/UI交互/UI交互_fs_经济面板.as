@@ -1,37 +1,27 @@
-﻿// 初始化 UI 系统参数
+﻿import org.flashNight.aven.Proxy.Proxy;
+
+// 初始化 UI 系统参数
 _root.UI系统.经济面板动效 = true; // 是否启用经济面板动画效果
 _root.UI系统.经济面板帧间隔 = 60; // 动画总帧数
 _root.UI系统.经济面板动效占比 = 0.2; // 动画中用于渐显和渐隐的帧数比例
 
-// 辅助函数：设置变量监视器
-// 用于监视指定变量的变化，并在变化时调用对应的刷新函数
-_root.UI系统.设置变量监视 = function(变量名, 刷新函数) {
-    _root.watch(变量名, function(prop, oldValue, newValue) {
-        // 检查旧值是否已定义且与新值不同
-        if (oldValue !== undefined && oldValue !== newValue) {
-            刷新函数(); // 调用刷新函数
-        }
-        return newValue; // 保持变量的新值不变
-    });
-};
-
 // 定义刷新函数：用于刷新“金钱”面板
-_root.UI系统.金钱刷新 = function() { 
+_root.UI系统.金钱刷新 = function(newValue:Number, oldValue:Number):Void { 
     // 调用经济面板刷新函数，传入金币图标和对应的变量名
     _root.UI系统.经济面板刷新(_root.金币图标, "金钱");
 };
 
 // 定义刷新函数：用于刷新“虚拟币”面板
-_root.UI系统.虚拟币刷新 = function() { 
+_root.UI系统.虚拟币刷新 = function(newValue:Number, oldValue:Number):Void { 
     // 调用经济面板刷新函数，传入虚拟币图标和对应的变量名
     _root.UI系统.经济面板刷新(_root.K点图标, "虚拟币");
 };
 
 // 设置金钱和虚拟币的监视器
-// 监视“金钱”变量的变化，当变化时调用金钱刷新函数
-_root.UI系统.设置变量监视("金钱", _root.UI系统.金钱刷新);
-// 监视“虚拟币”变量的变化，当变化时调用虚拟币刷新函数
-_root.UI系统.设置变量监视("虚拟币", _root.UI系统.虚拟币刷新);
+// 使用 Proxy 类添加属性 Setter 监视器，监视“金钱”和“虚拟币”变量的变化
+Proxy.addPropertySetterWatcher(_root, "金钱", _root.UI系统.金钱刷新);
+Proxy.addPropertySetterWatcher(_root, "虚拟币", _root.UI系统.虚拟币刷新);
+
 
 // 初始化面板函数
 // 用于初始化指定的面板（金币或虚拟币）并开始播放动画
