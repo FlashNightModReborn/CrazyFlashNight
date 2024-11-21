@@ -29,28 +29,53 @@ _root.decomposeColorMatrix = function(matrix:Array):Object {
         hue: 0
     };
     
-    // 实现矩阵分解算法，这里是一个复杂的数学问题
-    // 为了简化，假设我们有一个函数可以从矩阵中提取参数
-    // 由于 AS2 的限制，我们可以使用近似的方法
+    // Luminance coefficients for RGB
+    var lumaR:Number = 0.2126;
+    var lumaG:Number = 0.7152;
+    var lumaB:Number = 0.0722;
 
-    // 提取亮度
-    params.brightness = matrix[4] / 255 * 100;
+    // Extract scale factors from the diagonal elements
+    var scaleR:Number = matrix[0];     // m00
+    var scaleG:Number = matrix[6];     // m11
+    var scaleB:Number = matrix[12];    // m22
 
-    // 提取对比度
-    params.contrast = (matrix[0] - 1) * 100;
+    // Estimate contrast (average scale factor)
+    var avgScale:Number = (scaleR + scaleG + scaleB) / 3;
+    params.contrast = (avgScale - 1) * 100; // Convert to percentage
 
-    // 提取饱和度
-    // 计算平均值来估计饱和度
-    var avgR:Number = (matrix[0] + matrix[1] + matrix[2]) / 3;
-    var avgG:Number = (matrix[5] + matrix[6] + matrix[7]) / 3;
-    var avgB:Number = (matrix[10] + matrix[11] + matrix[12]) / 3;
-    var avgAll:Number = (avgR + avgG + avgB) / 3;
-    params.saturation = (avgAll - 1) * 100;
+    // Extract offsets from the last column
+    var offsetR:Number = matrix[4];     // m04
+    var offsetG:Number = matrix[9];     // m14
+    var offsetB:Number = matrix[14];    // m24
 
-    // 色相的提取非常复杂，这里暂时不处理，保持为0
+    // Estimate brightness
+    // Adjust for contrast offset: offset = scale * brightness + 128 * (1 - scale)
+    var avgOffset:Number = (offsetR + offsetG + offsetB) / 3;
+    var brightnessValue:Number = (avgOffset - 128 * (1 - avgScale)) / avgScale;
+    params.brightness = (brightnessValue / 255) * 100; // Convert to percentage
+
+    // Estimate saturation
+    // Based on the difference between the adjusted scale factors and luminance coefficients
+    var satR:Number = (scaleR - lumaR * (1 - avgScale)) / avgScale;
+    var satG:Number = (scaleG - lumaG * (1 - avgScale)) / avgScale;
+    var satB:Number = (scaleB - lumaB * (1 - avgScale)) / avgScale;
+    var saturationAvg:Number = ((satR + satG + satB) / 3 - 1) * 100;
+    params.saturation = saturationAvg;
+
+    // Estimate hue (complex due to trigonometric functions)
+    // Use off-diagonal elements to approximate hue angle
+    var hueNumerator:Number = matrix[1] - matrix[5];  // m01 - m10
+    var hueDenominator:Number = matrix[0] + matrix[6] - 2 * avgScale;  // m00 + m11 - 2 * avgScale
+    var hueAngle:Number = Math.atan2(hueNumerator, hueDenominator);
+    params.hue = hueAngle * (180 / Math.PI); // Convert to degrees
+
+    // Adjust hue value to be within -180 to 180 degrees
+    if (params.hue > 180) params.hue -= 360;
+    if (params.hue < -180) params.hue += 360;
 
     return params;
 };
+
 
 // 提取 ColorMatrixFilter 参数
 _root.extractColorMatrixParams = function(target:MovieClip):Object {
@@ -873,6 +898,9 @@ stop();
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="159391" publishTime="1732157248"/>
+          <PublishItem publishSize="159391" publishTime="1732157214"/>
+          <PublishItem publishSize="159179" publishTime="1732156987"/>
           <PublishItem publishSize="158974" publishTime="1732156448"/>
           <PublishItem publishSize="159179" publishTime="1732156347"/>
           <PublishItem publishSize="159229" publishTime="1732156269"/>
@@ -890,8 +918,5 @@ stop();
           <PublishItem publishSize="156682" publishTime="1732154755"/>
           <PublishItem publishSize="156677" publishTime="1732154259"/>
           <PublishItem publishSize="156615" publishTime="1732154121"/>
-          <PublishItem publishSize="155148" publishTime="1732153916"/>
-          <PublishItem publishSize="150071" publishTime="1732153842"/>
-          <PublishItem publishSize="150072" publishTime="1732153807"/>
      </publishHistory>
 </DOMDocument>
