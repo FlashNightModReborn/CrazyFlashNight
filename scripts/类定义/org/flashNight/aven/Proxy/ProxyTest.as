@@ -53,7 +53,7 @@ class org.flashNight.aven.Proxy.ProxyTest {
         this.testRemovePropertyGetterWatcher();
         this.testMultipleCallbacks();
         this.testFunctionCallWatcher();
-        this.testPerformance(); // 性能测试暂时注释
+        // this.testPerformance(); // 性能测试暂时注释
     }
 
     /**
