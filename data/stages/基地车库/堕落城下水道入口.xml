@@ -123,7 +123,7 @@
                         <Type>兵种403</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
-                        <Level>30</Level>
+                        <Level>15</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
@@ -142,6 +142,55 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/堕落城下水道过道1.swf</Background>
         </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>250</x>
+                <y>450</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <最小主线进度>0</最小主线进度>
+                    <最大主线进度>100</最大主线进度>
+                    <内部物>C级防化服上装</内部物>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+            <Instance id="1">
+                <x>280</x>
+                <y>450</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <最小主线进度>0</最小主线进度>
+                    <最大主线进度>100</最大主线进度>
+                    <内部物>C级防化服下装</内部物>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+            <Instance id="2">
+                <x>310</x>
+                <y>450</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <最小主线进度>0</最小主线进度>
+                    <最大主线进度>100</最大主线进度>
+                    <内部物>红外夜视仪</内部物>
+                    <数量>1</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+        </Instances>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>这里好像有箱子，是之前的人遗留的吗？</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -185,9 +234,9 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种403</Type>
+                        <Type>兵种394</Type>
                         <Interval>1200</Interval>
-                        <Quantity>1</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>35</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
@@ -242,9 +291,9 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种403</Type>
+                        <Type>兵种394</Type>
                         <Interval>2000</Interval>
-                        <Quantity>1</Quantity>
+                        <Quantity>2</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy>
@@ -273,7 +322,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种403</Type>
+                        <Type>兵种401</Type>
                         <Interval>2400</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -287,7 +336,7 @@
                     <Enemy>
                         <Type>兵种394</Type>
                         <Interval>1200</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>5</Quantity>
                         <Level>30</Level>
                     </Enemy>
                 </EnemyGroup>
