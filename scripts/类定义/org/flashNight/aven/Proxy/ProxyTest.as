@@ -538,6 +538,140 @@ class org.flashNight.aven.Proxy.ProxyTest {
 
         trace("设置属性触发嵌套回调耗时: " + (endSet5 - startSet5) + " 毫秒");
         trace("回调调用总次数: " + nestedCallbackCount5);
+/**
+ * 性能测试 - Watch vs Proxy
+ * 测试场景：单属性 Setter、多属性管理、回调触发
+ */
+
+trace("--- 扩展性能测试: Watch vs Proxy ---");
+
+// 测试样例1: 单属性单回调性能
+function testSinglePropertySingleCallback():Void {
+    trace("--- 测试样例1: 单属性单回调性能 ---");
+
+    var objWatch:Object = {};
+    var objProxy:Object = {};
+    var callbackCountWatch:Number = 0;
+    var callbackCountProxy:Number = 0;
+
+    function setterCallbackWatch(id:String, oldValue:Number, newValue:Number):Void {
+        callbackCountWatch++;
+    }
+
+    function setterCallbackProxy(newValue:Number, oldValue:Number):Void {
+        callbackCountProxy++;
+    }
+
+    var testRounds:Number = 100000; // 增加测试轮数
+
+    // Watch 添加回调
+    var startWatchAdd:Number = getTimer();
+    for (var i:Number = 0; i < testRounds; i++) {
+        objWatch.watch("value" + i, setterCallbackWatch);
+    }
+    var endWatchAdd:Number = getTimer();
+
+    // Proxy 添加回调
+    var startProxyAdd:Number = getTimer();
+    for (var i:Number = 0; i < testRounds; i++) {
+        Proxy.addPropertySetterWatcher(objProxy, "value" + i, setterCallbackProxy);
+    }
+    var endProxyAdd:Number = getTimer();
+
+    // Watch 触发回调
+    var startWatchSet:Number = getTimer();
+    objWatch["value" + 0] = 500;
+    objWatch["value" + 1] = 600;
+    objWatch["value" + 2] = 700;
+    objWatch["value" + 3] = 800;
+    var endWatchSet:Number = getTimer();
+
+    // Proxy 触发回调
+    var startProxySet:Number = getTimer();
+    objProxy["value" + 0] = 500;
+    objProxy["value" + 1] = 600;
+    objProxy["value" + 2] = 700;
+    objProxy["value" + 3] = 800;
+    var endProxySet:Number = getTimer();
+
+    trace("Watch 添加单回调耗时: " + (endWatchAdd - startWatchAdd) + " ms");
+    trace("Proxy 添加单回调耗时: " + (endProxyAdd - startProxyAdd) + " ms");
+    trace("Watch 设置属性耗时: " + (endWatchSet - startWatchSet) + " ms");
+    trace("Proxy 设置属性耗时: " + (endProxySet - startProxySet) + " ms");
+    trace("Watch 回调调用次数: " + callbackCountWatch);
+    trace("Proxy 回调调用次数: " + callbackCountProxy);
+}
+
+// 测试样例2: 多属性多回调性能
+function testMultiplePropertiesMultipleCallbacks():Void {
+    trace("--- 测试样例2: 多属性多回调性能 ---");
+
+    var objProxy:Object = {};
+    var callbackCountProxy:Number = 0;
+
+    function setterCallbackProxy(newValue:Number, oldValue:Number):Void {
+        callbackCountProxy++;
+    }
+
+    var numProperties:Number = 500; // 属性数量
+    var numCallbacks:Number = 50;  // 每属性回调数量
+
+    // Proxy 添加回调
+    var startProxyAdd:Number = getTimer();
+    for (var i:Number = 0; i < numProperties; i++) {
+        var propName:String = "prop" + i;
+        for (var j:Number = 0; j < numCallbacks; j++) {
+            Proxy.addPropertySetterWatcher(objProxy, propName, setterCallbackProxy);
+        }
+    }
+    var endProxyAdd:Number = getTimer();
+
+    // Proxy 触发回调
+    var startProxySet:Number = getTimer();
+    for (var i:Number = 0; i < numProperties; i++) {
+        objProxy["prop" + i] = i * 10;
+    }
+    var endProxySet:Number = getTimer();
+
+    trace("Proxy 添加多回调耗时: " + (endProxyAdd - startProxyAdd) + " ms");
+    trace("Proxy 触发多回调耗时: " + (endProxySet - startProxySet) + " ms");
+    trace("Proxy 回调调用次数: " + callbackCountProxy);
+}
+
+// 测试样例3: 高频触发场景
+function testHighFrequencyTrigger():Void {
+    trace("--- 测试样例3: 高频触发场景 ---");
+
+    var objProxy:Object = {};
+    var callbackCountProxy:Number = 0;
+
+    function setterCallbackProxy(newValue:Number, oldValue:Number):Void {
+        callbackCountProxy++;
+    }
+
+    var numCallbacks:Number = 5000; // 回调数量
+
+    // 添加回调
+    Proxy.addPropertySetterWatcher(objProxy, "value", setterCallbackProxy);
+
+    // 高频触发回调
+    var startProxySet:Number = getTimer();
+    for (var i:Number = 0; i < numCallbacks; i++) {
+        objProxy.value = i;
+    }
+    var endProxySet:Number = getTimer();
+
+    trace("Proxy 高频触发回调耗时: " + (endProxySet - startProxySet) + " ms");
+    trace("Proxy 回调调用次数: " + callbackCountProxy);
+}
+
+// 运行测试
+testSinglePropertySingleCallback();
+testMultiplePropertiesMultipleCallbacks();
+testHighFrequencyTrigger();
+
+
+
     }
 
 }

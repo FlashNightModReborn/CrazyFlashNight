@@ -9,6 +9,9 @@ _root.效果系统.初始化效果池 = function() {
     var 游戏世界 = _root.gameworld;
     游戏世界.可用效果池 = {};
     _root.当前效果总数 = 0;
+
+    // 设置 `可用效果池` 为不可枚举
+    _global.ASSetPropFlags(游戏世界, ["可用效果池"], 1, true);
 };
 
 // 获取或创建原型效果（懒加载）

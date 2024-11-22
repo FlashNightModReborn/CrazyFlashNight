@@ -49,8 +49,7 @@
                     if (typeof getterCallback == "function") {
                         getterCallback.call(obj, value);
                     } else {
-                        var len:Number = getterCallback.length;
-                        for (var i:Number = len - 1; i >= 0; i--) {
+                        for (var i:Number = getterCallback.length - 1; i >= 0; i--) {
                             getterCallback[i].call(obj, value);
                         }
                     }
@@ -67,8 +66,7 @@
                     if (typeof setterCallback == "function") {
                         setterCallback.call(obj, newValue, oldValue);
                     } else {
-                        var len:Number = setterCallback.length;
-                        for (var i:Number = len - 1; i >= 0; i--) {
+                        for (var i:Number = setterCallback.length - 1; i >= 0; i--) {
                             setterCallback[i].call(obj, newValue, oldValue);
                         }
                     }
@@ -145,8 +143,7 @@
                     if (typeof getterCallback == "function") {
                         getterCallback.call(obj, value);
                     } else {
-                        var len:Number = getterCallback.length;
-                        for (var i:Number = len - 1; i >= 0; i--) {
+                        for (var i:Number = getterCallback.length - 1; i >= 0; i--) {
                             getterCallback[i].call(obj, value);
                         }
                     }
@@ -163,8 +160,7 @@
                     if (typeof setterCallback == "function") {
                         setterCallback.call(obj, newValue, oldValue);
                     } else {
-                        var len:Number = setterCallback.length;
-                        for (var i:Number = len - 1; i >= 0; i--) {
+                        for (var i:Number = setterCallback.length - 1; i >= 0; i--) {
                             setterCallback[i].call(obj, newValue, oldValue);
                         }
                     }
@@ -228,8 +224,7 @@
                         // trace("[DEBUG] 移除最后一个 Setter 回调属性: " + propName + " 在对象 UID: " + uid);
                     }
                 } else {
-                    var len:Number = setterCallback.length;
-                    for (var i:Number = len - 1; i >= 0; i--) {
+                    for (var i:Number = setterCallback.length - 1; i >= 0; i--) {
                         if (setterCallback[i] == callback) {
                             setterCallback.splice(i, 1);
                             // trace("[DEBUG] 移除一个 Setter 回调属性: " + propName + " 在对象 UID: " + uid);
@@ -237,7 +232,8 @@
                         }
                     }
                     // 如果只剩一个回调，简化存储
-                    len = setterCallback.length;
+                    var len = setterCallback.length;
+
                     if (len == 1) {
                         callbacks.setter = setterCallback[0];
                         // trace("[DEBUG] 简化 Setter 回调存储属性: " + propName + " 在对象 UID: " + uid);
@@ -284,8 +280,7 @@
                         // trace("[DEBUG] 移除最后一个 Getter 回调属性: " + propName + " 在对象 UID: " + uid);
                     }
                 } else {
-                    var len:Number = getterCallback.length;
-                    for (var i:Number = len - 1; i >= 0; i--) {
+                    for (var i:Number = getterCallback.length - 1; i >= 0; i--) {
                         if (getterCallback[i] == callback) {
                             getterCallback.splice(i, 1);
                             // trace("[DEBUG] 移除一个 Getter 回调属性: " + propName + " 在对象 UID: " + uid);
@@ -293,7 +288,8 @@
                         }
                     }
                     // 如果只剩一个回调，简化存储
-                    len = getterCallback.length;
+                    var len = getterCallback.length;
+
                     if (len == 1) {
                         callbacks.getter = getterCallback[0];
                         // trace("[DEBUG] 简化 Getter 回调存储属性: " + propName + " 在对象 UID: " + uid);
@@ -346,8 +342,7 @@
                     if (typeof funcCallback == "function") {
                         funcCallback.apply(this, args);
                     } else {
-                        var len:Number = funcCallback.length;
-                        for (var i:Number = len - 1; i >= 0; i--) {
+                        for (var i:Number = funcCallback.length - 1; i >= 0; i--) {
                             funcCallback[i].apply(this, args);
                         }
                     }
@@ -414,8 +409,7 @@
                     // trace("[DEBUG] 移除最后一个函数调用回调方法: " + funcName + " 在对象 UID: " + uid);
                 }
             } else {
-                var len:Number = funcCallback.length;
-                for (var i:Number = len - 1; i >= 0; i--) {
+                for (var i:Number = funcCallback.length - 1; i >= 0; i--) {
                     if (funcCallback[i] == callback) {
                         funcCallback.splice(i, 1);
                         // trace("[DEBUG] 移除一个函数调用回调方法: " + funcName + " 在对象 UID: " + uid);
@@ -423,7 +417,7 @@
                     }
                 }
                 // 如果只剩一个回调，简化存储
-                len = funcCallback.length;
+                var len = funcCallback.length;
                 if (len == 1) {
                     functionCallbacks[funcName] = funcCallback[0];
                     // trace("[DEBUG] 简化函数调用回调存储方法: " + funcName + " 在对象 UID: " + uid);
