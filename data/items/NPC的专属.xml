@@ -921,8 +921,25 @@
     <equipped>
       <dressup>枪-长枪-M134暴力版</dressup>
     </equipped>
-     </item>
-     <item>
+    <lifecycle>
+      <description></description>
+      <attr_0>
+        <init>
+          <initRoutines>M134暴力版初始化</initRoutines>
+          <initParam>
+            <interval>5000</interval>
+            <label>自动抡枪</label>
+            <x_range>180</x_range>
+            <z_range>30</z_range>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>M134暴力版周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
+  </item>
+  <item>
     <id>30600</id>
     <name>将军衣服</name>
     <displayname>将军衣服</displayname>
