@@ -1,204 +1,209 @@
 ﻿//迁移了所有生存模式与无限过图的函数，以及4个难度关卡按钮里的函数
 
-_root.开启生存模式 = function(模式)
+_root.开启生存模式 = function(模式) 
 {
-	_root.当前为战斗地图 = true;
-	//_root.d_波次._visible = _root.调试模式;
-	//_root.d_剩余敌人数._visible = _root.调试模式;
-	_root.d_倒计时显示._visible = false;
-	_root.生存模式OBJ = new Object();
-	_root.生存模式OBJ.波次 = 0;
-	_root.生存模式OBJ.当前时间 = 0;
-	_root.生存模式OBJ.总时间 = 0;
+    _root.当前为战斗地图 = true;
+    //_root.d_波次._visible = _root.调试模式;
+    //_root.d_剩余敌人数._visible = _root.调试模式;
+    _root.d_倒计时显示._visible = false;
+    _root.生存模式OBJ = new Object();
+    _root.生存模式OBJ.波次 = 0;
+    _root.生存模式OBJ.当前时间 = 0;
+    _root.生存模式OBJ.总时间 = 0;
 
-	var 时钟 = _root.生存模式OBJ.时钟;
-	if (时钟 != undefined || 时钟.length > 0)
-	{
-		for (var i = 0; i < 时钟.length; i++)
-		{
-			for (var j = 0; j < 时钟[i].length; j++)
-			{
-				_root.帧计时器.移除任务(时钟[i][j]);
-			}
-		}
-	}
-	_root.生存模式OBJ.时钟 = [];
-	_root.生存模式OBJ.已出兵记录 = [];
-	_root.生存模式OBJ.模式部署 = 模式;
+    var 时钟 = _root.生存模式OBJ.时钟;
+    if (时钟 != undefined || 时钟.length > 0) {
+        for (var i = 0; i < 时钟.length; i++) {
+            for (var j = 0; j < 时钟[i].length; j++) {
+                _root.帧计时器.移除任务(时钟[i][j]);
+            }
+        }
+    }
+    _root.生存模式OBJ.时钟 = [];
+    _root.生存模式OBJ.已出兵记录 = [];
+    _root.生存模式OBJ.模式部署 = 模式;
 
-	var 基本配置 = _root.无限过图基本配置[_root.无限过图模式关卡计数];
-	var 游戏世界 = _root.gameworld;
+    var 基本配置 = _root.无限过图基本配置[_root.无限过图模式关卡计数];
+    var 游戏世界 = _root.gameworld;
 
-	//设置本张图结束后的过场背景
-	if(基本配置.LoadingImage) _root.加载背景列表.本次背景 = 基本配置.LoadingImage;
+    // 设置本张图结束后的过场背景
+    if (基本配置.LoadingImage) {
+        _root.加载背景列表.本次背景 = 基本配置.LoadingImage;
+    }
 
-	//设置地图尺寸
-	var bglist = 基本配置.Background.split("/");
-	var url = bglist[bglist.length-1];
-	var 环境信息 = _root.duplicateOf(_root.天气系统.环境设置[url]);
-	if(!环境信息){
-		环境信息 = _root.duplicateOf(_root.天气系统.环境设置.Default);
-	}
-	var Environment = _root.配置环境信息(基本配置.Environment, null);
-	if(Environment){
-		for(var key in 环境信息){
-			if(Environment[key] || Environment[key] == 0) 环境信息[key] = Environment[key];
-		}
-	}
-	_root.天气系统.无限过图环境信息 = 环境信息;
+    // 设置地图尺寸
+    var bglist = 基本配置.Background.split("/");
+    var url = bglist[bglist.length - 1];
+    var 环境信息 = _root.duplicateOf(_root.天气系统.环境设置[url]);
+    if (!环境信息) {
+        环境信息 = _root.duplicateOf(_root.天气系统.环境设置.Default);
+    }
+    var Environment = _root.配置环境信息(基本配置.Environment, null);
+    if (Environment) {
+        for (var key in 环境信息) {
+            if (Environment[key] || Environment[key] == 0) 环境信息[key] = Environment[key];
+        }
+    }
+    _root.天气系统.无限过图环境信息 = 环境信息;
 
-	if(环境信息.对齐原点){
-		游戏世界.背景._x = 0;
-		游戏世界.背景._y = 0;
-	}
-	_root.Xmax = 环境信息.Xmax;
-	_root.Xmin = 环境信息.Xmin;
-	_root.Ymax = 环境信息.Ymax;
-	_root.Ymin = 环境信息.Ymin;
-	游戏世界.背景长 = 环境信息.背景长;
-	游戏世界.背景高 = 环境信息.背景高;
-	
-	游戏世界.门朝向 = 环境信息.门朝向;
-	游戏世界.允许通行 = false;
-	游戏世界.关卡结束 = false;
+    if (环境信息.对齐原点) {
+        游戏世界.背景._x = 0;
+        游戏世界.背景._y = 0;
+    }
+    _root.Xmax = 环境信息.Xmax;
+    _root.Xmin = 环境信息.Xmin;
+    _root.Ymax = 环境信息.Ymax;
+    _root.Ymin = 环境信息.Ymin;
+    游戏世界.背景长 = 环境信息.背景长;
+    游戏世界.背景高 = 环境信息.背景高;
+    
+    游戏世界.门朝向 = 环境信息.门朝向;
+    游戏世界.允许通行 = false;
+    游戏世界.关卡结束 = false;
 
+    // 将上述属性设置为不可枚举
+    _global.ASSetPropFlags(游戏世界, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin"], 1, true);
 
-	//添加动态尺寸的位图层，加载场景
-	var 尸体层 = 游戏世界.deadbody;
-	尸体层.layers = new Array(3);
-	var 位图宽度 = 游戏世界.背景长 < 2880 ? 游戏世界.背景长 : 2880;
-	var 位图高度 = 游戏世界.背景高 < 1000 ? 游戏世界.背景高 : 1000;
-	尸体层.layers[0] = new flash.display.BitmapData(位图宽度, 位图高度, true, 13421772);
-	尸体层.layers[1] = null;//从未被使用的尸体层1不添加
-	尸体层.layers[2] = new flash.display.BitmapData(位图宽度, 位图高度, true, 13421772);
-	尸体层.attachBitmap(尸体层.layers[0],尸体层.getNextHighestDepth());
-	尸体层.attachBitmap(尸体层.layers[2],尸体层.getNextHighestDepth());
-	_root.加载场景背景(基本配置.Background);
+    // 添加动态尺寸的位图层，加载场景
+    var 尸体层 = 游戏世界.deadbody;
+    尸体层.layers = new Array(3);
+    var 位图宽度 = 游戏世界.背景长 < 2880 ? 游戏世界.背景长 : 2880;
+    var 位图高度 = 游戏世界.背景高 < 1000 ? 游戏世界.背景高 : 1000;
+    尸体层.layers[0] = new flash.display.BitmapData(位图宽度, 位图高度, true, 13421772);
+    尸体层.layers[1] = null; // 从未被使用的尸体层1不添加
+    尸体层.layers[2] = new flash.display.BitmapData(位图宽度, 位图高度, true, 13421772);
+    尸体层.attachBitmap(尸体层.layers[0], 尸体层.getNextHighestDepth());
+    尸体层.attachBitmap(尸体层.layers[2], 尸体层.getNextHighestDepth());
 
-	//绘制地图碰撞箱
-	var 地图碰撞箱数组 = 环境信息.地图碰撞箱;
-	var 游戏世界地图 = 游戏世界.地图;
-	if(地图碰撞箱数组.length > 0)
-	{
-		for(var i = 0; i < 地图碰撞箱数组.length; i++)
-		{
-			var 多边形 = 地图碰撞箱数组[i].Point;
-			if(多边形.length < 3) continue;
-			游戏世界地图.beginFill(0x000000);
-			var pt = 多边形[0].split(",");
-			var px = Number(pt[0]);
-			var py = Number(pt[1]);
-			游戏世界地图.moveTo(px, py);
-			for(var j = 多边形.length - 1; j >= 0; j--)
-			{
-				var pt = 多边形[j].split(",");
-				var px = Number(pt[0]);
-				var py = Number(pt[1]);
-				游戏世界地图.lineTo(px, py);
-			}
-			游戏世界地图.endFill();
-		}
-	}
-	游戏世界地图._visible = false;
+    // 将 'deadbody' 设置为不可枚举
+    _global.ASSetPropFlags(游戏世界, ["deadbody"], 1, true);
 
-	//确定左右刷怪线
-	if(环境信息.左侧出生线){
-		_root.生存模式OBJ.左侧出生线 = 环境信息.左侧出生线;
-		_root.生存模式OBJ.获取左侧随机出生点 = function(){
-			var rand = _root.basic_random();
-			var px = Math.floor(this.左侧出生线.x0 + (this.左侧出生线.x1 - this.左侧出生线.x0) * rand);
-			var py = Math.floor(this.左侧出生线.y0 + (this.左侧出生线.y1 - this.左侧出生线.y0) * rand);
-			return {x:px, y:py};
-		}
-	}else{
-		_root.生存模式OBJ.获取左侧随机出生点 = function(){
-			var px = _root.Xmin + random(50);
-			var py = _root.Ymin + random(_root.Ymax - _root.Ymin);
-			return {x:px, y:py};
-		}
-	}
-	if(环境信息.右侧出生线){
-		_root.生存模式OBJ.右侧出生线 = 环境信息.右侧出生线;
-		_root.生存模式OBJ.获取右侧随机出生点 = function(){
-			var rand = _root.basic_random();
-			var px = Math.floor(this.右侧出生线.x0 + (this.右侧出生线.x1 - this.右侧出生线.x0) * rand);
-			var py = Math.floor(this.右侧出生线.y0 + (this.右侧出生线.y1 - this.右侧出生线.y0) * rand);
-			return {x:px, y:py};
-		}
-	}else{
-		_root.生存模式OBJ.获取右侧随机出生点 = function(){
-			var px = _root.Xmax - random(50);
-			var py = _root.Ymin + random(_root.Ymax - _root.Ymin);
-			return {x:px, y:py};
-		}
-	}
-	
-	//设置玩家出生地，若未配置PlayerX或PlayerY则设置为无限过图默认位置(90,390)
-	if (isNaN(基本配置.PlayerX) || isNaN(基本配置.PlayerY))
-	{
-		基本配置.PlayerX = _root.Xmin + 50;
-		基本配置.PlayerY = _root.Ymin + 60;
-	}
-	游戏世界.出生地._x = 基本配置.PlayerX;
-	游戏世界.出生地._y = 基本配置.PlayerY;
-	游戏世界.出生地.是否从门加载角色();
-	
-	//放置地图元件
-	var 实例列表 = _root.无限过图实例[_root.无限过图模式关卡计数];
-	for(var i = 0; i < 实例列表.length; i++){
-		var 实例对象;
-		//优先检测url参数载入外部swf，若无则根据identifier从库中加载元件
-		if(实例列表[i].url){
-			实例对象 = 游戏世界.createEmptyMovieClip("instance"+i, 游戏世界.getNextHighestDepth());
-			实例对象.loadMovie(实例列表[i].url);
-		}else{
-			实例对象 = 游戏世界.attachMovie(实例列表[i].Identifier, "instance"+i, 游戏世界.getNextHighestDepth());
-		}
-		实例对象._x = 实例列表[i].x;
-		实例对象._y = 实例列表[i].y;
-		实例对象.swapDepths(实例对象._y);
-		if(实例列表[i].Parameters){
-			_root.无限过图解析额外参数(实例对象, 实例列表[i].Parameters);
-		}
-	}
+    _root.加载场景背景(基本配置.Background);
 
-	//放置出生点，初始化各个刷怪点的总个数和场上人数
-	var 出生点列表 = _root.无限过图出生点[_root.无限过图模式关卡计数];
-	for(var i = 0; i < 出生点列表.length; i++){
-		var 出生点;
-		if(出生点列表[i].Identifier){
-			出生点 = 游戏世界.attachMovie(出生点列表[i].Identifier, "door"+i, 游戏世界.getNextHighestDepth(), {_x:出生点列表[i].x, _y:出生点列表[i].y});
-			出生点.swapDepths(出生点列表[i].y);
-		}else{
-			出生点 = 游戏世界.createEmptyMovieClip("door"+i,游戏世界.getNextHighestDepth());
-		}
-		出生点.僵尸型敌人总个数 = 0;
-		出生点.僵尸型敌人场上实际人数 = 0;
-	}
-	游戏世界.地图.僵尸型敌人总个数 = 0;
-	
-	//加载进图动画
-	if (基本配置.Animation.Load == 1)
-	{
-		_root.最上层加载外部动画(基本配置.Animation.Path);
-		if (基本配置.Animation.Pause == 1)
-		{
-			_root.暂停 = true;
-		}
-	}
+    // 绘制地图碰撞箱
+    var 地图碰撞箱数组 = 环境信息.地图碰撞箱;
+    var 游戏世界地图 = 游戏世界.地图;
+    if (地图碰撞箱数组.length > 0) {
+        for (var i = 0; i < 地图碰撞箱数组.length; i++) {
+            var 多边形 = 地图碰撞箱数组[i].Point;
+            if (多边形.length < 3) continue;
+            游戏世界地图.beginFill(0x000000);
+            var pt = 多边形[0].split(",");
+            var px = Number(pt[0]);
+            var py = Number(pt[1]);
+            游戏世界地图.moveTo(px, py);
+            for (var j = 多边形.length - 1; j >= 0; j--) {
+                var pt = 多边形[j].split(",");
+                var px = Number(pt[0]);
+                var py = Number(pt[1]);
+                游戏世界地图.lineTo(px, py);
+            }
+            游戏世界地图.endFill();
+        }
+    }
+    游戏世界地图._visible = false;
 
-	//加载进图对话
-	var 本轮对话 = _root.副本对话[_root.无限过图模式关卡计数][0];
-	if (本轮对话.length > 0)
-	{
-		_root.暂停 = true;
-		_root.SetDialogue(本轮对话);
-	}
-	
-	//开始刷怪
-	if(!基本配置.RogueMode) _root.生存模式OBJ.模式部署.总波数 = _root.生存模式OBJ.模式部署.length;
-	_root.生存模式进攻();
+    // 将 '地图' 设置为不可枚举
+    _global.ASSetPropFlags(游戏世界, ["地图"], 1, true);
+
+    // 确定左右刷怪线
+    if (环境信息.左侧出生线) {
+        _root.生存模式OBJ.左侧出生线 = 环境信息.左侧出生线;
+        _root.生存模式OBJ.获取左侧随机出生点 = function() {
+            var rand = _root.basic_random();
+            var px = Math.floor(this.左侧出生线.x0 + (this.左侧出生线.x1 - this.左侧出生线.x0) * rand);
+            var py = Math.floor(this.左侧出生线.y0 + (this.左侧出生线.y1 - this.左侧出生线.y0) * rand);
+            return {x: px, y: py};
+        };
+    } else {
+        _root.生存模式OBJ.获取左侧随机出生点 = function() {
+            var px = _root.Xmin + random(50);
+            var py = _root.Ymin + random(_root.Ymax - _root.Ymin);
+            return {x: px, y: py};
+        };
+    }
+    if (环境信息.右侧出生线) {
+        _root.生存模式OBJ.右侧出生线 = 环境信息.右侧出生线;
+        _root.生存模式OBJ.获取右侧随机出生点 = function() {
+            var rand = _root.basic_random();
+            var px = Math.floor(this.右侧出生线.x0 + (this.右侧出生线.x1 - this.右侧出生线.x0) * rand);
+            var py = Math.floor(this.右侧出生线.y0 + (this.右侧出生线.y1 - this.右侧出生线.y0) * rand);
+            return {x: px, y: py};
+        };
+    } else {
+        _root.生存模式OBJ.获取右侧随机出生点 = function() {
+            var px = _root.Xmax - random(50);
+            var py = _root.Ymin + random(_root.Ymax - _root.Ymin);
+            return {x: px, y: py};
+        };
+    }
+    
+    // 设置玩家出生地，若未配置PlayerX或PlayerY则设置为无限过图默认位置(90,390)
+    if (isNaN(基本配置.PlayerX) || isNaN(基本配置.PlayerY)) {
+        基本配置.PlayerX = _root.Xmin + 50;
+        基本配置.PlayerY = _root.Ymin + 60;
+    }
+    游戏世界.出生地._x = 基本配置.PlayerX;
+    游戏世界.出生地._y = 基本配置.PlayerY;
+    游戏世界.出生地.是否从门加载角色();
+    
+    // 将 '出生地' 设置为不可枚举
+    _global.ASSetPropFlags(游戏世界, ["出生地"], 1, true);
+
+    // 放置地图元件
+    var 实例列表 = _root.无限过图实例[_root.无限过图模式关卡计数];
+    for (var i = 0; i < 实例列表.length; i++) {
+        var 实例对象;
+        // 优先检测url参数载入外部swf，若无则根据identifier从库中加载元件
+        if (实例列表[i].url) {
+            实例对象 = 游戏世界.createEmptyMovieClip("instance" + i, 游戏世界.getNextHighestDepth());
+            实例对象.loadMovie(实例列表[i].url);
+        } else {
+            实例对象 = 游戏世界.attachMovie(实例列表[i].Identifier, "instance" + i, 游戏世界.getNextHighestDepth());
+        }
+        实例对象._x = 实例列表[i].x;
+        实例对象._y = 实例列表[i].y;
+        实例对象.swapDepths(实例列表[i].y);
+        if (实例列表[i].Parameters) {
+            _root.无限过图解析额外参数(实例对象, 实例列表[i].Parameters);
+        }
+    }
+
+    // 放置出生点，初始化各个刷怪点的总个数和场上人数
+    var 出生点列表 = _root.无限过图出生点[_root.无限过图模式关卡计数];
+    for (var i = 0; i < 出生点列表.length; i++) {
+        var 出生点;
+        if (出生点列表[i].Identifier) {
+            出生点 = 游戏世界.attachMovie(出生点列表[i].Identifier, "door" + i, 游戏世界.getNextHighestDepth(), {_x: 出生点列表[i].x, _y: 出生点列表[i].y});
+            出生点.swapDepths(出生点列表[i].y);
+        } else {
+            出生点 = 游戏世界.createEmptyMovieClip("door" + i, 游戏世界.getNextHighestDepth());
+        }
+        出生点.僵尸型敌人总个数 = 0;
+        出生点.僵尸型敌人场上实际人数 = 0;
+    }
+    游戏世界.地图.僵尸型敌人总个数 = 0;
+
+    // 加载进图动画
+    if (基本配置.Animation.Load == 1) {
+        _root.最上层加载外部动画(基本配置.Animation.Path);
+        if (基本配置.Animation.Pause == 1) {
+            _root.暂停 = true;
+        }
+    }
+
+    // 加载进图对话
+    var 本轮对话 = _root.副本对话[_root.无限过图模式关卡计数][0];
+    if (本轮对话.length > 0) {
+        _root.暂停 = true;
+        _root.SetDialogue(本轮对话);
+    }
+    
+    // 开始刷怪
+    if (!基本配置.RogueMode) _root.生存模式OBJ.模式部署.总波数 = _root.生存模式OBJ.模式部署.length;
+    _root.生存模式进攻();
 };
+
 
 _root.生存模式关闭 = function()
 {

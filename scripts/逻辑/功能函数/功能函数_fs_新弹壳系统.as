@@ -109,6 +109,9 @@ _root.弹壳系统.初始化弹壳池 = function() {
     for (var 类型 in this.弹壳映射表) {
         游戏世界.可用弹壳池[this.弹壳映射表[类型].弹壳] = [];
     }
+
+    // 设置 `可用弹壳池` 为不可枚举
+    _global.ASSetPropFlags(游戏世界, ["可用弹壳池"], 1, true);
 };
 
 // 为对象池class对接弹壳系统准备

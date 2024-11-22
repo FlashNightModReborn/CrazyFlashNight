@@ -42,13 +42,19 @@ _root.删佣兵 = function(佣兵ID)
 		}
 	}
 };
-_root.初始化佣兵编号缓存 = function()
-{
-	if (_root.gameworld.佣兵编号缓存 == undefined)
-	{
-		_root.gameworld.佣兵编号缓存 = {权重列表:[], 总权重:0, 已初始化:false};
-	}
+
+_root.初始化佣兵编号缓存 = function() {
+    var 游戏世界 = _root.gameworld;
+
+    // 初始化并设置为不可枚举
+    if (游戏世界.佣兵编号缓存 == undefined) {
+        游戏世界.佣兵编号缓存 = {权重列表: [], 总权重: 0, 已初始化: false};
+
+        // 设置 `佣兵编号缓存` 为不可枚举
+        _global.ASSetPropFlags(游戏世界, ["佣兵编号缓存"], 1, true);
+    }
 };
+
 
 _root.更新佣兵编号缓存 = function()
 {

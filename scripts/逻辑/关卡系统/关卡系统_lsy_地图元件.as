@@ -33,6 +33,10 @@ _root.初始化出生点 = function(){
 	if(this.area){
 		var rect = this.area.getRect(游戏世界);
 		var 地图 = 游戏世界.地图;
+
+        // 设置 `地图` 为不可枚举
+        _global.ASSetPropFlags(游戏世界, ["地图"], 1, true);
+		
 		地图.beginFill(0x000000);
 		地图.moveTo(rect.xMin, rect.yMin);
 		地图.lineTo(rect.xMax, rect.yMin);

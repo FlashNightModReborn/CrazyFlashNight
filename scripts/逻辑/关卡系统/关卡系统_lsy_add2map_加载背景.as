@@ -124,6 +124,8 @@ _root.贴背景图 = function()
 	//尝试直接卸载原背景
 	背景层.外部动画加载壳mc.unloadMovie();
 	背景层._visible = false;
+
+	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域"], 1, true);
 };
 
 _root.加载场景背景 = function (动画名)
