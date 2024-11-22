@@ -1,318 +1,437 @@
 ﻿class org.flashNight.aven.Proxy.Proxy {
-    // UID counter for assigning unique identifiers to objects
+    // 用于为对象分配唯一标识符的计数器
     private static var uidCounter:Number = 1;
 
     /**
-     * Retrieves the unique identifier (UID) for the object.
-     * If the object hasn't been assigned a UID, it assigns a new one and attaches it to the object.
-     * Also initializes the __proxyData__ object on the first call.
-     * @param key The object to get the UID for.
-     * @return The UID of the object.
-     */
-    private static function getStaticUID(key:Object):Number {
-        if (key.__proxyUID__ === undefined) {
-            key.__proxyUID__ = uidCounter++; // Assign a new UID
-            key.__proxyData__ = { propertyCallbacks: {}, functionCallbacks: {} }; // Initialize proxy data storage
-            // Set properties as non-enumerable to prevent external access
-            _global.ASSetPropFlags(key, ["__proxyUID__", "__proxyData__"], 1, true);
-            // trace("[DEBUG] Assigned UID: " + key.__proxyUID__ + " to object.");
-        }
-        return key.__proxyUID__;
-    }
-
-    /**
-     * Adds a setter watcher for a property.
-     * When the property is modified, the callback function is triggered.
-     * @param obj The object whose property is being watched.
-     * @param propName The name of the property to watch.
-     * @param callback The callback function to invoke when the property is modified.
+     * 为对象的属性添加 setter 监视器。
+     * 当属性被修改时，会触发回调函数。
+     * @param obj 需要监视属性的对象。
+     * @param propName 需要监视的属性名称。
+     * @param callback 当属性被修改时调用的回调函数。
      */
     public static function addPropertySetterWatcher(obj:Object, propName:String, callback:Function):Void {
-        setupProperty(obj, propName); // Ensure the property has a proxy set up
-        var proxyData:Object = obj.__proxyData__;
-        var setterCallback = proxyData.propertyCallbacks[propName].setter;
-
-        if (setterCallback == null) {
-            proxyData.propertyCallbacks[propName].setter = callback;
-            // trace("[DEBUG] Added first Setter callback for property: " + propName + " on object with UID: " + obj.__proxyUID__);
-        } else if (typeof setterCallback == "function") {
-            proxyData.propertyCallbacks[propName].setter = [setterCallback, callback];
-            // trace("[DEBUG] Converted Setter callback to array for property: " + propName + " on object with UID: " + obj.__proxyUID__);
+        // 内联 getStaticUID 逻辑并进行变量本地化
+        var proxyUID:String = "__proxyUID__";
+        var proxyDataKey:String = "__proxyData__";
+        if (obj[proxyUID] === undefined) {
+            var uid:Number = uidCounter++; // 分配新的 UID
+            obj[proxyUID] = uid;
+            var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
+            obj[proxyDataKey] = proxyData; // 初始化代理数据存储
+            // 将属性设置为不可枚举，以防止外部访问
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            // trace("[DEBUG] Assigned UID: " + uid + " to object.");
         } else {
-            setterCallback.push(callback);
-            // trace("[DEBUG] Added additional Setter callback for property: " + propName + " on object with UID: " + obj.__proxyUID__);
+            var uid:Number = obj[proxyUID];
+            var proxyData:Object = obj[proxyDataKey];
         }
-    }
 
-    /**
-     * Adds a getter watcher for a property.
-     * When the property is accessed, the callback function is triggered.
-     * @param obj The object whose property is being watched.
-     * @param propName The name of the property to watch.
-     * @param callback The callback function to invoke when the property is accessed.
-     */
-    public static function addPropertyGetterWatcher(obj:Object, propName:String, callback:Function):Void {
-        setupProperty(obj, propName);
-        var proxyData:Object = obj.__proxyData__;
-        var getterCallback = proxyData.propertyCallbacks[propName].getter;
+        // 内联 setupProperty 逻辑并进行变量本地化
+        var propertyCallbacks:Object = proxyData.propertyCallbacks;
+        if (!propertyCallbacks[propName]) {
+            var callbacks:Object = { getter: null, setter: null };
+            propertyCallbacks[propName] = callbacks;
 
-        if (getterCallback == null) {
-            proxyData.propertyCallbacks[propName].getter = callback;
-            // trace("[DEBUG] Added first Getter callback for property: " + propName + " on object with UID: " + obj.__proxyUID__);
-        } else if (typeof getterCallback == "function") {
-            proxyData.propertyCallbacks[propName].getter = [getterCallback, callback];
-            // trace("[DEBUG] Converted Getter callback to array for property: " + propName + " on object with UID: " + obj.__proxyUID__);
-        } else {
-            getterCallback.push(callback);
-            // trace("[DEBUG] Added additional Getter callback for property: " + propName + " on object with UID: " + obj.__proxyUID__);
-        }
-    }
+            var internalPropName:String = "__" + propName + "__"; // 内部存储属性的名称
 
-    /**
-     * Removes a setter watcher from a property.
-     * @param obj The object whose property watcher is being removed.
-     * @param propName The name of the property.
-     * @param callback The callback function to remove.
-     */
-    public static function removePropertySetterWatcher(obj:Object, propName:String, callback:Function):Void {
-        removeCallback(obj, propName, "setter", callback);
-    }
-
-    /**
-     * Removes a getter watcher from a property.
-     * @param obj The object whose property watcher is being removed.
-     * @param propName The name of the property.
-     * @param callback The callback function to remove.
-     */
-    public static function removePropertyGetterWatcher(obj:Object, propName:String, callback:Function):Void {
-        removeCallback(obj, propName, "getter", callback);
-    }
-
-    /**
-     * Adds a function call watcher.
-     * When the function is called, the callback function is triggered.
-     * @param obj The object whose method is being watched.
-     * @param funcName The name of the method to watch.
-     * @param callback The callback function to invoke when the method is called.
-     */
-    public static function addFunctionCallWatcher(obj:Object, funcName:String, callback:Function):Void {
-        var uid:Number = getStaticUID(obj); // Ensure the object's UID exists
-        setupFunction(obj, funcName);
-        var proxyData:Object = obj.__proxyData__;
-        var funcCallback = proxyData.functionCallbacks[funcName];
-
-        if (funcCallback == null) {
-            proxyData.functionCallbacks[funcName] = callback;
-            // trace("[DEBUG] Added first function call callback for method: " + funcName + " on object with UID: " + uid);
-        } else if (typeof funcCallback == "function") {
-            proxyData.functionCallbacks[funcName] = [funcCallback, callback];
-            // trace("[DEBUG] Converted function call callback to array for method: " + funcName + " on object with UID: " + uid);
-        } else {
-            funcCallback.push(callback);
-            // trace("[DEBUG] Added additional function call callback for method: " + funcName + " on object with UID: " + uid);
-        }
-    }
-
-    /**
-     * Removes a function call watcher.
-     * @param obj The object whose method watcher is being removed.
-     * @param funcName The name of the method.
-     * @param callback The callback function to remove.
-     */
-    public static function removeFunctionCallWatcher(obj:Object, funcName:String, callback:Function):Void {
-        var uid:Number = getStaticUID(obj);
-        var proxyData:Object = obj.__proxyData__;
-        var funcCallback = proxyData.functionCallbacks[funcName];
-
-        if (funcCallback != null) {
-            if (typeof funcCallback == "function") {
-                if (funcCallback == callback) {
-                    proxyData.functionCallbacks[funcName] = null;
-                    // trace("[DEBUG] Removed last function call callback for method: " + funcName + " on object with UID: " + uid);
-                }
-            } else {
-                for (var i:Number = 0; i < funcCallback.length; i++) {
-                    if (funcCallback[i] == callback) {
-                        funcCallback.splice(i, 1);
-                        // trace("[DEBUG] Removed a function call callback for method: " + funcName + " on object with UID: " + uid);
-                        break;
-                    }
-                }
-                // If only one callback remains, simplify storage
-                if (funcCallback.length == 1) {
-                    proxyData.functionCallbacks[funcName] = funcCallback[0];
-                    // trace("[DEBUG] Simplified function call callback storage for method: " + funcName + " on object with UID: " + uid);
-                } else if (funcCallback.length == 0) {
-                    proxyData.functionCallbacks[funcName] = null;
-                    // trace("[DEBUG] All function call callbacks removed for method: " + funcName + " on object with UID: " + uid);
-                }
-            }
-        }
-    }
-
-    /**
-     * Internal method to set up property getters and setters and initialize callback storage.
-     * If the property hasn't been proxied yet, it creates proxy getters and setters.
-     * @param obj The object whose property is being set up.
-     * @param propName The name of the property.
-     */
-    private static function setupProperty(obj:Object, propName:String):Void {
-        var uid:Number = getStaticUID(obj); // Ensure the object's UID exists
-        var proxyData:Object = obj.__proxyData__;
-        if (!proxyData.propertyCallbacks[propName]) {
-            proxyData.propertyCallbacks[propName] = { getter: null, setter: null };
-
-            var internalPropName:String = "__" + propName + "__"; // Internal storage for the property
-
-            // Initialize the actual value
+            // 初始化实际的属性值
             obj[internalPropName] = obj[propName];
 
-            // Set internal property as non-enumerable
+            // 将内部属性设置为不可枚举
             _global.ASSetPropFlags(obj, [internalPropName], 1, true);
 
-            // Create custom Getter and Setter
-            var getter:Function = createGetter(obj, propName, internalPropName);
-            var setter:Function = createSetter(obj, propName, internalPropName);
+            // 创建自定义的 Getter 和 Setter
+            var getter:Function = function() {
+                var value = obj[internalPropName];
+                var getterCallback = callbacks.getter;
+                if (getterCallback != null) {
+                    // trace("[DEBUG] Getter 调用属性: " + propName + " 在对象 UID: " + uid);
+                    if (typeof getterCallback == "function") {
+                        getterCallback.call(obj, value);
+                    } else {
+                        var len:Number = getterCallback.length;
+                        for (var i:Number = len - 1; i >= 0; i--) {
+                            getterCallback[i].call(obj, value);
+                        }
+                    }
+                }
+                return value;
+            };
 
-            // Use addProperty to add custom Getter and Setter
+            var setter:Function = function(newValue):Void {
+                var oldValue = obj[internalPropName];
+                obj[internalPropName] = newValue;
+                var setterCallback = callbacks.setter;
+                if (setterCallback != null) {
+                    // trace("[DEBUG] Setter 调用属性: " + propName + " 在对象 UID: " + uid);
+                    if (typeof setterCallback == "function") {
+                        setterCallback.call(obj, newValue, oldValue);
+                    } else {
+                        var len:Number = setterCallback.length;
+                        for (var i:Number = len - 1; i >= 0; i--) {
+                            setterCallback[i].call(obj, newValue, oldValue);
+                        }
+                    }
+                }
+            };
+
+            // 使用 addProperty 添加自定义的 Getter 和 Setter
             obj.addProperty(propName, getter, setter);
 
-            // trace("[DEBUG] Set up property proxy for: " + propName + " on object with UID: " + uid);
+            // trace("[DEBUG] 设置属性代理: " + propName + " 在对象 UID: " + uid);
+        } else {
+            var callbacks:Object = propertyCallbacks[propName];
+        }
+
+        var setterCallback = callbacks.setter;
+
+        // 添加回调并优化存储方式
+        if (setterCallback == null) {
+            callbacks.setter = callback;
+            // trace("[DEBUG] 添加第一个 Setter 回调属性: " + propName + " 在对象 UID: " + uid);
+        } else if (typeof setterCallback == "function") {
+            callbacks.setter = [setterCallback, callback];
+            // trace("[DEBUG] 将 Setter 回调转换为数组属性: " + propName + " 在对象 UID: " + uid);
+        } else {
+            setterCallback.push(callback);
+            // trace("[DEBUG] 添加额外的 Setter 回调属性: " + propName + " 在对象 UID: " + uid);
         }
     }
 
     /**
-     * Creates a custom Getter function.
-     * When the property is accessed, all registered Getter callbacks are invoked.
-     * @param obj The object to which the property belongs.
-     * @param propName The name of the property.
-     * @param internalPropName The internal storage name for the property.
-     * @return The custom Getter function.
+     * 为对象的属性添加 getter 监视器。
+     * 当属性被访问时，会触发回调函数。
+     * @param obj 需要监视属性的对象。
+     * @param propName 需要监视的属性名称。
+     * @param callback 当属性被访问时调用的回调函数。
      */
-    private static function createGetter(obj:Object, propName:String, internalPropName:String):Function {
-        return function() {
-            var value = obj[internalPropName];
-            var getterCallback = obj.__proxyData__.propertyCallbacks[propName].getter;
-            var uid:Number = obj.__proxyUID__;
-            if (getterCallback != null) {
-                // trace("[DEBUG] Getter called for property: " + propName + " on object with UID: " + uid);
-                if (typeof getterCallback == "function") {
-                    getterCallback.call(obj, value);
-                } else {
-                    for (var i:Number = 0; i < getterCallback.length; i++) {
-                        getterCallback[i].call(obj, value);
+    public static function addPropertyGetterWatcher(obj:Object, propName:String, callback:Function):Void {
+        // 内联 getStaticUID 逻辑并进行变量本地化
+        var proxyUID:String = "__proxyUID__";
+        var proxyDataKey:String = "__proxyData__";
+        if (obj[proxyUID] === undefined) {
+            var uid:Number = uidCounter++; // 分配新的 UID
+            obj[proxyUID] = uid;
+            var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
+            obj[proxyDataKey] = proxyData; // 初始化代理数据存储
+            // 将属性设置为不可枚举，以防止外部访问
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            // trace("[DEBUG] Assigned UID: " + uid + " to object.");
+        } else {
+            var uid:Number = obj[proxyUID];
+            var proxyData:Object = obj[proxyDataKey];
+        }
+
+        // 内联 setupProperty 逻辑并进行变量本地化
+        var propertyCallbacks:Object = proxyData.propertyCallbacks;
+        if (!propertyCallbacks[propName]) {
+            var callbacks:Object = { getter: null, setter: null };
+            propertyCallbacks[propName] = callbacks;
+
+            var internalPropName:String = "__" + propName + "__"; // 内部存储属性的名称
+
+            // 初始化实际的属性值
+            obj[internalPropName] = obj[propName];
+
+            // 将内部属性设置为不可枚举
+            _global.ASSetPropFlags(obj, [internalPropName], 1, true);
+
+            // 创建自定义的 Getter 和 Setter
+            var getter:Function = function() {
+                var value = obj[internalPropName];
+                var getterCallback = callbacks.getter;
+                if (getterCallback != null) {
+                    // trace("[DEBUG] Getter 调用属性: " + propName + " 在对象 UID: " + uid);
+                    if (typeof getterCallback == "function") {
+                        getterCallback.call(obj, value);
+                    } else {
+                        var len:Number = getterCallback.length;
+                        for (var i:Number = len - 1; i >= 0; i--) {
+                            getterCallback[i].call(obj, value);
+                        }
                     }
                 }
-            }
-            return value;
-        };
+                return value;
+            };
+
+            var setter:Function = function(newValue):Void {
+                var oldValue = obj[internalPropName];
+                obj[internalPropName] = newValue;
+                var setterCallback = callbacks.setter;
+                if (setterCallback != null) {
+                    // trace("[DEBUG] Setter 调用属性: " + propName + " 在对象 UID: " + uid);
+                    if (typeof setterCallback == "function") {
+                        setterCallback.call(obj, newValue, oldValue);
+                    } else {
+                        var len:Number = setterCallback.length;
+                        for (var i:Number = len - 1; i >= 0; i--) {
+                            setterCallback[i].call(obj, newValue, oldValue);
+                        }
+                    }
+                }
+            };
+
+            // 使用 addProperty 添加自定义的 Getter 和 Setter
+            obj.addProperty(propName, getter, setter);
+
+            // trace("[DEBUG] 设置属性代理: " + propName + " 在对象 UID: " + uid);
+        } else {
+            var callbacks:Object = propertyCallbacks[propName];
+        }
+
+        var getterCallback = callbacks.getter;
+
+        // 添加回调并优化存储方式
+        if (getterCallback == null) {
+            callbacks.getter = callback;
+            // trace("[DEBUG] 添加第一个 Getter 回调属性: " + propName + " 在对象 UID: " + uid);
+        } else if (typeof getterCallback == "function") {
+            callbacks.getter = [getterCallback, callback];
+            // trace("[DEBUG] 将 Getter 回调转换为数组属性: " + propName + " 在对象 UID: " + uid);
+        } else {
+            getterCallback.push(callback);
+            // trace("[DEBUG] 添加额外的 Getter 回调属性: " + propName + " 在对象 UID: " + uid);
+        }
     }
 
     /**
-     * Creates a custom Setter function.
-     * When the property is modified, all registered Setter callbacks are invoked with the new and old values.
-     * @param obj The object to which the property belongs.
-     * @param propName The name of the property.
-     * @param internalPropName The internal storage name for the property.
-     * @return The custom Setter function.
+     * 从对象的属性中移除 setter 监视器。
+     * @param obj 需要移除 setter 监视器的对象。
+     * @param propName 需要移除监视器的属性名称。
+     * @param callback 需要移除的回调函数。
      */
-    private static function createSetter(obj:Object, propName:String, internalPropName:String):Function {
-        return function(newValue):Void {
-            var oldValue = obj[internalPropName];
-            obj[internalPropName] = newValue;
-            var setterCallback = obj.__proxyData__.propertyCallbacks[propName].setter;
-            var uid:Number = obj.__proxyUID__;
+    public static function removePropertySetterWatcher(obj:Object, propName:String, callback:Function):Void {
+        // 内联 getStaticUID 逻辑并进行变量本地化
+        var proxyUID:String = "__proxyUID__";
+        var proxyDataKey:String = "__proxyData__";
+        if (obj[proxyUID] === undefined) {
+            var uid:Number = uidCounter++; // 分配新的 UID
+            obj[proxyUID] = uid;
+            var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
+            obj[proxyDataKey] = proxyData; // 初始化代理数据存储
+            // 将属性设置为不可枚举，以防止外部访问
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            // trace("[DEBUG] Assigned UID: " + uid + " to object.");
+        } else {
+            var uid:Number = obj[proxyUID];
+            var proxyData:Object = obj[proxyDataKey];
+        }
+
+        var propertyCallbacks:Object = proxyData.propertyCallbacks;
+        var callbacks:Object = propertyCallbacks[propName];
+        if (callbacks) {
+            var setterCallback = callbacks.setter;
             if (setterCallback != null) {
-                // trace("[DEBUG] Setter called for property: " + propName + " on object with UID: " + uid);
                 if (typeof setterCallback == "function") {
-                    setterCallback.call(obj, newValue, oldValue);
+                    if (setterCallback == callback) {
+                        callbacks.setter = null;
+                        // trace("[DEBUG] 移除最后一个 Setter 回调属性: " + propName + " 在对象 UID: " + uid);
+                    }
                 } else {
-                    for (var i:Number = 0; i < setterCallback.length; i++) {
-                        setterCallback[i].call(obj, newValue, oldValue);
+                    var len:Number = setterCallback.length;
+                    for (var i:Number = len - 1; i >= 0; i--) {
+                        if (setterCallback[i] == callback) {
+                            setterCallback.splice(i, 1);
+                            // trace("[DEBUG] 移除一个 Setter 回调属性: " + propName + " 在对象 UID: " + uid);
+                            break;
+                        }
                     }
-                }
-            }
-        };
-    }
-
-    /**
-     * Internal method to remove a callback function.
-     * @param obj The object from which to remove the callback.
-     * @param propName The name of the property.
-     * @param type The type of callback ("getter" or "setter").
-     * @param callback The callback function to remove.
-     */
-    private static function removeCallback(obj:Object, propName:String, type:String, callback:Function):Void {
-        var proxyData:Object = obj.__proxyData__;
-        var callbackRef = proxyData.propertyCallbacks[propName][type];
-        var uid:Number = obj.__proxyUID__;
-
-        if (callbackRef != null) {
-            if (typeof callbackRef == "function") {
-                if (callbackRef == callback) {
-                    proxyData.propertyCallbacks[propName][type] = null;
-                    // trace("[DEBUG] Removed last " + type + " callback for property: " + propName + " on object with UID: " + uid);
-                }
-            } else {
-                for (var i:Number = 0; i < callbackRef.length; i++) {
-                    if (callbackRef[i] == callback) {
-                        callbackRef.splice(i, 1);
-                        // trace("[DEBUG] Removed a " + type + " callback for property: " + propName + " on object with UID: " + uid);
-                        break;
+                    // 如果只剩一个回调，简化存储
+                    len = setterCallback.length;
+                    if (len == 1) {
+                        callbacks.setter = setterCallback[0];
+                        // trace("[DEBUG] 简化 Setter 回调存储属性: " + propName + " 在对象 UID: " + uid);
+                    } else if (len == 0) {
+                        callbacks.setter = null;
+                        // trace("[DEBUG] 移除所有 Setter 回调属性: " + propName + " 在对象 UID: " + uid);
                     }
-                }
-                // Simplify storage if only one callback remains
-                if (callbackRef.length == 1) {
-                    proxyData.propertyCallbacks[propName][type] = callbackRef[0];
-                    // trace("[DEBUG] Simplified " + type + " callback storage for property: " + propName + " on object with UID: " + uid);
-                } else if (callbackRef.length == 0) {
-                    proxyData.propertyCallbacks[propName][type] = null;
-                    // trace("[DEBUG] All " + type + " callbacks removed for property: " + propName + " on object with UID: " + uid);
                 }
             }
         }
     }
 
     /**
-     * Internal method to set up a function proxy and initialize callback storage.
-     * If the function hasn't been proxied yet, it creates a proxy function.
-     * @param obj The object whose function is being set up.
-     * @param funcName The name of the function.
+     * 从对象的属性中移除 getter 监视器。
+     * @param obj 需要移除 getter 监视器的对象。
+     * @param propName 需要移除监视器的属性名称。
+     * @param callback 需要移除的回调函数。
      */
-    private static function setupFunction(obj:Object, funcName:String):Void {
-        var proxyData:Object = obj.__proxyData__;
-        if (proxyData.functionCallbacks[funcName] === undefined) {
-            proxyData.functionCallbacks[funcName] = null;
+    public static function removePropertyGetterWatcher(obj:Object, propName:String, callback:Function):Void {
+        // 内联 getStaticUID 逻辑并进行变量本地化
+        var proxyUID:String = "__proxyUID__";
+        var proxyDataKey:String = "__proxyData__";
+        if (obj[proxyUID] === undefined) {
+            var uid:Number = uidCounter++; // 分配新的 UID
+            obj[proxyUID] = uid;
+            var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
+            obj[proxyDataKey] = proxyData; // 初始化代理数据存储
+            // 将属性设置为不可枚举，以防止外部访问
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            // trace("[DEBUG] Assigned UID: " + uid + " to object.");
+        } else {
+            var uid:Number = obj[proxyUID];
+            var proxyData:Object = obj[proxyDataKey];
+        }
+
+        var propertyCallbacks:Object = proxyData.propertyCallbacks;
+        var callbacks:Object = propertyCallbacks[propName];
+        if (callbacks) {
+            var getterCallback = callbacks.getter;
+            if (getterCallback != null) {
+                if (typeof getterCallback == "function") {
+                    if (getterCallback == callback) {
+                        callbacks.getter = null;
+                        // trace("[DEBUG] 移除最后一个 Getter 回调属性: " + propName + " 在对象 UID: " + uid);
+                    }
+                } else {
+                    var len:Number = getterCallback.length;
+                    for (var i:Number = len - 1; i >= 0; i--) {
+                        if (getterCallback[i] == callback) {
+                            getterCallback.splice(i, 1);
+                            // trace("[DEBUG] 移除一个 Getter 回调属性: " + propName + " 在对象 UID: " + uid);
+                            break;
+                        }
+                    }
+                    // 如果只剩一个回调，简化存储
+                    len = getterCallback.length;
+                    if (len == 1) {
+                        callbacks.getter = getterCallback[0];
+                        // trace("[DEBUG] 简化 Getter 回调存储属性: " + propName + " 在对象 UID: " + uid);
+                    } else if (len == 0) {
+                        callbacks.getter = null;
+                        // trace("[DEBUG] 移除所有 Getter 回调属性: " + propName + " 在对象 UID: " + uid);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 为对象的方法添加函数调用监视器。
+     * 当方法被调用时，会触发回调函数。
+     * @param obj 需要监视方法的对象。
+     * @param funcName 需要监视的方法名称。
+     * @param callback 当方法被调用时调用的回调函数。
+     */
+    public static function addFunctionCallWatcher(obj:Object, funcName:String, callback:Function):Void {
+        // 内联 getStaticUID 逻辑并进行变量本地化
+        var proxyUID:String = "__proxyUID__";
+        var proxyDataKey:String = "__proxyData__";
+        if (obj[proxyUID] === undefined) {
+            var uid:Number = uidCounter++; // 分配新的 UID
+            obj[proxyUID] = uid;
+            var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
+            obj[proxyDataKey] = proxyData; // 初始化代理数据存储
+            // 将属性设置为不可枚举，以防止外部访问
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            // trace("[DEBUG] Assigned UID: " + uid + " to object.");
+        } else {
+            var uid:Number = obj[proxyUID];
+            var proxyData:Object = obj[proxyDataKey];
+        }
+
+        var functionCallbacks:Object = proxyData.functionCallbacks;
+
+        if (functionCallbacks[funcName] === undefined) {
+            functionCallbacks[funcName] = null;
 
             var originalFunction:Function = obj[funcName];
 
-            // Create the proxy function
+            // 创建代理函数
             var proxyFunction:Function = function() {
                 var args:Array = arguments;
-                var funcCallback = obj.__proxyData__.functionCallbacks[funcName];
-                var uid:Number = obj.__proxyUID__;
+                var funcCallback = functionCallbacks[funcName];
                 if (funcCallback != null) {
-                    // trace("[DEBUG] Function called: " + funcName + " on object with UID: " + uid);
+                    // trace("[DEBUG] 函数调用: " + funcName + " 在对象 UID: " + uid);
                     if (typeof funcCallback == "function") {
                         funcCallback.apply(this, args);
                     } else {
-                        for (var i:Number = 0; i < funcCallback.length; i++) {
+                        var len:Number = funcCallback.length;
+                        for (var i:Number = len - 1; i >= 0; i--) {
                             funcCallback[i].apply(this, args);
                         }
                     }
                 }
-                // Call the original function
+                // 调用原始函数
                 return originalFunction.apply(this, args);
             };
 
-            // Set the proxy function's UID and make it non-enumerable
-            proxyFunction.__proxyUID__ = obj.__proxyUID__;
+            // 设置代理函数的 UID 并将其设为不可枚举
+            proxyFunction.__proxyUID__ = uid;
             _global.ASSetPropFlags(proxyFunction, ["__proxyUID__"], 1, true);
 
-            // Replace the original function with the proxy function
+            // 将原始函数替换为代理函数
             obj[funcName] = proxyFunction;
 
-            // trace("[DEBUG] Set up function proxy for method: " + funcName + " on object with UID: " + obj.__proxyUID__);
+            // trace("[DEBUG] 设置函数代理: " + funcName + " 在对象 UID: " + uid);
+        }
+
+        var funcCallback = functionCallbacks[funcName];
+
+        // 添加回调并优化存储方式
+        if (funcCallback == null) {
+            functionCallbacks[funcName] = callback;
+            // trace("[DEBUG] 添加第一个函数调用回调方法: " + funcName + " 在对象 UID: " + uid);
+        } else if (typeof funcCallback == "function") {
+            functionCallbacks[funcName] = [funcCallback, callback];
+            // trace("[DEBUG] 将函数调用回调转换为数组方法: " + funcName + " 在对象 UID: " + uid);
+        } else {
+            funcCallback.push(callback);
+            // trace("[DEBUG] 添加额外的函数调用回调方法: " + funcName + " 在对象 UID: " + uid);
+        }
+    }
+
+    /**
+     * 从对象的方法中移除函数调用监视器。
+     * @param obj 需要移除函数调用监视器的对象。
+     * @param funcName 需要移除监视器的方法名称。
+     * @param callback 需要移除的回调函数。
+     */
+    public static function removeFunctionCallWatcher(obj:Object, funcName:String, callback:Function):Void {
+        // 内联 getStaticUID 逻辑并进行变量本地化
+        var proxyUID:String = "__proxyUID__";
+        var proxyDataKey:String = "__proxyData__";
+        if (obj[proxyUID] === undefined) {
+            var uid:Number = uidCounter++; // 分配新的 UID
+            obj[proxyUID] = uid;
+            var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
+            obj[proxyDataKey] = proxyData; // 初始化代理数据存储
+            // 将属性设置为不可枚举，以防止外部访问
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            // trace("[DEBUG] Assigned UID: " + uid + " to object.");
+        } else {
+            var uid:Number = obj[proxyUID];
+            var proxyData:Object = obj[proxyDataKey];
+        }
+
+        var functionCallbacks:Object = proxyData.functionCallbacks;
+        var funcCallback = functionCallbacks[funcName];
+
+        if (funcCallback != null) {
+            if (typeof funcCallback == "function") {
+                if (funcCallback == callback) {
+                    functionCallbacks[funcName] = null;
+                    // trace("[DEBUG] 移除最后一个函数调用回调方法: " + funcName + " 在对象 UID: " + uid);
+                }
+            } else {
+                var len:Number = funcCallback.length;
+                for (var i:Number = len - 1; i >= 0; i--) {
+                    if (funcCallback[i] == callback) {
+                        funcCallback.splice(i, 1);
+                        // trace("[DEBUG] 移除一个函数调用回调方法: " + funcName + " 在对象 UID: " + uid);
+                        break;
+                    }
+                }
+                // 如果只剩一个回调，简化存储
+                len = funcCallback.length;
+                if (len == 1) {
+                    functionCallbacks[funcName] = funcCallback[0];
+                    // trace("[DEBUG] 简化函数调用回调存储方法: " + funcName + " 在对象 UID: " + uid);
+                } else if (len == 0) {
+                    functionCallbacks[funcName] = null;
+                    // trace("[DEBUG] 移除所有函数调用回调方法: " + funcName + " 在对象 UID: " + uid);
+                }
+            }
         }
     }
 }
