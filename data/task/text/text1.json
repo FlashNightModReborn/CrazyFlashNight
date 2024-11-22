@@ -280,6 +280,13 @@
              "imageurl": "flashswf/images/task_images/blue技能提示.png"
         },
         {
+           "name": "Blue",
+           "title": "格斗教练",
+           "char": "Blue",
+           "text": "学会技能之后，按住拖动并装备在下方技能栏即可。升级可以获得技能点，等级越高时获得的技能点也可能会增多，已有的技能点数也在下方的SP栏标注。",
+            "imageurl": "flashswf/images/task_images/SP栏.png"
+       },
+        {
             "name": "Blue",
             "title": "格斗教练",
             "char": "Blue",
@@ -2199,14 +2206,14 @@
             "name": "小F",
             "title": "机械师",
             "char": "小F",
-            "text": "那当然，你自己找人砍下试试。我还给了你一个图纸吧，只要你有材料，可以来我这用它合成格外强大的刀具！不过这把刀对精力的消耗很大，记得准备好充足的药剂。",
+            "text": "那当然，你自己找人砍下试试。如果不满意，我还给了你一张图纸，只要你有材料，可以来我这用它合成格外强大的刀具！",
             "imageurl": "flashswf/images/task_images/合成页面.png"
         },
         {
             "name": "小F",
             "title": "机械师",
             "char": "小F",
-            "text": "哦对，老大找你，赶紧去吧。",
+            "text": "材料没收集齐的话可以去外面大厅找商人买，需要图纸则来找我就行。哦对，老大找你，赶紧去吧。",
             "imageurl": "close"
         }
     ],
