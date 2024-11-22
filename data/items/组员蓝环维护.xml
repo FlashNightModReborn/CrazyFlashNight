@@ -512,7 +512,7 @@
         <init>
           <initRoutines>红外夜视仪初始化</initRoutines>
           <initParam>
-            <visual>夜视仪</visual>
+            <visual>浅红夜视仪</visual>
             <min>0</min>
             <max>4</max>
           </initParam>
@@ -520,7 +520,7 @@
         <cycle>
           <cycleRoutines>红外夜视仪周期</cycleRoutines>
           <cycleParam>
-            <visual>夜视仪</visual>
+            <visual>浅红夜视仪</visual>
             <min>0</min>
             <max>4</max>
           </cycleParam>

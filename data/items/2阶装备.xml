@@ -1214,7 +1214,8 @@
     <use>头部装备</use>
     <weight>0.5</weight>
     <price>25200</price>
-    <description>你永远不知道末日的夜晚与暗处会藏着什么&lt;font color=&quot;#b22222&quot;&gt;阴险&lt;/font&gt;&lt;font color=&quot;#D3D3D3&quot;&gt;可怖&lt;/font&gt;之物，因此红外夜视仪成为了你外出探险的保命符。</description>
+    <description>你永远不知道末日的夜晚与暗处会藏着什么&lt;font color=&quot;#b22222&quot;&gt;阴险&lt;/font&gt;&lt;font color=&quot;#D3D3D3&quot;&gt;可怖&lt;/font&gt;之物，因此红外夜视仪成为了你外出探险的保命符。
+&lt;font color=&quot;#66cc66&quot;&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，效果为浅绿，开启亮度等级为0~4。</description>
     <level>12</level>
     <equipped>
       <dressup>男变装-红外夜视仪</dressup>
@@ -1224,6 +1225,26 @@
       <defence>80</defence>
       <bullet>0</bullet>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>红外夜视仪初始化</initRoutines>
+          <initParam>
+            <visual>浅绿夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>红外夜视仪周期</cycleRoutines>
+          <cycleParam>
+            <visual>浅绿夜视仪</visual>
+            <min>0</min>
+            <max>4</max>
+          </cycleParam>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>10060</id>
