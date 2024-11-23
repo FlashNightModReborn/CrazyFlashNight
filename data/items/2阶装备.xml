@@ -1254,16 +1254,17 @@
     <type>防具</type>
     <use>头部装备</use>
     <weight>0.5</weight>
-    <price>25200</price>
+    <price>39200</price>
     <description>作为末日前欧美恐怖片的常客以及叛逆文化的代表，骷髅面具广泛存在于无政府主义者的活动，例如涂鸦、游击作战之中。
     然而时过境迁，如今社会秩序几乎崩溃，骷髅面具的反秩序属性被消解，但是它所代表的恐怖片理念反而被发扬光大：如今的堕落城中，总会有戴骷髅面具的杀人魔的传说。</description>
-    <level>12</level>
+    <level>15</level>
     <equipped>
       <dressup>男变装-骷髅面具</dressup>
       <hp>50</hp>
       <mp>50</mp>
-      <damage>15</damage>
-      <defence>80</defence>
+      <damage>0</damage>
+      <knifepower>35</knifepower>
+      <defence>75</defence>
       <bullet>0</bullet>
     </equipped>
   </item>
