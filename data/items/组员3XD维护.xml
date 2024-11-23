@@ -348,7 +348,7 @@
       <skillname>破坏殆尽</skillname>
       <description>手持该武器时可以使用破坏殆尽。</description>
       <cd>8000</cd>
-      <mp>25</mp>
+      <mp>35</mp>
     </skill>
     <description>幸存者的自制武器，用铁钉加成的球棒更有威胁。</description>
     <level>10</level>
@@ -457,7 +457,12 @@
 	<actiontype>刀剑</actiontype>
     <weight>2</weight>
     <price>360000</price>
-    <skill>&lt;font color=&quot;#FFCC00&quot;&gt;【主动战技】&lt;/font&gt;手持该武器时可以使用弧光斩。&lt;BR&gt;&lt;font color=&quot;#FFCC00&quot;&gt;【战技信息】&lt;/font&gt;冷却4秒，消耗25MP。</skill>
+    <skill>
+      <skillname>弧光斩</skillname>
+      <description>手持该武器时可以使用弧光斩。</description>
+      <cd>5000</cd>
+      <mp>50</mp>
+    </skill>
     <description>显然，在末日之前，人类的科技已经有了很大的突破，例如这把热能武士刀。
 末日之后，这把武士刀无论是对废土之中游荡的怪物，又或是居心否侧的人类，都极具威胁性。</description>
     <level>36</level>
@@ -735,7 +740,7 @@
       <skillname>滑步</skillname>
       <description>手持该武器时可以使用滑步。</description>
       <cd>2000</cd>
-      <mp>5</mp>
+      <mp>10</mp>
     </skill>
     <description>爪子刀是印尼、马来亚等地流行的一种个人随身刀具，适合防身。又演化出了花式的功能。起源于巴厘岛，它的起源可以从苏门答腊岛追溯到马来西亚和爪哇，它的源泉来自于流传在当地的宗教，它的形状是寄托了神秘力量的国王灵魂的化身虎爪。后来由于印度教的传入，而更换为印度教的比玛和哈奴曼神的爪的形状，后来逐渐变了样子。为了在战场时使用，最早的KARAMBIT非常大，但随着历史的演变，就逐渐变为用于自卫的小型化武器。</description>
     <level>3</level>
@@ -763,7 +768,7 @@
       <skillname>凶斩</skillname>
       <description>手持该武器时可以使用凶斩。</description>
       <cd>8000</cd>
-      <mp>25</mp>
+      <mp>30</mp>
     </skill>
     <description>消防斧是一种清理着火或易燃材料，切断火势蔓延的工具，还可以劈开被烧变形的门窗，解救被困的人。在末日下理所应当成为幸存者们的武器。</description>
     <level>10</level>
@@ -847,7 +852,7 @@
       <skillname>滑步</skillname>
       <description>手持该武器时可以使用滑步。</description>
       <cd>2000</cd>
-      <mp>5</mp>
+      <mp>10</mp>
     </skill>
     <description>折刀是一种能够折叠起来的刀具，它具有便于携带、方便、安全等特点。现代时代，各种新颖和先进的技术和材料被应用到折刀上，使得折刀更加美观和实用。末日时代，成为求生的工具</description>
     <level>5</level>
@@ -875,7 +880,7 @@
       <skillname>滑步</skillname>
       <description>手持该武器时可以使用滑步。</description>
       <cd>2000</cd>
-      <mp>5</mp>
+      <mp>10</mp>
     </skill>
     <description>疯狗刀由于近乎完美，有着非常惊人的切割能力和耐用性以及用户为导向的设计细节和精湛的工艺，极低的年产量和优异的性能受到世界各地的爱好者的尊重和追捧。</description>
     <level>7</level>
@@ -903,7 +908,7 @@
       <skillname>滑步</skillname>
       <description>手持该武器时可以使用滑步。</description>
       <cd>2000</cd>
-      <mp>5</mp>
+      <mp>10</mp>
     </skill>
     <description>具有可怕的穿刺力与强大的切割力。此刀手柄非常长，或许看似比例失调，但此刀的重心在刀颈处，两侧重量非常平衡。长手柄可以让你用任何手形使用刀而不会觉得手柄短，非常适合手型较大或戴手套的人使用。</description>
     <level>10</level>
@@ -931,7 +936,7 @@
       <skillname>滑步</skillname>
       <description>手持该武器时可以使用滑步。</description>
       <cd>2000</cd>
-      <mp>5</mp>
+      <mp>10</mp>
     </skill>
     <description>是军队中普遍使用的近身武器，作用与刀类似，但是比刀威力稍大，作用范围广。</description>
     <level>8</level>
@@ -1178,7 +1183,14 @@
     <actiontype>短兵</actiontype>
     <weight>4</weight>
     <price>36500</price>
-    <skill>&lt;font color=&quot;#FFCC00&quot;&gt;【主动战技】&lt;/font&gt;手持该武器时可以使用Eternal Maximum Drive技能。&lt;BR&gt;&lt;font color=&quot;#FFCC00&quot;&gt;【战技信息】&lt;/font&gt;冷却6秒，消耗80MP。</skill>
+    <skill>
+      <!-- <skillname>Eternal Maximum Drive</skillname> -->
+      <!-- <description>手持该武器时可以使用Eternal Maximum Drive技能。</description> -->
+      <skillname>EternalMaximumDrive</skillname>
+      <description>手持该武器时可以使用Eternal Maximum Drive技能。</description>
+      <cd>5000</cd>
+      <mp>50</mp>
+    </skill>
     <description>据传，代号为3XD的黑市商人曾参观过许多遥远异域的武器，并通过搬运引入了诸多仿品，而这把刀的不同之处在于，这是他亲自下场锻造仿制而成的杀器。其名为永恒之刃。
 ”来吧，享受地狱的乐趣！“——Eternal</description>
     <level>18</level>
@@ -1206,7 +1218,7 @@
       <skillname>狼跳</skillname>
       <description>手持该武器时可以使用狼跳。</description>
       <cd>8000</cd>
-      <mp>25</mp>
+      <mp>35</mp>
     </skill>
     <description>鬼剑士的巨剑</description>
     <level>15</level>
@@ -1959,7 +1971,12 @@
   <actiontype>刀剑</actiontype>
     <weight>2</weight>
     <price>75000</price>
-    <skill>&lt;font color=&quot;#FFCC00&quot;&gt;【主动战技】&lt;/font&gt;手持该武器时可以使用弧光斩。&lt;BR&gt;&lt;font color=&quot;#FFCC00&quot;&gt;【战技信息】&lt;/font&gt;冷却4秒，消耗25MP。</skill>
+    <skill>
+      <skillname>弧光斩</skillname>
+      <description>手持该武器时可以使用弧光斩。</description>
+      <cd>5000</cd>
+      <mp>50</mp>
+    </skill>
     <description>以现代冶炼技术精制的复古武器，酒保从堕落城带来的精品好货。</description>
     <level>19</level>
     <data>
@@ -1980,7 +1997,12 @@
   <actiontype>刀剑</actiontype>
     <weight>2</weight>
     <price>240000</price>
-    <skill>&lt;font color=&quot;#FFCC00&quot;&gt;【主动战技】&lt;/font&gt;手持该武器时可以使用弧光斩。&lt;BR&gt;&lt;font color=&quot;#FFCC00&quot;&gt;【战技信息】&lt;/font&gt;冷却4秒，消耗25MP。</skill>
+    <skill>
+      <skillname>弧光斩</skillname>
+      <description>手持该武器时可以使用弧光斩。</description>
+      <cd>5000</cd>
+      <mp>50</mp>
+    </skill>
     <description>以现代冶炼技术精制的复古武器，酒保从堕落城带来的精品好货。</description>
     <level>27</level>
     <data>
@@ -2136,7 +2158,7 @@
       <skillname>狼跳</skillname>
       <description>手持该武器时可以使用狼跳。</description>
       <cd>1000</cd>
-      <mp>10</mp>
+      <mp>35</mp>
     </skill>
     <description>正常流程内无法获取，无法使用。无需反馈此武器的相关问题，也请勿推荐他人使用此武器进行流程。
     &lt;font color=&quot;#FF0000&quot;&gt;“那块铁，挽着些儿就死，磕着些儿就亡，挨挨儿皮破，擦擦儿筋伤！”&lt;/font&gt;。</description>
