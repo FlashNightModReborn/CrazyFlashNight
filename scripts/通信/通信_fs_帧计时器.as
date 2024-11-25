@@ -34,7 +34,7 @@ _root.帧计时器.初始化任务栈 = function()
     this.异常间隔帧数 = this.帧率 * 5;
     this.实际帧率 = 0;
     this.性能等级 = 0;
-    this.预设画质 = _quality;
+    this.预设画质 = _root._quality;
     this.更新天气间隔 = 5 * this.帧率;
     this.天气待更新时间 = this.更新天气间隔;
     this.光照等级数据 = [];//存储短期内的天气情况
@@ -244,7 +244,7 @@ _root.帧计时器.性能评估优化 = function()
                 this.执行性能调整(当前性能);// 如果已经在等待确认，执行调整
                 this.性能等级 = 当前性能;
                 this.等待确认 = false;
-                _root.发布消息("性能等级: [" + this.性能等级  + " : " + this.实际帧率 + " FPS] " + _quality);
+                _root.发布消息("性能等级: [" + this.性能等级  + " : " + this.实际帧率 + " FPS] " + _root._quality);
             } 
             else 
             {
@@ -272,7 +272,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.面积系数 = 300000;
             _root.同屏打击数字特效上限 = 25;
             this.是否死亡特效 = true;
-            _quality = this.预设画质;
+            _root._quality = this.预设画质;
             _root.天气系统.光照等级更新阈值 = 0.1;
             _root.弹壳系统.弹壳总数上限 = 25;
             _root.发射效果上限 = 15;
@@ -285,7 +285,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.面积系数 = 450000; 
             _root.同屏打击数字特效上限 = 18;
             this.是否死亡特效 = true;
-            _quality = this.预设画质 === 'LOW' ? this.预设画质 : 'MEDIUM';
+            _root._quality = this.预设画质 === 'LOW' ? this.预设画质 : 'MEDIUM';
             _root.天气系统.光照等级更新阈值 = 0.2;
             _root.弹壳系统.弹壳总数上限 = 18;
             _root.发射效果上限 = 10;
@@ -299,7 +299,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.同屏打击数字特效上限 = 12;
             this.是否死亡特效 = false;
             _root.天气系统.光照等级更新阈值 = 0.5;
-            _quality = 'LOW';
+            _root._quality = 'LOW';
             _root.弹壳系统.弹壳总数上限 = 12;
             _root.发射效果上限 = 5;
             _root.显示列表.暂停播放(_root.显示列表.预设任务ID);
@@ -312,7 +312,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.同屏打击数字特效上限 = 10;
             this.是否死亡特效 = false;
             _root.天气系统.光照等级更新阈值 = 1;
-            _quality = 'LOW';
+            _root._quality = 'LOW';
             _root.弹壳系统.弹壳总数上限 = 10;
             _root.发射效果上限 = 0;
             _root.显示列表.暂停播放(_root.显示列表.预设任务ID);
