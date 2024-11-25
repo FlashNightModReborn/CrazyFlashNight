@@ -368,6 +368,11 @@ _root.帧计时器.定期更新天气 = function()
         {                                                                                                                                                                                                                                                                                                                                                                                           
             游戏世界.已更新天气 = true;//保证换场景可切换
             _global.ASSetPropFlags(游戏世界, ["已更新天气"], 1, true);
+
+            // 清理缓存，避免循环引用
+
+            Delegate.clearCache();
+            Dictionary.destroyStatic();
             // 游戏世界.onUnload = function()
             // {
             //     _root.常用工具函数.释放对象绘图内存(游戏世界);

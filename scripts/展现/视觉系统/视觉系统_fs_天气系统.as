@@ -1,4 +1,6 @@
-﻿_root.天气系统 = {};
+﻿import org.flashNight.neur.Event.*;
+
+_root.天气系统 = {};
 //_root.开启昼夜系统 = true;
 
 _root.天气系统.初始化 = function()
@@ -117,6 +119,7 @@ _root.天气系统.设置当前天气 = function()
         if(光照等级 <= 夜视仪.最大启动亮度 && 光照等级 >= 夜视仪.最小启动亮度)
         {
             视觉情况 = 夜视仪.视觉情况;
+            EventBus.getInstance().publish("夜视仪启动");
         }
 
         else

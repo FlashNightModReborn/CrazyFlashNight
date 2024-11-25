@@ -74,6 +74,42 @@ class org.flashNight.naki.DataStructures.TaskIDLinkedList {
     }
 
     /**
+     * 直接快速合并另一个链表的节点到当前链表，忽略节点的list引用
+     * @param otherList 要合并的另一个TaskIDLinkedList
+     */
+    public function mergeDirect(otherList:TaskIDLinkedList):Void {
+        if (otherList == null) {
+            throw new Error("Cannot merge a null list.");
+        }
+
+        // 提取头尾节点为局部变量，减少重复访问
+        var otherHead:TaskIDNode = otherList.head;
+        var otherTail:TaskIDNode = otherList.tail;
+
+        if (otherHead == null) {
+            return; // 另一个链表为空，不需要操作
+        }
+
+        // 如果当前链表为空
+        if (this.tail == null) {
+            this.head = otherHead;
+        } else {
+            // 当前链表非空，直接连接链表尾部
+            this.tail.next = otherHead;
+            otherHead.prev = this.tail;
+        }
+
+        // 更新当前链表的尾部
+        this.tail = otherTail;
+
+        // 清空otherList的头尾引用
+        otherList.head = null;
+        otherList.tail = null;
+    }
+
+
+
+    /**
      * 从链表中移除指定的节点，并断开与链表的引用
      * @param node 要移除的节点
      */

@@ -35,7 +35,7 @@
     }
 
     /**
-     * 静态版getUID方法，用于外部使用
+     * 静态版getUID方法，用于外部使用，不持有引用避免循环引用干扰正常gc
      * @param key 键（可以是字符串、对象或函数）
      * @return 返回与该键关联的唯一标识符
      */
@@ -43,7 +43,7 @@
         var uid:Number = key.__dictUID;
         if (uid === undefined) {
             uid = key.__dictUID = uidCounter++;
-            uidMap[uid] = key;
+            // uidMap[uid] = key;
             _global.ASSetPropFlags(key, ["__dictUID"], 1, true); // 设置 __dictUID 不可枚举
         }
         return uid;
@@ -236,6 +236,19 @@
         uidMap = null;         // 清理 UID 映射对象
         keysCache = null;      // 清理键缓存
     }
+
+    /**
+     * 静态方法：清空所有静态资源引用
+     * 重置 UID 映射表和计数器，确保不再持有任何静态引用。
+     */
+    public static function destroyStatic():Void {
+        // 直接清空静态引用
+        uidMap = null;       // 清除 UID 映射表引用
+        // uidCounter = 1;      // 重置 UID 计数器
+    }
+
+
+    
 }
 
 

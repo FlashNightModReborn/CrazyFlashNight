@@ -1,9 +1,5 @@
 ﻿import org.flashNight.neur.Event.*;
 
-EventBus.getInstance().subscribe("红外夜视仪启动", function(参数) {
-    _root.发布消息("红外夜视仪启动");
-});
-
 
 _root.装备生命周期函数.红外夜视仪初始化 = function(反射对象, 参数对象)
 {
@@ -38,7 +34,25 @@ _root.装备生命周期函数.红外夜视仪初始化 = function(反射对象,
     反射对象.生命周期函数列表.push(卸载对象);
 
     _root.天气系统.夜视仪 = 自机.红外夜视仪;
-    EventBus.getInstance().publish("红外夜视仪启动", 夜视仪.视觉影片剪辑);
+
+    var eventBus = EventBus.getInstance();
+    // 使用标志位避免重复订阅
+    if (!夜视仪.事件已订阅) {
+        夜视仪.事件已订阅 = true;
+
+        // 订阅红外夜视仪启动事件
+        eventBus.subscribeOnce("红外夜视仪启动", function() {
+            // 订阅夜视仪启动事件
+            eventBus.subscribeOnce("夜视仪启动", function() {
+                _root.发布消息("红外夜视仪启动");
+            });
+
+            eventBus.publish("夜视仪启动", 夜视仪.视觉影片剪辑);
+        });
+    }
+
+    // 立即发布红外夜视仪启动事件
+    eventBus.publish("红外夜视仪启动", 夜视仪.视觉影片剪辑);
 };
 
 _root.装备生命周期函数.红外夜视仪周期 = function(反射对象, 参数对象)

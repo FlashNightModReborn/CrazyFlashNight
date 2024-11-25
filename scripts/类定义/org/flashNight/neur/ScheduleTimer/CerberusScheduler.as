@@ -782,7 +782,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
             if (resultList == null) {
                 resultList = heapTasks; // 如果结果列表为空，直接赋值为堆任务
             } else {
-                resultList.merge(heapTasks); // 否则，合并堆任务到结果列表
+                resultList.mergeDirect(heapTasks); // 否则，合并堆任务到结果列表
             }
         }
 
@@ -797,7 +797,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
                 if (resultList == null) {
                     resultList = secondLevelTasks; // 如果结果列表为空，直接赋值为第二级时间轮任务
                 } else {
-                    resultList.merge(secondLevelTasks); // 否则，合并任务到结果列表
+                    resultList.mergeDirect(secondLevelTasks); // 否则，合并任务到结果列表
                 }
             }
 
@@ -812,7 +812,7 @@ class org.flashNight.neur.ScheduleTimer.CerberusScheduler {
                     if (resultList == null) {
                         resultList = thirdLevelTasks; // 如果结果列表为空，直接赋值为第三级时间轮任务
                     } else {
-                        resultList.merge(thirdLevelTasks); // 否则，合并任务到结果列表
+                        resultList.mergeDirect(thirdLevelTasks); // 否则，合并任务到结果列表
                     }
                 }
 

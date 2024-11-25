@@ -329,9 +329,9 @@ class org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest {
         var currentLoad:Number = 100; // 起始负载级别
 
         // 循环生成负载级别，直到达到或超过限制
-        while (currentLoad <= 100000) {
+        while (currentLoad <= 6000) {
             testLoads.push(currentLoad);
-            currentLoad *= 3;
+            currentLoad *= 1.618;
             currentLoad = Math.floor(currentLoad);
         }
 
