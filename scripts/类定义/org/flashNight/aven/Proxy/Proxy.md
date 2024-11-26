@@ -10,8 +10,10 @@
     - [引入 Proxy 类](#引入-proxy-类)
     - [属性监视器](#属性监视器)
         - [添加属性 Setter 监视器](#添加属性-setter-监视器)
+        - [添加属性 Setter 监视器（基于 `watch` 方法）](#添加属性-setter-监视器基于-watch-方法)
         - [添加属性 Getter 监视器](#添加属性-getter-监视器)
         - [移除属性 Setter 监视器](#移除属性-setter-监视器)
+        - [移除属性 Setter 监视器（基于 `watch` 方法）](#移除属性-setter-监视器基于-watch-方法)
         - [移除属性 Getter 监视器](#移除属性-getter-监视器)
     - [函数调用监视器](#函数调用监视器)
         - [添加函数调用监视器](#添加函数调用监视器)
@@ -20,6 +22,7 @@
 7. [局限性](#局限性)
 8. [示例代码](#示例代码)
     - [属性监视示例](#属性监视示例)
+    - [属性监视示例（基于 `watch` 方法）](#属性监视示例基于-watch-方法)
     - [函数调用监视示例](#函数调用监视示例)
 9. [注意事项](#注意事项)
 10. [结语](#结语)
@@ -44,14 +47,21 @@
 
 ## 特性与功能
 
+### 新增特性
+
+- **基于 `watch` 的 Setter 监视器**：
+  - 通过 `addPropertySetterWatcherWithWatch` 方法，可以利用 AS2 的原生 `watch` 方法，实现更高效的 Setter 监视功能。
+  
+- **基于 `watch` 的 Setter 监视器移除**：
+  - 使用 `removePropertyWatcherWithWatch` 方法，可以移除通过 `addPropertySetterWatcherWithWatch` 添加的 Setter 监视器，确保监视器能够被正确管理和清理。
+
+### 更新后的特性列表
+
 - **属性监视**：可以监视对象属性的读取（Getter）和写入（Setter）操作。
-
+- **基于 `watch` 的 Setter 监视**：通过原生 `watch` 方法，提高 Setter 监视的性能和效率。
 - **函数调用监视**：可以监视对象方法的调用，拦截方法调用前的操作。
-
 - **多回调支持**：支持为同一属性或方法注册多个回调函数，按顺序执行。
-
 - **动态添加与移除**：支持在运行时动态添加和移除监视器。
-
 - **回调参数传递**：
   - **Setter 回调**：接收新值和旧值两个参数。
   - **Getter 回调**：接收当前属性值作为参数。
@@ -98,6 +108,27 @@ Proxy.addPropertySetterWatcher(user, "age", function(newValue, oldValue) {
 user.age = 25; // 输出: Age changed from undefined to 25
 ```
 
+#### 添加属性 Setter 监视器（基于 `watch` 方法）
+
+```actionscript
+Proxy.addPropertySetterWatcherWithWatch(obj:Object, propName:String, callback:Function):Void
+```
+
+- **参数说明**：
+  - `obj`：需要监视的对象。
+  - `propName`：需要监视的属性名。
+  - `callback`：当属性被修改时调用的回调函数，接受两个参数：`newValue`（新值）和 `oldValue`（旧值）。
+
+- **示例**：
+
+```actionscript
+var user:Object = {};
+Proxy.addPropertySetterWatcherWithWatch(user, "age", function(newValue, oldValue) {
+    trace("WithWatch - Age changed from " + oldValue + " to " + newValue);
+});
+user.age = 30; // 输出: WithWatch - Age changed from undefined to 30
+```
+
 #### 添加属性 Getter 监视器
 
 ```actionscript
@@ -132,6 +163,22 @@ Proxy.removePropertySetterWatcher(obj:Object, propName:String, callback:Function
 
 ```actionscript
 Proxy.removePropertySetterWatcher(user, "age", setterCallback);
+```
+
+#### 移除属性 Setter 监视器（基于 `watch` 方法）
+
+```actionscript
+Proxy.removePropertyWatcherWithWatch(obj:Object, propName:String):Void
+```
+
+- **参数说明**：
+  - `obj`：需要移除监视的对象。
+  - `propName`：需要移除监视的属性名。
+
+- **示例**：
+
+```actionscript
+Proxy.removePropertyWatcherWithWatch(user, "age");
 ```
 
 #### 移除属性 Getter 监视器
@@ -233,8 +280,30 @@ Proxy.addPropertyGetterWatcher(product, "price", function(value) {
     trace("Price accessed: " + value);
 });
 
-product.price = 120; // 输出: Price changed from 100 to 120
-var currentPrice = product.price; // 输出: Price accessed: 120
+// 使用基于 watch 的 Setter 监视器
+Proxy.addPropertySetterWatcherWithWatch(product, "price", function(newValue, oldValue) {
+    trace("WithWatch - Price changed from " + oldValue + " to " + newValue);
+});
+
+product.price = 120; 
+// 输出: 
+// Price changed from 100 to 120
+// WithWatch - Price changed from 100 to 120
+
+var currentPrice = product.price; 
+// 输出: Price accessed: 120
+```
+
+### 属性监视示例（基于 `watch` 方法）
+
+```actionscript
+import org.flashNight.aven.Proxy.Proxy;
+
+var user:Object = {};
+Proxy.addPropertySetterWatcherWithWatch(user, "age", function(newValue, oldValue) {
+    trace("WithWatch - Age changed from " + oldValue + " to " + newValue);
+});
+user.age = 30; // 输出: WithWatch - Age changed from undefined to 30
 ```
 
 ### 函数调用监视示例
@@ -254,8 +323,12 @@ Proxy.addFunctionCallWatcher(calculator, "add", function(a, b) {
 });
 
 var result = calculator.add(5, 7);
-// 输出: add method called with arguments: 5, 7
-trace("Result: " + result); // 输出: Result: 12
+// 输出: 
+// add method called with arguments: 5, 7
+// Result: 12
+
+// 移除函数调用监视器
+Proxy.removeFunctionCallWatcher(calculator, "add", functionCallback);
 ```
 
 ## 注意事项
@@ -268,16 +341,11 @@ trace("Result: " + result); // 输出: Result: 12
 
 - **方法上下文**：函数监视器替换了原方法，可能影响方法内部的 `this` 指向，确保在方法内部正确引用上下文。
 
+- **性能影响**：尤其是在大量属性和回调的情况下，监视器的添加和触发可能会影响性能，建议仅在必要时使用，并进行性能评估。
+
 ## 结语
 
 自定义的 `Proxy` 类为 AS2 提供了类似于 JavaScript `Proxy` 的部分功能，尽管功能有限，但在特定场景下仍然非常有用。通过合理使用，可以提高代码的可维护性和扩展性。在使用过程中，需注意其局限性和潜在的风险，确保应用的稳定性和性能。
-
-
-
-
-
-
-
 
 
 
@@ -291,14 +359,17 @@ var proxyTest:ProxyTest = new ProxyTest();
 
 
 
-
-
 === ProxyTest 开始 ===
 --- 测试: 添加属性 setter 监视器 ---
 [DEBUG] setterCallback 被调用
 [PASS] Setter 回调接收到正确的新值
 [PASS] Setter 回调接收到正确的旧值
 [PASS] Setter 回调被正确触发
+--- 测试: 添加基于 watch 的属性 setter 监视器 ---
+[DEBUG] setterCallbackWithWatch 被调用
+[PASS] SetterWithWatch 回调接收到正确的新值
+[PASS] SetterWithWatch 回调接收到正确的旧值
+[PASS] SetterWithWatch 回调被正确触发
 --- 测试: 添加属性 getter 监视器 ---
 [DEBUG] getterCallback 被调用
 [PASS] Getter 回调接收到正确的值
@@ -306,15 +377,17 @@ var proxyTest:ProxyTest = new ProxyTest();
 [PASS] Getter 返回正确的值
 --- 测试: 移除属性 setter 监视器 ---
 [PASS] Setter 回调已成功移除，未被触发
+--- 测试: 移除基于 watch 的属性 setter 监视器 ---
+[PASS] SetterWithWatch 回调已成功移除，未被触发
 --- 测试: 移除属性 getter 监视器 ---
 [PASS] Getter 回调已成功移除，未被触发
 --- 测试: 多个回调函数的注册和触发 ---
-[DEBUG] setterCallback1 被调用
-[PASS] Setter 回调1接收到正确的新值
-[PASS] Setter 回调1接收到正确的旧值
 [DEBUG] setterCallback2 被调用
 [PASS] Setter 回调2接收到正确的新值
 [PASS] Setter 回调2接收到正确的旧值
+[DEBUG] setterCallback1 被调用
+[PASS] Setter 回调1接收到正确的新值
+[PASS] Setter 回调1接收到正确的旧值
 [PASS] Setter 回调1被正确触发
 [PASS] Setter 回调2被正确触发
 --- 测试: 函数调用监视器 ---
@@ -326,13 +399,48 @@ var proxyTest:ProxyTest = new ProxyTest();
 [PASS] 移除函数调用回调后，回调未被触发
 [PASS] 函数返回值正确
 --- 测试: 性能评估 ---
-添加 1000 个 setter 回调耗时: 13 毫秒
+--- 测试1: 单一属性 Setter 回调性能评估 ---
+添加 1000 个 setter 回调耗时: 7 毫秒
 设置属性触发 1000 个 setter 回调耗时: 5 毫秒
 Setter 回调总调用次数: 1001
-移除 1000 个 setter 回调耗时: 321 毫秒
-[PASS] 添加回调的性能在合理范围内
-[PASS] 触发回调的性能在合理范围内
-[PASS] 移除回调的性能在合理范围内
+--- 测试2: 多属性、多回调 Setter 和 Getter 性能评估 ---
+添加 100 个属性，每个属性 100 个回调耗时: 146 毫秒
+访问 100 个属性触发所有回调耗时: 89 毫秒
+Setter 回调调用总次数: 10100
+Getter 回调调用总次数: 10100
+--- 测试3: 函数调用代理性能评估 ---
+调用函数 1000 次触发所有回调耗时: 441 毫秒
+函数回调调用总次数: 101000
+--- 测试4: 移除大量 Setter 回调性能评估 ---
+添加 50 个属性的 100 个回调耗时: 35 毫秒
+移除 50 个属性的 100 个回调耗时: 193 毫秒
+--- 测试5: 嵌套代理性能评估 ---
+添加 10 层嵌套代理耗时: 1 毫秒
+设置属性触发嵌套回调耗时: 0 毫秒
+回调调用总次数: 10
+--- 扩展性能测试: Watch vs Proxy vs WatchWithWatch vs AddProperty ---
+--- 测试样例1: 单属性单回调性能 ---
+Watch 添加单回调耗时: 115 ms
+Proxy 添加单回调耗时: 37699 ms
+WatchWithWatch 添加单回调耗时: 47072 ms
+AddProperty 添加单回调耗时: 140503 ms
+Watch 设置属性耗时: 0 ms
+Proxy 设置属性耗时: 0 ms
+WatchWithWatch 设置属性耗时: 0 ms
+AddProperty 设置属性耗时: 0 ms
+Watch 回调调用次数: 4
+Proxy 回调调用次数: 4
+WatchWithWatch 回调调用次数: 4
+AddProperty 回调调用次数: 4
+--- 测试样例2: 多属性多回调性能 ---
+Proxy 添加多回调耗时: 1123 ms
+Proxy 触发多回调耗时: 69 ms
+Proxy 回调调用次数: 9000
+--- 测试样例3: 高频触发场景 ---
+Proxy 高频触发回调耗时: 36 ms
+Proxy 回调调用次数: 3000
 === ProxyTest 结束 ===
-通过的测试: 14
+通过的测试: 13
 失败的测试: 0
+
+

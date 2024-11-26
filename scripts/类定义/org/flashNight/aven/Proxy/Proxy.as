@@ -96,6 +96,55 @@
         }
     }
 
+    public static function addPropertySetterWatcherWithWatch(obj:Object, propName:String, callback:Function):Void {
+        var proxyUID:String = "__proxyUID__";
+        var proxyDataKey:String = "__proxyData__";
+
+        // 初始化 UID 和代理数据
+        if (obj[proxyUID] === undefined) {
+            var uid:Number = uidCounter++; // 分配新的 UID
+            obj[proxyUID] = uid;
+            var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
+            obj[proxyDataKey] = proxyData; // 初始化代理数据存储
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+        } else {
+            var proxyData:Object = obj[proxyDataKey];
+        }
+
+        // 获取或初始化属性回调
+        var propertyCallbacks:Object = proxyData.propertyCallbacks;
+        if (!propertyCallbacks[propName]) {
+            propertyCallbacks[propName] = { setter: null, getter: null };
+        }
+
+        var setterCallback = propertyCallbacks[propName].setter;
+
+        // 添加回调
+        if (setterCallback == null) {
+            propertyCallbacks[propName].setter = callback;
+        } else if (typeof setterCallback == "function") {
+            propertyCallbacks[propName].setter = [setterCallback, callback];
+        } else {
+            setterCallback.push(callback);
+        }
+
+        // 使用 watch 实现 setter 代理
+        obj.watch(propName, function(prop, oldValue, newValue) {
+            var callbacks = propertyCallbacks[propName].setter;
+            if (callbacks != null) {
+                if (typeof callbacks == "function") {
+                    callbacks.call(obj, newValue, oldValue);
+                } else {
+                    for (var i:Number = callbacks.length - 1; i >= 0; i--) {
+                        callbacks[i].call(obj, newValue, oldValue);
+                    }
+                }
+            }
+            return newValue; // 保持原行为
+        });
+    }
+
+
     /**
      * 为对象的属性添加 getter 监视器。
      * 当属性被访问时，会触发回调函数。
@@ -189,6 +238,11 @@
             // trace("[DEBUG] 添加额外的 Getter 回调属性: " + propName + " 在对象 UID: " + uid);
         }
     }
+
+    public static function removePropertyWatcherWithWatch(obj:Object, propName:String):Void {
+        obj.unwatch(propName); // 直接移除 watch 代理
+    }
+
 
     /**
      * 从对象的属性中移除 setter 监视器。
