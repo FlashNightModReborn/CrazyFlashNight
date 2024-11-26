@@ -1614,7 +1614,7 @@
       <poison>50</poison>
     </equipped>
   </item>
-    <item>
+  <item>
     <id>1526</id>
     <name>白无常面具</name>
     <displayname>白无常面具</displayname>
@@ -2443,6 +2443,56 @@
       <hp>0</hp>
       <mp>0</mp>
       <defence>0</defence>
+    </equipped>
+  </item>
+  <item>
+    <id>1570</id>
+    <name>霜精大头套</name>
+    <displayname>霜精大头套</displayname>
+    <icon>霜精大头套</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <weight>5</weight>
+    <price>105000</price>
+    <description>HEEHO！</description>
+    <level>25</level>
+    <helmet>true</helmet>
+    <equipped>
+      <dressup>男变装-霜精大头套</dressup>
+      <hp>100</hp>
+      <mp>100</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <defence>250</defence>
+      <evasion>0</evasion>
+      <magicdefence>
+        <冷>10</冷>
+      </magicdefence>
+    </equipped>
+  </item>
+  <item>
+    <id>1571</id>
+    <name>霜精侠的刻字板</name>
+    <displayname>霜精侠的刻字板</displayname>
+    <icon>霜精大头套</icon>
+    <type>防具</type>
+    <use>颈部装备</use>
+    <weight>0</weight>
+    <price>180000</price>
+    <description>据这个人所说，他以前不长这样，直到被霜精咬了一口。
+	可信度恐怕有待考究。</description>
+    <level>25</level>
+    <equipped>
+      <dressup>
+      </dressup>
+      <hp>100</hp>
+      <mp>100</mp>
+      <gunpower>0</gunpower>
+      <damage>50</damage>
+      <defence>200</defence>
+      <bullet>0</bullet>
+      <title>HEEHOMAN</title>
     </equipped>
   </item>
 </root>
