@@ -1,4 +1,5 @@
 ﻿import org.flashNight.aven.Proxy.*;
+import flash.utils.getTimer; // 导入 getTimer 方法用于性能测试
 
 // 定义 ProxyTest 类
 class org.flashNight.aven.Proxy.ProxyTest {
@@ -48,12 +49,14 @@ class org.flashNight.aven.Proxy.ProxyTest {
      */
     private function runAllTests():Void {
         this.testAddPropertySetterWatcher();
+        this.testAddPropertySetterWatcherWithWatch();
         this.testAddPropertyGetterWatcher();
         this.testRemovePropertySetterWatcher();
+        this.testRemovePropertyWatcherWithWatch();
         this.testRemovePropertyGetterWatcher();
         this.testMultipleCallbacks();
         this.testFunctionCallWatcher();
-        this.testPerformance(); // 性能测试暂时注释
+        this.testPerformance(); // 性能测试
     }
 
     /**
@@ -93,6 +96,45 @@ class org.flashNight.aven.Proxy.ProxyTest {
 
         // 清理，移除 Setter 监视器
         Proxy.removePropertySetterWatcher(obj, "value", setterCallback);
+    }
+
+    /**
+     * 测试添加基于 watch 的属性 Setter 监视器。
+     * 验证在对象属性被修改时，Setter 回调能够被正确触发并接收正确的参数。
+     */
+    private function testAddPropertySetterWatcherWithWatch():Void {
+        trace("--- 测试: 添加基于 watch 的属性 setter 监视器 ---");
+        var obj:Object = {}; // 创建一个空对象
+        var callbackCalled:Boolean = false; // 标志，记录回调是否被调用
+        var expectedNewValue:Number = 100; // 预期的新值
+        var expectedOldValue:Number = undefined; // 预期的旧值
+
+        var assertFuncRef:Function = this.assertFunc; // 引用断言方法
+
+        /**
+         * Setter 回调函数。
+         * 当属性被修改时，此函数被调用，验证接收到的参数是否正确。
+         * @param newValue 新的属性值。
+         * @param oldValue 旧的属性值。
+         */
+        function setterCallback(newValue:Number, oldValue:Number):Void {
+            trace("[DEBUG] setterCallbackWithWatch 被调用");
+            callbackCalled = true;
+            assertFuncRef(newValue === expectedNewValue, "SetterWithWatch 回调接收到正确的新值");
+            assertFuncRef(oldValue === expectedOldValue, "SetterWithWatch 回调接收到正确的旧值");
+        }
+
+        // 添加 Setter 监视器
+        Proxy.addPropertySetterWatcherWithWatch(obj, "value", setterCallback);
+
+        // 设置属性值，触发 Setter 回调
+        obj.value = expectedNewValue;
+
+        // 断言回调被调用
+        this.assert(callbackCalled, "SetterWithWatch 回调被正确触发");
+
+        // 清理，移除 Setter 监视器
+        Proxy.removePropertyWatcherWithWatch(obj, "value");
     }
 
     /**
@@ -167,6 +209,41 @@ class org.flashNight.aven.Proxy.ProxyTest {
 
         // 断言回调未被调用
         this.assert(!callbackCalled, "Setter 回调已成功移除，未被触发");
+    }
+
+    /**
+     * 测试移除基于 watch 的属性 Setter 监视器。
+     * 验证在移除 Setter 监视器后，属性修改不会再触发回调函数。
+     */
+    private function testRemovePropertyWatcherWithWatch():Void {
+        trace("--- 测试: 移除基于 watch 的属性 setter 监视器 ---");
+        var obj:Object = {}; // 创建一个空对象
+        var callbackCalled:Boolean = false; // 标志，记录回调是否被调用
+
+        var assertFuncRef:Function = this.assertFunc; // 引用断言方法
+
+        /**
+         * Setter 回调函数。
+         * 此回调在移除监视器后不应被调用。
+         * @param newValue 新的属性值。
+         * @param oldValue 旧的属性值。
+         */
+        function setterCallback(newValue:Number, oldValue:Number):Void {
+            trace("[DEBUG] setterCallbackWithWatch 被调用");
+            callbackCalled = true;
+            assertFuncRef(false, "SetterWithWatch 回调不应被触发");
+        }
+
+        // 添加 Setter 监视器
+        Proxy.addPropertySetterWatcherWithWatch(obj, "value", setterCallback);
+        // 移除 Setter 监视器
+        Proxy.removePropertyWatcherWithWatch(obj, "value");
+
+        // 设置属性值，理论上不应触发 Setter 回调
+        obj.value = 200;
+
+        // 断言回调未被调用
+        this.assert(!callbackCalled, "SetterWithWatch 回调已成功移除，未被触发");
     }
 
     /**
@@ -320,13 +397,12 @@ class org.flashNight.aven.Proxy.ProxyTest {
     }
 
     /**
-     * 性能测试。
-     * 测试在大量添加和调用回调时的性能开销。
-     * 注意：此测试可能会消耗较多资源，建议在需要时启用。
+     * 运行所有性能测试方法。
+     * 包括现有的性能测试以及新增的基于 watch 的方法性能测试。
      */
     private function testPerformance():Void {
         trace("--- 测试: 性能评估 ---");
-        
+
         /**
          * 测试1: 添加和触发单一属性的 Setter 回调
          */
@@ -437,8 +513,8 @@ class org.flashNight.aven.Proxy.ProxyTest {
          */
         trace("--- 测试3: 函数调用代理性能评估 ---");
         var obj3:Object = {
-            greet: function(name:String):String {
-                return "Hello, " + name + "!";
+            greet: function(name:String, age:Number):String {
+                return "Hello, " + name + "! You are " + age + " years old.";
             }
         };
         var numFunctionCallbacks3:Number = 100; // 每个函数的回调数量
@@ -447,25 +523,26 @@ class org.flashNight.aven.Proxy.ProxyTest {
 
         /**
          * 函数调用回调函数。
+         * @param name 被调用方法的第一个参数。
+         * @param age 被调用方法的第二个参数。
          */
-        function functionCallback3():Void {
+        function functionCallback3(name:String, age:Number):Void {
+            // trace("[DEBUG] functionCallback3 被调用");
             functionCallbackCallCount3++;
         }
 
-        // 添加函数代理和回调
-        var startAdd3:Number = getTimer();
+        // 添加函数调用监视器
         Proxy.addFunctionCallWatcher(obj3, "greet", functionCallback3);
+
+        // 添加多个函数调用回调
         for (var i3:Number = 0; i3 < numFunctionCallbacks3; i3++) {
             Proxy.addFunctionCallWatcher(obj3, "greet", functionCallback3);
         }
-        var endAdd3:Number = getTimer();
 
-        trace("添加 " + numFunctionCallbacks3 + " 个函数调用回调耗时: " + (endAdd3 - startAdd3) + " 毫秒");
-
-        // 调用函数
+        // 调用函数，触发回调
         var startCall3:Number = getTimer();
         for (var j3:Number = 0; j3 < numFunctionCalls3; j3++) {
-            obj3.greet("Test" + j3);
+            obj3.greet("TestUser", 25);
         }
         var endCall3:Number = getTimer();
 
@@ -538,140 +615,215 @@ class org.flashNight.aven.Proxy.ProxyTest {
 
         trace("设置属性触发嵌套回调耗时: " + (endSet5 - startSet5) + " 毫秒");
         trace("回调调用总次数: " + nestedCallbackCount5);
-/**
- * 性能测试 - Watch vs Proxy
- * 测试场景：单属性 Setter、多属性管理、回调触发
- */
 
-trace("--- 扩展性能测试: Watch vs Proxy ---");
+        /**
+         * 扩展性能测试: Watch vs Proxy vs WatchWithWatch vs AddProperty
+         * 测试场景：单属性 Setter、多属性管理、回调触发
+         */
+        trace("--- 扩展性能测试: Watch vs Proxy vs WatchWithWatch vs AddProperty ---");
 
-// 测试样例1: 单属性单回调性能
-function testSinglePropertySingleCallback():Void {
-    trace("--- 测试样例1: 单属性单回调性能 ---");
+        // 测试样例1: 单属性单回调性能
+        this.testSinglePropertySingleCallback();
 
-    var objWatch:Object = {};
-    var objProxy:Object = {};
-    var callbackCountWatch:Number = 0;
-    var callbackCountProxy:Number = 0;
+        // 测试样例2: 多属性多回调性能
+        this.testMultiplePropertiesMultipleCallbacks();
 
-    function setterCallbackWatch(id:String, oldValue:Number, newValue:Number):Void {
-        callbackCountWatch++;
+        // 测试样例3: 高频触发场景
+        this.testHighFrequencyTrigger();
     }
 
-    function setterCallbackProxy(newValue:Number, oldValue:Number):Void {
-        callbackCountProxy++;
-    }
+    /**
+     * 测试样例1: 单属性单回调性能
+     * 比较原生 watch、Proxy.addPropertySetterWatcher、Proxy.addPropertySetterWatcherWithWatch 和 addProperty 的性能
+     */
+    private function testSinglePropertySingleCallback():Void {
+        trace("--- 测试样例1: 单属性单回调性能 ---");
 
-    var testRounds:Number = 100000; // 增加测试轮数
+        var objWatch:Object = {};
+        var objProxy:Object = {};
+        var objWatchWithWatch:Object = {};
+        var objAddProperty:Object = {};
 
-    // Watch 添加回调
-    var startWatchAdd:Number = getTimer();
-    for (var i:Number = 0; i < testRounds; i++) {
-        objWatch.watch("value" + i, setterCallbackWatch);
-    }
-    var endWatchAdd:Number = getTimer();
+        var callbackCountWatch:Number = 0;
+        var callbackCountProxy:Number = 0;
+        var callbackCountWatchWithWatch:Number = 0;
+        var callbackCountAddProperty:Number = 0;
 
-    // Proxy 添加回调
-    var startProxyAdd:Number = getTimer();
-    for (var i:Number = 0; i < testRounds; i++) {
-        Proxy.addPropertySetterWatcher(objProxy, "value" + i, setterCallbackProxy);
-    }
-    var endProxyAdd:Number = getTimer();
-
-    // Watch 触发回调
-    var startWatchSet:Number = getTimer();
-    objWatch["value" + 0] = 500;
-    objWatch["value" + 1] = 600;
-    objWatch["value" + 2] = 700;
-    objWatch["value" + 3] = 800;
-    var endWatchSet:Number = getTimer();
-
-    // Proxy 触发回调
-    var startProxySet:Number = getTimer();
-    objProxy["value" + 0] = 500;
-    objProxy["value" + 1] = 600;
-    objProxy["value" + 2] = 700;
-    objProxy["value" + 3] = 800;
-    var endProxySet:Number = getTimer();
-
-    trace("Watch 添加单回调耗时: " + (endWatchAdd - startWatchAdd) + " ms");
-    trace("Proxy 添加单回调耗时: " + (endProxyAdd - startProxyAdd) + " ms");
-    trace("Watch 设置属性耗时: " + (endWatchSet - startWatchSet) + " ms");
-    trace("Proxy 设置属性耗时: " + (endProxySet - startProxySet) + " ms");
-    trace("Watch 回调调用次数: " + callbackCountWatch);
-    trace("Proxy 回调调用次数: " + callbackCountProxy);
-}
-
-// 测试样例2: 多属性多回调性能
-function testMultiplePropertiesMultipleCallbacks():Void {
-    trace("--- 测试样例2: 多属性多回调性能 ---");
-
-    var objProxy:Object = {};
-    var callbackCountProxy:Number = 0;
-
-    function setterCallbackProxy(newValue:Number, oldValue:Number):Void {
-        callbackCountProxy++;
-    }
-
-    var numProperties:Number = 500; // 属性数量
-    var numCallbacks:Number = 50;  // 每属性回调数量
-
-    // Proxy 添加回调
-    var startProxyAdd:Number = getTimer();
-    for (var i:Number = 0; i < numProperties; i++) {
-        var propName:String = "prop" + i;
-        for (var j:Number = 0; j < numCallbacks; j++) {
-            Proxy.addPropertySetterWatcher(objProxy, propName, setterCallbackProxy);
+        function setterCallbackWatch(prop:String, oldValue:Number, newValue:Number):Void {
+            callbackCountWatch++;
         }
+
+        function setterCallbackProxy(newValue:Number, oldValue:Number):Void {
+            callbackCountProxy++;
+        }
+
+        function setterCallbackWatchWithWatch(newValue:Number, oldValue:Number):Void {
+            callbackCountWatchWithWatch++;
+        }
+
+        function setterCallbackAddProperty(newValue:Number, oldValue:Number):Void {
+            callbackCountAddProperty++;
+        }
+
+        var testRounds:Number = 50000; // 测试轮数
+
+        // Watch 添加回调
+        var startWatchAdd:Number = getTimer();
+        for (var i:Number = 0; i < testRounds; i++) {
+            objWatch.watch("value" + i, setterCallbackWatch);
+        }
+        var endWatchAdd:Number = getTimer();
+
+        // Proxy 添加回调
+        var startProxyAdd:Number = getTimer();
+        for (var i:Number = 0; i < testRounds; i++) {
+            Proxy.addPropertySetterWatcher(objProxy, "value" + i, setterCallbackProxy);
+        }
+        var endProxyAdd:Number = getTimer();
+
+        // WatchWithWatch 添加回调
+        var startWatchWithWatchAdd:Number = getTimer();
+        for (var i:Number = 0; i < testRounds; i++) {
+            Proxy.addPropertySetterWatcherWithWatch(objWatchWithWatch, "value" + i, setterCallbackWatchWithWatch);
+        }
+        var endWatchWithWatchAdd:Number = getTimer();
+
+        // AddProperty 添加回调
+        var startAddPropertyAdd:Number = getTimer();
+        for (var i:Number = 0; i < testRounds; i++) {
+            // 使用 addProperty 手动添加 Getter 和 Setter
+            var internalPropName:String = "__value" + i + "__";
+            objAddProperty[internalPropName] = undefined; // 初始化内部属性
+
+            objAddProperty.addProperty("value" + i, 
+                function():Number {
+                    // 获取内部属性值
+                    var index:Number = arguments.callee.propIndex;
+                    return this["__value" + index + "__"];
+                },
+                function(newValue:Number):Void {
+                    // Setter 回调
+                    callbackCountAddProperty++;
+                    var index:Number = arguments.callee.propIndex;
+                    this["__value" + index + "__"] = newValue;
+                }
+            );
+
+            // 关联 propIndex，以便 Getter 和 Setter 可以访问
+            arguments.callee.propIndex = i;
+        }
+        var endAddPropertyAdd:Number = getTimer();
+
+        // Watch 触发回调
+        var startWatchSet:Number = getTimer();
+        for (var i:Number = 0; i < 4; i++) {
+            objWatch["value" + i] = 500;
+        }
+        var endWatchSet:Number = getTimer();
+
+        // Proxy 触发回调
+        var startProxySet:Number = getTimer();
+        for (var i:Number = 0; i < 4; i++) {
+            objProxy["value" + i] = 500;
+        }
+        var endProxySet:Number = getTimer();
+
+        // WatchWithWatch 触发回调
+        var startWatchWithWatchSet:Number = getTimer();
+        for (var i:Number = 0; i < 4; i++) {
+            objWatchWithWatch["value" + i] = 500;
+        }
+        var endWatchWithWatchSet:Number = getTimer();
+
+        // AddProperty 触发回调
+        var startAddPropertySet:Number = getTimer();
+        for (var i:Number = 0; i < 4; i++) {
+            objAddProperty["value" + i] = 500;
+        }
+        var endAddPropertySet:Number = getTimer();
+
+        trace("Watch 添加单回调耗时: " + (endWatchAdd - startWatchAdd) + " ms");
+        trace("Proxy 添加单回调耗时: " + (endProxyAdd - startProxyAdd) + " ms");
+        trace("WatchWithWatch 添加单回调耗时: " + (endWatchWithWatchAdd - startWatchWithWatchAdd) + " ms");
+        trace("AddProperty 添加单回调耗时: " + (endAddPropertyAdd - startAddPropertyAdd) + " ms");
+
+        trace("Watch 设置属性耗时: " + (endWatchSet - startWatchSet) + " ms");
+        trace("Proxy 设置属性耗时: " + (endProxySet - startProxySet) + " ms");
+        trace("WatchWithWatch 设置属性耗时: " + (endWatchWithWatchSet - startWatchWithWatchSet) + " ms");
+        trace("AddProperty 设置属性耗时: " + (endAddPropertySet - startAddPropertySet) + " ms");
+
+        trace("Watch 回调调用次数: " + callbackCountWatch);
+        trace("Proxy 回调调用次数: " + callbackCountProxy);
+        trace("WatchWithWatch 回调调用次数: " + callbackCountWatchWithWatch);
+        trace("AddProperty 回调调用次数: " + callbackCountAddProperty);
     }
-    var endProxyAdd:Number = getTimer();
 
-    // Proxy 触发回调
-    var startProxySet:Number = getTimer();
-    for (var i:Number = 0; i < numProperties; i++) {
-        objProxy["prop" + i] = i * 10;
-    }
-    var endProxySet:Number = getTimer();
+    /**
+     * 测试样例2: 多属性多回调性能
+     * 仅针对 Proxy 方法，评估在多属性、多回调情况下的性能。
+     */
+    private function testMultiplePropertiesMultipleCallbacks():Void {
+        trace("--- 测试样例2: 多属性多回调性能 ---");
 
-    trace("Proxy 添加多回调耗时: " + (endProxyAdd - startProxyAdd) + " ms");
-    trace("Proxy 触发多回调耗时: " + (endProxySet - startProxySet) + " ms");
-    trace("Proxy 回调调用次数: " + callbackCountProxy);
-}
+        var objProxy:Object = {};
+        var callbackCountProxy:Number = 0;
 
-// 测试样例3: 高频触发场景
-function testHighFrequencyTrigger():Void {
-    trace("--- 测试样例3: 高频触发场景 ---");
+        function setterCallbackProxy(newValue:Number, oldValue:Number):Void {
+            callbackCountProxy++;
+        }
 
-    var objProxy:Object = {};
-    var callbackCountProxy:Number = 0;
+        var numProperties:Number = 300; // 属性数量
+        var numCallbacks:Number = 30;  // 每属性回调数量
 
-    function setterCallbackProxy(newValue:Number, oldValue:Number):Void {
-        callbackCountProxy++;
-    }
+        // Proxy 添加回调
+        var startProxyAdd:Number = getTimer();
+        for (var i:Number = 0; i < numProperties; i++) {
+            var propName:String = "prop" + i;
+            for (var j:Number = 0; j < numCallbacks; j++) {
+                Proxy.addPropertySetterWatcher(objProxy, propName, setterCallbackProxy);
+            }
+        }
+        var endProxyAdd:Number = getTimer();
 
-    var numCallbacks:Number = 5000; // 回调数量
+        // Proxy 触发回调
+        var startProxySet:Number = getTimer();
+        for (var i:Number = 0; i < numProperties; i++) {
+            objProxy["prop" + i] = i * 10;
+        }
+        var endProxySet:Number = getTimer();
 
-    // 添加回调
-    Proxy.addPropertySetterWatcher(objProxy, "value", setterCallbackProxy);
-
-    // 高频触发回调
-    var startProxySet:Number = getTimer();
-    for (var i:Number = 0; i < numCallbacks; i++) {
-        objProxy.value = i;
-    }
-    var endProxySet:Number = getTimer();
-
-    trace("Proxy 高频触发回调耗时: " + (endProxySet - startProxySet) + " ms");
-    trace("Proxy 回调调用次数: " + callbackCountProxy);
-}
-
-// 运行测试
-testSinglePropertySingleCallback();
-testMultiplePropertiesMultipleCallbacks();
-testHighFrequencyTrigger();
-
-
-
+        trace("Proxy 添加多回调耗时: " + (endProxyAdd - startProxyAdd) + " ms");
+        trace("Proxy 触发多回调耗时: " + (endProxySet - startProxySet) + " ms");
+        trace("Proxy 回调调用次数: " + callbackCountProxy);
     }
 
+    /**
+     * 测试样例3: 高频触发场景
+     * 评估在高频率修改属性值（5,000 次）时，Proxy 类的性能表现。
+     */
+    private function testHighFrequencyTrigger():Void {
+        trace("--- 测试样例3: 高频触发场景 ---");
+
+        var objProxy:Object = {};
+        var callbackCountProxy:Number = 0;
+
+        function setterCallbackProxy(newValue:Number, oldValue:Number):Void {
+            callbackCountProxy++;
+        }
+
+        var numCallbacks:Number = 3000; // 回调数量
+
+        // 添加回调
+        Proxy.addPropertySetterWatcher(objProxy, "value", setterCallbackProxy);
+
+        // 高频触发回调
+        var startProxySet:Number = getTimer();
+        for (var i:Number = 0; i < numCallbacks; i++) {
+            objProxy.value = i;
+        }
+        var endProxySet:Number = getTimer();
+
+        trace("Proxy 高频触发回调耗时: " + (endProxySet - startProxySet) + " ms");
+        trace("Proxy 回调调用次数: " + callbackCountProxy);
+    }
 }
