@@ -17,10 +17,33 @@ _root.UI系统.虚拟币刷新 = function(newValue:Number, oldValue:Number):Void
     _root.UI系统.经济面板刷新(_root.K点图标, "虚拟币");
 };
 
+/*
+
 // 设置金钱和虚拟币的监视器
 // 使用 Proxy 类添加属性 Setter 监视器，监视“金钱”和“虚拟币”变量的变化
 Proxy.addPropertySetterWatcher(_root, "金钱", _root.UI系统.金钱刷新);
 Proxy.addPropertySetterWatcher(_root, "虚拟币", _root.UI系统.虚拟币刷新);
+
+*/
+
+// 辅助函数：设置变量监视器
+// 用于监视指定变量的变化，并在变化时调用对应的刷新函数
+_root.UI系统.设置变量监视 = function(变量名:String, 刷新函数:Function):Void {
+    _root.watch(变量名, function(prop:String, oldValue, newValue):Number {
+        // 检查旧值是否已定义且与新值不同
+        if (oldValue !== undefined && oldValue !== newValue) {
+            刷新函数(); // 调用刷新函数
+        }
+        return newValue; // 保持变量的新值不变
+    });
+};
+
+
+// 设置金钱和虚拟币的监视器，由于目前需求较为简单，直接使用性能开销更低的watch
+// 监视“金钱”变量的变化，当变化时调用金钱刷新函数
+_root.UI系统.设置变量监视("金钱", _root.UI系统.金钱刷新);
+// 监视“虚拟币”变量的变化，当变化时调用虚拟币刷新函数
+_root.UI系统.设置变量监视("虚拟币", _root.UI系统.虚拟币刷新);
 
 
 // 初始化面板函数
