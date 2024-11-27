@@ -3,7 +3,7 @@ import org.flashNight.gesh.string.StringUtils;
 
 class org.flashNight.gesh.xml.TestXmlLoader
 {
-    private static var basePath:String = "C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/scripts/类定义/org/flashNight/gesh/xml/TestXml/";
+    private static var basePath:String = "类定义/org/flashNight/gesh/xml/TestXml/";
 
     /**
      * 主测试方法，用于依次测试所有 XML 文件。
@@ -30,7 +30,7 @@ class org.flashNight.gesh.xml.TestXmlLoader
         var path:String = filePath.split("\\").join("/");
 
         // 前缀 'file:///' 不进行编码
-        return "file:///" + path;
+        return path;
     }
 
     /**
