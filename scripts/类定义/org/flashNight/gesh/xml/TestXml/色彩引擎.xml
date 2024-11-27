@@ -1,0 +1,19 @@
+<ColorEngine>
+    <PresetSet>
+        <name>测试预设</name>
+        <Preset>
+            <level>1</level>
+            <Brightness>-10</Brightness>
+            <Contrast>20</Contrast>
+            <redMultiplier>0.5</redMultiplier>
+            <blueOffset>10</blueOffset>
+        </Preset>
+        <Preset>
+            <level>2</level>
+            <Brightness>0</Brightness>
+            <Contrast>0</Contrast>
+            <redMultiplier>1</redMultiplier>
+            <greenMultiplier>0.8</greenMultiplier>
+        </Preset>
+    </PresetSet>
+</ColorEngine>
