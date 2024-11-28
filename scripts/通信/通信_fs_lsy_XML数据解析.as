@@ -857,37 +857,6 @@ _root.解析背景元素 = function(背景元素数据:Array):Object{
 	return 背景元素数据;
 }
 
-_root.加载并配置子弹映射 = function(xml文件地址:String):Void 
-{
-    var 子弹XML:XML = new XML();
-    子弹XML.ignoreWhite = true;
-    子弹XML.onLoad = function(加载成功:Boolean)
-	{
-        if (加载成功)
-		{
-            _root.弹壳系统.弹壳映射表 = {};
-            var 子弹数据 = _root.解析XML节点(this.firstChild);
-            var bulletNodes:Array = 子弹数据.bullet;
-            for (var i:Number = 0; i < bulletNodes.length; i++)
-            {
-                var 子弹信息:Object = {};
-                var child_Nodes:Array = bulletNodes[i];
-                子弹信息.弹壳 = child_Nodes.casing != undefined ? child_Nodes.casing : "步枪弹壳";
-				子弹信息.myX = child_Nodes.xOffset != undefined ? Number(child_Nodes.xOffset) : 0;
-				子弹信息.myY = child_Nodes.yOffset != undefined ? Number(child_Nodes.yOffset) : 0;
-                子弹信息.模拟方式 = child_Nodes.simulationMethod != undefined ? child_Nodes.simulationMethod : "标准";
-                
-                _root.弹壳系统.弹壳映射表[child_Nodes.name] = 子弹信息;
-            }
-            //_root.服务器.发布服务器消息("子弹映射表配置成功: " + _root.格式化对象为字符串(_root.弹壳系统.弹壳映射表) );
-        }
-		else
-		{
-            //_root.服务器.发布服务器消息("无法加载 XML 文件: " + xml文件地址);
-        }
-    };
-    子弹XML.load(xml文件地址);
-};
 
 _root.色彩引擎 = {};
 _root.色彩引擎.加载并配置色彩预设 = function(xml文件地址:String):Void 

@@ -212,7 +212,7 @@ var loader:BaseXMLLoader = new BaseXMLLoader("data/items/bullets_cases.xml");
 loader.load(
     function(data:Object):Void {
         trace("加载成功！");
-        trace(loader.objectToString(data));
+        trace(loader);
     },
     function():Void {
         trace("加载失败！");
@@ -243,7 +243,7 @@ loader.reload(
 ```actionscript
 if (loader.isLoaded()) {
     var data:Object = loader.getData();
-    trace("已加载的数据：" + loader.objectToString(data));
+    trace("已加载的数据：" + loader);
 }
 ```
 
@@ -334,7 +334,7 @@ var weaponsLoader:WeaponsLoader = WeaponsLoader.getInstance();
 weaponsLoader.loadWeapons(
     function(data:Object):Void {
         trace("主程序：weapons.xml 加载成功！");
-        trace("主程序解析结果: " + weaponsLoader.objectToString(data));
+        trace("主程序解析结果: " + weaponsLoader);
         // 在此处处理 weapons 数据
     },
     function():Void {
@@ -420,7 +420,7 @@ var bulletsLoader:BulletsCasesLoader = BulletsCasesLoader.getInstance();
 bulletsLoader.loadBulletsCases(
     function(data:Object):Void {
         trace("主程序：bullets_cases.xml 加载成功！");
-        trace("主程序解析结果: " + bulletsLoader.objectToString(data));
+        trace("主程序解析结果: " + bulletsLoader);
         // 在此处处理 bullets 数据
     },
     function():Void {
@@ -475,7 +475,7 @@ if (bulletsLoader.isLoaded()) {
 **解决方法**：
 - 确保在输出对象时，调用了 `objectToString` 方法。例如：
   ```actionscript
-  trace("Parsed Data: " + loader.objectToString(data));
+  trace("Parsed Data: " + loader);
   ```
 - 检查 `objectToString` 方法是否正确定义并可访问。
 

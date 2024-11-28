@@ -1,7 +1,34 @@
 ﻿import org.flashNight.sara.util.*;
 import org.flashNight.naki.RandomNumberEngine.*;
+import org.flashNight.gesh.xml.LoadXml.*;
 
 _root.弹壳系统 = {};
+
+_root.弹壳系统.弹壳映射表 = {};
+
+// 获取 BulletsCasesLoader 实例
+var bulletsLoader:BulletsCasesLoader = BulletsCasesLoader.getInstance();
+
+bulletsLoader.loadBulletsCases(
+    function(data:Object):Void {
+        var bulletNodes:Array = data.bullet;
+        for (var i:Number = 0; i < bulletNodes.length; i++)
+        {
+            var bulletInfo:Object = {};
+            var child_Nodes:Array = bulletNodes[i];
+            bulletInfo.弹壳 = child_Nodes.casing != undefined ? child_Nodes.casing : "步枪弹壳";
+            bulletInfo.myX = child_Nodes.xOffset != undefined ? Number(child_Nodes.xOffset) : 0;
+            bulletInfo.myY = child_Nodes.yOffset != undefined ? Number(child_Nodes.yOffset) : 0;
+            bulletInfo.模拟方式 = child_Nodes.simulationMethod != undefined ? child_Nodes.simulationMethod : "标准";
+            
+            _root.弹壳系统.弹壳映射表[child_Nodes.name] = bulletInfo;
+        }
+    },
+    function():Void {
+        trace("BulletsCasesLoader：bullets_cases.xml 加载失败！");
+    }
+);
+
 
 // 物理运动函数
 _root.弹壳系统.弹壳物理运动 = function(弹壳) {   
