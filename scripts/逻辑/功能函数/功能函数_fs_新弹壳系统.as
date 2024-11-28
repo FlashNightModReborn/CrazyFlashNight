@@ -1,16 +1,25 @@
 ﻿import org.flashNight.sara.util.*;
 import org.flashNight.naki.RandomNumberEngine.*;
 import org.flashNight.gesh.xml.LoadXml.*;
+import org.flashNight.neur.Server.*; 
+import org.flashNight.gesh.object.*;
+
 
 _root.弹壳系统 = {};
 
 _root.弹壳系统.弹壳映射表 = {};
 
-// 获取 BulletsCasesLoader 实例
-var bulletsLoader:BulletsCasesLoader = BulletsCasesLoader.getInstance();
-
-bulletsLoader.loadBulletsCases(
+BulletsCasesLoader.getInstance().loadBulletsCases(
     function(data:Object):Void {
+
+        var server = ServerManager.getInstance();
+        var testObj = {};
+        testObj.a = 1;
+        testObj.c = 2;
+        var testObjString = ObjectUtil.toString(testObj);
+        var dataString = ObjectUtil.toString(data);
+        server.sendServerMessage("BulletsCasesLoader：bullets_cases.xml 加载成功！");
+        
         var bulletNodes:Array = data.bullet;
         for (var i:Number = 0; i < bulletNodes.length; i++)
         {
@@ -23,6 +32,8 @@ bulletsLoader.loadBulletsCases(
             
             _root.弹壳系统.弹壳映射表[child_Nodes.name] = bulletInfo;
         }
+
+        server.sendServerMessage("BulletsCasesInfo: " + "配置完毕");
     },
     function():Void {
         trace("BulletsCasesLoader：bullets_cases.xml 加载失败！");
