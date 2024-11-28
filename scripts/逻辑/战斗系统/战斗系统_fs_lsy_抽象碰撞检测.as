@@ -1,7 +1,7 @@
 ﻿import flash.geom.Point;
 import flash.geom.Rectangle;
 import org.flashNight.naki.Sort.*;
-
+import org.flashNight.neur.Event.Delegate;
 
 //输入点与影片剪辑的引用，将点坐标从该影片剪辑转换到gameworld
 _root.pointToGameworld = function(point, loc)
@@ -192,18 +192,9 @@ _root.点集面积系数 = function(点集:Array):Number {
 
     return Math.abs(面积);//这个函数用于计算面积比值，因此不需要/2
 };
-_root.创建向量 = function(x:Number, y:Number):Object 
-{
-	return new 向量(x, y);
-	/*return {
-        x: x, 
-        y: y, 
-
-		叉积: function(v:Object):Number {
-			return this.x * v.y - this.y * v.x;
-		}
-    };*/
-};
+_root.创建向量 = Delegate.create(_root, function(x:Number, y:Number):Object {
+    return new 向量(x, y);
+});
 // 创建一个向量对象的函数，包含基本的向量操作：减法、点积和求垂直向量（法线）
 
 _root.投影多边形 = function(轴:Object, 多边形:Array):Object 
