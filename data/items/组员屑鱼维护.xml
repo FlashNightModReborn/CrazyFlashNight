@@ -1340,4 +1340,32 @@
       </magicdefence>
     </equipped>
   </item>
+  <item>
+    <id>8044</id>
+    <name>通关证明</name>
+    <displayname>通关证明</displayname>
+    <icon>A兵团项链</icon>
+    <type>防具</type>
+    <use>颈部装备</use>
+    <weight>0</weight>
+    <price>0</price>
+    <description>不是哥们，你真拿这套装备通关了啊？</description>
+    <level>70</level>
+    <equipped>
+      <dressup>
+      </dressup>
+      <hp>3000</hp>
+      <mp>3000</mp>
+      <force>100</force>
+      <damage>2000</damage>
+	  <gunpower>500</gunpower>
+	  <knifepower>500</knifepower>
+      <defence>3900</defence>
+      <bullet>0</bullet>
+      <title>看着眼熟</title>
+	  <magicdefence>
+        <全属性>50</全属性>
+      </magicdefence>
+    </equipped>
+  </item>
 </root>
