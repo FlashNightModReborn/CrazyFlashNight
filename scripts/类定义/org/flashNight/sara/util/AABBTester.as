@@ -27,6 +27,7 @@ class org.flashNight.sara.util.AABBTester {
         this.testClone();
         this.testIntersects();
         this.testGetMTV();
+        this.testGetMTVV();
         this.testGetMTVCornerOverlap();
         this.testGetMTVNestedBoxes();
         this.testGetMTVIdenticalBoxes();
@@ -61,6 +62,7 @@ class org.flashNight.sara.util.AABBTester {
         this.performanceTestGetCenterV(); // New
         this.performanceTestGetVertices(); // New
         this.performanceTestGetMTV();
+        this.performanceTestGetMTVV();
         this.performanceTestContainsPoint();
         this.performanceTestContainsPointV(); // New
         this.performanceTestClosestPoint();
@@ -159,6 +161,25 @@ class org.flashNight.sara.util.AABBTester {
         var box4:AABB = new AABB(80, 120, -10, 20); // Overlaps only on the x-axis
         mtv = box1.getMTV(box4);
         this.assert(mtv.dx == -20 && mtv.dy == 0, "getMTV() - x-axis only overlap");
+    }
+
+    // Test getMTV() method
+    private function testGetMTVV():Void {
+        var box1:AABB = new AABB(0, 100, 0, 50);
+        var box2:AABB = new AABB(90, 150, 40, 90); // Overlaps on both axes
+
+        var mtv:Vector = box1.getMTVV(box2);
+
+        // Minimal overlap is along the x-axis
+        this.assert(mtv.x == -10 && mtv.y == 0, "getMTVV() - minimal x-axis overlap");
+
+        var box3:AABB = new AABB(-50, 0, -50, 0); // Touching at the corner
+        mtv = box1.getMTVV(box3);
+        this.assert(mtv == null, "getMTVV() - corner-touching boxes (no overlap)");
+
+        var box4:AABB = new AABB(80, 120, -10, 20); // Overlaps only on the x-axis
+        mtv = box1.getMTVV(box4);
+        this.assert(mtv.x == -20 && mtv.y == 0, "getMTVV() - x-axis only overlap");
     }
 
     // Test getMTVCornerOverlap
@@ -522,6 +543,22 @@ class org.flashNight.sara.util.AABBTester {
         var elapsed:Number = endTime - startTime;
 
         trace("[PERF] getMTV() executed " + iterations + " times in " + this.formatTime(elapsed));
+    }
+
+    // Performance test for getMTV()
+    private function performanceTestGetMTVV():Void {
+        var iterations:Number = 10000;
+        var box1:AABB = new AABB(0, 100, 0, 50);
+        var box2:AABB = new AABB(50, 150, 25, 75);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            box1.getMTVV(box2);
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] getMTVV() executed " + iterations + " times in " + this.formatTime(elapsed));
     }
 
     // Performance test for intersects()
