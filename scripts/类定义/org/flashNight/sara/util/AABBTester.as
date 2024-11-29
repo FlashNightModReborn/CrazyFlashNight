@@ -27,6 +27,13 @@ class org.flashNight.sara.util.AABBTester {
         this.testClone();
         this.testIntersects();
         this.testGetMTV();
+        this.testGetMTVCornerOverlap();
+        this.testGetMTVNestedBoxes();
+        this.testGetMTVIdenticalBoxes();
+        this.testGetMTVZeroOverlap();
+        this.testGetMTVMinimalOverlap();
+        this.testGetMTVNegativeCoordinates();
+        this.testGetMTVEqualPenetrations();
         this.testContainsPoint();
         this.testClosestPoint();
         this.testIntersectsLine();
@@ -66,6 +73,7 @@ class org.flashNight.sara.util.AABBTester {
             trace("Some tests failed. Please review the failed test cases.");
         }
     }
+
 
     // Helper method to assert conditions
     private function assert(condition:Boolean, testName:String):Void {
@@ -119,18 +127,105 @@ class org.flashNight.sara.util.AABBTester {
 
         var mtv:Object = box1.getMTV(box2);
 
-        // MTV should be minimal on the x-axis: overlapX = 100 - 90 = 10
-        this.assert(mtv.dx == 10 && mtv.dy == 0, "getMTV() - minimal x-axis overlap");
+        // Minimal overlap is along the x-axis
+        this.assert(mtv.dx == -10 && mtv.dy == 0, "getMTV() - minimal x-axis overlap");
 
         var box3:AABB = new AABB(-50, 0, -50, 0); // Touching at the corner
-
         mtv = box1.getMTV(box3);
         this.assert(mtv == null, "getMTV() - corner-touching boxes (no overlap)");
 
         var box4:AABB = new AABB(80, 120, -10, 20); // Overlaps only on the x-axis
         mtv = box1.getMTV(box4);
-        this.assert(mtv.dx == 20 && mtv.dy == 0, "getMTV() - x-axis only overlap");
+        this.assert(mtv.dx == -20 && mtv.dy == 0, "getMTV() - x-axis only overlap");
     }
+
+
+        // Test getMTVCornerOverlap
+    private function testGetMTVCornerOverlap():Void {
+        var box1:AABB = new AABB(0, 100, 0, 100);
+        var box2:AABB = new AABB(100, 200, 100, 200); // Touching at the corner
+
+        var mtv:Object = box1.getMTV(box2);
+        this.assert(mtv == null, "getMTV() - corner-touching boxes (no overlap)");
+    }
+
+    // Test getMTVNestedBoxes
+    private function testGetMTVNestedBoxes():Void {
+        var outer:AABB = new AABB(0, 100, 0, 100);
+        var inner:AABB = new AABB(25, 75, 25, 75);
+
+        var mtv:Object = inner.getMTV(outer);
+
+        // Expect MTV to move inner box outwards by 75 units along either axis
+        this.assert(
+            (mtv.dx == -75 && mtv.dy == 0) || 
+            (mtv.dx == 75 && mtv.dy == 0) || 
+            (mtv.dx == 0 && mtv.dy == -75) || 
+            (mtv.dx == 0 && mtv.dy == 75), 
+            "getMTV() - nested boxes"
+        );
+    }
+
+
+
+
+
+    // Test getMTVIdenticalBoxes
+    private function testGetMTVIdenticalBoxes():Void {
+        var box1:AABB = new AABB(0, 100, 0, 100);
+        var box2:AABB = new AABB(0, 100, 0, 100);
+
+        var mtv:Object = box1.getMTV(box2);
+        // Expect MTV to resolve along any axis with a value of 100
+        this.assert(
+            mtv != null && (Math.abs(mtv.dx) == 100 || Math.abs(mtv.dy) == 100),
+            "getMTV() - identical boxes"
+        );
+    }
+
+
+    // Test getMTVZeroOverlap
+    private function testGetMTVZeroOverlap():Void {
+        var box1:AABB = new AABB(0, 100, 0, 100);
+        var box2:AABB = new AABB(100, 200, 0, 100); // Touching on the edge
+
+        var mtv:Object = box1.getMTV(box2);
+        this.assert(mtv == null, "getMTV() - edge-touching boxes (no overlap)");
+    }
+
+
+    // Test getMTVMinimalOverlap
+    private function testGetMTVMinimalOverlap():Void {
+        var box1:AABB = new AABB(0, 100, 0, 100);
+        var box2:AABB = new AABB(99.99, 200, 50, 150); // Overlaps by 0.01 on x-axis
+
+        var mtv:Object = box1.getMTV(box2);
+        this.assert(Math.abs(mtv.dx + 0.01) < 0.0001 && mtv.dy == 0, "getMTV() - minimal x-axis overlap");
+    }
+
+    // Test getMTVNegativeCoordinates
+    private function testGetMTVNegativeCoordinates():Void {
+        var box1:AABB = new AABB(-100, 0, -100, 0);
+        var box2:AABB = new AABB(-50, 50, -50, 50); // Overlaps on both axes
+
+        var mtv:Object = box1.getMTV(box2);
+
+        // Minimal MTV should resolve along x-axis by 50 units
+        this.assert(mtv.dx == -50 && mtv.dy == 0, "getMTV() - negative coordinates overlap");
+    }
+
+
+    // Test getMTVEqualPenetrations
+    private function testGetMTVEqualPenetrations():Void {
+        var box1:AABB = new AABB(0, 100, 0, 100);
+        var box2:AABB = new AABB(90, 190, 90, 190); // Overlaps by 10 on both axes
+
+        var mtv:Object = box1.getMTV(box2);
+
+        // Minimal MTV resolves along the x-axis by 10 units
+        this.assert(mtv.dx == -10 && mtv.dy == 0, "getMTV() - equal penetration on both axes");
+    }
+
 
     // Test containsPoint() method
     private function testContainsPoint():Void {
