@@ -102,8 +102,9 @@ class org.flashNight.sara.util.AABB {
 
     // 检查线段是否与AABB相交
     public function intersectsLine(x1:Number, y1:Number, x2:Number, y2:Number):Boolean {
-        // 快速包含性检查
-        if (this.containsPoint(x1, y1) || this.containsPoint(x2, y2)) {
+        // 快速包含性检查（内联 containsPoint 逻辑）
+        if ((x1 >= this.left && x1 <= this.right && y1 >= this.top && y1 <= this.bottom) ||
+            (x2 >= this.left && x2 <= this.right && y2 >= this.top && y2 <= this.bottom)) {
             return true;
         }
 
@@ -185,64 +186,77 @@ class org.flashNight.sara.util.AABB {
     }
 
 
-    // 检查AABB是否与给定的圆相交
+
     public function intersectsCircle(circleX:Number, circleY:Number, radius:Number):Boolean {
-        var nearestX:Number = Math.max(this.left, Math.min(circleX, this.right));
-        var nearestY:Number = Math.max(this.top, Math.min(circleY, this.bottom));
-        var deltaX:Number = circleX - nearestX;
-        var deltaY:Number = circleY - nearestY;
+        // 局部化边界值
+        var left:Number = this.left, right:Number = this.right;
+        var top:Number = this.top, bottom:Number = this.bottom;
+
+        // 直接计算 deltaX 和 deltaY
+        var deltaX:Number = circleX - ((circleX < left) ? left : (circleX > right ? right : circleX));
+        var deltaY:Number = circleY - ((circleY < top) ? top : (circleY > bottom ? bottom : circleY));
+
+        // 判断是否在半径范围内
         return (deltaX * deltaX + deltaY * deltaY) <= (radius * radius);
     }
 
-    // 检查射线是否与AABB相交
-    public function intersectsRay(rayOriginX:Number, rayOriginY:Number, rayDirX:Number, rayDirY:Number):Boolean {
-        var tMin:Number, tMax:Number, tyMin:Number, tyMax:Number;
-        var invDirX:Number = 1.0 / rayDirX;
-        var invDirY:Number = 1.0 / rayDirY;
 
+
+    public function intersectsRay(rayOriginX:Number, rayOriginY:Number, rayDirX:Number, rayDirY:Number):Boolean {
+        var invDirX:Number, invDirY:Number, tMin:Number, tMax:Number, tyMin:Number, tyMax:Number;
+        var temp:Number;
+
+        // 计算 X 轴交点
         if (rayDirX != 0) {
+            invDirX = 1.0 / rayDirX;
             tMin = (this.left - rayOriginX) * invDirX;
             tMax = (this.right - rayOriginX) * invDirX;
 
+            // 确保 tMin 是最小值，tMax 是最大值
             if (tMin > tMax) {
-                var temp:Number = tMin;
+                temp = tMin;
                 tMin = tMax;
                 tMax = temp;
             }
+        } else if (rayOriginX < this.left || rayOriginX > this.right) {
+            return false; // 射线平行且不在 AABB 范围内
         } else {
-            if (rayOriginX < this.left || rayOriginX > this.right) {
-                return false;
-            }
             tMin = Number.NEGATIVE_INFINITY;
             tMax = Number.POSITIVE_INFINITY;
         }
 
+        // 计算 Y 轴交点
         if (rayDirY != 0) {
+            invDirY = 1.0 / rayDirY;
             tyMin = (this.top - rayOriginY) * invDirY;
             tyMax = (this.bottom - rayOriginY) * invDirY;
 
+            // 确保 tyMin 是最小值，tyMax 是最大值
             if (tyMin > tyMax) {
                 temp = tyMin;
                 tyMin = tyMax;
                 tyMax = temp;
             }
+        } else if (rayOriginY < this.top || rayOriginY > this.bottom) {
+            return false; // 射线平行且不在 AABB 范围内
         } else {
-            if (rayOriginY < this.top || rayOriginY > this.bottom) {
-                return false;
-            }
             tyMin = Number.NEGATIVE_INFINITY;
             tyMax = Number.POSITIVE_INFINITY;
         }
 
-        if ((tMin > tyMax) || (tyMin > tMax)) {
+        // 判断 X 和 Y 的范围是否重叠
+        if (tMin > tyMax || tyMin > tMax) {
             return false;
         }
 
-        tMin = Math.max(tMin, tyMin);
-        tMax = Math.min(tMax, tyMax);
+        // 更新 tMin 和 tMax，取交集
+        tMin = (tMin > tyMin) ? tMin : tyMin;
+        tMax = (tMax < tyMax) ? tMax : tyMax;
 
+        // 检查射线是否与 AABB 相交
         return tMax >= 0;
     }
+
 
     // 检查当前AABB是否与另一个AABB相交
     public function intersects(other:AABB):Boolean {
@@ -250,41 +264,67 @@ class org.flashNight.sara.util.AABB {
                  this.bottom < other.top || this.top > other.bottom);
     }
 
-    // 将当前AABB与另一个AABB合并，返回新的AABB
     public function merge(other:AABB):AABB {
-        var newLeft:Number = Math.min(this.left, other.left);
-        var newRight:Number = Math.max(this.right, other.right);
-        var newTop:Number = Math.min(this.top, other.top);
-        var newBottom:Number = Math.max(this.bottom, other.bottom);
-        return new AABB(newLeft, newRight, newTop, newBottom);
+        return new AABB(
+            (other.left < this.left) ? other.left : this.left,  // newLeft
+            (other.right > this.right) ? other.right : this.right,  // newRight
+            (other.top < this.top) ? other.top : this.top,  // newTop
+            (other.bottom > this.bottom) ? other.bottom : this.bottom // newBottom
+        );
     }
 
-    // 合并另一个AABB到当前AABB
+
     public function mergeWith(other:AABB):Void {
-        this.left = Math.min(this.left, other.left);
-        this.right = Math.max(this.right, other.right);
-        this.top = Math.min(this.top, other.top);
-        this.bottom = Math.max(this.bottom, other.bottom);
+        // 局部化变量，减少属性访问
+        var left2:Number = other.left, right2:Number = other.right;
+        var top2:Number = other.top, bottom2:Number = other.bottom;
+
+        // 使用 if-else 更新 this 的边界值
+        if (this.left > left2) {
+            this.left = left2;
+        }
+        if (this.right < right2) {
+            this.right = right2;
+        }
+        if (this.top > top2) {
+            this.top = top2;
+        }
+        if (this.bottom < bottom2) {
+            this.bottom = bottom2;
+        }
     }
 
-    // 批量合并多个AABB
+
+
     public static function mergeBatch(aabbs:Array):AABB {
-        if (aabbs.length == 0) {
+        var len = aabbs.length;
+
+        if (len == 0) {
             throw new Error("mergeBatch: No AABBs to merge.");
         }
 
-        var mergedAABB:AABB = new AABB(aabbs[0].left, aabbs[0].right, aabbs[0].top, aabbs[0].bottom);
+        var lastAABB = aabbs[len - 1];
 
-        for (var i:Number = 1; i < aabbs.length; i++) {
-            mergedAABB.mergeWith(aabbs[i]);
+        // 初始化边界值为最后一个 AABB 的值（逆序遍历）
+        var left:Number = lastAABB.left;
+        var right:Number = lastAABB.right;
+        var top:Number = lastAABB.top;
+        var bottom:Number = lastAABB.bottom;
+
+        // 逆序遍历并更新边界值
+        for (var i:Number = len - 2; i >= 0; i--) {
+            var aabb:AABB = aabbs[i];
+            if (aabb.left < left) left = aabb.left;
+            if (aabb.right > right) right = aabb.right;
+            if (aabb.top < top) top = aabb.top;
+            if (aabb.bottom > bottom) bottom = aabb.bottom;
         }
 
-        // 调整最大边界以确保包含性
-        mergedAABB.right += 1;
-        mergedAABB.bottom += 1;
-
-        return mergedAABB;
+        // 返回新的 AABB 对象，调整边界值以确保包含性
+        return new AABB(left, right + 1, top, bottom + 1);
     }
+
+
 
     // 将AABB细分为四个更小的AABB
     public function subdivide():Array {
