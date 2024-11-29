@@ -1,4 +1,5 @@
 ﻿import org.flashNight.sara.util.*;
+import org.flashNight.sara.graphics.*;
 
 class org.flashNight.sara.util.AABBTester {
     private var totalTests:Number = 0;
@@ -34,10 +35,15 @@ class org.flashNight.sara.util.AABBTester {
         this.testGetMTVNegativeCoordinates();
         this.testGetMTVEqualPenetrations();
         this.testContainsPoint();
+        this.testContainsPointV(); // New
         this.testClosestPoint();
+        this.testClosestPointV(); // New
         this.testIntersectsLine();
+        this.testIntersectsLineV(); // New
         this.testIntersectsCircle();
+        this.testIntersectsCircleV(); // New
         this.testIntersectsRay();
+        this.testIntersectsRayV(); // New
         this.testMerge();
         this.testMergeWith();
         this.testMergeBatch();
@@ -45,17 +51,26 @@ class org.flashNight.sara.util.AABBTester {
         this.testGetArea();
         this.testFromMovieClip();
         this.testFromBullet();
+        this.testGetCenter(); // New
+        this.testGetVertices(); // New
 
         // Run performance tests
         this.performanceTestClone();
         this.performanceTestGetWidthAndLength();
         this.performanceTestGetCenter();
+        this.performanceTestGetCenterV(); // New
+        this.performanceTestGetVertices(); // New
         this.performanceTestGetMTV();
         this.performanceTestContainsPoint();
+        this.performanceTestContainsPointV(); // New
         this.performanceTestClosestPoint();
+        this.performanceTestClosestPointV(); // New
         this.performanceTestIntersectsLine();
+        this.performanceTestIntersectsLineV(); // New
         this.performanceTestIntersectsCircle();
+        this.performanceTestIntersectsCircleV(); // New
         this.performanceTestIntersectsRay();
+        this.performanceTestIntersectsRayV(); // New
         this.performanceTestIntersects();
         this.performanceTestMerge();
         this.performanceTestMergeWith();
@@ -492,20 +507,6 @@ class org.flashNight.sara.util.AABBTester {
         trace("[PERF] getWidth() and getLength() executed " + (iterations * 2) + " times in " + this.formatTime(elapsed));
     }
 
-    // Performance test for getCenter()
-    private function performanceTestGetCenter():Void {
-        var iterations:Number = 100000;
-        var box:AABB = new AABB(0, 100, 0, 50);
-
-        var startTime:Number = getTimer();
-        for (var i:Number = 0; i < iterations; i++) {
-            var center:Object = box.getCenter();
-        }
-        var endTime:Number = getTimer();
-        var elapsed:Number = endTime - startTime;
-
-        trace("[PERF] getCenter() executed " + iterations + " times in " + this.formatTime(elapsed));
-    }
 
     // Performance test for getMTV()
     private function performanceTestGetMTV():Void {
@@ -541,6 +542,198 @@ class org.flashNight.sara.util.AABBTester {
         trace("[PERF] intersects() executed " + (iterations * 2) + " times in " + this.formatTime(elapsed));
     }
 
+    // Test getCenter() method (returns Vector)
+    private function testGetCenter():Void {
+        var box:AABB = new AABB(0, 100, 0, 50);
+        var center:Vector = box.getCenter();
+
+        this.assert(center.x == 50 && center.y == 25, "getCenter() - correct center");
+    }
+
+    // New Correctness Test: getCenterV() is not needed since getCenter() already returns Vector
+
+    // Test getVertices() method
+    private function testGetVertices():Void {
+        var box:AABB = new AABB(0, 100, 0, 50);
+        var vertices:Array = box.getVertices();
+
+        var expectedVertices:Array = [
+            new Vector(0, 0),
+            new Vector(100, 0),
+            new Vector(100, 50),
+            new Vector(0, 50)
+        ];
+
+        this.assert(vertices.length == 4, "getVertices() - number of vertices");
+
+        for (var i:Number = 0; i < vertices.length; i++) {
+            var v:Vector = vertices[i];
+            var expected:Vector = expectedVertices[i];
+            this.assert(v.x == expected.x && v.y == expected.y, "getVertices() - vertex " + (i+1));
+        }
+    }
+
+    // Test containsPointV() method
+    private function testContainsPointV():Void {
+        var box:AABB = new AABB(0, 100, 0, 50);
+        var insidePoint:Vector = new Vector(50, 25);
+        var edgePoint:Vector = new Vector(100, 50);
+        var outsidePoint:Vector = new Vector(150, 75);
+
+        this.assert(box.containsPointV(insidePoint) == true, "containsPointV() - point inside");
+        this.assert(box.containsPointV(edgePoint) == true, "containsPointV() - point on edge");
+        this.assert(box.containsPointV(outsidePoint) == false, "containsPointV() - point outside");
+    }
+
+    // Test closestPointV() method
+    private function testClosestPointV():Void {
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        // Point inside
+        var insidePoint:Vector = new Vector(50, 25);
+        var closest:Vector = box.closestPointV(insidePoint);
+        this.assert(closest.x == 50 && closest.y == 25, "closestPointV() - point inside");
+
+        // Point to the left
+        var leftPoint:Vector = new Vector(-10, 25);
+        closest = box.closestPointV(leftPoint);
+        this.assert(closest.x == 0 && closest.y == 25, "closestPointV() - point left outside");
+
+        // Point above
+        var abovePoint:Vector = new Vector(50, -20);
+        closest = box.closestPointV(abovePoint);
+        this.assert(closest.x == 50 && closest.y == 0, "closestPointV() - point above outside");
+
+        // Point to the bottom-right
+        var bottomRightPoint:Vector = new Vector(150, 100);
+        closest = box.closestPointV(bottomRightPoint);
+        this.assert(closest.x == 100 && closest.y == 50, "closestPointV() - point bottom-right outside");
+    }
+
+    // Test intersectsLineV() method
+    private function testIntersectsLineV():Void {
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        // Line entirely inside
+        var lineStart:Vector = new Vector(10, 10);
+        var lineEnd:Vector = new Vector(90, 40);
+        this.assert(box.intersectsLineV(lineStart, lineEnd) == true, "intersectsLineV() - line inside");
+
+        // Line partially inside
+        lineStart = new Vector(-50, 25);
+        lineEnd = new Vector(50, 25);
+        this.assert(box.intersectsLineV(lineStart, lineEnd) == true, "intersectsLineV() - line partially inside");
+
+        // Line entirely outside
+        lineStart = new Vector(-50, -50);
+        lineEnd = new Vector(-10, -10);
+        this.assert(box.intersectsLineV(lineStart, lineEnd) == false, "intersectsLineV() - line outside");
+
+        // Line touching the edge
+        lineStart = new Vector(100, 0);
+        lineEnd = new Vector(200, 50);
+        this.assert(box.intersectsLineV(lineStart, lineEnd) == true, "intersectsLineV() - line touching edge");
+    }
+
+    // Test intersectsCircleV() method
+    private function testIntersectsCircleV():Void {
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        // Circle entirely inside
+        var circleCenter:Vector = new Vector(50, 25);
+        var radius:Number = 10;
+        this.assert(box.intersectsCircleV(circleCenter, radius) == true, "intersectsCircleV() - circle inside");
+
+        // Circle overlapping on the edge
+        circleCenter = new Vector(100, 25);
+        radius = 10;
+        this.assert(box.intersectsCircleV(circleCenter, radius) == true, "intersectsCircleV() - circle overlapping edge");
+
+        // Circle entirely outside
+        circleCenter = new Vector(150, 25);
+        radius = 10;
+        this.assert(box.intersectsCircleV(circleCenter, radius) == false, "intersectsCircleV() - circle outside");
+
+        // Circle overlapping corner
+        circleCenter = new Vector(-10, -10);
+        radius = 15;
+        this.assert(box.intersectsCircleV(circleCenter, radius) == true, "intersectsCircleV() - circle overlapping corner");
+    }
+
+    // Test intersectsRayV() method
+    private function testIntersectsRayV():Void {
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        // Ray originating inside and going out
+        var rayOrigin:Vector = new Vector(50, 25);
+        var rayDir:Vector = new Vector(1, 0);
+        this.assert(box.intersectsRayV(rayOrigin, rayDir) == true, "intersectsRayV() - ray from inside");
+
+        // Ray originating outside and intersecting
+        rayOrigin = new Vector(-50, 25);
+        rayDir = new Vector(1, 0);
+        this.assert(box.intersectsRayV(rayOrigin, rayDir) == true, "intersectsRayV() - ray intersecting box");
+
+        // Ray originating outside and not intersecting
+        rayOrigin = new Vector(-50, -50);
+        rayDir = new Vector(1, 0);
+        this.assert(box.intersectsRayV(rayOrigin, rayDir) == false, "intersectsRayV() - ray not intersecting box");
+
+        // Ray parallel to y-axis and not intersecting
+        rayOrigin = new Vector(150, 25);
+        rayDir = new Vector(0, 1);
+        this.assert(box.intersectsRayV(rayOrigin, rayDir) == false, "intersectsRayV() - ray parallel and not intersecting");
+    }
+
+    // ===================
+    // Performance Tests
+    // ===================
+
+    // Performance test for getCenter()
+    private function performanceTestGetCenter():Void {
+        var iterations:Number = 100000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            var center:Object = box.getCenter();
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] getCenter() executed " + iterations + " times in " + this.formatTime(elapsed));
+    }
+
+    // New Performance Test: getCenter() returning Vector
+    private function performanceTestGetCenterV():Void {
+        var iterations:Number = 100000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            var center:Vector = box.getCenter();
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] getCenter() returning Vector executed " + iterations + " times in " + this.formatTime(elapsed));
+    }
+
+    // New Performance Test: getVertices()
+    private function performanceTestGetVertices():Void {
+        var iterations:Number = 10000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            var vertices:Array = box.getVertices();
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] getVertices() executed " + iterations + " times in " + this.formatTime(elapsed));
+    }
+
     // Performance test for containsPoint()
     private function performanceTestContainsPoint():Void {
         var iterations:Number = 10000;
@@ -557,6 +750,24 @@ class org.flashNight.sara.util.AABBTester {
         var elapsed:Number = endTime - startTime;
 
         trace("[PERF] containsPoint() executed " + (iterations * 2) + " times in " + this.formatTime(elapsed));
+    }
+
+    // New Performance Test: containsPointV()
+    private function performanceTestContainsPointV():Void {
+        var iterations:Number = 10000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+        var insidePoint:Vector = new Vector(50, 25);
+        var outsidePoint:Vector = new Vector(150, 75);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            box.containsPointV(insidePoint);
+            box.containsPointV(outsidePoint);
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] containsPointV() executed " + (iterations * 2) + " times in " + this.formatTime(elapsed));
     }
 
     // Performance test for closestPoint()
@@ -579,6 +790,28 @@ class org.flashNight.sara.util.AABBTester {
         var elapsed:Number = endTime - startTime;
 
         trace("[PERF] closestPoint() executed " + (iterations * points.length) + " times in " + this.formatTime(elapsed));
+    }
+
+    // New Performance Test: closestPointV()
+    private function performanceTestClosestPointV():Void {
+        var iterations:Number = 10000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+        var points:Array = [
+            new Vector(50, 25),
+            new Vector(-50, -25),
+            new Vector(150, 75)
+        ];
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            for (var j:Number = 0; j < points.length; j++) {
+                box.closestPointV(points[j]);
+            }
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] closestPointV() executed " + (iterations * points.length) + " times in " + this.formatTime(elapsed));
     }
 
     // Performance test for intersectsLine()
@@ -604,6 +837,29 @@ class org.flashNight.sara.util.AABBTester {
         trace("[PERF] intersectsLine() executed " + (iterations * lines.length) + " times in " + this.formatTime(elapsed));
     }
 
+    // New Performance Test: intersectsLineV()
+    private function performanceTestIntersectsLineV():Void {
+        var iterations:Number = 10000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+        var lines:Array = [
+            {start: new Vector(10, 10), end: new Vector(90, 40)},
+            {start: new Vector(-50, 25), end: new Vector(50, 25)},
+            {start: new Vector(-50, -50), end: new Vector(-10, -10)},
+            {start: new Vector(100, 0), end: new Vector(200, 50)}
+        ];
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            for (var j:Number = 0; j < lines.length; j++) {
+                box.intersectsLineV(lines[j].start, lines[j].end);
+            }
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] intersectsLineV() executed " + (iterations * lines.length) + " times in " + this.formatTime(elapsed));
+    }
+
     // Performance test for intersectsCircle()
     private function performanceTestIntersectsCircle():Void {
         var iterations:Number = 10000;
@@ -626,6 +882,28 @@ class org.flashNight.sara.util.AABBTester {
         trace("[PERF] intersectsCircle() executed " + (iterations * circles.length) + " times in " + this.formatTime(elapsed));
     }
 
+    // New Performance Test: intersectsCircleV()
+    private function performanceTestIntersectsCircleV():Void {
+        var iterations:Number = 10000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+        var circles:Array = [
+            {center: new Vector(50, 25), r: 10},
+            {center: new Vector(150, 75), r: 10},
+            {center: new Vector(-10, -10), r: 15}
+        ];
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            for (var j:Number = 0; j < circles.length; j++) {
+                box.intersectsCircleV(circles[j].center, circles[j].r);
+            }
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] intersectsCircleV() executed " + (iterations * circles.length) + " times in " + this.formatTime(elapsed));
+    }
+
     // Performance test for intersectsRay()
     private function performanceTestIntersectsRay():Void {
         var iterations:Number = 10000;
@@ -646,6 +924,28 @@ class org.flashNight.sara.util.AABBTester {
         var elapsed:Number = endTime - startTime;
 
         trace("[PERF] intersectsRay() executed " + (iterations * rays.length) + " times in " + this.formatTime(elapsed));
+    }
+
+    // New Performance Test: intersectsRayV()
+    private function performanceTestIntersectsRayV():Void {
+        var iterations:Number = 10000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+        var rays:Array = [
+            {origin: new Vector(50, 25), dir: new Vector(1, 0)},
+            {origin: new Vector(-50, 25), dir: new Vector(1, 0)},
+            {origin: new Vector(50, -10), dir: new Vector(0, 1)}
+        ];
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            for (var j:Number = 0; j < rays.length; j++) {
+                box.intersectsRayV(rays[j].origin, rays[j].dir);
+            }
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] intersectsRayV() executed " + (iterations * rays.length) + " times in " + this.formatTime(elapsed));
     }
 
     // Performance test for merge()
@@ -783,8 +1083,4 @@ class org.flashNight.sara.util.AABBTester {
         // Clean up
         _root.removeMovieClip(bulletMC);
     }
-
-    // ===================
-    // End of AABBTester
-    // ===================
 }
