@@ -12,11 +12,10 @@ class org.flashNight.sara.util.AABBTester {
         this.passedTests = 0;
         this.failedTests = 0;
 
-        // In AABBTester constructor or before tests
+        // Initialize gameworld if not present
         if (_root.gameworld == undefined) {
             _root.createEmptyMovieClip("gameworld", _root.getNextHighestDepth());
         }
-
     }
 
     // Method to run all tests
@@ -46,21 +45,26 @@ class org.flashNight.sara.util.AABBTester {
         this.testGetArea();
         this.testFromMovieClip();
         this.testFromBullet();
-        // Note: draw() method involves graphical output and is not suitable for automated testing
 
         // Run performance tests
-        this.performanceTestIntersects();
+        this.performanceTestClone();
+        this.performanceTestGetWidthAndLength();
+        this.performanceTestGetCenter();
         this.performanceTestGetMTV();
         this.performanceTestContainsPoint();
         this.performanceTestClosestPoint();
         this.performanceTestIntersectsLine();
         this.performanceTestIntersectsCircle();
         this.performanceTestIntersectsRay();
+        this.performanceTestIntersects();
         this.performanceTestMerge();
         this.performanceTestMergeWith();
         this.performanceTestMergeBatch();
         this.performanceTestSubdivide();
         this.performanceTestGetArea();
+        this.performanceTestFromMovieClip();
+        this.performanceTestFromBullet();
+        // Note: draw() method involves graphical output and is not suitable for automated testing
 
         // Summary of tests
         trace("=== Test Summary ===");
@@ -74,7 +78,6 @@ class org.flashNight.sara.util.AABBTester {
         }
     }
 
-
     // Helper method to assert conditions
     private function assert(condition:Boolean, testName:String):Void {
         this.totalTests++;
@@ -86,6 +89,10 @@ class org.flashNight.sara.util.AABBTester {
             trace("[FAIL] " + testName);
         }
     }
+
+    // ===================
+    // Correctness Tests
+    // ===================
 
     // Test clone() method
     private function testClone():Void {
@@ -139,8 +146,7 @@ class org.flashNight.sara.util.AABBTester {
         this.assert(mtv.dx == -20 && mtv.dy == 0, "getMTV() - x-axis only overlap");
     }
 
-
-        // Test getMTVCornerOverlap
+    // Test getMTVCornerOverlap
     private function testGetMTVCornerOverlap():Void {
         var box1:AABB = new AABB(0, 100, 0, 100);
         var box2:AABB = new AABB(100, 200, 100, 200); // Touching at the corner
@@ -166,10 +172,6 @@ class org.flashNight.sara.util.AABBTester {
         );
     }
 
-
-
-
-
     // Test getMTVIdenticalBoxes
     private function testGetMTVIdenticalBoxes():Void {
         var box1:AABB = new AABB(0, 100, 0, 100);
@@ -183,7 +185,6 @@ class org.flashNight.sara.util.AABBTester {
         );
     }
 
-
     // Test getMTVZeroOverlap
     private function testGetMTVZeroOverlap():Void {
         var box1:AABB = new AABB(0, 100, 0, 100);
@@ -192,7 +193,6 @@ class org.flashNight.sara.util.AABBTester {
         var mtv:Object = box1.getMTV(box2);
         this.assert(mtv == null, "getMTV() - edge-touching boxes (no overlap)");
     }
-
 
     // Test getMTVMinimalOverlap
     private function testGetMTVMinimalOverlap():Void {
@@ -214,7 +214,6 @@ class org.flashNight.sara.util.AABBTester {
         this.assert(mtv.dx == -50 && mtv.dy == 0, "getMTV() - negative coordinates overlap");
     }
 
-
     // Test getMTVEqualPenetrations
     private function testGetMTVEqualPenetrations():Void {
         var box1:AABB = new AABB(0, 100, 0, 100);
@@ -225,7 +224,6 @@ class org.flashNight.sara.util.AABBTester {
         // Minimal MTV resolves along the x-axis by 10 units
         this.assert(mtv.dx == -10 && mtv.dy == 0, "getMTV() - equal penetration on both axes");
     }
-
 
     // Test containsPoint() method
     private function testContainsPoint():Void {
@@ -312,7 +310,6 @@ class org.flashNight.sara.util.AABBTester {
         // Corrected ray parallel to x-axis and not intersecting
         this.assert(box.intersectsRay(150, 25, 0, 1) == false, "intersectsRay() - ray parallel and not intersecting");
     }
-
 
     // Test merge() method
     private function testMerge():Void {
@@ -455,11 +452,75 @@ class org.flashNight.sara.util.AABBTester {
         _root.removeMovieClip(bulletMC);
     }
 
-    // Performance Test Methods
+    // ===================
+    // Performance Tests
+    // ===================
 
     // Helper method to format milliseconds
     private function formatTime(ms:Number):String {
         return ms + " ms";
+    }
+
+    // Performance test for clone()
+    private function performanceTestClone():Void {
+        var iterations:Number = 10000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            var cloned:AABB = box.clone();
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] clone() executed " + iterations + " times in " + this.formatTime(elapsed));
+    }
+
+    // Performance test for getWidth() and getLength()
+    private function performanceTestGetWidthAndLength():Void {
+        var iterations:Number = 100000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            var width:Number = box.getWidth();
+            var length:Number = box.getLength();
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] getWidth() and getLength() executed " + (iterations * 2) + " times in " + this.formatTime(elapsed));
+    }
+
+    // Performance test for getCenter()
+    private function performanceTestGetCenter():Void {
+        var iterations:Number = 100000;
+        var box:AABB = new AABB(0, 100, 0, 50);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            var center:Object = box.getCenter();
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] getCenter() executed " + iterations + " times in " + this.formatTime(elapsed));
+    }
+
+    // Performance test for getMTV()
+    private function performanceTestGetMTV():Void {
+        var iterations:Number = 10000;
+        var box1:AABB = new AABB(0, 100, 0, 50);
+        var box2:AABB = new AABB(50, 150, 25, 75);
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            box1.getMTV(box2);
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] getMTV() executed " + iterations + " times in " + this.formatTime(elapsed));
     }
 
     // Performance test for intersects()
@@ -478,22 +539,6 @@ class org.flashNight.sara.util.AABBTester {
         var elapsed:Number = endTime - startTime;
 
         trace("[PERF] intersects() executed " + (iterations * 2) + " times in " + this.formatTime(elapsed));
-    }
-
-    // Performance test for getMTV()
-    private function performanceTestGetMTV():Void {
-        var iterations:Number = 10000;
-        var box1:AABB = new AABB(0, 100, 0, 50);
-        var box2:AABB = new AABB(50, 150, 25, 75);
-
-        var startTime:Number = getTimer();
-        for (var i:Number = 0; i < iterations; i++) {
-            box1.getMTV(box2);
-        }
-        var endTime:Number = getTimer();
-        var elapsed:Number = endTime - startTime;
-
-        trace("[PERF] getMTV() executed " + iterations + " times in " + this.formatTime(elapsed));
     }
 
     // Performance test for containsPoint()
@@ -682,4 +727,64 @@ class org.flashNight.sara.util.AABBTester {
 
         trace("[PERF] getArea() executed " + iterations + " times in " + this.formatTime(elapsed));
     }
+
+    // Performance test for fromMovieClip()
+    private function performanceTestFromMovieClip():Void {
+        var iterations:Number = 10000;
+        var dummyMC:MovieClip = _root.createEmptyMovieClip("dummyMC_PERF", _root.getNextHighestDepth());
+        dummyMC._x = 100;
+        dummyMC._y = 100;
+        dummyMC.beginFill(0xFF0000);
+        dummyMC.moveTo(-50, -25);
+        dummyMC.lineTo(50, -25);
+        dummyMC.lineTo(50, 25);
+        dummyMC.lineTo(-50, 25);
+        dummyMC.lineTo(-50, -25);
+        dummyMC.endFill();
+
+        var z_offset:Number = 10;
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            var aabb:AABB = AABB.fromMovieClip(dummyMC, z_offset);
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] fromMovieClip() executed " + iterations + " times in " + this.formatTime(elapsed));
+
+        // Clean up
+        _root.removeMovieClip(dummyMC);
+    }
+
+    // Performance test for fromBullet()
+    private function performanceTestFromBullet():Void {
+        var iterations:Number = 10000;
+        var bulletMC:MovieClip = _root.createEmptyMovieClip("bulletMC_PERF", _root.getNextHighestDepth());
+        bulletMC._x = 200;
+        bulletMC._y = 200;
+        bulletMC.beginFill(0x00FF00);
+        bulletMC.moveTo(-10, -10);
+        bulletMC.lineTo(10, -10);
+        bulletMC.lineTo(10, 10);
+        bulletMC.lineTo(-10, 10);
+        bulletMC.lineTo(-10, -10);
+        bulletMC.endFill();
+
+        var startTime:Number = getTimer();
+        for (var i:Number = 0; i < iterations; i++) {
+            var aabb:AABB = AABB.fromBullet(bulletMC);
+        }
+        var endTime:Number = getTimer();
+        var elapsed:Number = endTime - startTime;
+
+        trace("[PERF] fromBullet() executed " + iterations + " times in " + this.formatTime(elapsed));
+
+        // Clean up
+        _root.removeMovieClip(bulletMC);
+    }
+
+    // ===================
+    // End of AABBTester
+    // ===================
 }

@@ -68,10 +68,6 @@ class org.flashNight.sara.util.AABB {
         }
     }
 
-
-
-
-
     // 检查当前AABB是否包含给定的点
     public function containsPoint(x:Number, y:Number):Boolean {
         return (x >= this.left && x <= this.right && 
@@ -80,52 +76,114 @@ class org.flashNight.sara.util.AABB {
 
     // 计算AABB中离给定点最近的点
     public function closestPoint(x:Number, y:Number):Object {
-        return {
-            x: Math.max(this.left, Math.min(x, this.right)),
-            y: Math.max(this.top, Math.min(y, this.bottom))
-        };
+        var clampedX:Number, clampedY:Number;
+
+        // Clamp x within [left, right]
+        if (x < this.left) {
+            clampedX = this.left;
+        } else if (x > this.right) {
+            clampedX = this.right;
+        } else {
+            clampedX = x;
+        }
+
+        // Clamp y within [top, bottom]
+        if (y < this.top) {
+            clampedY = this.top;
+        } else if (y > this.bottom) {
+            clampedY = this.bottom;
+        } else {
+            clampedY = y;
+        }
+
+        return { x: clampedX, y: clampedY };
     }
+
 
     // 检查线段是否与AABB相交
     public function intersectsLine(x1:Number, y1:Number, x2:Number, y2:Number):Boolean {
+        // 快速包含性检查
         if (this.containsPoint(x1, y1) || this.containsPoint(x2, y2)) {
             return true;
         }
 
+        // 初始化变量
         var t0:Number = 0.0;
         var t1:Number = 1.0;
         var dx:Number = x2 - x1;
         var dy:Number = y2 - y1;
-        var p:Array = [-dx, dx, -dy, dy];
-        var q:Array = [x1 - this.left, this.right - x1, y1 - this.top, this.bottom - y1];
 
-        for (var i:Number = 0; i < 4; i++) {
-            if (p[i] == 0) {
-                if (q[i] < 0) {
-                    return false;
-                }
+        // 逐个轴的边界检测
+        var p:Number, q:Number, t:Number;
+
+        // 左边界
+        p = -dx;
+        q = x1 - this.left;
+        if (p == 0) {
+            if (q < 0) return false; // 平行且在线段外
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
             } else {
-                var t:Number = q[i] / p[i];
-                if (p[i] < 0) {
-                    if (t > t1) {
-                        return false;
-                    }
-                    if (t > t0) {
-                        t0 = t;
-                    }
-                } else {
-                    if (t < t0) {
-                        return false;
-                    }
-                    if (t < t1) {
-                        t1 = t;
-                    }
-                }
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
             }
         }
 
+        // 右边界
+        p = dx;
+        q = this.right - x1;
+        if (p == 0) {
+            if (q < 0) return false;
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 上边界
+        p = -dy;
+        q = y1 - this.top;
+        if (p == 0) {
+            if (q < 0) return false;
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 下边界
+        p = dy;
+        q = this.bottom - y1;
+        if (p == 0) {
+            if (q < 0) return false;
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 最终判断
         return t0 <= t1 && t1 >= 0 && t0 <= 1;
     }
+
 
     // 检查AABB是否与给定的圆相交
     public function intersectsCircle(circleX:Number, circleY:Number, radius:Number):Boolean {
