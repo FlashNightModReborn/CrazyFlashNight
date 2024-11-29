@@ -1,13 +1,9 @@
-﻿interface org.flashNight.arki.bullet.BulletComponent.Collider.ICollider {
-    // Gets the Axis-Aligned Bounding Box (AABB) of the collider
-    function getAABB():AABB;
-    
-    // Checks if this collider intersects with another collider
-    function intersects(other:ICollider):Boolean;
-    
-    // Gets detailed collision information with another collider
-    function getCollisionInfo(other:ICollider):CollisionInfo;
-    
-    // Transforms the collider by a given transformation matrix or function
-    function transform(transformFunc:Function):Void;
+﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+
+interface org.flashNight.arki.bullet.BulletComponent.Collider.ICollider {
+    // Checks if this collider collides with another collider
+    function checkCollision(other:ICollider):CollisionResult;
+
+    // Handles collision response based on the collision result
+    function handleCollision(result:CollisionResult):Void;
 }
