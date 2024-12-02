@@ -1,6 +1,8 @@
 ﻿import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Movement.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
+import org.flashNight.arki.bullet.BulletComponent.Type.*;
+
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
 
@@ -64,22 +66,22 @@ _root.子弹区域shoot传递 = function(Obj){
     var 射击角度 = 计算射击角度(Obj, 发射对象);
 
     // 创建发射效果和音效
-    创建发射效果(Obj, 发射对象);
+    _root.创建发射效果(Obj, 发射对象);
 
     // 设置子弹类型标志
-    设置子弹类型标志(Obj);
+    _root.设置子弹类型标志(Obj);
 
     // 设置默认值
-    设置默认值(Obj, 发射对象);
+    _root.设置默认值(Obj, 发射对象);
 
     // 继承发射者属性
-    继承发射者属性(Obj, 发射对象);
+    _root.继承发射者属性(Obj, 发射对象);
 
     // 计算击退速度
-    计算击退速度(Obj);
+    _root.计算击退速度(Obj);
 
     // 初始化子弹属性
-    初始化子弹属性(Obj);
+    _root.初始化子弹属性(Obj);
 
     // 创建子弹
     var 子弹实例 = 创建子弹(Obj, 发射对象, 射击角度);
