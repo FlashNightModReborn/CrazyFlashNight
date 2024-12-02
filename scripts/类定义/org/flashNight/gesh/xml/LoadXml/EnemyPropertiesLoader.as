@@ -25,6 +25,15 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
     }
 
     /**
+     * 覆盖基类的 load 方法，实现敌人属性的加载逻辑。
+     * @param onLoadHandler 加载成功后的回调函数，接收合并后的数据作为参数。
+     * @param onErrorHandler 加载失败后的回调函数。
+     */
+    public function load(onLoadHandler:Function, onErrorHandler:Function):Void {
+        this.loadEnemyProperties(onLoadHandler, onErrorHandler);
+    }
+
+    /**
      * 解析 list.xml 文件，根据其中内容，解析并合并其中的 XML 数据。
      * @param onLoadHandler 加载成功后的回调函数，接收合并后的数据作为参数。
      * @param onErrorHandler 加载失败后的回调函数。
@@ -33,7 +42,7 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
         var self:EnemyPropertiesLoader = this;
 
         // 加载 list.xml 文件
-        this.load(function(data:Object):Void {
+        super.load(function(data:Object):Void {
             // trace("EnemyPropertiesLoader: list.xml 文件加载成功！");
             // trace("EnemyPropertiesLoader: list.xml 数据 = " + ObjectUtil.toString(data));
 
@@ -50,6 +59,9 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
 
             // 开始加载子 XML 文件
             self.loadChildXmlFiles(childXmlPaths, 0, function():Void {
+                // 将合并后的数据保存到基类的 data 属性中
+                super.data = self.combinedData;
+
                 // trace("EnemyPropertiesLoader: 所有子 XML 文件加载并合并成功！");
                 // trace("EnemyPropertiesLoader: 合并后的数据 = " + ObjectUtil.toString(self.combinedData));
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
@@ -114,19 +126,25 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
     }
 
     /**
-     * 重新加载敌人属性数据。
+     * 覆盖基类的 reload 方法，实现敌人属性数据的重新加载逻辑。
      * @param onLoadHandler 加载成功后的回调函数。
      * @param onErrorHandler 加载失败后的回调函数。
      */
     public function reload(onLoadHandler:Function, onErrorHandler:Function):Void {
         // 清空现有数据
         this.combinedData = null;
-
-        // 调用主加载逻辑
-        this.loadEnemyProperties(onLoadHandler, onErrorHandler);
+        super.reload(onLoadHandler, onErrorHandler);
     }
 
+    /**
+     * 覆盖基类的 getData 方法，确保返回合并后的敌人属性数据。
+     * @return Object 合并后的数据对象，如果尚未加载，则返回 null。
+     */
+    public function getData():Object {
+        return this.combinedData;
+    }
 }
+
 
 
 /*
