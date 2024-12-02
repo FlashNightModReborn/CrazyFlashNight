@@ -1,5 +1,6 @@
 ﻿import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Movement.*;
+import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
 
@@ -202,11 +203,16 @@ _root.创建子弹实例 = function(Obj, 发射对象, 射击角度){
     指定生命周期函数(子弹实例);
 
 	// 创建子弹移动逻辑实例
-	var movement:LinearBulletMovement = LinearBulletMovement.create(子弹实例.速度X, 子弹实例.速度Y, 子弹实例.ZY比例, 900); // 当前射程阈值为900
+	var movement:LinearBulletMovement = LinearBulletMovement.create(子弹实例.速度X, 子弹实例.速度Y, 子弹实例.ZY比例);
 
-	// 将 updateMovement 和 shouldDestroy 方法绑定到子弹实例
+	// 创建生命周期逻辑实例
+	var lifecycle:BulletLifecycle = new BulletLifecycle(900); // 当前射程阈值为900
+
+	// 将 updateMovement 方法绑定到子弹实例
 	子弹实例.updateMovement = Delegate.create(movement, movement.updateMovement);
-	子弹实例.shouldDestroy = Delegate.create(movement, movement.shouldDestroy);
+
+	// 将 shouldDestroy 方法绑定到子弹实例
+	子弹实例.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
 
 
     return 子弹实例;
@@ -718,15 +724,6 @@ _root.子弹生命周期 = function()
         return; // 结束生命周期函数
     }
 };
-
-var movement:LinearBulletMovement = LinearBulletMovement.create(子弹.速度X, 子弹.速度Y, 子弹.ZY比例, 900);
-
-// 将 updateMovement 方法绑定到 _root.子弹基础运动控制
-_root.子弹基础运动控制 = Delegate.create(movement, movement.updateMovement);
-
-// 绑定销毁逻辑（可选，用于更复杂的逻辑场景）
-var destroyCheck = Delegate.create(movement, movement.shouldDestroy);
-
 
 
 _root.子弹区域shoot表演 = function(声音, 霰弹值, 子弹散射度, 发射效果, 子弹种类, 子弹威力, 子弹速度, Z轴攻击范围, 击中地图效果, 发射者, shootX, shootY, shootZ, 子弹敌我属性, 击倒率, 击中后子弹的效果)

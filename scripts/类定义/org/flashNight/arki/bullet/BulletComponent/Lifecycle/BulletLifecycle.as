@@ -22,18 +22,15 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
         var 发射者:MovieClip = _root.gameworld[target.发射者名];
         if (发射者 == undefined) return false;
 
-        // 缓存常用变量
         var targetX:Number = target._x;
         var targetY:Number = target._y;
         var 发射者X:Number = 发射者._x;
         var 发射者Y:Number = 发射者._y;
 
-        // 判断是否超出射程
         var isOutOfRange:Boolean = !target.远距离不消失 &&
                                    (Math.abs(targetX - 发射者X) > this.射程阈值 ||
                                     Math.abs(targetY - 发射者Y) > this.射程阈值);
 
-        // 地图碰撞检测
         var isCollidedWithMap:Boolean = this.checkMapCollision(target);
 
         if (isCollidedWithMap) {
