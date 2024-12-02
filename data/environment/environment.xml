@@ -194,6 +194,7 @@
             <y0>240</y0>
             <x1>1760</x1>
             <y1>290</y1>
+            <Identifier>横向地图路障</Identifier>
         </Door>
     </Environment>
     <Environment>
@@ -217,6 +218,70 @@
                 <y>525</y>
             </Element>
         </Elements>
+    </Environment>
+    <!-- 废墟武器店-->
+    <Environment>
+        <BackgroundURL>gk3_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1830</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1830</Width>
+        <Height>640</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>852</x0>
+            <y0>221</y0>
+            <x1>968</x1>
+            <y1>291</y1>
+            <Identifier>横向地图路障</Identifier>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk3_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1830</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1830</Width>
+        <Height>640</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>627</x0>
+            <y0>224</y0>
+            <x1>743</x1>
+            <y1>294</y1>
+            <Identifier>横向地图路障</Identifier>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk3_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1830</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1830</Width>
+        <Height>640</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>1303</x0>
+            <y0>228</y0>
+            <x1>1419</x1>
+            <y1>298</y1>
+            <Identifier>纵向地图路障</Identifier>
+        </Door>
+        <Collision>
+            <Point>1370,240</Point>
+            <Point>1830,240</Point>
+            <Point>1830,650</Point>
+            <Point>1730,650</Point>
+        </Collision>
     </Environment>
     <!-- 第一防线-->
     <Environment>

@@ -87,7 +87,7 @@ _root.add2map3 = function(tg, ln)
 
 _root.贴背景图 = function()
 {
-	if(_root.无限过图模式) _root.配置无限过图背景参数();
+	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
 	var 游戏世界 = _root.gameworld;
 	var 背景层 = 游戏世界.背景;
 	var 天气系统 = _root.天气系统;
@@ -121,9 +121,8 @@ _root.贴背景图 = function()
 	游戏世界.deadbody.globalToLocal(pos);
 	var matrix = new flash.geom.Matrix(1, 0, 0, 1, pos.x, pos.y);
 	游戏世界.deadbody.layers[0].draw(背景层,matrix,new flash.geom.ColorTransform(),"normal",undefined,true);
-	//尝试直接卸载原背景
-	背景层.外部动画加载壳mc.unloadMovie();
 	背景层._visible = false;
+	背景层.外部动画加载壳mc.unloadMovie(); //尝试直接卸载原背景
 
 	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域"], 1, true);
 };
