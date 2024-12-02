@@ -1,7 +1,7 @@
 ﻿import flash.geom.Point;
 import flash.geom.Rectangle;
 import org.flashNight.naki.Sort.*;
-import org.flashNight.neur.Event.Delegate;
+import org.flashNight.neur.Event.*;
 
 //输入点与影片剪辑的引用，将点坐标从该影片剪辑转换到gameworld
 _root.pointToGameworld = function(point, loc)

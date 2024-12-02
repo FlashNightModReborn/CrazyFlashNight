@@ -1,4 +1,6 @@
-﻿//重写子弹生成逻辑
+﻿import org.flashNight.neur.Event.*;
+import org.flashNight.arki.bullet.BulletComponent.Movement.*;
+//重写子弹生成逻辑
 _root.子弹生成计数 = 0;
 
 //加入新参数水平击退速度和垂直击退速度。未填写的话默认分别为10和5（和子弹区域shoot一致），最大击退速度可以调节下方常数（目前为33）。
@@ -722,20 +724,14 @@ _root.子弹生命周期 = function()
 	_root.子弹基础运动控制(this);
 };
 
-_root.子弹基础运动控制 = function(子弹:MovieClip){
-	if(子弹.速度X && 子弹.速度Y && 子弹.ZY比例){
-		子弹._x += 子弹.速度X;
-		子弹._y += 子弹.速度Y;
-		子弹.Z轴坐标 = 子弹._y * 子弹.ZY比例;
-	}else{
-		子弹._x += 子弹.xmov;
-		子弹._y += 子弹.ymov;
-	}
-	if (!子弹.远距离不消失 && (Math.abs(子弹._x - _root.gameworld[子弹.发射者名]._x) > 900 || Math.abs(子弹._y - _root.gameworld[子弹.发射者名]._y) > 900))
-	{
-		子弹.removeMovieClip();
-	}
-}
+var movement:LinearBulletMovement = LinearBulletMovement.create(子弹.速度X, 子弹.速度Y, 子弹.ZY比例, 900);
+
+// 将 updateMovement 方法绑定到 _root.子弹基础运动控制
+_root.子弹基础运动控制 = Delegate.create(movement, movement.updateMovement);
+
+// 绑定销毁逻辑（可选，用于更复杂的逻辑场景）
+var destroyCheck = Delegate.create(movement, movement.shouldDestroy);
+
 
 
 _root.子弹区域shoot表演 = function(声音, 霰弹值, 子弹散射度, 发射效果, 子弹种类, 子弹威力, 子弹速度, Z轴攻击范围, 击中地图效果, 发射者, shootX, shootY, shootZ, 子弹敌我属性, 击倒率, 击中后子弹的效果)
