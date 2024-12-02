@@ -47,10 +47,39 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
         if (发射者 == undefined || this.射程阈值 == undefined) {
             return false;
         }
+        
+        var isOutOfRange:Boolean = !target.远距离不消失 &&
+                                   (Math.abs(target._x - 发射者._x) > this.射程阈值 ||
+                                    Math.abs(target._y - 发射者._y) > this.射程阈值);
 
-        return !target.远距离不消失 &&
-               (Math.abs(target._x - 发射者._x) > this.射程阈值 ||
-                Math.abs(target._y - 发射者._y) > this.射程阈值);
+        // 地图碰撞检测
+        var isCollidedWithMap:Boolean = false;
+        var 游戏世界 = _root.gameworld;
+        var ZY比例 = this.ZY比例;
+        var Z轴坐标 = target.Z轴坐标;
+        var 近战检测 = target.近战检测;
+
+        if(target._x < _root.Xmin || target._x > _root.Xmax || Z轴坐标 < _root.Ymin || Z轴坐标 > _root.Ymax){
+            if(ZY比例 != undefined){
+                // 可根据需要添加 ZY比例 的逻辑
+            }else{
+                isCollidedWithMap = true;
+            }
+        }else if(target._y > Z轴坐标 && !近战检测){
+            isCollidedWithMap = true;
+        }else{
+            var 子弹地面坐标:Object = {x: target._x, y: Z轴坐标};
+            游戏世界.localToGlobal(子弹地面坐标);
+            if(游戏世界.地图.hitTest(子弹地面坐标.x, 子弹地面坐标.y, true)){
+                isCollidedWithMap = true;
+            }
+        }
+
+        if(isCollidedWithMap){
+            target.击中地图 = true; // 标记子弹击中了地图
+        }
+
+        return isOutOfRange || isCollidedWithMap;
     }
 
     /**

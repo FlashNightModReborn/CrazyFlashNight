@@ -201,6 +201,14 @@ _root.创建子弹实例 = function(Obj, 发射对象, 射击角度){
     设置毒属性(Obj, 子弹实例, 发射对象);
     指定生命周期函数(子弹实例);
 
+	// 创建子弹移动逻辑实例
+	var movement:LinearBulletMovement = LinearBulletMovement.create(子弹实例.速度X, 子弹实例.速度Y, 子弹实例.ZY比例, 900); // 当前射程阈值为900
+
+	// 将 updateMovement 和 shouldDestroy 方法绑定到子弹实例
+	子弹实例.updateMovement = Delegate.create(movement, movement.updateMovement);
+	子弹实例.shouldDestroy = Delegate.create(movement, movement.shouldDestroy);
+
+
     return 子弹实例;
 }
 
@@ -232,10 +240,11 @@ _root.指定生命周期函数 = function(子弹实例){
 
 _root.子弹生命周期 = function()
 {
-	if(!this.area && !this.透明检测){
-		_root.子弹基础运动控制(this);
-		return;
-	}
+    // 如果没有 area 且不是透明检测，直接进行运动更新
+    if(!this.area && !this.透明检测){
+        this.updateMovement(this);
+        return;
+    }
 
 	var 检测area:MovieClip;
 	var area线框:Object;
@@ -689,39 +698,25 @@ _root.子弹生命周期 = function()
 		_root.效果(this.击中后子弹的效果,this._x,this._y,发射对象._xscale);
 	}
 	
-	var 击中地图判定 = false;
-	if(this._x < _root.Xmin || this._x > _root.Xmax || this.Z轴坐标 < _root.Ymin || this.Z轴坐标 > _root.Ymax){
-		if(this.ZY比例){
-			// if(this.Z轴坐标 < _root.Ymin * this.ZY比例 || this.Z轴坐标 > _root.Ymax * this.ZY比例){
-			// 	击中地图判定 = true;
-			// }
-		}else{
-			击中地图判定 = true;
-		}
-	}else if(this._y > this.Z轴坐标 && !this.近战检测){
-		击中地图判定 = true;
-	}else{
-		var 子弹地面坐标 = {x:this._x, y:this.Z轴坐标};
-		游戏世界.localToGlobal(子弹地面坐标);
-		if (游戏世界.地图.hitTest(子弹地面坐标.x, 子弹地面坐标.y, true)){
-			击中地图判定 = true;
-		}
-	}
-	if (击中地图判定){
-		//疑似没有名叫子弹碎片的效果元件，这几行先注释掉
-		// var 子弹碎片depth = random(50);
-		// var 子弹碎片b_name = "zidan子弹碎片" + 子弹碎片depth;
-		// 游戏世界.效果.attachMovie("子弹碎片",子弹碎片b_name,游戏世界.效果.getNextHighestDepth(),{_x:this._x, _y:this._y});
-		this.击中地图 = true;
-		this.霰弹值 = 1;
-		_root.效果(this.击中地图效果,this._x,this._y);
-		if(this.击中时触发函数){
-			this.击中时触发函数();
-		}
-		this.gotoAndPlay("消失");
-	}
+    // 调用更新运动逻辑
+    this.updateMovement(this);
 
-	_root.子弹基础运动控制(this);
+    // 检查是否需要销毁
+    if (this.shouldDestroy(this)) {
+        if (this.击中地图) {
+            // 处理击中地图的效果
+            this.霰弹值 = 1;
+            _root.效果(this.击中地图效果, this._x, this._y);
+            if (this.击中时触发函数) {
+                this.击中时触发函数();
+            }
+            this.gotoAndPlay("消失");
+        } else {
+            // 超出射程，直接移除子弹
+            this.removeMovieClip();
+        }
+        return; // 结束生命周期函数
+    }
 };
 
 var movement:LinearBulletMovement = LinearBulletMovement.create(子弹.速度X, 子弹.速度Y, 子弹.ZY比例, 900);
