@@ -112,6 +112,20 @@ class org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader extends BaseXMLLoade
     public function getEnemyPropertiesData():Object {
         return this.combinedData;
     }
+
+    /**
+     * 重新加载敌人属性数据。
+     * @param onLoadHandler 加载成功后的回调函数。
+     * @param onErrorHandler 加载失败后的回调函数。
+     */
+    public function reload(onLoadHandler:Function, onErrorHandler:Function):Void {
+        // 清空现有数据
+        this.combinedData = null;
+
+        // 调用主加载逻辑
+        this.loadEnemyProperties(onLoadHandler, onErrorHandler);
+    }
+
 }
 
 

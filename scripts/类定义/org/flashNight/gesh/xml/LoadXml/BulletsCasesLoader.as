@@ -45,4 +45,18 @@ class org.flashNight.gesh.xml.LoadXml.BulletsCasesLoader extends BaseXMLLoader {
     public function getBulletsCasesData():Object {
         return this.getData();
     }
+
+    /**
+     * 重新加载 bullets_cases.xml 文件。
+     * @param onLoadHandler 加载成功后的回调函数。
+     * @param onErrorHandler 加载失败后的回调函数。
+     */
+    public function reload(onLoadHandler:Function, onErrorHandler:Function):Void {
+        // 清空缓存
+        this.data = null;
+
+        // 重新加载
+        this.loadBulletsCases(onLoadHandler, onErrorHandler);
+    }
+
 }
