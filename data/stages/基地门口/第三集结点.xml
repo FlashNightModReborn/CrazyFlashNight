@@ -143,6 +143,11 @@
             <Background>flashswf/backgrounds/gk8_2_BG.swf</Background>
             <PlayerX>848</PlayerX>
             <PlayerY>404</PlayerY>
+            <Animation>
+                <Path>flashswf/movies/movie_gk_8_2.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
@@ -186,14 +191,20 @@
             <SubDialogue id="0">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR</Char>
-                <Text>让我看看还有没有没有被洗劫的箱子……里面也许有我需要的东西……</Text>
+                <Char>$PC_CHAR#微笑</Char>
+                <Text>恩，找到物资了！</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#大笑</Char>
+                <Text>接下来就是等支援的同伴们来回收物资了！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
-                <Text>先解决掉这个家伙先！</Text>
+                <Text>啊！这个声音是......僵尸。好像数量还不少，我要小心了！</Text>
             </SubDialogue>
         </Dialogue>
         <Wave>

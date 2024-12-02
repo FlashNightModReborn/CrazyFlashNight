@@ -1,12 +1,54 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
     <StageInfo>
-        <Type>初期关卡</Type>
+        <Type>无限过图</Type>
         <Name>DEATH MATCH入门赛</Name>
-        <FadeTransitionFrame>关卡4-1</FadeTransitionFrame>
+        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
         <UnlockCondition>8</UnlockCondition>
         <Description>为了让新手练习而设立的场地</Description>
     </StageInfo>
     <Rewards>
     </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk4_1_BG.swf</Background>
+            <PlayerX>539</PlayerX>
+            <PlayerY>471</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>5</Level>
+                        <x>1116</x>
+                        <y>277</y>
+                        <spritename>主角-男</spritename>
+                        <Name>盗贼</Name>
+                        <IsHostile>true</IsHostile>
+                        <Height>180</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon></PrimaryWeapon>
+                        <SecondaryWeapon></SecondaryWeapon>
+                        <SecondaryWeapon2></SecondaryWeapon2>
+                        <MeleeWeapon></MeleeWeapon>
+                        <Grenade></Grenade>
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle>发型-男式-黑暴走头</HairStyle>
+                        <HeadEquipment>红色风镜</HeadEquipment>
+                        <BodyArmor>黑短袖</BodyArmor>
+                        <LegArmor>破牛仔裤</LegArmor>
+                        <HandGear>牛皮手套</HandGear>
+                        <FootGear>新手皮鞋</FootGear>
+                        <NeckGear>新手军牌</NeckGear>
+                        <Gender>男</Gender>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
 </GameStage>

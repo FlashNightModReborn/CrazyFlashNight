@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
     <StageInfo>
-        <Type>初期关卡</Type>
+        <Type>无限过图</Type>
         <Name>禁区边缘</Name>
-        <FadeTransitionFrame>关卡23-1</FadeTransitionFrame>
+        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
         <UnlockCondition>24</UnlockCondition>
         <Description>此地属于机械统治范围的边界，巡逻中的机器人会无情地消灭一切进入此地的生物</Description>
     </StageInfo>
@@ -44,4 +44,71 @@
             <QuantityMax>1</QuantityMax>
         </Reward>
     </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk23_1_BG.swf</Background>
+            <PlayerX>182</PlayerX>
+            <PlayerY>389</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种8</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <x>1445</x>
+                        <y>555</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种4</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <x>1190</x>
+                        <y>351</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种13</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>1372</x>
+                        <y>390</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk23_2_BG.swf</Background>
+            <PlayerX>182</PlayerX>
+            <PlayerY>389</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种25</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>24</Level>
+                        <x>1489</x>
+                        <y>396</y>
+                        <Parameters>
+                            <长枪>M4A1改</长枪>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
 </GameStage>
