@@ -40,7 +40,14 @@
         <Ymax>600</Ymax>
         <Width>1800</Width>
         <Height>600</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>1310</x0>
+            <y0>300</y0>
+            <x1>1600</x1>
+            <y1>370</y1>
+        </Door>
         <Collision>
             <Point>1650,330</Point>
             <Point>1800,330</Point>
@@ -180,7 +187,14 @@
         <Ymax>640</Ymax>
         <Width>1830</Width>
         <Height>640</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>1560</x0>
+            <y0>240</y0>
+            <x1>1760</x1>
+            <y1>290</y1>
+        </Door>
     </Environment>
     <Environment>
         <BackgroundURL>gk2_2_BG.swf</BackgroundURL>
@@ -191,7 +205,10 @@
         <Ymax>480</Ymax>
         <Width>1467</Width>
         <Height>512</Height>
-        <DoorDirection>左</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
         <Elements>
             <Element>
@@ -203,6 +220,16 @@
     </Environment>
     <!-- 第一防线-->
     <Environment>
+        <BackgroundURL>gk6_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1770</Width>
+        <Height>720</Height>
+    </Environment>
+    <Environment>
         <BackgroundURL>gk6_2_BG.swf</BackgroundURL>
         <Alignment>false</Alignment>
         <Xmin>50</Xmin>
@@ -211,6 +238,44 @@
         <Ymax>700</Ymax>
         <Width>1800</Width>
         <Height>710</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk6_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1400</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>550</Ymax>
+        <Width>1730</Width>
+        <Height>700</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>下</Direction>
+            <x0>951</x0>
+            <y0>541</y0>
+            <x1>1231</x1>
+            <y1>692</y1>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk6_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1770</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>720</Ymax>
+        <Width>1770</Width>
+        <Height>740</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk6_5_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1820</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1820</Width>
+        <Height>740</Height>
     </Environment>
     <!-- 闹市区-->
     <Environment>
@@ -333,7 +398,14 @@
         <Ymax>790</Ymax>
         <Width>1790</Width>
         <Height>790</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>290</x0>
+            <y0>270</y0>
+            <x1>650</x1>
+            <y1>310</y1>
+        </Door>
     </Environment>
     <Environment>
         <BackgroundURL>gk12_4_BG.swf</BackgroundURL>
@@ -881,7 +953,14 @@
         <Ymax>620</Ymax>
         <Width>1024</Width>
         <Height>630</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>330</x0>
+            <y0>370</y0>
+            <x1>450</x1>
+            <y1>390</y1>
+        </Door>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>4</MinIllumination>
     </Environment>
@@ -920,7 +999,10 @@
         <Ymax>430</Ymax>
         <Width>1200</Width>
         <Height>512</Height>
-        <DoorDirection>左</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
@@ -1001,7 +1083,14 @@
         <Ymax>600</Ymax>
         <Width>1100</Width>
         <Height>600</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>540</x0>
+            <y0>330</y0>
+            <x1>740</x1>
+            <y1>390</y1>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
     </Environment>
     <Environment>
@@ -1013,7 +1102,14 @@
         <Ymax>600</Ymax>
         <Width>1024</Width>
         <Height>600</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>410</x0>
+            <y0>330</y0>
+            <x1>610</x1>
+            <y1>380</y1>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
     </Environment>
     <Environment>
@@ -1025,7 +1121,14 @@
         <Ymax>600</Ymax>
         <Width>1024</Width>
         <Height>600</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>410</x0>
+            <y0>330</y0>
+            <x1>610</x1>
+            <y1>380</y1>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
     </Environment>
     <Environment>
@@ -1069,7 +1172,10 @@
         <Ymax>650</Ymax>
         <Width>1610</Width>
         <Height>650</Height>
-        <DoorDirection>左</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
         <Collision>
             <Point>1170,260</Point>
@@ -1213,7 +1319,14 @@
         <Width>1380</Width>
         <Height>590</Height>
         <SpaceCondition>室内</SpaceCondition>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>970</x0>
+            <y0>370</y0>
+            <x1>1170</x1>
+            <y1>390</y1>
+        </Door>
         <MaxIllumination>2</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>

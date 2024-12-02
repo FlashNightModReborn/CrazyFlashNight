@@ -791,7 +791,8 @@ _root.加载并配置环境设置 = function(xml文件地址:String):Void
 				//背景元素
 				背景元素: null,
 				//无限过图参数
-				门朝向: "右",
+				门: null,
+				// 门朝向: "右", //弃用
 				地图碰撞箱: null,
 				左侧出生线: null,
 				右侧出生线: null
@@ -837,7 +838,17 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	//背景元素
 	环境信息.背景元素 = 当前配置.Elements ? _root.解析背景元素(_root.配置数据为数组(当前配置.Elements.Element)) : null;
 	//无限过图参数
-	环境信息.门朝向 = 当前配置.DoorDirection ? 当前配置.DoorDirection : 默认配置.门朝向;
+	if(当前配置.Door){
+		var 门数据 = _root.配置数据为数组(当前配置.Door);
+		环境信息.门 = new Object();
+		for(var i=0; i<门数据.length; i++){
+			var door = 门数据[i];
+			环境信息.门[door.Index] = door;
+		}
+	}else{
+		环境信息.门 = null;
+	}
+	// 环境信息.门朝向 = 当前配置.DoorDirection ? 当前配置.DoorDirection : 默认配置.门朝向; //弃用
 	环境信息.地图碰撞箱 = 当前配置.Collision ? _root.配置数据为数组(当前配置.Collision) : null;
 	环境信息.左侧出生线 = 当前配置.LeftSpawnLine ? 当前配置.LeftSpawnLine : null;
 	环境信息.右侧出生线 = 当前配置.RightSpawnLine ? 当前配置.RightSpawnLine : null;

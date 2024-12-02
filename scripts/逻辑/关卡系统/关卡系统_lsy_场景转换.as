@@ -329,5 +329,133 @@ _root.加载共享场景 = function(加载场景名)
 	游戏世界.swapDepths(_root.gameworld层级定位器);
 	// _root.淡出动画.gotoAndPlay("加载完毕");
 	// _root.贴背景图();
+	setTimeout(_root.打印原版关卡数据, 200);
+}
+
+
+_root.生成临时兵种_敌人表 = function(){
+	_root.兵种_敌人表 = {};
+	for(i in _root.兵种库){
+		var 兵种 = _root.兵种库[i];
+		if(!_root.兵种_敌人表[兵种.兵种名]){
+			_root.兵种_敌人表[兵种.兵种名] = i;
+		}
+	}
+}
+
+_root.生成临时兵种_敌人表();
+
+import org.flashNight.neur.Server.*;
+
+_root.打印原版关卡数据 = function(){
+	var 游戏世界 = _root.gameworld;
+	var url = 游戏世界.场景背景url;
+	var index = Number(url.split("_")[1]) - 1;
+	str = '    <SubStage id="' + index + '">\n';
+	str+="        <BasicInformation>\n";
+	str+="            <Background>"+ url +"</Background>\n";
+	str+="            <PlayerX>"+ Math.floor(游戏世界.出生地._x) +"</PlayerX>\n";
+	str+="            <PlayerY>"+ Math.floor(游戏世界.出生地._y) +"</PlayerY>\n";
+	str+="        </BasicInformation>\n";
+
+	var points = "        <SpawnPoint>\n";
+	var enemy = "                <EnemyGroup>\n";
+	var pointcount = 0;
+	var enemycount = 0;
+	var killcount = 0;
+	var killdiff = 0;
+
+	for(key in 游戏世界){
+		var mc = 游戏世界[key];
+		if(mc.目标门 && mc.僵尸型敌人总个数 && mc.僵尸型敌人上场个数 && mc.兵种 && mc.名字 && mc.等级){
+			points+='            <Point id="'+pointcount+'">\n';
+			points+="                <x>"+Math.floor(mc._x)+"</x>\n";
+			points+="                <y>"+Math.floor(mc._y)+"</y>\n";
+			points+="                <QuantityMax>"+mc.僵尸型敌人上场个数+"</QuantityMax>\n";
+			points+="            </Point>\n";
+			//
+			enemy+="                    <Enemy>\n";
+			enemy+="                        <Type>"+_root.兵种_敌人表[mc.兵种]+"</Type>\n";
+			enemy+="                        <Interval>1000</Interval>\n";
+			enemy+="                        <Quantity>"+mc.僵尸型敌人总个数+"</Quantity>\n";
+			enemy+="                        <Level>"+mc.等级+"</Level>\n";
+			enemy+="                        <SpawnIndex>"+pointcount+"</SpawnIndex>\n";
+			enemy+="                    </Enemy>\n";
+			pointcount++;
+			enemycount+=mc.僵尸型敌人总个数;
+		}else if(mc.兵种 && mc.僵尸型敌人newname && mc.等级){
+			enemy+="                    <Enemy>\n";
+			enemy+="                        <Type>"+_root.兵种_敌人表[mc.兵种]+"</Type>\n";
+			enemy+="                        <Interval>100</Interval>\n";
+			enemy+="                        <Quantity>1</Quantity>\n";
+			enemy+="                        <Level>"+mc.等级+"</Level>\n";
+			enemy+="                        <x>"+Math.floor(mc._x)+"</x>\n";
+			enemy+="                        <y>"+Math.floor(mc._y)+"</y>\n";
+			enemy+="                    </Enemy>\n";
+			enemycount++;
+		}else if (mc.需要杀死数 > 0){
+			killcount = mc.需要杀死数;
+		}
+	}
+	if(killcount > 0 && killcount < enemycount) killdiff = enemycount-killcount;
+
+	points += "        </SpawnPoint>\n";
+	enemy += "                </EnemyGroup>\n";
+
+	if(pointcount > 0) str += points;
+
+	str+="        <Wave>\n";
+	str+='            <SubWave id="0">\n';
+
+	var info = "";
+	info+="                <WaveInformation>\n";
+	info+="                    <Duration>0</Duration>\n";
+	if(killdiff > 0) info+="                    <FinishRequirement>"+killdiff+"</FinishRequirement>\n";
+	info+="                </WaveInformation>\n";
+	
+	str += info;
+	str += enemy;
+
+	str+="            </SubWave>\n";
+	str+="        </Wave>\n";
+	str+="    </SubStage>";
+
+	ServerManager.getInstance().sendServerMessage(str);
+
+	//
+	var list = url.split("/");
+	var suburl = list[list.length-1];
+	str2 = "    <Environment>\n";
+	str2+="        <BackgroundURL>"+suburl+"</BackgroundURL>\n";
+	str2+="        <Alignment>false</Alignment>\n";
+	str2+="        <Xmin>"+_root.Xmin+"</Xmin>\n";
+	str2+="        <Xmax>"+_root.Xmax+"</Xmax>\n";
+	str2+="        <Ymin>"+_root.Ymin+"</Ymin>\n";
+	str2+="        <Ymax>"+_root.Ymax+"</Ymax>\n";
+	str2+="        <Width>"+游戏世界.背景长+"</Width>\n";
+	str2+="        <Height>"+游戏世界.背景高+"</Height>\n";
+
+	var door = 游戏世界.门1;
+	var doorrect = door.getRect(游戏世界);
+	if(_root.Xmax - doorrect.xMax > 200 || door._height < 250){
+		var direction = "上";
+		if(doorrect.xMin - _root.Xmin < 20) direction = "左";
+		if(_root.Ymax - doorrect.yMax < 20) direction = "下";
+		str2+="        <Door>\n";
+		str2+="            <Index>1</Index>\n";
+		str2+="            <Direction>"+direction+"</Direction>\n";
+		if(direction == "上" || direction == "下"){
+			str2+="            <x0>"+Math.floor(doorrect.xMin)+"</x0>\n";
+			str2+="            <y0>"+Math.floor(doorrect.yMin)+"</y0>\n";
+			str2+="            <x1>"+Math.floor(doorrect.xMax)+"</x1>\n";
+			str2+="            <y1>"+Math.floor(doorrect.yMax)+"</y1>\n";
+		}
+		str2+="        </Door>\n";
+	}
+
+	str2+="    </Environment>\n";
+
+	ServerManager.getInstance().sendServerMessage(str2);
+	_root.发布消息("打印关卡数据");
 }
 
