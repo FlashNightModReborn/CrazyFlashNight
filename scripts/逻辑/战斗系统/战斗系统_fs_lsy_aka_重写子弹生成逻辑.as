@@ -119,15 +119,63 @@ _root.创建发射效果 = function(Obj, 发射对象){
     _root.播放音效(Obj.声音);
 }
 
-_root.设置子弹类型标志 = function(Obj){
-    Obj.近战检测 = Obj.子弹种类.indexOf("近战") != -1;
-    Obj.联弹检测 = Obj.子弹种类.indexOf("联弹") != -1;
-    Obj.穿刺检测 = Obj.穿刺检测 || Obj.子弹种类.indexOf("穿刺") != -1;
-    Obj.透明检测 = Obj.透明检测 || Obj.子弹种类 === "近战子弹" || Obj.子弹种类 === "近战联弹" || Obj.子弹种类 === "透明子弹";
-    Obj.手雷检测 = Obj.手雷检测 || Obj.子弹种类.indexOf("手雷") != -1;
-    Obj.爆炸检测 = Obj.爆炸检测 || Obj.子弹种类.indexOf("爆炸") != -1;
-    Obj.普通检测 = !Obj.穿刺检测 && !Obj.爆炸检测 && (Obj.近战检测 || Obj.透明检测 || Obj.子弹种类.indexOf("普通") > -1 || Obj.子弹种类.indexOf("能量子弹") > -1 || Obj.子弹种类 == "精制子弹");
+// 初始化类型缓存
+if (_root.typeCache == undefined) {
+    _root.typeCache = {};
 }
+
+_root.设置子弹类型标志 = function(Obj){
+    var 子弹种类:String = Obj.子弹种类;
+    
+    // 检查缓存中是否已有该子弹种类的检测标志
+    if (_root.typeCache[子弹种类] == undefined) {
+        // 如果缓存中不存在，则计算检测标志
+        var flags:Object = {};
+        
+        flags.近战检测 = 子弹种类.indexOf("近战") != -1;
+        flags.联弹检测 = 子弹种类.indexOf("联弹") != -1;
+        flags.穿刺检测 = 子弹种类.indexOf("穿刺") != -1;
+        flags.透明检测 = 子弹种类 === "近战子弹" || 子弹种类 === "近战联弹" || 子弹种类 === "透明子弹";
+        flags.手雷检测 = 子弹种类.indexOf("手雷") != -1;
+        flags.爆炸检测 = 子弹种类.indexOf("爆炸") != -1;
+        flags.普通检测 = !flags.穿刺检测 && !flags.爆炸检测 &&
+                       (flags.近战检测 || flags.透明检测 ||
+                        子弹种类.indexOf("普通") > -1 ||
+                        子弹种类.indexOf("能量子弹") > -1 ||
+                        子弹种类 == "精制子弹");
+        
+        // 将计算结果存入缓存
+        _root.typeCache[子弹种类] = flags;
+        
+        // 调试输出
+        trace("[类型缓存] 新增子弹种类: " + 子弹种类);
+    } else {
+        // 调试输出
+        trace("[类型缓存] 使用缓存子弹种类: " + 子弹种类);
+    }
+    
+    // 获取缓存中的检测标志
+    var cachedFlags:Object = _root.typeCache[子弹种类];
+    
+    // 应用检测标志
+    Obj.近战检测 = cachedFlags.近战检测;
+    Obj.联弹检测 = cachedFlags.联弹检测;
+    
+    // 处理穿刺检测：保持原有值或更新
+    Obj.穿刺检测 = Obj.穿刺检测 || cachedFlags.穿刺检测;
+    
+    // 处理透明检测：保持原有值或更新
+    Obj.透明检测 = Obj.透明检测 || cachedFlags.透明检测;
+    
+    // 处理手雷检测：保持原有值或更新
+    Obj.手雷检测 = Obj.手雷检测 || cachedFlags.手雷检测;
+    
+    // 处理爆炸检测：保持原有值或更新
+    Obj.爆炸检测 = Obj.爆炸检测 || cachedFlags.爆炸检测;
+    
+    // 处理普通检测：保持原有值或更新
+    Obj.普通检测 = Obj.普通检测 || cachedFlags.普通检测;
+} 
 
 _root.设置默认值 = function(Obj, 发射对象){
     Obj.固伤 = isNaN(Obj.固伤) ? 0 : Obj.固伤;
