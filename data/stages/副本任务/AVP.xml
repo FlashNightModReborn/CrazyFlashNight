@@ -604,6 +604,11 @@
             <Background>flashswf/backgrounds/avp1_9_BG.swf</Background>
             <PlayerX>135</PlayerX>
             <PlayerY>376</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>6</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -675,6 +680,11 @@
             <Background>flashswf/backgrounds/avp1_10_BG.swf</Background>
             <PlayerX>113</PlayerX>
             <PlayerY>385</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>5</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -730,6 +740,11 @@
             <Background>flashswf/backgrounds/avp1_11_BG.swf</Background>
             <PlayerX>115</PlayerX>
             <PlayerY>362</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>4</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -831,6 +846,11 @@
             <Background>flashswf/backgrounds/avp1_12_BG.swf</Background>
             <PlayerX>112</PlayerX>
             <PlayerY>369</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>3</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -947,6 +967,11 @@
             <Background>flashswf/backgrounds/avp1_13_BG.swf</Background>
             <PlayerX>112</PlayerX>
             <PlayerY>397</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>0</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
         </BasicInformation>
         <Instances>
             <Instance id="0">
@@ -1030,6 +1055,11 @@
             <Background>flashswf/backgrounds/avp1_13_BG.swf</Background>
             <PlayerX>1000</PlayerX>
             <PlayerY>400</PlayerY>
+            <CallbackFunction>
+                <Name>AVP_重设光照</Name>
+                <Parameter>0</Parameter>
+                <Parameter>0</Parameter>
+            </CallbackFunction>
         </BasicInformation>
         <Instances>
             <Instance id="0">

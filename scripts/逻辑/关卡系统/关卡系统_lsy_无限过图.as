@@ -91,7 +91,7 @@ _root.开启生存模式 = function(模式)
     // 将上述属性设置为不可枚举
     _global.ASSetPropFlags(游戏世界, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin"], 1, true);
 
-    // 添加动态尺寸的位图层，加载场景
+    // 添加动态尺寸的位图层
     var 尸体层 = 游戏世界.deadbody;
     尸体层.layers = new Array(3);
     var 位图宽度 = 游戏世界.背景长 < 2880 ? 游戏世界.背景长 : 2880;
@@ -104,8 +104,6 @@ _root.开启生存模式 = function(模式)
 
     // 将 'deadbody' 设置为不可枚举
     _global.ASSetPropFlags(游戏世界, ["deadbody"], 1, true);
-
-    _root.加载场景背景(基本配置.Background);
 
     // 绘制地图碰撞箱
     var 地图碰撞箱数组 = 环境信息.地图碰撞箱;
@@ -228,9 +226,17 @@ _root.开启生存模式 = function(模式)
 
 	//调用回调函数
 	if(基本配置.CallbackFunction.Name){
-		_root.关卡回调函数[基本配置.CallbackFunction.Name]();
+		if(基本配置.CallbackFunction.Parameter){
+			var para = _root.配置数据为数组(基本配置.CallbackFunction.Parameter);
+			_root.关卡回调函数[基本配置.CallbackFunction.Name].apply(_root.关卡回调函数,para);
+		}else{
+			_root.关卡回调函数[基本配置.CallbackFunction.Name]();
+		}
 	}
     
+	//加载场景
+	_root.加载场景背景(基本配置.Background);
+
     // 开始刷怪
     if (!基本配置.RogueMode) _root.生存模式OBJ.模式部署.总波数 = _root.生存模式OBJ.模式部署.length;
     _root.生存模式进攻();
