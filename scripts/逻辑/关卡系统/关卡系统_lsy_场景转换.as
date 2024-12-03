@@ -358,6 +358,7 @@ _root.打印原版关卡数据 = function(){
 	str+="            <PlayerY>"+ Math.floor(游戏世界.出生地._y) +"</PlayerY>\n";
 	str+="        </BasicInformation>\n";
 
+	var dialogue = null;
 	var points = "        <SpawnPoint>\n";
 	var enemy = "                <EnemyGroup>\n";
 	var pointcount = 0;
@@ -395,6 +396,18 @@ _root.打印原版关卡数据 = function(){
 			enemycount++;
 		}else if (mc.需要杀死数 > 0){
 			killcount = mc.需要杀死数;
+		}else if (mc.本段对话){
+			dialogue = "        <Dialogue>\n";
+			for(var i=0;i<本段对话.length;i++){
+				var 对话 = 本段对话[i];
+				dialogue +='            <SubDialogue id="'+i+'">\n';
+				dialogue+="                <Name>"+对话[0]+"</Name>\n";
+				dialogue+="                <Title>"+对话[1]+"</Title>\n";
+				dialogue+="                <Char>"+对话[2]+"#"+对话[4]+"</Char>\n";
+				dialogue+="                <Text>"+对话[3]+"</Text>\n";
+				dialogue +='            </SubDialogue>\n';
+			}
+			dialogue += "        </Dialogue>\n";
 		}
 	}
 	if(killcount > 0 && killcount < enemycount) killdiff = enemycount-killcount;
@@ -403,6 +416,7 @@ _root.打印原版关卡数据 = function(){
 	enemy += "                </EnemyGroup>\n";
 
 	if(pointcount > 0) str += points;
+	if(dialogue) str += dialogue;
 
 	str+="        <Wave>\n";
 	str+='            <SubWave id="0">\n';
