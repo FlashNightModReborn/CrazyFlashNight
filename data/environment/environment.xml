@@ -1273,6 +1273,12 @@
         <Ymax>680</Ymax>
         <Width>1730</Width>
         <Height>680</Height>
+        <Collision>
+            <Point>520,280</Point>
+            <Point>520,330</Point>
+            <Point>610,365</Point>
+            <Point>860,280</Point>
+        </Collision>
     </Environment>
     <Environment>
         <BackgroundURL>gk24_3_BG.swf</BackgroundURL>
@@ -1298,11 +1304,16 @@
         <BackgroundURL>gk24_5_BG.swf</BackgroundURL>
         <Alignment>false</Alignment>
         <Xmin>50</Xmin>
-        <Xmax>1760</Xmax>
+        <Xmax>1580</Xmax>
         <Ymin>260</Ymin>
-        <Ymax>900</Ymax>
+        <Ymax>680</Ymax>
         <Width>1730</Width>
         <Height>900</Height>
+        <Collision>
+            <Point>1295,250</Point>
+            <Point>1590,250</Point>
+            <Point>1590,685</Point>
+        </Collision>
     </Environment>
     <Environment>
         <BackgroundURL>禁区大钻头入口_BG.swf</BackgroundURL>
