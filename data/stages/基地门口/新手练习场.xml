@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
     <StageInfo>
-        <Type>初期关卡</Type>
+        <Type>无限过图</Type>
         <Name>新手练习场</Name>
-        <FadeTransitionFrame>关卡1-1</FadeTransitionFrame>
+        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
         <UnlockCondition>1</UnlockCondition>
         <Description>暂无资料</Description>
     </StageInfo>
@@ -14,6 +14,9 @@
             <Background>flashswf/backgrounds/gk1_1_BG.swf</Background>
             <PlayerX>152</PlayerX>
             <PlayerY>461</PlayerY>
+            <CallbackFunction>
+                <Name>新手练习场_1</Name>
+            </CallbackFunction>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -46,6 +49,9 @@
             <Background>flashswf/backgrounds/gk1_2_BG.swf</Background>
             <PlayerX>818</PlayerX>
             <PlayerY>531</PlayerY>
+            <CallbackFunction>
+                <Name>新手练习场_2</Name>
+            </CallbackFunction>
         </BasicInformation>
         <Wave>
             <SubWave id="0">

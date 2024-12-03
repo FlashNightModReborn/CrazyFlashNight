@@ -225,6 +225,11 @@ _root.开启生存模式 = function(模式)
         _root.暂停 = true;
         _root.SetDialogue(本轮对话);
     }
+
+	//调用回调函数
+	if(基本配置.CallbackFunction.Name){
+		_root.关卡回调函数[基本配置.CallbackFunction.Name]();
+	}
     
     // 开始刷怪
     if (!基本配置.RogueMode) _root.生存模式OBJ.模式部署.总波数 = _root.生存模式OBJ.模式部署.length;
