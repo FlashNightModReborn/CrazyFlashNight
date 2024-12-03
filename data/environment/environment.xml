@@ -211,6 +211,8 @@
             <Direction>左</Direction>
         </Door>
         <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
         <Elements>
             <Element>
                 <url>flashswf/backgrounds/elements/置物架A.swf</url>
@@ -292,6 +294,13 @@
         <Ymax>480</Ymax>
         <Width>1467</Width>
         <Height>480</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
     </Environment>
     <!-- 角斗场-->
     <Environment>
@@ -442,17 +451,53 @@
     </Environment>
     <!-- 地铁站-->
     <Environment>
+        <BackgroundURL>gk11_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1350</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>720</Ymax>
+        <Width>2000</Width>
+        <Height>720</Height>
+    </Environment>
+    <Environment>
         <BackgroundURL>gk11_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>2000</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>710</Ymax>
+        <Width>2000</Width>
+        <Height>710</Height>
+        <Collision>
+            <Point>220,290</Point>
+            <Point>610,720</Point>
+            <Point>220,720</Point>
+        </Collision>
         <MaxIllumination>6</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>
     <Environment>
         <BackgroundURL>gk11_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>2020</Xmax>
+        <Ymin>400</Ymin>
+        <Ymax>800</Ymax>
+        <Width>2020</Width>
+        <Height>800</Height>
         <MaxIllumination>4</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>
     <Environment>
         <BackgroundURL>gk11_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>440</Ymin>
+        <Ymax>850</Ymax>
+        <Width>2000</Width>
+        <Height>850</Height>
         <MaxIllumination>2</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>
@@ -1290,17 +1335,6 @@
             <Point>1570,260</Point>
         </Collision>
     </Environment>
-    <!-- <Environment>
-        <BackgroundURL>诺亚兵工厂生产线_BG.swf</BackgroundURL>
-        <Alignment>true</Alignment>
-        <Xmin>50</Xmin>
-        <Xmax>1150</Xmax>
-        <Ymin>270</Ymin>
-        <Ymax>600</Ymax>
-        <Width>1200</Width>
-        <Height>600</Height>
-        <SpaceCondition>室内</SpaceCondition>
-    </Environment> -->
     <!-- 试炼场深处-->
     <Environment>
         <BackgroundURL>试炼场深处钻头入口_BG.swf</BackgroundURL>
@@ -1312,6 +1346,14 @@
         <Width>1350</Width>
         <Height>710</Height>
         <SpaceCondition>室内</SpaceCondition>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>565</x0>
+            <y0>370</y0>
+            <x1>645</x1>
+            <y1>395</y1>
+        </Door>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
         <Collision>
