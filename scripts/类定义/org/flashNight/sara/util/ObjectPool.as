@@ -41,7 +41,7 @@ class org.flashNight.sara.util.ObjectPool {
         prototypeInitArgs:Array
     ) {
         this.pool = [];  // 初始化对象池数组
-        this.topIndex = -1;  // 初始化堆栈顶索引
+        this.topIndex = 0;  // 初始化堆栈顶索引
         this.createFunc = createFunc;  // 创建新对象的函数
         this.resetFunc = resetFunc;  // 重置对象的函数
         this.releaseFunc = releaseFunc;  // 释放对象的函数
@@ -84,6 +84,8 @@ class org.flashNight.sara.util.ObjectPool {
         newObj._pool = this;
         _global.ASSetPropFlags(newObj, ["_pool", "recycle"], 1, 0);  // 1表示不可枚举
 
+        newObj.__isDestroyed = false;  // 初始化为未销毁
+
         return newObj;
     }
 
@@ -93,15 +95,14 @@ class org.flashNight.sara.util.ObjectPool {
      */
     public function setPoolCapacity(maxPoolSize:Number):Void {
         this.maxPoolSize = maxPoolSize;
-        // 如果当前池大小超过新的最大容量，销毁多余的对象
-        while (this.topIndex + 1 > this.maxPoolSize) {
+        while (this.topIndex > this.maxPoolSize) {
+            this.topIndex--;
             var obj:MovieClip = this.pool[this.topIndex];
             if (obj != undefined) {
                 obj.__isDestroyed = true;
                 obj.removeMovieClip();
                 this.pool[this.topIndex] = undefined;
             }
-            this.topIndex--;
         }
     }
 
@@ -111,15 +112,13 @@ class org.flashNight.sara.util.ObjectPool {
      * @param preloadSize 要预加载的对象数量
      */
     public function preload(numToPreload:Number):Void {
-        if (!this.isLazyLoaded) {
-            for (var i:Number = 0; i < numToPreload; i++) {
-                if (this.topIndex + 1 < this.maxPoolSize) {
-                    var obj:MovieClip = this.createNewObject();
-                    this.topIndex++;
-                    this.pool[this.topIndex] = obj;
-                } else {
-                    break;
-                }
+        for (var i:Number = 0; i < numToPreload; i++) {
+            if (this.topIndex < this.maxPoolSize) {
+                var obj:MovieClip = this.createNewObject();
+                this.pool[this.topIndex] = obj;
+                this.topIndex++;
+            } else {
+                break;
             }
         }
     }
@@ -132,49 +131,45 @@ class org.flashNight.sara.util.ObjectPool {
     public function getObject():MovieClip {
         var obj:MovieClip;
 
-        // 如果池中有对象，则取出顶部对象；否则创建新对象
-        if (this.topIndex >= 0) {
-            obj = MovieClip(this.pool[this.topIndex]);
-            this.pool[this.topIndex] = undefined;  // 清除引用
+        if (this.topIndex > 0) {
             this.topIndex--;
+            obj = MovieClip(this.pool[this.topIndex]);
+            this.pool[this.topIndex] = undefined; // Clear reference
         } else {
             obj = this.createNewObject();
         }
 
-        // 重置对象状态，传递所有参数给 resetFunc
         this.resetFunc.apply(obj, arguments);
 
         return obj;
     }
+
+
 
     /**
      * 将对象释放回对象池中，或在池满时销毁对象
      * @param obj 要释放的对象
      */
     public function releaseObject(obj:MovieClip):Void {
-        // 检查对象是否有效或已被销毁
         if (obj == undefined || obj.__isDestroyed) {
             return;
         }
 
-        // 调用自定义的释放函数，传递除第一个参数外的所有参数
         if (this.releaseFunc != undefined) {
-            // 使用 Delegate 创建释放函数的调用
             this.releaseFunc.apply(obj, Array.prototype.slice.call(arguments, 1));
         }
 
-        // 清理对象的 _pool 引用，防止内存泄漏
-        obj._pool = undefined;
-        obj.recycle = undefined;
-        _global.ASSetPropFlags(obj, ["_pool", "recycle"], 1, 0);  // 1表示不可枚举
+        if (this.topIndex < this.maxPoolSize) {
+            obj._pool = undefined;
+            obj.recycle = undefined;
+            _global.ASSetPropFlags(obj, ["_pool", "recycle"], 1, 0);
 
-        // 检查对象池是否已满
-        if (this.topIndex + 1 < this.maxPoolSize) {
+            this.pool[this.topIndex] = obj;
             this.topIndex++;
-            this.pool[this.topIndex] = obj;  // 将对象放回池中
+            obj.__isDestroyed = false;
         } else {
-            obj.__isDestroyed = true;  // 标记对象已被销毁
-            obj.removeMovieClip();  // 从舞台上移除对象，释放内存
+            obj.__isDestroyed = true;
+            obj.removeMovieClip();
         }
     }
 
@@ -183,7 +178,7 @@ class org.flashNight.sara.util.ObjectPool {
      * @return 对象池中的当前对象数量
      */
     public function getPoolSize():Number {
-        return this.topIndex + 1;
+        return this.topIndex;
     }
 
     /**
@@ -214,16 +209,16 @@ class org.flashNight.sara.util.ObjectPool {
      * 清空对象池，销毁所有池中的对象并释放内存
      */
     public function clearPool():Void {
-        for (var i:Number = 0; i <= this.topIndex; i++) {
+        for (var i:Number = 0; i < this.topIndex; i++) {
             var obj:MovieClip = this.pool[i];
             if (obj != undefined) {
-                obj.__isDestroyed = true;  // 标记对象已被销毁
-                obj.removeMovieClip();  // 销毁对象，释放内存
+                obj.__isDestroyed = true;
+                obj.removeMovieClip();
                 this.pool[i] = undefined;
             }
         }
         this.pool = [];
-        this.topIndex = -1;
+        this.topIndex = 0;
     }
 
     /**
@@ -231,7 +226,7 @@ class org.flashNight.sara.util.ObjectPool {
      * @return 如果对象池为空则返回 true，否则返回 false
      */
     public function isPoolEmpty():Boolean {
-        return this.topIndex < 0;
+        return this.topIndex == 0;
     }
 
     /**
@@ -239,8 +234,9 @@ class org.flashNight.sara.util.ObjectPool {
      * @return 如果对象池已满则返回 true，否则返回 false
      */
     public function isPoolFull():Boolean {
-        return this.topIndex + 1 >= this.maxPoolSize;
+        return this.topIndex >= this.maxPoolSize;
     }
+
 
     /**
      * 获取当前对象池中未被使用的对象数量
