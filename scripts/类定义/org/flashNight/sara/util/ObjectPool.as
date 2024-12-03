@@ -1,4 +1,7 @@
-﻿class org.flashNight.sara.util.ObjectPool {
+﻿import org.flashNight.naki.DataStructures.Dictionary;  // 引入字典类
+import org.flashNight.neur.Event.Delegate;             // 引入优化后的 Delegate 类
+
+class org.flashNight.sara.util.ObjectPool {
     private var pool:Array;                  // 对象池数组，用于存储可重用的对象
     private var prototype:MovieClip;         // 原型对象，用于克隆新对象
     private var createFunc:Function;         // 创建新对象的函数
@@ -10,6 +13,9 @@
     private var isLazyLoaded:Boolean;        // 是否启用懒加载模式
     private var isPrototypeEnabled:Boolean;  // 是否启用原型模式
     private var prototypeInitArgs:Array;     // 原型初始化所需的额外参数
+
+    // 堆栈管理
+    private var topIndex:Number;             // 当前堆栈顶索引
 
     /**
      * 构造函数，用于初始化对象池的各项参数
@@ -35,12 +41,13 @@
         prototypeInitArgs:Array
     ) {
         this.pool = [];  // 初始化对象池数组
+        this.topIndex = -1;  // 初始化堆栈顶索引
         this.createFunc = createFunc;  // 创建新对象的函数
         this.resetFunc = resetFunc;  // 重置对象的函数
         this.releaseFunc = releaseFunc;  // 释放对象的函数
         this.parentClip = parentClip;  // 父级影片剪辑
-        this.maxPoolSize = maxPoolSize || 30;  // 设置最大容量，默认为30
-        this.preloadSize = preloadSize || 5;  // 设置预加载数量，默认为5
+        this.maxPoolSize = (maxPoolSize != undefined) ? maxPoolSize : 30;  // 设置最大容量，默认为30
+        this.preloadSize = (preloadSize != undefined) ? preloadSize : 5;  // 设置预加载数量，默认为5
         this.isLazyLoaded = (isLazyLoaded != undefined) ? isLazyLoaded : true;  // 是否启用懒加载，默认为 true
         this.isPrototypeEnabled = (isPrototypeEnabled != undefined) ? isPrototypeEnabled : true;  // 是否启用原型模式，默认为 true
         this.prototypeInitArgs = prototypeInitArgs || [];  // 原型初始化所需的额外参数，默认为空
@@ -69,13 +76,13 @@
             newObj = this.createFunc.apply(null, [this.parentClip].concat(this.prototypeInitArgs));
         }
 
-        // 为新对象添加 _pool 引用，指向当前对象池
-        newObj._pool = this;
+        // 使用 Delegate 创建 recycle 方法，并绑定到当前对象池
+        var recycleDelegate:Function = Delegate.create(this, releaseObject, newObj);
+        newObj.recycle = recycleDelegate;
 
-        // 为新对象添加 recycle 方法，用于回收对象到池中
-        newObj.recycle = function():Void {
-            this._pool.releaseObject(this);
-        };
+        // 使用 _global.ASSetPropFlags 将 _pool 和 recycle 设置为不可枚举
+        newObj._pool = this;
+        _global.ASSetPropFlags(newObj, ["_pool", "recycle"], 1, 0);  // 1表示不可枚举
 
         return newObj;
     }
@@ -86,6 +93,16 @@
      */
     public function setPoolCapacity(maxPoolSize:Number):Void {
         this.maxPoolSize = maxPoolSize;
+        // 如果当前池大小超过新的最大容量，销毁多余的对象
+        while (this.topIndex + 1 > this.maxPoolSize) {
+            var obj:MovieClip = this.pool[this.topIndex];
+            if (obj != undefined) {
+                obj.__isDestroyed = true;
+                obj.removeMovieClip();
+                this.pool[this.topIndex] = undefined;
+            }
+            this.topIndex--;
+        }
     }
 
     /**
@@ -93,13 +110,15 @@
      * 只有在禁用懒加载时才会进行预加载
      * @param preloadSize 要预加载的对象数量
      */
-    public function preload(preloadSize:Number):Void {
+    public function preload(numToPreload:Number):Void {
         if (!this.isLazyLoaded) {
-            this.preloadSize = preloadSize;
-            for (var i:Number = 0; i < this.preloadSize; i++) {
-                if (this.pool.length < this.maxPoolSize) {
-                    var obj:MovieClip = this.createNewObject();  // 根据配置创建新对象
-                    this.pool.push(obj);  // 将新对象加入池中
+            for (var i:Number = 0; i < numToPreload; i++) {
+                if (this.topIndex + 1 < this.maxPoolSize) {
+                    var obj:MovieClip = this.createNewObject();
+                    this.topIndex++;
+                    this.pool[this.topIndex] = obj;
+                } else {
+                    break;
                 }
             }
         }
@@ -113,25 +132,17 @@
     public function getObject():MovieClip {
         var obj:MovieClip;
 
-        // 如果池中有对象，则取出第一个对象；否则创建新对象
-        if (this.pool.length > 0) {
-            obj = MovieClip(this.pool.shift());
+        // 如果池中有对象，则取出顶部对象；否则创建新对象
+        if (this.topIndex >= 0) {
+            obj = MovieClip(this.pool[this.topIndex]);
+            this.pool[this.topIndex] = undefined;  // 清除引用
+            this.topIndex--;
         } else {
             obj = this.createNewObject();
         }
 
-        // 确保对象的 _pool 属性指向当前对象池
-        obj._pool = this;
-
-        // 如果对象未包含 recycle 方法，确保为其添加 recycle 方法
-        if (typeof obj.recycle !== "function") {
-            obj.recycle = function():Void {
-                this._pool.releaseObject(this);
-            };
-        }
-
         // 重置对象状态，传递所有参数给 resetFunc
-        this.resetFunc.apply(obj, Array.prototype.slice.call(arguments));
+        this.resetFunc.apply(obj, arguments);
 
         return obj;
     }
@@ -148,16 +159,19 @@
 
         // 调用自定义的释放函数，传递除第一个参数外的所有参数
         if (this.releaseFunc != undefined) {
+            // 使用 Delegate 创建释放函数的调用
             this.releaseFunc.apply(obj, Array.prototype.slice.call(arguments, 1));
         }
 
         // 清理对象的 _pool 引用，防止内存泄漏
-        delete obj._pool;
-        delete obj.recycle;
+        obj._pool = undefined;
+        obj.recycle = undefined;
+        _global.ASSetPropFlags(obj, ["_pool", "recycle"], 1, 0);  // 1表示不可枚举
 
         // 检查对象池是否已满
-        if (this.pool.length < this.maxPoolSize) {
-            this.pool.push(obj);  // 将对象放回池中
+        if (this.topIndex + 1 < this.maxPoolSize) {
+            this.topIndex++;
+            this.pool[this.topIndex] = obj;  // 将对象放回池中
         } else {
             obj.__isDestroyed = true;  // 标记对象已被销毁
             obj.removeMovieClip();  // 从舞台上移除对象，释放内存
@@ -169,7 +183,7 @@
      * @return 对象池中的当前对象数量
      */
     public function getPoolSize():Number {
-        return this.pool.length;
+        return this.topIndex + 1;
     }
 
     /**
@@ -200,11 +214,16 @@
      * 清空对象池，销毁所有池中的对象并释放内存
      */
     public function clearPool():Void {
-        for (var i:Number = 0; i < this.pool.length; i++) {
+        for (var i:Number = 0; i <= this.topIndex; i++) {
             var obj:MovieClip = this.pool[i];
-            obj.removeMovieClip();  // 销毁对象，释放内存
+            if (obj != undefined) {
+                obj.__isDestroyed = true;  // 标记对象已被销毁
+                obj.removeMovieClip();  // 销毁对象，释放内存
+                this.pool[i] = undefined;
+            }
         }
-        this.pool = [];  // 清空对象池数组
+        this.pool = [];
+        this.topIndex = -1;
     }
 
     /**
@@ -212,7 +231,7 @@
      * @return 如果对象池为空则返回 true，否则返回 false
      */
     public function isPoolEmpty():Boolean {
-        return this.pool.length == 0;
+        return this.topIndex < 0;
     }
 
     /**
@@ -220,7 +239,7 @@
      * @return 如果对象池已满则返回 true，否则返回 false
      */
     public function isPoolFull():Boolean {
-        return this.pool.length >= this.maxPoolSize;
+        return this.topIndex + 1 >= this.maxPoolSize;
     }
 
     /**
@@ -228,7 +247,7 @@
      * @return 当前对象池中的空闲对象数量
      */
     public function getIdleObjectCount():Number {
-        return this.pool.length;  // 返回对象池数组的长度
+        return this.getPoolSize();
     }
 
     /**
@@ -241,5 +260,4 @@
             this.releaseObject(obj);  // 使用现有的 releaseObject 方法回收对象
         }
     }
-
 }
