@@ -530,6 +530,72 @@
         <Width>1820</Width>
         <Height>740</Height>
     </Environment>
+    <!-- 商业区-->
+    <Environment>
+        <BackgroundURL>gk7_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1870</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>720</Ymax>
+        <Width>1870</Width>
+        <Height>720</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk7_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1980</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1920</Width>
+        <Height>700</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk7_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1570</Xmax>
+        <Ymin>380</Ymin>
+        <Ymax>800</Ymax>
+        <Width>1980</Width>
+        <Height>800</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>395</x0>
+            <y0>346</y0>
+            <x1>715</x1>
+            <y1>441</y1>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk7_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1930</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1920</Width>
+        <Height>800</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk7_5_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1600</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>800</Ymax>
+        <Width>1930</Width>
+        <Height>800</Height>
+        <Collision>
+            <Point>1420,290</Point>
+            <Point>1555,500</Point>
+            <Point>1555,555</Point>
+            <Point>1610,610</Point>
+            <Point>1610,290</Point>
+        </Collision>
+    </Environment>
     <!-- 第三集结点-->
     <Environment>
         <BackgroundURL>gk8_1_BG.swf</BackgroundURL>
