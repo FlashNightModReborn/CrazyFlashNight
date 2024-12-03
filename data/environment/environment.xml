@@ -617,6 +617,75 @@
         <Width>1800</Width>
         <Height>880</Height>
     </Environment>
+    <!-- 贫民窟-->
+    <Environment>
+        <BackgroundURL>gk9_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>390</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1900</Width>
+        <Height>780</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1940</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1940</Width>
+        <Height>780</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1900</Width>
+        <Height>780</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1900</Width>
+        <Height>780</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_5_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1940</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1940</Width>
+        <Height>780</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_6_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>390</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1900</Width>
+        <Height>780</Height>
+    </Environment>
     <!-- 闹市区-->
     <Environment>
         <BackgroundURL>gk10_1_BG.swf</BackgroundURL>
