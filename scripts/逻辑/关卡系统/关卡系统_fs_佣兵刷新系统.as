@@ -444,7 +444,7 @@ _root.创建佣兵实体对象 = function(佣兵数据, X, Y)
 	var 佣兵名 = "佣兵" + 佣兵数据[1] + 生成佣兵计数;// 根据佣兵数据生成唯一的佣兵名
 
 	// 在游戏世界中创建佣兵对象
-	_root.gameworld.attachMovie("佣兵npc",佣兵名,_root.gameworld.getNextHighestDepth(),{_x:X, _y:Y});
+	_root.加载游戏世界人物("佣兵npc",佣兵名,_root.gameworld.getNextHighestDepth(),{_x:X, _y:Y});
 	var 佣兵对象 = _root.gameworld[佣兵名];
 
 	// 设置佣兵对象的各项属性

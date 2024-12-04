@@ -114,7 +114,7 @@ _root.加载我方人物 = function(地点X, 地点Y)
 		//当前操作单位 = "主角-" + _root.性别;
 		var 当前操作单位 = "主角-男";//主角模型已经统一
 	}
-	_root.gameworld.attachMovie(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{_x:地点X, _y:地点Y, 是否为敌人:false, 身高:_root.身高, 名字:_root.角色名, 等级:_root.等级, 性别:_root.性别, 用户ID:_root.accId, 是否允许掉装备:false});
+	_root.加载游戏世界人物(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{_x:地点X, _y:地点Y, 是否为敌人:false, 身高:_root.身高, 名字:_root.角色名, 等级:_root.等级, 性别:_root.性别, 用户ID:_root.accId, 是否允许掉装备:false});
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
 	_root.添加其他玩家();
@@ -132,7 +132,7 @@ _root.加载主角和战宠 = function(地点X, 地点Y)
 		//当前操作单位 = "主角-" + _root.性别;
 		var 当前操作单位 = "主角-男";//主角模型已经统一
 	}
-	_root.gameworld.attachMovie(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{_x:地点X, _y:地点Y, 是否为敌人:false, 身高:_root.身高, 名字:_root.角色名, 等级:_root.等级, 性别:_root.性别, 用户ID:_root.accId, 是否允许掉装备:false});
+	_root.加载游戏世界人物(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{_x:地点X, _y:地点Y, 是否为敌人:false, 身高:_root.身高, 名字:_root.角色名, 等级:_root.等级, 性别:_root.性别, 用户ID:_root.accId, 是否允许掉装备:false});
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
 	_root.添加其他玩家();
@@ -152,7 +152,7 @@ _root.加载佣兵 = function(地点X, 地点Y)
 				if (同伴信息[17] == "女") 同伴信息[17] = "主角-女";
 				*/
 				//主角模型已经统一
-				var 当前佣兵 = _root.gameworld.attachMovie("主角-男","同伴" + i,_root.gameworld.getNextHighestDepth(),{_x:地点X + random(10), _y:地点Y + random(10), 用户ID:同伴信息[2], 是否为敌人:false, 身高:同伴信息[3], 名字:同伴信息[1], 等级:同伴信息[0], 脸型:同伴信息[4], 发型:同伴信息[5], 头部装备:同伴信息[6], 上装装备:同伴信息[7], 手部装备:同伴信息[8], 下装装备:同伴信息[9], 脚部装备:同伴信息[10], 颈部装备:同伴信息[11], 长枪:同伴信息[12], 手枪:同伴信息[13], 手枪2:同伴信息[14], 刀:同伴信息[15], 手雷:同伴信息[16], 性别:同伴信息[17], 是否允许掉装备:false, 是否为佣兵:true, 佣兵是否出战信息id:i});
+				var 当前佣兵 = _root.加载游戏世界人物("主角-男","同伴" + i,_root.gameworld.getNextHighestDepth(),{_x:地点X + random(10), _y:地点Y + random(10), 用户ID:同伴信息[2], 是否为敌人:false, 身高:同伴信息[3], 名字:同伴信息[1], 等级:同伴信息[0], 脸型:同伴信息[4], 发型:同伴信息[5], 头部装备:同伴信息[6], 上装装备:同伴信息[7], 手部装备:同伴信息[8], 下装装备:同伴信息[9], 脚部装备:同伴信息[10], 颈部装备:同伴信息[11], 长枪:同伴信息[12], 手枪:同伴信息[13], 手枪2:同伴信息[14], 刀:同伴信息[15], 手雷:同伴信息[16], 性别:同伴信息[17], 是否允许掉装备:false, 是否为佣兵:true, 佣兵是否出战信息id:i});
 				if(同伴信息[19].装备强化度){
 					当前佣兵.装备强化度 = 同伴信息[19].装备强化度;
 				}
@@ -183,8 +183,18 @@ _root.加载敌方人物 = function(地点X, 地点Y)
 	for(var i = 0; i < _root.敌人同伴数; i++)
 	{
 		var 敌人信息 = _root.敌人同伴数据[i];
-		_root.gameworld.attachMovie("主角-男","敌人同伴" + i,_root.gameworld.getNextHighestDepth(),{_x:地点X + random(10), _y:地点Y + random(10), 是否为敌人:true, 身高:敌人信息[3], 名字:敌人信息[1], 等级:敌人信息[0], 脸型:敌人信息[4], 发型:敌人信息[5], 头部装备:敌人信息[6], 上装装备:敌人信息[7], 手部装备:敌人信息[8], 下装装备:敌人信息[9], 脚部装备:敌人信息[10], 颈部装备:敌人信息[11], 长枪:敌人信息[12], 手枪:敌人信息[13], 手枪2:敌人信息[14], 刀:敌人信息[15], 手雷:敌人信息[16], 性别:敌人信息[17], 是否允许掉装备:false});
+		_root.加载游戏世界人物("主角-男","敌人同伴" + i,_root.gameworld.getNextHighestDepth(),{_x:地点X + random(10), _y:地点Y + random(10), 是否为敌人:true, 身高:敌人信息[3], 名字:敌人信息[1], 等级:敌人信息[0], 脸型:敌人信息[4], 发型:敌人信息[5], 头部装备:敌人信息[6], 上装装备:敌人信息[7], 手部装备:敌人信息[8], 下装装备:敌人信息[9], 脚部装备:敌人信息[10], 颈部装备:敌人信息[11], 长枪:敌人信息[12], 手枪:敌人信息[13], 手枪2:敌人信息[14], 刀:敌人信息[15], 手雷:敌人信息[16], 性别:敌人信息[17], 是否允许掉装备:false});
 	}
+}
+
+//人物的统一加载函数
+_root.加载游戏世界人物 = function(id:String, name:String, depth:Number, initObject:Object):MovieClip{
+	if(!initObject) {
+		initObject = {兵种:id};
+	}else{
+		initObject.兵种 = id;
+	}
+	return _root.gameworld.attachMovie(id, name, depth, initObject);
 }
 
 
