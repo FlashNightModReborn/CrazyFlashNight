@@ -329,10 +329,12 @@ _root.加载共享场景 = function(加载场景名)
 	游戏世界.swapDepths(_root.gameworld层级定位器);
 	// _root.淡出动画.gotoAndPlay("加载完毕");
 	// _root.贴背景图();
-	setTimeout(_root.打印原版关卡数据, 200);
+	// setTimeout(_root.打印原版关卡数据, 200);
 }
 
 
+// 模板化小工具
+/*
 _root.生成临时兵种_敌人表 = function(){
 	_root.兵种_敌人表 = {};
 	for(i in _root.兵种库){
@@ -472,4 +474,4 @@ _root.打印原版关卡数据 = function(){
 	ServerManager.getInstance().sendServerMessage(str2);
 	_root.发布消息("打印关卡数据");
 }
-
+*/

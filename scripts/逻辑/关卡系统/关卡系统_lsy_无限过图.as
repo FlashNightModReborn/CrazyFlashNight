@@ -512,7 +512,7 @@ _root.无限过图模式过关 = function()
 	}
 	else
 	{
-		_root.最上层发布文字提示(_root.获得翻译("GOGOGO！剩余战场数：") + (_root.无限过图总关卡.length - _root.无限过图模式关卡计数 - 1) + "！");
+		// _root.最上层发布文字提示(_root.获得翻译("GOGOGO！剩余战场数：") + (_root.无限过图总关卡.length - _root.无限过图模式关卡计数 - 1) + "！"); //已经不需要这种东西了
 		_root.gameworld.允许通行 = true;
 		_root.效果("小过关提示动画",_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y,100);
 	}
