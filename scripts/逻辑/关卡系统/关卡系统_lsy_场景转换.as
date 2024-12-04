@@ -398,14 +398,14 @@ _root.打印原版关卡数据 = function(){
 			killcount = mc.需要杀死数;
 		}else if (mc.本段对话){
 			dialogue = "        <Dialogue>\n";
-			for(var i=0;i<本段对话.length;i++){
-				var 对话 = 本段对话[i];
-				dialogue +='            <SubDialogue id="'+i+'">\n';
+			for(var i=0;i<mc.本段对话.length;i++){
+				var 对话 = mc.本段对话[i];
+				dialogue+='            <SubDialogue id="'+i+'">\n';
 				dialogue+="                <Name>"+对话[0]+"</Name>\n";
 				dialogue+="                <Title>"+对话[1]+"</Title>\n";
 				dialogue+="                <Char>"+对话[2]+"#"+对话[4]+"</Char>\n";
 				dialogue+="                <Text>"+对话[3]+"</Text>\n";
-				dialogue +='            </SubDialogue>\n';
+				dialogue+='            </SubDialogue>\n';
 			}
 			dialogue += "        </Dialogue>\n";
 		}
