@@ -628,9 +628,9 @@ _root.竞技场随机对手选择 = function(条件)
 		_root.决斗场进入中 = false;
 	}
 };
-_root.abc = function()
-{
-};
+// _root.abc = function()
+// {
+// };
 _root.竞技场对手请求 = function(请求表达式)
 {
 	if (_root.确认佣兵库(请求表达式))
@@ -656,9 +656,9 @@ _root.更新重用限制 = function()
 	_root.竞技场佣兵重用基数 += _root.重用基数成长率;
 	_root.当前佣兵重用数 = 0;
 };
-_root.doNothing = function()
-{
-};
+// _root.doNothing = function()
+// {
+// };
 _root.清除佣兵库回调 = function()
 {
 	_root.佣兵请求成功回调 = _root.doNothing();
