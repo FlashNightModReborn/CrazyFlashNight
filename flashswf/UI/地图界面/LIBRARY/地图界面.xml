@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1733280815" lastUniqueIdentifier="146">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1733369688" lastUniqueIdentifier="146">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
@@ -9,8 +9,96 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 定义层级数组
+                <script><![CDATA[// ============================
+// Tween 类定义
+// ============================
+function Tween(target, startAlpha, endAlpha, duration) {
+    this.target = target;
+    this.startAlpha = startAlpha;
+    this.endAlpha = endAlpha;
+    this.duration = duration;
+    this.elapsed = 0;
+    this.visibleAfter = endAlpha > 0;
+    
+    // 如果从透明度为0开始并且目标透明度大于0，设置可见
+    if (this.startAlpha == 0 && this.endAlpha > 0) {
+        this.target._visible = true;
+    }
+}
+
+Tween.prototype.update = function(delta) {
+    this.elapsed += delta;
+    var t = this.elapsed / this.duration;
+    if (t >= 1) {
+        t = 1;
+        this.target._alpha = this.endAlpha;
+        if (this.endAlpha == 0) {
+            this.target._visible = false;
+        }
+        return true; // Tween 完成
+    }
+    this.target._alpha = this.startAlpha + (this.endAlpha - this.startAlpha) * t;
+    return false; // Tween 未完成
+};
+
+// ============================
+// TweenManager 类定义
+// ============================
+
+var _this = this;
+function TweenManager() {
+    this.tweens = [];
+    
+    // 创建一个空的影片剪辑，挂载到当前环境
+    this.tweenClip = _this.createEmptyMovieClip("tweenManagerClip", _this.getNextHighestDepth());
+
+    // 绑定 onEnterFrame 到空影片剪辑
+    var self = this; // 保存当前 TweenManager 的引用
+    this.tweenClip.onEnterFrame = function() {
+        self.update(); // 调用 TweenManager 的 update 方法
+    };
+}
+
+// 添加一个 Tween 到管理器
+TweenManager.prototype.addTween = function(tween) {
+    this.tweens.push(tween);
+};
+
+// 更新所有 Tween
+TweenManager.prototype.update = function() {
+    var completedTweens = [];
+    for (var i = 0; i < this.tweens.length; i++) {
+        var tween = this.tweens[i];
+        var done = tween.update(1); // 假设每帧时间增量为 1
+        if (done) {
+            completedTweens.push(i);
+        }
+    }
+    // 移除已完成的 Tweens
+    for (var i = completedTweens.length - 1; i >= 0; i--) {
+        this.tweens.splice(completedTweens[i], 1);
+    }
+};
+
+// 销毁 TweenManager 时清理空影片剪辑
+TweenManager.prototype.destroy = function() {
+    this.tweenClip.removeMovieClip();
+};
+
+// ============================
+// 初始化 TweenManager
+// ============================
+var tweenManager = new TweenManager();
+
+// ============================
+// 层级管理代码
+// ============================
+
+// 定义层级数组
 var layers = [];
+
+// 当前激活的层级
+var currentActiveLayer = null;
 
 // 基地屋顶层级
 var baseRoofLayer = {};
@@ -73,84 +161,187 @@ undergroundWaterLayer.npcs = [];
 undergroundWaterLayer.selectableProperty = "地下水可选";
 layers.push(undergroundWaterLayer);
 
+// 定义通用的透明度设置函数
+function setTransparency(targets, targetAlpha, duration) {
+    tweenAlpha(targets, targetAlpha, duration);
+}
+
+// 定义透明度渐变函数，利用 TweenManager
+function tweenAlpha(targets, targetAlpha, duration) {
+    for (var i = 0; i < targets.length; i++) {
+        var mc = targets[i];
+        var tween = new Tween(mc, mc._alpha, targetAlpha, duration);
+        tweenManager.addTween(tween);
+    }
+}
+
 // 初始化层级状态
 function initializeLayers() {
     for (var i = 0; i < layers.length; i++) {
         var layer = layers[i];
         // 设置组件半透明可见
+        setTransparency(layer.components, 50, 5);
         for (var j = 0; j < layer.components.length; j++) {
-            layer.components[j]._alpha = 50;
-            layer.components[j]._visible = true;
+            var component = layer.components[j];
+            component.gotoAndStop(1); // 确保组件显示在初始状态
         }
         // 设置 NPC 头像透明度
+        var npcAvatars = [];
         for (var k = 0; k < layer.npcs.length; k++) {
-            layer.npcs[k].avatar._alpha = 80;
-            layer.npcs[k].avatar._visible = true;
+            var npcAvatar = layer.npcs[k].avatar;
+            npcAvatar.gotoAndStop(1); // 确保NPC头像显示在初始状态
+            npcAvatars.push(npcAvatar);
         }
+        setTransparency(npcAvatars, 80, 5);
         // 设置可选属性为 false
         this[layer.selectableProperty] = false;
     }
+    // 取消当前激活的层级
+    currentActiveLayer = null;
+    // 设置所有房间的 rollover 事件
+    attachRollOverEvents();
 }
-
-initializeLayers();
 
 // 激活层级函数
-function activateLayer(activeLayer) {
-    for (var i = 0; i < layers.length; i++) {
-        var layer = layers[i];
-        if (layer == activeLayer) {
-            // 激活的层级设为全不透明
-            for (var j = 0; j < layer.components.length; j++) {
-                layer.components[j]._visible = true;
-                layer.components[j]._alpha = 100;
-            }
-            // 设置 NPC 头像为全不透明
-            for (var k = 0; k < layer.npcs.length; k++) {
-                layer.npcs[k].avatar._alpha = 100;
-            }
-            // 设置可选属性为 true
-            this[layer.selectableProperty] = true;
-        } else {
-            // 其他层级隐藏
-            for (var j = 0; j < layer.components.length; j++) {
-                layer.components[j]._visible = false;
-            }
-            // 设置 NPC 头像透明度降低
-            for (var k = 0; k < layer.npcs.length; k++) {
-                layer.npcs[k].avatar._alpha = 30;
-            }
-            // 设置可选属性为 false
-            this[layer.selectableProperty] = false;
-        }
+function activateLayer(activeLayer, activeRoom) {
+    if (currentActiveLayer != null && currentActiveLayer != activeLayer) {
+        // 如果有其他层级被激活，先取消其激活状态
+        deactivateCurrentLayer();
     }
+
+    currentActiveLayer = activeLayer;
+
+    // 设置激活层级的组件和 NPC 头像全不透明
+    var targets = [];
+    for (var j = 0; j < activeLayer.components.length; j++) {
+        targets.push(activeLayer.components[j]);
+    }
+    for (var k = 0; k < activeLayer.npcs.length; k++) {
+        targets.push(activeLayer.npcs[k].avatar);
+    }
+    setTransparency(targets, 100, 5);
+
+    /*
+        // 将激活层级的所有房间移到最顶层（假设使用swapDepths方法）
+        for (var j = 0; j < activeLayer.components.length; j++) {
+            activeLayer.components[j].swapDepths(_root.getNextHighestDepth());
+        }
+    */
+
+    // 高亮当前房间
+    activeRoom.gotoAndStop(2);
+
+    // 设置可选属性为 true
+    this[activeLayer.selectableProperty] = true;
+
+    // 移除所有房间的 rollover 事件
+    removeRollOverEvents();
+
+    // 为当前激活层级的房间添加 rollout 事件
+    attachRollOutEvents(activeLayer);
 }
 
-// 设置房间事件处理器
-function setupRoomEventHandlers() {
+// 取消激活当前层级
+function deactivateCurrentLayer() {
+    if (currentActiveLayer == null) return;
+
+    var layer = currentActiveLayer;
+
+    // 设置激活层级的组件和 NPC 头像半透明
+    var targets = [];
+    for (var j = 0; j < layer.components.length; j++) {
+        targets.push(layer.components[j]);
+    }
+    for (var k = 0; k < layer.npcs.length; k++) {
+        targets.push(layer.npcs[k].avatar);
+    }
+    setTransparency(targets, 50, 5);
+    for (var j = 0; j < layer.components.length; j++) {
+        layer.components[j].gotoAndStop(1); // 恢复组件初始状态
+    }
+    for (var k = 0; k < layer.npcs.length; k++) {
+        layer.npcs[k].avatar.gotoAndStop(1); // 恢复NPC头像初始状态
+    }
+
+    // 设置可选属性为 false
+    this[layer.selectableProperty] = false;
+
+    // 重新绑定所有房间的 rollover 事件
+    attachRollOverEvents();
+
+    // 取消 rollout 事件
+    removeRollOutEvents(layer);
+
+    currentActiveLayer = null;
+}
+
+// 设置房间的 rollover 事件
+function attachRollOverEvents() {
     for (var i = 0; i < layers.length; i++) {
         var layer = layers[i];
         for (var j = 0; j < layer.components.length; j++) {
             var roomClip = layer.components[j];
-            roomClip.layer = layer; // 关联房间与层级
+            // 避免重复绑定
             roomClip.onRollOver = function() {
-                activateLayer(this.layer);
-				// _root.注释(100,_root.获得翻译("前往基地大厅"));
-				this.gotoAndStop(2);
-            };
-            roomClip.onRollOut = function() {
-                // 鼠标离开时，恢复初始状态
-                initializeLayers();
-				this.gotoAndStop(1);
+                if (currentActiveLayer == null) {
+                    activateLayer(this.layer, this);
+                }
             };
         }
     }
 }
 
+// 移除所有房间的 rollover 事件
+function removeRollOverEvents() {
+    for (var i = 0; i < layers.length; i++) {
+        var layer = layers[i];
+        for (var j = 0; j < layer.components.length; j++) {
+            var roomClip = layer.components[j];
+            roomClip.onRollOver = null;
+        }
+    }
+}
 
-setupRoomEventHandlers();
+// 为激活层级的房间添加 rollout 事件
+function attachRollOutEvents(layer) {
+    for (var j = 0; j < layer.components.length; j++) {
+        var roomClip = layer.components[j];
+        roomClip.onRollOut = function() {
+            // 取消高亮当前房间
+            this.gotoAndStop(1);
+            // 取消激活层级
+            deactivateCurrentLayer();
+        };
+    }
+}
 
-// 处理鼠标移动事件
+// 取消激活层级的 rollout 事件
+function removeRollOutEvents(layer) {
+    if (layer == null) return;
+    for (var j = 0; j < layer.components.length; j++) {
+        var roomClip = layer.components[j];
+        roomClip.onRollOut = null;
+    }
+}
+
+// 设置每个房间的关联层级
+for (var i = 0; i < layers.length; i++) {
+    var layer = layers[i];
+    for (var j = 0; j < layer.components.length; j++) {
+        layer.components[j].layer = layer; // 关联房间与层级
+    }
+}
+
+// 初始化层级状态
+initializeLayers();
+
+// 处理鼠标移动事件，仅在没有激活层级时进行碰撞检测
 _root.onMouseMove = function() {
+    if (currentActiveLayer != null) {
+        // 当前有层级被激活，忽略全局鼠标移动事件
+        return;
+    }
+
     var isOverRoom = false;
     for (var i = 0; i < layers.length; i++) {
         var layer = layers[i];
@@ -961,7 +1152,7 @@ function 设置NPC闪光提示() {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" centerPoint3DX="484.75" centerPoint3DY="159.15">
+                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" cacheAsBitmap="true" centerPoint3DX="484.75" centerPoint3DY="159.15">
                   <matrix>
                     <Matrix a="0.200958251953125" d="0.200958251953125" tx="223.6" ty="95.25"/>
                   </matrix>
@@ -981,17 +1172,7 @@ function 设置NPC闪光提示() {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.基地屋顶可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往基地顶层"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1033,7 +1214,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="pig头像" name="pig头像" centerPoint3DX="155.5" centerPoint3DY="190">
+                <DOMSymbolInstance libraryItemName="pig头像" name="pig头像" cacheAsBitmap="true" centerPoint3DX="155.5" centerPoint3DY="190">
                   <matrix>
                     <Matrix tx="133.55" ty="168"/>
                   </matrix>
@@ -1041,7 +1222,7 @@ on (rollOut) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="boy头像" name="boy头像" centerPoint3DX="196.8" centerPoint3DY="217.85">
+                <DOMSymbolInstance libraryItemName="boy头像" name="boy头像" cacheAsBitmap="true" centerPoint3DX="196.8" centerPoint3DY="217.85">
                   <matrix>
                     <Matrix tx="174.85" ty="195.85"/>
                   </matrix>
@@ -1049,7 +1230,7 @@ on (rollOut) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="king头像" name="king头像" centerPoint3DX="249.15" centerPoint3DY="189.75">
+                <DOMSymbolInstance libraryItemName="king头像" name="king头像" cacheAsBitmap="true" centerPoint3DX="249.15" centerPoint3DY="189.75">
                   <matrix>
                     <Matrix tx="227.2" ty="167.75"/>
                   </matrix>
@@ -1065,7 +1246,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="冷兵器商人头像" name="冷兵器商人头像" centerPoint3DX="104.45" centerPoint3DY="193.95">
+                <DOMSymbolInstance libraryItemName="冷兵器商人头像" name="冷兵器商人头像" cacheAsBitmap="true" centerPoint3DX="104.45" centerPoint3DY="193.95">
                   <matrix>
                     <Matrix tx="82.5" ty="171.95"/>
                   </matrix>
@@ -1084,7 +1265,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="基地车库整体" name="基地车库" centerPoint3DX="183.95" centerPoint3DY="197.8">
+                <DOMSymbolInstance libraryItemName="基地车库整体" name="基地车库" cacheAsBitmap="true" centerPoint3DX="183.95" centerPoint3DY="197.8">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="45.3" ty="134.25"/>
                   </matrix>
@@ -1104,17 +1285,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.基地一层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往基地车库"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1131,7 +1302,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="基地门口" name="基地门口" centerPoint3DX="788.45" centerPoint3DY="206.35">
+                <DOMSymbolInstance libraryItemName="基地门口" name="基地门口" cacheAsBitmap="true" centerPoint3DX="788.45" centerPoint3DY="206.35">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="634.65" ty="151.3"/>
                   </matrix>
@@ -1151,17 +1322,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.基地一层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往基地门口"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1186,7 +1347,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="幸存老兵头像" name="幸存老兵头像" centerPoint3DX="450.35" centerPoint3DY="231.2">
+                <DOMSymbolInstance libraryItemName="幸存老兵头像" name="幸存老兵头像" cacheAsBitmap="true" centerPoint3DX="450.35" centerPoint3DY="231.2">
                   <matrix>
                     <Matrix tx="428.4" ty="209.2"/>
                   </matrix>
@@ -1194,7 +1355,7 @@ on (rollOut) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="学生妹头像" name="学生妹头像" centerPoint3DX="397.95" centerPoint3DY="217.3">
+                <DOMSymbolInstance libraryItemName="学生妹头像" name="学生妹头像" cacheAsBitmap="true" centerPoint3DX="397.95" centerPoint3DY="217.3">
                   <matrix>
                     <Matrix tx="376" ty="195.3"/>
                   </matrix>
@@ -1210,7 +1371,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="∞天ㄙ★使的剪∞头像" name="杀马特头像" centerPoint3DX="349.7" centerPoint3DY="189.5">
+                <DOMSymbolInstance libraryItemName="∞天ㄙ★使的剪∞头像" name="杀马特头像" cacheAsBitmap="true" centerPoint3DX="349.7" centerPoint3DY="189.5">
                   <matrix>
                     <Matrix tx="327.75" ty="167.5"/>
                   </matrix>
@@ -1226,7 +1387,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="黑铁会外交部长头像" name="黑铁会外交部长头像" centerPoint3DX="347" centerPoint3DY="236.6">
+                <DOMSymbolInstance libraryItemName="黑铁会外交部长头像" name="黑铁会外交部长头像" cacheAsBitmap="true" centerPoint3DX="347" centerPoint3DY="236.6">
                   <matrix>
                     <Matrix tx="325.05" ty="214.6"/>
                   </matrix>
@@ -1242,7 +1403,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="前治安官头像" name="前治安官头像" centerPoint3DX="609.6" centerPoint3DY="209.2">
+                <DOMSymbolInstance libraryItemName="前治安官头像" name="前治安官头像" cacheAsBitmap="true" centerPoint3DX="609.6" centerPoint3DY="209.2">
                   <matrix>
                     <Matrix tx="587.65" ty="187.2"/>
                   </matrix>
@@ -1258,7 +1419,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="宝石线人头像" name="宝石线人头像" centerPoint3DX="548.7" centerPoint3DY="221.9">
+                <DOMSymbolInstance libraryItemName="宝石线人头像" name="宝石线人头像" cacheAsBitmap="true" centerPoint3DX="548.7" centerPoint3DY="221.9">
                   <matrix>
                     <Matrix tx="526.75" ty="199.9"/>
                   </matrix>
@@ -1285,7 +1446,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="基地大厅整体" name="基地大厅" centerPoint3DX="482.7" centerPoint3DY="203.6">
+                <DOMSymbolInstance libraryItemName="基地大厅整体" name="基地大厅" cacheAsBitmap="true" centerPoint3DX="482.7" centerPoint3DY="203.6">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="235.35" ty="146.7"/>
                   </matrix>
@@ -1305,17 +1466,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.基地一层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往基地大厅"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1348,7 +1499,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="格格巫头像" name="格格巫头像" centerPoint3DX="550.9" centerPoint3DY="145.65">
+                <DOMSymbolInstance libraryItemName="格格巫头像" name="格格巫头像" cacheAsBitmap="true" centerPoint3DX="550.9" centerPoint3DY="145.65">
                   <matrix>
                     <Matrix tx="528.95" ty="123.65"/>
                   </matrix>
@@ -1356,7 +1507,7 @@ on (rollOut) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="丽丽丝头像" name="丽丽丝头像" centerPoint3DX="605.55" centerPoint3DY="145.45">
+                <DOMSymbolInstance libraryItemName="丽丽丝头像" name="丽丽丝头像" cacheAsBitmap="true" centerPoint3DX="605.55" centerPoint3DY="145.45">
                   <matrix>
                     <Matrix tx="583.6" ty="123.45"/>
                   </matrix>
@@ -1395,17 +1546,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.基地一层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往医务室"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1422,7 +1563,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="卧室整体" name="宿舍" centerPoint3DX="549.5" centerPoint3DY="91.75">
+                <DOMSymbolInstance libraryItemName="卧室整体" name="宿舍" cacheAsBitmap="true" centerPoint3DX="549.5" centerPoint3DY="91.75">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="487.85" ty="56.2"/>
                   </matrix>
@@ -1442,17 +1583,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.基地一层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往卧室"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1477,7 +1608,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="酒保头像" name="酒保头像" centerPoint3DX="428.65" centerPoint3DY="107.9">
+                <DOMSymbolInstance libraryItemName="酒保头像" name="酒保头像" cacheAsBitmap="true" centerPoint3DX="428.65" centerPoint3DY="107.9">
                   <matrix>
                     <Matrix tx="406.7" ty="85.9"/>
                   </matrix>
@@ -1493,7 +1624,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="舞女头像" name="舞女头像" centerPoint3DX="373.65" centerPoint3DY="112.1">
+                <DOMSymbolInstance libraryItemName="舞女头像" name="舞女头像" cacheAsBitmap="true" centerPoint3DX="373.65" centerPoint3DY="112.1">
                   <matrix>
                     <Matrix tx="351.7" ty="90.1"/>
                   </matrix>
@@ -1512,7 +1643,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="佣兵酒吧整体" name="佣兵酒吧" centerPoint3DX="409" centerPoint3DY="113.6">
+                <DOMSymbolInstance libraryItemName="佣兵酒吧整体" name="佣兵酒吧" cacheAsBitmap="true" centerPoint3DX="409" centerPoint3DY="113.6">
                   <matrix>
                     <Matrix a="0.150588989257813" d="0.150588989257813" tx="307.1" ty="65.9"/>
                   </matrix>
@@ -1532,17 +1663,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.基地一层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往佣兵酒吧"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1584,7 +1705,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="andy头像" name="andy头像" centerPoint3DX="481.4" centerPoint3DY="301.25">
+                <DOMSymbolInstance libraryItemName="andy头像" name="andy头像" cacheAsBitmap="true" centerPoint3DX="481.4" centerPoint3DY="301.25">
                   <matrix>
                     <Matrix tx="459.45" ty="279.25"/>
                   </matrix>
@@ -1592,7 +1713,7 @@ on (rollOut) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="the girl头像" name="thegirl头像" centerPoint3DX="420.1" centerPoint3DY="304.5">
+                <DOMSymbolInstance libraryItemName="the girl头像" name="thegirl头像" cacheAsBitmap="true" centerPoint3DX="420.1" centerPoint3DY="304.5">
                   <matrix>
                     <Matrix tx="398.15" ty="282.5"/>
                   </matrix>
@@ -1600,7 +1721,7 @@ on (rollOut) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="blue头像" name="blue头像" centerPoint3DX="604.75" centerPoint3DY="308.65">
+                <DOMSymbolInstance libraryItemName="blue头像" name="blue头像" cacheAsBitmap="true" centerPoint3DX="604.75" centerPoint3DY="308.65">
                   <matrix>
                     <Matrix tx="582.8" ty="286.65"/>
                   </matrix>
@@ -1619,7 +1740,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="地下一层整体" name="地下一层" centerPoint3DX="508.8" centerPoint3DY="303.4">
+                <DOMSymbolInstance libraryItemName="地下一层整体" name="地下一层" cacheAsBitmap="true" centerPoint3DX="508.8" centerPoint3DY="303.4">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="349.55" ty="257.4"/>
                   </matrix>
@@ -1639,17 +1760,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.地下一层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往地下一层"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1666,7 +1777,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="健身房整体" name="健身房" centerPoint3DX="318.65" centerPoint3DY="303.1">
+                <DOMSymbolInstance libraryItemName="健身房整体" name="健身房" cacheAsBitmap="true" centerPoint3DX="318.65" centerPoint3DY="303.1">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="233.25" ty="257.4"/>
                   </matrix>
@@ -1686,17 +1797,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.地下一层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往健身房"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1729,7 +1830,7 @@ on (rollOut) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="shopgirl头像" name="shopgirl头像" centerPoint3DX="533.8" centerPoint3DY="263.05">
+                <DOMSymbolInstance libraryItemName="shopgirl头像" name="shopgirl头像" cacheAsBitmap="true" centerPoint3DX="533.8" centerPoint3DY="263.05">
                   <matrix>
                     <Matrix tx="511.85" ty="241.05"/>
                   </matrix>
@@ -1737,7 +1838,7 @@ on (rollOut) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="小F头像" name="小F头像" centerPoint3DX="593.3" centerPoint3DY="251.95">
+                <DOMSymbolInstance libraryItemName="小F头像" name="小F头像" cacheAsBitmap="true" centerPoint3DX="593.3" centerPoint3DY="251.95">
                   <matrix>
                     <Matrix tx="571.35" ty="229.95"/>
                   </matrix>
@@ -1776,17 +1877,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.地下一层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往武器库"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1831,17 +1922,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.地下二层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往地下二层走廊"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1858,7 +1939,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="食堂整体" name="食堂" centerPoint3DX="241.5" centerPoint3DY="378.65">
+                <DOMSymbolInstance libraryItemName="食堂整体" name="食堂" cacheAsBitmap="true" centerPoint3DX="241.5" centerPoint3DY="378.65">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="56.6" ty="314.05"/>
                   </matrix>
@@ -1878,17 +1959,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.地下二层可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往食堂"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1933,17 +2004,7 @@ on (rollOut) {
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
 }
-on (rollOver) {
-	if (_parent.地下水可选 == true)
-	{
-		_root.注释(100,_root.获得翻译("前往地下河"));
-		this.gotoAndStop(2);
-	}
-}
-on (rollOut) {
-	_root.注释结束();
-	this.gotoAndStop(1);
-}]]></script>
+]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -1953,7 +2014,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#EE56CF" locked="true" autoNamed="false">
+        <DOMLayer name="背景" color="#EE56CF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1985,38 +2046,7 @@ on (rollOut) {
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
-              <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <SolidColor color="#AA9F98"/>
-                    </FillStyle>
-                  </fills>
-                  <strokes>
-                    <StrokeStyle index="1">
-                      <SolidStroke scaleMode="normal">
-                        <fill>
-                          <SolidColor/>
-                        </fill>
-                      </SolidStroke>
-                    </StrokeStyle>
-                  </strokes>
-                  <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!13917 14509[13789 14637 13607 14637!13607 14637[13424 14637 13296 14509!13296 14509[13264 14477 13240 14441!13240 14441[13167 14334 13167 14197!13167 14197[13167 14014 13296 13886!13296 13886[13424 13757 13607 13757!13607 13757[13789
- 13757 13917 13886!13917 13886[14046 14014 14046 14197!14046 14197[14046 14334 13974 14441!13974 14441[13949 14477 13917 14509"/>
-                    <Edge cubics="!13607 13757(;13728,13757 13832,13800 13917,13886q13607 13757Q13789 13757q13917 13886);"/>
-                    <Edge cubics="!13296 13886(13296,13886;13381,13800 13485,13757 13607,13757q13296 13886Q13424 13757q13607 13757);"/>
-                    <Edge cubics="!13607 14637(;13485,14637 13381,14594 13296,14509q13607 14637Q13424 14637q13296 14509);"/>
-                    <Edge cubics="!14046 14197(;14046,14288 14022,14369 13974,14441q14046 14197Q14046 14334q13974 14441);"/>
-                    <Edge cubics="!13974 14441(13974,14441;13958,14464 13939,14487 13917,14509q13974 14441 13917 14509)13917,14509;"/>
-                    <Edge cubics="!13917 14509(;13832,14594 13728,14637 13607,14637q13917 14509Q13789 14637q13607 14637);"/>
-                    <Edge cubics="!13296 14509(13296,14509;13276,14489 13258,14468 13240,14441q13296 14509 13240 14441)13240,14441;"/>
-                    <Edge cubics="!13240 14441(;13192,14373 13167,14290 13167,14197q13240 14441Q13167 14334q13167 14197);"/>
-                    <Edge cubics="!13917 13886(;14003,13971 14046,14075 14046,14197q13917 13886Q14046 14014q14046 14197);"/>
-                    <Edge cubics="!13167 14197(;13167,14075 13210,13971 13296,13886q13167 14197Q13167 14014q13296 13886);"/>
-                  </edges>
-                </DOMShape>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
