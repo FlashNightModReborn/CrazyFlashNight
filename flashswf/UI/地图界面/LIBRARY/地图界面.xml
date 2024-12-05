@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1733369688" lastUniqueIdentifier="146">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1733382948" lastUniqueIdentifier="146">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
@@ -184,6 +184,9 @@ function initializeLayers() {
         for (var j = 0; j < layer.components.length; j++) {
             var component = layer.components[j];
             component.gotoAndStop(1); // 确保组件显示在初始状态
+            
+            // 记录组件的原始深度
+            component.originalDepth = component.getDepth();
         }
         // 设置 NPC 头像透明度
         var npcAvatars = [];
@@ -191,6 +194,9 @@ function initializeLayers() {
             var npcAvatar = layer.npcs[k].avatar;
             npcAvatar.gotoAndStop(1); // 确保NPC头像显示在初始状态
             npcAvatars.push(npcAvatar);
+            
+            // 记录 NPC 头像的原始深度
+            npcAvatar.originalDepth = npcAvatar.getDepth();
         }
         setTransparency(npcAvatars, 80, 5);
         // 设置可选属性为 false
@@ -210,6 +216,8 @@ function activateLayer(activeLayer, activeRoom) {
     }
 
     currentActiveLayer = activeLayer;
+	
+	var depthTop = 1000;
 
     // 设置激活层级的组件和 NPC 头像全不透明
     var targets = [];
@@ -221,12 +229,21 @@ function activateLayer(activeLayer, activeRoom) {
     }
     setTransparency(targets, 100, 5);
 
-    /*
-        // 将激活层级的所有房间移到最顶层（假设使用swapDepths方法）
-        for (var j = 0; j < activeLayer.components.length; j++) {
-            activeLayer.components[j].swapDepths(_root.getNextHighestDepth());
-        }
-    */
+    // 调整激活层级的深度，使其置顶
+    for (var j = 0; j < activeLayer.components.length; j++) {
+        var component = activeLayer.components[j];
+        // 记录当前深度
+        component.currentDepth = component.getDepth();
+        // 交换深度，将组件置顶
+        component.swapDepths(component.originalDepth + depthTop);
+    }
+    for (var k = 0; k < activeLayer.npcs.length; k++) {
+        var npcAvatar = activeLayer.npcs[k].avatar;
+        // 记录当前深度
+        npcAvatar.currentDepth = npcAvatar.getDepth();
+        // 交换深度，将 NPC 头像置顶
+        npcAvatar.swapDepths(npcAvatar.originalDepth + depthTop);
+    }
 
     // 高亮当前房间
     activeRoom.gotoAndStop(2);
@@ -257,10 +274,32 @@ function deactivateCurrentLayer() {
     }
     setTransparency(targets, 50, 5);
     for (var j = 0; j < layer.components.length; j++) {
-        layer.components[j].gotoAndStop(1); // 恢复组件初始状态
+        var component = layer.components[j];
+        component.gotoAndStop(1); // 恢复组件初始状态
+        
+        // 恢复组件的原始深度
+        if (component.currentDepth != undefined) {
+            try {
+                component.swapDepths(_root.getInstanceAtDepth(component.originalDepth));
+            } catch (e) {
+                trace("Error restoring depth for component: " + component._name + " - " + e);
+            }
+            delete component.currentDepth;
+        }
     }
     for (var k = 0; k < layer.npcs.length; k++) {
-        layer.npcs[k].avatar.gotoAndStop(1); // 恢复NPC头像初始状态
+        var npcAvatar = layer.npcs[k].avatar;
+        npcAvatar.gotoAndStop(1); // 恢复NPC头像初始状态
+        
+        // 恢复 NPC 头像的原始深度
+        if (npcAvatar.currentDepth != undefined) {
+            try {
+                npcAvatar.swapDepths(_root.getInstanceAtDepth(npcAvatar.originalDepth));
+            } catch (e) {
+                trace("Error restoring depth for NPC Avatar: " + npcAvatar._name + " - " + e);
+            }
+            delete npcAvatar.currentDepth;
+        }
     }
 
     // 设置可选属性为 false
@@ -285,6 +324,7 @@ function attachRollOverEvents() {
             roomClip.onRollOver = function() {
                 if (currentActiveLayer == null) {
                     activateLayer(this.layer, this);
+                    _this.deactivateFlag = false;
                 }
             };
         }
@@ -310,6 +350,7 @@ function attachRollOutEvents(layer) {
             // 取消高亮当前房间
             this.gotoAndStop(1);
             // 取消激活层级
+            _this.deactivateFlag = true;
             deactivateCurrentLayer();
         };
     }
@@ -336,10 +377,14 @@ for (var i = 0; i < layers.length; i++) {
 initializeLayers();
 
 // 处理鼠标移动事件，仅在没有激活层级时进行碰撞检测
-_root.onMouseMove = function() {
+this.onMouseMove = function() {
     if (currentActiveLayer != null) {
         // 当前有层级被激活，忽略全局鼠标移动事件
-        return;
+        if (this.deactivateFlag) {
+            deactivateCurrentLayer();
+        } else {
+            return;
+        }
     }
 
     var isOverRoom = false;
