@@ -18,53 +18,53 @@ class org.flashNight.sara.util.ObjectPoolTest {
     }
 
     /**
-     * 初始化测试环境，创建 ObjectPool 实例
+     * Initialize the testing environment by creating an ObjectPool instance
      */
     private function setup():Void {
-        // 创建一个简单的创建函数
+        // Define a simple create function
         var createFunc:Function = function(parent:MovieClip):MovieClip {
             var mc:MovieClip = parent.createEmptyMovieClip("testMC" + Dictionary.getStaticUID(this), parent.getNextHighestDepth());
             mc.__isDestroyed = false;
             return mc;
         };
 
-        // 重置函数
+        // Define a simple reset function
         var resetFunc:Function = function():Void {
-            // 简单重置逻辑，例如重置位置
+            // Simple reset logic, e.g., reset position and visibility
             this._x = 0;
             this._y = 0;
             this._visible = true;
         };
 
-        // 释放函数
+        // Define a simple release function
         var releaseFunc:Function = function():Void {
-            // 简单释放逻辑，例如隐藏对象
+            // Simple release logic, e.g., hide the object
             this._visible = false;
         };
 
-        // 假设有一个父 MovieClip
+        // Assume a parent MovieClip exists
         var parentClip:MovieClip = _root.createEmptyMovieClip("parentClip", _root.getNextHighestDepth());
 
-        // 创建 ObjectPool 实例
-        // 参数：createFunc, resetFunc, releaseFunc, parentClip, maxPoolSize=10, preloadSize=3, isLazyLoaded=false, isPrototypeEnabled=true, prototypeInitArgs=[]
+        // Create the ObjectPool instance
+        // Parameters: createFunc, resetFunc, releaseFunc, parentClip, maxPoolSize=10, preloadSize=3, isLazyLoaded=false, isPrototypeEnabled=true, prototypeInitArgs=[]
         pool = new ObjectPool(createFunc, resetFunc, releaseFunc, parentClip, 10, 3, false, true, []);
     }
 
     /**
-     * 运行所有测试部分
+     * Run all test sections
      */
     private function runTests():Void {
         testPublicMethods();
-        setup();  // 重新初始化对象池
+        setup();  // Reinitialize the object pool
         testRealWorldUsage();
-        setup();  // 重新初始化对象池
+        setup();  // Reinitialize the object pool
         testPerformance();
-        setup();  // 重新初始化对象池 for edge case tests
+        setup();  // Reinitialize the object pool for edge case tests
         testEdgeCases();
     }
 
     /**
-     * 公共方法准确性测试（单元测试）
+     * Public Methods Accuracy Tests (Unit Tests)
      */
     private function testPublicMethods():Void {
         trace("Starting Public Methods Accuracy Tests...");
@@ -79,8 +79,8 @@ class org.flashNight.sara.util.ObjectPoolTest {
 
         // Test preload and getPoolSize
         try {
-            pool.preload(5);
-            assert(pool.getPoolSize() == 5, "preload/getPoolSize");
+            pool.preload(15); // Preload up to max capacity
+            assert(pool.getPoolSize() == 15, "preload/getPoolSize");
         } catch (e) {
             fail("preload/getPoolSize", e.message);
         }
@@ -96,25 +96,25 @@ class org.flashNight.sara.util.ObjectPoolTest {
         // Test getObject and releaseObject
         try {
             var obj1:MovieClip = pool.getObject();
-            assert(pool.getPoolSize() == 4, "getObject reduces pool size");
+            assert(pool.getPoolSize() == 14, "getObject reduces pool size");
             pool.releaseObject(obj1);
-            assert(pool.getPoolSize() == 5, "releaseObject increases pool size");
+            assert(pool.getPoolSize() == 15, "releaseObject increases pool size");
         } catch (e) {
             fail("getObject/releaseObject", e.message);
         }
 
         // Test isPoolEmpty and isPoolFull
         try {
+            var objects:Array = [];
             // Empty the pool by acquiring all objects
-            for (var i:Number = 0; i < 5; i++) {
-                pool.getObject();
+            for (var i:Number = 0; i < 15; i++) {
+                objects.push(pool.getObject());
             }
             assert(pool.isPoolEmpty() == true, "isPoolEmpty after getting all objects");
 
-            // Fill the pool to maxPoolSize (15)
+            // Release the objects back into the pool
             for (var j:Number = 0; j < 15; j++) {
-                var obj:MovieClip = pool.getObject();
-                pool.releaseObject(obj);
+                pool.releaseObject(objects[j]);
             }
             assert(pool.isPoolFull() == true, "isPoolFull after filling the pool");
         } catch (e) {
@@ -129,33 +129,22 @@ class org.flashNight.sara.util.ObjectPoolTest {
             fail("clearPool", e.message);
         }
 
-        // Additional Test: Releasing objects when pool is full
+        // Additional Test: Releasing an extra object when pool is full
         try {
             // Preload to full capacity
             pool.clearPool();
-            pool.preload(pool.getMaxPoolSize()); // preload 15 objects
+            pool.preload(pool.getMaxPoolSize()); // Preload 15 objects
             assert(pool.getPoolSize() == 15, "Preload to full capacity");
+            assert(pool.isPoolFull() == true, "Pool is full before releasing extra object");
 
-            // Attempt to release another object, which should be destroyed
-            var extraObj:MovieClip = pool.getObject(); // get one object, pool size =14
-            pool.releaseObject(extraObj); // release back, pool size=15
+            // Create an extra object outside the pool
+            var extraObj:MovieClip = pool.createNewObject(); // External object not from pool
 
-            // Now, attempt to release an extra object when pool is full
-            var anotherObj:MovieClip = pool.getObject(); // get one object, pool size=14
-            pool.releaseObject(anotherObj); // release back, pool size=15
-            var overObj:MovieClip = pool.getObject(); // get one object, pool size=14
-            pool.releaseObject(overObj); // release back, pool size=15
-
-            // Release an object when pool is already full
-            var objToDestroy:MovieClip = pool.getObject(); // get one, pool size=14
-            pool.releaseObject(objToDestroy); // release back, pool size=15
-
-            // Now, release another object when pool is full
-            var extraObjToDestroy:MovieClip = pool.getObject(); // get one, pool size=14
-            pool.releaseObject(extraObjToDestroy); // pool is full, object should be destroyed
+            // Release the extra object; pool is full, so it should be destroyed
+            pool.releaseObject(extraObj);
 
             // Check if the extra object is destroyed
-            if (extraObjToDestroy == undefined || extraObjToDestroy.__isDestroyed == true) {
+            if (extraObj == undefined || extraObj.__isDestroyed == true || extraObj._parent == undefined) {
                 assert(true, "Extra object is marked as destroyed");
             } else {
                 assert(false, "Extra object is marked as destroyed");
@@ -167,8 +156,9 @@ class org.flashNight.sara.util.ObjectPoolTest {
         trace("Public Methods Accuracy Tests Completed.");
     }
 
+
     /**
-     * 实战性调度测试
+     * Real-World Usage Tests
      */
     private function testRealWorldUsage():Void {
         trace("Starting Real-World Usage Tests...");
@@ -222,7 +212,7 @@ class org.flashNight.sara.util.ObjectPoolTest {
     }
 
     /**
-     * 性能效率测试
+     * Performance Efficiency Tests
      */
     private function testPerformance():Void {
         trace("Starting Performance Efficiency Tests...");
@@ -267,7 +257,7 @@ class org.flashNight.sara.util.ObjectPoolTest {
     }
 
     /**
-     * 边界条件和异常情况测试
+     * Edge Cases and Exception Handling Tests
      */
     private function testEdgeCases():Void {
         trace("Starting Edge Cases Tests...");
@@ -352,9 +342,9 @@ class org.flashNight.sara.util.ObjectPoolTest {
     }
 
     /**
-     * 自定义断言方法
-     * @param condition 条件表达式
-     * @param testName 测试名称
+     * Custom assertion method
+     * @param condition Boolean condition to assert
+     * @param testName Name of the test
      */
     private function assert(condition:Boolean, testName:String):Void {
         totalTests++;
@@ -367,9 +357,9 @@ class org.flashNight.sara.util.ObjectPoolTest {
     }
 
     /**
-     * 记录失败的测试
-     * @param testName 测试名称
-     * @param message 错误信息
+     * Record failed tests
+     * @param testName Name of the test
+     * @param message Error message
      */
     private function fail(testName:String, message:String):Void {
         totalTests++;
@@ -377,7 +367,7 @@ class org.flashNight.sara.util.ObjectPoolTest {
     }
 
     /**
-     * 报告测试结果
+     * Report test results
      */
     private function reportResults():Void {
         trace("----- Test Results -----");

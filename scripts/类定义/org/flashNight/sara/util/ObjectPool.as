@@ -65,7 +65,7 @@ class org.flashNight.sara.util.ObjectPool {
      * 如果启用了原型模式，将通过克隆原型对象创建新对象；否则直接调用 createFunc 创建新对象
      * @return 新创建的 MovieClip 对象
      */
-    private function createNewObject():MovieClip {
+    public function createNewObject():MovieClip {
         var newObj:MovieClip;
 
         // 如果启用了原型模式且原型对象存在，通过克隆原型创建新对象
@@ -236,6 +236,7 @@ class org.flashNight.sara.util.ObjectPool {
     public function isPoolFull():Boolean {
         return this.topIndex >= this.maxPoolSize;
     }
+
 
 
     /**
