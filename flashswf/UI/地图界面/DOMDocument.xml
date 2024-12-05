@@ -25,7 +25,7 @@
           <DOMBitmapItem name="纹理图/Asphalt031_1K-JPG_Color.jpg" itemID="6745b232-00000155" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/Asphalt031_1K-JPG_Color.jpg" sourceLastImported="1728359378" allowSmoothing="true" quality="50" href="纹理图/Asphalt031_1K-JPG_Color.jpg" bitmapDataHRef="M 5 1732944133.dat" frameRight="20480" frameBottom="20480" isJPEG="true"/>
           <DOMBitmapItem name="纹理图/Asphalt031_1K-JPG_Displacement.jpg" itemID="6745b236-00000159" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/Asphalt031_1K-JPG_Displacement.jpg" sourceLastImported="1728359466" allowSmoothing="true" quality="50" href="纹理图/Asphalt031_1K-JPG_Displacement.jpg" bitmapDataHRef="M 4 1732944133.dat" frameRight="20480" frameBottom="20480" isJPEG="true"/>
           <DOMBitmapItem name="纹理图/bitmap13.jpg" itemID="66751b8b-00000042" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/bitmap13.jpg" sourceLastImported="1718950795" quality="50" href="纹理图/bitmap13.jpg" bitmapDataHRef="M 7 1732944133.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
-          <DOMBitmapItem name="image/bitmap2123.jpg" itemID="6597607b-00000415" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2123.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2123.jpg" bitmapDataHRef="M 1 1732887827.dat" frameRight="16160" frameBottom="8580" isJPEG="true"/>
+          <DOMBitmapItem name="image/bitmap2123.jpg" itemID="6597607b-00000415" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2123.jpg" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2123.jpg" bitmapDataHRef="M 1 1732887827.dat" frameRight="16160" frameBottom="8580"/>
           <DOMBitmapItem name="image/bitmap2259.jpg" itemID="6597607b-00000460" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2259.jpg" sourceLastImported="1704419451" quality="50" href="image/bitmap2259.jpg" bitmapDataHRef="M 25 1732944133.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
           <DOMBitmapItem name="image/bitmap2261.png" itemID="6597607b-00000465" sourceExternalFilepath="../地图界面/LIBRARY/image/bitmap2261.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap2261.png" bitmapDataHRef="M 18 1732944133.dat" frameRight="1140" frameBottom="1480"/>
           <DOMBitmapItem name="纹理图/bitmap2261.png" itemID="67458aad-000000ba" sourceExternalFilepath="../地图界面/LIBRARY/纹理图/bitmap2261.png" sourceLastImported="1732610729" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="纹理图/bitmap2261.png" bitmapDataHRef="M 8 1732944133.dat" frameRight="1140" frameBottom="1480"/>
@@ -343,7 +343,7 @@
           <Include href="地板材质-1.xml" loadImmediate="false" itemID="6745b254-00000161" lastModified="1732620884"/>
           <Include href="地板材质-2.xml" loadImmediate="false" itemID="6745b269-0000016e" lastModified="1732620905"/>
           <Include href="地板块-new.xml" loadImmediate="false" itemID="6745b337-0000018b" lastModified="1732621111"/>
-          <Include href="地图界面.xml" itemID="6749c50f-00000907" lastModified="1733382948"/>
+          <Include href="地图界面.xml" itemID="6749c50f-00000907" lastModified="1733387072"/>
           <Include href="地下二层远景.xml" itemIcon="1" loadImmediate="false" itemID="6748ceb5-00000257" lastModified="1732824757"/>
           <Include href="地下水整体.xml" itemIcon="1" loadImmediate="false" itemID="6748cb24-00000095" lastModified="1732959012"/>
           <Include href="地下一层全景.xml" itemIcon="1" loadImmediate="false" itemID="6748ce9b-000001b1" lastModified="1732824850"/>
@@ -487,25 +487,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2913348" publishTime="1733387076"/>
+          <PublishItem publishSize="2910837" publishTime="1733386825"/>
+          <PublishItem publishSize="2913299" publishTime="1733386421"/>
+          <PublishItem publishSize="2913227" publishTime="1733385924"/>
+          <PublishItem publishSize="2913334" publishTime="1733385308"/>
+          <PublishItem publishSize="2913226" publishTime="1733384983"/>
+          <PublishItem publishSize="2913227" publishTime="1733384751"/>
+          <PublishItem publishSize="2910831" publishTime="1733384742"/>
+          <PublishItem publishSize="2913120" publishTime="1733384639"/>
+          <PublishItem publishSize="2913227" publishTime="1733384345"/>
+          <PublishItem publishSize="2913320" publishTime="1733383914"/>
+          <PublishItem publishSize="2913378" publishTime="1733383861"/>
+          <PublishItem publishSize="2913347" publishTime="1733383812"/>
+          <PublishItem publishSize="2913347" publishTime="1733383798"/>
+          <PublishItem publishSize="2913341" publishTime="1733383757"/>
+          <PublishItem publishSize="2913316" publishTime="1733383283"/>
           <PublishItem publishSize="2913314" publishTime="1733382954"/>
           <PublishItem publishSize="2913313" publishTime="1733382895"/>
           <PublishItem publishSize="2913300" publishTime="1733382728"/>
           <PublishItem publishSize="2913004" publishTime="1733382432"/>
-          <PublishItem publishSize="2912469" publishTime="1733382421"/>
-          <PublishItem publishSize="2912332" publishTime="1733382390"/>
-          <PublishItem publishSize="2913000" publishTime="1733382161"/>
-          <PublishItem publishSize="2913259" publishTime="1733382138"/>
-          <PublishItem publishSize="2912989" publishTime="1733382006"/>
-          <PublishItem publishSize="2913157" publishTime="1733381981"/>
-          <PublishItem publishSize="2913154" publishTime="1733381948"/>
-          <PublishItem publishSize="2913000" publishTime="1733369693"/>
-          <PublishItem publishSize="2912989" publishTime="1733369660"/>
-          <PublishItem publishSize="2912991" publishTime="1733369634"/>
-          <PublishItem publishSize="2912981" publishTime="1733369617"/>
-          <PublishItem publishSize="2912883" publishTime="1733369355"/>
-          <PublishItem publishSize="2912576" publishTime="1733368947"/>
-          <PublishItem publishSize="2912926" publishTime="1733368801"/>
-          <PublishItem publishSize="2912339" publishTime="1733368450"/>
-          <PublishItem publishSize="2912633" publishTime="1733368338"/>
      </publishHistory>
 </DOMDocument>

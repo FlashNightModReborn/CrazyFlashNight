@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1733382948" lastUniqueIdentifier="146">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1733387072" lastUniqueIdentifier="154">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
@@ -44,13 +44,11 @@ Tween.prototype.update = function(delta) {
 // ============================
 // TweenManager 类定义
 // ============================
-
-var _this = this;
-function TweenManager() {
+function TweenManager(parentClip) {
     this.tweens = [];
     
-    // 创建一个空的影片剪辑，挂载到当前环境
-    this.tweenClip = _this.createEmptyMovieClip("tweenManagerClip", _this.getNextHighestDepth());
+    // 创建一个空的影片剪辑，挂载到 parentClip
+    this.tweenClip = parentClip.createEmptyMovieClip("tweenManagerClip", parentClip.getNextHighestDepth());
 
     // 绑定 onEnterFrame 到空影片剪辑
     var self = this; // 保存当前 TweenManager 的引用
@@ -59,12 +57,10 @@ function TweenManager() {
     };
 }
 
-// 添加一个 Tween 到管理器
 TweenManager.prototype.addTween = function(tween) {
     this.tweens.push(tween);
 };
 
-// 更新所有 Tween
 TweenManager.prototype.update = function() {
     var completedTweens = [];
     for (var i = 0; i < this.tweens.length; i++) {
@@ -80,316 +76,226 @@ TweenManager.prototype.update = function() {
     }
 };
 
-// 销毁 TweenManager 时清理空影片剪辑
 TweenManager.prototype.destroy = function() {
     this.tweenClip.removeMovieClip();
 };
 
 // ============================
-// 初始化 TweenManager
+// Layer 类定义
 // ============================
-var tweenManager = new TweenManager();
-
-// ============================
-// 层级管理代码
-// ============================
-
-// 定义层级数组
-var layers = [];
-
-// 当前激活的层级
-var currentActiveLayer = null;
-
-// 基地屋顶层级
-var baseRoofLayer = {};
-baseRoofLayer.name = "基地屋顶";
-baseRoofLayer.components = [this.基地屋顶];
-baseRoofLayer.npcs = [];
-baseRoofLayer.selectableProperty = "基地屋顶可选";
-layers.push(baseRoofLayer);
-
-// 基地一层层级
-var firstFloorLayer = {};
-firstFloorLayer.name = "基地一层";
-firstFloorLayer.components = [this.基地大厅, this.佣兵酒吧, this.基地车库, this.基地门口, this.医务室, this.宿舍];
-firstFloorLayer.npcs = [
-    { avatar: this.king头像, name: "king头像" },
-    { avatar: this.boy头像, name: "boy头像" },
-    { avatar: this.pig头像, name: "pig头像" },
-    { avatar: this.冷兵器商人头像, name: "冷兵器商人头像" },
-    { avatar: this.杀马特头像, name: "杀马特头像" },
-    { avatar: this.酒保头像, name: "酒保头像" },
-    { avatar: this.舞女头像, name: "舞女头像" },
-    { avatar: this.格格巫头像, name: "格格巫头像" },
-    { avatar: this.丽丽丝头像, name: "丽丽丝头像" },
-    { avatar: this.黑铁会外交部长头像, name: "黑铁会外交部长头像" },
-    { avatar: this.宝石线人头像, name: "宝石线人头像" },
-    { avatar: this.前治安官头像, name: "前治安官头像" },
-    { avatar: this.幸存老兵头像, name: "幸存老兵头像" },
-    { avatar: this.学生妹头像, name: "学生妹头像" }
-];
-firstFloorLayer.selectableProperty = "基地一层可选";
-layers.push(firstFloorLayer);
-
-// 地下一层层级
-var basement1Layer = {};
-basement1Layer.name = "地下一层";
-basement1Layer.components = [this.地下一层, this.健身房, this.武器库];
-basement1Layer.npcs = [
-    { avatar: this.andy头像, name: "andy头像" },
-    { avatar: this.thegirl头像, name: "thegirl头像" },
-    { avatar: this.shopgirl头像, name: "shopgirl头像" },
-    { avatar: this.blue头像, name: "blue头像" },
-    { avatar: this.小F头像, name: "小F头像" }
-];
-basement1Layer.selectableProperty = "地下一层可选";
-layers.push(basement1Layer);
-
-// 地下二层层级
-var basement2Layer = {};
-basement2Layer.name = "地下二层";
-basement2Layer.components = [this.走廊, this.食堂];
-basement2Layer.npcs = [];
-basement2Layer.selectableProperty = "地下二层可选";
-layers.push(basement2Layer);
-
-// 地下水层级
-var undergroundWaterLayer = {};
-undergroundWaterLayer.name = "地下水";
-undergroundWaterLayer.components = [this.地下水];
-undergroundWaterLayer.npcs = [];
-undergroundWaterLayer.selectableProperty = "地下水可选";
-layers.push(undergroundWaterLayer);
-
-// 定义通用的透明度设置函数
-function setTransparency(targets, targetAlpha, duration) {
-    tweenAlpha(targets, targetAlpha, duration);
+function Layer(name, components, npcs, selectableProperty) {
+    this.name = name;
+    this.components = components; // Array of MovieClips
+    this.npcs = npcs; // Array of { avatar: MovieClip, name: String }
+    this.selectableProperty = selectableProperty;
+    this.originalDepths = { components: [], npcs: [] };
 }
 
-// 定义透明度渐变函数，利用 TweenManager
-function tweenAlpha(targets, targetAlpha, duration) {
-    for (var i = 0; i < targets.length; i++) {
-        var mc = targets[i];
-        var tween = new Tween(mc, mc._alpha, targetAlpha, duration);
-        tweenManager.addTween(tween);
-    }
-}
-
-// 初始化层级状态
-function initializeLayers() {
-    for (var i = 0; i < layers.length; i++) {
-        var layer = layers[i];
-        // 设置组件半透明可见
-        setTransparency(layer.components, 50, 5);
-        for (var j = 0; j < layer.components.length; j++) {
-            var component = layer.components[j];
-            component.gotoAndStop(1); // 确保组件显示在初始状态
-            
-            // 记录组件的原始深度
+Layer.prototype.recordOriginalDepths = function() {
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        if (component.originalDepth == undefined) {
             component.originalDepth = component.getDepth();
+            this.originalDepths.components.push(component.originalDepth);
         }
-        // 设置 NPC 头像透明度
-        var npcAvatars = [];
-        for (var k = 0; k < layer.npcs.length; k++) {
-            var npcAvatar = layer.npcs[k].avatar;
-            npcAvatar.gotoAndStop(1); // 确保NPC头像显示在初始状态
-            npcAvatars.push(npcAvatar);
-            
-            // 记录 NPC 头像的原始深度
+    }
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        if (npcAvatar.originalDepth == undefined) {
             npcAvatar.originalDepth = npcAvatar.getDepth();
+            this.originalDepths.npcs.push(npcAvatar.originalDepth);
         }
-        setTransparency(npcAvatars, 80, 5);
-        // 设置可选属性为 false
-        this[layer.selectableProperty] = false;
     }
-    // 取消当前激活的层级
-    currentActiveLayer = null;
-    // 设置所有房间的 rollover 事件
-    attachRollOverEvents();
-}
+};
 
-// 激活层级函数
-function activateLayer(activeLayer, activeRoom) {
-    if (currentActiveLayer != null && currentActiveLayer != activeLayer) {
-        // 如果有其他层级被激活，先取消其激活状态
-        deactivateCurrentLayer();
+Layer.prototype.initialize = function(tweenManager) {
+    // 设置组件半透明
+    LayerUtils.setTransparency(this.components, 50, 5, tweenManager);
+    
+    // 设置组件初始状态并恢复原始深度
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        component.gotoAndStop(1); // 初始状态
+        component.swapDepths(component.originalDepth);
     }
+    
+    // 设置 NPC 头像透明度
+    var npcAvatars = [];
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.gotoAndStop(1); // 初始状态
+        npcAvatars.push(npcAvatar);
+        npcAvatar.swapDepths(npcAvatar.originalDepth);
+    }
+    LayerUtils.setTransparency(npcAvatars, 80, 5, tweenManager);
+    
+    // 设置可选属性为 false
+    _this[this.selectableProperty] = false;
+};
 
-    currentActiveLayer = activeLayer;
-	
-	var depthTop = 1000;
-
-    // 设置激活层级的组件和 NPC 头像全不透明
-    var targets = [];
-    for (var j = 0; j < activeLayer.components.length; j++) {
-        targets.push(activeLayer.components[j]);
+Layer.prototype.activate = function(tweenManager, depthOffset, activeRoom) {
+    // 设置组件和 NPC 头像全不透明
+    LayerUtils.setTransparency(this.components, 100, 5, tweenManager);
+    
+    var npcAvatars = [];
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.gotoAndStop(2); // 高亮状态
+        npcAvatars.push(npcAvatar);
     }
-    for (var k = 0; k < activeLayer.npcs.length; k++) {
-        targets.push(activeLayer.npcs[k].avatar);
+    LayerUtils.setTransparency(npcAvatars, 100, 5, tweenManager);
+    
+    // 调整深度，使其置顶
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        component.swapDepths(component.originalDepth + depthOffset);
     }
-    setTransparency(targets, 100, 5);
-
-    // 调整激活层级的深度，使其置顶
-    for (var j = 0; j < activeLayer.components.length; j++) {
-        var component = activeLayer.components[j];
-        // 记录当前深度
-        component.currentDepth = component.getDepth();
-        // 交换深度，将组件置顶
-        component.swapDepths(component.originalDepth + depthTop);
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.swapDepths(npcAvatar.originalDepth + depthOffset);
     }
-    for (var k = 0; k < activeLayer.npcs.length; k++) {
-        var npcAvatar = activeLayer.npcs[k].avatar;
-        // 记录当前深度
-        npcAvatar.currentDepth = npcAvatar.getDepth();
-        // 交换深度，将 NPC 头像置顶
-        npcAvatar.swapDepths(npcAvatar.originalDepth + depthTop);
-    }
-
+    
     // 高亮当前房间
     activeRoom.gotoAndStop(2);
-
+    
     // 设置可选属性为 true
-    this[activeLayer.selectableProperty] = true;
+    _this[this.selectableProperty] = true;
+};
 
-    // 移除所有房间的 rollover 事件
-    removeRollOverEvents();
-
-    // 为当前激活层级的房间添加 rollout 事件
-    attachRollOutEvents(activeLayer);
-}
-
-// 取消激活当前层级
-function deactivateCurrentLayer() {
-    if (currentActiveLayer == null) return;
-
-    var layer = currentActiveLayer;
-
-    // 设置激活层级的组件和 NPC 头像半透明
-    var targets = [];
-    for (var j = 0; j < layer.components.length; j++) {
-        targets.push(layer.components[j]);
+Layer.prototype.deactivate = function(tweenManager) {
+    // 设置组件半透明
+    LayerUtils.setTransparency(this.components, 50, 5, tweenManager);
+    
+    // 设置 NPC 头像透明度
+    var npcAvatars = [];
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.gotoAndStop(1); // 恢复初始状态
+        npcAvatars.push(npcAvatar);
     }
-    for (var k = 0; k < layer.npcs.length; k++) {
-        targets.push(layer.npcs[k].avatar);
+    LayerUtils.setTransparency(npcAvatars, 80, 5, tweenManager);
+    
+    // 恢复组件初始状态并恢复原始深度
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        component.gotoAndStop(1); // 恢复初始状态
+        component.swapDepths(component.originalDepth);
     }
-    setTransparency(targets, 50, 5);
-    for (var j = 0; j < layer.components.length; j++) {
-        var component = layer.components[j];
-        component.gotoAndStop(1); // 恢复组件初始状态
-        
-        // 恢复组件的原始深度
-        if (component.currentDepth != undefined) {
-            try {
-                component.swapDepths(_root.getInstanceAtDepth(component.originalDepth));
-            } catch (e) {
-                trace("Error restoring depth for component: " + component._name + " - " + e);
-            }
-            delete component.currentDepth;
-        }
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.gotoAndStop(1); // 恢复初始状态
+        npcAvatar.swapDepths(npcAvatar.originalDepth);
     }
-    for (var k = 0; k < layer.npcs.length; k++) {
-        var npcAvatar = layer.npcs[k].avatar;
-        npcAvatar.gotoAndStop(1); // 恢复NPC头像初始状态
-        
-        // 恢复 NPC 头像的原始深度
-        if (npcAvatar.currentDepth != undefined) {
-            try {
-                npcAvatar.swapDepths(_root.getInstanceAtDepth(npcAvatar.originalDepth));
-            } catch (e) {
-                trace("Error restoring depth for NPC Avatar: " + npcAvatar._name + " - " + e);
-            }
-            delete npcAvatar.currentDepth;
-        }
-    }
-
+    
     // 设置可选属性为 false
-    this[layer.selectableProperty] = false;
+    _this[this.selectableProperty] = false;
+};
 
-    // 重新绑定所有房间的 rollover 事件
-    attachRollOverEvents();
+// ============================
+// LayerManager 类定义
+// ============================
+function LayerManager(layers, tweenManager, parentClip) {
+    this.layers = layers; // Array of Layer instances
+    this.tweenManager = tweenManager;
+    this.parentClip = parentClip;
+    this.currentActiveLayer = null;
+    this.deactivateFlag = false;
+    var self = this;
 
-    // 取消 rollout 事件
-    removeRollOutEvents(layer);
-
-    currentActiveLayer = null;
+    // 初始化层级状态
+    this.initializeLayers();
 }
 
-// 设置房间的 rollover 事件
-function attachRollOverEvents() {
-    for (var i = 0; i < layers.length; i++) {
-        var layer = layers[i];
+LayerManager.prototype.initializeLayers = function() {
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
+        layer.recordOriginalDepths();
+        layer.initialize(this.tweenManager);
+    }
+    this.currentActiveLayer = null;
+    this.attachRollOverEvents();
+};
+
+LayerManager.prototype.activateLayer = function(layer, activeRoom) {
+    if (this.currentActiveLayer != null && this.currentActiveLayer != layer) {
+        // 先取消当前激活的层级
+        this.deactivateCurrentLayer();
+    }
+    this.currentActiveLayer = layer;
+    var depthOffset = 100;
+    layer.activate(this.tweenManager, depthOffset, activeRoom);
+    this.removeRollOverEvents();
+    this.attachRollOutEvents(layer);
+};
+
+LayerManager.prototype.deactivateCurrentLayer = function() {
+    if (this.currentActiveLayer == null) return;
+    var layer = this.currentActiveLayer;
+    layer.deactivate(this.tweenManager);
+    this.attachRollOverEvents();
+    this.removeRollOutEvents(layer);
+    this.currentActiveLayer = null;
+};
+
+LayerManager.prototype.attachRollOverEvents = function() {
+    var self = this;
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
         for (var j = 0; j < layer.components.length; j++) {
             var roomClip = layer.components[j];
-            // 避免重复绑定
+            roomClip.layer = layer; // 关联房间与层级
             roomClip.onRollOver = function() {
-                if (currentActiveLayer == null) {
-                    activateLayer(this.layer, this);
-                    _this.deactivateFlag = false;
+                if (self.currentActiveLayer == null) {
+                    self.activateLayer(this.layer, this);
+                    self.deactivateFlag = false;
                 }
             };
         }
     }
-}
+};
 
-// 移除所有房间的 rollover 事件
-function removeRollOverEvents() {
-    for (var i = 0; i < layers.length; i++) {
-        var layer = layers[i];
+LayerManager.prototype.removeRollOverEvents = function() {
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
         for (var j = 0; j < layer.components.length; j++) {
             var roomClip = layer.components[j];
             roomClip.onRollOver = null;
         }
     }
-}
+};
 
-// 为激活层级的房间添加 rollout 事件
-function attachRollOutEvents(layer) {
+LayerManager.prototype.attachRollOutEvents = function(layer) {
+    var self = this;
     for (var j = 0; j < layer.components.length; j++) {
         var roomClip = layer.components[j];
         roomClip.onRollOut = function() {
-            // 取消高亮当前房间
             this.gotoAndStop(1);
-            // 取消激活层级
-            _this.deactivateFlag = true;
-            deactivateCurrentLayer();
+            self.deactivateFlag = true;
+            self.deactivateCurrentLayer();
         };
     }
-}
+};
 
-// 取消激活层级的 rollout 事件
-function removeRollOutEvents(layer) {
+LayerManager.prototype.removeRollOutEvents = function(layer) {
     if (layer == null) return;
     for (var j = 0; j < layer.components.length; j++) {
         var roomClip = layer.components[j];
         roomClip.onRollOut = null;
     }
-}
+};
 
-// 设置每个房间的关联层级
-for (var i = 0; i < layers.length; i++) {
-    var layer = layers[i];
-    for (var j = 0; j < layer.components.length; j++) {
-        layer.components[j].layer = layer; // 关联房间与层级
-    }
-}
-
-// 初始化层级状态
-initializeLayers();
-
-// 处理鼠标移动事件，仅在没有激活层级时进行碰撞检测
-this.onMouseMove = function() {
-    if (currentActiveLayer != null) {
-        // 当前有层级被激活，忽略全局鼠标移动事件
+LayerManager.prototype.handleMouseMove = function() {
+    if (this.currentActiveLayer != null) {
         if (this.deactivateFlag) {
-            deactivateCurrentLayer();
+            this.deactivateCurrentLayer();
         } else {
             return;
         }
     }
 
     var isOverRoom = false;
-    for (var i = 0; i < layers.length; i++) {
-        var layer = layers[i];
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
         for (var j = 0; j < layer.components.length; j++) {
             var roomClip = layer.components[j];
             if (roomClip.hitTest(_root._xmouse, _root._ymouse, true)) {
@@ -402,9 +308,106 @@ this.onMouseMove = function() {
         }
     }
     if (!isOverRoom) {
-        // 鼠标不在任何房间上，恢复初始状态
-        initializeLayers();
+        this.initializeLayers();
     }
+};
+
+// ============================
+// LayerUtils 类定义
+// ============================
+var LayerUtils = {
+    setTransparency: function(targets, targetAlpha, duration, tweenManager) {
+        for (var i = 0; i < targets.length; i++) {
+            var mc = targets[i];
+            var tween = new Tween(mc, mc._alpha, targetAlpha, duration);
+            tweenManager.addTween(tween);
+        }
+    }
+};
+
+// ============================
+// 初始化代码
+// ============================
+
+// 保存当前环境
+var _this = this;
+
+// 初始化 TweenManager
+var tweenManager = new TweenManager(_this);
+
+// 定义层级数组
+var layers = [];
+
+// 基地屋顶层级
+var baseRoofLayer = new Layer("基地屋顶",
+    [this.基地屋顶], // components
+    [], // npcs
+    "基地屋顶可选");
+layers.push(baseRoofLayer);
+
+// 基地一层层级
+var firstFloorLayer = new Layer("基地一层",
+    [this.基地大厅, this.佣兵酒吧, this.基地车库, this.基地门口, this.医务室, this.宿舍], // components
+    [
+        { avatar: this.king头像, name: "king头像" },
+        { avatar: this.boy头像, name: "boy头像" },
+        { avatar: this.pig头像, name: "pig头像" },
+        { avatar: this.冷兵器商人头像, name: "冷兵器商人头像" },
+        { avatar: this.杀马特头像, name: "杀马特头像" },
+        { avatar: this.酒保头像, name: "酒保头像" },
+        { avatar: this.舞女头像, name: "舞女头像" },
+        { avatar: this.格格巫头像, name: "格格巫头像" },
+        { avatar: this.丽丽丝头像, name: "丽丽丝头像" },
+        { avatar: this.黑铁会外交部长头像, name: "黑铁会外交部长头像" },
+        { avatar: this.宝石线人头像, name: "宝石线人头像" },
+        { avatar: this.前治安官头像, name: "前治安官头像" },
+        { avatar: this.幸存老兵头像, name: "幸存老兵头像" },
+        { avatar: this.学生妹头像, name: "学生妹头像" }
+    ],
+    "基地一层可选");
+layers.push(firstFloorLayer);
+
+// 地下一层层级
+var basement1Layer = new Layer("地下一层",
+    [this.地下一层, this.健身房, this.武器库], // components
+    [
+        { avatar: this.andy头像, name: "andy头像" },
+        { avatar: this.thegirl头像, name: "thegirl头像" },
+        { avatar: this.shopgirl头像, name: "shopgirl头像" },
+        { avatar: this.blue头像, name: "blue头像" },
+        { avatar: this.小F头像, name: "小F头像" }
+    ],
+    "地下一层可选");
+layers.push(basement1Layer);
+
+// 地下二层层级
+var basement2Layer = new Layer("地下二层",
+    [this.走廊, this.食堂], // components
+    [], // npcs
+    "地下二层可选");
+layers.push(basement2Layer);
+
+// 地下水层级
+var undergroundWaterLayer = new Layer("地下水",
+    [this.地下水], // components
+    [], // npcs
+    "地下水可选");
+layers.push(undergroundWaterLayer);
+
+// 创建 LayerManager
+var layerManager = new LayerManager(layers, tweenManager, _this);
+
+// 设置每个房间的关联层级
+for (var i = 0; i < layers.length; i++) {
+    var layer = layers[i];
+    for (var j = 0; j < layer.components.length; j++) {
+        layer.components[j].layer = layer; // 关联房间与层级
+    }
+}
+
+// 处理鼠标移动事件
+this.onMouseMove = function() {
+    layerManager.handleMouseMove();
 };
 ]]></script>
               </Actionscript>
