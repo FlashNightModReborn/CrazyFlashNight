@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1733388844" lastUniqueIdentifier="154">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1733389678" lastUniqueIdentifier="154">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -467,7 +467,7 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D4FDCB">
+        <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -558,6 +558,14 @@ function 设置任务相关头像(头像名, 任务进度) {
 }
 
 function 设置NPC闪光提示() {
+    // 手动组装映射表
+    var NPC映射 = new Object();
+    NPC映射["∞天ㄙ★使的剪∞"] = {
+        头像: "杀马特头像",
+        闪光提示: "杀马特_闪光提示"
+    };
+
+    // 定义标准 NPC 名称数组
     var NPC闪光 = [
         "Pig_闪光提示", "Boy_闪光提示", "King_闪光提示",
         "The Girl_闪光提示", "Andy Law_闪光提示", "Shop Girl_闪光提示",
@@ -566,17 +574,47 @@ function 设置NPC闪光提示() {
         "学生妹_闪光提示", "幸存老兵_闪光提示", "前治安官_闪光提示",
         "黑铁会外交部长_闪光提示", "舞女_闪光提示", "杀马特_闪光提示"
     ];
+
+    // 首先隐藏所有标准 NPC 的闪光提示
     for (var i = 0; i < NPC闪光.length; i++) {
-        this[NPC闪光[i]]._visible = 0;
+        if (this[NPC闪光[i]]) {
+            this[NPC闪光[i]]._visible = 0;
+        }
     }
 
+    // 针对映射表中的特殊 NPC，隐藏他们的闪光提示
+    for (var npcName in NPC映射) {
+        if (this[NPC映射[npcName].闪光提示]) {
+            this[NPC映射[npcName].闪光提示]._visible = 0;
+        }
+    }
+
+    // 遍历任务列表并设置对应 NPC 的闪光提示为可见
     for (var i = 0; i < _root.tasks_to_do.length; i++) {
         if (_root.taskFinished(i)) {
-            var npc闪光 = _root.getTaskData(_root.tasks_to_do[i].id).finish_npc + "_闪光提示";
-            this[npc闪光]._visible = 1;
+            // 获取任务数据
+            var taskData = _root.getTaskData(_root.tasks_to_do[i].id);
+            var finishNpc = taskData.finish_npc;
+
+            // 检查是否为特殊 NPC
+            if (NPC映射[finishNpc]) {
+                // 处理特殊 NPC
+                var 特殊闪光提示 = NPC映射[finishNpc].闪光提示;
+                if (this[特殊闪光提示]) {
+                    this[特殊闪光提示]._visible = 1;
+                }
+            } else {
+                // 处理标准 NPC
+                var 标准闪光提示 = finishNpc + "_闪光提示";
+                if (this[标准闪光提示]) {
+                    this[标准闪光提示]._visible = 1;
+                }
+            }
         }
     }
 }
+
+
 
 地图标识();
 ]]></script>
@@ -585,7 +623,7 @@ function 设置NPC闪光提示() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="按钮" color="#CBE8E6" autoNamed="false">
+        <DOMLayer name="按钮" color="#CBE8E6" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -623,7 +661,7 @@ function 设置NPC闪光提示() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="缩略图" color="#EEDEBD" autoNamed="false">
+        <DOMLayer name="缩略图" color="#EEDEBD" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -639,7 +677,7 @@ function 设置NPC闪光提示() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景边框" color="#FE8194" autoNamed="false">
+        <DOMLayer name="背景边框" color="#FE8194" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -655,7 +693,7 @@ function 设置NPC闪光提示() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="焦点按钮文字" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="焦点按钮文字" color="#FF4FFF" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -799,7 +837,7 @@ function 设置NPC闪光提示() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="调整焦点按钮" color="#FF800A" autoNamed="false">
+        <DOMLayer name="调整焦点按钮" color="#FF800A" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1237,15 +1275,15 @@ function 设置NPC闪光提示() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地屋顶" color="#4F80FF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="基地屋顶npc" color="#4F80FF" parentLayerIndex="7" autoNamed="false">
+        <DOMLayer name="基地屋顶" color="#4F80FF" autoNamed="false" visible="false" layerType="folder"/>
+        <DOMLayer name="基地屋顶npc" color="#4F80FF" parentLayerIndex="7" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="7" autoNamed="false">
+        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="7" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1773,8 +1811,8 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下一层" color="#4FFF4F" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="地下一层npc" color="#31ECB9" parentLayerIndex="21" autoNamed="false">
+        <DOMLayer name="地下一层" color="#4FFF4F" autoNamed="false" visible="false" layerType="folder"/>
+        <DOMLayer name="地下一层npc" color="#31ECB9" parentLayerIndex="21" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1833,7 +1871,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下一层" color="#4FFF4F" parentLayerIndex="21" autoNamed="false">
+        <DOMLayer name="地下一层" color="#4FFF4F" parentLayerIndex="21" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1870,7 +1908,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="健身房" color="#9933CC" parentLayerIndex="21" autoNamed="false">
+        <DOMLayer name="健身房" color="#9933CC" parentLayerIndex="21" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1907,7 +1945,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器库npc" color="#FF4FFF" parentLayerIndex="21" autoNamed="false">
+        <DOMLayer name="武器库npc" color="#FF4FFF" parentLayerIndex="21" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1950,7 +1988,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器库" color="#FF800A" parentLayerIndex="21" autoNamed="false">
+        <DOMLayer name="武器库" color="#FF800A" parentLayerIndex="21" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1987,15 +2025,15 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下二层" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="地下二层npc" color="#FF4F4F" parentLayerIndex="27" autoNamed="false">
+        <DOMLayer name="地下二层" color="#9933CC" autoNamed="false" visible="false" layerType="folder"/>
+        <DOMLayer name="地下二层npc" color="#FF4F4F" parentLayerIndex="27" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="走廊" color="#4FFFFF" parentLayerIndex="27" autoNamed="false">
+        <DOMLayer name="走廊" color="#4FFFFF" parentLayerIndex="27" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2032,7 +2070,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="食堂" color="#808080" parentLayerIndex="27" autoNamed="false">
+        <DOMLayer name="食堂" color="#808080" parentLayerIndex="27" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2069,15 +2107,15 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下水" color="#FF4FFF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="地下水npc" color="#4FFF4F" parentLayerIndex="31" autoNamed="false">
+        <DOMLayer name="地下水" color="#FF4FFF" autoNamed="false" visible="false" layerType="folder"/>
+        <DOMLayer name="地下水npc" color="#4FFF4F" parentLayerIndex="31" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下水" color="#808080" parentLayerIndex="31" autoNamed="false">
+        <DOMLayer name="地下水" color="#808080" parentLayerIndex="31" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2114,7 +2152,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#EE56CF" autoNamed="false">
+        <DOMLayer name="背景" color="#EE56CF" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2140,7 +2178,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF">
+        <DOMLayer name="图层 5" color="#4FFFFF" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
