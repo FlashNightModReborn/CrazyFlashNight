@@ -91,6 +91,7 @@ _root.贴背景图 = function()
 	var 游戏世界 = _root.gameworld;
 	var 背景层 = 游戏世界.背景;
 	var 天气系统 = _root.天气系统;
+	
 	if(!背景层.已更新环境配置)
 	{
 		if(_root.天空盒)
