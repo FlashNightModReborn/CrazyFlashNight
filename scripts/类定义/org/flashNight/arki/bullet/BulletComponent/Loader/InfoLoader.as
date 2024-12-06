@@ -31,13 +31,21 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader {
                         var loader:IComponentLoader = self.loadersMap[key];
                         var componentInfo:Object = loader.load(bulletNode);
 
-                        // 初始化存储键，确保为数组结构
+                        // 如果加载器返回 null 或空对象，跳过挂载
+                        if (componentInfo == null || typeof(componentInfo) != "object" || Object.prototype.toString.call(componentInfo) != "[object Object]") {
+                            continue;
+                        }
+
+                        // 初始化存储键，确保为对象结构
                         if (resultData[key] == undefined) {
                             resultData[key] = {};
                         }
 
                         // 使用 name 作为键，存储解析结果
-                        var bulletName:String = bulletNode.shell.name != undefined ? bulletNode.shell.name : ("bullet_" + i);
+                        var bulletName:String = (bulletNode.shell != undefined && bulletNode.shell.name != undefined)
+                            ? bulletNode.shell.name
+                            : ("bullet_" + i);
+
                         resultData[key][bulletName] = componentInfo;
                     }
                 }
@@ -62,6 +70,7 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader {
     }
 
 
+
     /**
      * 注册加载完成后的回调
      */
@@ -73,12 +82,17 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader {
         }
     }
 
+
     /**
-     * 获取加载的数据
+     * 通用化获取加载的数据，支持默认值
+     * @param key:String - 数据的键名
+     * @param defaultValue:Object - 数据不存在时返回的默认值（可选）
+     * @return Object - 加载的数据对象或默认值
      */
-    public function getShellData():Object {
-        return this.infoData["shellData"];
+    public function getData(key:String, defaultValue:Object):Object {
+        return this.infoData[key] != undefined ? this.infoData[key] : defaultValue;
     }
+
 
     /**
      * 获取单例实例
