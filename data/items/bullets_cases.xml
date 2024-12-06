@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <bullets>
     <bullet>
+        <name>天使虫</name>
         <shell>
-            <name>天使虫</name>
             <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -10,8 +10,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>巴雷特子弹</name>
         <shell>
-            <name>巴雷特子弹</name>
             <casing>能量重机枪弹壳</casing>
             <xOffset>120</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -19,8 +19,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>新电球</name>
         <shell>
-            <name>新电球</name>
             <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -28,8 +28,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>声波</name>
         <shell>
-            <name>声波</name>
             <casing>能量霰弹弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -37,8 +37,27 @@
         </shell>
     </bullet>
     <bullet>
+        <name>穿刺子弹</name>
         <shell>
-            <name>穿刺子弹</name>
+            <casing>能量弹壳</casing>
+            <xOffset>60</xOffset>
+            <simulationMethod>标准</simulationMethod>
+            <yOffset>0</yOffset>
+        </shell>
+        <movement>
+            <func>基础导弹</func>
+            <param>
+                <usePreLaunch>true</usePreLaunch>
+                <onInitializeMissile>基础导弹初始化</onInitializeMissile>
+                <onSearchForTarget>基础导弹索敌</onSearchForTarget>
+                <onTrackTarget>基础导弹跟踪</onTrackTarget>
+                <onPreLaunchMove>基础预发射</onPreLaunchMove>
+            </param>
+        </movement>
+    </bullet>
+    <bullet>
+        <name>能量子弹</name>
+        <shell>
             <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -46,17 +65,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>横向联弹-穿刺子弹</name>
         <shell>
-            <name>能量子弹</name>
-            <casing>能量弹壳</casing>
-            <xOffset>60</xOffset>
-            <simulationMethod>标准</simulationMethod>
-            <yOffset>0</yOffset>
-        </shell>
-    </bullet>
-    <bullet>
-        <shell>
-            <name>横向联弹-穿刺子弹</name>
             <casing>能量霰弹弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -64,8 +74,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>横向机枪联弹-穿刺子弹</name>
         <shell>
-            <name>横向机枪联弹-穿刺子弹</name>
             <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -73,8 +83,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>横向联弹-普通子弹</name>
         <shell>
-            <name>横向联弹-普通子弹</name>
             <casing>霰弹弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -82,8 +92,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>横向机枪联弹-普通子弹</name>
         <shell>
-            <name>横向机枪联弹-普通子弹</name>
             <casing>步枪弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -91,8 +101,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>加强普通子弹</name>
         <shell>
-            <name>加强普通子弹</name>
             <casing>加强弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -100,8 +110,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>糖果子弹</name>
         <shell>
-            <name>糖果子弹</name>
             <casing>能量弹壳</casing>
             <xOffset>40</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -109,8 +119,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>电球</name>
         <shell>
-            <name>电球</name>
             <casing>能量榴弹弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -118,8 +128,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>横向联弹-加强普通子弹</name>
         <shell>
-            <name>横向联弹-加强普通子弹</name>
             <casing>加强霰弹弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -127,8 +137,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>横向机枪联弹-加强普通子弹</name>
         <shell>
-            <name>横向机枪联弹-加强普通子弹</name>
             <casing>加强弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -136,8 +146,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>麻醉子弹</name>
         <shell>
-            <name>麻醉子弹</name>
             <casing>手枪弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -145,8 +155,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>普通子弹</name>
         <shell>
-            <name>普通子弹</name>
             <casing>步枪弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -154,8 +164,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>横向联弹-红色针弹</name>
         <shell>
-            <name>横向联弹-红色针弹</name>
             <casing>能量霰弹弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -163,8 +173,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>横向机枪联弹-红色针弹</name>
         <shell>
-            <name>横向机枪联弹-红色针弹</name>
             <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -172,8 +182,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>高爆子弹</name>
         <shell>
-            <name>高爆子弹</name>
             <casing>加强霰弹弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -181,8 +191,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>烈焰子弹</name>
         <shell>
-            <name>烈焰子弹</name>
             <casing>加强弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -190,8 +200,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>新能量子弹</name>
         <shell>
-            <name>新能量子弹</name>
             <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>
@@ -199,8 +209,8 @@
         </shell>
     </bullet>
     <bullet>
+        <name>绿色能量子弹</name>
         <shell>
-            <name>绿色能量子弹</name>
             <casing>能量弹壳</casing>
             <xOffset>60</xOffset>
             <simulationMethod>标准</simulationMethod>

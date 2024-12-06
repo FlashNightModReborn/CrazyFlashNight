@@ -25,6 +25,7 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader {
 
                 for (var i:Number = 0; i < bulletNodes.length; i++) {
                     var bulletNode:Object = bulletNodes[i];
+                    var bulletName = (bulletNode.name != undefined && bulletNode.name != "") ? bulletNode.name : "bullet_" + i;
 
                     // 遍历映射表，按键名执行加载器
                     for (var key:String in self.loadersMap) {
@@ -40,11 +41,6 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader {
                         if (resultData[key] == undefined) {
                             resultData[key] = {};
                         }
-
-                        // 使用 name 作为键，存储解析结果
-                        var bulletName:String = (bulletNode.shell != undefined && bulletNode.shell.name != undefined)
-                            ? bulletNode.shell.name
-                            : ("bullet_" + i);
 
                         resultData[key][bulletName] = componentInfo;
                     }
