@@ -192,12 +192,15 @@ BulletsCasesLoader.getInstance().loadBulletsCases(
         for (var i:Number = 0; i < bulletNodes.length; i++) {
             var bulletInfo:Object = {};
             var child_Nodes:Array = bulletNodes[i];
-            bulletInfo.弹壳 = child_Nodes.casing != undefined ? child_Nodes.casing : "步枪弹壳";
-            bulletInfo.myX = child_Nodes.xOffset != undefined ? Number(child_Nodes.xOffset) : 0;
-            bulletInfo.myY = child_Nodes.yOffset != undefined ? Number(child_Nodes.yOffset) : 0;
-            bulletInfo.模拟方式 = child_Nodes.simulationMethod != undefined ? child_Nodes.simulationMethod : "标准";
+
+            var shell_info = child_Nodes.shell;
+
+            bulletInfo.弹壳 = shell_info.casing != undefined ? shell_info.casing : "步枪弹壳";
+            bulletInfo.myX = shell_info.xOffset != undefined ? Number(shell_info.xOffset) : 0;
+            bulletInfo.myY = shell_info.yOffset != undefined ? Number(shell_info.yOffset) : 0;
+            bulletInfo.模拟方式 = shell_info.simulationMethod != undefined ? shell_info.simulationMethod : "标准";
             
-            _root.弹壳系统.弹壳映射表[child_Nodes.name] = bulletInfo;
+            _root.弹壳系统.弹壳映射表[shell_info.name] = bulletInfo;
         }
 
         server.sendServerMessage("BulletsCasesInfo: 配置完毕");
