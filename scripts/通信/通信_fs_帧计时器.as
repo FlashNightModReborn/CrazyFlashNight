@@ -374,6 +374,8 @@ _root.帧计时器.定期更新天气 = function()
 
             Delegate.clearCache();
             Dictionary.destroyStatic();
+
+            this.eventBus.publish("地图已切换");
             // 游戏世界.onUnload = function()
             // {
             //     _root.常用工具函数.释放对象绘图内存(游戏世界);

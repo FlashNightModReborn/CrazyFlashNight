@@ -87,6 +87,7 @@ _root.add2map3 = function(tg, ln)
 };
 
 
+
 _root.贴背景图 = function()
 {
 	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
@@ -94,12 +95,6 @@ _root.贴背景图 = function()
 	var 背景层 = 游戏世界.背景;
 	var 天气系统 = _root.天气系统;
 
-	ShellSystem.initializeBulletPools();
-
-	if (!游戏世界.可用弹壳池 || !_root.弹壳系统.弹壳池映射) {
-		_root.弹壳系统.初始化弹壳池(); 
-	}
-	
 	if(!背景层.已更新环境配置)
 	{
 		if(_root.天空盒)
