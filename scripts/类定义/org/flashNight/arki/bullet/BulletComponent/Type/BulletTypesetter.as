@@ -8,7 +8,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
     private static var typeCache:Object = {};
 
     // 透明类型数组
-    private static var 透明类型:Array = ["近战子弹", "近战联弹", "透明子弹"];
+    private static var transparency:Array = ["近战子弹", "近战联弹", "透明子弹"];
 
     /**
      * 构造函数。
@@ -35,7 +35,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
             cachedFlags.contains_近战 = 子弹种类.indexOf("近战") != -1;
             cachedFlags.contains_联弹 = 子弹种类.indexOf("联弹") != -1;
             cachedFlags.contains_穿刺 = 子弹种类.indexOf("穿刺") != -1;
-            cachedFlags.is_透明类型 = 透明类型.indexOf(子弹种类) != -1;
+            cachedFlags.is_透明类型 = transparency.indexOf(子弹种类) != -1;
             cachedFlags.contains_手雷 = 子弹种类.indexOf("手雷") != -1;
             cachedFlags.contains_爆炸 = 子弹种类.indexOf("爆炸") != -1;
             cachedFlags.contains_普通 = 子弹种类.indexOf("普通") != -1;
@@ -54,7 +54,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         bullet.穿刺检测 = bullet.穿刺检测 || cachedFlags.contains_穿刺;
 
         // 透明检测：保持原有值或更新
-        bullet.透明检测 = bullet.透明检测 || cachedFlags.is_透明类型;
+        bullet.透明检测 = bullet.透明检测 || cachedFlags.is_transparency;
 
         // 手雷检测：保持原有值或更新
         bullet.手雷检测 = bullet.手雷检测 || cachedFlags.contains_手雷;
