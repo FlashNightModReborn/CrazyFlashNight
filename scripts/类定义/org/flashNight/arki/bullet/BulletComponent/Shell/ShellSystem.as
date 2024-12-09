@@ -1,10 +1,10 @@
-﻿
-import org.flashNight.sara.util.ObjectPool;
-import org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine;
-import org.flashNight.gesh.xml.LoadXml;
-import org.flashNight.neur.Server;
+﻿import org.flashNight.sara.util.*;
+import org.flashNight.naki.RandomNumberEngine.*;
+import org.flashNight.gesh.xml.LoadXml.*;
+import org.flashNight.neur.Server.*; 
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.bullet.BulletComponent.Loader.*;
+
 
 class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     // 弹壳映射表（由数据加载）
@@ -13,13 +13,21 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     private static var shellPools:Object = {};
     // 当前弹壳总数与上限
     private static var currentShellCount:Number = 0;
-    private static var maxShellCount:Number = 100;
+    private static var maxShellCount:Number = 30;
 
     private static var initialized:Boolean = false;
 
     /**
+     * 初始化方法：注册InfoLoader回调，将数据加载整合到ShellSystem内部
+     */
+    public static function initialize():Void {
+        InfoLoader.getInstance().onLoad(function(data:Object):Void {
+            ShellSystem.onShellDataLoad(data);
+        });
+    }
+
+    /**
      * 设置弹壳总数上限
-     * @param limit:Number 新的上限值
      */
     public static function setMaxShellCountLimit(limit:Number):Void {
         maxShellCount = limit;
@@ -27,7 +35,6 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
 
     /**
      * 获取弹壳总数上限
-     * @return Number
      */
     public static function getMaxShellCountLimit():Number {
         return maxShellCount;
@@ -36,7 +43,6 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     /**
      * 当加载完成 InfoLoader 数据后调用此方法
      * 用于设置 shellMap，并初始化弹壳池
-     * @param data:Object {shellData: {...}}
      */
     public static function onShellDataLoad(data:Object):Void {
         shellMap = data.shellData;
@@ -99,11 +105,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
 
     /**
      * 发射弹壳接口
-     * @param 子弹类型:String
-     * @param myX:Number
-     * @param myY:Number
-     * @param xscale:Number
-     * @param 必然触发:Boolean 是否忽略上限强制发射
+     * 与原先 _root.弹壳系统.发射弹壳 功能一致，可通过 delegate 转接
      */
     public static function launchShell(子弹类型:String, myX:Number, myY:Number, xscale:Number, 必然触发:Boolean):Void {
         if (!initialized) {
@@ -156,7 +158,6 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
 
     /**
      * 弹壳物理模拟函数 (原逻辑)
-     * 在发射后调用，设置初始运动参数并注册运动任务
      */
     private static function shellPhysicsSimulation(弹壳:MovieClip):Void {
         var engine = LinearCongruentialEngine.getInstance();
@@ -192,7 +193,6 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
                 _root.add2map3(弹壳, 2);
                 _root.帧计时器.移除任务(弹壳.任务ID);
                 _root.帧计时器.添加或更新任务(弹壳, "回收", function(壳:MovieClip) {
-                    // 回收时使用对象池的机制
                     recycleShell(壳);
                 }, 1, 弹壳);
             }
@@ -203,7 +203,6 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
      * 回收弹壳方法
      */
     private static function recycleShell(弹壳:MovieClip):Void {
-        // 回收到池中
         var 弹壳种类:String = 弹壳.弹壳种类;
         var pool:ObjectPool = shellPools[弹壳种类];
         if (pool) {
@@ -213,4 +212,3 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         --currentShellCount;
     }
 }
-
