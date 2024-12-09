@@ -1,4 +1,6 @@
-﻿_root.add2map = function(tg, ln)
+﻿import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+
+_root.add2map = function(tg, ln)
 {
 	tg.暴走标志.removeMovieClip();
 	tg.远古标志.removeMovieClip();
@@ -91,6 +93,8 @@ _root.贴背景图 = function()
 	var 游戏世界 = _root.gameworld;
 	var 背景层 = 游戏世界.背景;
 	var 天气系统 = _root.天气系统;
+
+	ShellSystem.initializeBulletPools();
 
 	if (!游戏世界.可用弹壳池 || !_root.弹壳系统.弹壳池映射) {
 		_root.弹壳系统.初始化弹壳池(); 

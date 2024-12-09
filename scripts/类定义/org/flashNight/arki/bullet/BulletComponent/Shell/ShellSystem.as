@@ -4,7 +4,7 @@ import org.flashNight.gesh.xml.LoadXml.*;
 import org.flashNight.neur.Server.*; 
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.bullet.BulletComponent.Loader.*;
-
+import org.flashNight.arki.bullet.BulletComponent.Shell.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     // 弹壳映射表（由数据加载）
@@ -13,7 +13,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     private static var shellPools:Object = {};
     // 当前弹壳总数与上限
     private static var currentShellCount:Number = 0;
-    private static var maxShellCount:Number = 30;
+    private static var maxShellCount:Number = 25;
 
     private static var initialized:Boolean = false;
 

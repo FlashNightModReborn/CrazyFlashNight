@@ -2,6 +2,7 @@
 import org.flashNight.arki.bullet.BulletComponent.Movement.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
+import org.flashNight.arki.bullet.BulletComponent.Shell.*;
 
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
@@ -115,7 +116,7 @@ _root.创建发射效果 = function(Obj, 发射对象){
         _y: Obj.shootY,
         _rotation: Obj.角度偏移
     });
-    _root.弹壳系统.发射弹壳(Obj.子弹种类, Obj.shootX, Obj.shootY, 发射对象._xscale);
+    ShellSystem.launchShell(Obj.子弹种类, Obj.shootX, Obj.shootY, 发射对象._xscale);
     _root.播放音效(Obj.声音);
 }
 
