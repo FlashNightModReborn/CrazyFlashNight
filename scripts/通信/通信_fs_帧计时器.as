@@ -1,18 +1,18 @@
-﻿import org.flashNight.neur.Controller.PIDController;
-import org.flashNight.neur.ScheduleTimer.CerberusScheduler;
+﻿import org.flashNight.neur.Controller.*;
+import org.flashNight.neur.ScheduleTimer.*;
 import org.flashNight.naki.DataStructures.*;
 import org.flashNight.sara.*;
 import org.flashNight.neur.Server.*; 
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+
 _root.帧计时器 = {};
 
-_root.帧计时器.初始化任务栈 = function()
- {  
-    //this.任务栈 = []; 
-	//this.待移除任务表 = []; 
-	//this.待添加任务表 = [];
-    //this.待移除移除任务id表 = {};
+/**
+ * 初始化任务栈和相关参数
+ */
+_root.帧计时器.初始化任务栈 = function() {  
+    // 初始化各种任务相关的表和参数
     this.任务哈希表 = {}; // 频繁更新的任务利用键值对单独维护
     this.当前帧数 = 0; 
     this.任务ID计数器 = 0;
@@ -20,39 +20,49 @@ _root.帧计时器.初始化任务栈 = function()
     this.目标缓存["undefined"] = { 数据: [], 最后更新帧数: 0 };
     this.目标缓存["true"] = { 数据: [], 最后更新帧数: 0 };
     this.目标缓存["false"] = { 数据: [], 最后更新帧数: 0 };
-    this.阵营单位表 = {}; //预备后续的
-    this.帧率 = 30;//当前项目为30帧/s
-    this.毫秒每帧 = this.帧率 / 1000;//用于乘法优化性能
+    this.阵营单位表 = {}; // 预备后续的
+    this.帧率 = 30; // 当前项目为30帧/s
+    this.毫秒每帧 = this.帧率 / 1000; // 用于乘法优化性能
     this.每帧毫秒 = 1000 / this.帧率;
     this.帧开始时间 = 0;
     this.测量间隔帧数 = this.帧率;
-    this.帧率数据队列 = [];
-    this.队列最大长度 = 24;
+    
+    // 使用 SlidingWindowBuffer 替代原有的帧率数据队列
+    this.队列最大长度 = 24; // 队列最大长度
+    this.frameRateBuffer = new SlidingWindowBuffer(this.队列最大长度);
+    
+    // 初始化帧率缓冲区，填充默认值
+    for (var i:Number = 0; i < this.队列最大长度; i++) {
+        this.frameRateBuffer.insert(this.帧率); // 填充默认帧率
+    }
+    
     this.总帧率 = 0;  // 存储所有帧率之和
     this.最小帧率 = 30;  // 初始化为一个合理的默认最大值
     this.最大帧率 = 0;  // 初始化为0
-    this.最小差异 = 5;//最大最小帧率差的最小值
+    this.最小差异 = 5; // 最大最小帧率差的最小值
     this.异常间隔帧数 = this.帧率 * 5;
     this.实际帧率 = 0;
     this.性能等级 = 0;
     this.预设画质 = _root._quality;
     this.更新天气间隔 = 5 * this.帧率;
     this.天气待更新时间 = this.更新天气间隔;
-    this.光照等级数据 = [];//存储短期内的天气情况
+    this.光照等级数据 = []; // 存储短期内的天气情况
     this.当前小时 = null;
-
+    
     this.是否死亡特效 = true;
-
+    
+    // PID控制器参数初始化
     this.kp = 0.2;
     this.ki = 0.5;
     this.kd = -30;
     this.integralMax = 3; // 设定积分限幅
     this.derivativeFilter = 0.2; // 平滑误差
     this.目标帧率 = 26;
-    this.PID = new org.flashNight.neur.Controller.PIDController(this.kp, this.ki, this.kd, this.integralMax, this.derivativeFilter);
-
+    this.PID = new PIDController(this.kp, this.ki, this.kd, this.integralMax, this.derivativeFilter);
+    
+    // 任务调度器初始化
     this.ScheduleTimer = new CerberusScheduler();
-
+    
     this.singleWheelSize = 150;
     this.multiLevelSecondsSize = 60;
     this.multiLevelMinutesSize = 60;
@@ -62,142 +72,131 @@ _root.帧计时器.初始化任务栈 = function()
                                   this.multiLevelMinutesSize, 
                                   this.帧率, 
                                   this.precisionThreshold);
-
-    this.zeroFrameTasks = {}; // Use an object or array to store tasks
+    
+    this.zeroFrameTasks = {}; // 使用对象存储任务
     this.server = ServerManager.getInstance();
     this.eventBus = EventBus.getInstance();
 };
 
-_root.帧计时器.初始化任务栈();
-_root.帧计时器.更新帧率数据 = function(当前帧率) 
-{
-    var 被移除的数据 = null;
-    if (this.帧率数据队列.length >= this.队列最大长度) 
-    {
-        被移除的数据 = this.帧率数据队列.shift();  // 移除最旧的数据
-        this.总帧率 -= 被移除的数据.帧率;
-        this.帧率数据队列.push({帧率: 当前帧率});
-    }
-    else
-    {
-        this.总帧率 = 当前帧率 * this.队列最大长度;
-        while (this.帧率数据队列.length < this.队列最大长度) 
-        {
-            this.帧率数据队列.push({帧率: 当前帧率});// 处理帧率数据未满的情况
-        }
-    }
+_root.帧计时器.初始化任务栈(); // 调用初始化方法
 
-    this.总帧率 += 当前帧率;// 添加新帧率数据
-    if (当前帧率 > this.最大帧率) this.最大帧率 = 当前帧率;// 更新最小和最大帧率
-    if (当前帧率 < this.最小帧率) this.最小帧率 = 当前帧率;
-
-    // 检查移除的数据是否影响最小或最大值
-    if (被移除的数据) 
-    {
-        if (被移除的数据.帧率 === this.最小帧率 or 被移除的数据.帧率 === this.最大帧率) 
-        {
-            // 重新评估最小或最大帧率
-            this.最小帧率 = this.帧率数据队列[0].帧率;
-            this.最大帧率 = this.帧率数据队列[0].帧率;
-            for (var i = 1; i < this.队列最大长度; ++i) 
-            {
-                var 帧率 = this.帧率数据队列[i].帧率;
-                if (帧率 < this.最小帧率) this.最小帧率 = 帧率;
-                if (帧率 > this.最大帧率) this.最大帧率 = 帧率;
-            }
-        }
-    }
-
-    this.平均帧率 = this.总帧率 / this.队列最大长度;// 更新平均帧率
-    if (this.最大帧率 - this.最小帧率 < this.最小差异) 
-    {
-        var 差额 = (this.最小差异 - (this.最大帧率 - this.最小帧率)) / 2;
+/**
+ * 更新帧率数据
+ * @param 当前帧率 当前的帧率值
+ */
+_root.帧计时器.更新帧率数据 = function(当前帧率:Number):Void {
+    // 插入新的帧率数据到缓冲区
+    this.frameRateBuffer.insert(当前帧率);
+    
+    // 获取当前缓冲区的最小值、最大值和平均值
+    var 当前最小帧率:Number = this.frameRateBuffer.min;
+    var 当前最大帧率:Number = this.frameRateBuffer.max;
+    var 当前平均帧率:Number = this.frameRateBuffer.average;
+    
+    // 更新总帧率
+    this.总帧率 = 当前平均帧率 * this.队列最大长度;
+    
+    // 更新最小和最大帧率
+    if (当前最大帧率 > this.最大帧率) this.最大帧率 = 当前最大帧率;
+    if (当前最小帧率 < this.最小帧率) this.最小帧率 = 当前最小帧率;
+    
+    // 更新帧率差
+    if (this.最大帧率 - this.最小帧率 < this.最小差异) {
+        var 差额:Number = (this.最小差异 - (this.最大帧率 - this.最小帧率)) / 2;
         this.最小帧率 -= 差额;
         this.最大帧率 += 差额;
         this.帧率差 = this.最小差异;
-    }
-    else
-    {
+    } else {
         this.帧率差 = this.最大帧率 - this.最小帧率;
     }
-
-    var 光照起点小时 = Math.floor(_root.天气系统.当前时间);
-    if(this.当前小时 !== 光照起点小时)
-    {
-        this.光照等级数据 = [];// 添加绘制光照等级的逻辑
+    
+    // 处理光照数据（保持原有逻辑）
+    var 光照起点小时:Number = Math.floor(_root.天气系统.当前时间);
+    if (this.当前小时 !== 光照起点小时) {
+        this.光照等级数据 = []; // 清空光照等级数据
         this.当前小时 = 光照起点小时;
-        for (var i = 0; i < this.队列最大长度; ++i) 
-        {
-            this.光照等级数据.push(_root.天气系统.昼夜光照[(光照起点小时 + i) % 24]);// 推入未来队列最大长度的光照等级
+        for (var i:Number = 0; i < this.队列最大长度; i++) {
+            // 推入未来队列最大长度的光照等级
+            this.光照等级数据.push(_root.天气系统.昼夜光照[(光照起点小时 + i) % 24]);
         }
     }
 };
 
-_root.帧计时器.绘制帧率曲线 = function() 
-{
-    var 画布 = _root.玩家信息界面.性能帧率显示器.画布;
-    var 高度 = 14;  // 曲线图的高度
-    var 宽度 = 72;  // 曲线图的宽度
-    var 步进长度 = 宽度 / this.队列最大长度;
-
+/**
+ * 绘制帧率曲线
+ */
+_root.帧计时器.绘制帧率曲线 = function():Void {
+    var 画布:MovieClip = _root.玩家信息界面.性能帧率显示器.画布;
+    var 高度:Number = 14;  // 曲线图的高度
+    var 宽度:Number = 72;  // 曲线图的宽度
+    var 步进长度:Number = 宽度 / this.队列最大长度;
+    
     画布._x = 2;  // 设置画布位置
     画布._y = 2;
-    画布.clear();//重置绘图区
-
+    画布.clear(); // 重置绘图区
+    
     // 开始绘制光照等级曲线
-    var 线条颜色 = 0x333333; // 灰色线条表示光照等级
-    //画布.lineStyle(0.5, 线条颜色, 100);
-    画布.beginFill(线条颜色, 100); // 开始填充区域
-    var 光照步进高度 = 高度 / 9;
-    var x0 = 0;
-    var y0 = 高度 - (this.光照等级数据[0] * 光照步进高度);
-
+    var 光照线条颜色:Number = 0x333333; // 灰色线条表示光照等级
+    画布.beginFill(光照线条颜色, 100); // 开始填充区域
+    var 光照步进高度:Number = 高度 / 9;
+    var x0:Number = 0;
+    var y0:Number = 高度 - (this.光照等级数据[0] * 光照步进高度);
+    
     画布.moveTo(x0, 高度); // 移动到起点底部
     画布.lineTo(x0, y0); // 移动到起点
-
-    for (var i = 1; i < this.队列最大长度; ++i) 
-    {
-        var x1 = x0 + 步进长度;
-        var y1 = 高度 - (this.光照等级数据[i] * 光照步进高度);
-
-        画布.curveTo((x0 + x1) / 2, (y0 + y1) / 2, x1, y1); // 绘制二次贝塞尔曲线
-       
+    
+    for (var i:Number = 1; i < this.队列最大长度; i++) {
+        var x1:Number = x0 + 步进长度;
+        var y1:Number = 高度 - (this.光照等级数据[i] * 光照步进高度);
+        
+        // 绘制二次贝塞尔曲线
+        画布.curveTo((x0 + x1) / 2, (y0 + y1) / 2, x1, y1);
+        
         x0 = x1; // 更新起点
         y0 = y1;
     }
-
+    
     画布.lineTo(x0, 高度); // 从最后一个点连接到底部
     画布.endFill(); // 完成填充区域
-
-    var 线条颜色;
-    switch(this.性能等级)
-    {
-        case 0: 线条颜色 = 0x00FF00;break;
-        case 1: 线条颜色 = 0x00CCFF;break;
-        case 2: 线条颜色 = 0xFFFF00;break;
-        default: 线条颜色 = 0xFF0000;
-    }
-    画布.lineStyle(1.5, 线条颜色, 100);  // 设置线条样式（绿色）
-
-
-    // 绘制帧率曲线
-    var 帧率步进高度 = 高度 / this.帧率差;
-    var x0 = 0;
-    var y0 = 高度 - ((this.帧率数据队列[0].帧率 - this.最小帧率) * 帧率步进高度);
     
-    画布.moveTo(x0, y0);
-
-    for (var i = 1; i < this.队列最大长度; i++) 
-    {
-        var x1 = x0 + 步进长度;
-        var y1 = 高度 - ((this.帧率数据队列[i].帧率 - this.最小帧率) * 帧率步进高度);
-
-        画布.curveTo((x0 + x1) / 2, (y0 + y1) / 2, x1, y1);// 绘制二次贝塞尔曲线
- 
-        x0 = x1;// 更新起点
-        y0 = y1;
+    // 设置帧率曲线的颜色根据性能等级变化
+    var 帧率线条颜色:Number;
+    switch(this.性能等级) {
+        case 0: 
+            帧率线条颜色 = 0x00FF00; // 绿色
+            break;
+        case 1: 
+            帧率线条颜色 = 0x00CCFF; // 蓝绿色
+            break;
+        case 2: 
+            帧率线条颜色 = 0xFFFF00; // 黄色
+            break;
+        default: 
+            帧率线条颜色 = 0xFF0000; // 红色
     }
+    画布.lineStyle(1.5, 帧率线条颜色, 100); // 设置线条样式
+    
+    // 绘制帧率曲线
+    var 帧率步进高度:Number = 高度 / this.帧率差;
+    var 起点X:Number = 0;
+    var 起点Y:Number = 高度 - ((this.frameRateBuffer.min <= 0) ? 0 : (this.frameRateBuffer.min - this.最小帧率) * 帧率步进高度);
+    
+    画布.moveTo(起点X, 起点Y);
+    
+    // 使用 forEach 方法确保顺序遍历帧率数据
+    var self = this; // 保存当前上下文以在闭包中使用
+    this.frameRateBuffer.forEach(function(value:Number):Void {
+        var x1:Number = 起点X + 步进长度;
+        var y1:Number = 高度 - ((value - self.最小帧率) * 帧率步进高度);
+        
+        // 绘制二次贝塞尔曲线
+        画布.curveTo((起点X + x1) / 2, (起点Y + y1) / 2, x1, y1);
+        
+        起点X = x1; // 更新起点
+        起点Y = y1;
+    });
 };
+
 
 _root.帧计时器.性能评估优化 = function()
 {
