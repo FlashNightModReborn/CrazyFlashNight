@@ -456,19 +456,13 @@ _root.子弹生命周期 = function()
     }
 
     var 点集碰撞检测许可:Boolean = this.联弹检测 && this._rotation != 0 && this._rotation != 180;
-    var area面积, 击中矩形, 击中点集, area点集边向量, 矩形a;
+    var area面积, 击中矩形, 击中点集, area点集边向量;
     if(点集碰撞检测许可)
     {
         var area点集 = _root.影片剪辑至游戏世界点集(检测area);
         area面积 = _root.点集面积系数(area点集);
         area点集边向量 = [];
-        // 矩形a 未初始化，但原代码如此，我们保持不变
-        var 击中点集 = [
-            _root.创建向量(矩形a[0].x - 矩形a[3].x, 矩形a[0].y - 矩形a[3].y),
-            _root.创建向量(矩形a[1].x - 矩形a[0].x, 矩形a[1].y - 矩形a[0].y),
-            _root.创建向量(矩形a[2].x - 矩形a[1].x, 矩形a[2].y - 矩形a[1].y),
-            _root.创建向量(矩形a[3].x - 矩形a[2].x, 矩形a[3].y - 矩形a[2].y)
-        ];
+        var 击中点集;
     }
     else
     {
