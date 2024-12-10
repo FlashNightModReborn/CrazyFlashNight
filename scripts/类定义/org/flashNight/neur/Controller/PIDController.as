@@ -44,14 +44,14 @@
         // 积分项更新，同时应用反积分饱和
         integral += error * deltaTime;
         // 替换 Math.max 和 Math.min 函数，利用逻辑运算符的短路特性进一步优化，减少条件判断次数
-        integral = (integral > integralMax && (integral = integralMax)) || (integral < -integralMax && (integral = -integralMax)) || integral;
+        // integral = (integral > integralMax && (integral = integralMax)) || (integral < -integralMax && (integral = -integralMax)) || integral;
 
         // 微分项平滑处理，提前计算 errorPrev 和 error 差值
         // var errorDiff:Number = (error - errorPrev) / deltaTime;
         // derivativePrev = derivativePrev * (1 - derivativeFilter) + errorDiff * derivativeFilter;
         
         // 计算 PID 输出，内联计算，减少临时变量和重复计算
-        var output:Number = kp * error + ki * integral + kd * (derivativePrev * (1 - derivativeFilter) + ((error - errorPrev) / deltaTime) * derivativeFilter);
+        var output:Number = kp * error + ki * (integral = (integral > integralMax && (integral = integralMax)) || (integral < -integralMax && (integral = -integralMax)) || integral) + kd * (derivativePrev * (1 - derivativeFilter) + ((error - errorPrev) / deltaTime) * derivativeFilter);
 
         // 更新上一次误差
         errorPrev = error;
