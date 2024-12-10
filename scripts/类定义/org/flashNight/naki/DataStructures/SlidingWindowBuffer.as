@@ -4,37 +4,58 @@
     public var average:Number; // 当前平均值
     public var data:Array;     // 环形缓冲区存储数据
 
-    private var size:Number; 
+    public var size:Number; 
     private var sum:Number; 
     private var head:Number;
     private var count:Number;
 
-    private var maxIndex:Number;
-    private var minIndex:Number;
-    private var needsRecalculateMax:Boolean;
-    private var needsRecalculateMin:Boolean;
+    private var minQueue:Array; // 存储可能的最小值的索引
+    private var minQueueHead:Number; // 最小值队列的头部索引
+    private var minQueueTail:Number; // 最小值队列的尾部索引
+
+    private var maxQueue:Array; // 存储可能的最大值的索引
+    private var maxQueueHead:Number; // 最大值队列的头部索引
+    private var maxQueueTail:Number; // 最大值队列的尾部索引
 
     /**
      * 构造函数
      * @param size 缓冲区大小
      */
     public function SlidingWindowBuffer(size:Number) {
-        this.size = size;
-        this.data = [];
-        for (var i:Number = 0; i < size; i++) {
-            this.data[i] = 0; 
+        // 初始化缓冲区大小，防止非法值
+        if (size <= 0 || isNaN(size)) {
+            trace("[Error] Buffer size must be a positive number. Defaulting to size=1.");
+            size = 1;
         }
-        // 初始化为0，需要在插入后检查count是否为1来修正min和max
-        this.max = 0;
-        this.min = 0;
-        this.average = 0;
+
+        // 缓存缓冲区大小，取整确保是整数
+        var locSize = this.size = Math.floor(size);
+
+        // 初始化缓冲区数据并预分配数组，避免动态分配带来的性能开销
+        this.data = new Array(locSize);
+        for (var i:Number = 0; i < locSize; i++) {
+            this.data[i] = 0;
+        }
+
+        // 初始化最小值和最大值的单调队列
+        this.minQueue = new Array(locSize);
+        this.maxQueue = new Array(locSize);
+        for (var j:Number = 0; j < locSize; j++) {
+            this.minQueue[j] = j; // 初始索引填充
+            this.maxQueue[j] = j;
+        }
+
+        // 初始化队列头尾指针和其他变量
+        this.minQueueHead = 0;
+        this.minQueueTail = locSize;
+        this.maxQueueHead = 0;
+        this.maxQueueTail = locSize;
+        this.count = locSize;
         this.sum = 0;
+        this.min = 0;
+        this.max = 0;
+        this.average = 0;
         this.head = 0;
-        this.count = 0;
-        this.maxIndex = 0;
-        this.minIndex = 0;
-        this.needsRecalculateMax = false;
-        this.needsRecalculateMin = false;
     }
 
     /**
@@ -42,98 +63,49 @@
      * @param value 插入的数据
      */
     public function insert(value:Number):Void {
-        var size:Number = this.size;
+        // 使用局部变量访问实例变量，减少多次查找带来的性能开销
+        var localSize:Number = this.size;
         var headPos:Number = this.head;
-        var count:Number = this.count;
-        var sum:Number = this.sum;
+        var localData:Array = this.data;
+        var localSum:Number = this.sum - localData[headPos]; // 从总和中减去被覆盖的旧值
+        var localMinQueue:Array = this.minQueue;
+        var localMaxQueue:Array = this.maxQueue;
+        var minHead:Number = this.minQueueHead;
+        var minTail:Number = this.minQueueTail;
+        var maxHead:Number = this.maxQueueHead;
+        var maxTail:Number = this.maxQueueTail;
 
-        if (count == size) {
-            var oldValue:Number = this.data[headPos];
-            sum -= oldValue;
+        // 利用条件表达式的数值特性，将布尔值转化为 0 或 1，优化递增逻辑
+        minHead += Number(localMinQueue[minHead] == headPos);
+        maxHead += Number(localMaxQueue[maxHead] == headPos);
 
-            // 标记是否需要重新计算 max 和 min
-            if (headPos == this.maxIndex) {
-                this.needsRecalculateMax = true;
-            }
-            if (headPos == this.minIndex) {
-                this.needsRecalculateMin = true;
-            }
-        } else {
-            this.count = count + 1;
-        }
+        // 更新缓冲区数据并调整 head 位置，使用三元运算符减少条件判断
+        localData[headPos] = value;
+        this.head = (++headPos < localSize) ? headPos : 0;
 
-        // 更新缓冲区
-        this.data[headPos] = value;
-        headPos++;
-        if (headPos >= size) {
-            headPos = 0;
-        }
-        this.head = headPos;
+        // 更新总和并计算平均值，避免多次求和操作
+        localSum += value;
+        this.sum = localSum;
+        this.average = Math.round((localSum / localSize) * 100) / 100;
 
-        // 更新统计数据
-        sum += value;
-        this.sum = sum;
+        // 缓存新值索引，用于队列操作
+        var prevPos:Number = (headPos > 0) ? headPos - 1 : localSize - 1;
 
-        // 在首次插入时强制更新max和min
-        if (this.count == 1) {
-            // 第一个值插入后，直接将max和min设为该值
-            this.max = value;
-            this.min = value;
-        } else {
-            // 更新 max
-            if (value > this.max || this.needsRecalculateMax) {
-                this.max = value;
-                this.maxIndex = headPos - 1 >= 0 ? headPos - 1 : size - 1;
-            }
+        // 更新 minQueue 和 maxQueue，移除无用的索引以保持单调性
+        while (minTail > minHead && localData[localMinQueue[minTail - 1]] >= value) minTail--;
+        while (maxTail > maxHead && localData[localMaxQueue[maxTail - 1]] <= value) maxTail--;
 
-            // 更新 min
-            if (value < this.min || this.needsRecalculateMin) {
-                this.min = value;
-                this.minIndex = headPos - 1 >= 0 ? headPos - 1 : size - 1;
-            }
-        }
+        // 插入新值索引到队列尾部
+        localMinQueue[minTail++] = prevPos;
+        localMaxQueue[maxTail++] = prevPos;
 
-        // 重新计算 max 和 min
-        if (this.needsRecalculateMax || this.needsRecalculateMin) {
-            this.recalculateMinMax();
-            this.needsRecalculateMax = false;
-            this.needsRecalculateMin = false;
-        }
+        // 更新当前最小值和最大值
+        this.min = localData[localMinQueue[this.minQueueHead = minHead]];
+        this.max = localData[localMaxQueue[this.maxQueueHead = maxHead]];
 
-        // 对average进行四舍五入以匹配测试期望的精度
-        this.average = Math.round((sum / this.count) * 100) / 100;
-    }
-
-    /**
-     * 重新计算 max 和 min
-     */
-    public function recalculateMinMax():Void {
-        var tempMax:Number = -Number.MAX_VALUE;
-        var tempMin:Number = Number.MAX_VALUE;
-        var tempMaxIndex:Number = 0;
-        var tempMinIndex:Number = 0;
-
-        var size:Number = this.size;
-        var count:Number = this.count;
-        var head:Number = this.head;
-
-        for (var i:Number = 0; i < count; i++) {
-            var index:Number = (head + i) % size;
-            var currentValue:Number = this.data[index];
-            if (currentValue > tempMax) {
-                tempMax = currentValue;
-                tempMaxIndex = index;
-            }
-            if (currentValue < tempMin) {
-                tempMin = currentValue;
-                tempMinIndex = index;
-            }
-        }
-
-        this.max = tempMax;
-        this.min = tempMin;
-        this.maxIndex = tempMaxIndex;
-        this.minIndex = tempMinIndex;
+        // 更新队列尾部索引
+        this.minQueueTail = minTail;
+        this.maxQueueTail = maxTail;
     }
 
     /**
@@ -141,14 +113,24 @@
      * @param callback 要执行的回调函数，格式为 function(value:Number):Void
      */
     public function forEach(callback:Function):Void {
-        var currentHead:Number = this.head;
-        var size:Number = this.size;
-        var count:Number = this.count;
-        var data:Array = this.data;
-        for (var i:Number = 0; i < count; i++) {
-            var index:Number = (currentHead + i) % size;
-            callback(data[index]);
+        // 使用局部变量提升循环性能
+        var localHead:Number = this.head;
+        var localSize:Number = this.size;
+        var localCount:Number = this.count;
+        var localData:Array = this.data;
+        var delta:Number = localSize - localHead;
+
+        // 第一段：从 head 到缓冲区末尾，避免每次循环判断分段逻辑
+        var firstSegmentLength:Number = (localCount < delta) ? localCount : delta;
+        while (firstSegmentLength-- > 0) {
+            callback(localData[localHead++]);
+        }
+
+        // 第二段：从缓冲区起始位置遍历剩余数据
+        localHead = 0; // 回绕到数组起始位置
+        var secondSegmentLength:Number = localCount - (localSize - this.head);
+        while (secondSegmentLength-- > 0) {
+            callback(localData[localHead++]);
         }
     }
 }
-
