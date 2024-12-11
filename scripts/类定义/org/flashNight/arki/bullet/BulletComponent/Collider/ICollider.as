@@ -11,13 +11,6 @@ interface org.flashNight.arki.bullet.BulletComponent.Collider.ICollider {
     function checkCollision(other:ICollider):CollisionResult;
     
     /**
-     * 处理碰撞响应
-     * 
-     * @param result 碰撞结果 CollisionResult 实例
-     */
-    function handleCollision(result:CollisionResult):Void;
-
-    /**
      * 获取碰撞器的 AABB 信息
      * 
      * @return AABB 实例，表示碰撞器的轴对齐边界框

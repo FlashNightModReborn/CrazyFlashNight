@@ -3,6 +3,7 @@ import org.flashNight.arki.bullet.BulletComponent.Movement.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
@@ -437,23 +438,25 @@ _root.子弹生命周期 = function()
         return;
     }
 
-    var 检测area:MovieClip;
+    var detectionArea:MovieClip;
     var area线框:Object;
 
-    var 子弹x:Number = this._x;
-    var 子弹y:Number = this._y;
+
 
     if (this.透明检测 && !this.子弹区域area) {
-        area线框 = {left: 子弹x - 12.5, right: 子弹x + 12.5, top: 子弹y - 12.5, bottom: 子弹y + 12.5};
+        area线框 = AABBCollider.fromTransparentBullet(this);
     } else {
         if (this.子弹区域area) {
-            检测area = this.子弹区域area;
+            detectionArea = this.子弹区域area;
         } else {
-            检测area = this.area;
+            detectionArea = this.area;
         }
 
-        var area_key = (检测area._x << 16) | (检测area._height <<8) | (检测area._width ^ 检测area._y)
-        if (!this[area_key]) this[area_key] = {area: _root.areaToRectGameworld(检测area), x: 子弹x, y: 子弹y};
+        var 子弹x:Number = this._x;
+        var 子弹y:Number = this._y;
+
+        var area_key = (detectionArea._x << 16) | (detectionArea._height <<8) | (detectionArea._width ^ detectionArea._y)
+        if (!this[area_key]) this[area_key] = {area: _root.areaToRectGameworld(detectionArea), x: 子弹x, y: 子弹y};
         var cache_area:Object = this[area_key].area;
         var x_offset:Number = 子弹x - this[area_key].x;
         var y_offset:Number = 子弹y - this[area_key].y;
@@ -465,7 +468,7 @@ _root.子弹生命周期 = function()
     var area面积, 击中矩形, 击中点集, area点集边向量;
     if(点集碰撞检测许可)
     {
-        var area点集 = _root.影片剪辑至游戏世界点集(检测area);
+        var area点集 = _root.影片剪辑至游戏世界点集(detectionArea);
         area面积 = _root.点集面积系数(area点集);
         area点集边向量 = [];
         var 击中点集;
@@ -478,7 +481,7 @@ _root.子弹生命周期 = function()
 
     if (_root.调试模式)
     {
-        _root.绘制线框(检测area);
+        _root.绘制线框(detectionArea);
     }
     var 游戏世界 = _root.gameworld;
     var 发射对象 = 游戏世界[this.发射者名];
