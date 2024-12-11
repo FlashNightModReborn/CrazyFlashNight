@@ -103,14 +103,14 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         var bullet_x:Number = bullet._x;
         var bullet_y:Number = bullet._y;
 
-        var cache:Object;
         // 取哈希时错开宽高，避免正方形碰撞箱异或宽高置零
-        var area_key = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y)
+        var area_key:Number = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y)
         if (!bullet[area_key]) 
         {
             bullet[area_key] = {area: _root.areaToRectGameworld(detectionArea), x: bullet_x, y: bullet_y};
-            cache = bullet[area_key];
+            
         }
+        var cache:Object = bullet[area_key];
         var cache_area:Object = cache.area;
         var x_offset:Number = bullet_x - cache.x;
         var y_offset:Number = bullet_y - cache.y;

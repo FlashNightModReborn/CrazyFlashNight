@@ -443,22 +443,11 @@ _root.子弹生命周期 = function()
     var detectionArea:MovieClip;
     var areaAABB:Object;
 
-
-
     if (this.透明检测 && !this.子弹区域area) {
         areaAABB = AABBCollider.fromTransparentBullet(this);
     } else {
         detectionArea = this.子弹区域area || this.area;
-
-        var 子弹x:Number = this._x;
-        var 子弹y:Number = this._y;
-
-        var area_key = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y)
-        if (!this[area_key]) this[area_key] = {area: _root.areaToRectGameworld(detectionArea), x: 子弹x, y: 子弹y};
-        var cache_area:Object = this[area_key].area;
-        var x_offset:Number = 子弹x - this[area_key].x;
-        var y_offset:Number = 子弹y - this[area_key].y;
-        areaAABB = {left: cache_area.left + x_offset, right: cache_area.right + x_offset, top: cache_area.top + y_offset, bottom: cache_area.bottom + y_offset};
+        areaAABB = AABBCollider.fromBullet(this, detectionArea);
     }
 
     var bullet_rotation = this._rotation; // 本地化避免多次访问造成getter开销

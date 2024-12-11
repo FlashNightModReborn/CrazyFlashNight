@@ -68,9 +68,6 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
 
         // 根据 flags 的普通标志更新普通检测逻辑
         bullet.普通检测 = ((flags & FLAG_NORMAL) != 0);
-
-        // 调试输出（可选）
-        // _root.服务器.发布服务器消息(" bts " + ObjectUtil.toString(bullet));
     }
 
     public static function clearCache():Void {
