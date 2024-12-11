@@ -679,6 +679,12 @@ class org.flashNight.sara.util.AABB {
         return (this.right - this.left) * (this.bottom - this.top);
     }
 
+    public static function getGameWorldAABB(dmc:MovieClip):AABB
+    {
+        var rect = dmc.getRect(_root.gameworld);
+        return new AABB(rect.xMin, rect.xMax, rect.yMin, rect.yMax);
+    }
+
     /**
      * 从 MovieClip 创建 AABB
      * 

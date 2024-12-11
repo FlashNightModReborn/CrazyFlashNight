@@ -88,8 +88,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * 从子弹 MovieClip 实例中提取 AABB 碰撞范围，返回 AABBCollider 实例
      * @param bullet 子弹的 MovieClip 实例，应包含 area、子弹区域area、透明检测 等属性
      */
-    public static function fromTransparentBullet(bullet:MovieClip):AABBCollider
-    {
+    public static function fromTransparentBullet(bullet:MovieClip):AABBCollider {
         var bullet_x:Number = bullet._x;
         var bullet_y:Number = bullet._y;
         
@@ -100,50 +99,23 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * 从子弹 MovieClip 实例中提取 AABB 碰撞范围，返回 AABBCollider 实例
      * @param bullet 子弹的 MovieClip 实例，应包含 area、子弹区域area、透明检测 等属性
      */
-    public static function fromBullet(bullet:MovieClip):AABBCollider {
-        var 子弹x:Number = bullet._x;
-        var 子弹y:Number = bullet._y;
-        var area线框:Object;
+    public static function fromBullet(bullet:MovieClip ,detectionArea:MovieClip):AABBCollider {
+        var bullet_x:Number = bullet._x;
+        var bullet_y:Number = bullet._y;
 
-        // 情况1：透明检测并且没有子弹区域
-        if (bullet.透明检测 && !bullet.子弹区域area) {
-            area线框 = {
-                left: 子弹x - 12.5, 
-                right: 子弹x + 12.5, 
-                top: 子弹y - 12.5, 
-                bottom: 子弹y + 12.5
-            };
-        } else {
-            // 情况2：使用子弹区域area或area进行计算
-            var 检测area:MovieClip = bullet.子弹区域area ? bullet.子弹区域area : bullet.area;
-            
-            // 构建area_key用于缓存
-            var area_key:Number = (检测area._x << 16) | (检测area._height <<8) | (检测area._width ^ 检测area._y);
-
-            // 如果缓存中还没有相关数据，则计算并缓存
-            if (!bullet[area_key]) {
-                // 通过全局方法 areaToRectGameworld 获取游戏世界坐标系下的区域信息
-                var rect:Object = _root.areaToRectGameworld(检测area);
-                bullet[area_key] = {
-                    area: rect, 
-                    x: 子弹x, 
-                    y: 子弹y
-                };
-            }
-
-            var cache_area:Object = bullet[area_key].area;
-            var x_offset:Number = 子弹x - bullet[area_key].x;
-            var y_offset:Number = 子弹y - bullet[area_key].y;
-
-            area线框 = {
-                left: cache_area.left + x_offset,
-                right: cache_area.right + x_offset,
-                top: cache_area.top + y_offset,
-                bottom: cache_area.bottom + y_offset
-            };
+        var cache:Object;
+        // 取哈希时错开宽高，避免正方形碰撞箱异或宽高置零
+        var area_key = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y)
+        if (!bullet[area_key]) 
+        {
+            bullet[area_key] = {area: _root.areaToRectGameworld(detectionArea), x: bullet_x, y: bullet_y};
+            cache = bullet[area_key];
         }
+        var cache_area:Object = cache.area;
+        var x_offset:Number = bullet_x - cache.x;
+        var y_offset:Number = bullet_y - cache.y;
 
-        // 使用 area线框 构造并返回一个 AABBCollider 实例
-        return new AABBCollider(area线框.left, area线框.right, area线框.top, area线框.bottom);
+        // 构造并返回一个 AABBCollider 实例
+        return new AABBCollider(cache_area.left + x_offset, cache_area.right + x_offset, cache_area.top + y_offset, cache_area.bottom + y_offset);
     }
 }

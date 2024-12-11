@@ -439,28 +439,24 @@ _root.子弹生命周期 = function()
     }
 
     var detectionArea:MovieClip;
-    var area线框:Object;
+    var areaAABB:Object;
 
 
 
     if (this.透明检测 && !this.子弹区域area) {
-        area线框 = AABBCollider.fromTransparentBullet(this);
+        areaAABB = AABBCollider.fromTransparentBullet(this);
     } else {
-        if (this.子弹区域area) {
-            detectionArea = this.子弹区域area;
-        } else {
-            detectionArea = this.area;
-        }
+        detectionArea = this.子弹区域area || this.area;
 
         var 子弹x:Number = this._x;
         var 子弹y:Number = this._y;
 
-        var area_key = (detectionArea._x << 16) | (detectionArea._height <<8) | (detectionArea._width ^ detectionArea._y)
+        var area_key = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y)
         if (!this[area_key]) this[area_key] = {area: _root.areaToRectGameworld(detectionArea), x: 子弹x, y: 子弹y};
         var cache_area:Object = this[area_key].area;
         var x_offset:Number = 子弹x - this[area_key].x;
         var y_offset:Number = 子弹y - this[area_key].y;
-        area线框 = {left: cache_area.left + x_offset, right: cache_area.right + x_offset, top: cache_area.top + y_offset, bottom: cache_area.bottom + y_offset};
+        areaAABB = {left: cache_area.left + x_offset, right: cache_area.right + x_offset, top: cache_area.top + y_offset, bottom: cache_area.bottom + y_offset};
     }
 
     var bullet_rotation = this._rotation; // 本地化避免多次访问造成getter开销
@@ -476,7 +472,7 @@ _root.子弹生命周期 = function()
     else
     {
         击中矩形 = {};
-        area面积 = _root.calculateRectArea(area线框);
+        area面积 = _root.calculateRectArea(areaAABB);
     }
 
     if (_root.调试模式)
@@ -508,7 +504,7 @@ _root.子弹生命周期 = function()
             var 目标线框 = this.命中对象.area.getRect(游戏世界);
             var 碰撞中心;
 
-            if (_root.aabb碰撞检测(area线框, 目标线框, Z轴坐标差)) {
+            if (_root.aabb碰撞检测(areaAABB, 目标线框, Z轴坐标差)) {
                 if (this.联弹检测) {
                     if(点集碰撞检测许可){
                         击中点集 = _root.点集碰撞检测(area点集, this.命中对象.area, area点集边向量,Z轴坐标差);
@@ -520,7 +516,7 @@ _root.子弹生命周期 = function()
                         碰撞中心 = {x:this._x,y:this._y};
                     }
                     else{
-                        击中矩形 = _root.rectHitTest(area线框, this.命中对象.area, Z轴坐标差);
+                        击中矩形 = _root.rectHitTest(areaAABB, this.命中对象.area, Z轴坐标差);
                         覆盖率 = _root.calculateRectArea(击中矩形) / area面积;
                         if(覆盖率 <= 0)
                         {
@@ -530,8 +526,8 @@ _root.子弹生命周期 = function()
                     }
                 }else{
                     碰撞中心 = {
-                        x:(Math.max(area线框.left,目标线框.xMin) + Math.min(area线框.right,目标线框.xMax)) / 2,
-                        y:(Math.max(area线框.top,目标线框.yMin) + Math.min(area线框.bottom,目标线框.yMax)) / 2
+                        x:(Math.max(areaAABB.left,目标线框.xMin) + Math.min(areaAABB.right,目标线框.xMax)) / 2,
+                        y:(Math.max(areaAABB.top,目标线框.yMin) + Math.min(areaAABB.bottom,目标线框.yMax)) / 2
                     };
                 }
             } else {
