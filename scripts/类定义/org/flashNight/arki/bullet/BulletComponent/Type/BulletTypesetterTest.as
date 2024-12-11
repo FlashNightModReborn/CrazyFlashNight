@@ -121,7 +121,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetterTest {
         assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
         assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
         assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
-        assert(bullet.普通检测 == true, bullet.子弹种类 + " 普通检测应为 true");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
     }
     
     // 测试精制子弹
@@ -135,7 +135,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetterTest {
         assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
         assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
         assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
-        assert(bullet.普通检测 == true, bullet.子弹种类 + " 普通检测应为 true");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
     }
     
     // 测试组合子弹（近战联弹穿刺）
@@ -219,7 +219,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetterTest {
         assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
         assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
         assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
-        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+        assert(bullet.普通检测 == true, bullet.子弹种类 + " 普通检测应为 true");
     }
     
     // 运行所有功能测试

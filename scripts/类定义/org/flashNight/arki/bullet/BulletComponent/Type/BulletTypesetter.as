@@ -43,8 +43,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
             var isRefined:Boolean       = (子弹种类 == "精制子弹");
 
             // 根据普通检测逻辑，计算 isNormal 标志
-            var isNormal:Boolean = !isPierce && !isExplosive && !isChain && 
-                                   (isMelee || isTransparency || (子弹种类.indexOf("普通") != -1) || isEnergy || isRefined);
+            var isNormal:Boolean = !isPierce && !isExplosive && 
+                                   (isMelee || isTransparency || (子弹种类.indexOf("普通") != -1));
 
             flags = ((isMelee         ? FLAG_MELEE         : 0)
                   | (isChain         ? FLAG_CHAIN         : 0)
