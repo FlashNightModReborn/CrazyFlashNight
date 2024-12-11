@@ -1465,7 +1465,8 @@
       <interval>180</interval>
       <singleshoot>true</singleshoot>
       <velocity>25</velocity>
-      <bullet>精制子弹</bullet>
+      <bullet>精制普通子弹</bullet>
+      <bulletrename>精制子弹</bulletrename>
       <sound>m3-1.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>
@@ -1496,7 +1497,8 @@
       <diffusion>5</diffusion>
       <interval>180</interval>
       <velocity>30</velocity>
-      <bullet>烈焰子弹</bullet>
+      <bullet>烈焰普通子弹</bullet>
+      <bulletrename>烈焰子弹</bulletrename>
       <sound>shoot.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>烈焰火花</bullethit>

@@ -217,4 +217,22 @@
             <yOffset>0</yOffset>
         </shell>
     </bullet>
+    <bullet>
+        <name>能量普通子弹</name>
+        <shell>
+            <casing>能量弹壳</casing>
+            <xOffset>60</xOffset>
+            <simulationMethod>标准</simulationMethod>
+            <yOffset>0</yOffset>
+        </shell>
+    </bullet>
+    <bullet>
+        <name>绿色能量普通子弹</name>
+        <shell>
+            <casing>能量弹壳</casing>
+            <xOffset>60</xOffset>
+            <simulationMethod>标准</simulationMethod>
+            <yOffset>0</yOffset>
+        </shell>
+    </bullet>
 </bullets>
