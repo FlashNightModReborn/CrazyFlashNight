@@ -1,9 +1,26 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.sara.util.*;
 
 interface org.flashNight.arki.bullet.BulletComponent.Collider.ICollider {
-    // Checks if this collider collides with another collider
+    /**
+     * 检查与另一个碰撞器是否发生碰撞
+     * 
+     * @param other 另一个 ICollider 实例
+     * @return CollisionResult 实例，包含碰撞结果及相关信息
+     */
     function checkCollision(other:ICollider):CollisionResult;
-
-    // Handles collision response based on the collision result
+    
+    /**
+     * 处理碰撞响应
+     * 
+     * @param result 碰撞结果 CollisionResult 实例
+     */
     function handleCollision(result:CollisionResult):Void;
+
+    /**
+     * 获取碰撞器的 AABB 信息
+     * 
+     * @return AABB 实例，表示碰撞器的轴对齐边界框
+     */
+    function getAABB():AABB;
 }

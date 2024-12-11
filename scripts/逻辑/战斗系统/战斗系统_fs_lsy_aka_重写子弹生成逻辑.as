@@ -439,23 +439,29 @@ _root.子弹生命周期 = function()
 
     var 检测area:MovieClip;
     var area线框:Object;
-    if(this.透明检测 && !this.子弹区域area){
-        area线框 = {left: this._x - 12.5, right: this._x + 12.5, top: this._y - 12.5, bottom: this._y + 12.5};
-    }else{
-        if(this.子弹区域area){
+
+    var 子弹x:Number = this._x;
+    var 子弹y:Number = this._y;
+
+    if (this.透明检测 && !this.子弹区域area) {
+        area线框 = {left: 子弹x - 12.5, right: 子弹x + 12.5, top: 子弹y - 12.5, bottom: 子弹y + 12.5};
+    } else {
+        if (this.子弹区域area) {
             检测area = this.子弹区域area;
-        }else{
+        } else {
             检测area = this.area;
         }
-        var area_key:String = (检测area._x ^ 检测area._height) + "_" + (检测area._width ^ 检测area._y);
-        if (!this[area_key]) this[area_key] = {area:_root.areaToRectGameworld(检测area),x:this._x,y:this._y};
-        var cache_area:MovieClip = this[area_key].area;
-        var x_offsst:Number = this._x - this[area_key].x;
-        var y_offsst:Number = this._y - this[area_key].y;
-        area线框 = {left: cache_area.left + x_offsst, right: cache_area.right + x_offsst, top: cache_area.top + y_offsst, bottom: cache_area.bottom + y_offsst};
+
+        var area_key = (检测area._x << 16) | (检测area._height <<8) | (检测area._width ^ 检测area._y)
+        if (!this[area_key]) this[area_key] = {area: _root.areaToRectGameworld(检测area), x: 子弹x, y: 子弹y};
+        var cache_area:Object = this[area_key].area;
+        var x_offset:Number = 子弹x - this[area_key].x;
+        var y_offset:Number = 子弹y - this[area_key].y;
+        area线框 = {left: cache_area.left + x_offset, right: cache_area.right + x_offset, top: cache_area.top + y_offset, bottom: cache_area.bottom + y_offset};
     }
 
-    var 点集碰撞检测许可:Boolean = this.联弹检测 && this._rotation != 0 && this._rotation != 180;
+    var bullet_rotation = this._rotation; // 本地化避免多次访问造成getter开销
+    var 点集碰撞检测许可:Boolean = this.联弹检测 && bullet_rotation != 0 && bullet_rotation != 180;
     var area面积, 击中矩形, 击中点集, area点集边向量;
     if(点集碰撞检测许可)
     {

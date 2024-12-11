@@ -749,4 +749,14 @@ class org.flashNight.sara.util.AABB {
 
         return pointSet;
     }
+    /**
+     * 转换成字符串输出
+     * 
+     * @return 字符串形式的 AABB 信息
+     */
+
+    public function toString():String
+    {
+        return "[" + this.left + "," + this.right + "," + this.top + "," + this.bottom + "]";
+    }
 }
