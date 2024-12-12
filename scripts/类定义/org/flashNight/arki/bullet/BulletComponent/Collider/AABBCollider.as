@@ -4,14 +4,16 @@ import org.flashNight.sara.util.*;
 /**
  * AABBCollider 类
  * 
- * 通过继承 AABB 类，实现 ICollider 接口，
- * 提供基于轴对齐边界框（AABB）的碰撞检测功能。
- * 使用 Vector 类作为点和向量的数据结构。
+ * 基于 AABB（轴对齐边界框）的碰撞检测器，通过继承 AABB 类并实现 ICollider 接口，
+ * 提供基本的碰撞检测功能，包括碰撞检查和边界信息提取。
+ * 
+ * 使用 Vector 类作为点和向量的数据结构，支持动态生成 AABB。
  */
 class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends AABB implements ICollider {
     
     /**
      * 构造函数，初始化 AABB 碰撞器的边界
+     * 
      * @param left 左边界坐标
      * @param right 右边界坐标
      * @param top 上边界坐标
@@ -23,36 +25,29 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
 
     /**
      * 实现 ICollider 接口的碰撞检查方法。
-     * 注意:计算顺序上要求为子弹的碰撞器调用checkCollision方法，检测单位的碰撞器，否则zOffset需要取反
-     * 逻辑：
-     * 1. 获取对方的 AABB 信息。
-     * 2. 使用 AABB 的 intersects 方法进行初步碰撞检测。
-     * 3. 如果 AABB 相交，计算碰撞中心点并返回 CollisionResult。
+     * 
+     * 逻辑流程：
+     * 1. 获取另一个碰撞器的 AABB 信息。
+     * 2. 检查 AABB 是否相交，通过多个简单的条件判断优化性能。
+     * 3. 如果相交，计算碰撞中心点并返回结果。
      * 
      * @param other 另一个 ICollider 实例
+     * @param zOffset Z轴偏移量，用于模拟 3D 高度差
      * @return 碰撞结果 CollisionResult 实例
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
-        // 获取对方的 AABB 信息，并应用 zOffset
+        // 获取对方的 AABB 信息，并应用 zOffset 偏移
         var otherAABB:AABB = other.getAABB(zOffset);
 
-        // 检查不相交的条件，并提前返回，经测试，多个简单if提前返回性能略好于一个复杂逻辑运算的组合if
-        if (this.right <= otherAABB.left) {
-            return CollisionResult.FALSE; // 提前返回
-        }
-        if (this.left >= otherAABB.right) {
-            return CollisionResult.FALSE; // 提前返回
-        }
-        if (this.bottom <= otherAABB.top) {
-            return CollisionResult.FALSE; // 提前返回
-        }
-        if (this.top >= otherAABB.bottom) {
-            return CollisionResult.FALSE; // 提前返回
-        }
+        // 提前返回检查不相交条件，优化性能
+        if (this.right <= otherAABB.left)  return CollisionResult.FALSE;
+        if (this.left >= otherAABB.right)  return CollisionResult.FALSE;
+        if (this.bottom <= otherAABB.top)  return CollisionResult.FALSE;
+        if (this.top >= otherAABB.bottom)  return CollisionResult.FALSE;
 
-        // 如果相交，计算碰撞中心点,创建碰撞结果并返回
+        // 计算碰撞结果，包括重叠中心点
         var result:CollisionResult = new CollisionResult(true);
-        result.overlapRatio = 1;
+        result.overlapRatio = 1; // 默认覆盖率为 1（完全覆盖）
         result.overlapCenter = new Vector(
             (((this.left > otherAABB.left) ? this.left : otherAABB.left) + ((this.right < otherAABB.right) ? this.right : otherAABB.right)) >> 1,
             (((this.top > otherAABB.top) ? this.top : otherAABB.top) + ((this.bottom < otherAABB.bottom) ? this.bottom : otherAABB.bottom)) >> 1
@@ -60,60 +55,122 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         return result;
     }
 
-
     /**
      * 获取 AABB 信息
      * 
-     * @return 当前实例作为 AABB 返回
+     * 根据 zOffset 偏移量，返回一个新的 AABB 实例，用于碰撞计算。
+     * 
+     * @param zOffset Z轴偏移量，用于模拟 3D 高度差
+     * @return 当前碰撞器的 AABB 实例
      */
     public function getAABB(zOffset:Number):AABB {
         return new AABB(this.left, this.right, this.top + zOffset, this.bottom + zOffset);
     }
 
-    /**
-     * 从透明子弹 MovieClip 实例中提取 AABB 碰撞范围，返回 AABBCollider 实例
-     * @param 透明子弹实际上不是影片剪辑，被裁剪至object，根据之前的业务实现，硬编码其碰撞箱的大小为25
-     */
-    public static function fromTransparentBullet(bullet:Object):AABBCollider {
-        var bullet_x:Number = bullet._x;
-        var bullet_y:Number = bullet._y;
-        
-        return new AABBCollider(bullet_x - 12.5, bullet_x + 12.5, bullet_y - 12.5, bullet_y + 12.5);
-    }
+    // 静态辅助方法区域
 
     /**
-     * 从子弹 MovieClip 实例中提取 AABB 碰撞范围，返回 AABBCollider 实例
-     * @param bullet 子弹的 MovieClip 实例，应包含 area、子弹区域area、透明检测 等属性
+     * 从子弹和检测区域中提取边界信息
+     * 
+     * 计算并返回子弹在指定检测区域内的 AABB 坐标信息。
+     * 
+     * @param bullet 子弹 MovieClip 实例
+     * @param detectionArea 子弹的检测区域 MovieClip 实例
+     * @return 包含边界坐标的 Object 对象
      */
-    public static function fromBullet(bullet:MovieClip ,detectionArea:MovieClip):AABBCollider {
+    private static function getBulletCoordinates(bullet:MovieClip, detectionArea:MovieClip):Object {
         var bullet_x:Number = bullet._x;
         var bullet_y:Number = bullet._y;
 
-        // 取哈希时错开宽高，避免正方形碰撞箱异或宽高置零
-        var area_key:Number = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y)
-        if (!bullet[area_key]) 
-        {
+        // 生成唯一哈希键，用于缓存计算结果
+        var area_key:Number = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y);
+        if (!bullet[area_key]) {
             var areaRect:Object = detectionArea.getRect(_root.gameworld);
             bullet[area_key] = {area: new AABB(areaRect.xMin, areaRect.xMax, areaRect.yMin, areaRect.yMax), x: bullet_x, y: bullet_y};
-            
         }
         var cache:Object = bullet[area_key];
-        var cache_area:Object = cache.area;
+        var cache_area:AABB = cache.area;
         var x_offset:Number = bullet_x - cache.x;
         var y_offset:Number = bullet_y - cache.y;
 
-        // 构造并返回一个 AABBCollider 实例
-        return new AABBCollider(cache_area.left + x_offset, cache_area.right + x_offset, cache_area.top + y_offset, cache_area.bottom + y_offset);
+        return {
+            left: cache_area.left + x_offset,
+            right: cache_area.right + x_offset,
+            top: cache_area.top + y_offset,
+            bottom: cache_area.bottom + y_offset
+        };
     }
 
     /**
-     * 从单位 MovieClip 实例中提取 AABB 碰撞范围，返回 AABBCollider 实例
-     * @param 单位必须拥有area影片剪辑
+     * 从透明子弹中提取边界信息
+     * 
+     * 硬编码透明子弹的碰撞箱大小为 25x25，并根据子弹的坐标计算其 AABB 信息。
+     * 
+     * @param bullet 透明子弹对象
+     * @return 包含边界坐标的 Object 对象
+     */
+    private static function getTransparentBulletCoordinates(bullet:Object):Object {
+        var bullet_x:Number = bullet._x;
+        var bullet_y:Number = bullet._y;
+        return {
+            left: bullet_x - 12.5, 
+            right: bullet_x + 12.5, 
+            top: bullet_y - 12.5, 
+            bottom: bullet_y + 12.5
+        };
+    }
+
+    /**
+     * 从单位区域中提取边界信息
+     * 
+     * 计算单位区域在游戏世界中的 AABB 坐标信息。
+     * 
+     * @param unit 包含 area 属性的单位 MovieClip 实例
+     * @return 包含边界坐标的 Object 对象
+     */
+    private static function getUnitAreaCoordinates(unit:MovieClip):Object {
+        var unitRect:Object = unit.area.getRect(_root.gameworld);
+        return {
+            left: unitRect.xMin,
+            right: unitRect.xMax,
+            top: unitRect.yMin,
+            bottom: unitRect.yMax
+        };
+    }
+
+    // 实例化方法区域
+
+    /**
+     * 从透明子弹实例化 AABBCollider
+     * 
+     * @param bullet 透明子弹对象
+     * @return AABBCollider 实例
+     */
+    public static function fromTransparentBullet(bullet:Object):AABBCollider {
+        var coords:Object = getTransparentBulletCoordinates(bullet);
+        return new AABBCollider(coords.left, coords.right, coords.top, coords.bottom);
+    }
+
+    /**
+     * 从子弹和检测区域实例化 AABBCollider
+     * 
+     * @param bullet 子弹 MovieClip 实例
+     * @param detectionArea 子弹的检测区域 MovieClip 实例
+     * @return AABBCollider 实例
+     */
+    public static function fromBullet(bullet:MovieClip, detectionArea:MovieClip):AABBCollider {
+        var coords:Object = getBulletCoordinates(bullet, detectionArea);
+        return new AABBCollider(coords.left, coords.right, coords.top, coords.bottom);
+    }
+
+    /**
+     * 从单位区域实例化 AABBCollider
+     * 
+     * @param unit 包含 area 属性的单位 MovieClip 实例
+     * @return AABBCollider 实例
      */
     public static function fromUnitArea(unit:MovieClip):AABBCollider {
-        var unitRect = unit.area.getRect(_root.gameworld);
-
-        // 构造并返回一个 AABBCollider 实例
-        return new AABBCollider(unitRect.xMin, unitRect.xMax, unitRect.yMin, unitRect.yMax);
+        var coords:Object = getUnitAreaCoordinates(unit);
+        return new AABBCollider(coords.left, coords.right, coords.top, coords.bottom);
     }
 }

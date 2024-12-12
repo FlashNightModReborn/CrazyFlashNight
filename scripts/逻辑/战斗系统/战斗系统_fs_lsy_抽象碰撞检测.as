@@ -38,28 +38,20 @@ _root.点集至影片剪辑 = function(点集, loc)
 
 _root.影片剪辑至游戏世界点集 = function(影片剪辑:MovieClip):Array 
 {
-    var 点集:Array = new Array(4); // 创建点集数组并预扩容
-    var rect:Object = 影片剪辑.getRect(影片剪辑); // 获得影片剪辑的边界框
+	var 点集:Array = new Array(4);//创建点集数组并预扩容
+	var rect:Object = 影片剪辑.getRect(影片剪辑);//获得影片剪辑的边界框
 
-    // 转换边界框对角点到游戏世界坐标系
-    var 左上 = _root.pointToGameworld({x:rect.xMin, y:rect.yMin}, 影片剪辑); // 左上角
-    var 右下 = _root.pointToGameworld({x:rect.xMax, y:rect.yMax}, 影片剪辑); // 右下角
+	点集[1] = _root.pointToGameworld({x:rect.xMax, y:rect.yMax}, 影片剪辑);
+	点集[3] = _root.pointToGameworld({x:rect.xMin, y:rect.yMin}, 影片剪辑);
+	var 中点x = (点集[1].x + 点集[3].x) / 2, 中点y = (点集[1].y + 点集[3].y) / 2;//计算中点坐标以获得向量
+	var 向量x = 点集[1].x - 中点x, 向量y = 点集[1].y - 中点y;//
+	var 夹角:Number = Math.atan2(向量y, 向量x);// 计算旋转角度
+	var 向量模:Number = Math.sqrt(向量x * 向量x + 向量y * 向量y);// 取向量模长
+	var 余弦值 = 向量模 * Math.cos(夹角), 正弦值 = 向量模 * Math.sin(夹角);
+	点集[0] = {x:中点x - 余弦值, y:中点y + 正弦值};// 计算0号和2号顶点的向量（旋转后）
+	点集[2] = {x:中点x + 余弦值, y:中点y - 正弦值};
 
-    // 中点坐标
-    var 中点x:Number = (左上.x + 右下.x) / 2;
-    var 中点y:Number = (左上.y + 右下.y) / 2;
-
-    // 通过对称性计算其他两个顶点
-    var 右上 = {x:右下.x, y:左上.y}; // 右上角
-    var 左下 = {x:左上.x, y:右下.y}; // 左下角
-
-    // 按顺序保存四个顶点：左上、右上、右下、左下
-    点集[0] = 左上;
-    点集[1] = 右上;
-    点集[2] = 右下;
-    点集[3] = 左下;
-
-    return 点集;
+	return 点集;
 };
 
 //将矩形坐标转换到gameworld（好像用不到了）

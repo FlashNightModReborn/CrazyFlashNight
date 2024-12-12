@@ -442,18 +442,22 @@ _root.子弹生命周期 = function()
 
     var detectionArea:MovieClip;
     var areaAABB:Object;
+    var bullet_rotation:Number = this._rotation; // 本地化避免多次访问造成getter开销
+    var isRotated:Boolean = (bullet_rotation != 0 && bullet_rotation != 180);
+    var isPointSet:Boolean = this.联弹检测 && isRotated;
+    var isAxisAlignedChain = this.联弹检测 && !isRotated;
 
     if (this.透明检测 && !this.子弹区域area) {
-        areaAABB = AABBCollider.fromTransparentBullet(this);
+        areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromTransparentBullet(this) : AABBCollider.fromTransparentBullet(this);
     } else {
         detectionArea = this.子弹区域area || this.area;
-        areaAABB = AABBCollider.fromBullet(this, detectionArea);
+        areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromBullet(this, detectionArea) : AABBCollider.fromBullet(this, detectionArea);
     }
 
-    var bullet_rotation = this._rotation; // 本地化避免多次访问造成getter开销
-    var 点集碰撞检测许可:Boolean = this.联弹检测 && bullet_rotation != 0 && bullet_rotation != 180;
+
+    
     var area面积, 击中矩形, 击中点集, area点集边向量;
-    if(点集碰撞检测许可)
+    if(isPointSet)
     {
         var area点集 = _root.影片剪辑至游戏世界点集(detectionArea);
         area面积 = _root.点集面积系数(area点集);
@@ -497,7 +501,7 @@ _root.子弹生命周期 = function()
             var result:CollisionResult = areaAABB.checkCollision(AABBCollider.fromUnitArea(this.命中对象), Z轴坐标差);
             if (result.isColliding) {
                 if (this.联弹检测) {
-                    if(点集碰撞检测许可){
+                    if(isPointSet){
                         击中点集 = _root.点集碰撞检测(area点集, this.命中对象.area, area点集边向量,Z轴坐标差);
                         if(击中点集.length < 3)
                         {
@@ -507,13 +511,8 @@ _root.子弹生命周期 = function()
                         碰撞中心 = {x:this._x,y:this._y};
                     }
                     else{
-                        击中矩形 = _root.rectHitTest(areaAABB, this.命中对象.area, Z轴坐标差);
-                        覆盖率 = _root.calculateRectArea(击中矩形) / area面积;
-                        if(覆盖率 <= 0)
-                        {
-                            continue;
-                        }
-                        碰撞中心 = {x:(击中矩形.left + 击中矩形.right) / 2, y:(击中矩形.top + 击中矩形.bottom) / 2};
+                        覆盖率 = result.overlapRatio;
+                        碰撞中心 = result.overlapCenter;
                     }
                 }else{
                     碰撞中心 = result.overlapCenter;
