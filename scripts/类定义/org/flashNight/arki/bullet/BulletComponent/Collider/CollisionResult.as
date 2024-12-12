@@ -3,25 +3,46 @@
 class org.flashNight.arki.bullet.BulletComponent.Collider.CollisionResult {
     public var isColliding:Boolean;       // 碰撞是否发生（必要字段）
     public var overlapCenter:Vector;      // 碰撞中心点（可选字段）
+    public var overlapRatio:Number;       // 重叠比率（可选字段）
     public var additionalInfo:Object;    // 额外碰撞信息（可选字段）
+
+    // 静态属性：表示无碰撞结果的常量实例
+    public static var FALSE:CollisionResult = new CollisionResult(false);
 
     /**
      * 碰撞器进行碰撞检测的结果对象
      * 
      * @param isColliding 碰撞检测的结果
-     * @param overlapCenter 碰撞中心，用于定位特效发生的坐标
      */
-    public function CollisionResult(isColliding:Boolean, overlapCenter:Vector) {
+    public function CollisionResult(isColliding:Boolean) {
         this.isColliding = isColliding;
-        this.overlapCenter = overlapCenter || {}; // 未碰撞则不必提供碰撞中心，这里用空对象占位
+        this.additionalInfo = {}; // 初始化为空对象，避免 null 检查
     }
 
     /**
-     * 添加额外信息的包装方法，从性能来说，直接通过属性操作来添加额外信息更优
+     * 设置碰撞中心的包装方法
      * 
-     * @param key 
-     * @param value 
-     * @return 
+     * @param overlapCenter 碰撞中心点
+     */
+    public function setOverlapCenter(overlapCenter:Vector):Void {
+        this.overlapCenter = overlapCenter;
+    }
+
+    /**
+     * 设置覆盖率的包装方法
+     * 
+     * @param 覆盖率的大小，数值范围是0-1
+     */
+    public function setOverlapRatio(ratio:Number):Void {
+        this.overlapRatio = ratio;
+    }
+
+
+    /**
+     * 添加额外信息的包装方法
+     * 
+     * @param key 键
+     * @param value 值
      */
     public function addInfo(key:String, value):Void {
         this.additionalInfo[key] = value;

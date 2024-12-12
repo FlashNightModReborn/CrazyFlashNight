@@ -492,10 +492,10 @@ _root.子弹生命周期 = function()
         if ((this.命中对象._name != this.发射者名 || this.友军伤害) && this.命中对象.防止无限飞 != true || (this.命中对象.hp <= 0 && !this.近战检测))
         {
             var 覆盖率 = 1;
-            var 目标线框 = this.命中对象.area.getRect(游戏世界);
             var 碰撞中心;
 
-            if (_root.aabb碰撞检测(areaAABB, 目标线框, Z轴坐标差)) {
+            var result:CollisionResult = areaAABB.checkCollision(AABBCollider.fromUnitArea(this.命中对象), Z轴坐标差);
+            if (result.isColliding) {
                 if (this.联弹检测) {
                     if(点集碰撞检测许可){
                         击中点集 = _root.点集碰撞检测(area点集, this.命中对象.area, area点集边向量,Z轴坐标差);
@@ -516,10 +516,7 @@ _root.子弹生命周期 = function()
                         碰撞中心 = {x:(击中矩形.left + 击中矩形.right) / 2, y:(击中矩形.top + 击中矩形.bottom) / 2};
                     }
                 }else{
-                    碰撞中心 = {
-                        x:(Math.max(areaAABB.left,目标线框.xMin) + Math.min(areaAABB.right,目标线框.xMax)) / 2,
-                        y:(Math.max(areaAABB.top,目标线框.yMin) + Math.min(areaAABB.bottom,目标线框.yMax)) / 2
-                    };
+                    碰撞中心 = result.overlapCenter;
                 }
             } else {
                 continue;

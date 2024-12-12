@@ -32,19 +32,34 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @param other 另一个 ICollider 实例
      * @return 碰撞结果 CollisionResult 实例
      */
-    public function checkCollision(other:ICollider ,zOffset:Number):CollisionResult {
-        var result:CollisionResult = new CollisionResult(false); // 考虑到绝大部分碰撞检测都会失败，预创建为false
-
-        // 获取对方的 AABB 信息
+    public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
+        // 获取对方的 AABB 信息，并应用 zOffset
         var otherAABB:AABB = other.getAABB(zOffset);
-        if(this.left < otherAABB.right && this.right > otherAABB.left && this.top < otherAABB.bottom && this.bottom > otherAABB.top)
-        {
-            result.isColliding = true;
-            result.overlapCenter = new Vector((Math.max(this.left, otherAABB.left) + Math.min(this.right, otherAABB.right)) / 2, (Math.max(this.top, otherAABB.top) + Math.min(this.bottom, otherAABB.bottom)) / 2)
+
+        // 检查不相交的条件，并提前返回，经测试，多个简单if提前返回性能略好于一个复杂逻辑运算的组合if
+        if (this.right <= otherAABB.left) {
+            return CollisionResult.FALSE; // 提前返回
+        }
+        if (this.left >= otherAABB.right) {
+            return CollisionResult.FALSE; // 提前返回
+        }
+        if (this.bottom <= otherAABB.top) {
+            return CollisionResult.FALSE; // 提前返回
+        }
+        if (this.top >= otherAABB.bottom) {
+            return CollisionResult.FALSE; // 提前返回
         }
 
+        // 如果相交，计算碰撞中心点,创建碰撞结果并返回
+        var result:CollisionResult = new CollisionResult(true);
+        result.overlapRatio = 1;
+        result.overlapCenter = new Vector(
+            (((this.left > otherAABB.left) ? this.left : otherAABB.left) + ((this.right < otherAABB.right) ? this.right : otherAABB.right)) >> 1,
+            (((this.top > otherAABB.top) ? this.top : otherAABB.top) + ((this.bottom < otherAABB.bottom) ? this.bottom : otherAABB.bottom)) >> 1
+        );
         return result;
     }
+
 
     /**
      * 获取 AABB 信息
