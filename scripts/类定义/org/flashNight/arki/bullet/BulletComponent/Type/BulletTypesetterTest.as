@@ -96,6 +96,34 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetterTest {
         assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
     }
     
+    // 测试普通爆炸
+    private static function testExplosiveBullet():Void {
+        var bullet:Object = { 子弹种类: "普通爆炸" };
+        BulletTypesetter.setTypeFlags(bullet);
+        
+        assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
+        assert(bullet.联弹检测 == false, bullet.子弹种类 + " 联弹检测应为 false");
+        assert(bullet.穿刺检测 == false, bullet.子弹种类 + " 穿刺检测应为 false");
+        assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
+        assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
+        assert(bullet.爆炸检测 == true, bullet.子弹种类 + " 爆炸检测应为 true");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+    }
+    
+    // 测试小火箭弹
+    private static function testExplosiveBullet():Void {
+        var bullet:Object = { 子弹种类: "小火箭弹" };
+        BulletTypesetter.setTypeFlags(bullet);
+        
+        assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
+        assert(bullet.联弹检测 == false, bullet.子弹种类 + " 联弹检测应为 false");
+        assert(bullet.穿刺检测 == false, bullet.子弹种类 + " 穿刺检测应为 false");
+        assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
+        assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
+        assert(bullet.爆炸检测 == true, bullet.子弹种类 + " 爆炸检测应为 true");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+    }
+    
     // 测试普通子弹
     private static function testNormalBullet():Void {
         var bullet:Object = { 子弹种类: "普通子弹" };
@@ -124,9 +152,107 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetterTest {
         assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
     }
     
+    // 测试新能量子弹
+    private static function testEnergyBullet():Void {
+        var bullet:Object = { 子弹种类: "新能量子弹" };
+        BulletTypesetter.setTypeFlags(bullet);
+        
+        assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
+        assert(bullet.联弹检测 == false, bullet.子弹种类 + " 联弹检测应为 false");
+        assert(bullet.穿刺检测 == false, bullet.子弹种类 + " 穿刺检测应为 false");
+        assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
+        assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
+        assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+    }
+    
+    // 测试巨型穿刺能量子弹
+    private static function testEnergyBullet():Void {
+        var bullet:Object = { 子弹种类: "巨型穿刺能量子弹" };
+        BulletTypesetter.setTypeFlags(bullet);
+        
+        assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
+        assert(bullet.联弹检测 == false, bullet.子弹种类 + " 联弹检测应为 false");
+        assert(bullet.穿刺检测 == false, bullet.子弹种类 + " 穿刺检测应为 false");
+        assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
+        assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
+        assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+    }
+    
     // 测试精制子弹
     private static function testRefinedBullet():Void {
         var bullet:Object = { 子弹种类: "精制子弹" };
+        BulletTypesetter.setTypeFlags(bullet);
+        
+        assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
+        assert(bullet.联弹检测 == false, bullet.子弹种类 + " 联弹检测应为 false");
+        assert(bullet.穿刺检测 == false, bullet.子弹种类 + " 穿刺检测应为 false");
+        assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
+        assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
+        assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+    }
+
+    // 测试能量普通子弹
+    private static function testEnergyBullet():Void {
+        var bullet:Object = { 子弹种类: "能量普通子弹" };
+        BulletTypesetter.setTypeFlags(bullet);
+        
+        assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
+        assert(bullet.联弹检测 == false, bullet.子弹种类 + " 联弹检测应为 false");
+        assert(bullet.穿刺检测 == false, bullet.子弹种类 + " 穿刺检测应为 false");
+        assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
+        assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
+        assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+    }
+    
+    // 测试精制普通子弹
+    private static function testRefinedBullet():Void {
+        var bullet:Object = { 子弹种类: "精制普通子弹" };
+        BulletTypesetter.setTypeFlags(bullet);
+        
+        assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
+        assert(bullet.联弹检测 == false, bullet.子弹种类 + " 联弹检测应为 false");
+        assert(bullet.穿刺检测 == false, bullet.子弹种类 + " 穿刺检测应为 false");
+        assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
+        assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
+        assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+    }
+    
+    // 测试冰冷普通子弹
+    private static function testRefinedBullet():Void {
+        var bullet:Object = { 子弹种类: "冰冷普通子弹" };
+        BulletTypesetter.setTypeFlags(bullet);
+        
+        assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
+        assert(bullet.联弹检测 == false, bullet.子弹种类 + " 联弹检测应为 false");
+        assert(bullet.穿刺检测 == false, bullet.子弹种类 + " 穿刺检测应为 false");
+        assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
+        assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
+        assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+    }
+    
+    // 测试加强普通子弹
+    private static function testRefinedBullet():Void {
+        var bullet:Object = { 子弹种类: "加强普通子弹" };
+        BulletTypesetter.setTypeFlags(bullet);
+        
+        assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
+        assert(bullet.联弹检测 == false, bullet.子弹种类 + " 联弹检测应为 false");
+        assert(bullet.穿刺检测 == false, bullet.子弹种类 + " 穿刺检测应为 false");
+        assert(bullet.透明检测 == false, bullet.子弹种类 + " 透明检测应为 false");
+        assert(bullet.手雷检测 == false, bullet.子弹种类 + " 手雷检测应为 false");
+        assert(bullet.爆炸检测 == false, bullet.子弹种类 + " 爆炸检测应为 false");
+        assert(bullet.普通检测 == false, bullet.子弹种类 + " 普通检测应为 false");
+    }
+    
+    // 测试新电球
+    private static function testRefinedBullet():Void {
+        var bullet:Object = { 子弹种类: "新电球" };
         BulletTypesetter.setTypeFlags(bullet);
         
         assert(bullet.近战检测 == false, bullet.子弹种类 + " 近战检测应为 false");
