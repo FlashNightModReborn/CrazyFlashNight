@@ -17,4 +17,26 @@ interface org.flashNight.arki.bullet.BulletComponent.Collider.ICollider {
      * @return AABB 实例，表示碰撞器的轴对齐边界框
      */
     function getAABB(zOffset:Number):AABB;
+
+    /**
+     * 更新 ICollider 实例的边界信息，基于透明子弹对象
+     * 
+     * @param bullet 透明子弹对象
+     */
+    function updateFromTransparentBullet(bullet:Object):Void;
+
+    /**
+     * 更新 ICollider 实例的边界信息，基于子弹和检测区域的 MovieClip 实例
+     * 
+     * @param bullet 子弹 MovieClip 实例
+     * @param detectionArea 子弹的检测区域 MovieClip 实例
+     */
+    function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void;
+
+    /**
+     * 更新 ICollider 实例的边界信息，基于单位区域的 MovieClip 实例
+     * 
+     * @param unit 包含 area 属性的单位 MovieClip 实例
+     */
+    function updateFromUnitArea(unit:MovieClip):Void;
 }

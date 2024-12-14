@@ -173,4 +173,46 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         var coords:Object = getUnitAreaCoordinates(unit);
         return new AABBCollider(coords.left, coords.right, coords.top, coords.bottom);
     }
+
+    // 新增的更新方法区域
+
+    /**
+     * 更新 AABBCollider 实例的边界信息，基于透明子弹对象
+     * 
+     * @param bullet 透明子弹对象
+     */
+    public function updateFromTransparentBullet(bullet:Object):Void {
+        var coords:Object = getTransparentBulletCoordinates(bullet);
+        this.left = coords.left;
+        this.right = coords.right;
+        this.top = coords.top;
+        this.bottom = coords.bottom;
+    }
+
+    /**
+     * 更新 AABBCollider 实例的边界信息，基于子弹和检测区域的 MovieClip 实例
+     * 
+     * @param bullet 子弹 MovieClip 实例
+     * @param detectionArea 子弹的检测区域 MovieClip 实例
+     */
+    public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
+        var coords:Object = getBulletCoordinates(bullet, detectionArea);
+        this.left = coords.left;
+        this.right = coords.right;
+        this.top = coords.top;
+        this.bottom = coords.bottom;
+    }
+
+    /**
+     * 更新 AABBCollider 实例的边界信息，基于单位区域的 MovieClip 实例
+     * 
+     * @param unit 包含 area 属性的单位 MovieClip 实例
+     */
+    public function updateFromUnitArea(unit:MovieClip):Void {
+        var coords:Object = getUnitAreaCoordinates(unit);
+        this.left = coords.left;
+        this.right = coords.right;
+        this.top = coords.top;
+        this.bottom = coords.bottom;
+    }
 }
