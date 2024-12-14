@@ -16,7 +16,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.CollisionResult {
      */
     public function CollisionResult(isColliding:Boolean) {
         this.isColliding = isColliding;
-        this.additionalInfo = {}; // 初始化为空对象，避免 null 检查
+        // this.additionalInfo = {}; // 初始化为空对象，避免 null 检查
     }
 
     /**
