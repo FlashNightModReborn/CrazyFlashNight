@@ -61,21 +61,42 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBCollider e
         return result;
     }
 
-    // 不需要覆写 getAABB，因为父类 AABBCollider 已经实现了 ICollider 接口的 getAABB 方法。
+    // 不需要覆写 剩余接口方法，因为父类 AABBCollider 已经实现了 ICollider 接口的 对应方法。
 
-    // 重用父类的辅助方法获取坐标，再使用 CoverageAABBCollider 的构造函数
+    /**
+     * 从透明子弹实例化 CoverageAABBCollider
+     * 
+     * @param bullet 透明子弹对象
+     * @return CoverageAABBCollider 实例
+     */
     public static function fromTransparentBullet(bullet:Object):CoverageAABBCollider {
-        var coords:Object = AABBCollider.getTransparentBulletCoordinates(bullet);
-        return new CoverageAABBCollider(coords.left, coords.right, coords.top, coords.bottom);
+        var collider:CoverageAABBCollider = new CoverageAABBCollider(null);
+        collider.updateFromTransparentBullet(bullet);
+        return collider;
     }
 
+    /**
+     * 从子弹和检测区域实例化 CoverageAABBCollider
+     * 
+     * @param bullet 子弹 MovieClip 实例
+     * @param detectionArea 子弹的检测区域 MovieClip 实例
+     * @return CoverageAABBCollider 实例
+     */
     public static function fromBullet(bullet:MovieClip, detectionArea:MovieClip):CoverageAABBCollider {
-        var coords:Object = AABBCollider.getBulletCoordinates(bullet, detectionArea);
-        return new CoverageAABBCollider(coords.left, coords.right, coords.top, coords.bottom);
+        var collider:CoverageAABBCollider = new CoverageAABBCollider(null);
+        collider.updateFromBullet(bullet, detectionArea);
+        return collider;
     }
 
+    /**
+     * 从单位区域实例化 CoverageAABBCollider
+     * 
+     * @param unit 包含 area 属性的单位 MovieClip 实例
+     * @return CoverageAABBCollider 实例
+     */
     public static function fromUnitArea(unit:MovieClip):CoverageAABBCollider {
-        var coords:Object = AABBCollider.getUnitAreaCoordinates(unit);
-        return new CoverageAABBCollider(coords.left, coords.right, coords.top, coords.bottom);
+        var collider:CoverageAABBCollider = new CoverageAABBCollider(null);
+        collider.updateFromUnitArea(unit);
+        return collider;
     }
 }

@@ -147,8 +147,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @return AABBCollider 实例
      */
     public static function fromTransparentBullet(bullet:Object):AABBCollider {
-        var coords:Object = getTransparentBulletCoordinates(bullet);
-        return new AABBCollider(coords.left, coords.right, coords.top, coords.bottom);
+        var collider:AABBCollider = new AABBCollider(null);
+        collider.updateFromTransparentBullet(bullet);
+        return collider;
     }
 
     /**
@@ -159,8 +160,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @return AABBCollider 实例
      */
     public static function fromBullet(bullet:MovieClip, detectionArea:MovieClip):AABBCollider {
-        var coords:Object = getBulletCoordinates(bullet, detectionArea);
-        return new AABBCollider(coords.left, coords.right, coords.top, coords.bottom);
+        var collider:AABBCollider = new AABBCollider(null);
+        collider.updateFromBullet(bullet, detectionArea);
+        return collider;
     }
 
     /**
@@ -170,8 +172,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @return AABBCollider 实例
      */
     public static function fromUnitArea(unit:MovieClip):AABBCollider {
-        var coords:Object = getUnitAreaCoordinates(unit);
-        return new AABBCollider(coords.left, coords.right, coords.top, coords.bottom);
+        var collider:AABBCollider = new AABBCollider(null);
+        collider.updateFromUnitArea(unit);
+        return collider;
     }
 
     // 新增的更新方法区域
