@@ -1,0 +1,33 @@
+﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.sara.util.*;
+
+class org.flashNight.arki.bullet.BulletComponent.Collider.ColliderFactoryRegistry {
+    private static var factories:Object = {};
+    
+    public static function registerFactory(type:String, factory:IColliderFactory):Void {
+        factories[type] = factory;
+    }
+
+    public static function getFactory(type:String):IColliderFactory {
+        return factories[type];
+    }
+
+    /**
+        * 初始化所有碰撞器工厂
+        * 在应用启动时调用此方法，以注册所有可用的碰撞器工厂
+        */
+    public static function init():Void {
+        // 实例化并注册 AABBColliderFactory
+        var aabbFactory:IColliderFactory = new AABBColliderFactory();
+        ColliderFactoryRegistry.registerFactory("AABB", aabbFactory);
+
+        // 实例化并注册 CoverageAABBColliderFactory
+        var coverageAabbFactory:IColliderFactory = new CoverageAABBColliderFactory();
+        ColliderFactoryRegistry.registerFactory("CoverageAABB", coverageAabbFactory);
+
+        // 将来添加新的碰撞器工厂时，只需在此处实例化并注册
+        // 例如：
+        // var rayFactory:IColliderFactory = new RayColliderFactory();
+        // ColliderFactoryRegistry.registerFactory("Ray", rayFactory);
+    }
+}
