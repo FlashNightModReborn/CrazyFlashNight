@@ -18,11 +18,11 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.ColliderFactoryRegistr
         */
     public static function init():Void {
         // 实例化并注册 AABBColliderFactory
-        var aabbFactory:IColliderFactory = new AABBColliderFactory();
+        var aabbFactory:IColliderFactory = new AABBColliderFactory(30);
         ColliderFactoryRegistry.registerFactory("AABB", aabbFactory);
 
         // 实例化并注册 CoverageAABBColliderFactory
-        var coverageAabbFactory:IColliderFactory = new CoverageAABBColliderFactory();
+        var coverageAabbFactory:IColliderFactory = new CoverageAABBColliderFactory(30);
         ColliderFactoryRegistry.registerFactory("CoverageAABB", coverageAabbFactory);
 
         // 将来添加新的碰撞器工厂时，只需在此处实例化并注册

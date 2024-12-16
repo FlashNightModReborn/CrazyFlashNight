@@ -228,12 +228,28 @@ _root.设置毒属性 = function(Obj, 子弹实例, 发射对象){
     }
 }
 
-_root.指定生命周期函数 = function(子弹实例){
-    if(子弹实例.透明检测){
-        子弹实例.子弹生命周期 = _root.子弹生命周期;
-        子弹实例.子弹生命周期();
+_root.指定生命周期函数 = function(bulletInstance){
+
+    var detectionArea:MovieClip;
+    var areaAABB:ICollider;
+    var bullet_rotation:Number = bulletInstance._rotation; // 本地化避免多次访问造成getter开销
+    var isRotated:Boolean = (bullet_rotation != 0 && bullet_rotation != 180);
+    var isPointSet:Boolean = bulletInstance.联弹检测 && isRotated;
+    var isAxisAlignedChain = bulletInstance.联弹检测 && !isRotated;
+
+    if (bulletInstance.透明检测 && !bulletInstance.子弹区域area) {
+        areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromTransparentBullet(bulletInstance) : AABBCollider.fromTransparentBullet(bulletInstance);
     } else {
-        子弹实例.onEnterFrame = _root.子弹生命周期;
+        detectionArea = bulletInstance.子弹区域area || bulletInstance.area;
+        areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromBullet(bulletInstance, detectionArea) : AABBCollider.fromBullet(bulletInstance, detectionArea);
+    }
+
+    bulletInstance.aabbCollider = areaAABB;
+    if(bulletInstance.透明检测)
+    {
+        _root.子弹生命周期.call(bulletInstance);
+    } else {
+        bulletInstance.onEnterFrame = _root.子弹生命周期;
     }
 }
 
