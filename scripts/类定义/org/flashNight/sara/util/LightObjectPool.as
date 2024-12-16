@@ -2,7 +2,6 @@
  * LightObjectPool
  * 
  * 一个极简化、轻量级的对象池类，适用于需要高性能对象重用的场景。
- * 通过构造函数指定对象的创建函数，提供获取和释放对象的基本功能。
  */
 class org.flashNight.sara.util.LightObjectPool {
     private var pool:Array;           // 存储可重用对象的数组
@@ -27,20 +26,9 @@ class org.flashNight.sara.util.LightObjectPool {
      * @return 对象实例
      */
     public function getObject():Object {
-        var obj:Object;
-
-        // 如果池中有对象可用
-        if (this.topIndex > 0) {
-            this.topIndex--;
-            obj = this.pool[this.topIndex];
-            this.pool[this.topIndex] = undefined;
-        } else {
-            // 池为空，创建新对象
-            obj = this.createFunc();
-        }
-
-        return obj;
+        return (this.topIndex > 0) ? this.pool[--this.topIndex] : this.createFunc();
     }
+
 
     /**
      * 将对象释放回对象池中
@@ -51,18 +39,14 @@ class org.flashNight.sara.util.LightObjectPool {
         if (obj == undefined) return;
 
         // 将对象放回池中
-        this.pool[this.topIndex] = obj;
-        this.topIndex++;
+        this.pool[this.topIndex++] = obj;
     }
 
     /**
      * 清空对象池，释放所有对象
      */
     public function clearPool():Void {
-        for (var i:Number = 0; i < this.topIndex; i++) {
-            this.pool[i] = undefined;
-        }
-        this.pool = [];
+        this.pool.length = 0;
         this.topIndex = 0;
     }
 

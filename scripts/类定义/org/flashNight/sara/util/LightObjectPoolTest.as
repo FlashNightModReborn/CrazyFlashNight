@@ -36,6 +36,9 @@ class org.flashNight.sara.util.LightObjectPoolTest {
         testBasicFunctionality();
         setup();  // Reinitialize the object pool
         testClearPool();
+        setup();  // Reinitialize the object pool before performance tests
+        testPerformance();
+        testPracticalPerformance();
     }
 
     /**
@@ -122,6 +125,133 @@ class org.flashNight.sara.util.LightObjectPoolTest {
 
         trace("Clear Pool Tests Completed.");
     }
+
+    /**
+     * Test the performance of LightObjectPool
+     */
+    private function testPerformance():Void {
+        trace("Starting Performance Tests...");
+
+        var iterations:Number = 10000; // Number of get and release operations
+        var startTime:Number;
+        var endTime:Number;
+        var duration:Number;
+
+        // Measure getObject and releaseObject performance
+        try {
+            startTime = getTimer();
+            for (var i:Number = 0; i < iterations; i++) {
+                var obj:Object = pool.getObject();
+                // Optionally perform some operations on the object
+                obj.foo = "baz";
+                pool.releaseObject(obj);
+            }
+            endTime = getTimer();
+            duration = endTime - startTime;
+            trace("Performed " + iterations + " getObject and releaseObject operations in " + duration + " ms");
+
+            // Simple performance assertion (example: should be less than 1000ms)
+            // Note: Thresholds may need adjustment based on actual performance
+            var threshold:Number = 100; // in milliseconds
+            assert(duration < threshold, "Performance: " + iterations + " getObject/releaseObject operations < " + threshold + " ms");
+        } catch (e) {
+            fail("Performance: getObject/releaseObject operations", e.message);
+        }
+
+        // Additional performance test: Continuous get and release without holding references
+        try {
+            startTime = getTimer();
+            for (var j:Number = 0; j < iterations; j++) {
+                pool.releaseObject(pool.getObject());
+            }
+            endTime = getTimer();
+            duration = endTime - startTime;
+            trace("Performed " + iterations + " continuous getObject and releaseObject operations in " + duration + " ms");
+
+            // Simple performance assertion (example: should be less than 800ms)
+            var threshold2:Number = 100; // in milliseconds
+            assert(duration < threshold2, "Performance: " + iterations + " continuous getObject/releaseObject operations < " + threshold2 + " ms");
+        } catch (e) {
+            fail("Performance: continuous getObject/releaseObject operations", e.message);
+        }
+
+        trace("Performance Tests Completed.");
+    }
+
+    /**
+     * Test the performance of LightObjectPool in a practical scenario
+     */
+    private function testPracticalPerformance():Void {
+        trace("Starting Practical Performance Tests...");
+
+        var iterations:Number = 10000; // Number of operations
+        var reuseThreshold:Number = 70; // Percentage threshold for reusing objects
+        var releaseThreshold:Number = 50; // Percentage threshold for releasing objects
+        var operations:Array = []; // To simulate a mixed workload
+        var poolSize:Number = 0;
+
+        // Generate operations based on thresholds
+        for (var i:Number = 0; i < iterations; i++) {
+            if (i % 100 < reuseThreshold) {
+                operations.push("get");
+            } else if (i % 100 < releaseThreshold + reuseThreshold) {
+                operations.push("release");
+            } else {
+                operations.push("mixed");
+            }
+        }
+
+        // Initialize test variables
+        var startTime:Number;
+        var endTime:Number;
+        var duration:Number;
+
+        // Perform mixed operations
+        try {
+            startTime = getTimer();
+            for (var j:Number = 0; j < iterations; j++) {
+                var op:String = operations[j];
+                if (op == "get") {
+                    // Get an object from the pool and optionally modify it
+                    var obj:Object = pool.getObject();
+                    obj.foo = "baz";
+                    poolSize++;
+                } else if (op == "release") {
+                    // Release an object back to the pool if available
+                    if (poolSize > 0) {
+                        var releaseObj:Object = pool.getObject();
+                        pool.releaseObject(releaseObj);
+                        poolSize--;
+                    }
+                } else if (op == "mixed") {
+                    // Perform both get and release
+                    if (poolSize > 0) {
+                        var mixedObj:Object = pool.getObject();
+                        mixedObj.foo = "baz";
+                        pool.releaseObject(mixedObj);
+                    } else {
+                        var newObj:Object = pool.getObject();
+                        newObj.foo = "baz";
+                        pool.releaseObject(newObj);
+                    }
+                }
+            }
+            endTime = getTimer();
+            duration = endTime - startTime;
+
+            trace("Performed " + iterations + " mixed operations in " + duration + " ms");
+
+            // Simple performance assertion (example: should be less than 150ms)
+            var threshold:Number = 150; // in milliseconds
+            assert(duration < threshold, "Performance: " + iterations + " mixed operations < " + threshold + " ms");
+        } catch (e) {
+            fail("Performance: mixed operations", e.message);
+        }
+
+        trace("Practical Performance Tests Completed.");
+    }
+
+
 
     /**
      * Custom assertion method
