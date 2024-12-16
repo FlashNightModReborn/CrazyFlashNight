@@ -15,19 +15,20 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBColliderFactory ex
     }
 
     public function createFromTransparentBullet(bullet:Object):ICollider {
-        var collider:AABBCollider = AABBCollider(this.getObject());
+        var collider = this.getObject();
+        collider.
         collider.updateFromTransparentBullet(bullet);
         return collider;
     }
 
     public function createFromBullet(bullet:MovieClip, detectionArea:MovieClip):ICollider {
-        var collider:AABBCollider = AABBCollider(this.getObject());
+        var collider = this.getObject();
         collider.updateFromBullet(bullet, detectionArea);
         return collider;
     }
 
     public function createFromUnitArea(unit:MovieClip):ICollider {
-        var collider:AABBCollider = AABBCollider(this.getObject());
+        var collider = this.getObject();
         collider.updateFromUnitArea(unit);
         return collider;
     }

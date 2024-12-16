@@ -3,6 +3,9 @@ import org.flashNight.sara.util.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Collider.ColliderFactoryRegistry {
     private static var factories:Object = {};
+
+    public static var AABBFactory:String = "AABB";
+    public static var CoverageAABBFactory:String = "CoverageAABB";
     
     public static function registerFactory(type:String, factory:IColliderFactory):Void {
         factories[type] = factory;
@@ -19,11 +22,11 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.ColliderFactoryRegistr
     public static function init():Void {
         // 实例化并注册 AABBColliderFactory
         var aabbFactory:IColliderFactory = new AABBColliderFactory(30);
-        ColliderFactoryRegistry.registerFactory("AABB", aabbFactory);
+        ColliderFactoryRegistry.registerFactory(ColliderFactoryRegistry.AABBFactory, aabbFactory);
 
         // 实例化并注册 CoverageAABBColliderFactory
         var coverageAabbFactory:IColliderFactory = new CoverageAABBColliderFactory(30);
-        ColliderFactoryRegistry.registerFactory("CoverageAABB", coverageAabbFactory);
+        ColliderFactoryRegistry.registerFactory(ColliderFactoryRegistry.CoverageAABBFactory, coverageAabbFactory);
 
         // 将来添加新的碰撞器工厂时，只需在此处实例化并注册
         // 例如：

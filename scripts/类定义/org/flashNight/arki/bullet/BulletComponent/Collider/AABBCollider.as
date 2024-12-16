@@ -11,7 +11,8 @@ import org.flashNight.sara.util.*;
  */
 class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends AABB implements ICollider {
 
-    public var _factory:IColliderFactory;
+    public var _factory:AbstractColliderFactory;
+    public var _update:Function;
     
     /**
      * 构造函数，初始化 AABB 碰撞器的边界
@@ -143,45 +144,6 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
     // 实例化方法区域
 
     /**
-     * 从透明子弹实例化 AABBCollider
-     * 
-     * @param bullet 透明子弹对象
-     * @return AABBCollider 实例
-     */
-    public static function fromTransparentBullet(bullet:Object):AABBCollider {
-        var collider:AABBCollider = new AABBCollider(null);
-        collider.updateFromTransparentBullet(bullet);
-        return collider;
-    }
-
-    /**
-     * 从子弹和检测区域实例化 AABBCollider
-     * 
-     * @param bullet 子弹 MovieClip 实例
-     * @param detectionArea 子弹的检测区域 MovieClip 实例
-     * @return AABBCollider 实例
-     */
-    public static function fromBullet(bullet:MovieClip, detectionArea:MovieClip):AABBCollider {
-        var collider:AABBCollider = new AABBCollider(null);
-        collider.updateFromBullet(bullet, detectionArea);
-        return collider;
-    }
-
-    /**
-     * 从单位区域实例化 AABBCollider
-     * 
-     * @param unit 包含 area 属性的单位 MovieClip 实例
-     * @return AABBCollider 实例
-     */
-    public static function fromUnitArea(unit:MovieClip):AABBCollider {
-        var collider:AABBCollider = new AABBCollider(null);
-        collider.updateFromUnitArea(unit);
-        return collider;
-    }
-
-    // 新增的更新方法区域
-
-    /**
      * 更新 AABBCollider 实例的边界信息，基于透明子弹对象
      * 
      * @param bullet 透明子弹对象
@@ -221,11 +183,11 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         this.bottom = coords.bottom;
     }
 
-    public function setFactory(factory:IColliderFactory):Void {
+    public function setFactory(factory:AbstractColliderFactory):Void {
         this._factory = factory;
     }
 
-    public function getFactory():IColliderFactory {
+    public function getFactory():AbstractColliderFactory {
         return this._factory;
     }
 }

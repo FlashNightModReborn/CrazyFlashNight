@@ -25,7 +25,7 @@ class org.flashNight.sara.util.LightObjectPool {
      * 
      * @return 对象实例
      */
-    public function getObject():Object {
+    public function getObject() {
         return (this.topIndex > 0) ? this.pool[--this.topIndex] : this.createFunc();
     }
 

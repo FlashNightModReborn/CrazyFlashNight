@@ -40,6 +40,6 @@ interface org.flashNight.arki.bullet.BulletComponent.Collider.ICollider {
      */
     function updateFromUnitArea(unit:MovieClip):Void;
 
-    function setFactory(factory:IColliderFactory):Void;  // 设置工厂引用
-    function getFactory():IColliderFactory;             // 获取工厂引用
+    function setFactory(factory:AbstractColliderFactory):Void;  // 设置工厂引用
+    function getFactory():AbstractColliderFactory;             // 获取工厂引用
 }

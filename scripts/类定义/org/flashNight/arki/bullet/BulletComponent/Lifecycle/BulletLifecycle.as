@@ -48,13 +48,17 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
     public function bindLifecycle(target:MovieClip):Void {
         var areaAABB:ICollider;
         var detectionArea:MovieClip;
+        var bulletRotation:Number = target._rotation; // 本地化避免多次访问造成getter开销
+        var isRotated:Boolean = (bulletRotation != 0 && bulletRotation != 180);
+        var isAxisAlignedChain = target.联弹检测 && !isRotated;
+        var factory:IColliderFactory = ColliderFactoryRegistry.getFactory(isAxisAlignedChain ? ColliderFactoryRegistry.CoverageAABBFactory : ColliderFactoryRegistry.AABBFactory);
 
         // 判断是否透明检测，设置 AABB 碰撞区域
         if (target.透明检测 && !target.子弹区域area) {
-            areaAABB = target.联弹检测 ? CoverageAABBCollider.fromTransparentBullet(target) : AABBCollider.fromTransparentBullet(target);
+            areaAABB = factory.createFromTransparentBullet(target);
         } else {
             detectionArea = target.子弹区域area || target.area;
-            areaAABB = target.联弹检测 ? CoverageAABBCollider.fromBullet(target, detectionArea) : AABBCollider.fromBullet(target, detectionArea);
+            areaAABB = factory.createFromBullet(target, detectionArea);
         }
 
         // 绑定 AABB 碰撞区域到子弹实例

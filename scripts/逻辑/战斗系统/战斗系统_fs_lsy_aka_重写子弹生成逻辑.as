@@ -431,17 +431,19 @@ _root.子弹生命周期 = function()
     }
 
     var detectionArea:MovieClip;
-    var areaAABB:Object;
+    var areaAABB:ICollider = this.aabbCollider;
     var bullet_rotation:Number = this._rotation; // 本地化避免多次访问造成getter开销
     var isRotated:Boolean = (bullet_rotation != 0 && bullet_rotation != 180);
     var isPointSet:Boolean = this.联弹检测 && isRotated;
     var isAxisAlignedChain = this.联弹检测 && !isRotated;
 
     if (this.透明检测 && !this.子弹区域area) {
-        areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromTransparentBullet(this) : AABBCollider.fromTransparentBullet(this);
+        // areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromTransparentBullet(this) : AABBCollider.fromTransparentBullet(this);
+        areaAABB.updateFromTransparentBullet(this);
     } else {
         detectionArea = this.子弹区域area || this.area;
-        areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromBullet(this, detectionArea) : AABBCollider.fromBullet(this, detectionArea);
+        // areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromBullet(this, detectionArea) : AABBCollider.fromBullet(this, detectionArea);
+        areaAABB.updateFromBullet(this, detectionArea);
     }
 
 
@@ -488,7 +490,10 @@ _root.子弹生命周期 = function()
             var 覆盖率 = 1;
             var 碰撞中心;
 
-            var result:CollisionResult = areaAABB.checkCollision(AABBCollider.fromUnitArea(this.命中对象), Z轴坐标差);
+            var unitArea:AABBCollider = new AABBCollider();
+            unitArea.updateFromUnitArea(this.命中对象);
+
+            var result:CollisionResult = areaAABB.checkCollision(unitArea, Z轴坐标差);
             if (result.isColliding) {
                 if (this.联弹检测) {
                     if(isPointSet){
@@ -669,9 +674,8 @@ _root.子弹生命周期 = function()
 
     // 检查是否需要销毁
     if (this.shouldDestroy(this)) {
-        var destoryCollider:ICollider = this.collider;
-        destoryCollider.getFactory().releaseCollider(destoryCollider);
-        
+        areaAABB.getFactory().releaseCollider(areaAABB);
+
         if (this.击中地图) {
             this.霰弹值 = 1;
             _root.效果(this.击中地图效果, this._x, this._y);
