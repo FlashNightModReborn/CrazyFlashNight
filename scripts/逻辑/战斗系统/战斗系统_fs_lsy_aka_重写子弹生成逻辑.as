@@ -435,18 +435,13 @@ _root.子弹生命周期 = function()
     var bullet_rotation:Number = this._rotation; // 本地化避免多次访问造成getter开销
     var isRotated:Boolean = (bullet_rotation != 0 && bullet_rotation != 180);
     var isPointSet:Boolean = this.联弹检测 && isRotated;
-    var isAxisAlignedChain = this.联弹检测 && !isRotated;
 
     if (this.透明检测 && !this.子弹区域area) {
-        // areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromTransparentBullet(this) : AABBCollider.fromTransparentBullet(this);
         areaAABB.updateFromTransparentBullet(this);
     } else {
         detectionArea = this.子弹区域area || this.area;
-        // areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromBullet(this, detectionArea) : AABBCollider.fromBullet(this, detectionArea);
         areaAABB.updateFromBullet(this, detectionArea);
     }
-
-
     
     var area面积, 击中矩形, 击中点集, area点集边向量;
     if(isPointSet)
