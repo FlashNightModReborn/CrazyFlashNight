@@ -1,6 +1,7 @@
 ﻿// 文件路径：org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle.as
-
+import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.ILifecycle;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle implements ILifecycle {
     private var 射程阈值:Number;
@@ -38,6 +39,33 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
         }
 
         return isOutOfRange || isCollidedWithMap;
+    }
+
+    /**
+     * 为目标对象绑定生命周期逻辑。
+     * @param target:MovieClip 要绑定生命周期的目标对象。
+     */
+    public function bindLifecycle(target:MovieClip):Void {
+        var areaAABB:ICollider;
+        var detectionArea:MovieClip;
+
+        // 判断是否透明检测，设置 AABB 碰撞区域
+        if (target.透明检测 && !target.子弹区域area) {
+            areaAABB = target.联弹检测 ? CoverageAABBCollider.fromTransparentBullet(target) : AABBCollider.fromTransparentBullet(target);
+        } else {
+            detectionArea = target.子弹区域area || target.area;
+            areaAABB = target.联弹检测 ? CoverageAABBCollider.fromBullet(target, detectionArea) : AABBCollider.fromBullet(target, detectionArea);
+        }
+
+        // 绑定 AABB 碰撞区域到子弹实例
+        target.aabbCollider = areaAABB;
+
+        // 判断是否需要直接调用生命周期函数或绑定 onEnterFrame
+        if (target.透明检测) {
+            _root.子弹生命周期.call(target);
+        } else {
+            target.onEnterFrame = _root.子弹生命周期;
+        }
     }
 
     /**

@@ -7,4 +7,10 @@ interface org.flashNight.arki.bullet.BulletComponent.Lifecycle.ILifecycle {
      * @return Boolean 是否需要销毁。
      */
     function shouldDestroy(target:MovieClip):Boolean;
+
+    /**
+     * 为目标对象绑定生命周期逻辑。
+     * @param target:MovieClip 要绑定生命周期的目标对象。
+     */
+    function bindLifecycle(target:MovieClip):Void;
 }

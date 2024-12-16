@@ -194,13 +194,12 @@ _root.创建子弹实例 = function(Obj, 发射对象, 射击角度){
     子弹实例.霰弹值 = Obj.联弹检测 ? Obj.霰弹值 : 1;
 
     设置毒属性(Obj, 子弹实例, 发射对象);
-    指定生命周期函数(子弹实例);
+    // 创建生命周期逻辑实例
+	var lifecycle:BulletLifecycle = new BulletLifecycle(900); // 当前射程阈值为900
+    lifecycle.bindLifecycle(子弹实例);
 
 	// 创建子弹移动逻辑实例
 	var movement:LinearBulletMovement = LinearBulletMovement.create(子弹实例.速度X, 子弹实例.速度Y, 子弹实例.ZY比例);
-
-	// 创建生命周期逻辑实例
-	var lifecycle:BulletLifecycle = new BulletLifecycle(900); // 当前射程阈值为900
 
 	// 将 updateMovement 方法绑定到子弹实例
 	子弹实例.updateMovement = Delegate.create(movement, movement.updateMovement);
@@ -227,32 +226,6 @@ _root.设置毒属性 = function(Obj, 子弹实例, 发射对象){
         }
     }
 }
-
-_root.指定生命周期函数 = function(bulletInstance){
-
-    var detectionArea:MovieClip;
-    var areaAABB:ICollider;
-    var bullet_rotation:Number = bulletInstance._rotation; // 本地化避免多次访问造成getter开销
-    var isRotated:Boolean = (bullet_rotation != 0 && bullet_rotation != 180);
-    var isPointSet:Boolean = bulletInstance.联弹检测 && isRotated;
-    var isAxisAlignedChain = bulletInstance.联弹检测 && !isRotated;
-
-    if (bulletInstance.透明检测 && !bulletInstance.子弹区域area) {
-        areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromTransparentBullet(bulletInstance) : AABBCollider.fromTransparentBullet(bulletInstance);
-    } else {
-        detectionArea = bulletInstance.子弹区域area || bulletInstance.area;
-        areaAABB = isAxisAlignedChain ? CoverageAABBCollider.fromBullet(bulletInstance, detectionArea) : AABBCollider.fromBullet(bulletInstance, detectionArea);
-    }
-
-    bulletInstance.aabbCollider = areaAABB;
-    if(bulletInstance.透明检测)
-    {
-        _root.子弹生命周期.call(bulletInstance);
-    } else {
-        bulletInstance.onEnterFrame = _root.子弹生命周期;
-    }
-}
-
 
 // 伤害结算函数
 _root.子弹伤害结算 = function(子弹, 发射对象, 命中对象, 覆盖率, 消耗霰弹值, 躲闪状态, 碰撞中心)
