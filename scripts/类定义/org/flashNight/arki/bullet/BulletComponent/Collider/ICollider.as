@@ -39,4 +39,7 @@ interface org.flashNight.arki.bullet.BulletComponent.Collider.ICollider {
      * @param unit 包含 area 属性的单位 MovieClip 实例
      */
     function updateFromUnitArea(unit:MovieClip):Void;
+
+    function setFactory(factory:IColliderFactory):Void;  // 设置工厂引用
+    function getFactory():IColliderFactory;             // 获取工厂引用
 }

@@ -7,6 +7,7 @@ import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
+ColliderFactoryRegistry.init();
 
 //加入新参数水平击退速度和垂直击退速度。未填写的话默认分别为10和5（和子弹区域shoot一致），最大击退速度可以调节下方常数（目前为33）。
 //额外添加了命中率,固伤,百分比伤害，血量上限击溃，防御粉碎，命中率未输入则寻找发射者的命中，固伤与百分比未输入默认为0
@@ -668,6 +669,9 @@ _root.子弹生命周期 = function()
 
     // 检查是否需要销毁
     if (this.shouldDestroy(this)) {
+        var destoryCollider:ICollider = this.collider;
+        destoryCollider.getFactory().releaseCollider(destoryCollider);
+        
         if (this.击中地图) {
             this.霰弹值 = 1;
             _root.效果(this.击中地图效果, this._x, this._y);

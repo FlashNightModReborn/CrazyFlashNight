@@ -10,6 +10,8 @@ import org.flashNight.sara.util.*;
  * 使用 Vector 类作为点和向量的数据结构，支持动态生成 AABB。
  */
 class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends AABB implements ICollider {
+
+    public var _factory:IColliderFactory;
     
     /**
      * 构造函数，初始化 AABB 碰撞器的边界
@@ -217,5 +219,13 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         this.right = coords.right;
         this.top = coords.top;
         this.bottom = coords.bottom;
+    }
+
+    public function setFactory(factory:IColliderFactory):Void {
+        this._factory = factory;
+    }
+
+    public function getFactory():IColliderFactory {
+        return this._factory;
     }
 }
