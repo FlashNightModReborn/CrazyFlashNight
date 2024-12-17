@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
+import org.flashNight.neur.Server.*;
 
 /**
  * AABBCollider 类
@@ -14,6 +15,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
 
     public var _factory:AbstractColliderFactory;
     public var _update:Function;
+    public var _currentFrame:Number;
     
     /**
      * 构造函数，初始化 AABB 碰撞器的边界
@@ -175,6 +177,10 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @param unit 包含 area 属性的单位 MovieClip 实例
      */
     public function updateFromUnitArea(unit:MovieClip):Void {
+        var frame = _root.帧计时器.当前帧数;
+        if(this._currentFrame == frame) return;
+
+        this._currentFrame = frame;
         var coords:Object = getUnitAreaCoordinates(unit);
         this.left = coords.left;
         this.right = coords.right;
