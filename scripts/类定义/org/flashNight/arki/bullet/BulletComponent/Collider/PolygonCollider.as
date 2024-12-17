@@ -31,35 +31,123 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         super();
     }
 
-    /**
-     * 检查与另一个碰撞器的碰撞
-     * 在本设计中，我们只关心 PolygonCollider 与对方 AABB 的碰撞检测。
-     * 逻辑：
-     * 1. 获取对方的 AABB。
-     * 2. 将 AABB 转换为点集（一个矩形多边形的4个顶点）。
-     * 3. 调用 _root.点集碰撞检测 来获取交集多边形。
-     * 4. 如果交集多边形点数>=3，表示碰撞发生。
-     *    - 计算交集面积与自身面积的比例作为 overlapRatio
-     *    - 计算交集多边形的质心作为 overlapCenter
-     * 5. 返回 CollisionResult。
-     * 
-     * @param other 另一个 ICollider
-     * @param zOffset Z轴偏移，用于模拟3D高度差
-     * @return CollisionResult
-     */
-    public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
-        // 获取对方的 AABB
-        cachePolygon = other.getAABB(zOffset).toPointSet().toArray();
+    // 裁剪辅助函数，用Sutherland–Hodgman算法对多边形进行裁剪
+    // clipFunc: (point:Object) => Boolean 判断点是否在剪裁区域内
+    // intersectFunc: (p1:Object, p2:Object) => Object 计算线段与剪裁边的交点
+    private function clipPolygon(polygon:Array, clipFunc:Function, intersectFunc:Function):Array {
+        var output:Array = [];
+        var len:Number = polygon.length;
+        if (len < 2) return polygon;
 
-        // 获取当前多边形点集
+        var a:Object = polygon[len - 1];
+        for (var i:Number = 0; i < len; i++) {
+            var b:Object = polygon[i];
+            var aInside:Boolean = clipFunc(a);
+            var bInside:Boolean = clipFunc(b);
+
+            if (aInside && bInside) {
+                // 两点都在内
+                output.push(b);
+            } else if (aInside && !bInside) {
+                // a在内b在外，求交点
+                var inter:Object = intersectFunc(a, b);
+                if (inter) output.push(inter);
+            } else if (!aInside && bInside) {
+                // a在外b在内，求交点+加上b
+                var inter2:Object = intersectFunc(a, b);
+                if (inter2) output.push(inter2);
+                output.push(b);
+            }
+            a = b;
+        }
+        return output;
+    }
+
+    // 针对AABB的特殊求交函数
+    private function intersectPolygonWithAABB(polygon:Array, aabb:Object):Array {
+        // 剪裁线定义与辅助函数
+        // left剪裁: 保留x >= left的点
+        var leftClip:Function = function(p:Object):Boolean { return p.x >= aabb.left; };
+        var leftIntersect:Function = function(p1:Object, p2:Object):Object {
+            var dx:Number = p2.x - p1.x;
+            var dy:Number = p2.y - p1.y;
+            if (dx == 0) return null;
+            var t:Number = (aabb.left - p1.x) / dx;
+            if (t >= 0 && t <= 1) {
+                return {x:aabb.left, y:p1.y + t * dy};
+            }
+            return null;
+        };
+
+        // right剪裁: 保留x <= right
+        var rightClip:Function = function(p:Object):Boolean { return p.x <= aabb.right; };
+        var rightIntersect:Function = function(p1:Object, p2:Object):Object {
+            var dx:Number = p2.x - p1.x;
+            var dy:Number = p2.y - p1.y;
+            if (dx == 0) return null;
+            var t:Number = (aabb.right - p1.x) / dx;
+            if (t >= 0 && t <= 1) {
+                return {x:aabb.right, y:p1.y + t * dy};
+            }
+            return null;
+        };
+
+        // top剪裁: 保留y >= top
+        var topClip:Function = function(p:Object):Boolean { return p.y >= aabb.top; };
+        var topIntersect:Function = function(p1:Object, p2:Object):Object {
+            var dx:Number = p2.x - p1.x;
+            var dy:Number = p2.y - p1.y;
+            if (dy == 0) return null;
+            var t:Number = (aabb.top - p1.y) / dy;
+            if (t >= 0 && t <= 1) {
+                return {x:p1.x + t * dx, y:aabb.top};
+            }
+            return null;
+        };
+
+        // bottom剪裁: 保留y <= bottom
+        var bottomClip:Function = function(p:Object):Boolean { return p.y <= aabb.bottom; };
+        var bottomIntersect:Function = function(p1:Object, p2:Object):Object {
+            var dx:Number = p2.x - p1.x;
+            var dy:Number = p2.y - p1.y;
+            if (dy == 0) return null;
+            var t:Number = (aabb.bottom - p1.y) / dy;
+            if (t >= 0 && t <= 1) {
+                return {x:p1.x + t * dx, y:aabb.bottom};
+            }
+            return null;
+        };
+
+        // 对polygon依次进行4次裁剪
+        var clipped:Array;
+        clipped = clipPolygon(polygon, leftClip, leftIntersect);
+        if (clipped.length < 3) return clipped;
+        clipped = clipPolygon(clipped, rightClip, rightIntersect);
+        if (clipped.length < 3) return clipped;
+        clipped = clipPolygon(clipped, topClip, topIntersect);
+        if (clipped.length < 3) return clipped;
+        clipped = clipPolygon(clipped, bottomClip, bottomIntersect);
+        return clipped;
+    }
+
+    // 在 checkCollision 中使用新的特化函数
+    public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
+        // 获取对方的AABB
+        var otherAABB:AABB = other.getAABB(zOffset);
+
+        // 当前多边形点集
         var thisPoints:Array = this.toArray();
 
-        // 调用点集碰撞检测函数
-        var intersection:Array = _root.多边形交集(thisPoints, cachePolygon);
+        // 使用特化的函数直接求 thisPoints 和 otherAABB 的交集
+        var intersection:Array = intersectPolygonWithAABB(thisPoints, {
+            left: otherAABB.left,
+            right: otherAABB.right,
+            top: otherAABB.top,
+            bottom: otherAABB.bottom
+        });
 
         if (!intersection || intersection.length < 3) {
             // 没有形成有效的交集多边形
-            _root.服务器.发布服务器消息(CollisionResult.FALSE);
             return CollisionResult.FALSE;
         }
 
