@@ -199,4 +199,18 @@ class org.flashNight.sara.util.PointSet
     //==================================================
     // 凸包相关函数结束
     //==================================================
+
+    public function toString():String {
+        var result:String = "PointSet [";
+        for (var i:Number = 0; i < points.length; i++) {
+            var point:Vector = points[i];
+            result += "(" + point.x + ", " + point.y + ")";
+            if (i < points.length - 1) {
+                result += ", ";
+            }
+        }
+        result += "]";
+        return result;
+    }
+
 }

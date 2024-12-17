@@ -48,4 +48,17 @@ class org.flashNight.arki.component.Collider.CollisionResult {
     public function addInfo(key:String, value):Void {
         this.additionalInfo[key] = value;
     }
+
+    public function toString():String
+    {
+        var str:String = "[CR]" + String(isColliding);
+
+        if(!isColliding) return str;
+
+        str += " " + String(overlapCenter) + " " + String(overlapRatio);
+
+        if(!additionalInfo) return str;
+
+        return str + " " + additionalInfo;
+    }
 }

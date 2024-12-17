@@ -2,13 +2,14 @@
 import flash.geom.Rectangle;
 import org.flashNight.naki.Sort.*;
 import org.flashNight.neur.Event.*;
+import org.flashNight.sara.util.*;
 
 //输入点与影片剪辑的引用，将点坐标从该影片剪辑转换到gameworld
 _root.pointToGameworld = function(point, loc)
 {
 	loc.localToGlobal(point);
 	_root.gameworld.globalToLocal(point);
-	return point;
+	return new Vector(point.x, point.y);
 };
 
 _root.点集至游戏世界 = function(点集, loc)
@@ -48,9 +49,9 @@ _root.影片剪辑至游戏世界点集 = function(影片剪辑:MovieClip):Array
 	var 夹角:Number = Math.atan2(向量y, 向量x);// 计算旋转角度
 	var 向量模:Number = Math.sqrt(向量x * 向量x + 向量y * 向量y);// 取向量模长
 	var 余弦值 = 向量模 * Math.cos(夹角), 正弦值 = 向量模 * Math.sin(夹角);
-	点集[0] = {x:中点x - 余弦值, y:中点y + 正弦值};// 计算0号和2号顶点的向量（旋转后）
-	点集[2] = {x:中点x + 余弦值, y:中点y - 正弦值};
 
+	点集[0] = new Vector(中点x - 余弦值, 中点y + 正弦值);// 计算0号和2号顶点的向量（旋转后）
+	点集[2] = new Vector(中点x + 余弦值, 中点y - 正弦值);
 	return 点集;
 };
 

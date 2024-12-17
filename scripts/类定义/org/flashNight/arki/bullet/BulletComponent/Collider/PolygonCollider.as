@@ -20,6 +20,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     public var _currentFrame:Number;
 
 
+    private var cachePolygon:Array;
+
+
     /**
      * 构造函数
      * 初始化为空点集，后续通过 updateFrom... 方法填充点数据
@@ -46,23 +49,17 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         // 获取对方的 AABB
-        var otherAABB:AABB = other.getAABB(zOffset);
-
-        // 将 AABB 转为多边形（矩形点集）
-        var boxPoints:Array = [
-            {x: otherAABB.left,  y: otherAABB.top},
-            {x: otherAABB.right, y: otherAABB.top},
-            {x: otherAABB.right, y: otherAABB.bottom},
-            {x: otherAABB.left,  y: otherAABB.bottom}
-        ];
+        cachePolygon = other.getAABB(zOffset).toPointSet().toArray();
 
         // 获取当前多边形点集
         var thisPoints:Array = this.toArray();
 
-        // 调用点集碰撞检测函数：_root.点集碰撞检测(多边形A点集, 多边形B点集, 边向量, Z轴差)
-        var intersection:Array = _root.点集碰撞检测(thisPoints, boxPoints, zOffset);
+        // 调用点集碰撞检测函数
+        var intersection:Array = _root.多边形交集(thisPoints, cachePolygon);
+
         if (!intersection || intersection.length < 3) {
             // 没有形成有效的交集多边形
+            _root.服务器.发布服务器消息(CollisionResult.FALSE);
             return CollisionResult.FALSE;
         }
 
@@ -138,6 +135,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
      * @param unit 包含 area 属性的单位 MovieClip
      */
     public function updateFromUnitArea(unit:MovieClip):Void {
+        var frame = _root.帧计时器.当前帧数;
+        if (this._currentFrame == frame) return;
+        this._currentFrame = frame;
         var unitRect:Object = unit.area.getRect(_root.gameworld);
         this.fromArray([
             {x: unitRect.xMin, y: unitRect.yMin},

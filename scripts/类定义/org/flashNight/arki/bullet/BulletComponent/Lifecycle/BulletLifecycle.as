@@ -52,8 +52,25 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
         var bulletRotation:Number = target._rotation; // 本地化避免多次访问造成getter开销
         var isRotated:Boolean = (bulletRotation != 0 && bulletRotation != 180);
         var isAxisAlignedChain = target.联弹检测 && !isRotated;
-        var factory:IColliderFactory = ColliderFactoryRegistry.getFactory(isAxisAlignedChain ? ColliderFactoryRegistry.CoverageAABBFactory : ColliderFactoryRegistry.AABBFactory);
+        var factory:IColliderFactory;
 
+        if(target.联弹检测)
+        {
+            if(isRotated)
+            {
+                factory = factory = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.AABBFactory);
+
+                target.polygonCollider = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.PolygonFactory).createFromBullet(target);
+            }
+            else
+            {
+                factory = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.CoverageAABBFactory);
+            }
+        }
+        else
+        {
+            factory = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.AABBFactory);
+        }
         // 判断是否透明检测，设置 AABB 碰撞区域
         if (target.透明检测 && !target.子弹区域area) {
             areaAABB = factory.createFromTransparentBullet(target);
