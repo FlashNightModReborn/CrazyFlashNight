@@ -4,7 +4,21 @@ import org.flashNight.sara.util.*;
 import org.flashNight.naki.Sort.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extends PointSet implements ICollider {
-    private var _factory:AbstractColliderFactory;
+    /**
+     * 碰撞器工厂实例，用于管理碰撞器的创建与复用。
+     */
+    public var _factory:AbstractColliderFactory;
+
+    /**
+     * 更新函数引用，用于多态表达当前使用的更新路径
+     */
+    public var _update:Function;
+
+    /**
+     * 当前帧数，避免在同一帧内重复更新边界。
+     */
+    public var _currentFrame:Number;
+
 
     /**
      * 构造函数
@@ -46,8 +60,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         var thisPoints:Array = this.toArray();
 
         // 调用点集碰撞检测函数：_root.点集碰撞检测(多边形A点集, 多边形B点集, 边向量, Z轴差)
-        // 此处边向量数组可传空数组，因为内部计算可能不依赖此值。
-        var intersection:Array = _root.点集碰撞检测(thisPoints, boxPoints, [], zOffset);
+        var intersection:Array = _root.点集碰撞检测(thisPoints, boxPoints, zOffset);
         if (!intersection || intersection.length < 3) {
             // 没有形成有效的交集多边形
             return CollisionResult.FALSE;

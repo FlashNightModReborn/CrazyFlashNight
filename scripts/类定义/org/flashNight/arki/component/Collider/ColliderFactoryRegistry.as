@@ -7,6 +7,7 @@ class org.flashNight.arki.component.Collider.ColliderFactoryRegistry {
 
     public static var AABBFactory:String = "AABB";
     public static var CoverageAABBFactory:String = "CoverageAABB";
+    public static var PolygonFactory:String = "Polygon";
     
     public static function registerFactory(type:String, factory:IColliderFactory):Void {
         factories[type] = factory;
@@ -28,6 +29,9 @@ class org.flashNight.arki.component.Collider.ColliderFactoryRegistry {
         // 实例化并注册 CoverageAABBColliderFactory
         var coverageAabbFactory:IColliderFactory = new CoverageAABBColliderFactory(30);
         ColliderFactoryRegistry.registerFactory(ColliderFactoryRegistry.CoverageAABBFactory, coverageAabbFactory);
+
+        var polygonFactory:IColliderFactory = new PolygonColliderFactory(15);
+        ColliderFactoryRegistry.registerFactory(ColliderFactoryRegistry.PolygonFactory, polygonFactory);
 
         // 将来添加新的碰撞器工厂时，只需在此处实例化并注册
         // 例如：

@@ -444,12 +444,11 @@ _root.子弹生命周期 = function()
         areaAABB.updateFromBullet(this, detectionArea);
     }
     
-    var area面积, 击中矩形, 击中点集, area点集边向量;
+    var area面积, 击中矩形, 击中点集;
     if(isPointSet)
     {
         var area点集 = _root.影片剪辑至游戏世界点集(detectionArea);
         area面积 = _root.点集面积系数(area点集);
-        area点集边向量 = [];
         var 击中点集;
     }
     else
@@ -493,7 +492,7 @@ _root.子弹生命周期 = function()
             if (result.isColliding) {
                 if (this.联弹检测) {
                     if(isPointSet){
-                        击中点集 = _root.点集碰撞检测(area点集, this.命中对象.area, area点集边向量,Z轴坐标差);
+                        击中点集 = _root.点集碰撞检测(area点集, this.命中对象.area ,Z轴坐标差);
                         if(击中点集.length < 3)
                         {
                             continue;
