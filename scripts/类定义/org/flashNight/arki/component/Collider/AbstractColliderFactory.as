@@ -1,7 +1,8 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 
-class org.flashNight.arki.bullet.BulletComponent.Collider.AbstractColliderFactory extends LightObjectPool implements IColliderFactory  {
+class org.flashNight.arki.component.Collider.AbstractColliderFactory extends LightObjectPool implements IColliderFactory  {
 
     private var factoryReference:AbstractColliderFactory; // 保存工厂自身引用
 

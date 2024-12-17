@@ -2,6 +2,7 @@
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.ILifecycle;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle implements ILifecycle {
     private var 射程阈值:Number;

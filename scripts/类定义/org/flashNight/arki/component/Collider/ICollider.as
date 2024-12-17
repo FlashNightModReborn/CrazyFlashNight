@@ -1,7 +1,7 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+﻿import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 
-interface org.flashNight.arki.bullet.BulletComponent.Collider.ICollider {
+interface org.flashNight.arki.component.Collider.ICollider {
     /**
      * 检查与另一个碰撞器是否发生碰撞
      * 

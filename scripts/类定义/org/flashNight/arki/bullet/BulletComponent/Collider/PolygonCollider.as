@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider implements ICollider {

@@ -4,6 +4,7 @@ import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
 
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;

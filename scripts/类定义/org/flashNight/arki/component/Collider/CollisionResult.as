@@ -1,6 +1,7 @@
 ﻿import org.flashNight.sara.util.*;
+import org.flashNight.arki.component.Collider.*;
 
-class org.flashNight.arki.bullet.BulletComponent.Collider.CollisionResult {
+class org.flashNight.arki.component.Collider.CollisionResult {
     public var isColliding:Boolean;       // 碰撞是否发生（必要字段）
     public var overlapCenter:Vector;      // 碰撞中心点（可选字段）
     public var overlapRatio:Number;       // 重叠比率（可选字段）
