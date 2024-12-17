@@ -79,29 +79,16 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * 计算并返回子弹在指定检测区域内的 AABB 坐标信息。
      * 
      * @param bullet 子弹 MovieClip 实例
-     * @param detectionArea 子弹的检测区域 MovieClip 实例
      * @return 包含边界坐标的 Object 对象
      */
     private static function getBulletCoordinates(bullet:MovieClip, detectionArea:MovieClip):Object {
-        var bullet_x:Number = bullet._x;
-        var bullet_y:Number = bullet._y;
-
-        // 生成唯一哈希键，用于缓存计算结果
-        var area_key:Number = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y);
-        if (!bullet[area_key]) {
-            var areaRect:Object = detectionArea.getRect(_root.gameworld);
-            bullet[area_key] = {area: new AABB(areaRect.xMin, areaRect.xMax, areaRect.yMin, areaRect.yMax), x: bullet_x, y: bullet_y};
-        }
-        var cache:Object = bullet[area_key];
-        var cache_area:AABB = cache.area;
-        var x_offset:Number = bullet_x - cache.x;
-        var y_offset:Number = bullet_y - cache.y;
+        var areaRect:Object = detectionArea.getRect(_root.gameworld);
 
         return {
-            left: cache_area.left + x_offset,
-            right: cache_area.right + x_offset,
-            top: cache_area.top + y_offset,
-            bottom: cache_area.bottom + y_offset
+            left: areaRect.xMin,
+            right: areaRect.xMax,
+            top: areaRect.yMin,
+            bottom: areaRect.yMax
         };
     }
 
@@ -164,11 +151,22 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @param detectionArea 子弹的检测区域 MovieClip 实例
      */
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
-        var coords:Object = getBulletCoordinates(bullet, detectionArea);
-        this.left = coords.left;
-        this.right = coords.right;
-        this.top = coords.top;
-        this.bottom = coords.bottom;
+        var bullet_x:Number = bullet._x;
+        var bullet_y:Number = bullet._y;
+
+        // 生成唯一哈希键，用于缓存计算结果
+        var area_key:Number = (detectionArea._x << 16) | (detectionArea._height << 8) | (detectionArea._width ^ detectionArea._y);
+        if (!bullet[area_key]) bullet[area_key] = {area: getBulletCoordinates(bullet, detectionArea), x: bullet_x, y: bullet_y};
+
+        var cache:Object = bullet[area_key];
+        var cache_area:AABB = cache.area;
+        var x_offset:Number = bullet_x - cache.x;
+        var y_offset:Number = bullet_y - cache.y;
+
+        this.left = cache_area.left + x_offset;
+        this.right = cache_area.right + x_offset;
+        this.top = cache_area.top + y_offset;
+        this.bottom = cache_area.bottom + y_offset;
     }
 
     /**
