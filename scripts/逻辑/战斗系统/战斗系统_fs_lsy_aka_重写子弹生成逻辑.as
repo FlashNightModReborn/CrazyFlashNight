@@ -486,7 +486,7 @@ _root.子弹生命周期 = function()
             var 覆盖率 = 1;
             var 碰撞中心;
 
-            var unitArea:AABBCollider = new AABBCollider();
+            var unitArea:AABBCollider = this.命中对象.aabbCollider;
             unitArea.updateFromUnitArea(this.命中对象);
 
             var result:CollisionResult = areaAABB.checkCollision(unitArea, Z轴坐标差);

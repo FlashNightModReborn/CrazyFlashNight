@@ -2,7 +2,7 @@
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 
-class org.flashNight.arki.bullet.BulletComponent.Collider.ColliderFactoryRegistry {
+class org.flashNight.arki.component.Collider.ColliderFactoryRegistry {
     private static var factories:Object = {};
 
     public static var AABBFactory:String = "AABB";

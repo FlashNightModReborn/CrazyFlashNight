@@ -5,6 +5,8 @@ import org.flashNight.sara.*;
 import org.flashNight.neur.Server.*; 
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
 
 _root.帧计时器 = {};
 
@@ -846,6 +848,7 @@ _root.帧计时器.更新目标缓存 = function(自机:Object, 更新间隔:Num
         {
             //if (目标.是否为敌人 === undefinded) 目标.是否为敌人 = true;
             if (条件判断函数(目标)) 目标缓存对象.数据.push(目标);
+            if (!目标.aabbCollider) 目标.aabbCollider = new AABBCollider();
         }
         //_root.服务器.发布服务器消息(目标 + " ," + 目标.命中率 + " ," + 目标.躲闪率);
     }
