@@ -513,8 +513,9 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
         // 创建并返回碰撞结果
         var result:CollisionResult = new CollisionResult(true);
-        result.setOverlapRatio(overlapRatio); // 设置重叠比例
-        result.setOverlapCenter(overlapCenter); // 设置重叠中心
+
+        result.overlapRatio = overlapRatio; // 设置重叠比例
+        result.overlapCenter = overlapCenter; // 设置重叠中心
         return result;
     }
 

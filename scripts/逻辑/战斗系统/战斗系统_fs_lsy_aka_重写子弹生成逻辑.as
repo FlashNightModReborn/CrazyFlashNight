@@ -647,6 +647,11 @@ _root.子弹生命周期 = function()
     if (this.shouldDestroy(this)) {
         areaAABB.getFactory().releaseCollider(areaAABB);
 
+        if(isPointSet)
+        {
+            this.polygonCollider.getFactory().releaseCollider(this.polygonCollider);
+        }
+
         if (this.击中地图) {
             this.霰弹值 = 1;
             _root.效果(this.击中地图效果, this._x, this._y);
