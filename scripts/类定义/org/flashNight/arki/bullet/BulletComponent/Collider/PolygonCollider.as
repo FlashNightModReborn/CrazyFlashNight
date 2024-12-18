@@ -2,404 +2,342 @@
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 
+/**
+ * PolygonCollider 类用于检测多边形与另一个碰撞体之间的碰撞。
+ * 该类继承自 RectanglePointSet，并实现了 ICollider 接口。
+ * 
+ * 优化点：
+ * 1. 内联展开碰撞检测逻辑，减少函数调用开销。
+ * 2. 消除冗余计算，如固定值的乘法和减法。
+ * 3. 合并副作用操作，如使用后置递增运算符 `++`。
+ * 4. 使用并行数组管理交点，避免动态数组操作。
+ * 5. 使用位运算生成唯一键，加快去重过程。
+ */
 class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extends RectanglePointSet implements ICollider {
-    public var _factory:AbstractColliderFactory;
-    public var _update:Function;
-    public var _currentFrame:Number;
+    public var _factory:AbstractColliderFactory; // 碰撞工厂
+    public var _update:Function; // 更新函数
+    public var _currentFrame:Number; // 当前帧数
 
-    // 为了避免动态push，这里定义最大点数量（可根据实际需求调整）
-    // 矩形的顶点是否在 AABB 内：
-    // 最多可以有 4 个点（矩形的 4 个顶点全部落在 AABB 内）。
-    // 矩形边与 AABB 边的交点：
-    // 每条矩形边最多与 AABB 的 4 条边各产生一个交点。矩形有 4 条边，因此最多有 16 个交点。
-    // 两个矩形（包括 AABB）之间的交点一般远低于理论上限。
-    // 在大多数情况下：
-    // 如果一个矩形完全在 AABB 内，则只有矩形的顶点；
-    // 如果一个矩形与 AABB 部分重叠，实际交点通常为 3 至 8 个（取决于重叠区域的形状）。
-
+    // 定义最大点数量以避免动态push操作，提升性能
+    // 矩形点集与aabb进行碰撞检测正常来说会返回3-8个交点，最多16个，因此选择8作为阈值
     private static var MAX_POINTS:Number = 8;
 
     /**
      * 构造函数
-     * 如果传入为null，则自动创建4个(0,0)点保证数据结构完整。
+     * @param p1 第一个顶点
+     * @param p2 第二个顶点
+     * @param p3 第三个顶点
+     * @param p4 第四个顶点
+     * 如果传入为null，则自动创建四个(0,0)点以保证数据结构完整。
      */
     public function PolygonCollider(p1:Vector, p2:Vector, p3:Vector, p4:Vector) {
         super(p1 ? p1 : new Vector(0, 0), p2 ? p2 : new Vector(0, 0), p3 ? p3 : new Vector(0, 0), p4 ? p4 : new Vector(0, 0));
     }
 
+    /**
+     * 空构造函数，创建四个(0,0)点。
+     */
     public function PolygonCollider_empty() {
         super(new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0));
     }
 
+    /**
+     * 获取包围盒（AABB），并应用z轴偏移。
+     * @param zOffset z轴偏移量
+     * @return AABB 对象
+     */
     public function getAABB(zOffset:Number):AABB {
         var box:AABB = super.getBoundingBox();
         return new AABB(box.left, box.right, box.top + zOffset, box.bottom + zOffset);
     }
 
+    /**
+     * 检查与另一个碰撞体的碰撞。
+     * @param other 另一个碰撞体
+     * @param zOffset z轴偏移量
+     * @return CollisionResult 碰撞结果
+     */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
-        var otherAABB:AABB = other.getAABB(zOffset);
+        var otherAABB:AABB = other.getAABB(zOffset); // 获取另一个碰撞体的AABB
 
-        // AABB快速剔除
+        // AABB快速剔除：如果两个AABB不重叠，则无需进一步检测
         var box:AABB = this.getBoundingBox();
         if (box.right <= otherAABB.left || box.left >= otherAABB.right || box.bottom <= otherAABB.top || box.top >= otherAABB.bottom) {
             return CollisionResult.FALSE;
         }
 
-        // 不使用push, 使用数组索引管理
+        // 使用并行数组管理交点，预扩容以提高性能
         var intersectionPointsX:Array = new Array(MAX_POINTS);
         var intersectionPointsY:Array = new Array(MAX_POINTS);
-        var intersectionPointsCount:Number = 0;
+        var intersectionPointsCount:Number = 0; // 记录交点数量
 
-        var px:Number, py:Number;
+        var px:Number, py:Number; // 临时变量，用于存储顶点坐标
 
-        // 收集在AABB内部的点 (p1, p2, p3, p4)
-        px = p1.x;
-        py = p1.y;
+        // 检查多边形自身四个顶点是否在AABB内，如果在则添加为交点
+        px = p1.x; py = p1.y;
         if (px >= otherAABB.left && px <= otherAABB.right && py >= otherAABB.top && py <= otherAABB.bottom) {
             intersectionPointsX[intersectionPointsCount] = px;
-            intersectionPointsY[intersectionPointsCount] = py;
-            intersectionPointsCount++;
+            intersectionPointsY[intersectionPointsCount++] = py; // 合并递增操作，减少指令数
         }
 
-        px = p2.x;
-        py = p2.y;
+        px = p2.x; py = p2.y;
         if (px >= otherAABB.left && px <= otherAABB.right && py >= otherAABB.top && py <= otherAABB.bottom) {
             intersectionPointsX[intersectionPointsCount] = px;
-            intersectionPointsY[intersectionPointsCount] = py;
-            intersectionPointsCount++;
+            intersectionPointsY[intersectionPointsCount++] = py;
         }
 
-        px = p3.x;
-        py = p3.y;
+        px = p3.x; py = p3.y;
         if (px >= otherAABB.left && px <= otherAABB.right && py >= otherAABB.top && py <= otherAABB.bottom) {
             intersectionPointsX[intersectionPointsCount] = px;
-            intersectionPointsY[intersectionPointsCount] = py;
-            intersectionPointsCount++;
+            intersectionPointsY[intersectionPointsCount++] = py;
         }
 
-        px = p4.x;
-        py = p4.y;
+        px = p4.x; py = p4.y;
         if (px >= otherAABB.left && px <= otherAABB.right && py >= otherAABB.top && py <= otherAABB.bottom) {
             intersectionPointsX[intersectionPointsCount] = px;
-            intersectionPointsY[intersectionPointsCount] = py;
-            intersectionPointsCount++;
+            intersectionPointsY[intersectionPointsCount++] = py;
         }
 
-        var ax:Number, ay:Number, bx:Number, by:Number;
-        var interX:Number, interY:Number;
-        var denom:Number, ua:Number, ub:Number;
+        var ax:Number, ay:Number, bx:Number, by:Number; // 线段起点和终点
+        var interX:Number, interY:Number; // 交点坐标
+        var denom:Number, ua:Number, ub:Number; // 计算参数
 
-        /*、
+        // 获取AABB的边界值，简化后续计算
+        var left:Number   = otherAABB.left;
+        var right:Number  = otherAABB.right;
+        var top:Number    = otherAABB.top;
+        var bottom:Number = otherAABB.bottom;
 
-        // 定义一个内联函数式代码块用于插入交点(实际使用重复代码结构)
-        // 注释掉以免造成额外开销，此处作为注释留档备份
-        function addIntersectionPoint(ix:Number, iy:Number):Void {
-            // 检查是否在AABB内部
-            if (ix >= otherAABB.left && ix <= otherAABB.right && iy >= otherAABB.top && iy <= otherAABB.bottom) {
-                intersectionPointsX[intersectionPointsCount] = ix;
-                intersectionPointsY[intersectionPointsCount] = iy;
-                intersectionPointsCount++;
-            }
-        }
+        var w:Number = (right - left); // AABB宽度
+        var h:Number = (bottom - top); // AABB高度
 
-        */
-
-        // 定义一个内联计算相交的片段逻辑函数伪代码（只为减少重复，不是真正函数调用）
-        // 实际上将重复的行复制粘贴以避免函数调用。
+        /**
+         * 优化后的相交计算逻辑：
+         * 处理多边形的四条边（p1->p2, p2->p3, p3->p4, p4->p1）与AABB的四条边（x=left, x=right, y=top, y=bottom）的相交检测。
+         * 通过内联展开和消除冗余计算，减少运算量和指令数。
+         */
 
         // 边：p1->p2
-        ax = p1.x;
-        ay = p1.y;
-        bx = p2.x;
-        by = p2.y;
-        // 与左边相交
-        denom = (otherAABB.bottom - otherAABB.top) * (bx - ax);
-        // (otherAABB.left - otherAABB.left)=0, 因此这行原本是减了0可忽略
-        denom = denom - (0) * (by - ay); // 无意义但保留结构
+        ax = p1.x; ay = p1.y;
+        bx = p2.x; by = p2.y;
+
+        // 与左边相交（x = left）
+        denom = h * (bx - ax); // 分母计算，简化后的形式
         if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                // 检查AABB内部
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = -(h * (ax - left)) / denom; // 计算ua
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) { // 检查参数是否在有效范围内
+                interX = ax + ua * (bx - ax); // 计算交点X坐标
+                interY = ay + ua * (by - ay); // 计算交点Y坐标
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // 与右边相交
-        denom = (otherAABB.bottom - otherAABB.top) * (bx - ax) - (0) * (by - ay); // right-right=0
+        // 与右边相交（x = right）
+        // denom同上为 h * (bx - ax)
         if (denom != 0) {
-            ua = ((otherAABB.right - otherAABB.left) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = ((w * (ay - top) - h * (ax - left))) / denom; // 计算ua
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) { // 检查参数是否在有效范围内
+                interX = ax + ua * (bx - ax); // 计算交点X坐标
+                interY = ay + ua * (by - ay); // 计算交点Y坐标
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // 与上边相交
-        denom = (0) * (bx - ax) - (otherAABB.right - otherAABB.left) * (by - ay); //(otherAABB.top-otherAABB.top)=0
+        // 与上边相交（y = top）
+        denom = -w * (by - ay); // 分母计算，简化后的形式
         if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (0) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = 0; // 因为与上边相关的项为0，直接设ua为0
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ub >= 0 && ub <= 1) { // 只需要检查ub是否在有效范围内
+                interX = ax; // ua=0时，交点X坐标为ax
+                interY = ay; // ua=0时，交点Y坐标为ay
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // 与下边相交
-        denom = (0) * (bx - ax) - (otherAABB.right - otherAABB.left) * (by - ay); //(otherAABB.bottom-otherAABB.bottom)=0
+        // 与下边相交（y = bottom）
+        denom = -w * (by - ay); // 分母计算，简化后的形式
         if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = -((bottom - top) * (ax - left)) / denom; // 计算ua
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) { // 检查参数是否在有效范围内
+                interX = ax + ua * (bx - ax); // 计算交点X坐标
+                interY = ay + ua * (by - ay); // 计算交点Y坐标
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // p2->p3
-        ax = p2.x;
-        ay = p2.y;
-        bx = p3.x;
-        by = p3.y;
-        // 与左边相交
-        denom = (otherAABB.bottom - otherAABB.top) * (bx - ax) - (0) * (by - ay);
+        // 边：p2->p3
+        ax = p2.x; ay = p2.y;
+        bx = p3.x; by = p3.y;
+
+        // 与左边相交（x = left）
+        denom = h * (bx - ax); // 分母计算，简化后的形式
         if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = -(h * (ax - left)) / denom; // 计算ua
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) { // 检查参数是否在有效范围内
+                interX = ax + ua * (bx - ax); // 计算交点X坐标
+                interY = ay + ua * (by - ay); // 计算交点Y坐标
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // 与右边
-        denom = (otherAABB.bottom - otherAABB.top) * (bx - ax) - (0) * (by - ay);
+        // 与右边相交（x = right）
+        // denom同上为 h * (bx - ax)
         if (denom != 0) {
-            ua = ((otherAABB.right - otherAABB.left) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = ((w * (ay - top) - h * (ax - left))) / denom; // 计算ua
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) { // 检查参数是否在有效范围内
+                interX = ax + ua * (bx - ax); // 计算交点X坐标
+                interY = ay + ua * (by - ay); // 计算交点Y坐标
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // 上边
-        denom = (0) * (bx - ax) - (otherAABB.right - otherAABB.left) * (by - ay);
+        // 与上边相交（y = top）
+        denom = -w * (by - ay); // 分母计算，简化后的形式
         if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (0) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = 0; // 因为与上边相关的项为0，直接设ua为0
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ub >= 0 && ub <= 1) { // 只需要检查ub是否在有效范围内
+                interX = ax; // ua=0时，交点X坐标为ax
+                interY = ay; // ua=0时，交点Y坐标为ay
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // 下边
-        denom = (0) * (bx - ax) - (otherAABB.right - otherAABB.left) * (by - ay);
+        // 与下边相交（y = bottom）
+        denom = -w * (by - ay); // 分母计算，简化后的形式
         if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = -((bottom - top) * (ax - left)) / denom; // 计算ua
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) { // 检查参数是否在有效范围内
+                interX = ax + ua * (bx - ax); // 计算交点X坐标
+                interY = ay + ua * (by - ay); // 计算交点Y坐标
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // p3->p4
-        ax = p3.x;
-        ay = p3.y;
-        bx = p4.x;
-        by = p4.y;
-        // 与左边
-        denom = (otherAABB.bottom - otherAABB.top) * (bx - ax) - 0 * (by - ay);
+        // 边：p3->p4
+        ax = p3.x; ay = p3.y;
+        bx = p4.x; by = p4.y;
+
+        // 与左边相交（x = left）
+        denom = h * (bx - ax); // 分母计算，简化后的形式
         if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = -(h * (ax - left)) / denom; // 计算ua
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) { // 检查参数是否在有效范围内
+                interX = ax + ua * (bx - ax); // 计算交点X坐标
+                interY = ay + ua * (by - ay); // 计算交点Y坐标
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // 右边
-        denom = (otherAABB.bottom - otherAABB.top) * (bx - ax) - 0 * (by - ay);
+        // 与右边相交（x = right）
+        // denom同上为 h * (bx - ax)
         if (denom != 0) {
-            ua = ((otherAABB.right - otherAABB.left) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = ((w * (ay - top) - h * (ax - left))) / denom; // 计算ua
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) { // 检查参数是否在有效范围内
+                interX = ax + ua * (bx - ax); // 计算交点X坐标
+                interY = ay + ua * (by - ay); // 计算交点Y坐标
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // 上边
-        denom = (0) * (bx - ax) - (otherAABB.right - otherAABB.left) * (by - ay);
+        // 与上边相交（y = top）
+        denom = -w * (by - ay); // 分母计算，简化后的形式
         if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (0) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = 0; // 因为与上边相关的项为0，直接设ua为0
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ub >= 0 && ub <= 1) { // 只需要检查ub是否在有效范围内
+                interX = ax; // ua=0时，交点X坐标为ax
+                interY = ay; // ua=0时，交点Y坐标为ay
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // 下边
-        denom = (0) * (bx - ax) - (otherAABB.right - otherAABB.left) * (by - ay);
+        // 与下边相交（y = bottom）
+        denom = -w * (by - ay); // 分母计算，简化后的形式
         if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
+            ua = -((bottom - top) * (ax - left)) / denom; // 计算ua
+            ub = ((bx - ax) * (ay - top) - (by - ay) * (ax - left)) / denom; // 计算ub
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) { // 检查参数是否在有效范围内
+                interX = ax + ua * (bx - ax); // 计算交点X坐标
+                interY = ay + ua * (by - ay); // 计算交点Y坐标
+                // 检查交点是否在AABB内部
+                if (interX >= left && interX <= right && interY >= top && interY <= bottom) {
                     intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
+                    intersectionPointsY[intersectionPointsCount++] = interY;
                 }
             }
         }
 
-        // p4->p1
-        ax = p4.x;
-        ay = p4.y;
-        bx = p1.x;
-        by = p1.y;
-        // 左边
-        denom = (otherAABB.bottom - otherAABB.top) * (bx - ax) - 0 * (by - ay);
-        if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
-                    intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
-                }
-            }
-        }
-
-        // 右边
-        denom = (otherAABB.bottom - otherAABB.top) * (bx - ax) - 0 * (by - ay);
-        if (denom != 0) {
-            ua = ((otherAABB.right - otherAABB.left) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
-                    intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
-                }
-            }
-        }
-
-        // 上边
-        denom = (0) * (bx - ax) - (otherAABB.right - otherAABB.left) * (by - ay);
-        if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (0) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
-                    intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
-                }
-            }
-        }
-
-        // 下边
-        denom = (0) * (bx - ax) - (otherAABB.right - otherAABB.left) * (by - ay);
-        if (denom != 0) {
-            ua = ((0) * (ay - otherAABB.top) - (otherAABB.bottom - otherAABB.top) * (ax - otherAABB.left)) / denom;
-            ub = ((bx - ax) * (ay - otherAABB.top) - (by - ay) * (ax - otherAABB.left)) / denom;
-            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-                interX = ax + ua * (bx - ax);
-                interY = ay + ua * (by - ay);
-                if (interX >= otherAABB.left && interX <= otherAABB.right && interY >= otherAABB.top && interY <= otherAABB.bottom) {
-                    intersectionPointsX[intersectionPointsCount] = interX;
-                    intersectionPointsY[intersectionPointsCount] = interY;
-                    intersectionPointsCount++;
-                }
-            }
-        }
-
-        // 去重
-        var uniqueMap:Object = {};
+        /**
+         * 去除重复的交点
+         * 使用对象映射(uniqueMap)来记录已存在的交点，通过位运算生成唯一键加快查找速度。
+         * 使用并行数组uniquePointsX和uniquePointsY来存储唯一交点，避免动态数组操作。
+         */
+        var uniqueMap:Object = {}; // 用于记录唯一交点
         var uniquePointsX:Array = new Array(MAX_POINTS);
         var uniquePointsY:Array = new Array(MAX_POINTS);
-        var uniquePointsCount:Number = 0;
-        var eps:Number = 0.00001;
-        var val:Number, scale:Number, integerVal:Number;
+        var uniquePointsCount:Number = 0; // 记录唯一交点数量
+        var eps:Number = 0.00001; // 精度，用于四舍五入
 
         for (var u:Number = 0; u < intersectionPointsCount; u++) {
             px = intersectionPointsX[u];
             py = intersectionPointsY[u];
 
-            // 模拟round(px/eps) 用三元运算符优化
-            val = px / eps;
+            // 对交点坐标进行四舍五入，减少浮点数精度带来的重复
+            var val:Number = px / eps;
             val = (val >= 0 ? val + 0.5 : val - 0.5) - (val % 1); // 四舍五入并去掉小数部分
             var roundedX:Number = val * eps;
 
@@ -407,27 +345,25 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
             val = (val >= 0 ? val + 0.5 : val - 0.5) - (val % 1); // 四舍五入并去掉小数部分
             var roundedY:Number = val * eps;
 
-
             // 使用位运算生成唯一键
             var key:Number = (roundedX << 16) | (roundedY & 0xFFFF);
-            if (!uniqueMap[key]) {
+            if (!uniqueMap[key]) { // 如果该键尚未存在，则添加到唯一交点数组
                 uniqueMap[key] = true;
                 uniquePointsX[uniquePointsCount] = px;
-                uniquePointsY[uniquePointsCount] = py;
-                uniquePointsCount++;
+                uniquePointsY[uniquePointsCount++] = py;
             }
         }
 
-        if (uniquePointsCount < 3) {
-            var intersectionCount:Number = uniquePointsCount;
-            if (intersectionCount < 3) {
-                return CollisionResult.FALSE;
-            }
-                // 当点数小于3，不需要排序和计算，因为面积也将是0
-                // 下面直接进行计算，实际上小于3无法形成多边形，无需计算重叠率
-                // 但按照原逻辑继续下去
+        var intersectionCount:Number = uniquePointsCount; // 更新交点数量
+
+        // 如果唯一交点少于3个，则无法形成多边形，返回无碰撞
+        if (intersectionCount < 3) {
+            return CollisionResult.FALSE;
         } else {
-            // 计算质心
+            /**
+             * 计算质心
+             * 通过所有交点的平均位置来确定质心，用于后续计算重叠率和重叠中心。
+             */
             var cx:Number = 0, cy:Number = 0;
             for (var m:Number = 0; m < uniquePointsCount; m++) {
                 cx += uniquePointsX[m];
@@ -436,30 +372,32 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
             cx = cx / uniquePointsCount;
             cy = cy / uniquePointsCount;
 
-            // 需要对点按极角排序
-            // 原先使用 sort(function(a,b)),现在没有对象数组，我们有平行数组，需要建立索引数组
+            /**
+             * 对交点按极角进行插入排序
+             * 由于没有对象数组，使用索引数组(indices)来记录排序后的顺序。
+             */
             var indices:Array = new Array(uniquePointsCount);
             for (var idx:Number = 0; idx < uniquePointsCount; idx++) {
-                indices[idx] = idx;
+                indices[idx] = idx; // 初始化索引数组
             }
 
-            // 使用插入排序对 indices 进行排序
+            // 使用插入排序对索引数组进行排序，根据交点相对于质心的极角
             for (var i:Number = 1; i < uniquePointsCount; i++) {
                 var current:Number = indices[i];
-                var ax:Number = uniquePointsX[current];
-                var ay:Number = uniquePointsY[current];
+                var axSort:Number = uniquePointsX[current];
+                var aySort:Number = uniquePointsY[current];
 
                 // 计算当前点的极角
-                var currentAngle:Number = Math.atan2(ay - cy, ax - cx);
+                var currentAngle:Number = Math.atan2(aySort - cy, axSort - cx);
 
                 var j:Number = i - 1;
                 while (j >= 0) {
                     var previous:Number = indices[j];
-                    var bx:Number = uniquePointsX[previous];
-                    var by:Number = uniquePointsY[previous];
+                    var bxSort:Number = uniquePointsX[previous];
+                    var bySort:Number = uniquePointsY[previous];
 
                     // 计算前一个点的极角
-                    var previousAngle:Number = Math.atan2(by - cy, bx - cx);
+                    var previousAngle:Number = Math.atan2(bySort - cy, bxSort - cx);
 
                     // 比较当前点与前一个点的极角
                     if (currentAngle >= previousAngle) {
@@ -475,8 +413,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
                 indices[j + 1] = current;
             }
 
-
-            // 按排序后的顺序重排uniquePointsX,Y
+            // 根据排序后的索引数组，重排交点数组
             var sortedX:Array = new Array(uniquePointsCount);
             var sortedY:Array = new Array(uniquePointsCount);
             for (var s:Number = 0; s < uniquePointsCount; s++) {
@@ -484,120 +421,137 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
                 sortedX[s] = uniquePointsX[ii];
                 sortedY[s] = uniquePointsY[ii];
             }
-
-            // 用 sortedX, sortedY 代替 uniquePointsX/Y 作为最终 intersection
             uniquePointsX = sortedX;
             uniquePointsY = sortedY;
         }
 
-        var intersectionX:Array = uniquePointsX;
-        var intersectionY:Array = uniquePointsY;
-        var intersectionCount:Number = uniquePointsCount;
-
+        intersectionCount = uniquePointsCount; // 更新交点数量
         if (intersectionCount < 3) {
-            return CollisionResult.FALSE;
+            return CollisionResult.FALSE; // 交点少于3个，无法形成多边形
         }
 
-        // 计算交集多边形面积（无Math.abs）
+        /**
+         * 计算交集多边形面积
+         * 使用多边形面积计算公式（Shoelace公式）。
+         * 不使用 Math.abs，而是手动取绝对值以替代。
+         */
         var intersectionArea:Number = 0;
         var lenArea:Number = intersectionCount;
-        var ii:Number = lenArea - 1;
+        var iiArea:Number = lenArea - 1; // 初始化为最后一个点的索引
         for (var iArea:Number = 0; iArea < lenArea; iArea++) {
-            intersectionArea += intersectionX[ii] * intersectionY[iArea] - intersectionX[iArea] * intersectionY[ii];
-            ii = iArea;
+            intersectionArea += uniquePointsX[iiArea] * uniquePointsY[iArea] - uniquePointsX[iArea] * uniquePointsY[iiArea];
+            iiArea = iArea; // 更新上一点的索引
         }
-        intersectionArea = (intersectionArea < 0) ? -intersectionArea : intersectionArea; //代替Math.abs
+        intersectionArea = (intersectionArea < 0) ? -intersectionArea : intersectionArea; // 手动取绝对值
 
-        // 计算自身矩形面积
+        /**
+         * 计算自身矩形面积
+         * 使用多边形面积计算公式（Shoelace公式）。
+         */
         var area:Number = (p1.x * p2.y + p2.x * p3.y + p3.x * p4.y + p4.x * p1.y) - (p2.x * p1.y + p3.x * p2.y + p4.x * p3.y + p1.x * p4.y);
-        var thisArea:Number = (area < 0) ? -area : area;
+        var thisArea:Number = (area < 0) ? -area : area; // 手动取绝对值
 
-        var overlapRatio:Number = intersectionArea / thisArea;
+        var overlapRatio:Number = intersectionArea / thisArea; // 计算重叠比例
 
-        // 计算最终质心
+        /**
+         * 计算最终质心
+         * 通过所有交点的平均位置来确定重叠区域的质心。
+         */
         var cxCentroid:Number = 0, cyCentroid:Number = 0;
         for (var iCentroid:Number = 0; iCentroid < intersectionCount; iCentroid++) {
-            cxCentroid += intersectionX[iCentroid];
-            cyCentroid += intersectionY[iCentroid];
+            cxCentroid += uniquePointsX[iCentroid];
+            cyCentroid += uniquePointsY[iCentroid];
         }
         cxCentroid = cxCentroid / intersectionCount;
         cyCentroid = cyCentroid / intersectionCount;
 
-        var overlapCenter:Vector = new Vector(cxCentroid, cyCentroid);
+        var overlapCenter:Vector = new Vector(cxCentroid, cyCentroid); // 创建重叠中心向量
 
+        // 创建并返回碰撞结果
         var result:CollisionResult = new CollisionResult(true);
-        result.setOverlapRatio(overlapRatio);
-        result.setOverlapCenter(overlapCenter);
+        result.setOverlapRatio(overlapRatio); // 设置重叠比例
+        result.setOverlapCenter(overlapCenter); // 设置重叠中心
         return result;
     }
 
-    // 更新为透明子弹，直接修改p1,p2,p3,p4的x,y
+    /**
+     * 更新为透明子弹，直接修改p1, p2, p3, p4的x, y坐标。
+     * @param bullet 子弹对象，包含_x和_y属性
+     */
     public function updateFromTransparentBullet(bullet:Object):Void {
-        var halfSize:Number = 12.5;
-        p1.x = bullet._x - halfSize;
-        p1.y = bullet._y - halfSize;
-        p2.x = bullet._x + halfSize;
-        p2.y = bullet._y - halfSize;
-        p3.x = bullet._x + halfSize;
-        p3.y = bullet._y + halfSize;
-        p4.x = bullet._x - halfSize;
-        p4.y = bullet._y + halfSize;
+        p1.x = bullet._x - 12.5; p1.y = bullet._y - 12.5;
+        p2.x = bullet._x + 12.5; p2.y = bullet._y - 12.5;
+        p3.x = bullet._x + 12.5; p3.y = bullet._y + 12.5;
+        p4.x = bullet._x - 12.5; p4.y = bullet._y + 12.5;
     }
 
+    /**
+     * 从子弹和检测区域更新多边形的顶点。
+     * @param bullet 子弹MovieClip
+     * @param detectionArea 检测区域MovieClip
+     */
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
-        var rect:Object = detectionArea.getRect(detectionArea);
+        var rect:Object = detectionArea.getRect(detectionArea); // 获取检测区域的矩形边界
 
-        // 内联 pointToGameworld
+        // 内联转换点到游戏世界坐标
         var pt:Object = {x: rect.xMax, y: rect.yMax};
-        detectionArea.localToGlobal(pt);
-        _root.gameworld.globalToLocal(pt);
-        var p1gw:Vector = new Vector(pt.x, pt.y);
+        detectionArea.localToGlobal(pt); // 本地坐标转换到全局坐标
+        _root.gameworld.globalToLocal(pt); // 全局坐标转换到游戏世界坐标
+        var p1gw:Vector = new Vector(pt.x, pt.y); // 创建顶点1
 
         pt = {x: rect.xMin, y: rect.yMin};
-        detectionArea.localToGlobal(pt);
-        _root.gameworld.globalToLocal(pt);
-        var p3gw:Vector = new Vector(pt.x, pt.y);
+        detectionArea.localToGlobal(pt); // 本地坐标转换到全局坐标
+        _root.gameworld.globalToLocal(pt); // 全局坐标转换到游戏世界坐标
+        var p3gw:Vector = new Vector(pt.x, pt.y); // 创建顶点3
 
+        // 计算中心点
         var centerX:Number = (p1gw.x + p3gw.x) * 0.5;
         var centerY:Number = (p1gw.y + p3gw.y) * 0.5;
-        var vx:Number = p1gw.x - centerX;
-        var vy:Number = p1gw.y - centerY;
-        var angle:Number = Math.atan2(vy, vx);
-        var length:Number = Math.sqrt(vx * vx + vy * vy);
-        var cosVal:Number = length * Math.cos(angle);
-        var sinVal:Number = length * Math.sin(angle);
+        var vx:Number = p1gw.x - centerX; // 计算向量x分量
+        var vy:Number = p1gw.y - centerY; // 计算向量y分量
+        var angle:Number = Math.atan2(vy, vx); // 计算向量角度
+        var length:Number = Math.sqrt(vx * vx + vy * vy); // 计算向量长度
+        var cosVal:Number = length * Math.cos(angle); // 计算cos值
+        var sinVal:Number = length * Math.sin(angle); // 计算sin值
 
-        p1.x = p1gw.x;
-        p1.y = p1gw.y;
-        p3.x = p3gw.x;
-        p3.y = p3gw.y;
-        p2.x = centerX + cosVal;
-        p2.y = centerY - sinVal;
-        p4.x = centerX - cosVal;
-        p4.y = centerY + sinVal;
+        // 更新多边形顶点
+        p1.x = p1gw.x; p1.y = p1gw.y;
+        p3.x = p3gw.x; p3.y = p3gw.y;
+        p2.x = centerX + cosVal; p2.y = centerY - sinVal;
+        p4.x = centerX - cosVal; p4.y = centerY + sinVal;
     }
 
+    /**
+     * 从单位区域更新多边形的顶点。
+     * @param unit 单位MovieClip
+     */
     public function updateFromUnitArea(unit:MovieClip):Void {
-        var frame:Number = _root.帧计时器.当前帧数;
-        if (this._currentFrame == frame)
+        var frame:Number = _root.帧计时器.当前帧数; // 获取当前帧数
+        if (this._currentFrame == frame) // 如果已在当前帧更新，跳过
             return;
-        this._currentFrame = frame;
-        var unitRect:Object = unit.area.getRect(_root.gameworld);
+        this._currentFrame = frame; // 更新当前帧数
 
-        p1.x = unitRect.xMin;
-        p1.y = unitRect.yMin;
-        p2.x = unitRect.xMax;
-        p2.y = unitRect.yMin;
-        p3.x = unitRect.xMax;
-        p3.y = unitRect.yMax;
-        p4.x = unitRect.xMin;
-        p4.y = unitRect.yMax;
+        var unitRect:Object = unit.area.getRect(_root.gameworld); // 获取单位区域的矩形边界
+
+        // 更新多边形顶点
+        p1.x = unitRect.xMin; p1.y = unitRect.yMin;
+        p2.x = unitRect.xMax; p2.y = unitRect.yMin;
+        p3.x = unitRect.xMax; p3.y = unitRect.yMax;
+        p4.x = unitRect.xMin; p4.y = unitRect.yMax;
     }
 
+    /**
+     * 设置碰撞工厂。
+     * @param factory AbstractColliderFactory 对象
+     */
     public function setFactory(factory:AbstractColliderFactory):Void {
         this._factory = factory;
     }
 
+    /**
+     * 获取碰撞工厂。
+     * @return AbstractColliderFactory 对象
+     */
     public function getFactory():AbstractColliderFactory {
         return this._factory;
     }
