@@ -60,11 +60,17 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
         var otherAABB:AABB = other.getAABB(zOffset); // 获取另一个碰撞体的AABB
 
+        /*
+
         // AABB快速剔除：如果两个AABB不重叠，则无需进一步检测
         var box:AABB = this.getBoundingBox();
         if (box.right <= otherAABB.left || box.left >= otherAABB.right || box.bottom <= otherAABB.top || box.top >= otherAABB.bottom) {
             return CollisionResult.FALSE;
         }
+
+        // 预筛选已在外部完成，因此不需要额外做快速剔除
+
+        */
 
         // 使用并行数组管理交点，预扩容以提高性能
         var intersectionPointsX:Array = new Array(MAX_POINTS);
@@ -73,41 +79,79 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
         var px:Number, py:Number; // 临时变量，用于存储顶点坐标
 
-        // 检查多边形自身四个顶点是否在AABB内，如果在则添加为交点
-        px = p1.x; py = p1.y;
-        if (px >= otherAABB.left && px <= otherAABB.right && py >= otherAABB.top && py <= otherAABB.bottom) {
-            intersectionPointsX[intersectionPointsCount] = px;
-            intersectionPointsY[intersectionPointsCount++] = py; // 合并递增操作，减少指令数
-        }
-
-        px = p2.x; py = p2.y;
-        if (px >= otherAABB.left && px <= otherAABB.right && py >= otherAABB.top && py <= otherAABB.bottom) {
-            intersectionPointsX[intersectionPointsCount] = px;
-            intersectionPointsY[intersectionPointsCount++] = py;
-        }
-
-        px = p3.x; py = p3.y;
-        if (px >= otherAABB.left && px <= otherAABB.right && py >= otherAABB.top && py <= otherAABB.bottom) {
-            intersectionPointsX[intersectionPointsCount] = px;
-            intersectionPointsY[intersectionPointsCount++] = py;
-        }
-
-        px = p4.x; py = p4.y;
-        if (px >= otherAABB.left && px <= otherAABB.right && py >= otherAABB.top && py <= otherAABB.bottom) {
-            intersectionPointsX[intersectionPointsCount] = px;
-            intersectionPointsY[intersectionPointsCount++] = py;
-        }
-
-        var ax:Number, ay:Number, bx:Number, by:Number; // 线段起点和终点
-        var interX:Number, interY:Number; // 交点坐标
-        var denom:Number, ua:Number, ub:Number; // 计算参数
-
         // 获取AABB的边界值，简化后续计算
         var left:Number   = otherAABB.left;
         var right:Number  = otherAABB.right;
         var top:Number    = otherAABB.top;
         var bottom:Number = otherAABB.bottom;
 
+        // 检查多边形自身四个顶点是否在AABB内，如果在则添加为交点
+        // 使用多个简单的if语句替代一个复杂的if条件，以提升AS2中的性能
+
+        // 检查顶点p1
+        px = p1.x; 
+        py = p1.y;
+        if (px >= left) {             // 第一个条件：x坐标不小于AABB左边界
+            if (px <= right) {        // 第二个条件：x坐标不大于AABB右边界
+                if (py >= top) {       // 第三个条件：y坐标不小于AABB上边界
+                    if (py <= bottom) { // 第四个条件：y坐标不大于AABB下边界
+                        // 如果所有条件都满足，则将p1作为交点添加到交点数组中
+                        intersectionPointsX[intersectionPointsCount] = px;
+                        intersectionPointsY[intersectionPointsCount++] = py; // 合并递增操作，减少指令数
+                    }
+                }
+            }
+        }
+
+        // 检查顶点p2
+        px = p2.x; 
+        py = p2.y;
+        if (px >= left) {             // 第一个条件：x坐标不小于AABB左边界
+            if (px <= right) {        // 第二个条件：x坐标不大于AABB右边界
+                if (py >= top) {       // 第三个条件：y坐标不小于AABB上边界
+                    if (py <= bottom) { // 第四个条件：y坐标不大于AABB下边界
+                        // 如果所有条件都满足，则将p2作为交点添加到交点数组中
+                        intersectionPointsX[intersectionPointsCount] = px;
+                        intersectionPointsY[intersectionPointsCount++] = py;
+                    }
+                }
+            }
+        }
+
+        // 检查顶点p3
+        px = p3.x; 
+        py = p3.y;
+        if (px >= left) {             // 第一个条件：x坐标不小于AABB左边界
+            if (px <= right) {        // 第二个条件：x坐标不大于AABB右边界
+                if (py >= top) {       // 第三个条件：y坐标不小于AABB上边界
+                    if (py <= bottom) { // 第四个条件：y坐标不大于AABB下边界
+                        // 如果所有条件都满足，则将p3作为交点添加到交点数组中
+                        intersectionPointsX[intersectionPointsCount] = px;
+                        intersectionPointsY[intersectionPointsCount++] = py;
+                    }
+                }
+            }
+        }
+
+        // 检查顶点p4
+        px = p4.x; 
+        py = p4.y;
+        if (px >= left) {             // 第一个条件：x坐标不小于AABB左边界
+            if (px <= right) {        // 第二个条件：x坐标不大于AABB右边界
+                if (py >= top) {       // 第三个条件：y坐标不小于AABB上边界
+                    if (py <= bottom) { // 第四个条件：y坐标不大于AABB下边界
+                        // 如果所有条件都满足，则将p4作为交点添加到交点数组中
+                        intersectionPointsX[intersectionPointsCount] = px;
+                        intersectionPointsY[intersectionPointsCount++] = py;
+                    }
+                }
+            }
+        }
+
+
+        var ax:Number, ay:Number, bx:Number, by:Number; // 线段起点和终点
+        var interX:Number, interY:Number; // 交点坐标
+        var denom:Number, ua:Number, ub:Number; // 计算参数
         var w:Number = (right - left); // AABB宽度
         var h:Number = (bottom - top); // AABB高度
 
@@ -491,6 +535,10 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
      * @param detectionArea 检测区域MovieClip
      */
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
+        var frame:Number = _root.帧计时器.当前帧数; // 获取当前帧数
+        if (this._currentFrame == frame) // 如果已在当前帧更新，跳过
+            return;
+        this._currentFrame = frame; // 更新当前帧数
         var rect:Object = detectionArea.getRect(detectionArea); // 获取检测区域的矩形边界
 
         // 内联转换点到游戏世界坐标
