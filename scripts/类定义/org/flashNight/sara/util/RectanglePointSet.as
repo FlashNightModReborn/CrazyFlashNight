@@ -1,14 +1,13 @@
-﻿import org.flashNight.sara.util.PointSet;
-import org.flashNight.arki.component.Collider.AABB;
-import org.flashNight.sara.util.Vector;
+﻿import org.flashNight.sara.util.*;
+import org.flashNight.arki.component.Collider.*;
 
-class org.flashNight.sara.util.InlineRectanglePointSet extends PointSet {
+class org.flashNight.sara.util.RectanglePointSet extends PointSet {
     private var p1:Vector;
     private var p2:Vector;
     private var p3:Vector;
     private var p4:Vector;
 
-    public function InlineRectanglePointSet(p1:Vector, p2:Vector, p3:Vector, p4:Vector) {
+    public function RectanglePointSet(p1:Vector, p2:Vector, p3:Vector, p4:Vector) {
         super();
         this.p1 = p1;
         this.p2 = p2;
@@ -23,12 +22,12 @@ class org.flashNight.sara.util.InlineRectanglePointSet extends PointSet {
 
     // 重写addPoint：不允许添加
     public function addPoint(x:Number, y:Number):Void {
-        trace("InlineRectanglePointSet: 已有4点，无法添加更多点。");
+        trace("RectanglePointSet: 已有4点，无法添加更多点。");
     }
 
     // 重写removePoint：不允许移除
     public function removePoint(index:Number):Void {
-        trace("InlineRectanglePointSet: 不允许移除点。");
+        trace("RectanglePointSet: 不允许移除点。");
     }
 
     public function setRectangle(p1:Vector, p2:Vector, p3:Vector, p4:Vector):Void {
@@ -91,7 +90,7 @@ class org.flashNight.sara.util.InlineRectanglePointSet extends PointSet {
     // 重写fromArray，用传入的数组重设4点
     public function fromArray(arr:Array):Void {
         if (arr.length != 4) {
-            trace("InlineRectanglePointSet: 数组必须有4个点。");
+            trace("RectanglePointSet: 数组必须有4个点。");
             return;
         }
         p1 = arr[0];
@@ -109,8 +108,8 @@ class org.flashNight.sara.util.InlineRectanglePointSet extends PointSet {
         return this.clone();
     }
 
-    public function clone():InlineRectanglePointSet {
-        return new InlineRectanglePointSet(
+    public function clone():RectanglePointSet {
+        return new RectanglePointSet(
             new Vector(p1.x, p1.y),
             new Vector(p2.x, p2.y),
             new Vector(p3.x, p3.y),
@@ -119,6 +118,6 @@ class org.flashNight.sara.util.InlineRectanglePointSet extends PointSet {
     }
 
     public function toString():String {
-        return "InlineRectanglePointSet [(" + p1.x + "," + p1.y + "), (" + p2.x + "," + p2.y + "), (" + p3.x + "," + p3.y + "), (" + p4.x + "," + p4.y + ")]";
+        return "RectanglePointSet [(" + p1.x + "," + p1.y + "), (" + p2.x + "," + p2.y + "), (" + p3.x + "," + p3.y + "), (" + p4.x + "," + p4.y + ")]";
     }
 }
