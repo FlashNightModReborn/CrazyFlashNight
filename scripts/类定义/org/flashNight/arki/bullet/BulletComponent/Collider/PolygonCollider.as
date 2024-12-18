@@ -1,23 +1,26 @@
-﻿import org.flashNight.sara.util.*;
+﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;
-import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.sara.util.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extends RectanglePointSet implements ICollider {
     public var _factory:AbstractColliderFactory;
     public var _update:Function;
     public var _currentFrame:Number;
 
+    /**
+     * 构造函数
+     * 如果传入为null，则自动创建4个(0,0)点保证数据结构完整。
+     */
     public function PolygonCollider(p1:Vector, p2:Vector, p3:Vector, p4:Vector) {
-        super(p1, p2, p3, p4);
+        super(p1 ? p1 : new Vector(0, 0), p2 ? p2 : new Vector(0, 0), p3 ? p3 : new Vector(0, 0), p4 ? p4 : new Vector(0, 0));
     }
 
     public function PolygonCollider_empty() {
-        super(null, null, null, null);
+        super(new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0));
     }
 
-    // 将局部坐标点转换到gameworld坐标
     private function pointToGameworld(x:Number, y:Number, loc:MovieClip):Vector {
-        var pt:Object = {x:x, y:y};
+        var pt:Object = {x: x, y: y};
         loc.localToGlobal(pt);
         _root.gameworld.globalToLocal(pt);
         return new Vector(pt.x, pt.y);
@@ -27,89 +30,150 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         return (px >= aabb.left && px <= aabb.right && py >= aabb.top && py <= aabb.bottom);
     }
 
-    private function lineIntersect(p1x:Number, p1y:Number, p2x:Number, p2y:Number,
-                                   p3x:Number, p3y:Number, p4x:Number, p4y:Number):Object {
-        var denom:Number = (p4y - p3y)*(p2x - p1x) - (p4x - p3x)*(p2y - p1y);
-        if (denom == 0) return null; // 平行或重合
+    private function lineIntersect(ax:Number, ay:Number, bx:Number, by:Number, cx:Number, cy:Number, dx:Number, dy:Number):Object {
+        var denom:Number = (dy - cy) * (bx - ax) - (dx - cx) * (by - ay);
+        if (denom == 0)
+            return null; // 平行或重合
 
-        var ua:Number = ((p4x - p3x)*(p1y - p3y) - (p4y - p3y)*(p1x - p3x)) / denom;
-        var ub:Number = ((p2x - p1x)*(p1y - p3y) - (p2y - p1y)*(p1x - p3x)) / denom;
+        var ua:Number = ((dx - cx) * (ay - cy) - (dy - cy) * (ax - cx)) / denom;
+        var ub:Number = ((bx - ax) * (ay - cy) - (by - ay) * (ax - cx)) / denom;
 
         if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
-            return {x:p1x + ua*(p2x - p1x), y:p1y + ua*(p2y - p1y)};
+            return {x: ax + ua * (bx - ax), y: ay + ua * (by - ay)};
         }
         return null;
     }
 
     private function intersectRectangleWithAABB(aabb:AABB):Array {
-        // 矩形4点
-        var p0x:Number = p1.x, p0y:Number = p1.y;
-        var p1x:Number = p2.x, p1y:Number = p2.y;
-        var p2x:Number = p3.x, p2y:Number = p3.y;
-        var p3x:Number = p4.x, p3y:Number = p4.y;
-
         var intersectionPoints:Array = [];
 
-        // 检查矩形4点是否在AABB内
-        if (isInsideAABB(p0x,p0y,aabb)) intersectionPoints.push({x:p0x,y:p0y});
-        if (isInsideAABB(p1x,p1y,aabb)) intersectionPoints.push({x:p1x,y:p1y});
-        if (isInsideAABB(p2x,p2y,aabb)) intersectionPoints.push({x:p2x,y:p2y});
-        if (isInsideAABB(p3x,p3y,aabb)) intersectionPoints.push({x:p3x,y:p3y});
+        // 收集在AABB内部的点 (p1, p2, p3, p4)
+        if (isInsideAABB(p1.x, p1.y, aabb))
+            intersectionPoints.push({x: p1.x, y: p1.y});
+        if (isInsideAABB(p2.x, p2.y, aabb))
+            intersectionPoints.push({x: p2.x, y: p2.y});
+        if (isInsideAABB(p3.x, p3.y, aabb))
+            intersectionPoints.push({x: p3.x, y: p3.y});
+        if (isInsideAABB(p4.x, p4.y, aabb))
+            intersectionPoints.push({x: p4.x, y: p4.y});
 
-        // AABB四条边
-        var aabbEdges:Array = [
-            [aabb.left, aabb.top, aabb.left, aabb.bottom],    // left
-            [aabb.right,aabb.top,aabb.right,aabb.bottom],     // right
-            [aabb.left,aabb.top,aabb.right,aabb.top],         // top
-            [aabb.left,aabb.bottom,aabb.right,aabb.bottom]    // bottom
-        ];
+        // AABB的4条边为：
+        // 左边：  x=aabb.left    (y: top->bottom)
+        // 右边：  x=aabb.right
+        // 上边：  y=aabb.top     (x: left->right)
+        // 下边：  y=aabb.bottom
 
-        // 矩形4条边，与AABB边相交
-        // 矩形边: (p1->p2), (p2->p3), (p3->p4), (p4->p1)
-        var rectEdges:Array = [
-            [p1.x,p1.y,p2.x,p2.y],
-            [p2.x,p2.y,p3.x,p3.y],
-            [p3.x,p3.y,p4.x,p4.y],
-            [p4.x,p4.y,p1.x,p1.y]
-        ];
+        // 矩形4条边：p1->p2, p2->p3, p3->p4, p4->p1
+        // 为减少循环和数组，直接手写8次检查（4条矩形边×4条AABB边）
 
-        for (var j:Number=0; j<4; j++) {
-            var re = rectEdges[j];
-            for (var k:Number=0; k<4; k++) {
-                var ae = aabbEdges[k];
-                var inter:Object = lineIntersect(re[0], re[1], re[2], re[3], ae[0], ae[1], ae[2], ae[3]);
-                if (inter && isInsideAABB(inter.x, inter.y, aabb)) {
-                    intersectionPoints.push(inter);
-                }
-            }
-        }
+        // 定义矩形四边
+        var ax:Number, ay:Number, bx:Number, by:Number;
 
-        if (intersectionPoints.length < 3) return intersectionPoints;
+        // p1->p2
+        ax = p1.x;
+        ay = p1.y;
+        bx = p2.x;
+        by = p2.y;
+        // 与左边相交
+        var inter:Object = lineIntersect(ax, ay, bx, by, aabb.left, aabb.top, aabb.left, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        // 与右边相交
+        inter = lineIntersect(ax, ay, bx, by, aabb.right, aabb.top, aabb.right, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        // 与上边相交
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.top, aabb.right, aabb.top);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        // 与下边相交
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.bottom, aabb.right, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+
+        // p2->p3
+        ax = p2.x;
+        ay = p2.y;
+        bx = p3.x;
+        by = p3.y;
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.top, aabb.left, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        inter = lineIntersect(ax, ay, bx, by, aabb.right, aabb.top, aabb.right, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.top, aabb.right, aabb.top);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.bottom, aabb.right, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+
+        // p3->p4
+        ax = p3.x;
+        ay = p3.y;
+        bx = p4.x;
+        by = p4.y;
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.top, aabb.left, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        inter = lineIntersect(ax, ay, bx, by, aabb.right, aabb.top, aabb.right, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.top, aabb.right, aabb.top);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.bottom, aabb.right, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+
+        // p4->p1
+        ax = p4.x;
+        ay = p4.y;
+        bx = p1.x;
+        by = p1.y;
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.top, aabb.left, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        inter = lineIntersect(ax, ay, bx, by, aabb.right, aabb.top, aabb.right, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.top, aabb.right, aabb.top);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+        inter = lineIntersect(ax, ay, bx, by, aabb.left, aabb.bottom, aabb.right, aabb.bottom);
+        if (inter && isInsideAABB(inter.x, inter.y, aabb))
+            intersectionPoints.push(inter);
+
+        if (intersectionPoints.length < 3)
+            return intersectionPoints;
 
         // 去重
         var uniqueMap:Object = {};
         var uniquePoints:Array = [];
         var eps:Number = 0.00001;
-        for (var u:Number=0; u<intersectionPoints.length; u++) {
+        for (var u:Number = 0; u < intersectionPoints.length; u++) {
             var px:Number = intersectionPoints[u].x;
             var py:Number = intersectionPoints[u].y;
-            var key:String = Math.round(px/eps)*eps + "_" + Math.round(py/eps)*eps;
+            var key:String = Math.round(px / eps) * eps + "_" + Math.round(py / eps) * eps;
             if (!uniqueMap[key]) {
                 uniqueMap[key] = true;
                 uniquePoints.push(intersectionPoints[u]);
             }
         }
 
-        if (uniquePoints.length < 3) return uniquePoints;
+        if (uniquePoints.length < 3)
+            return uniquePoints;
 
         // 按质心排序点集
-        var cx:Number=0, cy:Number=0;
-        for (var m:Number=0; m<uniquePoints.length; m++) {
+        var cx:Number = 0, cy:Number = 0;
+        var lenu:Number = uniquePoints.length;
+        for (var m:Number = 0; m < lenu; m++) {
             cx += uniquePoints[m].x;
             cy += uniquePoints[m].y;
         }
-        cx /= uniquePoints.length;
-        cy /= uniquePoints.length;
+        cx /= lenu;
+        cy /= lenu;
 
         uniquePoints.sort(function(a:Object, b:Object):Number {
             var angleA:Number = Math.atan2(a.y - cy, a.x - cx);
@@ -129,34 +193,29 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         var otherAABB:AABB = other.getAABB(zOffset);
 
         // AABB快速剔除
-        var box:AABB = this.getAABB(0);
-        if (box.right <= otherAABB.left || box.left >= otherAABB.right ||
-            box.bottom <= otherAABB.top || box.top >= otherAABB.bottom) {
+        var box:AABB = this.getBoundingBox();
+        if (box.right <= otherAABB.left || box.left >= otherAABB.right || box.bottom <= otherAABB.top || box.top >= otherAABB.bottom) {
             return CollisionResult.FALSE;
         }
 
-        // 求相交多边形
         var intersection:Array = intersectRectangleWithAABB(otherAABB);
         if (!intersection || intersection.length < 3) {
             return CollisionResult.FALSE;
         }
 
-        // 计算相交区域面积
-        var intersectionArea:Number = calcArea(intersection);
-
-        // 计算自身矩形面积 (直接用p1,p2,p3,p4)
-        var thisArea:Number = calcRectangleArea();
-
+        var intersectionArea:Number = this.calcArea(intersection);
+        var thisArea:Number = this.calcRectangleArea();
         var overlapRatio:Number = intersectionArea / thisArea;
 
         // 计算质心
-        var cx:Number=0, cy:Number=0;
-        for (var i:Number=0; i<intersection.length; i++) {
+        var cx:Number = 0, cy:Number = 0;
+        var leni:Number = intersection.length;
+        for (var i:Number = 0; i < leni; i++) {
             cx += intersection[i].x;
             cy += intersection[i].y;
         }
-        cx /= intersection.length;
-        cy /= intersection.length;
+        cx /= leni;
+        cy /= leni;
         var overlapCenter:Vector = new Vector(cx, cy);
 
         var result:CollisionResult = new CollisionResult(true);
@@ -165,38 +224,24 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         return result;
     }
 
-    // 计算任意点集多边形面积（保持不变）
+    // 计算任意点集的多边形面积
     private function calcArea(points:Array):Number {
         var len:Number = points.length;
-        if (len < 3) return 0;
+        if (len < 3)
+            return 0;
         var area:Number = 0;
-        for (var i:Number=0, ii:Number=len-1; i<len; ii=i++) {
-            area += points[ii].x*points[i].y - points[i].x*points[ii].y;
+        var ii:Number = len - 1;
+        for (var i:Number = 0; i < len; ii = i++) {
+            area += points[ii].x * points[i].y - points[i].x * points[ii].y;
         }
         return Math.abs(area);
     }
 
-    // 直接用p1,p2,p3,p4计算自身面积
+    // 计算矩形自身4点面积：直接使用p1,p2,p3,p4
     private function calcRectangleArea():Number {
-        // 四边形面积公式：利用抽屉公式
-        // 面积 = |(x1*y2 + x2*y3 + x3*y4 + x4*y1 - (y1*x2 + y2*x3 + y3*x4 + y4*x1))| / 2
-        // 这里调用calcArea那套逻辑时需要按顺序传入点
-        var x1:Number=p1.x,y1:Number=p1.y;
-        var x2:Number=p2.x,y2:Number=p2.y;
-        var x3:Number=p3.x,y3:Number=p3.y;
-        var x4:Number=p4.x,y4:Number=p4.y;
-        
-        // 使用抽屉算法直接计算
-        var rawArea:Number = (x1*y2 + x2*y3 + x3*y4 + x4*y1 - (y1*x2 + y2*x3 + y3*x4 + y4*x1));
-        return Math.abs(rawArea)/1; // 原先抽屉算法需要除2，但这里点集为4个闭合顶点时请注意:
-        // 实际上上面calcArea也是同样的公式，但不除2是因为calcArea中使用了完整循环，会自动等效抽屉算法结果的一半。
-        // 我们可以借鉴calcArea的逻辑以保持一致性:
-        // 使用与calcArea相同的方式：
-        // var arr:Array=[{x:x1,y:y1},{x:x2,y:y2},{x:x3,y:y3},{x:x4,y:y4}];
-        // return calcArea(arr);
-        // 为了确保一致性和不引入新问题，直接复用calcArea:
-        var arr:Array = [{x:x1,y:y1},{x:x2,y:y2},{x:x3,y:y3},{x:x4,y:y4}];
-        return calcArea(arr);
+        // 抽屉公式
+        var area:Number = (p1.x * p2.y + p2.x * p3.y + p3.x * p4.y + p4.x * p1.y) - (p2.x * p1.y + p3.x * p2.y + p4.x * p3.y + p1.x * p4.y);
+        return (area < 0) ? -area : area;
     }
 
     public function setFactory(factory:AbstractColliderFactory):Void {
@@ -207,47 +252,63 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         return this._factory;
     }
 
+    // 更新为透明子弹，直接修改p1,p2,p3,p4的x,y
     public function updateFromTransparentBullet(bullet:Object):Void {
         var halfSize:Number = 12.5;
-        p1 = new Vector(bullet._x - halfSize, bullet._y - halfSize);
-        p2 = new Vector(bullet._x + halfSize, bullet._y - halfSize);
-        p3 = new Vector(bullet._x + halfSize, bullet._y + halfSize);
-        p4 = new Vector(bullet._x - halfSize, bullet._y + halfSize);
+        p1.x = bullet._x - halfSize;
+        p1.y = bullet._y - halfSize;
+        p2.x = bullet._x + halfSize;
+        p2.y = bullet._y - halfSize;
+        p3.x = bullet._x + halfSize;
+        p3.y = bullet._y + halfSize;
+        p4.x = bullet._x - halfSize;
+        p4.y = bullet._y + halfSize;
     }
 
     public function updateFromBullet(bullet:MovieClip, detectionArea:MovieClip):Void {
         var rect:Object = detectionArea.getRect(detectionArea);
 
-        var P1:Vector = pointToGameworld(rect.xMax, rect.yMax, detectionArea);
-        var P3:Vector = pointToGameworld(rect.xMin, rect.yMin, detectionArea);
+        var p1gw:Vector = pointToGameworld(rect.xMax, rect.yMax, detectionArea);
+        var p3gw:Vector = pointToGameworld(rect.xMin, rect.yMin, detectionArea);
 
-        var centerX:Number = (P1.x + P3.x)*0.5;
-        var centerY:Number = (P1.y + P3.y)*0.5;
-        var vx:Number = P1.x - centerX;
-        var vy:Number = P1.y - centerY;
+        var centerX:Number = (p1gw.x + p3gw.x) * 0.5;
+        var centerY:Number = (p1gw.y + p3gw.y) * 0.5;
+        var vx:Number = p1gw.x - centerX;
+        var vy:Number = p1gw.y - centerY;
         var angle:Number = Math.atan2(vy, vx);
-        var length:Number = Math.sqrt(vx*vx + vy*vy);
+        var length:Number = Math.sqrt(vx * vx + vy * vy);
         var cosVal:Number = length * Math.cos(angle);
         var sinVal:Number = length * Math.sin(angle);
 
-        var P0:Vector = new Vector(centerX - cosVal, centerY + sinVal);
-        var P2:Vector = new Vector(centerX + cosVal, centerY - sinVal);
+        // p0, p1, p2, p3 对应之前的推断
+        // p0 = centerX - cosVal, centerY + sinVal
+        // p2 = centerX + cosVal, centerY - sinVal
+        // p1 = p1gw, p3 = p3gw
 
-        p1 = P0;
-        p2 = P1;
-        p3 = P2;
-        p4 = P3;
+        p1.x = p1gw.x;
+        p1.y = p1gw.y;
+        p3.x = p3gw.x;
+        p3.y = p3gw.y;
+        p2.x = centerX + cosVal;
+        p2.y = centerY - sinVal;
+        p4.x = centerX - cosVal;
+        p4.y = centerY + sinVal;
     }
 
     public function updateFromUnitArea(unit:MovieClip):Void {
         var frame = _root.帧计时器.当前帧数;
-        if (this._currentFrame == frame) return;
+        if (this._currentFrame == frame)
+            return;
         this._currentFrame = frame;
         var unitRect:Object = unit.area.getRect(_root.gameworld);
 
-        p1 = new Vector(unitRect.xMin, unitRect.yMin);
-        p2 = new Vector(unitRect.xMax, unitRect.yMin);
-        p3 = new Vector(unitRect.xMax, unitRect.yMax);
-        p4 = new Vector(unitRect.xMin, unitRect.yMax);
+        p1.x = unitRect.xMin;
+        p1.y = unitRect.yMin;
+        p2.x = unitRect.xMax;
+        p2.y = unitRect.yMin;
+        p3.x = unitRect.xMax;
+        p3.y = unitRect.yMax;
+        p4.x = unitRect.xMin;
+        p4.y = unitRect.yMax;
     }
 }
