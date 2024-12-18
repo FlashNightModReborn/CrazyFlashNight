@@ -82,6 +82,10 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
         // 绑定 AABB 碰撞区域到子弹实例
         target.aabbCollider = areaAABB;
 
+        var filterMethod:Function = BulletColliderHandler.defaultFilterMethod;
+        var collisionMethod:Function = BulletColliderHandler.defaultCollisionMethod;
+        target.colliderHandler = new BulletColliderHandler(target, filterMethod, collisionMethod);
+
         // 判断是否需要直接调用生命周期函数或绑定 onEnterFrame
         if (target.透明检测) {
             _root.子弹生命周期.call(target);
