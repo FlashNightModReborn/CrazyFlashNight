@@ -1,5 +1,4 @@
-﻿// org/flashNight/gesh/property/PropertyAccessor.as
-import org.flashNight.gesh.property.IProperty;
+﻿import org.flashNight.gesh.property.*;
 
 class org.flashNight.gesh.property.PropertyAccessor implements IProperty {
     private var _value:Number;
@@ -7,25 +6,40 @@ class org.flashNight.gesh.property.PropertyAccessor implements IProperty {
     private var _cacheValid:Boolean;
     private var _computeFunc:Function;
     private var _onSetCallback:Function;
+    private var _validationFunc:Function; // 验证函数
     private var _propName:String;
     private var _obj:Object;
 
     /**
      * 构造函数
-     * @param obj           目标对象
-     * @param propName      属性名称
-     * @param defaultValue  默认值
-     * @param computeFunc   计算函数（可选，用于派生属性）
-     * @param onSetCallback 设置回调（可选，用于通知依赖属性）
+     * @param obj             目标对象
+     * @param propName        属性名称
+     * @param defaultValue    默认值
+     * @param computeFunc     计算函数（可选，用于派生属性）
+     * @param onSetCallback   设置回调（可选，用于通知依赖属性）
+     * @param validationFunc  验证函数（可选，用于验证值是否合法）
      */
-    public function PropertyAccessor(obj:Object, propName:String, defaultValue:Number, computeFunc:Function, onSetCallback:Function) {
+    public function PropertyAccessor(
+        obj:Object,
+        propName:String,
+        defaultValue:Number,
+        computeFunc:Function,
+        onSetCallback:Function,
+        validationFunc:Function
+    ) {
         this._value = defaultValue;
-        this._cache = defaultValue;
-        this._cacheValid = true;
         this._computeFunc = computeFunc;
         this._onSetCallback = onSetCallback;
+        this._validationFunc = validationFunc; // 初始化验证函数
         this._propName = propName;
         this._obj = obj;
+
+        if (this._computeFunc != null) {
+            this._cacheValid = false;
+        } else {
+            this._cache = this._value;
+            this._cacheValid = true;
+        }
 
         var self:PropertyAccessor = this;
 
@@ -35,50 +49,50 @@ class org.flashNight.gesh.property.PropertyAccessor implements IProperty {
             function() {
                 return self.get();
             },
-            computeFunc == null ? function(newVal:Number) {
+            this._computeFunc == null ? function(newVal:Number) {
                 self.set(newVal);
             } : null
         );
     }
 
     /**
-     * 获取属性值
+     * 获取属性值（惰性优化）
      * @return 属性值
      */
     public function get():Number {
         if (!this._cacheValid) {
-            if (this._computeFunc != null) {
+            this.get = this._computeFunc != null ? function():Number {
                 this._cache = this._computeFunc();
-            } else {
-                this._cache = this._value;
-            }
-            this._cacheValid = true;
-            trace("Computed property '" + this._propName + "': " + this._cache);
-        } else {
-            trace("Cache hit for property '" + this._propName + "': " + this._cache);
+                this._cacheValid = true;
+                return this._cache;
+            } : function():Number {
+                return this._value;
+            };
+            return this.get();
         }
         return this._cache;
     }
 
     /**
-     * 设置属性值
+     * 设置属性值（惰性优化）
      * @param newVal 新值
      */
     public function set(newVal:Number):Void {
         if (this._computeFunc != null) {
-            trace("Property '" + this._propName + "' is read-only.");
+            this.set = function(newVal:Number):Void {
+                // 只读属性，无操作
+            };
             return;
         }
 
-        if (newVal >= 0) {
+        if (this._validationFunc == null || this._validationFunc(newVal)) {
             this._value = newVal;
             this._cacheValid = false;
-            trace("Set '" + this._propName + "' to " + this._value);
             if (this._onSetCallback != null) {
                 this._onSetCallback();
             }
         } else {
-            trace("Invalid value: " + newVal + "! '" + this._propName + "' must be non-negative.");
+            trace("Invalid value: " + newVal + " for property '" + this._propName + "'.");
         }
     }
 
@@ -87,7 +101,13 @@ class org.flashNight.gesh.property.PropertyAccessor implements IProperty {
      */
     public function invalidate():Void {
         this._cacheValid = false;
-        trace("Cache for property '" + this._propName + "' invalidated.");
+        this.get = this._computeFunc != null ? function():Number {
+            this._cache = this._computeFunc();
+            this._cacheValid = true;
+            return this._cache;
+        } : function():Number {
+            return this._value;
+        };
     }
 
     /**
