@@ -1,6 +1,8 @@
-﻿import org.flashNight.arki.component.Buff.*;
+﻿// org/flashNight/arki/component/Buff/AdditionBuff.as
+import org.flashNight.arki.component.Buff.BaseBuff;
+import org.flashNight.arki.component.Buff.IBuff;
 
-class org.flashNight.arki.component.Buff.AdditionBuff extends BaseBuff {
+class org.flashNight.arki.component.Buff.AdditionBuff extends BaseBuff implements IBuff {
     private var _addition:Number;
 
     /**

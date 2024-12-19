@@ -1,7 +1,8 @@
-﻿// org/flashNight/gesh/property/MultiplierBuff.as
-import org.flashNight.arki.component.Buff.*;
+﻿// org/flashNight/arki/component/Buff/MultiplierBuff.as
+import org.flashNight.arki.component.Buff.BaseBuff;
+import org.flashNight.arki.component.Buff.IBuff;
 
-class org.flashNight.arki.component.Buff.MultiplierBuff extends BaseBuff {
+class org.flashNight.arki.component.Buff.MultiplierBuff extends BaseBuff implements IBuff {
     private var _multiplier:Number;
 
     /**

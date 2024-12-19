@@ -1,6 +1,7 @@
 ﻿// org/flashNight/gesh/property/PropertyAccessor.as
-import org.flashNight.gesh.property.*;
-class org.flashNight.gesh.property.PropertyAccessor implements iProperty {
+import org.flashNight.gesh.property.IProperty;
+
+class org.flashNight.gesh.property.PropertyAccessor implements IProperty {
     private var _value:Number;
     private var _cache:Number;
     private var _cacheValid:Boolean;

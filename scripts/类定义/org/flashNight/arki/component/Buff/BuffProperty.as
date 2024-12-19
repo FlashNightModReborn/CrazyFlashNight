@@ -1,10 +1,14 @@
-﻿import org.flashNight.gesh.property.*;
-import org.flashNight.arki.component.Buff.*;
+﻿// org/flashNight/arki/component/Buff/BuffProperty.as
+import org.flashNight.gesh.property.PropertyAccessor;
+import org.flashNight.arki.component.Buff.IBuff;
+import org.flashNight.arki.component.Buff.MultiplierBuff;
+import org.flashNight.arki.component.Buff.AdditionBuff;
 
-class org.flashNight.gesh.property.BuffProperty {
+class org.flashNight.arki.component.Buff.BuffProperty {
     private var _baseAccessor:PropertyAccessor;
     private var _buffedAccessor:PropertyAccessor;
     private var _buffs:Array;
+    private var _obj:Object; // 存储目标对象引用
 
     /**
      * 构造函数
@@ -12,17 +16,18 @@ class org.flashNight.gesh.property.BuffProperty {
      * @param propName 属性名称
      */
     public function BuffProperty(obj:Object, propName:String) {
+        this._obj = obj;
         this._buffs = [];
 
         var self:BuffProperty = this;
 
         // 创建 PropertyAccessor 用于基础属性
-        this._baseAccessor = new org.flashNight.gesh.property.PropertyAccessor(obj, propName + "_base", 0, null, function() {
+        this._baseAccessor = new PropertyAccessor(obj, propName + "_base", 0, null, function() {
             self.invalidate();
         });
 
         // 创建 PropertyAccessor 用于 buffed 属性，并提供计算函数
-        this._buffedAccessor = new org.flashNight.gesh.property.PropertyAccessor(obj, propName, 0, function():Number {
+        this._buffedAccessor = new PropertyAccessor(obj, propName, 0, function():Number {
             return self.computeBuffed();
         }, null);
     }
@@ -32,7 +37,7 @@ class org.flashNight.gesh.property.BuffProperty {
      * @param multiplier 乘算值
      */
     public function addMultiplier(multiplier:Number):Void {
-        var buff:org.flashNight.gesh.property.MultiplierBuff = new org.flashNight.gesh.property.MultiplierBuff(multiplier);
+        var buff:MultiplierBuff = new MultiplierBuff(multiplier);
         this._buffs.push(buff);
         trace("Added multiplier buff: " + multiplier);
         this.invalidate();
@@ -43,7 +48,7 @@ class org.flashNight.gesh.property.BuffProperty {
      * @param addition 加算值
      */
     public function addAddition(addition:Number):Void {
-        var buff:org.flashNight.gesh.property.AdditionBuff = new org.flashNight.gesh.property.AdditionBuff(addition);
+        var buff:AdditionBuff = new AdditionBuff(addition);
         this._buffs.push(buff);
         trace("Added addition buff: " + addition);
         this.invalidate();
@@ -53,10 +58,26 @@ class org.flashNight.gesh.property.BuffProperty {
      * 添加通用 buff
      * @param buff buff 实例
      */
-    public function addBuff(buff:org.flashNight.gesh.property.iBuff):Void {
+    public function addBuff(buff:IBuff):Void {
         this._buffs.push(buff);
         trace("Added generic buff.");
         this.invalidate();
+    }
+
+    /**
+     * 移除指定 buff
+     * @param buff buff 实例
+     */
+    public function removeBuff(buff:IBuff):Void {
+        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
+            if (this._buffs[i] === buff) {
+                this._buffs.splice(i, 1);
+                trace("Removed buff.");
+                this.invalidate();
+                return;
+            }
+        }
+        trace("Buff not found.");
     }
 
     /**
@@ -64,7 +85,7 @@ class org.flashNight.gesh.property.BuffProperty {
      */
     public function clearMultipliers():Void {
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
-            if (this._buffs[i] instanceof org.flashNight.gesh.property.MultiplierBuff) {
+            if (this._buffs[i] instanceof MultiplierBuff) {
                 this._buffs.splice(i, 1);
                 trace("Removed multiplier buff.");
             }
@@ -77,7 +98,7 @@ class org.flashNight.gesh.property.BuffProperty {
      */
     public function clearAdditions():Void {
         for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
-            if (this._buffs[i] instanceof org.flashNight.gesh.property.AdditionBuff) {
+            if (this._buffs[i] instanceof AdditionBuff) {
                 this._buffs.splice(i, 1);
                 trace("Removed addition buff.");
             }
@@ -96,7 +117,7 @@ class org.flashNight.gesh.property.BuffProperty {
         trace("Computing buffed '" + this._buffedAccessor.getPropName() + "' from base value: " + baseValue);
 
         for (var i:Number = 0; i < this._buffs.length; i++) {
-            var buff:org.flashNight.gesh.property.iBuff = this._buffs[i];
+            var buff:IBuff = this._buffs[i];
             result = buff.apply(result);
         }
 
@@ -105,9 +126,12 @@ class org.flashNight.gesh.property.BuffProperty {
     }
 
     /**
-     * 使 buffed 属性缓存失效
+     * 使 buffed 属性缓存失效，并通知依赖属性
      */
     public function invalidate():Void {
         this._buffedAccessor.invalidate();
+        if (this._obj.invalidateDependents != undefined && this._obj.invalidateDependents instanceof Function) {
+            this._obj.invalidateDependents();
+        }
     }
 }

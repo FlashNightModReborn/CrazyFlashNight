@@ -1,88 +1,132 @@
-﻿// File: org/flashNight/gesh/property/BaseProperty.as
-class org.flashNight.gesh.property.BaseProperty {
-    private var _value:Number;
-    private var _cache:Number;
-    private var _cacheValid:Boolean;
-    private var _computeFunc:Function;
-    private var _onSetCallback:Function;
-    private var _propName:String;
+﻿// org/flashNight/gesh/property/BuffProperty.as
+import org.flashNight.gesh.property.PropertyAccessor;
+import org.flashNight.arki.component.Buff.IBuff;
+import org.flashNight.arki.component.Buff.MultiplierBuff;
+import org.flashNight.arki.component.Buff.AdditionBuff;
+
+class org.flashNight.gesh.property.BuffProperty {
+    private var _baseAccessor:PropertyAccessor;
+    private var _buffedAccessor:PropertyAccessor;
+    private var _buffs:Array;
 
     /**
      * 构造函数
-     * @param obj           目标对象
-     * @param propName      属性名称
-     * @param defaultValue  默认值
-     * @param computeFunc   计算函数（可选，用于派生属性）
-     * @param onSetCallback 设置回调函数（可选，用于通知依赖属性）
+     * @param obj      目标对象
+     * @param propName 属性名称
      */
-    public function BaseProperty(obj:Object, propName:String, defaultValue:Number, computeFunc:Function, onSetCallback:Function) {
-        this._propName = propName;
-        this._value = defaultValue;
-        this._cache = defaultValue;
-        this._cacheValid = true;
-        this._computeFunc = computeFunc;
-        this._onSetCallback = onSetCallback;
+    public function BuffProperty(obj:Object, propName:String) {
+        this._buffs = [];
 
-        var self:BaseProperty = this;
+        var self:BuffProperty = this;
 
-        // 定义属性访问器
-        obj.addProperty(
-            propName,
-            function():Number {
-                return self.getValue();
-            },
-            (computeFunc == null) ? function(newVal:Number):Void {
-                self.setValue(newVal);
-            } : null
-        );
+        // 创建 PropertyAccessor 用于基础属性
+        this._baseAccessor = new PropertyAccessor(obj, propName + "_base", 0, null, function() {
+            self.invalidate();
+        });
+
+        // 创建 PropertyAccessor 用于 buffed 属性，并提供计算函数
+        this._buffedAccessor = new PropertyAccessor(obj, propName, 0, function():Number {
+            return self.computeBuffed();
+        }, null);
     }
 
     /**
-     * 获取属性值
-     * @return 属性值
+     * 添加乘算 buff
+     * @param multiplier 乘算值
      */
-    public function getValue():Number {
-        if (!this._cacheValid) {
-            if (this._computeFunc != null) {
-                this._cache = this._computeFunc();
-                trace("Computed '" + this._propName + "': " + this._cache);
-            } else {
-                this._cache = this._value;
-                trace("Retrieved '" + this._propName + "': " + this._cache);
+    public function addMultiplier(multiplier:Number):Void {
+        var buff:MultiplierBuff = new MultiplierBuff(multiplier);
+        this._buffs.push(buff);
+        trace("Added multiplier buff: " + multiplier);
+        this.invalidate();
+    }
+
+    /**
+     * 添加加算 buff
+     * @param addition 加算值
+     */
+    public function addAddition(addition:Number):Void {
+        var buff:AdditionBuff = new AdditionBuff(addition);
+        this._buffs.push(buff);
+        trace("Added addition buff: " + addition);
+        this.invalidate();
+    }
+
+    /**
+     * 添加通用 buff
+     * @param buff buff 实例
+     */
+    public function addBuff(buff:IBuff):Void {
+        this._buffs.push(buff);
+        trace("Added generic buff.");
+        this.invalidate();
+    }
+
+    /**
+     * 移除指定 buff
+     * @param buff buff 实例
+     */
+    public function removeBuff(buff:IBuff):Void {
+        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
+            if (this._buffs[i] === buff) {
+                this._buffs.splice(i, 1);
+                trace("Removed buff.");
+                this.invalidate();
+                return;
             }
-            this._cacheValid = true;
-        } else {
-            trace("Cache hit for '" + this._propName + "': " + this._cache);
         }
-        return this._cache;
+        trace("Buff not found.");
     }
 
     /**
-     * 设置属性值
-     * @param newVal 新值
+     * 清除所有乘算 buff
      */
-    public function setValue(newVal:Number):Void {
-        if (this._computeFunc != null) {
-            trace("Property '" + this._propName + "' is read-only.");
-            return;
-        }
-        if (newVal >= 0) {
-            this._value = newVal;
-            this._cacheValid = false;
-            trace("Set '" + this._propName + "' to " + this._value);
-            if (this._onSetCallback != null) {
-                this._onSetCallback();
+    public function clearMultipliers():Void {
+        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
+            if (this._buffs[i] instanceof MultiplierBuff) {
+                this._buffs.splice(i, 1);
+                trace("Removed multiplier buff.");
             }
-        } else {
-            trace("Invalid value: " + newVal + "! '" + this._propName + "' must be non-negative.");
         }
+        this.invalidate();
     }
 
     /**
-     * 使缓存失效
+     * 清除所有加算 buff
+     */
+    public function clearAdditions():Void {
+        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
+            if (this._buffs[i] instanceof AdditionBuff) {
+                this._buffs.splice(i, 1);
+                trace("Removed addition buff.");
+            }
+        }
+        this.invalidate();
+    }
+
+    /**
+     * 计算 buffed 属性值，通过应用所有 buff
+     * @return buffed 值
+     */
+    private function computeBuffed():Number {
+        var baseValue:Number = this._baseAccessor.get();
+        var result:Number = baseValue;
+
+        trace("Computing buffed '" + this._buffedAccessor.getPropName() + "' from base value: " + baseValue);
+
+        for (var i:Number = 0; i < this._buffs.length; i++) {
+            var buff:IBuff = this._buffs[i];
+            result = buff.apply(result);
+        }
+
+        trace("Computed '" + this._buffedAccessor.getPropName() + "': " + result);
+        return result;
+    }
+
+    /**
+     * 使 buffed 属性缓存失效
      */
     public function invalidate():Void {
-        this._cacheValid = false;
-        trace("Cache for property '" + this._propName + "' invalidated.");
+        this._buffedAccessor.invalidate();
     }
 }

@@ -1,5 +1,7 @@
-﻿import org.flashNight.arki.component.Buff.*;
-class org.flashNight.arki.component.Buff.BaseBuff extends iBuff {
+﻿// org/flashNight/arki/component/Buff/BaseBuff.as
+import org.flashNight.arki.component.Buff.IBuff;
+
+class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
     /**
      * 构造函数
      */
