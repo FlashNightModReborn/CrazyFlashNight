@@ -9,12 +9,54 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[
-// var test:org.flashNight.gesh.fntl.FNTLLexerTest = new org.flashNight.gesh.fntl.FNTLLexerTest();
+                                        <script><![CDATA[import org.flashNight.gesh.property.*;
+import org.flashNight.arki.component.Buff.*;
 
-// 调用测试方法，运行所有测试用例
-// test.runAllTests("encoder");
 
+function main():Void {
+    // 创建一个空对象
+    var controller:Object = {};
+
+    // 为该对象添加速度相关的访问器属性
+    addSpeedProperties(controller);
+
+    // 设置 speed 为 10
+    trace("\n设置 speed 为 10");
+    controller.speed = 10;
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 10
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 5
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 20
+
+    // 添加乘算 buff: speed * 1.5
+    trace("\n添加乘算 buff: 1.5");
+    controller.buff.addMultiplier(1.5);
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 15
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 7.5
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 30
+
+    // 添加加算 buff: speed + 5
+    trace("\n添加加算 buff: 5");
+    controller.buff.addAddition(5);
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 20
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 10
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 40
+
+    // 修改 speed 为 20
+    trace("\n设置 speed 为 20");
+    controller.speed = 20;
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 35
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 17.5
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 70
+
+    // 尝试设置 speed 为 -5（无效）
+    trace("\n尝试设置 speed 为 -5");
+    controller.speed = -5; // 应输出: Invalid value: -5! 'speed_base' must be non-negative.
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 35
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 17.5
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 70
+}
+
+main();
 ]]></script>
                                    </Actionscript>
                                    <elements/>
@@ -30,25 +72,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="231638" publishTime="1734582860"/>
+          <PublishItem publishSize="232289" publishTime="1734579421"/>
+          <PublishItem publishSize="232640" publishTime="1734577912"/>
+          <PublishItem publishSize="232401" publishTime="1734577547"/>
+          <PublishItem publishSize="232387" publishTime="1734577365"/>
+          <PublishItem publishSize="232023" publishTime="1734576717"/>
+          <PublishItem publishSize="231912" publishTime="1734576544"/>
+          <PublishItem publishSize="231717" publishTime="1734576054"/>
+          <PublishItem publishSize="232083" publishTime="1734575088"/>
+          <PublishItem publishSize="232785" publishTime="1734574829"/>
+          <PublishItem publishSize="232436" publishTime="1734574709"/>
+          <PublishItem publishSize="232436" publishTime="1734574638"/>
+          <PublishItem publishSize="232435" publishTime="1734574623"/>
+          <PublishItem publishSize="232419" publishTime="1734574576"/>
           <PublishItem publishSize="215895" publishTime="1733134693"/>
           <PublishItem publishSize="215892" publishTime="1733134188"/>
           <PublishItem publishSize="215905" publishTime="1733133870"/>
           <PublishItem publishSize="215892" publishTime="1733133707"/>
           <PublishItem publishSize="214437" publishTime="1733124967"/>
           <PublishItem publishSize="167089" publishTime="1730564511"/>
-          <PublishItem publishSize="202198" publishTime="1728875228"/>
-          <PublishItem publishSize="202220" publishTime="1728874996"/>
-          <PublishItem publishSize="189525" publishTime="1728874979"/>
-          <PublishItem publishSize="189528" publishTime="1728874770"/>
-          <PublishItem publishSize="201062" publishTime="1728873438"/>
-          <PublishItem publishSize="179347" publishTime="1728873397"/>
-          <PublishItem publishSize="199793" publishTime="1728872771"/>
-          <PublishItem publishSize="199793" publishTime="1728872542"/>
-          <PublishItem publishSize="199794" publishTime="1728872513"/>
-          <PublishItem publishSize="199796" publishTime="1728872503"/>
-          <PublishItem publishSize="198758" publishTime="1728872479"/>
-          <PublishItem publishSize="198707" publishTime="1728872198"/>
-          <PublishItem publishSize="198692" publishTime="1728872061"/>
-          <PublishItem publishSize="199726" publishTime="1728871895"/>
      </publishHistory>
 </DOMDocument>
