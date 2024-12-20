@@ -1,6 +1,6 @@
 ﻿// org/flashNight/arki/component/Buff/IBuffProperty.as
-import org.flashNight.arki.component.Buff.IBuff;
-
+import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.BuffHandle.*;
 interface org.flashNight.arki.component.Buff.IBuffProperty {
     /**
      * 添加一个 Buff。

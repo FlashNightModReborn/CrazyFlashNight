@@ -1,6 +1,6 @@
 ﻿// org/flashNight.arki.component.Buff.BuffProperty.as
-import org.flashNight.arki.component.Buff.BaseBuffProperty;
-import org.flashNight.arki.component.Buff.IBuff;
+import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.BuffHandle.*;
 
 class org.flashNight.arki.component.Buff.BuffProperty extends BaseBuffProperty implements IBuffProperty {
     public function BuffProperty(obj:Object, propName:String, defaultBaseValue:Number) {

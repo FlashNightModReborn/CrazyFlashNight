@@ -1,5 +1,4 @@
-﻿// org/flashNight/arki/component/Buff/IBuff.as
-interface org.flashNight.arki.component.Buff.IBuff {
+﻿interface org.flashNight.arki.component.Buff.BuffHandle.IBuff {
     /**
      * Buff 的类型标志
      */

@@ -1,5 +1,6 @@
 import org.flashNight.gesh.property.*;
 import org.flashNight.arki.component.Buff.*; 
+import org.flashNight.arki.component.Buff.BuffHandle.*;
 
 function addSpeedProperties(obj:Object):Void {
     // 创建 BuffProperty 管理 'speed'

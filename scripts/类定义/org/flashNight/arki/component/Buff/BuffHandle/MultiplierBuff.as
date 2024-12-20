@@ -1,8 +1,6 @@
-﻿// org/flashNight/arki/component/Buff/MultiplierBuff.as
-import org.flashNight.arki.component.Buff.BaseBuff;
-import org.flashNight.arki.component.Buff.IBuff;
+﻿import org.flashNight.arki.component.Buff.BuffHandle.*;
 
-class org.flashNight.arki.component.Buff.MultiplierBuff extends BaseBuff implements IBuff {
+class org.flashNight.arki.component.Buff.BuffHandle.MultiplierBuff extends BaseBuff implements IBuff {
     private var _multiplier:Number;
 
     /**
@@ -10,7 +8,7 @@ class org.flashNight.arki.component.Buff.MultiplierBuff extends BaseBuff impleme
      * @param multiplier 乘算值
      */
     public function MultiplierBuff(multiplier:Number) {
-        super("multiplier"); // 设置 Buff 类型为 "multiplier"
+        super(BuffTypes.MULTIPLIER); // 设置 Buff 类型为 "multiplier"
         this._multiplier = multiplier;
     }
 

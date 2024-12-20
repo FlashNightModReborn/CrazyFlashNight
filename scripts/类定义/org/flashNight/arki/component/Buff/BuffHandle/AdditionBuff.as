@@ -1,8 +1,6 @@
-﻿// org/flashNight/arki/component/Buff/AdditionBuff.as
-import org.flashNight.arki.component.Buff.BaseBuff;
-import org.flashNight.arki.component.Buff.IBuff;
+﻿import org.flashNight.arki.component.Buff.BuffHandle.*;
 
-class org.flashNight.arki.component.Buff.AdditionBuff extends BaseBuff implements IBuff {
+class org.flashNight.arki.component.Buff.BuffHandle.AdditionBuff extends BaseBuff implements IBuff {
     private var _addition:Number;
 
     /**
@@ -10,7 +8,7 @@ class org.flashNight.arki.component.Buff.AdditionBuff extends BaseBuff implement
      * @param addition 加算值
      */
     public function AdditionBuff(addition:Number) {
-        super("addition"); // 设置 Buff 类型为 "addition"
+        super(BuffTypes.ADDITION); // 设置 Buff 类型为 "addition"
         this._addition = addition;
     }
 

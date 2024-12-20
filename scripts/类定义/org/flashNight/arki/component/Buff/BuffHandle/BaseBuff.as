@@ -1,7 +1,6 @@
-﻿// org/flashNight/arki/component/Buff/BaseBuff.as
-import org.flashNight.arki.component.Buff.IBuff;
+﻿import org.flashNight.arki.component.Buff.BuffHandle.IBuff;
 
-class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
+class org.flashNight.arki.component.Buff.BuffHandle.BaseBuff implements IBuff {
     private var _type:String;
 
     /**

@@ -1,5 +1,6 @@
 ﻿// org/flashNight/arki/component/Buff/BaseBuffPropertyTest.as
 import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.BuffHandle.*;
 import org.flashNight.gesh.property.*;
 import org.flashNight.naki.DataStructures.Dictionary;
 
@@ -168,9 +169,12 @@ class org.flashNight.arki.component.Buff.BaseBuffPropertyTest {
         assertEquals(buffProperty.getBuffedValue(), -5, "Buffed Value after Removing Multiplier Buff with 0");
     }
 
-    // 实战性场景测试：混合添加、移除、计算
+    // 实战性场景测试：基于百分比的稳定操作顺序
     private static function testRealWorldScenario():Void {
         trace("== Real-World Scenario Tests ==");
+
+        var startTime:Number = getTimer();
+        var endTime:Number;
 
         var target:Object = {};
         var buffProperty:BaseBuffProperty = new BaseBuffProperty(target, "testProp", 100, null);
@@ -186,32 +190,50 @@ class org.flashNight.arki.component.Buff.BaseBuffPropertyTest {
             buffs.push(new MultiplierBuff(1.01)); // 1% increase
         }
 
-        // 随机混合操作
-        for (var j:Number = 0; j < 1000; j++) {
-            var operation:Number = Math.random();
-            var buffIndex:Number = Math.floor(Math.random() * buffs.length);
+        // 固定操作顺序基于百分比
+        var totalOperations:Number = 1000;
+        var addOperations:Number = Math.floor(totalOperations * 0.15);    // 15% 添加
+        var removeOperations:Number = Math.floor(totalOperations * 0.15); // 15% 移除
+        var computeOperations:Number = totalOperations - addOperations - removeOperations; // 剩余 70% 计算
+
+        // 确定性操作队列
+        var operations:Array = [];
+        for (var a:Number = 0; a < addOperations; a++) {
+            operations.push("add");
+        }
+        for (var r:Number = 0; r < removeOperations; r++) {
+            operations.push("remove");
+        }
+        for (var c:Number = 0; c < computeOperations; c++) {
+            operations.push("compute");
+        }
+
+        // 固定的循环顺序
+        for (var j:Number = 0; j < totalOperations; j++) {
+            var operation:String = operations[j % operations.length]; // 循环操作顺序
+            var buffIndex:Number = j % buffs.length; // 确定性选择 Buff
             var selectedBuff:IBuff = buffs[buffIndex];
 
-            if (operation < 0.15) { // 15% 添加 Buff
+            if (operation === "add") { // 添加 Buff
                 buffProperty.addBuff(selectedBuff);
                 addCount++;
-            } else if (operation < 0.30) { // 15% 移除 Buff
+            } else if (operation === "remove") { // 移除 Buff
                 buffProperty.removeBuff(selectedBuff);
                 removeCount++;
-            } else { // 70% 计算 Buffed Value
+            } else if (operation === "compute") { // 计算 Buffed Value
                 var buffedValue:Number = buffProperty.getBuffedValue();
                 computeCount++;
-                // Optional: Validate buffedValue against expected logic
-                // 这里假设所有 Buff 的累积逻辑正确，因此不做具体断言
             }
         }
 
         trace("Real-World Scenario: Added Buffs: " + addCount + ", Removed Buffs: " + removeCount + ", Computed Buffed Values: " + computeCount);
 
+        endTime = getTimer();
         // 最终验证 Buffed Value 的合理性
-        // 由于 Buff 的随机添加和移除，具体值难以预期，但可以验证系统未崩溃并保持数值稳定
         trace("Final Buffed Value: " + buffProperty.getBuffedValue());
+        trace("Time to Real-World Scenario with: " + (endTime - startTime) + "ms");
     }
+
 
     // 性能测试
     private static function testPerformance():Void {
