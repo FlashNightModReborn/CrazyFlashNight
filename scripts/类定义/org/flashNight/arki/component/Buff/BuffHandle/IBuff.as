@@ -15,4 +15,11 @@
      * 使 buff 的缓存失效
      */
     function invalidate():Void;
+
+    
+    /**
+     * 判断 Buff 是否为 POD 类型
+     * @return true
+     */
+    function isPOD():Boolean;
 }

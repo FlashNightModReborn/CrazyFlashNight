@@ -36,4 +36,12 @@ class org.flashNight.arki.component.Buff.BuffHandle.BaseBuff implements IBuff {
     public function invalidate():Void {
         // 子类需实现
     }
+
+    /**
+     * 判断 Buff 是否为 POD 类型
+     * 子类需覆盖此方法
+     */
+    public function isPOD():Boolean {
+        return false;
+    }
 }
