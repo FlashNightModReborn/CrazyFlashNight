@@ -11,6 +11,47 @@ class org.flashNight.gesh.arguments.ArgumentsUtil {
         // arguments 对象有 length 属性
         return args.length;
     }
+    
+    /**
+     * sliceArgs 方法用于从给定的函数参数对象中提取一部分参数，并返回一个新的数组。
+     * 
+     * @param args FunctionArguments - 函数的 arguments 对象，包含所有传递的参数。
+     * @param startIndex Number - 要提取参数的起始索引（从 0 开始计数）。
+     * @return Array - 包含从起始索引开始的参数的新数组。如果起始索引超出范围，返回空数组。
+     */
+    public static function sliceArgs(args:FunctionArguments, startIndex:Number):Array {
+        var len:Number; // 需要提取的参数个数
+        var i:Number = args.length; // 从参数列表的末尾开始向前操作
+
+        // 计算需要提取的参数个数，如果结果小于等于 0，则直接返回空数组
+        if ((len = i - startIndex) <= 0) return [];
+
+        // 针对参数数量为 1-10 的情况展开逻辑
+        // 优化：通过手动展开逻辑避免循环开销
+        // 注意：使用 --i 操作符，自减操作会先递减索引再使用，以从右到左提取参数
+        if (len == 1) return [args[--i]]; // 提取 1 个参数
+        if (len == 2) return [args[--i], args[--i]]; // 提取 2 个参数
+        if (len == 3) return [args[--i], args[--i], args[--i]]; // 提取 3 个参数
+        if (len == 4) return [args[--i], args[--i], args[--i], args[--i]]; // 提取 4 个参数
+        if (len == 5) return [args[--i], args[--i], args[--i], args[--i], args[--i]]; // 提取 5 个参数
+        if (len == 6) return [args[--i], args[--i], args[--i], args[--i], args[--i], args[--i]]; // 提取 6 个参数
+        if (len == 7) return [args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i]]; // 提取 7 个参数
+        if (len == 8) return [args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i]]; // 提取 8 个参数
+        if (len == 9) return [args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i]]; // 提取 9 个参数
+        if (len == 10) return [args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i], args[--i]]; // 提取 10 个参数
+
+        // 对于参数数量大于 10 的情况，使用通用循环逻辑
+        // 优化：从右到左（数组末尾到起始索引）依次提取参数，填充到新数组中
+        var newArgs:Array = new Array(len); // 创建用于存储结果的数组，长度为 len
+        for (var j:Number = len - 1; j >= 0; j--) {
+            newArgs[j] = args[--i]; // 自减索引，依次填充结果数组
+        }
+
+        // 返回提取的参数数组
+        return newArgs;
+    }
+
+
 
     /**
      * 将 arguments 对象从指定的起始索引转换为一个数组。
