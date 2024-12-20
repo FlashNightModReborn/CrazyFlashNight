@@ -10,6 +10,7 @@ class org.flashNight.arki.component.Buff.MultiplierBuff extends BaseBuff impleme
      * @param multiplier 乘算值
      */
     public function MultiplierBuff(multiplier:Number) {
+        super("multiplier"); // 设置 Buff 类型为 "multiplier"
         this._multiplier = multiplier;
     }
 

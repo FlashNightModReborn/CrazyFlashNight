@@ -2,11 +2,23 @@
 import org.flashNight.arki.component.Buff.IBuff;
 
 class org.flashNight.arki.component.Buff.BaseBuff implements IBuff {
+    private var _type:String;
+
     /**
      * 构造函数
+     * @param type Buff 的类型标志
      */
-    public function BaseBuff() {
+    public function BaseBuff(type:String) {
+        this._type = type;
         // 基类 buff 构造逻辑
+    }
+
+    /**
+     * 获取 Buff 的类型标志
+     * @return Buff 类型标志
+     */
+    public function getType():String {
+        return this._type;
     }
 
     /**

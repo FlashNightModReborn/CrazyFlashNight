@@ -1,137 +1,31 @@
-﻿// org/flashNight/arki/component/Buff/BuffProperty.as
-import org.flashNight.gesh.property.PropertyAccessor;
+﻿// org/flashNight.arki.component.Buff.BuffProperty.as
+import org.flashNight.arki.component.Buff.BaseBuffProperty;
 import org.flashNight.arki.component.Buff.IBuff;
-import org.flashNight.arki.component.Buff.MultiplierBuff;
-import org.flashNight.arki.component.Buff.AdditionBuff;
 
-class org.flashNight.arki.component.Buff.BuffProperty {
-    private var _baseAccessor:PropertyAccessor;
-    private var _buffedAccessor:PropertyAccessor;
-    private var _buffs:Array;
-    private var _obj:Object; // 存储目标对象引用
-
-    /**
-     * 构造函数
-     * @param obj      目标对象
-     * @param propName 属性名称
-     */
-    public function BuffProperty(obj:Object, propName:String) {
-        this._obj = obj;
-        this._buffs = [];
-
-        var self:BuffProperty = this;
-
-        // 创建 PropertyAccessor 用于基础属性
-        this._baseAccessor = new PropertyAccessor(obj, propName + "_base", 0, null, function() {
-            self.invalidate();
-        });
-
-        // 创建 PropertyAccessor 用于 buffed 属性，并提供计算函数
-        this._buffedAccessor = new PropertyAccessor(obj, propName, 0, function():Number {
-            return self.computeBuffed();
-        }, null);
+class org.flashNight.arki.component.Buff.BuffProperty extends BaseBuffProperty implements IBuffProperty {
+    public function BuffProperty(obj:Object, propName:String, defaultBaseValue:Number) {
+        super(obj, propName, defaultBaseValue, null);
     }
 
-    /**
-     * 添加乘算 buff
-     * @param multiplier 乘算值
-     */
-    public function addMultiplier(multiplier:Number):Void {
-        var buff:MultiplierBuff = new MultiplierBuff(multiplier);
-        this._buffs.push(buff);
-        trace("Added multiplier buff: " + multiplier);
-        this.invalidate();
-    }
+    // 假设先应用所有加算 Buff，再应用所有乘算 Buff
+    public function computeBuffed():Number {
+        var baseVal:Number = this.getBaseValue();
+        var additionSum:Number = 0;
+        var multiplierProduct:Number = 1;
 
-    /**
-     * 添加加算 buff
-     * @param addition 加算值
-     */
-    public function addAddition(addition:Number):Void {
-        var buff:AdditionBuff = new AdditionBuff(addition);
-        this._buffs.push(buff);
-        trace("Added addition buff: " + addition);
-        this.invalidate();
-    }
-
-    /**
-     * 添加通用 buff
-     * @param buff buff 实例
-     */
-    public function addBuff(buff:IBuff):Void {
-        this._buffs.push(buff);
-        trace("Added generic buff.");
-        this.invalidate();
-    }
-
-    /**
-     * 移除指定 buff
-     * @param buff buff 实例
-     */
-    public function removeBuff(buff:IBuff):Void {
-        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
-            if (this._buffs[i] === buff) {
-                this._buffs.splice(i, 1);
-                trace("Removed buff.");
-                this.invalidate();
-                return;
+        var buffs:Array = this.getBuffs();
+        for (var i:Number = 0; i < buffs.length; i++) {
+            var buff:IBuff = buffs[i]; // 修正此处，使用 buffs[i] 而非 this._buffs[i]
+            if (buff instanceof AdditionBuff) {
+                additionSum += buff.apply(0); // apply(0) 返回加算值
+            } else if (buff instanceof MultiplierBuff) {
+                multiplierProduct *= buff.apply(1); // apply(1) 返回乘算值
+            } else {
+                baseVal = buff.apply(baseVal); // 其他 Buff 按默认逻辑应用
             }
         }
-        trace("Buff not found.");
-    }
 
-    /**
-     * 清除所有乘算 buff
-     */
-    public function clearMultipliers():Void {
-        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
-            if (this._buffs[i] instanceof MultiplierBuff) {
-                this._buffs.splice(i, 1);
-                trace("Removed multiplier buff.");
-            }
-        }
-        this.invalidate();
-    }
-
-    /**
-     * 清除所有加算 buff
-     */
-    public function clearAdditions():Void {
-        for (var i:Number = this._buffs.length - 1; i >= 0; i--) {
-            if (this._buffs[i] instanceof AdditionBuff) {
-                this._buffs.splice(i, 1);
-                trace("Removed addition buff.");
-            }
-        }
-        this.invalidate();
-    }
-
-    /**
-     * 计算 buffed 属性值，通过应用所有 buff
-     * @return buffed 值
-     */
-    private function computeBuffed():Number {
-        var baseValue:Number = this._baseAccessor.get();
-        var result:Number = baseValue;
-
-        trace("Computing buffed '" + this._buffedAccessor.getPropName() + "' from base value: " + baseValue);
-
-        for (var i:Number = 0; i < this._buffs.length; i++) {
-            var buff:IBuff = this._buffs[i];
-            result = buff.apply(result);
-        }
-
-        trace("Computed '" + this._buffedAccessor.getPropName() + "': " + result);
+        var result:Number = (baseVal + additionSum) * multiplierProduct;
         return result;
-    }
-
-    /**
-     * 使 buffed 属性缓存失效，并通知依赖属性
-     */
-    public function invalidate():Void {
-        this._buffedAccessor.invalidate();
-        if (this._obj.invalidateDependents != undefined && this._obj.invalidateDependents instanceof Function) {
-            this._obj.invalidateDependents();
-        }
     }
 }

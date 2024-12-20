@@ -1,6 +1,11 @@
 ﻿// org/flashNight/arki/component/Buff/IBuff.as
 interface org.flashNight.arki.component.Buff.IBuff {
     /**
+     * Buff 的类型标志
+     */
+    function getType():String;
+
+    /**
      * 应用 buff 到一个值
      * @param value 原始值
      * @return 修改后的值

@@ -10,6 +10,7 @@ class org.flashNight.arki.component.Buff.AdditionBuff extends BaseBuff implement
      * @param addition 加算值
      */
     public function AdditionBuff(addition:Number) {
+        super("addition"); // 设置 Buff 类型为 "addition"
         this._addition = addition;
     }
 
@@ -20,7 +21,7 @@ class org.flashNight.arki.component.Buff.AdditionBuff extends BaseBuff implement
      */
     public function apply(value:Number):Number {
         var result:Number = value + this._addition;
-        trace("Applied addition " + this._addition + ": " + result);
+        // trace("Applied addition " + this._addition + ": " + result);
         return result;
     }
 
