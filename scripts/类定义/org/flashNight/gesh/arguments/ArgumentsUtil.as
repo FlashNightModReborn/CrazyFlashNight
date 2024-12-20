@@ -11,20 +11,17 @@ class org.flashNight.gesh.arguments.ArgumentsUtil {
         // arguments 对象有 length 属性
         return args.length;
     }
-    
+
     /**
      * sliceArgs 方法用于从给定的函数参数对象中提取一部分参数，并返回一个新的数组。
      * 
      * @param args FunctionArguments - 函数的 arguments 对象，包含所有传递的参数。
      * @param startIndex Number - 要提取参数的起始索引（从 0 开始计数）。
-     * @return Array - 包含从起始索引开始的参数的新数组。如果起始索引超出范围，返回空数组。
+     * @return Array - 包含从起始索引开始的参数的新数组。
      */
     public static function sliceArgs(args:FunctionArguments, startIndex:Number):Array {
-        var len:Number; // 需要提取的参数个数
         var i:Number = args.length; // 从参数列表的末尾开始向前操作
-
-        // 计算需要提取的参数个数，如果结果小于等于 0，则直接返回空数组
-        if ((len = i - startIndex) <= 0) return [];
+        var len:Number = i - startIndex; // 需要提取的参数个数,外界需要做好数值控制以防len小于等于0
 
         // 针对参数数量为 1-10 的情况展开逻辑
         // 优化：通过手动展开逻辑避免循环开销
