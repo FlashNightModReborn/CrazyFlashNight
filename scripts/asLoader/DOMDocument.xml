@@ -1,0 +1,96 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="20" height="20" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="2.16892605577631" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <symbols>
+          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1733218158"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[import org.flashNight.gesh.property.*;
+import org.flashNight.arki.component.Buff.*;
+
+
+function main():Void {
+    // 创建一个空对象
+    var controller:Object = {};
+
+    // 为该对象添加速度相关的访问器属性
+    addSpeedProperties(controller);
+
+    // 设置 speed 为 10
+    trace("\n设置 speed 为 10");
+    controller.speed = 10;
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 10
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 5
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 20
+
+    // 添加乘算 buff: speed * 1.5
+    trace("\n添加乘算 buff: 1.5");
+    controller.buff.addMultiplier(1.5);
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 15
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 7.5
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 30
+
+    // 添加加算 buff: speed + 5
+    trace("\n添加加算 buff: 5");
+    controller.buff.addAddition(5);
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 20
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 10
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 40
+
+    // 修改 speed 为 20
+    trace("\n设置 speed 为 20");
+    controller.speed = 20;
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 35
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 17.5
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 70
+
+    // 尝试设置 speed 为 -5（无效）
+    trace("\n尝试设置 speed 为 -5");
+    controller.speed = -5; // 应输出: Invalid value: -5! 'speed_base' must be non-negative.
+    trace("Speed: " + controller.speed);    // 应输出: Speed: 35
+    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 17.5
+    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 70
+}
+
+main();
+]]></script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+          <PD n="DebugMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="231638" publishTime="1734582860"/>
+          <PublishItem publishSize="232289" publishTime="1734579421"/>
+          <PublishItem publishSize="232640" publishTime="1734577912"/>
+          <PublishItem publishSize="232401" publishTime="1734577547"/>
+          <PublishItem publishSize="232387" publishTime="1734577365"/>
+          <PublishItem publishSize="232023" publishTime="1734576717"/>
+          <PublishItem publishSize="231912" publishTime="1734576544"/>
+          <PublishItem publishSize="231717" publishTime="1734576054"/>
+          <PublishItem publishSize="232083" publishTime="1734575088"/>
+          <PublishItem publishSize="232785" publishTime="1734574829"/>
+          <PublishItem publishSize="232436" publishTime="1734574709"/>
+          <PublishItem publishSize="232436" publishTime="1734574638"/>
+          <PublishItem publishSize="232435" publishTime="1734574623"/>
+          <PublishItem publishSize="232419" publishTime="1734574576"/>
+          <PublishItem publishSize="215895" publishTime="1733134693"/>
+          <PublishItem publishSize="215892" publishTime="1733134188"/>
+          <PublishItem publishSize="215905" publishTime="1733133870"/>
+          <PublishItem publishSize="215892" publishTime="1733133707"/>
+          <PublishItem publishSize="214437" publishTime="1733124967"/>
+          <PublishItem publishSize="167089" publishTime="1730564511"/>
+     </publishHistory>
+</DOMDocument>

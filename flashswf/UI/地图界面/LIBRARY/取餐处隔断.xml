@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="取餐处隔断" itemID="67458f4f-0000004f" symbolType="graphic" lastModified="1732612783">
+  <timeline>
+    <DOMTimeline name="取餐处隔断">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <BitmapFill bitmapPath="纹理图/bitmap13.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="711" ty="151.4"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <BitmapFill bitmapPath="纹理图/bitmap7.jpg" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="592" ty="189.4"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!15310 0|22445 -7705!22445 -7705|24763 -10987"/>
+                    <Edge fillStyle0="1" edges="!24763 -10987|9726 -10987!9726 -10987|-137 -1"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!-137 -1|12370.5 -0.5!12370.5 -0.5|12370 0!12370 0|15310 0"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!15310 0|15310 11719"/>
+                    <Edge fillStyle0="2" edges="!15310 11719|24763 868!24763 868|24763 -10987"/>
+                    <Edge fillStyle1="3" edges="!15310 11719|-137 11719!-137 11719|-137 -1"/>
+                  </edges>
+                </DOMShape>
+                <DOMBitmapInstance libraryItemName="纹理图/bitmap2261.png">
+                  <matrix>
+                    <Matrix a="2.44865417480469" d="2.44865417480469" tx="618"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

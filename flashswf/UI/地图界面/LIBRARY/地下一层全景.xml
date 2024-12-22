@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地下一层全景" itemID="6748ce9b-000001b1" symbolType="graphic" lastModified="1732824850">
+  <timeline>
+    <DOMTimeline name="地下一层全景">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器库整体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="2079.15" ty="226.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="736.25" y="397.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="健身房整体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="571.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="731.25" y="398.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地下一层整体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="1014.05" ty="571.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1362.8" y="401.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

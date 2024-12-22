@@ -40,7 +40,14 @@
         <Ymax>600</Ymax>
         <Width>1800</Width>
         <Height>600</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>1310</x0>
+            <y0>300</y0>
+            <x1>1600</x1>
+            <y1>370</y1>
+        </Door>
         <Collision>
             <Point>1650,330</Point>
             <Point>1800,330</Point>
@@ -128,7 +135,7 @@
         <Width>1940</Width>
         <Height>650</Height>
         <SpaceCondition>室内</SpaceCondition>
-        <MaxIllumination>6</MaxIllumination>
+        <MaxIllumination>7</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>
     <Environment>
@@ -141,7 +148,7 @@
         <Width>1880</Width>
         <Height>650</Height>
         <SpaceCondition>室内</SpaceCondition>
-        <MaxIllumination>5</MaxIllumination>
+        <MaxIllumination>7</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>
     <Environment>
@@ -154,7 +161,7 @@
         <Width>2100</Width>
         <Height>650</Height>
         <SpaceCondition>室内</SpaceCondition>
-        <MaxIllumination>4</MaxIllumination>
+        <MaxIllumination>7</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>
     <Environment>
@@ -167,8 +174,115 @@
         <Width>2100</Width>
         <Height>680</Height>
         <SpaceCondition>室内</SpaceCondition>
-        <MaxIllumination>3</MaxIllumination>
+        <MaxIllumination>7</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+    </Environment>
+    <!-- 新手练习场-->
+    <Environment>
+        <BackgroundURL>gk1_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1688</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1688</Width>
+        <Height>640</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>883</x0>
+            <y0>240</y0>
+            <x1>998</x1>
+            <y1>310</y1>
+            <Identifier>横向地图路障</Identifier>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk1_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1670</Xmax>
+        <Ymin>274</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1688</Width>
+        <Height>640</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>右</Direction>
+            <x0>1580</x0>
+            <y0>380</y0>
+            <x1>1690</x1>
+            <y1>470</y1>
+            <Identifier>纵向地图路障</Identifier>
+        </Door>
+        <Collision>
+            <Point>1593,270</Point>
+            <Point>1593,374</Point>
+            <Point>1680,374</Point>
+            <Point>1680,270</Point>
+        </Collision>
+        <Collision>
+            <Point>1680,468</Point>
+            <Point>1610,468</Point>
+            <Point>1610,536</Point>
+            <Point>1560,536</Point>
+            <Point>1560,600</Point>
+            <Point>1680,600</Point>
+        </Collision>
+        <Collision>
+            <Point>650,550</Point>
+            <Point>760,550</Point>
+            <Point>760,640</Point>
+            <Point>650,640</Point>
+        </Collision>
+        <Collision>
+            <Point>825,550</Point>
+            <Point>925,550</Point>
+            <Point>925,640</Point>
+            <Point>825,640</Point>
+        </Collision>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk1_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1670</Xmax>
+        <Ymin>274</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1688</Width>
+        <Height>640</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>右</Direction>
+            <x0>1572</x0>
+            <y0>360</y0>
+            <x1>1684</x1>
+            <y1>525</y1>
+        </Door>
+        <Collision>
+            <Point>1593,270</Point>
+            <Point>1593,374</Point>
+            <Point>1680,374</Point>
+            <Point>1680,270</Point>
+        </Collision>
+        <Collision>
+            <Point>1680,468</Point>
+            <Point>1610,468</Point>
+            <Point>1610,536</Point>
+            <Point>1560,536</Point>
+            <Point>1560,600</Point>
+            <Point>1680,600</Point>
+        </Collision>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk1_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1688</Xmax>
+        <Ymin>274</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1688</Width>
+        <Height>640</Height>
     </Environment>
     <!-- 超市废墟-->
     <Environment>
@@ -180,7 +294,15 @@
         <Ymax>640</Ymax>
         <Width>1830</Width>
         <Height>640</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>1560</x0>
+            <y0>240</y0>
+            <x1>1760</x1>
+            <y1>290</y1>
+            <Identifier>横向地图路障</Identifier>
+        </Door>
     </Environment>
     <Environment>
         <BackgroundURL>gk2_2_BG.swf</BackgroundURL>
@@ -191,8 +313,13 @@
         <Ymax>480</Ymax>
         <Width>1467</Width>
         <Height>512</Height>
-        <DoorDirection>左</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
         <Elements>
             <Element>
                 <url>flashswf/backgrounds/elements/置物架A.swf</url>
@@ -201,7 +328,160 @@
             </Element>
         </Elements>
     </Environment>
+    <!-- 废墟武器店-->
+    <Environment>
+        <BackgroundURL>gk3_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1830</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1830</Width>
+        <Height>640</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>852</x0>
+            <y0>221</y0>
+            <x1>968</x1>
+            <y1>291</y1>
+            <Identifier>横向地图路障</Identifier>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk3_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1830</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1830</Width>
+        <Height>640</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>627</x0>
+            <y0>224</y0>
+            <x1>743</x1>
+            <y1>294</y1>
+            <Identifier>横向地图路障</Identifier>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk3_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1830</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1830</Width>
+        <Height>640</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>1303</x0>
+            <y0>228</y0>
+            <x1>1419</x1>
+            <y1>298</y1>
+            <Identifier>纵向地图路障</Identifier>
+        </Door>
+        <Collision>
+            <Point>1370,240</Point>
+            <Point>1830,240</Point>
+            <Point>1830,650</Point>
+            <Point>1730,650</Point>
+        </Collision>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk3_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1120</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>480</Ymax>
+        <Width>1467</Width>
+        <Height>480</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+    </Environment>
+    <!-- 角斗场-->
+    <Environment>
+        <BackgroundURL>gk4_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>330</Xmin>
+        <Xmax>1320</Xmax>
+        <Ymin>242</Ymin>
+        <Ymax>740</Ymax>
+        <Width>1830</Width>
+        <Height>640</Height>
+    </Environment>
+    <!-- 郊区-->
+    <Environment>
+        <BackgroundURL>gk5_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1770</Xmax>
+        <Ymin>250</Ymin>
+        <Ymax>720</Ymax>
+        <Width>1770</Width>
+        <Height>730</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk5_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1760</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>730</Ymax>
+        <Width>1760</Width>
+        <Height>730</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk5_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>240</Ymin>
+        <Ymax>730</Ymax>
+        <Width>1800</Width>
+        <Height>730</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk5_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>340</Ymin>
+        <Ymax>730</Ymax>
+        <Width>1770</Width>
+        <Height>730</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk5_5_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1770</Xmax>
+        <Ymin>340</Ymin>
+        <Ymax>730</Ymax>
+        <Width>1770</Width>
+        <Height>730</Height>
+    </Environment>
     <!-- 第一防线-->
+    <Environment>
+        <BackgroundURL>gk6_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1770</Width>
+        <Height>720</Height>
+    </Environment>
     <Environment>
         <BackgroundURL>gk6_2_BG.swf</BackgroundURL>
         <Alignment>false</Alignment>
@@ -211,6 +491,200 @@
         <Ymax>700</Ymax>
         <Width>1800</Width>
         <Height>710</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk6_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1400</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>550</Ymax>
+        <Width>1730</Width>
+        <Height>700</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>下</Direction>
+            <x0>951</x0>
+            <y0>541</y0>
+            <x1>1231</x1>
+            <y1>692</y1>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk6_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1770</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>720</Ymax>
+        <Width>1770</Width>
+        <Height>740</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk6_5_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1820</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1820</Width>
+        <Height>740</Height>
+    </Environment>
+    <!-- 商业区-->
+    <Environment>
+        <BackgroundURL>gk7_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1870</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>720</Ymax>
+        <Width>1870</Width>
+        <Height>720</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk7_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1980</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1920</Width>
+        <Height>700</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk7_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1570</Xmax>
+        <Ymin>380</Ymin>
+        <Ymax>800</Ymax>
+        <Width>1980</Width>
+        <Height>800</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>395</x0>
+            <y0>346</y0>
+            <x1>715</x1>
+            <y1>441</y1>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk7_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1930</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>700</Ymax>
+        <Width>1920</Width>
+        <Height>800</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk7_5_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1600</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>800</Ymax>
+        <Width>1930</Width>
+        <Height>800</Height>
+        <Collision>
+            <Point>1420,290</Point>
+            <Point>1555,500</Point>
+            <Point>1555,555</Point>
+            <Point>1610,610</Point>
+            <Point>1610,290</Point>
+        </Collision>
+    </Environment>
+    <!-- 第三集结点-->
+    <Environment>
+        <BackgroundURL>gk8_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1850</Xmax>
+        <Ymin>400</Ymin>
+        <Ymax>850</Ymax>
+        <Width>1850</Width>
+        <Height>850</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk8_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>1220</Ymax>
+        <Width>1800</Width>
+        <Height>880</Height>
+    </Environment>
+    <!-- 贫民窟-->
+    <Environment>
+        <BackgroundURL>gk9_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>390</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1900</Width>
+        <Height>780</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1940</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1940</Width>
+        <Height>780</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1900</Width>
+        <Height>780</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1900</Width>
+        <Height>780</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_5_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1940</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1940</Width>
+        <Height>780</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk9_6_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>390</Ymin>
+        <Ymax>780</Ymax>
+        <Width>1900</Width>
+        <Height>780</Height>
     </Environment>
     <!-- 闹市区-->
     <Environment>
@@ -270,17 +744,53 @@
     </Environment>
     <!-- 地铁站-->
     <Environment>
+        <BackgroundURL>gk11_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1350</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>720</Ymax>
+        <Width>2000</Width>
+        <Height>720</Height>
+    </Environment>
+    <Environment>
         <BackgroundURL>gk11_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>2000</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>710</Ymax>
+        <Width>2000</Width>
+        <Height>710</Height>
+        <Collision>
+            <Point>220,290</Point>
+            <Point>610,720</Point>
+            <Point>220,720</Point>
+        </Collision>
         <MaxIllumination>6</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>
     <Environment>
         <BackgroundURL>gk11_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>2020</Xmax>
+        <Ymin>400</Ymin>
+        <Ymax>800</Ymax>
+        <Width>2020</Width>
+        <Height>800</Height>
         <MaxIllumination>4</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>
     <Environment>
         <BackgroundURL>gk11_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>440</Ymin>
+        <Ymax>850</Ymax>
+        <Width>2000</Width>
+        <Height>850</Height>
         <MaxIllumination>2</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>
@@ -333,7 +843,14 @@
         <Ymax>790</Ymax>
         <Width>1790</Width>
         <Height>790</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>290</x0>
+            <y0>270</y0>
+            <x1>650</x1>
+            <y1>310</y1>
+        </Door>
     </Environment>
     <Environment>
         <BackgroundURL>gk12_4_BG.swf</BackgroundURL>
@@ -716,6 +1233,57 @@
         <Width>1900</Width>
         <Height>880</Height>
     </Environment>
+    <!-- 军阀前线基地-->
+    <Environment>
+        <BackgroundURL>gk22_1_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>880</Ymax>
+        <Width>1900</Width>
+        <Height>880</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk22_2_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>880</Ymax>
+        <Width>1900</Width>
+        <Height>880</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk22_3_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>880</Ymax>
+        <Width>1900</Width>
+        <Height>880</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk22_4_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>350</Ymin>
+        <Ymax>880</Ymax>
+        <Width>1900</Width>
+        <Height>880</Height>
+    </Environment>
+    <Environment>
+        <BackgroundURL>gk22_5_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>880</Ymax>
+        <Width>1900</Width>
+        <Height>880</Height>
+    </Environment>
     <!-- 禁区-->
     <Environment>
         <BackgroundURL>gk23_1_BG.swf</BackgroundURL>
@@ -756,6 +1324,12 @@
         <Ymax>680</Ymax>
         <Width>1730</Width>
         <Height>680</Height>
+        <Collision>
+            <Point>520,280</Point>
+            <Point>520,330</Point>
+            <Point>610,365</Point>
+            <Point>860,280</Point>
+        </Collision>
     </Environment>
     <Environment>
         <BackgroundURL>gk24_3_BG.swf</BackgroundURL>
@@ -781,11 +1355,16 @@
         <BackgroundURL>gk24_5_BG.swf</BackgroundURL>
         <Alignment>false</Alignment>
         <Xmin>50</Xmin>
-        <Xmax>1760</Xmax>
+        <Xmax>1580</Xmax>
         <Ymin>260</Ymin>
-        <Ymax>900</Ymax>
+        <Ymax>680</Ymax>
         <Width>1730</Width>
         <Height>900</Height>
+        <Collision>
+            <Point>1295,250</Point>
+            <Point>1590,250</Point>
+            <Point>1590,685</Point>
+        </Collision>
     </Environment>
     <Environment>
         <BackgroundURL>禁区大钻头入口_BG.swf</BackgroundURL>
@@ -881,7 +1460,14 @@
         <Ymax>620</Ymax>
         <Width>1024</Width>
         <Height>630</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>330</x0>
+            <y0>370</y0>
+            <x1>450</x1>
+            <y1>390</y1>
+        </Door>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>4</MinIllumination>
     </Environment>
@@ -920,7 +1506,10 @@
         <Ymax>430</Ymax>
         <Width>1200</Width>
         <Height>512</Height>
-        <DoorDirection>左</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
@@ -1001,7 +1590,14 @@
         <Ymax>600</Ymax>
         <Width>1100</Width>
         <Height>600</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>540</x0>
+            <y0>330</y0>
+            <x1>740</x1>
+            <y1>390</y1>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
     </Environment>
     <Environment>
@@ -1013,7 +1609,14 @@
         <Ymax>600</Ymax>
         <Width>1024</Width>
         <Height>600</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>410</x0>
+            <y0>330</y0>
+            <x1>610</x1>
+            <y1>380</y1>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
     </Environment>
     <Environment>
@@ -1025,7 +1628,14 @@
         <Ymax>600</Ymax>
         <Width>1024</Width>
         <Height>600</Height>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>410</x0>
+            <y0>330</y0>
+            <x1>610</x1>
+            <y1>380</y1>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
     </Environment>
     <Environment>
@@ -1069,7 +1679,10 @@
         <Ymax>650</Ymax>
         <Width>1610</Width>
         <Height>650</Height>
-        <DoorDirection>左</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+        </Door>
         <SpaceCondition>室内</SpaceCondition>
         <Collision>
             <Point>1170,260</Point>
@@ -1077,17 +1690,6 @@
             <Point>1570,260</Point>
         </Collision>
     </Environment>
-    <!-- <Environment>
-        <BackgroundURL>诺亚兵工厂生产线_BG.swf</BackgroundURL>
-        <Alignment>true</Alignment>
-        <Xmin>50</Xmin>
-        <Xmax>1150</Xmax>
-        <Ymin>270</Ymin>
-        <Ymax>600</Ymax>
-        <Width>1200</Width>
-        <Height>600</Height>
-        <SpaceCondition>室内</SpaceCondition>
-    </Environment> -->
     <!-- 试炼场深处-->
     <Environment>
         <BackgroundURL>试炼场深处钻头入口_BG.swf</BackgroundURL>
@@ -1099,6 +1701,14 @@
         <Width>1350</Width>
         <Height>710</Height>
         <SpaceCondition>室内</SpaceCondition>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>565</x0>
+            <y0>370</y0>
+            <x1>645</x1>
+            <y1>395</y1>
+        </Door>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
         <Collision>
@@ -1213,7 +1823,14 @@
         <Width>1380</Width>
         <Height>590</Height>
         <SpaceCondition>室内</SpaceCondition>
-        <DoorDirection>上</DoorDirection>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>970</x0>
+            <y0>370</y0>
+            <x1>1170</x1>
+            <y1>390</y1>
+        </Door>
         <MaxIllumination>2</MaxIllumination>
         <MinIllumination>0</MinIllumination>
     </Environment>

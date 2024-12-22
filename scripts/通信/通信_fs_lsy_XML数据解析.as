@@ -791,7 +791,8 @@ _root.加载并配置环境设置 = function(xml文件地址:String):Void
 				//背景元素
 				背景元素: null,
 				//无限过图参数
-				门朝向: "右",
+				门: null,
+				// 门朝向: "右", //弃用
 				地图碰撞箱: null,
 				左侧出生线: null,
 				右侧出生线: null
@@ -837,7 +838,17 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	//背景元素
 	环境信息.背景元素 = 当前配置.Elements ? _root.解析背景元素(_root.配置数据为数组(当前配置.Elements.Element)) : null;
 	//无限过图参数
-	环境信息.门朝向 = 当前配置.DoorDirection ? 当前配置.DoorDirection : 默认配置.门朝向;
+	if(当前配置.Door){
+		var 门数据 = _root.配置数据为数组(当前配置.Door);
+		环境信息.门 = new Object();
+		for(var i=0; i<门数据.length; i++){
+			var door = 门数据[i];
+			环境信息.门[door.Index] = door;
+		}
+	}else{
+		环境信息.门 = null;
+	}
+	// 环境信息.门朝向 = 当前配置.DoorDirection ? 当前配置.DoorDirection : 默认配置.门朝向; //弃用
 	环境信息.地图碰撞箱 = 当前配置.Collision ? _root.配置数据为数组(当前配置.Collision) : null;
 	环境信息.左侧出生线 = 当前配置.LeftSpawnLine ? 当前配置.LeftSpawnLine : null;
 	环境信息.右侧出生线 = 当前配置.RightSpawnLine ? 当前配置.RightSpawnLine : null;
@@ -857,37 +868,6 @@ _root.解析背景元素 = function(背景元素数据:Array):Object{
 	return 背景元素数据;
 }
 
-_root.加载并配置子弹映射 = function(xml文件地址:String):Void 
-{
-    var 子弹XML:XML = new XML();
-    子弹XML.ignoreWhite = true;
-    子弹XML.onLoad = function(加载成功:Boolean)
-	{
-        if (加载成功)
-		{
-            _root.弹壳系统.弹壳映射表 = {};
-            var 子弹数据 = _root.解析XML节点(this.firstChild);
-            var bulletNodes:Array = 子弹数据.bullet;
-            for (var i:Number = 0; i < bulletNodes.length; i++)
-            {
-                var 子弹信息:Object = {};
-                var child_Nodes:Array = bulletNodes[i];
-                子弹信息.弹壳 = child_Nodes.casing != undefined ? child_Nodes.casing : "步枪弹壳";
-				子弹信息.myX = child_Nodes.xOffset != undefined ? Number(child_Nodes.xOffset) : 0;
-				子弹信息.myY = child_Nodes.yOffset != undefined ? Number(child_Nodes.yOffset) : 0;
-                子弹信息.模拟方式 = child_Nodes.simulationMethod != undefined ? child_Nodes.simulationMethod : "标准";
-                
-                _root.弹壳系统.弹壳映射表[child_Nodes.name] = 子弹信息;
-            }
-            //_root.服务器.发布服务器消息("子弹映射表配置成功: " + _root.格式化对象为字符串(_root.弹壳系统.弹壳映射表) );
-        }
-		else
-		{
-            //_root.服务器.发布服务器消息("无法加载 XML 文件: " + xml文件地址);
-        }
-    };
-    子弹XML.load(xml文件地址);
-};
 
 _root.色彩引擎 = {};
 _root.色彩引擎.加载并配置色彩预设 = function(xml文件地址:String):Void 

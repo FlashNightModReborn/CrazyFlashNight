@@ -21,6 +21,16 @@
         this.derivativePrev = 0;
     }
 
+    public function getIntegral():Number {
+        return integral;
+    }
+
+    public function reset():Void {
+        this.errorPrev = 0;
+        this.integral = 0;
+        this.derivativePrev = 0;
+    }
+
     // 更新 PID 控制器，并返回控制输出
     public function update(setPoint:Number, actualValue:Number, deltaTime:Number):Number {
         // 确保 deltaTime > 0，避免负值或者零的场景
@@ -30,18 +40,18 @@
 
         // 计算误差
         var error:Number = setPoint - actualValue;
-        
+
         // 积分项更新，同时应用反积分饱和
         integral += error * deltaTime;
-        // 替换 Math.max 和 Math.min 函数，使用三元表达式进行限幅操作
-        integral = (integral < -integralMax) ? -integralMax : (integral > integralMax) ? integralMax : integral;
+        // 替换 Math.max 和 Math.min 函数，利用逻辑运算符的短路特性进一步优化，减少条件判断次数
+        // integral = (integral > integralMax && (integral = integralMax)) || (integral < -integralMax && (integral = -integralMax)) || integral;
 
         // 微分项平滑处理，提前计算 errorPrev 和 error 差值
-        var errorDiff:Number = (error - errorPrev) / deltaTime;
-        derivativePrev = derivativePrev * (1 - derivativeFilter) + errorDiff * derivativeFilter;
-
+        // var errorDiff:Number = (error - errorPrev) / deltaTime;
+        // derivativePrev = derivativePrev * (1 - derivativeFilter) + errorDiff * derivativeFilter;
+        
         // 计算 PID 输出，内联计算，减少临时变量和重复计算
-        var output:Number = kp * error + ki * integral + kd * derivativePrev;
+        var output:Number = kp * error + ki * (integral = (integral > integralMax && (integral = integralMax)) || (integral < -integralMax && (integral = -integralMax)) || integral) + kd * (derivativePrev * (1 - derivativeFilter) + ((error - errorPrev) / deltaTime) * derivativeFilter);
 
         // 更新上一次误差
         errorPrev = error;
@@ -50,10 +60,27 @@
     }
 
     // 设置和获取 PID 参数
-    public function setKp(value:Number):Void { kp = value; }
-    public function setKi(value:Number):Void { ki = value; }
-    public function setKd(value:Number):Void { kd = value; }
-    public function getKp():Number { return kp; }
-    public function getKi():Number { return ki; }
-    public function getKd():Number { return kd; }
+    public function setKp(value:Number):Void {
+        kp = value;
+    }
+
+    public function setKi(value:Number):Void {
+        ki = value;
+    }
+
+    public function setKd(value:Number):Void {
+        kd = value;
+    }
+
+    public function getKp():Number {
+        return kp;
+    }
+
+    public function getKi():Number {
+        return ki;
+    }
+
+    public function getKd():Number {
+        return kd;
+    }
 }

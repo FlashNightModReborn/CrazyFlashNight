@@ -1,8 +1,8 @@
 ﻿import org.flashNight.naki.DataStructures.TaskIDNode;
 
 class org.flashNight.naki.DataStructures.TaskIDLinkedList {
-    private var head:TaskIDNode = null;
-    private var tail:TaskIDNode = null;
+    public var head:TaskIDNode = null;
+    public var tail:TaskIDNode = null;
 
     public function TaskIDLinkedList() {
     }

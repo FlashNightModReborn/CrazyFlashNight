@@ -149,6 +149,7 @@
     <icon>锤子</icon>
     <type>武器</type>
     <use>刀</use>
+    <actiontype>短柄</actiontype>
     <weight>4</weight>
     <price>16800</price>
     <skill>
@@ -263,6 +264,7 @@
     <icon>短棒</icon>
     <type>武器</type>
     <use>刀</use>
+    <actiontype>短柄</actiontype>
     <weight>1</weight>
     <price>10800</price>
     <skill>
@@ -290,6 +292,7 @@
     <icon>短斧</icon>
     <type>武器</type>
     <use>刀</use>
+    <actiontype>短柄</actiontype>
     <weight>1</weight>
     <price>18200</price>
     <skill>
@@ -527,7 +530,7 @@
     <skill>
       <skillname>狮子之力</skillname>
       <description>手持该武器时可以使用星座之力。</description>
-      <information>造成范围性伤害，力量、防御、战技伤害根据我方存活角色数量提升。冷却10秒，消耗5%MP。</information>
+      <information>造成范围性伤害，空手攻击、防御能力、战技伤害根据我方存活角色数量提升。冷却10秒，消耗5%MP。</information>
       <cd>10000</cd>
       <mp>5%</mp>
     </skill>

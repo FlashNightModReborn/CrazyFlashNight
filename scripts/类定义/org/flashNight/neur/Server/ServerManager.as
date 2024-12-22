@@ -217,10 +217,12 @@ class org.flashNight.neur.Server.ServerManager {
     // 发送服务器消息（将消息追加到 messageBuffer）
     public function sendServerMessage(message:String):Void {
         // 验证消息内容，确保只接受字符串且不包含非法字符
+        /*
         if (typeof(message) != "string" || message.indexOf("{") != -1 || message.indexOf("}") != -1) {
             trace("Invalid message format. Only plain strings without '{}' are allowed.");
             return;
         }
+        */
 
         // 将消息追加到消息缓冲区
         if (messageBuffer.length > 0) {

@@ -1,0 +1,233 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="加载背景 1024*576" itemID="66e5bbbe-00001069" linkageExportForAS="true" linkageIdentifier="加载背景" lastModified="1734572501">
+  <timeline>
+    <DOMTimeline name="加载背景 1024*576">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" name="Andy" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" name="TheGirl" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" name="Blue" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" name="ShopGirl" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="5" name="Boy" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="5" name="Pig" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="5" name="King" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="5" name="过场1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="5" name="过场2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="5" name="武器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" duration="5" name="7代主角1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" duration="5" name="7代主角2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="60" duration="5" name="黑铁众" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="65" duration="5" name="诺亚方舟1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#C7F29B" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="70" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// 定义 BackgroundManager 类
+function BackgroundManager() {
+    // 构造函数，可用于初始化属性（当前无需额外初始化）
+}
+
+// 方法：检测是否为战斗地图
+BackgroundManager.prototype.isBattleMap = function() {
+    var levelFlag = _root.关卡标志;
+    
+    if (levelFlag == "wuxianguotu_1") {
+        return true;
+    }
+    
+    for (var i = 0; i < _root.初期关卡列表.length; i++) {
+        if (levelFlag == _root.初期关卡列表[i]) {
+            return true;
+        }
+    }
+    
+    return false;
+};
+
+// 方法：获取加载背景列表
+BackgroundManager.prototype.getBackgroundList = function() {
+    if (!_root.加载背景列表) {
+        return ["Andy", "TheGirl", "Blue", "ShopGirl", "Boy", "Pig", "King", "过场1", "过场2", "武器"];
+    }
+    
+    if (typeof _root.加载背景列表.本次背景 == "string") {
+        var list = [_root.加载背景列表.本次背景];
+        _root.加载背景列表.本次背景 = null;
+        return list;
+    }
+    
+    var isStage = this.isBattleMap();
+    var list = isStage ? _root.加载背景列表.关卡背景 : _root.加载背景列表.基地背景;
+    var backgroundList = [];
+    
+    for (var i = 0; i < list.length; i++) {
+        var image = list[i];
+        
+        if (typeof image == "string") {
+            backgroundList.push(image);
+        } else if (typeof image.Name == "string" && (_root.主线任务进度 + 1) > image.Unlock) {
+            backgroundList.push(image.Name);
+        }
+    }
+    
+    return backgroundList;
+};
+
+// 初始化 BackgroundManager 实例
+_root.backgroundManager = new BackgroundManager();
+
+// 使用 BackgroundManager 实例的方法
+var 背景列表 = _root.backgroundManager.getBackgroundList();
+stop();
+
+// 随机选择一个背景并跳转到对应帧
+if (背景列表.length > 0) {
+    gotoAndStop(背景列表[random(背景列表.length)]);
+} else {
+    trace("背景列表为空，无法跳转。");
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BB6BB5">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="原版加载背景-重做/背景-Andy.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="原版加载背景-重做/背景-TheGirl.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="原版加载背景-重做/背景-Blue.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="原版加载背景-重做/背景-ShopGirl.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="原版加载背景-重做/背景-Boy.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="原版加载背景-重做/背景-Pig.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="原版加载背景-重做/背景-King.png"/>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="无名氏自制背景/过场1.png">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="无名氏自制背景/过场2.png">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="官网壁纸/武器.jpg">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="50" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="官网壁纸/7代主角1.jpg">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="55" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="官网壁纸/7代主角2.jpg">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="官网壁纸/黑铁众.jpg">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="65" duration="5" keyMode="9728">
+              <elements>
+                <DOMBitmapInstance libraryItemName="官网壁纸/诺亚方舟1.jpg">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5"/>
+                  </matrix>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -261,7 +261,7 @@ class org.flashNight.sara.util.Vector {
      * @return 字符串表示的当前向量
      */
     public function toString():String {
-        return x + "," + y;
+        return "(" + x + "," + y + ")";
     }
 
 

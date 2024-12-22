@@ -57,14 +57,41 @@ _root.开启生存模式 = function(模式)
     游戏世界.背景长 = 环境信息.背景长;
     游戏世界.背景高 = 环境信息.背景高;
     
-    游戏世界.门朝向 = 环境信息.门朝向;
+    var 游戏世界门1 = 游戏世界.门1;
+	var 门1数据 = 环境信息.门[1];
+	游戏世界.门朝向 = 门1数据.Direction ? 门1数据.Direction : "右";
+	// 游戏世界.门朝向 = 环境信息.门朝向;
+	
+	if(门1数据.x0 && 门1数据.y0 && 门1数据.x1 && 门1数据.y1){
+		游戏世界门1._x = 门1数据.x0;
+		游戏世界门1._y = 门1数据.y0;
+		游戏世界门1._width = 门1数据.x1 - 门1数据.x0;
+		游戏世界门1._height = 门1数据.y1 - 门1数据.y0;
+	}else if(游戏世界.门朝向 === "左"){
+		//默认过图位置为地图左边缘或右边缘
+		游戏世界门1._x = _root.Xmin;
+		游戏世界门1._y = _root.Ymin;
+		游戏世界门1._width = 50;
+		游戏世界门1._height = _root.Ymax - _root.Ymin;
+	}else{
+		游戏世界门1._x = _root.Xmax - 50;
+		游戏世界门1._y = _root.Ymin;
+		游戏世界门1._width = 50;
+		游戏世界门1._height = _root.Ymax - _root.Ymin;
+	}
+	if(门1数据.Identifier){
+		var identifier = 游戏世界.attachMovie(门1数据.Identifier,"DoorIdentifier1",游戏世界.getNextHighestDepth());
+		identifier._x = (门1数据.x1 + 门1数据.x0) * 0.5;
+		identifier._y = (门1数据.y1 + 门1数据.y0) * 0.5;
+		identifier.swapDepths(identifier._y);
+	}
     游戏世界.允许通行 = false;
     游戏世界.关卡结束 = false;
 
     // 将上述属性设置为不可枚举
     _global.ASSetPropFlags(游戏世界, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin"], 1, true);
 
-    // 添加动态尺寸的位图层，加载场景
+    // 添加动态尺寸的位图层
     var 尸体层 = 游戏世界.deadbody;
     尸体层.layers = new Array(3);
     var 位图宽度 = 游戏世界.背景长 < 2880 ? 游戏世界.背景长 : 2880;
@@ -77,8 +104,6 @@ _root.开启生存模式 = function(模式)
 
     // 将 'deadbody' 设置为不可枚举
     _global.ASSetPropFlags(游戏世界, ["deadbody"], 1, true);
-
-    _root.加载场景背景(基本配置.Background);
 
     // 绘制地图碰撞箱
     var 地图碰撞箱数组 = 环境信息.地图碰撞箱;
@@ -198,7 +223,20 @@ _root.开启生存模式 = function(模式)
         _root.暂停 = true;
         _root.SetDialogue(本轮对话);
     }
+
+	//调用回调函数
+	if(基本配置.CallbackFunction.Name){
+		if(基本配置.CallbackFunction.Parameter){
+			var para = _root.配置数据为数组(基本配置.CallbackFunction.Parameter);
+			_root.关卡回调函数[基本配置.CallbackFunction.Name].apply(_root.关卡回调函数,para);
+		}else{
+			_root.关卡回调函数[基本配置.CallbackFunction.Name]();
+		}
+	}
     
+	//加载场景
+	_root.加载场景背景(基本配置.Background);
+
     // 开始刷怪
     if (!基本配置.RogueMode) _root.生存模式OBJ.模式部署.总波数 = _root.生存模式OBJ.模式部署.length;
     _root.生存模式进攻();
@@ -474,7 +512,7 @@ _root.无限过图模式过关 = function()
 	}
 	else
 	{
-		_root.最上层发布文字提示(_root.获得翻译("GOGOGO！剩余战场数：") + (_root.无限过图总关卡.length - _root.无限过图模式关卡计数 - 1) + "！");
+		// _root.最上层发布文字提示(_root.获得翻译("GOGOGO！剩余战场数：") + (_root.无限过图总关卡.length - _root.无限过图模式关卡计数 - 1) + "！"); //已经不需要这种东西了
 		_root.gameworld.允许通行 = true;
 		_root.效果("小过关提示动画",_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y,100);
 	}
@@ -635,7 +673,7 @@ _root.无限过图生成敌人 = function(兵种, 敌人实例名, 敌人参数,
 	敌人参数._x = 生存模式出生X;
 	敌人参数._y = 生存模式出生Y;
 	var 敌人层级 = 游戏世界.getNextHighestDepth();
-	游戏世界.attachMovie(兵种.兵种名, 敌人实例名, 敌人层级, 敌人参数);
+	_root.加载游戏世界人物(兵种.兵种名, 敌人实例名, 敌人层级, 敌人参数);
 	if (兵种.是否为敌人){
 		游戏世界[产生源].僵尸型敌人场上实际人数++;
 	}else{

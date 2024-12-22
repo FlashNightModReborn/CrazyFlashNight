@@ -1,0 +1,448 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1733218158">
+  <timeline>
+    <DOMTimeline name="asLoader" currentFrame="45">
+      <layers>
+        <DOMLayer name="label" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" name="锁定root" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" name="引擎" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" name="通信" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" name=" 逻辑系统分区" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="6" name="逻辑" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" duration="6" name="展现" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" duration="13" name="加载运行2" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" duration="22" name="实验新xmlloader" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" name="卸载影片剪辑" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="label2" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" name=" init" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" name="systems" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" name="preload" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="6" name="load" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="4" name="kill" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="58" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文件夹 1" color="#FF800A" layerType="folder"/>
+        <DOMLayer name="load脚本1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//所有_root字段指向主文件的_root
+this._lockroot = false;
+_root.stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../引擎/引擎_aka_作弊码.as"
+#include "../引擎/引擎_fs_eval解析器.as"
+#include "../引擎/引擎_fs_常用工具函数.as"
+#include "../引擎/引擎_fs_调试模式.as"
+#include "../引擎/引擎_fs_随机数引擎.as"
+#include "../引擎/引擎_lsy_层级管理器.as"
+#include "../引擎/引擎_lsy_常数.as"
+#include "../引擎/引擎_lsy_等级与经验值.as"
+#include "../引擎/引擎_lsy_技能系统.as"
+#include "../引擎/引擎_lsy_战宠系统.as"
+#include "../引擎/引擎_鸡蛋_lsy_物品系统.as"
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../通信/通信_fs_lsy_XML数据解析.as"
+#include "../通信/通信_fs_本地服务器.as"
+#include "../通信/通信_fs_帧计时器.as"
+#include "../通信/通信_lsy_原版存档系统.as"
+#include "../通信/通信_彬彬_存档系统.as"
+#include "../通信/通信_彬彬_存档组包.as"
+#include "../通信/通信_鸡蛋_XML与JSON解析.as"
+#include "../通信/通信_鸡蛋_任务系统.as"
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑系统分区/系统文件/逻辑系统分区_初始化.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("systems");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑系统分区/任务系统_兼容.as"
+#include "../逻辑系统分区/佣兵系统_兼容.as"
+#include "../逻辑系统分区/关卡系统_兼容.as"
+#include "../逻辑系统分区/兵种系统_兼容.as"
+#include "../逻辑系统分区/商城系统_兼容.as"
+#include "../逻辑系统分区/商店系统_兼容.as"
+#include "../逻辑系统分区/物品系统_兼容.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("preload");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="7" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑系统分区/系统文件/逻辑系统分区_最终化1.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndStop("load");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑系统分区/系统文件/逻辑系统分区_最终化2.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("kill");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑系统分区/系统文件/逻辑系统分区_最终化3.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="12" name="单位函数" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑/单位函数/单位函数_aka_lsy_使用药剂.as"
+#include "../逻辑/单位函数/单位函数_aka_升空函数.as"
+#include "../逻辑/单位函数/单位函数_fs_ai与特效通用函数.as"
+#include "../逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as"
+#include "../逻辑/单位函数/单位函数_fs_玩家装备配置.as"
+#include "../逻辑/单位函数/单位函数_fs_装备生命周期配置.as"
+#include "../逻辑/单位函数/单位函数_fs_装备引用配置.as"
+#include "../逻辑/单位函数/单位函数_fs_佣兵ai.as"
+#include "../逻辑/单位函数/单位函数_fs_佣兵缓存.as"
+#include "../逻辑/单位函数/单位函数_fs_佣兵加血加蓝.as"
+#include "../逻辑/单位函数/单位函数_lsy_敌人ai.as"
+#include "../逻辑/单位函数/单位函数_lsy_敌人模板迁移.as"
+#include "../逻辑/单位函数/单位函数_lsy_主角射击函数.as"
+#include "../逻辑/单位函数/单位函数_lsy_主角行走状态机.as"
+#include "../逻辑/单位函数/单位函数_雾人_aka_fs_主动战技.as"
+#include "../逻辑/单位函数/单位函数_lsy_主角技能.as"
+#include "../逻辑/单位函数/单位函数_aka_战宠进阶.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置战队信息("data/hybrid_mercenaries/teams.xml");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="55" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载随机名称库("data/hybrid_mercenaries/name.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置佣兵随机对话("data/hybrid_mercenaries/dialogues.xml");
+_root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues.xml");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置NPC对话("data/dialogues/npc_dialogues.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置环境设置("data/environment/environment.xml");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置子弹映射("data/items/bullets_cases.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="60" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置发型库("data/items/hairstyle.xml");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.色彩引擎.加载并配置色彩预设("data/environment/color_engine_preset.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置宠物信息("data/merc/pets.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置改装清单("data/shops/crafting.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="64" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载并配置技能表("data/skills/skills.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="65" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载过场背景与文本("data/stages/loading_data.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" duration="22" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader;
+//import org.flashNight.gesh.object.ObjectUtil;
+
+// 获取 EnemyPropertiesLoader 实例
+var enemyPropertiesLoader:EnemyPropertiesLoader = EnemyPropertiesLoader.getInstance();
+
+// 加载敌人属性数据
+enemyPropertiesLoader.loadEnemyProperties(
+    function(combinedData:Object):Void {
+        trace("主程序：敌人属性数据加载成功！");
+        //trace("合并后的数据: " + ObjectUtil.toString(combinedData));
+        // 在此处处理合并后的敌人属性数据
+		_root.敌人属性表 = combinedData;
+    },
+    function():Void {
+        trace("主程序：敌人属性数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.play();
+this.stop();
+this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本1.5" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" duration="57" name="装备函数" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑/装备函数/通用装备函数.as"
+#include "../逻辑/装备函数/装备函数列表.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本2" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" duration="56" name="功能函数" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑/功能函数/功能函数_fs_兵器攻击检测.as"
+#include "../逻辑/功能函数/功能函数_fs_状态机用函数.as"
+#include "../逻辑/功能函数/功能函数_fs_导弹模板.as"
+#include "../逻辑/功能函数/功能函数_fs_新弹壳系统.as"
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本3" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="45" duration="55" name="关卡系统" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑/关卡系统/关卡系统_fs_佣兵刷新系统.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_场景转换.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_地图元件.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_非人形佣兵刷新系统.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_无限过图.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as"
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本4" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" duration="54" name="战斗系统" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../逻辑/战斗系统/战斗系统_aka_特殊闪避计算函数.as"
+#include "../逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as"
+#include "../逻辑/战斗系统/战斗系统_fs_lsy_抽象碰撞检测.as"
+#include "../逻辑/战斗系统/战斗系统_fs_冲击力系统.as"
+#include "../逻辑/战斗系统/战斗系统_fs_减伤系统.as"
+#include "../逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+#include "../逻辑/战斗系统/战斗系统_lsy_消弹判定.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本5" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="53" name="UI交互" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../展现/UI交互/UI交互_fs_按键设定.as"
+#include "../展现/UI交互/UI交互_fs_个人信息.as"
+#include "../展现/UI交互/UI交互_fs_玩家信息界面.as"
+#include "../展现/UI交互/UI交互_fs_经济面板.as"
+#include "../展现/UI交互/UI交互_lsy_UI管理.as"
+#include "../展现/UI交互/UI交互_lsy_对话文本.as"
+#include "../展现/UI交互/UI交互_lsy_物品栏UI.as"
+#include "../展现/UI交互/UI交互_鸡蛋_fs_aka_物品图标注释.as"
+#include "../展现/UI交互/UI交互_无名氏_改造系统.as"
+#include "../展现/UI交互/UI交互_aka_健身房训练.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="load脚本6" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" duration="52" name="视觉系统" labelType="comment" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[#include "../展现/视觉系统/视觉系统_fs_打击数字池.as"
+#include "../展现/视觉系统/视觉系统_fs_画面效果控制生成.as"
+#include "../展现/视觉系统/视觉系统_fs_天气系统.as"
+#include "../展现/视觉系统/视觉系统_fs_绘图处理引擎.as"
+#include "../展现/视觉系统/视觉系统_fs_效果处理引擎.as"
+#include "../展现/视觉系统/视觉系统_fs_光照处理引擎.as"
+#include "../展现/视觉系统/视觉系统_fs_残影处理引擎.as"
+#include "../展现/视觉系统/视觉系统_fs_刀光处理引擎.as"
+#include "../展现/视觉系统/视觉系统_fs_显示列表引擎.as"]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

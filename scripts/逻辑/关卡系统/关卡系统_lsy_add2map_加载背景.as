@@ -1,4 +1,6 @@
-﻿_root.add2map = function(tg, ln)
+﻿import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+
+_root.add2map = function(tg, ln)
 {
 	tg.暴走标志.removeMovieClip();
 	tg.远古标志.removeMovieClip();
@@ -85,12 +87,14 @@ _root.add2map3 = function(tg, ln)
 };
 
 
+
 _root.贴背景图 = function()
 {
-	if(_root.无限过图模式) _root.配置无限过图背景参数();
+	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
 	var 游戏世界 = _root.gameworld;
 	var 背景层 = 游戏世界.背景;
 	var 天气系统 = _root.天气系统;
+
 	if(!背景层.已更新环境配置)
 	{
 		if(_root.天空盒)
@@ -121,16 +125,16 @@ _root.贴背景图 = function()
 	游戏世界.deadbody.globalToLocal(pos);
 	var matrix = new flash.geom.Matrix(1, 0, 0, 1, pos.x, pos.y);
 	游戏世界.deadbody.layers[0].draw(背景层,matrix,new flash.geom.ColorTransform(),"normal",undefined,true);
-	//尝试直接卸载原背景
-	背景层.外部动画加载壳mc.unloadMovie();
 	背景层._visible = false;
+	背景层.外部动画加载壳mc.unloadMovie(); //尝试直接卸载原背景
 
 	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域"], 1, true);
 };
 
 _root.加载场景背景 = function (动画名)
 {
-	var 背景层 = _root.gameworld.背景;
+	var 游戏世界 = _root.gameworld;
+	var 背景层 = 游戏世界.背景;
 	背景层.attachMovie("外部动画加载壳mc","外部动画加载壳mc",背景层.getNextHighestDepth());
 	var list = 动画名.split("/")
 	var url = list[list.length-1];
@@ -141,7 +145,8 @@ _root.加载场景背景 = function (动画名)
 		_root.天气系统.配置环境(环境配置);
 		背景层.已更新环境配置 = true;
 	}
-	loadMovie("flashswf/backgrounds/" + url,背景层.外部动画加载壳mc);
+	游戏世界.场景背景url = "flashswf/backgrounds/" + url;
+	loadMovie(游戏世界.场景背景url, 背景层.外部动画加载壳mc);
 	if(环境配置.背景元素){
 		for(var i = 0; i < 环境配置.背景元素.length; i++){
 			_root.加载背景元素(环境配置.背景元素[i].url, 环境配置.背景元素[i].name, 环境配置.背景元素[i].x, 环境配置.背景元素[i].y, 环境配置.背景元素[i].depth);
@@ -167,37 +172,37 @@ _root.加载背景元素 = function(url, 实例名, x, y, 层级){
 
 _root.配置无限过图背景参数 = function()
 {
-	//可以参考军阀秘密基地_1_BG和军阀秘密基地_2_BG这两张背景作为教程
-	if (!_root.无限过图模式){
-		return;
-	}
-	var 游戏世界 = _root.gameworld;
-	var 世界地图 = 游戏世界.地图;
-	var 对象 = 游戏世界.背景.外部动画加载壳mc;
-	var 环境信息 = _root.天气系统.无限过图环境信息;
+	// //可以参考军阀秘密基地_1_BG和军阀秘密基地_2_BG这两张背景作为教程
+	// if (!_root.无限过图模式){
+	// 	return;
+	// }
+	// var 游戏世界 = _root.gameworld;
+	// var 世界地图 = 游戏世界.地图;
+	// var 对象 = 游戏世界.背景.外部动画加载壳mc;
+	// var 环境信息 = _root.天气系统.无限过图环境信息;
 	
-	//注意：最小的能占满屏幕的背景长和背景高分别为1024和512，再小就会出黑边
+	// //注意：最小的能占满屏幕的背景长和背景高分别为1024和512，再小就会出黑边
 	
-	var 游戏世界门1 = 游戏世界.门1;
-	var 对象门 = 对象.门;
-	if(对象门){	
-		游戏世界门1._x = 对象门._x;
-		游戏世界门1._y = 对象门._y;
-		游戏世界门1._width = 对象门._width;
-		游戏世界门1._height = 对象门._height;
-	}else if(游戏世界.门朝向 === "左"){
-		//如果没有在背景文件里检测到门，则默认过图位置为地图左边缘或右边缘
-		游戏世界门1._x = _root.Xmin;
-		游戏世界门1._y = _root.Ymin;
-		游戏世界门1._width = 50;
-		游戏世界门1._height = _root.Ymax - _root.Ymin;
-	}else{
-		游戏世界门1._x = _root.Xmax - 50;
-		游戏世界门1._y = _root.Ymin;
-		游戏世界门1._width = 50;
-		游戏世界门1._height = _root.Ymax - _root.Ymin;
-		游戏世界.门朝向 = "右";
-	}
+	// var 游戏世界门1 = 游戏世界.门1;
+	// var 对象门 = 对象.门;
+	// if(对象门){	
+	// 	游戏世界门1._x = 对象门._x;
+	// 	游戏世界门1._y = 对象门._y;
+	// 	游戏世界门1._width = 对象门._width;
+	// 	游戏世界门1._height = 对象门._height;
+	// }else if(游戏世界.门朝向 === "左"){
+	// 	//如果没有在背景文件里检测到门，则默认过图位置为地图左边缘或右边缘
+	// 	游戏世界门1._x = _root.Xmin;
+	// 	游戏世界门1._y = _root.Ymin;
+	// 	游戏世界门1._width = 50;
+	// 	游戏世界门1._height = _root.Ymax - _root.Ymin;
+	// }else{
+	// 	游戏世界门1._x = _root.Xmax - 50;
+	// 	游戏世界门1._y = _root.Ymin;
+	// 	游戏世界门1._width = 50;
+	// 	游戏世界门1._height = _root.Ymax - _root.Ymin;
+	// 	游戏世界.门朝向 = "右";
+	// }
 	//地图碰撞箱的绘制已移到无限过图文件
 };
 

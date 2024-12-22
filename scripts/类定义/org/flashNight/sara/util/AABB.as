@@ -1,885 +1,768 @@
-﻿/*  org.flashNight.sara.util.AABB
-
-# AABB（轴对齐边界框）类详细说明
-
-## 目录
-
-- [简介](#简介)
-- [数学背景与概念](#数学背景与概念)
-  - [什么是AABB？](#什么是aabb)
-  - [AABB的用途](#aabb的用途)
-- [类概述](#类概述)
-- [属性与方法详解](#属性与方法详解)
-  - [构造函数](#构造函数)
-  - [克隆方法](#克隆方法)
-  - [边界访问器方法](#边界访问器方法)
-  - [尺寸和中心点计算](#尺寸和中心点计算)
-  - [数据访问方法](#数据访问方法)
-  - [碰撞检测方法](#碰撞检测方法)
-    - [最小平移向量（MTV）计算](#最小平移向量mtv计算)
-    - [点包含检测](#点包含检测)
-    - [最近点计算](#最近点计算)
-    - [线段相交检测](#线段相交检测)
-    - [圆形相交检测](#圆形相交检测)
-    - [射线相交检测](#射线相交检测)
-    - [AABB相交检测](#aabb相交检测)
-  - [合并与细分方法](#合并与细分方法)
-    - [AABB合并](#aabb合并)
-    - [批量合并](#批量合并)
-    - [AABB细分](#aabb细分)
-  - [其他实用方法](#其他实用方法)
-    - [面积计算](#面积计算)
-    - [从MovieClip创建AABB](#从movieclip创建aabb)
-    - [绘制AABB](#绘制aabb)
-- [使用示例](#使用示例)
-  - [示例1：创建和基本操作](#示例1创建和基本操作)
-  - [示例2：碰撞检测](#示例2碰撞检测)
-  - [示例3：最小平移向量应用](#示例3最小平移向量应用)
-  - [示例4：合并和细分](#示例4合并和细分)
-- [注意事项](#注意事项)
-- [适合新手的提示](#适合新手的提示)
-- [结语](#结语)
-
-## 简介
-
-本说明详细介绍了`AABB`（轴对齐边界框）类的实现和使用方法。通过深入的数学背景解释和丰富的使用示例，帮助您理解并应用该类于游戏开发中的碰撞检测、空间划分等功能，即使您是缺乏数学背景的新手程序员，也能轻松上手。
-
-## 数学背景与概念
-
-### 什么是AABB？
-
-AABB（Axis-Aligned Bounding Box）即轴对齐边界框，是在二维或三维空间中，与坐标轴对齐的矩形或立方体。由于其边界与坐标轴平行，计算和判断变得非常简单高效。
-
-### AABB的用途
-
-- **碰撞检测**：用于快速判断两个物体是否可能发生碰撞。
-- **空间划分**：用于划分空间，建立四叉树、八叉树等数据结构，优化查询性能。
-- **视锥裁剪**：在渲染时确定哪些物体需要被绘制。
-
-## 类概述
-
-`AABB`类用于表示二维空间中的轴对齐矩形区域。它提供了创建、操作和查询AABB的各种方法，包括碰撞检测、合并、细分等。
-
-## 属性与方法详解
-
-### 构造函数
-
-```actionscript
-public function AABB(left:Number, right:Number, top:Number, bottom:Number)
-```
-
-**描述**：创建一个新的`AABB`实例，指定左、右、上、下边界。
-
-**参数**：
-
-- `left`：左边界（最小x值）
-- `right`：右边界（最大x值）
-- `top`：上边界（最小y值）
-- `bottom`：下边界（最大y值）
-
-**注意**：必须满足`left <= right`和`top <= bottom`，否则会抛出错误。
-
-### 克隆方法
-
-```actionscript
-public function clone():AABB
-```
-
-**描述**：创建当前`AABB`的副本。
-
-**返回值**：新的`AABB`实例，具有相同的边界。
-
-### 边界访问器方法
-
-#### 获取边界
-
-```actionscript
-public function getLeft():Number
-public function getRight():Number
-public function getTop():Number
-public function getBottom():Number
-```
-
-**描述**：分别获取`AABB`的左、右、上、下边界值。
-
-#### 设置边界
-
-```actionscript
-public function setLeft(value:Number):Void
-public function setRight(value:Number):Void
-public function setTop(value:Number):Void
-public function setBottom(value:Number):Void
-```
-
-**描述**：分别设置`AABB`的左、右、上、下边界值。
-
-**参数**：
-
-- `value`：新的边界值。
-
-**注意**：
-
-- 设置`left`时，`value`必须小于等于当前的`right`。
-- 设置`right`时，`value`必须大于等于当前的`left`。
-- 设置`top`时，`value`必须小于等于当前的`bottom`。
-- 设置`bottom`时，`value`必须大于等于当前的`top`。
-- 否则会抛出错误，提示边界值无效。
-
-### 尺寸和中心点计算
-
-#### 获取宽度和高度
-
-```actionscript
-public function getWidth():Number
-public function getLength():Number
-```
-
-- `getWidth()`：计算并返回`AABB`的宽度，即`right - left`。
-- `getLength()`：计算并返回`AABB`的高度，即`bottom - top`。
-
-#### 获取中心点
-
-```actionscript
-public function getCenter():Object
-```
-
-**描述**：计算并返回`AABB`的中心点坐标。
-
-**返回值**：
-
-- `Object`：包含`x`和`y`属性，分别表示中心点的横坐标和纵坐标。
-
-### 数据访问方法
-
-#### 获取数据副本
-
-```actionscript
-public function getData():Array
-```
-
-**描述**：返回`AABB`边界数据的副本，顺序为`[left, right, top, bottom]`。
-
-#### 设置数据
-
-```actionscript
-public function setData(newData:Array):Void
-```
-
-**描述**：使用新的边界数据设置`AABB`。
-
-**参数**：
-
-- `newData`：包含四个数字的数组，顺序为`[left, right, top, bottom]`。
-
-**注意**：
-
-- 如果`newData`有效（长度为4，且`left <= right`，`top <= bottom`），则直接设置。
-- 否则，会自动调整边界值，确保`left <= right`，`top <= bottom`。
-
-### 碰撞检测方法
-
-#### 最小平移向量（MTV）计算
-
-```actionscript
-public function getMTV(other:AABB):Object
-```
-
-**描述**：计算当前`AABB`与另一个`AABB`之间的最小平移向量，用于解决碰撞。
-
-**数学背景**：
-
-- **重叠量计算**：在x轴和y轴上分别计算两个AABB的重叠量。
-- **最小平移向量**：选择重叠量较小的轴作为移动方向，移动的距离为该轴上的重叠量。
-
-**参数**：
-
-- `other`：另一个`AABB`实例。
-
-**返回值**：
-
-- `{dx: Number, dy: Number}`：需要移动的最小距离。
-- 如果没有重叠，返回`null`。
-
-**示例**：
-
-```actionscript
-var mtv:Object = aabb1.getMTV(aabb2);
-if (mtv != null) {
-    // 发生碰撞，调整位置
-    object.x += mtv.dx;
-    object.y += mtv.dy;
-}
-```
-
-#### 点包含检测
-
-```actionscript
-public function containsPoint(x:Number, y:Number):Boolean
-```
-
-**描述**：检查给定的点是否在`AABB`内。
-
-**参数**：
-
-- `x`：点的x坐标。
-- `y`：点的y坐标。
-
-**返回值**：
-
-- `true`：点在`AABB`内或边界上。
-- `false`：点在`AABB`外。
-
-#### 最近点计算
-
-```actionscript
-public function closestPoint(x:Number, y:Number):Object
-```
-
-**描述**：计算`AABB`内离给定点最近的点。
-
-**数学背景**：
-
-- 对于给定点，在每个轴上，如果点在AABB内，则该轴的坐标不变；如果在外，则取AABB在该轴上的最近边界值。
-
-**返回值**：
-
-- `Object`：包含`x`和`y`属性，表示最近点的坐标。
-
-#### 线段相交检测
-
-```actionscript
-public function intersectsLine(x1:Number, y1:Number, x2:Number, y2:Number):Boolean
-```
-
-**描述**：检查线段是否与`AABB`相交。
-
-**数学背景**：
-
-- 使用**梁-巴克斯基（Liang-Barsky）算法**，根据参数化的线段方程和AABB的边界，计算参数`t`的范围，判断是否存在相交。
-
-**返回值**：
-
-- `true`：线段与`AABB`相交。
-- `false`：线段与`AABB`不相交。
-
-#### 圆形相交检测
-
-```actionscript
-public function intersectsCircle(circleX:Number, circleY:Number, radius:Number):Boolean
-```
-
-**描述**：检查圆形是否与`AABB`相交。
-
-**数学背景**：
-
-- 找到AABB中离圆心最近的点，计算该点与圆心的距离，判断是否小于等于圆的半径。
-
-**返回值**：
-
-- `true`：圆形与`AABB`相交。
-- `false`：圆形与`AABB`不相交。
-
-#### 射线相交检测
-
-```actionscript
-public function intersectsRay(rayOriginX:Number, rayOriginY:Number, rayDirX:Number, rayDirY:Number):Boolean
-```
-
-**描述**：检查射线是否与`AABB`相交。
-
-**数学背景**：
-
-- 使用**射线与AABB的参数化方程**，计算射线在x轴和y轴上的进入和退出参数`t`，判断射线是否在AABB范围内。
-
-**返回值**：
-
-- `true`：射线与`AABB`相交。
-- `false`：射线与`AABB`不相交。
-
-#### AABB相交检测
-
-```actionscript
-public function intersects(other:AABB):Boolean
-```
-
-**描述**：检查当前`AABB`是否与另一个`AABB`相交。
-
-**数学背景**：
-
-- 判断两个AABB在x轴和y轴上是否存在重叠。
-
-**返回值**：
-
-- `true`：两个`AABB`相交。
-- `false`：两个`AABB`不相交。
-
-### 合并与细分方法
-
-#### AABB合并
-
-```actionscript
-public function merge(other:AABB):AABB
-```
-
-**描述**：将当前`AABB`与另一个`AABB`合并，返回一个新的`AABB`，边界包含两个AABB的所有区域。
-
-**示例**：
-
-```actionscript
-var mergedAABB = aabb1.merge(aabb2);
-```
-
-#### 批量合并
-
-```actionscript
-public static function mergeBatch(aabbs:Array):AABB
-```
-
-**描述**：合并一组`AABB`，返回一个包含所有AABB的最小`AABB`。
-
-**参数**：
-
-- `aabbs`：包含`AABB`实例的数组。
-
-**注意**：
-
-- 数组不能为空，否则会抛出错误。
-
-**示例**：
-
-```actionscript
-var allAABB = AABB.mergeBatch([aabb1, aabb2, aabb3]);
-```
-
-#### AABB细分
-
-```actionscript
-public function subdivide():Array
-```
-
-**描述**：将当前`AABB`细分为四个更小的`AABB`，用于空间划分。
-
-**返回值**：
-
-- 包含四个`AABB`实例的数组，分别对应于：
-
-  - `quad1`：右上区域
-  - `quad2`：左上区域
-  - `quad3`：左下区域
-  - `quad4`：右下区域
-
-**示例**：
-
-```actionscript
-var quads:Array = aabb1.subdivide();
-```
-
-### 其他实用方法
-
-#### 面积计算
-
-```actionscript
-public function getArea():Number
-```
-
-**描述**：计算并返回`AABB`的面积。
-
-**返回值**：
-
-- 面积值，计算方式为`(right - left) * (bottom - top)`。
-
-#### 从MovieClip创建AABB
-
-```actionscript
-public static function fromMovieClip(area:MovieClip, z_offset:Number):AABB
-```
-
-**描述**：根据`MovieClip`在游戏世界中的位置和z轴偏移量创建`AABB`。
-
-**参数**：
-
-- `area`：`MovieClip`实例。
-- `z_offset`：z轴偏移量。
-
-**返回值**：
-
-- 新的`AABB`实例。
-
-**示例**：
-
-```actionscript
-var aabbFromClip = AABB.fromMovieClip(movieClipInstance, 0);
-```
-
-#### 绘制AABB
-
-```actionscript
-public function draw(dmc:MovieClip):Void
-```
-
-**描述**：在指定的`MovieClip`上绘制当前的`AABB`，用于调试和可视化。
-
-**参数**：
-
-- `dmc`：用于绘制的`MovieClip`实例。
-
-**示例**：
-
-```actionscript
-aabb1.draw(_root);
-```
-
-## 使用示例
-
-### 示例1：创建和基本操作
-
-```actionscript
-// 创建AABB实例
-var aabb1 = new AABB(0, 100, 0, 50);
-
-// 获取边界值
-trace("Left: " + aabb1.getLeft());    // 输出：Left: 0
-trace("Right: " + aabb1.getRight());  // 输出：Right: 100
-
-// 设置新的边界值
-aabb1.setRight(120);
-trace("New Right: " + aabb1.getRight()); // 输出：New Right: 120
-
-// 获取宽度和高度
-trace("Width: " + aabb1.getWidth());     // 输出：Width: 120
-trace("Height: " + aabb1.getLength());   // 输出：Height: 50
-
-// 获取中心点
-var center = aabb1.getCenter();
-trace("Center X: " + center.x + ", Center Y: " + center.y); // 输出：Center X: 60, Center Y: 25
-```
-
-### 示例2：碰撞检测
-
-```actionscript
-// 创建两个AABB
-var aabb1 = new AABB(0, 100, 0, 100);
-var aabb2 = new AABB(50, 150, 50, 150);
-
-// 检查是否相交
-if (aabb1.intersects(aabb2)) {
-    trace("AABBs are intersecting.");
-} else {
-    trace("AABBs are not intersecting.");
-}
-
-// 检查点是否在AABB内
-var pointX:Number = 75;
-var pointY:Number = 75;
-if (aabb1.containsPoint(pointX, pointY)) {
-    trace("Point is inside aabb1.");
-} else {
-    trace("Point is outside aabb1.");
-}
-```
-
-### 示例3：最小平移向量应用
-
-```actionscript
-// 创建两个重叠的AABB
-var aabb1 = new AABB(0, 100, 0, 100);
-var aabb2 = new AABB(80, 180, 80, 180);
-
-// 计算MTV
-var mtv:Object = aabb1.getMTV(aabb2);
-if (mtv != null) {
-    trace("MTV dx: " + mtv.dx + ", dy: " + mtv.dy);
-    // 假设aabb1代表物体，调整其位置以解决碰撞
-    object.x += mtv.dx;
-    object.y += mtv.dy;
-} else {
-    trace("No collision detected.");
-}
-```
-
-### 示例4：合并和细分
-
-```actionscript
-// 合并两个AABB
-var aabb1 = new AABB(0, 50, 0, 50);
-var aabb2 = new AABB(40, 100, 40, 100);
-var mergedAABB = aabb1.merge(aabb2);
-
-trace("Merged AABB - Left: " + mergedAABB.getLeft() + ", Right: " + mergedAABB.getRight());
-trace("Merged AABB - Top: " + mergedAABB.getTop() + ", Bottom: " + mergedAABB.getBottom());
-
-// 细分AABB
-var quads = mergedAABB.subdivide();
-for (var i:Number = 0; i < quads.length; i++) {
-    trace("Quad " + (i+1) + ": Left=" + quads[i].getLeft() + ", Right=" + quads[i].getRight() +
-          ", Top=" + quads[i].getTop() + ", Bottom=" + quads[i].getBottom());
-}
-```
-
-## 注意事项
-
-- **边界值有效性**：创建或修改`AABB`时，务必确保`left <= right`和`top <= bottom`，否则会抛出错误。
-- **异常处理**：在设置边界或数据时，建议使用`try...catch`来捕获可能的异常，确保程序稳定性。
-- **性能优化**：该类内部使用数组存储边界数据，经过优化以提高性能。访问边界时，建议使用提供的访问器方法。
-- **调试**：使用`draw`方法可在舞台上绘制`AABB`，方便调试和可视化。
-
-*/
-
+﻿import org.flashNight.sara.util.*;
 import org.flashNight.sara.graphics.*;
 
+/**
+ * AABB（轴对齐边界框）类
+ * 
+ * 此类用于表示和操作二维空间中的轴对齐边界框（Axis-Aligned Bounding Box）。
+ * 提供了克隆、合并、细分、碰撞检测等多种方法，适用于游戏开发中的碰撞检测和空间划分。
+ */
 class org.flashNight.sara.util.AABB {
-    private var data:Array; // 存储 [left, right, top, bottom] 的数组
+    // 边界坐标
+    public var left:Number;   // 左边界
+    public var right:Number;  // 右边界
+    public var top:Number;    // 上边界
+    public var bottom:Number; // 下边界
 
-    // 构造函数
+    /**
+     * 构造函数
+     * 
+     * @param left 左边界坐标
+     * @param right 右边界坐标
+     * @param top 上边界坐标
+     * @param bottom 下边界坐标
+     */
     public function AABB(left:Number, right:Number, top:Number, bottom:Number) {
-        this.data = [left, right, top, bottom];
+        this.left = left;
+        this.right = right;
+        this.top = top;
+        this.bottom = bottom;
     }
 
-    // 克隆当前的AABB
+    /**
+     * 根据两个点表示的对角线创建 AABB
+     * 
+     * @param p1 对角线起点（Vector 实例）
+     * @param p2 对角线终点（Vector 实例）
+     * @return 一个新的 AABB 实例
+     */
+    public static function fromDiagonal(p1:Vector, p2:Vector):AABB {
+        return new AABB(
+            (p1.x < p2.x) ? p1.x : p2.x, // 确定左边界
+            (p1.x > p2.x) ? p1.x : p2.x, // 确定右边界
+            (p1.y < p2.y) ? p1.y : p2.y, // 确定上边界
+            (p1.y > p2.y) ? p1.y : p2.y  // 确定下边界
+        );
+    }
+
+    /**
+     * 克隆当前的 AABB
+     * 
+     * @return 一个新的 AABB 实例，具有相同的边界坐标
+     */
     public function clone():AABB {
-        return new AABB(this.data[0], this.data[1], this.data[2], this.data[3]);
+        return new AABB(this.left, this.right, this.top, this.bottom);
     }
 
-    // 获取AABB的左边界
-    public function getLeft():Number {
-        return this.data[0];
-    }
-
-    // 设置AABB的左边界
-    public function setLeft(value:Number):Void {
-        if (value <= this.data[1]) {
-            this.data[0] = value;
-        } else {
-            throw new Error("无效的AABB: 左边界不能大于右边界。");
-        }
-    }
-
-    // 获取AABB的右边界
-    public function getRight():Number {
-        return this.data[1];
-    }
-
-    // 设置AABB的右边界
-    public function setRight(value:Number):Void {
-        if (value >= this.data[0]) {
-            this.data[1] = value;
-        } else {
-            throw new Error("无效的AABB: 右边界不能小于左边界。");
-        }
-    }
-
-    // 获取AABB的上边界
-    public function getTop():Number {
-        return this.data[2];
-    }
-
-    // 设置AABB的上边界
-    public function setTop(value:Number):Void {
-        if(value <= this.data[3]) {
-            this.data[2] = value;
-        }
-        else {
-            throw new Error("无效的AABB: 上边界不能大于下边界。");
-        }
-    }
-
-    // 获取AABB的下边界
-    public function getBottom():Number {
-        return this.data[3];
-    }
-
-    // 设置AABB的下边界
-    public function setBottom(value:Number):Void {
-        if(value >= this.data[2]) {
-            this.data[3] = value;
-        }
-        else {
-            throw new Error("无效的AABB: 下边界不能小于上边界。");
-        }
-    }
-
-    // 获取AABB的宽度
+    /**
+     * 获取 AABB 的宽度
+     * 
+     * @return AABB 的宽度（右边界 - 左边界）
+     */
     public function getWidth():Number {
-        return this.data[1] - this.data[0];
+        return this.right - this.left;
     }
 
-    // 获取AABB的高度
+    /**
+     * 获取 AABB 的高度
+     * 
+     * @return AABB 的高度（下边界 - 上边界）
+     */
     public function getLength():Number {
-        return this.data[3] - this.data[2];
+        return this.bottom - this.top;
     }
 
-    // 获取AABB的中心点
-    public function getCenter():Object {
-        var centerX:Number = (this.data[0] + this.data[1]) / 2;
-        var centerY:Number = (this.data[2] + this.data[3]) / 2;
-        return {x: centerX, y: centerY};
+    /**
+     * 获取 AABB 的中心点，返回 Vector 实例
+     * 
+     * @return AABB 的中心点坐标（Vector 实例）
+     */
+    public function getCenter():Vector {
+        var centerX:Number = (this.left + this.right) / 2;
+        var centerY:Number = (this.top + this.bottom) / 2;
+        return new Vector(centerX, centerY);
     }
 
-    // 获取AABB的数据副本
-    public function getData():Array {
-        return this.data.concat(); // 返回数组的副本
-    }
-
-    // 设置AABB的数据
-    public function setData(newData:Array):Void {
-        if (newData.length == 4 && newData[0] <= newData[1] && newData[2] <= newData[3]) {
-            // 验证数据有效性并设置内部数据数组
-            this.data = newData.concat();
-        } else {
-            var left:Number = Math.min(newData[0], newData[1]);
-            var right:Number = Math.max(newData[0], newData[1]);
-            var top:Number = Math.min(newData[2], newData[3]);
-            var bottom:Number = Math.max(newData[2], newData[3]);
-            this.data = [left, right, top, bottom];
-        }
-    }
-
-    // 获取当前AABB与另一个AABB之间的最小平移向量（MTV）
+    /**
+     * 获取当前 AABB 与另一个 AABB 之间的最小平移向量（MTV）
+     * 
+     * @param other 另一个 AABB 实例
+     * @return 一个包含 dx 和 dy 的对象，表示最小平移向量；如果没有重叠则返回 null
+     */
     public function getMTV(other:AABB):Object {
-        /*
-        trace("Calculating MTV between AABBs.");
-        trace("Current AABB: " + this.toString());
-        trace("Other AABB: " + other.toString());
-        */
-        // 计算x轴上的重叠
+        // 计算 x 轴重叠
         var overlapX:Number = 0;
-        if (this.data[0] < other.data[1] && this.data[1] > other.data[0]) {
-            var moveRight:Number = other.data[1] - this.data[0]; // 向右移动的距离
-            var moveLeft:Number = this.data[1] - other.data[0];  // 向左移动的距离
-            //trace("Overlap on x-axis: moveRight = " + moveRight + ", moveLeft = " + moveLeft);
-            overlapX = (moveLeft < moveRight) ? -moveLeft : moveRight; // 选择合适的方向
-            //trace("Selected overlapX: " + overlapX);
+        if (this.left < other.right && this.right > other.left) {
+            var moveRight:Number = other.right - this.left;
+            var moveLeft:Number = this.right - other.left;
+            overlapX = (moveLeft < moveRight) ? -moveLeft : moveRight;
         } else {
-            //trace("No overlap on x-axis.");
-            return null;
+            return null; // x 轴没有重叠，无法计算 MTV
         }
 
-        // 计算y轴上的重叠
+        // 计算 y 轴重叠
         var overlapY:Number = 0;
-        if (this.data[2] < other.data[3] && this.data[3] > other.data[2]) {
-            var moveDown:Number = other.data[3] - this.data[2]; // 向下移动的距离
-            var moveUp:Number = this.data[3] - other.data[2];   // 向上移动的距离
-            //trace("Overlap on y-axis: moveDown = " + moveDown + ", moveUp = " + moveUp);
-            overlapY = (moveUp < moveDown) ? -moveUp : moveDown; // 选择合适的方向
-            //trace("Selected overlapY: " + overlapY);
+        if (this.top < other.bottom && this.bottom > other.top) {
+            var moveDown:Number = other.bottom - this.top;
+            var moveUp:Number = this.bottom - other.top;
+            overlapY = (moveUp < moveDown) ? -moveUp : moveDown;
         } else {
-            //trace("No overlap on y-axis.");
-            return null;
+            return null; // y 轴没有重叠，无法计算 MTV
         }
 
-        // 确定最小穿透轴
-        if (Math.abs(overlapX) <= Math.abs(overlapY)) {
-            //trace("Choosing x-axis for MTV: dx = " + overlapX);
-            return {dx: overlapX, dy: 0};
-        } else {
-            //trace("Choosing y-axis for MTV: dy = " + overlapY);
-            return {dx: 0, dy: overlapY};
-        }
+        // 确定最小平移向量，比较绝对值以决定移动方向
+        var absOverlapX:Number = (overlapX < 0) ? -overlapX : overlapX;
+        var absOverlapY:Number = (overlapY < 0) ? -overlapY : overlapY;
+
+        return (absOverlapX <= absOverlapY) 
+            ? {dx: overlapX, dy: 0} 
+            : {dx: 0, dy: overlapY};
     }
 
-    // 检查当前AABB是否包含给定的点
+    /**
+     * 获取当前 AABB 与另一个 AABB 之间的最小平移向量（MTV），返回 Vector 实例
+     * 
+     * @param other 另一个 AABB 实例
+     * @return 最小平移向量的 Vector 实例（如果没有重叠则返回 null）
+     */
+    public function getMTVV(other:AABB):Vector {
+        // 计算 x 轴重叠
+        var overlapX:Number = 0;
+        if (this.left < other.right && this.right > other.left) {
+            var moveRight:Number = other.right - this.left;
+            var moveLeft:Number = this.right - other.left;
+            overlapX = (moveLeft < moveRight) ? -moveLeft : moveRight;
+        } else {
+            return null; // x 轴没有重叠，无法计算 MTV
+        }
+
+        // 计算 y 轴重叠
+        var overlapY:Number = 0;
+        if (this.top < other.bottom && this.bottom > other.top) {
+            var moveDown:Number = other.bottom - this.top;
+            var moveUp:Number = this.bottom - other.top;
+            overlapY = (moveUp < moveDown) ? -moveUp : moveDown;
+        } else {
+            return null; // y 轴没有重叠，无法计算 MTV
+        }
+
+        // 确定最小平移向量，比较绝对值以决定移动方向
+        var absOverlapX:Number = (overlapX < 0) ? -overlapX : overlapX;
+        var absOverlapY:Number = (overlapY < 0) ? -overlapY : overlapY;
+
+        return (absOverlapX <= absOverlapY) 
+            ? new Vector(overlapX, 0) 
+            : new Vector(0, overlapY);
+    }
+
+    /**
+     * 检查当前 AABB 是否包含给定的点
+     * 
+     * @param x 点的 x 坐标
+     * @param y 点的 y 坐标
+     * @return 如果点在 AABB 内部或边界上，返回 true；否则返回 false
+     */
     public function containsPoint(x:Number, y:Number):Boolean {
-        return (x >= this.data[0] && x <= this.data[1] && 
-                y >= this.data[2] && y <= this.data[3]);
+        return (x >= this.left && x <= this.right &&
+                y >= this.top && y <= this.bottom);
     }
 
-    // 计算AABB中离给定点最近的点
-    public function closestPoint(x:Number, y:Number):Object {
-        return {
-            x: Math.max(this.data[0], Math.min(x, this.data[1])),
-            y: Math.max(this.data[2], Math.min(y, this.data[3]))
-        };
+    /**
+     * 检查当前 AABB 是否包含给定的点（使用 Vector 参数）
+     * 
+     * @param point 包含点的 Vector 实例
+     * @return 如果点在 AABB 内部或边界上，返回 true；否则返回 false
+     */
+    public function containsPointV(point:Vector):Boolean {
+        return (point.x >= this.left && point.x <= this.right &&
+                point.y >= this.top && point.y <= this.bottom);
     }
 
-    // 检查线段是否与AABB相交
+    /**
+     * 计算 AABB 中离给定点最近的点，返回 Vector 实例
+     * 
+     * @param x 给定点的 x 坐标
+     * @param y 给定点的 y 坐标
+     * @return 最近点的 Vector 实例
+     */
+    public function closestPoint(x:Number, y:Number):Vector {
+        return new Vector(
+            (x < this.left) ? this.left : (x > this.right ? this.right : x),
+            (y < this.top) ? this.top : (y > this.bottom ? this.bottom : y)
+        );
+    }
+
+    /**
+     * 计算 AABB 中离给定点最近的点，返回 Vector 实例（使用 Vector 参数）
+     * 
+     * @param point 给定点的 Vector 实例
+     * @return 最近点的 Vector 实例
+     */
+    public function closestPointV(point:Vector):Vector {
+        return new Vector(
+            (point.x < this.left) ? this.left : (point.x > this.right ? this.right : point.x), 
+            (point.y < this.top) ? this.top : (point.y > this.bottom ? this.bottom : point.y)
+        );
+    }
+
+    /**
+     * 检查线段是否与 AABB 相交
+     * 
+     * @param x1 线段起点的 x 坐标
+     * @param y1 线段起点的 y 坐标
+     * @param x2 线段终点的 x 坐标
+     * @param y2 线段终点的 y 坐标
+     * @return 如果线段与 AABB 相交，返回 true；否则返回 false
+     */
     public function intersectsLine(x1:Number, y1:Number, x2:Number, y2:Number):Boolean {
-        if (this.containsPoint(x1, y1) || this.containsPoint(x2, y2)) {
+        // 快速包含性检查：如果任意一个端点在 AABB 内部，则相交
+        if ((x1 >= this.left && x1 <= this.right && y1 >= this.top && y1 <= this.bottom) ||
+            (x2 >= this.left && x2 <= this.right && y2 >= this.top && y2 <= this.bottom)) {
             return true;
         }
 
+        // 初始化变量，用于计算参数 t
         var t0:Number = 0.0;
         var t1:Number = 1.0;
-        var dx:Number = x2 - x1;
-        var dy:Number = y2 - y1;
-        var p:Array = [-dx, dx, -dy, dy];
-        var q:Array = [x1 - this.data[0], this.data[1] - x1, y1 - this.data[2], this.data[3] - y1];
+        var dx:Number = x2 - x1; // 线段在 x 轴的增量
+        var dy:Number = y2 - y1; // 线段在 y 轴的增量
 
-        for (var i:Number = 0; i < 4; i++) {
-            if (p[i] == 0) {
-                if (q[i] < 0) {
-                    return false;
-                }
+        // 逐个轴的边界检测
+        var p:Number, q:Number, t:Number;
+
+        // 检查左边界
+        p = -dx;
+        q = x1 - this.left;
+        if (p == 0) {
+            if (q < 0) return false; // 线段平行于左边界且在左侧，无法相交
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
             } else {
-                var t:Number = q[i] / p[i];
-                if (p[i] < 0) {
-                    if (t > t1) {
-                        return false;
-                    }
-                    if (t > t0) {
-                        t0 = t;
-                    }
-                } else {
-                    if (t < t0) {
-                        return false;
-                    }
-                    if (t < t1) {
-                        t1 = t;
-                    }
-                }
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
             }
         }
 
+        // 检查右边界
+        p = dx;
+        q = this.right - x1;
+        if (p == 0) {
+            if (q < 0) return false; // 线段平行于右边界且在右侧，无法相交
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 检查上边界
+        p = -dy;
+        q = y1 - this.top;
+        if (p == 0) {
+            if (q < 0) return false; // 线段平行于上边界且在上方，无法相交
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 检查下边界
+        p = dy;
+        q = this.bottom - y1;
+        if (p == 0) {
+            if (q < 0) return false; // 线段平行于下边界且在下方，无法相交
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 最终判断，判断 t0 和 t1 是否有重叠，并且 tMax >= 0，tMin <= 1
         return t0 <= t1 && t1 >= 0 && t0 <= 1;
     }
 
-    // 检查AABB是否与给定的圆相交
+    /**
+     * 检查线段是否与 AABB 相交，接受 Vector 参数
+     * 
+     * @param start 起点的 Vector 实例
+     * @param end 终点的 Vector 实例
+     * @return 如果线段与 AABB 相交，返回 true；否则返回 false
+     */
+    public function intersectsLineV(start:Vector, end:Vector):Boolean {
+        var x1:Number = start.x;
+        var y1:Number = start.y;
+        var x2:Number = end.x;
+        var y2:Number = end.y;
+
+        // 快速包含性检查：如果任意一个端点在 AABB 内部，则相交
+        if ((x1 >= this.left && x1 <= this.right && y1 >= this.top && y1 <= this.bottom) ||
+            (x2 >= this.left && x2 <= this.right && y2 >= this.top && y2 <= this.bottom)) {
+            return true;
+        }
+
+        // 初始化变量，用于计算参数 t
+        var t0:Number = 0.0;
+        var t1:Number = 1.0;
+        var dx:Number = x2 - x1; // 线段在 x 轴的增量
+        var dy:Number = y2 - y1; // 线段在 y 轴的增量
+
+        // 逐个轴的边界检测
+        var p:Number, q:Number, t:Number;
+
+        // 检查左边界
+        p = -dx;
+        q = x1 - this.left;
+        if (p == 0) {
+            if (q < 0) return false; // 线段平行于左边界且在左侧，无法相交
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 检查右边界
+        p = dx;
+        q = this.right - x1;
+        if (p == 0) {
+            if (q < 0) return false; // 线段平行于右边界且在右侧，无法相交
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 检查上边界
+        p = -dy;
+        q = y1 - this.top;
+        if (p == 0) {
+            if (q < 0) return false; // 线段平行于上边界且在上方，无法相交
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 检查下边界
+        p = dy;
+        q = this.bottom - y1;
+        if (p == 0) {
+            if (q < 0) return false; // 线段平行于下边界且在下方，无法相交
+        } else {
+            t = q / p;
+            if (p < 0) {
+                if (t > t1) return false;
+                if (t > t0) t0 = t;
+            } else {
+                if (t < t0) return false;
+                if (t < t1) t1 = t;
+            }
+        }
+
+        // 最终判断，判断 t0 和 t1 是否有重叠，并且 tMax >= 0，tMin <= 1
+        return t0 <= t1 && t1 >= 0 && t0 <= 1;
+    }
+
+    /**
+     * 检查圆是否与 AABB 相交
+     * 
+     * @param circleX 圆心的 x 坐标
+     * @param circleY 圆心的 y 坐标
+     * @param radius 圆的半径
+     * @return 如果圆与 AABB 相交，返回 true；否则返回 false
+     */
     public function intersectsCircle(circleX:Number, circleY:Number, radius:Number):Boolean {
-        var nearestX:Number = Math.max(this.data[0], Math.min(circleX, this.data[1]));
-        var nearestY:Number = Math.max(this.data[2], Math.min(circleY, this.data[3]));
-        var deltaX:Number = circleX - nearestX;
-        var deltaY:Number = circleY - nearestY;
+        // 局部化边界值，减少属性访问次数
+        var left:Number = this.left, right:Number = this.right;
+        var top:Number = this.top, bottom:Number = this.bottom;
+
+        // 计算圆心到 AABB 最近点的 deltaX 和 deltaY
+        var deltaX:Number = circleX - ((circleX < left) ? left : (circleX > right ? right : circleX));
+        var deltaY:Number = circleY - ((circleY < top) ? top : (circleY > bottom ? bottom : circleY));
+
+        // 判断距离是否在半径范围内
         return (deltaX * deltaX + deltaY * deltaY) <= (radius * radius);
     }
 
-    // 检查射线是否与AABB相交
-    public function intersectsRay(rayOriginX:Number, rayOriginY:Number, rayDirX:Number, rayDirY:Number):Boolean {
-        var tMin:Number, tMax:Number, tyMin:Number, tyMax:Number;
-        var invDirX:Number = 1.0 / rayDirX;
-        var invDirY:Number = 1.0 / rayDirY;
+    /**
+     * 检查圆是否与 AABB 相交（使用 Vector 参数）
+     * 
+     * @param circleCenter 圆心的 Vector 实例
+     * @param radius 圆的半径
+     * @return 如果圆与 AABB 相交，返回 true；否则返回 false
+     */
+    public function intersectsCircleV(circleCenter:Vector, radius:Number):Boolean {
+        // 局部化边界值，减少属性访问次数
+        var left:Number = this.left, right:Number = this.right;
+        var top:Number = this.top, bottom:Number = this.bottom;
+        var circleX:Number = circleCenter.x;
+        var circleY:Number = circleCenter.y;
 
+        // 计算圆心到 AABB 最近点的 deltaX 和 deltaY
+        var deltaX:Number = circleX - ((circleX < left) ? left : (circleX > right ? right : circleX));
+        var deltaY:Number = circleY - ((circleY < top) ? top : (circleY > bottom ? bottom : circleY));
+
+        // 判断距离是否在半径范围内
+        return (deltaX * deltaX + deltaY * deltaY) <= (radius * radius);
+    }
+
+    /**
+     * 检查射线是否与 AABB 相交
+     * 
+     * @param rayOriginX 射线起点的 x 坐标
+     * @param rayOriginY 射线起点的 y 坐标
+     * @param rayDirX 射线方向的 x 分量
+     * @param rayDirY 射线方向的 y 分量
+     * @return 如果射线与 AABB 相交，返回 true；否则返回 false
+     */
+    public function intersectsRay(rayOriginX:Number, rayOriginY:Number, rayDirX:Number, rayDirY:Number):Boolean {
+        var invDirX:Number, invDirY:Number, tMin:Number, tMax:Number, tyMin:Number, tyMax:Number;
+        var temp:Number;
+
+        // 计算 X 轴交点
         if (rayDirX != 0) {
-            tMin = (this.data[0] - rayOriginX) * invDirX;
-            tMax = (this.data[1] - rayOriginX) * invDirX;
-            
+            invDirX = 1.0 / rayDirX;
+            tMin = (this.left - rayOriginX) * invDirX;
+            tMax = (this.right - rayOriginX) * invDirX;
+
+            // 确保 tMin 是最小值，tMax 是最大值
             if (tMin > tMax) {
-                var temp:Number = tMin;
+                temp = tMin;
                 tMin = tMax;
                 tMax = temp;
             }
+        } else if (rayOriginX < this.left || rayOriginX > this.right) {
+            return false; // 射线平行于 X 轴且不在 AABB 范围内
         } else {
-            if (rayOriginX < this.data[0] || rayOriginX > this.data[1]) {
-                return false;
-            }
             tMin = Number.NEGATIVE_INFINITY;
             tMax = Number.POSITIVE_INFINITY;
         }
 
+        // 计算 Y 轴交点
         if (rayDirY != 0) {
-            tyMin = (this.data[2] - rayOriginY) * invDirY;
-            tyMax = (this.data[3] - rayOriginY) * invDirY;
-            
+            invDirY = 1.0 / rayDirY;
+            tyMin = (this.top - rayOriginY) * invDirY;
+            tyMax = (this.bottom - rayOriginY) * invDirY;
+
+            // 确保 tyMin 是最小值，tyMax 是最大值
             if (tyMin > tyMax) {
                 temp = tyMin;
                 tyMin = tyMax;
                 tyMax = temp;
             }
+        } else if (rayOriginY < this.top || rayOriginY > this.bottom) {
+            return false; // 射线平行于 Y 轴且不在 AABB 范围内
         } else {
-            if (rayOriginY < this.data[2] || rayOriginY > this.data[3]) {
-                return false;
-            }
             tyMin = Number.NEGATIVE_INFINITY;
             tyMax = Number.POSITIVE_INFINITY;
         }
 
-        if ((tMin > tyMax) || (tyMin > tMax)) {
-            return false;
+        // 判断 X 和 Y 的范围是否重叠
+        if (tMin > tyMax || tyMin > tMax) {
+            return false; // 没有重叠部分，射线不相交
         }
 
-        tMin = Math.max(tMin, tyMin);
-        tMax = Math.min(tMax, tyMax);
+        // 更新 tMin 和 tMax，取交集
+        tMin = (tMin > tyMin) ? tMin : tyMin;
+        tMax = (tMax < tyMax) ? tMax : tyMax;
 
+        // 检查射线是否与 AABB 相交
         return tMax >= 0;
     }
 
-    // 检查当前AABB是否与另一个AABB相交
+    /**
+     * 检查射线是否与 AABB 相交（使用 Vector 参数）
+     * 
+     * @param rayOrigin 射线起点的 Vector 实例
+     * @param rayDir 射线方向的 Vector 实例
+     * @return 如果射线与 AABB 相交，返回 true；否则返回 false
+     */
+    public function intersectsRayV(rayOrigin:Vector, rayDir:Vector):Boolean {
+        var rayOriginX:Number = rayOrigin.x;
+        var rayOriginY:Number = rayOrigin.y;
+        var rayDirX:Number = rayDir.x;
+        var rayDirY:Number = rayDir.y;
+
+        var invDirX:Number, invDirY:Number, tMin:Number, tMax:Number, tyMin:Number, tyMax:Number;
+        var temp:Number;
+
+        // 计算 X 轴交点
+        if (rayDirX != 0) {
+            invDirX = 1.0 / rayDirX;
+            tMin = (this.left - rayOriginX) * invDirX;
+            tMax = (this.right - rayOriginX) * invDirX;
+
+            // 确保 tMin 是最小值，tMax 是最大值
+            if (tMin > tMax) {
+                temp = tMin;
+                tMin = tMax;
+                tMax = temp;
+            }
+        } else if (rayOriginX < this.left || rayOriginX > this.right) {
+            return false; // 射线平行于 X 轴且不在 AABB 范围内
+        } else {
+            tMin = Number.NEGATIVE_INFINITY;
+            tMax = Number.POSITIVE_INFINITY;
+        }
+
+        // 计算 Y 轴交点
+        if (rayDirY != 0) {
+            invDirY = 1.0 / rayDirY;
+            tyMin = (this.top - rayOriginY) * invDirY;
+            tyMax = (this.bottom - rayOriginY) * invDirY;
+
+            // 确保 tyMin 是最小值，tyMax 是最大值
+            if (tyMin > tyMax) {
+                temp = tyMin;
+                tyMin = tyMax;
+                tyMax = temp;
+            }
+        } else if (rayOriginY < this.top || rayOriginY > this.bottom) {
+            return false; // 射线平行于 Y 轴且不在 AABB 范围内
+        } else {
+            tyMin = Number.NEGATIVE_INFINITY;
+            tyMax = Number.POSITIVE_INFINITY;
+        }
+
+        // 判断 X 和 Y 的范围是否重叠
+        if (tMin > tyMax || tyMin > tMax) {
+            return false; // 没有重叠部分，射线不相交
+        }
+
+        // 更新 tMin 和 tMax，取交集
+        tMin = (tMin > tyMin) ? tMin : tyMin;
+        tMax = (tMax < tyMax) ? tMax : tyMax;
+
+        // 检查射线是否与 AABB 相交
+        return tMax >= 0;
+    }
+
+    /**
+     * 检查当前 AABB 是否与另一个 AABB 相交
+     * 
+     * @param other 另一个 AABB 实例
+     * @return 如果两个 AABB 相交，返回 true；否则返回 false
+     */
     public function intersects(other:AABB):Boolean {
-        return !(this.data[1] < other.data[0] || this.data[0] > other.data[1] || 
-                 this.data[3] < other.data[2] || this.data[2] > other.data[3]);
+        return !(this.right < other.left || this.left > other.right ||
+                 this.bottom < other.top || this.top > other.bottom);
     }
 
-    // 将当前AABB与另一个AABB合并，返回新的AABB
+    /**
+     * 合并当前 AABB 与另一个 AABB，返回一个新的 AABB 实例
+     * 
+     * @param other 另一个 AABB 实例
+     * @return 合并后的 AABB 实例
+     */
     public function merge(other:AABB):AABB {
-        var newLeft:Number = Math.min(this.data[0], other.data[0]);
-        var newRight:Number = Math.max(this.data[1], other.data[1]);
-        var newTop:Number = Math.min(this.data[2], other.data[2]);
-        var newBottom:Number = Math.max(this.data[3], other.data[3]);
-        return new AABB(newLeft, newRight, newTop, newBottom);
+        return new AABB(
+            (other.left < this.left) ? other.left : this.left,   // 合并后的左边界
+            (other.right > this.right) ? other.right : this.right, // 合并后的右边界
+            (other.top < this.top) ? other.top : this.top,      // 合并后的上边界
+            (other.bottom > this.bottom) ? other.bottom : this.bottom // 合并后的下边界
+        );
     }
 
-    // 合并另一个AABB到当前AABB
+    /**
+     * 合并当前 AABB 与另一个 AABB，直接修改当前 AABB 的边界
+     * 
+     * @param other 另一个 AABB 实例
+     */
     public function mergeWith(other:AABB):Void {
-        this.data[0] = Math.min(this.data[0], other.data[0]);
-        this.data[1] = Math.max(this.data[1], other.data[1]);
-        this.data[2] = Math.min(this.data[2], other.data[2]);
-        this.data[3] = Math.max(this.data[3], other.data[3]);
+        if (this.left > other.left) {
+            this.left = other.left; // 更新左边界
+        }
+        if (this.right < other.right) {
+            this.right = other.right; // 更新右边界
+        }
+        if (this.top > other.top) {
+            this.top = other.top; // 更新上边界
+        }
+        if (this.bottom < other.bottom) {
+            this.bottom = other.bottom; // 更新下边界
+        }
     }
 
-    // 批量合并多个AABB
+    /**
+     * 批量合并多个 AABB，返回一个新的 AABB 实例
+     * 
+     * @param aabbs 要合并的 AABB 数组
+     * @return 合并后的 AABB 实例
+     * @throws Error 如果传入的数组为空
+     */
     public static function mergeBatch(aabbs:Array):AABB {
-        if (aabbs.length == 0) {
-            throw new Error("mergeBatch: No AABBs to merge.");
+        var len:Number = aabbs.length;
+
+        if (len == 0) {
+            throw new Error("mergeBatch: No AABBs to merge."); // 抛出错误，提示没有 AABB 可供合并
         }
 
-        //trace("Starting mergeBatch with " + aabbs.length + " AABBs.");
+        var lastAABB:AABB = aabbs[len - 1];
 
-        var mergedAABB:AABB = new AABB(aabbs[0].data[0], aabbs[0].data[1], aabbs[0].data[2], aabbs[0].data[3]);
-        //trace("Initial merged AABB: " + mergedAABB.toString());
+        // 初始化合并后的边界为最后一个 AABB 的边界
+        var left:Number = lastAABB.left;
+        var right:Number = lastAABB.right;
+        var top:Number = lastAABB.top;
+        var bottom:Number = lastAABB.bottom;
 
-        for (var i:Number = 1; i < aabbs.length; i++) {
-            //trace("Merging with AABB #" + i + ": " + aabbs[i].toString());
-            mergedAABB.mergeWith(aabbs[i]);
-            //trace("Merged AABB after iteration " + i + ": " + mergedAABB.toString());
+        // 遍历剩余的 AABB，更新合并后的边界
+        for (var i:Number = len - 2; i >= 0; i--) {
+            var aabb:AABB = aabbs[i];
+            if (aabb.left < left) left = aabb.left;
+            if (aabb.right > right) right = aabb.right;
+            if (aabb.top < top) top = aabb.top;
+            if (aabb.bottom > bottom) bottom = aabb.bottom;
         }
 
-        // 调整最大边界以确保包含性
-        mergedAABB.data[1] += 1;
-        mergedAABB.data[3] += 1;
-
-        //trace("Final merged AABB: " + mergedAABB.toString());
-        return mergedAABB;
+        // 返回合并后的 AABB 实例，注意右边界和下边界增加了 1
+        return new AABB(left, right + 1, top, bottom + 1);
     }
 
-    // 将AABB细分为四个更小的AABB
+    /**
+     * 将 AABB 细分为四个更小的 AABB
+     * 
+     * @return 包含四个子 AABB 的数组
+     */
     public function subdivide():Array {
-        var center:Object = this.getCenter();
-        var left:Number = this.data[0];
-        var right:Number = this.data[1];
-        var top:Number = this.data[2];
-        var bottom:Number = this.data[3];
+        var center:Vector = this.getCenter(); // 获取当前 AABB 的中心点
+        var left:Number = this.left;
+        var right:Number = this.right;
+        var top:Number = this.top;
+        var bottom:Number = this.bottom;
 
-        // 创建四个更小的AABB
-        var quad1:AABB = new AABB(center.x, right, top, center.y);   // 右上
-        var quad2:AABB = new AABB(left, center.x, top, center.y);    // 左上
-        var quad3:AABB = new AABB(left, center.x, center.y, bottom); // 左下
-        var quad4:AABB = new AABB(center.x, right, center.y, bottom); // 右下
+        // 创建四个子 AABB，分别代表四个象限
+        var quad1:AABB = new AABB(center.x, right, top, center.y);     // 右上
+        var quad2:AABB = new AABB(left, center.x, top, center.y);      // 左上
+        var quad3:AABB = new AABB(left, center.x, center.y, bottom);   // 左下
+        var quad4:AABB = new AABB(center.x, right, center.y, bottom);  // 右下
 
-        return [quad1, quad2, quad3, quad4];
+        return [quad1, quad2, quad3, quad4]; // 返回包含四个子 AABB 的数组
     }
 
-    // 计算AABB的面积
+    /**
+     * 计算 AABB 的面积
+     * 
+     * @return AABB 的面积（宽度 * 高度）
+     */
     public function getArea():Number {
-        return (this.data[1] - this.data[0]) * (this.data[3] - this.data[2]);
+        return (this.right - this.left) * (this.bottom - this.top);
     }
 
-    // 从游戏世界中的MovieClip创建AABB
-    public static function fromMovieClip(area:MovieClip, z_offset:Number):AABB {
-        var rect = area.getRect(_root.gameworld);
-        return new AABB(rect.xMin, rect.xMax, rect.yMin + z_offset, rect.yMax + z_offset);
-    }
-
-    // 从子弹的MovieClip创建AABB
-    public static function fromBullet(bullet:MovieClip):AABB {
-        var rect = bullet.getRect(_root.gameworld);
+    public static function getGameWorldAABB(dmc:MovieClip):AABB
+    {
+        var rect = dmc.getRect(_root.gameworld);
         return new AABB(rect.xMin, rect.xMax, rect.yMin, rect.yMax);
     }
 
-    // 在给定的MovieClip上绘制AABB
+    /**
+     * 从 MovieClip 创建 AABB
+     * 
+     * @param area 用于创建 AABB 的 MovieClip 实例
+     * @param z_offset z 轴偏移量，用于调整 y 坐标
+     * @return 一个新的 AABB 实例
+     */
+    public static function fromMovieClip(area:MovieClip, z_offset:Number):AABB {
+        var rect:Object = area.getRect(area._parent); // 获取 MovieClip 的矩形边界
+        return new AABB(rect.xMin, rect.xMax, rect.yMin + z_offset, rect.yMax + z_offset);
+    }
+
+    /**
+     * 从 Bullet 创建 AABB
+     * 
+     * @param bullet 用于创建 AABB 的 Bullet MovieClip 实例
+     * @return 一个新的 AABB 实例
+     */
+    public static function fromBullet(bullet:MovieClip):AABB {
+        var rect:Object = bullet.getRect(bullet._parent); // 获取 Bullet 的矩形边界
+        return new AABB(rect.xMin, rect.xMax, rect.yMin, rect.yMax);
+    }
+
+    /**
+     * 在给定的 MovieClip 上绘制 AABB
+     * 
+     * @param dmc 用于绘制 AABB 的目标 MovieClip 实例
+     */
     public function draw(dmc:MovieClip):Void {
-        var width:Number = this.data[1] - this.data[0];
-        var height:Number = this.data[3] - this.data[2];
-        var centerX:Number = this.data[0] + width / 2;
-        var centerY:Number = this.data[2] + height / 2;
-        
-        Graphics.paintRectangle(dmc, centerX, centerY, width, height);
+        var width:Number = this.right - this.left;  // 计算 AABB 的宽度
+        var height:Number = this.bottom - this.top; // 计算 AABB 的高度
+        var centerX:Number = this.left + width / 2; // 计算中心点的 x 坐标
+        var centerY:Number = this.top + height / 2; // 计算中心点的 y 坐标
+
+        Graphics.paintRectangle(dmc, centerX, centerY, width, height); // 调用 Graphics 类的方法绘制矩形
+    }
+
+    /**
+     * 返回 AABB 的四个顶点，按左上、右上、右下、左下顺序
+     * 
+     * @return 包含四个 Vector 实例的数组，分别代表四个顶点
+     */
+    public function getVertices():Array {
+        return [
+            new Vector(this.left, this.top),     // 左上
+            new Vector(this.right, this.top),    // 右上
+            new Vector(this.right, this.bottom), // 右下
+            new Vector(this.left, this.bottom)   // 左下
+        ];
+    }
+
+    /**
+     * 将 AABB 转换为 PointSet
+     * 
+     * PointSet 是一个自定义的数据结构，用于存储和操作一组点。
+     * 此方法将 AABB 的四个顶点添加到 PointSet 中。
+     * 
+     * @return 一个包含四个顶点的 PointSet 实例
+     */
+    public function toPointSet():PointSet {
+        var pointSet:PointSet = new PointSet();
+
+        // 添加 AABB 的四个顶点到 PointSet
+        pointSet.addPoint(this.left, this.top);     // 左上
+        pointSet.addPoint(this.right, this.top);    // 右上
+        pointSet.addPoint(this.right, this.bottom); // 右下
+        pointSet.addPoint(this.left, this.bottom);  // 左下
+
+        return pointSet;
+    }
+    /**
+     * 转换成字符串输出
+     * 
+     * @return 字符串形式的 AABB 信息
+     */
+
+    public function toString():String
+    {
+        return "[" + this.left + "," + this.right + "," + this.top + "," + this.bottom + "]";
     }
 }

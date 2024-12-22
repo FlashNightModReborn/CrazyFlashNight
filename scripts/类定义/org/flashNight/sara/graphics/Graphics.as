@@ -145,11 +145,10 @@ class org.flashNight.sara.graphics.Graphics {
     {
         if (aabb) 
         {
-            var data:Array = aabb.getData(); // 获取 AABB 的数据副本
-            var left:Number = data[0];
-            var right:Number = data[1];
-            var top:Number = data[2];
-            var bottom:Number = data[3];
+            var left:Number = aabb.left;
+            var right:Number = aabb.right;
+            var top:Number = aabb.top;
+            var bottom:Number = aabb.bottom;
 
             dmc.moveTo(left, top);
             dmc.lineTo(right, top);

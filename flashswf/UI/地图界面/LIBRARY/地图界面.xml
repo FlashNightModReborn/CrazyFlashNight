@@ -1,0 +1,2194 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1733389678" lastUniqueIdentifier="154">
+  <timeline>
+    <DOMTimeline name="地图界面" currentFrame="1">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[// ============================
+// Tween 类定义
+// ============================
+function Tween(target, startAlpha, endAlpha, duration) {
+    this.target = target;
+    this.startAlpha = startAlpha;
+    this.endAlpha = endAlpha;
+    this.duration = duration;
+    this.elapsed = 0;
+    this.visibleAfter = endAlpha > 0;
+    
+    // 如果从透明度为0开始并且目标透明度大于0，设置可见
+    if (this.startAlpha == 0 && this.endAlpha > 0) {
+        this.target._visible = true;
+    }
+}
+
+Tween.prototype.update = function(delta) {
+    this.elapsed += delta;
+    var t = this.elapsed / this.duration;
+    if (t >= 1) {
+        t = 1;
+        this.target._alpha = this.endAlpha;
+        if (this.endAlpha == 0) {
+            this.target._visible = false;
+        }
+        return true; // Tween 完成
+    }
+    this.target._alpha = this.startAlpha + (this.endAlpha - this.startAlpha) * t;
+    return false; // Tween 未完成
+};
+
+// ============================
+// TweenManager 类定义
+// ============================
+function TweenManager(parentClip) {
+    this.tweens = [];
+    this.parentClip = parentClip; // 保存对 parentClip 的引用
+    
+    // 创建一个空的影片剪辑，挂载到 parentClip
+    this.tweenClip = parentClip.createEmptyMovieClip("tweenManagerClip", parentClip.getNextHighestDepth());
+
+    // 绑定 onEnterFrame 到空影片剪辑
+    var self = this; // 保存当前 TweenManager 的引用
+    this.tweenClip.onEnterFrame = function() {
+        if(parentClip._currentframe == 2) {
+            self.update(); // 调用 TweenManager 的 update 方法
+        } else {
+            self.destroy();
+        }
+    };
+}
+
+TweenManager.prototype.addTween = function(tween) {
+    this.tweens.push(tween);
+};
+
+TweenManager.prototype.update = function() {
+    var completedTweens = [];
+    for (var i = 0; i < this.tweens.length; i++) {
+        var tween = this.tweens[i];
+        var done = tween.update(1); // 假设每帧时间增量为 1
+        if (done) {
+            completedTweens.push(i);
+        }
+    }
+    // 移除已完成的 Tweens
+    for (var i = completedTweens.length - 1; i >= 0; i--) {
+        this.tweens.splice(completedTweens[i], 1);
+    }
+};
+
+TweenManager.prototype.destroy = function() {
+    this.tweenClip.removeMovieClip();
+    // 移除 parentClip 上的 onMouseMove 事件
+    delete this.parentClip.onMouseMove;
+};
+
+// ============================
+// Layer 类定义
+// ============================
+function Layer(name, components, npcs, selectableProperty) {
+    this.name = name;
+    this.components = components; // Array of MovieClips
+    this.npcs = npcs; // Array of { avatar: MovieClip, name: String }
+    this.selectableProperty = selectableProperty;
+    this.originalDepths = { components: [], npcs: [] };
+}
+
+Layer.prototype.recordOriginalDepths = function() {
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        if (component.originalDepth == undefined) {
+            component.originalDepth = component.getDepth();
+            this.originalDepths.components.push(component.originalDepth);
+        }
+    }
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        if (npcAvatar.originalDepth == undefined) {
+            npcAvatar.originalDepth = npcAvatar.getDepth();
+            this.originalDepths.npcs.push(npcAvatar.originalDepth);
+        }
+    }
+};
+
+Layer.prototype.initialize = function(tweenManager) {
+    // 设置组件半透明
+    LayerUtils.setTransparency(this.components, 50, 5, tweenManager);
+    
+    // 设置组件初始状态并恢复原始深度
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        component.gotoAndStop(1); // 初始状态
+        component.swapDepths(component.originalDepth);
+    }
+    
+    // 设置 NPC 头像透明度
+    var npcAvatars = [];
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.gotoAndStop(1); // 初始状态
+        npcAvatars.push(npcAvatar);
+        npcAvatar.swapDepths(npcAvatar.originalDepth);
+    }
+    LayerUtils.setTransparency(npcAvatars, 80, 5, tweenManager);
+    
+    // 设置可选属性为 false
+    _this[this.selectableProperty] = false;
+};
+
+Layer.prototype.activate = function(tweenManager, depthOffset, activeRoom) {
+    // 设置组件和 NPC 头像全不透明
+    LayerUtils.setTransparency(this.components, 100, 5, tweenManager);
+    
+    var npcAvatars = [];
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.gotoAndStop(2); // 高亮状态
+        npcAvatars.push(npcAvatar);
+    }
+    LayerUtils.setTransparency(npcAvatars, 100, 5, tweenManager);
+    
+    // 调整深度，使其置顶
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        component.swapDepths(component.originalDepth + depthOffset);
+    }
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.swapDepths(npcAvatar.originalDepth + depthOffset);
+    }
+    
+    // 高亮当前房间
+    activeRoom.gotoAndStop(2);
+    
+    // 设置可选属性为 true
+    _this[this.selectableProperty] = true;
+};
+
+Layer.prototype.deactivate = function(tweenManager) {
+    // 设置组件半透明
+    LayerUtils.setTransparency(this.components, 50, 5, tweenManager);
+    
+    // 设置 NPC 头像透明度
+    var npcAvatars = [];
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.gotoAndStop(1); // 恢复初始状态
+        npcAvatars.push(npcAvatar);
+    }
+    LayerUtils.setTransparency(npcAvatars, 80, 5, tweenManager);
+    
+    // 恢复组件初始状态并恢复原始深度
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        component.gotoAndStop(1); // 恢复初始状态
+        component.swapDepths(component.originalDepth);
+    }
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npcAvatar = this.npcs[j].avatar;
+        npcAvatar.gotoAndStop(1); // 恢复初始状态
+        npcAvatar.swapDepths(npcAvatar.originalDepth);
+    }
+    
+    // 设置可选属性为 false
+    _this[this.selectableProperty] = false;
+};
+
+// ============================
+// LayerManager 类定义
+// ============================
+function LayerManager(layers, tweenManager, parentClip) {
+    this.layers = layers; // Array of Layer instances
+    this.tweenManager = tweenManager;
+    this.parentClip = parentClip;
+    this.currentActiveLayer = null;
+    this.deactivateFlag = false;
+    var self = this;
+
+    // 初始化层级状态
+    this.initializeLayers();
+}
+
+LayerManager.prototype.initializeLayers = function() {
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
+        layer.recordOriginalDepths();
+        layer.initialize(this.tweenManager);
+    }
+    this.currentActiveLayer = null;
+    this.attachRollOverEvents();
+};
+
+LayerManager.prototype.activateLayer = function(layer, activeRoom) {
+    if (this.currentActiveLayer != null && this.currentActiveLayer != layer) {
+        // 先取消当前激活的层级
+        this.deactivateCurrentLayer();
+    }
+    this.currentActiveLayer = layer;
+    var depthOffset = 100;
+    layer.activate(this.tweenManager, depthOffset, activeRoom);
+    this.removeRollOverEvents();
+    this.attachRollOutEvents(layer);
+};
+
+LayerManager.prototype.deactivateCurrentLayer = function() {
+    if (this.currentActiveLayer == null) return;
+    var layer = this.currentActiveLayer;
+    layer.deactivate(this.tweenManager);
+    this.attachRollOverEvents();
+    this.removeRollOutEvents(layer);
+    this.currentActiveLayer = null;
+};
+
+LayerManager.prototype.attachRollOverEvents = function() {
+    var self = this;
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
+        for (var j = 0; j < layer.components.length; j++) {
+            var roomClip = layer.components[j];
+            roomClip.layer = layer; // 关联房间与层级
+            roomClip.onRollOver = function() {
+                if (self.currentActiveLayer == null) {
+                    self.activateLayer(this.layer, this);
+                    self.deactivateFlag = false;
+                }
+            };
+        }
+    }
+};
+
+LayerManager.prototype.removeRollOverEvents = function() {
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
+        for (var j = 0; j < layer.components.length; j++) {
+            var roomClip = layer.components[j];
+            roomClip.onRollOver = null;
+        }
+    }
+};
+
+LayerManager.prototype.attachRollOutEvents = function(layer) {
+    var self = this;
+    for (var j = 0; j < layer.components.length; j++) {
+        var roomClip = layer.components[j];
+        roomClip.onRollOut = function() {
+            this.gotoAndStop(1);
+            self.deactivateFlag = true;
+            self.deactivateCurrentLayer();
+        };
+    }
+};
+
+LayerManager.prototype.removeRollOutEvents = function(layer) {
+    if (layer == null) return;
+    for (var j = 0; j < layer.components.length; j++) {
+        var roomClip = layer.components[j];
+        roomClip.onRollOut = null;
+    }
+};
+
+LayerManager.prototype.handleMouseMove = function() {
+    if (this.currentActiveLayer != null) {
+        if (this.deactivateFlag) {
+            this.deactivateCurrentLayer();
+        } else {
+            return;
+        }
+    }
+
+    var isOverRoom = false;
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
+        for (var j = 0; j < layer.components.length; j++) {
+            var roomClip = layer.components[j];
+            if (roomClip.hitTest(_root._xmouse, _root._ymouse, true)) {
+                isOverRoom = true;
+                break;
+            }
+        }
+        if (isOverRoom) {
+            break;
+        }
+    }
+    if (!isOverRoom) {
+        this.initializeLayers();
+    }
+};
+
+LayerManager.prototype.destroy = function() {
+    // 移除所有事件绑定
+    this.removeRollOverEvents();
+    if (this.currentActiveLayer) {
+        this.removeRollOutEvents(this.currentActiveLayer);
+    }
+    // 清理引用
+    this.layers = null;
+    this.tweenManager = null;
+    this.parentClip = null;
+};
+
+// ============================
+// LayerUtils 类定义
+// ============================
+var LayerUtils = {
+    setTransparency: function(targets, targetAlpha, duration, tweenManager) {
+        for (var i = 0; i < targets.length; i++) {
+            var mc = targets[i];
+            var tween = new Tween(mc, mc._alpha, targetAlpha, duration);
+            tweenManager.addTween(tween);
+        }
+    }
+};
+
+// ============================
+// 初始化和销毁函数
+// ============================
+
+// 保存当前环境
+var _this = this;
+
+this.init = function() {
+    // 初始化 TweenManager
+    this.tweenManager = new TweenManager(this);
+
+    // 定义层级数组
+    var layers = [];
+
+    // 基地屋顶层级
+    var baseRoofLayer = new Layer("基地屋顶",
+        [this.基地屋顶], // components
+        [], // npcs
+        "基地屋顶可选");
+    layers.push(baseRoofLayer);
+
+    // 基地一层层级
+    var firstFloorLayer = new Layer("基地一层",
+        [this.基地大厅, this.佣兵酒吧, this.基地车库, this.基地门口, this.医务室, this.宿舍], // components
+        [
+            { avatar: this.king头像, name: "king头像" },
+            { avatar: this.boy头像, name: "boy头像" },
+            { avatar: this.pig头像, name: "pig头像" },
+            { avatar: this.冷兵器商人头像, name: "冷兵器商人头像" },
+            { avatar: this.杀马特头像, name: "杀马特头像" },
+            { avatar: this.酒保头像, name: "酒保头像" },
+            { avatar: this.舞女头像, name: "舞女头像" },
+            { avatar: this.格格巫头像, name: "格格巫头像" },
+            { avatar: this.丽丽丝头像, name: "丽丽丝头像" },
+            { avatar: this.黑铁会外交部长头像, name: "黑铁会外交部长头像" },
+            { avatar: this.宝石线人头像, name: "宝石线人头像" },
+            { avatar: this.前治安官头像, name: "前治安官头像" },
+            { avatar: this.幸存老兵头像, name: "幸存老兵头像" },
+            { avatar: this.学生妹头像, name: "学生妹头像" }
+        ],
+        "基地一层可选");
+    layers.push(firstFloorLayer);
+
+    // 地下一层层级
+    var basement1Layer = new Layer("地下一层",
+        [this.地下一层, this.健身房, this.武器库], // components
+        [
+            { avatar: this.andy头像, name: "andy头像" },
+            { avatar: this.thegirl头像, name: "thegirl头像" },
+            { avatar: this.shopgirl头像, name: "shopgirl头像" },
+            { avatar: this.blue头像, name: "blue头像" },
+            { avatar: this.小F头像, name: "小F头像" }
+        ],
+        "地下一层可选");
+    layers.push(basement1Layer);
+
+    // 地下二层层级
+    var basement2Layer = new Layer("地下二层",
+        [this.走廊, this.食堂], // components
+        [], // npcs
+        "地下二层可选");
+    layers.push(basement2Layer);
+
+    // 地下水层级
+    var undergroundWaterLayer = new Layer("地下水",
+        [this.地下水], // components
+        [], // npcs
+        "地下水可选");
+    layers.push(undergroundWaterLayer);
+
+    // 创建 LayerManager
+    this.layerManager = new LayerManager(layers, this.tweenManager, this);
+
+    // 设置每个房间的关联层级
+    for (var i = 0; i < layers.length; i++) {
+        var layer = layers[i];
+        for (var j = 0; j < layer.components.length; j++) {
+            layer.components[j].layer = layer; // 关联房间与层级
+        }
+    }
+
+    // 处理鼠标移动事件
+    this.onMouseMove = function() {
+        this.layerManager.handleMouseMove();
+        // trace(getTimer() + " onMouseMove ");
+    };
+};
+
+this.destroy = function() {
+    // 销毁 TweenManager
+    this.tweenManager.destroy();
+    delete this.tweenManager;
+
+    // 销毁 LayerManager
+    this.layerManager.destroy();
+    delete this.layerManager;
+
+    // 移除鼠标移动事件
+    delete this.onMouseMove;
+};
+
+// ============================
+// 帧检测和初始化/销毁逻辑
+// ============================
+this.onEnterFrame = function() {
+    if (this._currentframe == 2) {
+        if (!this.initialized) {
+            this.init();
+            this.initialized = true;
+        }
+    } else {
+        if (this.initialized) {
+            this.destroy();
+            this.initialized = false;
+        }
+    }
+};
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 地图标识() {
+    设置区域透明度();
+    设置区域可选状态();
+    设置NPC头像显示();
+    设置NPC闪光提示();
+}
+
+function 设置区域透明度() {
+    // 基地屋顶
+    this.基地屋顶._alpha = 50;
+
+    // 基地一层
+    var 基地一层区域 = [
+        this.基地大厅, this.佣兵酒吧, this.基地车库, 
+        this.基地门口, this.医务室, this.宿舍
+    ];
+    for (var i = 0; i < 基地一层区域.length; i++) {
+        基地一层区域[i]._alpha = 50;
+    }
+
+    // 地下一层
+    var 地下一层区域 = [this.地下一层, this.健身房, this.武器库];
+    for (var i = 0; i < 地下一层区域.length; i++) {
+        地下一层区域[i]._alpha = 50;
+    }
+
+    // 地下二层
+    var 地下二层区域 = [this.走廊, this.食堂];
+    for (var i = 0; i < 地下二层区域.length; i++) {
+        地下二层区域[i]._alpha = 50;
+    }
+
+    // 地下水
+    this.地下水._alpha = 50;
+}
+
+function 设置区域可选状态() {
+    var 区域可选 = ["基地屋顶", "基地一层", "地下一层", "地下二层", "地下水"];
+    for (var i = 0; i < 区域可选.length; i++) {
+        this[区域可选[i] + "可选"] = false;
+    }
+}
+
+function 设置NPC头像显示() {
+    // 基地一层 NPC
+    var 一层NPC头像 = [
+        "king头像", "boy头像", "pig头像", "冷兵器商人头像",
+        "杀马特头像", "酒保头像", "舞女头像", "格格巫头像",
+        "丽丽丝头像"
+    ];
+    for (var i = 0; i < 一层NPC头像.length; i++) {
+        this[一层NPC头像[i]]._alpha = 80;
+    }
+
+    // 动态任务相关头像
+    设置任务相关头像("黑铁会外交部长头像", 69);
+    设置任务相关头像("宝石线人头像", 42);
+    设置任务相关头像("前治安官头像", 22);
+    设置任务相关头像("幸存老兵头像", 19);
+    设置任务相关头像("学生妹头像", 40);
+
+    // 地下一层 NPC
+    var 地下一层NPC头像 = [
+        "andy头像", "thegirl头像", "shopgirl头像", 
+        "blue头像", "小F头像"
+    ];
+    for (var i = 0; i < 地下一层NPC头像.length; i++) {
+        this[地下一层NPC头像[i]]._alpha = 80;
+    }
+}
+
+function 设置任务相关头像(头像名, 任务进度) {
+    if (_root.主线任务进度 < 任务进度) {
+        this[头像名]._visible = 0;
+    } else {
+        this[头像名]._visible = 1;
+        this[头像名]._alpha = 80;
+    }
+}
+
+function 设置NPC闪光提示() {
+    // 手动组装映射表
+    var NPC映射 = new Object();
+    NPC映射["∞天ㄙ★使的剪∞"] = {
+        头像: "杀马特头像",
+        闪光提示: "杀马特_闪光提示"
+    };
+
+    // 定义标准 NPC 名称数组
+    var NPC闪光 = [
+        "Pig_闪光提示", "Boy_闪光提示", "King_闪光提示",
+        "The Girl_闪光提示", "Andy Law_闪光提示", "Shop Girl_闪光提示",
+        "Blue_闪光提示", "酒保_闪光提示", "格格巫_闪光提示", "丽丽丝_闪光提示",
+        "小F_闪光提示", "冷兵器商人_闪光提示", "宝石线人_闪光提示",
+        "学生妹_闪光提示", "幸存老兵_闪光提示", "前治安官_闪光提示",
+        "黑铁会外交部长_闪光提示", "舞女_闪光提示", "杀马特_闪光提示"
+    ];
+
+    // 首先隐藏所有标准 NPC 的闪光提示
+    for (var i = 0; i < NPC闪光.length; i++) {
+        if (this[NPC闪光[i]]) {
+            this[NPC闪光[i]]._visible = 0;
+        }
+    }
+
+    // 针对映射表中的特殊 NPC，隐藏他们的闪光提示
+    for (var npcName in NPC映射) {
+        if (this[NPC映射[npcName].闪光提示]) {
+            this[NPC映射[npcName].闪光提示]._visible = 0;
+        }
+    }
+
+    // 遍历任务列表并设置对应 NPC 的闪光提示为可见
+    for (var i = 0; i < _root.tasks_to_do.length; i++) {
+        if (_root.taskFinished(i)) {
+            // 获取任务数据
+            var taskData = _root.getTaskData(_root.tasks_to_do[i].id);
+            var finishNpc = taskData.finish_npc;
+
+            // 检查是否为特殊 NPC
+            if (NPC映射[finishNpc]) {
+                // 处理特殊 NPC
+                var 特殊闪光提示 = NPC映射[finishNpc].闪光提示;
+                if (this[特殊闪光提示]) {
+                    this[特殊闪光提示]._visible = 1;
+                }
+            } else {
+                // 处理标准 NPC
+                var 标准闪光提示 = finishNpc + "_闪光提示";
+                if (this[标准闪光提示]) {
+                    this[标准闪光提示]._visible = 1;
+                }
+            }
+        }
+    }
+}
+
+
+
+地图标识();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按钮" color="#CBE8E6" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2122" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.50003051757813" d="2.5" tx="988.1" ty="51.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	gotoAndStop(2);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2158" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.50003051757813" d="2.5" tx="987.3" ty="51.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	gotoAndStop(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="缩略图" color="#EEDEBD" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2121" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.864578247070313" d="0.864578247070313" tx="996" ty="51.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景边框" color="#FE8194" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2120" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="987.3" ty="51.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="焦点按钮文字" color="#FF4FFF" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="914.4" ty="115.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>基地屋顶</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="913.9" ty="158.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>基地一层</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="913.4" ty="202.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>地下一层</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="913.4" ty="245.35"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>地下二层</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="66.2" height="31.6" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="926.9" ty="288.45"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>地下水</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="66.2" height="31.6" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="924.9" ty="333.25"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>初始化</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="916.4" ty="376.65"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>层级关系</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="调整焦点按钮" color="#FF800A" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="基地屋顶焦点按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.44635009765625" d="1.44635009765625" tx="904.55" ty="115.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="4.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.基地屋顶._visible = 1;
+	this.基地屋顶._alpha = 100;
+	//基地一层
+	this.基地大厅._visible = 0;
+	this.佣兵酒吧._visible = 0;
+	this.基地车库._visible = 0;
+	this.基地门口._visible = 0;
+	this.医务室._visible = 0;
+	this.宿舍._visible = 0;
+	this.king头像._alpha = 30;
+	this.boy头像._alpha = 30;
+	this.pig头像._alpha = 30;
+	this.冷兵器商人头像._alpha = 30;
+	this.杀马特头像._alpha = 30;
+	this.酒保头像._alpha = 30;
+	this.舞女头像._alpha = 30;
+	this.格格巫头像._alpha = 30;
+	this.丽丽丝头像._alpha = 30;
+	this.黑铁会外交部长头像._alpha = 30;
+	this.宝石线人头像._alpha = 30;
+	this.前治安官头像._alpha = 30;
+	this.幸存老兵头像._alpha = 30;
+	this.学生妹头像._alpha = 30;
+	//地下一层
+	this.地下一层._visible = 0;
+	this.健身房._visible = 0;
+	this.武器库._visible = 0;
+	this.andy头像._alpha = 30;
+	this.thegirl头像._alpha = 30;
+	this.shopgirl头像._alpha = 30;
+	this.blue头像._alpha = 30;
+	this.小F头像._alpha = 30;
+	//地下二层
+	this.走廊._visible = 0;
+	this.食堂._visible = 0;
+	//地下水
+	this.地下水._visible = 0;
+	
+	this.基地屋顶可选 = true;
+	this.基地一层可选 = false;
+	this.地下一层可选 = false;
+	this.地下二层可选 = false;
+	this.地下水可选 = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="基地一层焦点按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.44635009765625" d="1.44635009765625" tx="904.05" ty="158.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="4.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.基地屋顶._visible = 0;
+	//基地一层
+	this.基地大厅._visible = 1;
+	this.佣兵酒吧._visible = 1;
+	this.基地车库._visible = 1;
+	this.基地门口._visible = 1;
+	this.医务室._visible = 1;
+	this.宿舍._visible = 1;
+	this.基地大厅._alpha = 100;
+	this.佣兵酒吧._alpha = 100;
+	this.基地车库._alpha = 100;
+	this.基地门口._alpha = 100;
+	this.医务室._alpha = 100;
+	this.宿舍._alpha = 100;
+	this.king头像._alpha = 100;
+	this.boy头像._alpha = 100;
+	this.pig头像._alpha = 100;
+	this.冷兵器商人头像._alpha = 100;
+	this.杀马特头像._alpha = 100;
+	this.酒保头像._alpha = 100;
+	this.舞女头像._alpha = 100;
+	this.格格巫头像._alpha = 100;
+	this.丽丽丝头像._alpha = 100;
+	this.黑铁会外交部长头像._alpha = 100;
+	this.宝石线人头像._alpha = 100;
+	this.前治安官头像._alpha = 100;
+	this.幸存老兵头像._alpha = 100;
+	this.学生妹头像._alpha = 100;
+	//地下一层
+	this.地下一层._visible = 0;
+	this.健身房._visible = 0;
+	this.武器库._visible = 0;
+	this.andy头像._alpha = 30;
+	this.thegirl头像._alpha = 30;
+	this.shopgirl头像._alpha = 30;
+	this.blue头像._alpha = 30;
+	this.小F头像._alpha = 30;
+	//地下二层
+	this.走廊._visible = 0;
+	this.食堂._visible = 0;
+	//地下水
+	this.地下水._visible = 0;
+	
+	this.基地屋顶可选 = false;
+	this.基地一层可选 = true;
+	this.地下一层可选 = false;
+	this.地下二层可选 = false;
+	this.地下水可选 = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="地下一层焦点按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.44635009765625" d="1.44635009765625" tx="903.55" ty="201.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="4.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.基地屋顶._visible = 0;
+	//基地一层
+	this.基地大厅._visible = 0;
+	this.佣兵酒吧._visible = 0;
+	this.基地车库._visible = 0;
+	this.基地门口._visible = 0;
+	this.医务室._visible = 0;
+	this.宿舍._visible = 0;
+	this.king头像._alpha = 30;
+	this.boy头像._alpha = 30;
+	this.pig头像._alpha = 30;
+	this.冷兵器商人头像._alpha = 30;
+	this.杀马特头像._alpha = 30;
+	this.酒保头像._alpha = 30;
+	this.舞女头像._alpha = 30;
+	this.格格巫头像._alpha = 30;
+	this.丽丽丝头像._alpha = 30;
+	this.黑铁会外交部长头像._alpha = 30;
+	this.宝石线人头像._alpha = 30;
+	this.前治安官头像._alpha = 30;
+	this.幸存老兵头像._alpha = 30;
+	this.学生妹头像._alpha = 30;
+	//地下一层
+	this.地下一层._visible = 1;
+	this.健身房._visible = 1;
+	this.武器库._visible = 1;
+	this.地下一层._alpha = 100;
+	this.健身房._alpha = 100;
+	this.武器库._alpha = 100;
+	this.andy头像._alpha = 100;
+	this.thegirl头像._alpha = 100;
+	this.shopgirl头像._alpha = 100;
+	this.blue头像._alpha = 100;
+	this.小F头像._alpha = 100;
+	//地下二层
+	this.走廊._visible = 0;
+	this.食堂._visible = 0;
+	//地下水
+	this.地下水._visible = 0;
+	
+	this.基地屋顶可选 = false;
+	this.基地一层可选 = false;
+	this.地下一层可选 = true;
+	this.地下二层可选 = false;
+	this.地下水可选 = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="地下二层焦点按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.44635009765625" d="1.44635009765625" tx="903.55" ty="244.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="4.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.基地屋顶._visible = 0;
+	//基地一层
+	this.基地大厅._visible = 0;
+	this.佣兵酒吧._visible = 0;
+	this.基地车库._visible = 0;
+	this.基地门口._visible = 0;
+	this.医务室._visible = 0;
+	this.宿舍._visible = 0;
+	this.king头像._alpha = 30;
+	this.boy头像._alpha = 30;
+	this.pig头像._alpha = 30;
+	this.冷兵器商人头像._alpha = 30;
+	this.杀马特头像._alpha = 30;
+	this.酒保头像._alpha = 30;
+	this.舞女头像._alpha = 30;
+	this.格格巫头像._alpha = 30;
+	this.丽丽丝头像._alpha = 30;
+	this.黑铁会外交部长头像._alpha = 30;
+	this.宝石线人头像._alpha = 30;
+	this.前治安官头像._alpha = 30;
+	this.幸存老兵头像._alpha = 30;
+	this.学生妹头像._alpha = 30;
+	//地下一层
+	this.地下一层._visible = 0;
+	this.健身房._visible = 0;
+	this.武器库._visible = 0;
+	this.andy头像._alpha = 30;
+	this.thegirl头像._alpha = 30;
+	this.shopgirl头像._alpha = 30;
+	this.blue头像._alpha = 30;
+	this.小F头像._alpha = 30;
+	//地下二层
+	this.走廊._visible = 1;
+	this.食堂._visible = 1;
+	this.走廊._alpha = 100;
+	this.食堂._alpha = 100;
+	//地下水
+	this.地下水._visible = 0;
+	
+	this.基地屋顶可选 = false;
+	this.基地一层可选 = false;
+	this.地下一层可选 = false;
+	this.地下二层可选 = true;
+	this.地下水可选 = false;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="地下水焦点按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.44635009765625" d="1.44635009765625" tx="904.55" ty="288.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="4.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.基地屋顶._visible = 0;
+	//基地一层
+	this.基地大厅._visible = 0;
+	this.佣兵酒吧._visible = 0;
+	this.基地车库._visible = 0;
+	this.基地门口._visible = 0;
+	this.医务室._visible = 0;
+	this.宿舍._visible = 0;
+	this.king头像._alpha = 30;
+	this.boy头像._alpha = 30;
+	this.pig头像._alpha = 30;
+	this.冷兵器商人头像._alpha = 30;
+	this.杀马特头像._alpha = 30;
+	this.酒保头像._alpha = 30;
+	this.舞女头像._alpha = 30;
+	this.格格巫头像._alpha = 30;
+	this.丽丽丝头像._alpha = 30;
+	this.黑铁会外交部长头像._alpha = 30;
+	this.宝石线人头像._alpha = 30;
+	this.前治安官头像._alpha = 30;
+	this.幸存老兵头像._alpha = 30;
+	this.学生妹头像._alpha = 30;
+	//地下一层
+	this.地下一层._visible = 0;
+	this.健身房._visible = 0;
+	this.武器库._visible = 0;
+	this.andy头像._alpha = 30;
+	this.thegirl头像._alpha = 30;
+	this.shopgirl头像._alpha = 30;
+	this.blue头像._alpha = 30;
+	this.小F头像._alpha = 30;
+	//地下二层
+	this.走廊._visible = 0;
+	this.食堂._visible = 0;
+	//地下水
+	this.地下水._visible = 1;
+	this.地下水._alpha = 100;
+	
+	this.基地屋顶可选 = false;
+	this.基地一层可选 = false;
+	this.地下一层可选 = false;
+	this.地下二层可选 = false;
+	this.地下水可选 = true;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="初始化按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.44635009765625" d="1.44635009765625" tx="904.05" ty="332.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="4.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.基地屋顶._visible = 1;
+	this.基地屋顶._alpha = 50;
+	//基地一层
+	this.基地大厅._visible = 1;
+	this.佣兵酒吧._visible = 1;
+	this.基地车库._visible = 1;
+	this.基地门口._visible = 1;
+	this.医务室._visible = 1;
+	this.宿舍._visible = 1;
+	this.基地大厅._alpha = 50;
+	this.佣兵酒吧._alpha = 50;
+	this.基地车库._alpha = 50;
+	this.基地门口._alpha = 50;
+	this.医务室._alpha = 50;
+	this.宿舍._alpha = 50;
+	//地下一层
+	this.地下一层._visible = 1;
+	this.健身房._visible = 1;
+	this.武器库._visible = 1;
+	this.地下一层._alpha = 50;
+	this.健身房._alpha = 50;
+	this.武器库._alpha = 50;
+	//地下二层
+	this.走廊._visible = 1;
+	this.食堂._visible = 1;
+	this.走廊._alpha = 50;
+	this.食堂._alpha = 50;
+	//地下水
+	this.地下水._visible = 1;
+	this.地下水._alpha = 50;
+
+	//焦点选中
+	基地屋顶可选 = false;
+	基地一层可选 = false;
+	地下一层可选 = false;
+	地下二层可选 = false;
+	地下水可选 = false;
+
+	//npc头像
+	//基地一层
+	this.king头像._alpha = 60;
+	this.boy头像._alpha = 60;
+	this.pig头像._alpha = 60;
+	this.冷兵器商人头像._alpha = 60;
+	this.杀马特头像._alpha = 60;
+	this.酒保头像._alpha = 60;
+	this.舞女头像._alpha = 60;
+	this.格格巫头像._alpha = 60;
+	this.丽丽丝头像._alpha = 60;
+	this.黑铁会外交部长头像._alpha = 60;
+	this.宝石线人头像._alpha = 60;
+	this.前治安官头像._alpha = 60;
+	this.幸存老兵头像._alpha = 60;
+	this.学生妹头像._alpha = 60;
+	//地下一层
+	this.andy头像._alpha = 60;
+	this.thegirl头像._alpha = 60;
+	this.shopgirl头像._alpha = 60;
+	this.blue头像._alpha = 60;
+	this.小F头像._alpha = 60;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="层级关系按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.44635009765625" d="1.44635009765625" tx="903.55" ty="376.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="4.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.基地房顶._visible = 1;
+	this.基地屋顶._alpha = 100;
+	//基地一层
+	this.基地大厅._visible = 1;
+	this.佣兵酒吧._visible = 1;
+	this.基地车库._visible = 1;
+	this.基地门口._visible = 1;
+	this.医务室._visible = 1;
+	this.宿舍._visible = 1;
+	this.基地大厅._alpha = 100;
+	this.佣兵酒吧._alpha = 100;
+	this.基地车库._alpha = 100;
+	this.基地门口._alpha = 100;
+	this.医务室._alpha = 100;
+	this.宿舍._alpha = 100;
+	//地下一层
+	this.地下一层._visible = 1;
+	this.健身房._visible = 1;
+	this.武器库._visible = 1;
+	this.地下一层._alpha = 100;
+	this.健身房._alpha = 100;
+	this.武器库._alpha = 100;
+	//地下二层
+	this.走廊._visible = 1;
+	this.食堂._visible = 1;
+	this.走廊._alpha = 100;
+	this.食堂._alpha = 100;
+	//地下水
+	this.地下水._visible = 1;
+	this.地下水._alpha = 100;
+
+	//焦点选中
+	基地屋顶可选 = false;
+	基地一层可选 = false;
+	地下一层可选 = false;
+	地下二层可选 = false;
+	地下水可选 = false;
+
+	//npc头像
+	//基地一层
+	this.king头像._alpha = 0;
+	this.boy头像._alpha = 0;
+	this.pig头像._alpha = 0;
+	this.冷兵器商人头像._alpha = 0;
+	this.杀马特头像._alpha = 0;
+	this.酒保头像._alpha = 0;
+	this.舞女头像._alpha = 0;
+	this.格格巫头像._alpha = 0;
+	this.丽丽丝头像._alpha = 0;
+	this.黑铁会外交部长头像._alpha = 0;
+	this.宝石线人头像._alpha = 0;
+	this.前治安官头像._alpha = 0;
+	this.幸存老兵头像._alpha = 0;
+	this.学生妹头像._alpha = 0;
+	//地下一层
+	this.andy头像._alpha = 0;
+	this.thegirl头像._alpha = 0;
+	this.shopgirl头像._alpha = 0;
+	this.blue头像._alpha = 0;
+	this.小F头像._alpha = 0;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="基地屋顶" color="#4F80FF" autoNamed="false" visible="false" layerType="folder"/>
+        <DOMLayer name="基地屋顶npc" color="#4F80FF" parentLayerIndex="7" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="7" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" cacheAsBitmap="true" centerPoint3DX="484.75" centerPoint3DY="159.15">
+                  <matrix>
+                    <Matrix a="0.200958251953125" d="0.200958251953125" tx="223.6" ty="95.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1170.65" y="239.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.基地屋顶可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("基地房顶");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="基地一层" color="#FF4F4F" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="基地车库npc" color="#4F80FF" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Pig_闪光提示" centerPoint3DX="191.3" centerPoint3DY="225.25">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="155.4" ty="189.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="King_闪光提示" centerPoint3DX="285.35" centerPoint3DY="225.45">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="249.2" ty="189.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Boy_闪光提示" centerPoint3DX="232.75" centerPoint3DY="253.3">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="196.8" ty="217.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="pig头像" name="pig头像" cacheAsBitmap="true" centerPoint3DX="155.5" centerPoint3DY="190">
+                  <matrix>
+                    <Matrix tx="133.55" ty="168"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="boy头像" name="boy头像" cacheAsBitmap="true" centerPoint3DX="196.8" centerPoint3DY="217.85">
+                  <matrix>
+                    <Matrix tx="174.85" ty="195.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="king头像" name="king头像" cacheAsBitmap="true" centerPoint3DX="249.15" centerPoint3DY="189.75">
+                  <matrix>
+                    <Matrix tx="227.2" ty="167.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="冷兵器商人_闪光提示" centerPoint3DX="140.25" centerPoint3DY="229.45">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="104.35" ty="193.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="冷兵器商人头像" name="冷兵器商人头像" cacheAsBitmap="true" centerPoint3DX="104.45" centerPoint3DY="193.95">
+                  <matrix>
+                    <Matrix tx="82.5" ty="171.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="基地车库" color="#FF4F4F" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="基地车库整体" name="基地车库" cacheAsBitmap="true" centerPoint3DX="183.95" centerPoint3DY="197.8">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="45.3" ty="134.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1209.1" y="554.2"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.基地一层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("基地车库");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="基地门口" color="#4FFF4F" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="基地门口" name="基地门口" cacheAsBitmap="true" centerPoint3DX="788.45" centerPoint3DY="206.35">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="634.65" ty="151.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1341.25" y="479.65"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.基地一层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("基地门口");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="基地大厅npc" color="#808080" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="幸存老兵_闪光提示" centerPoint3DX="486.3" centerPoint3DY="267.05">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="450.35" ty="231.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="幸存老兵头像" name="幸存老兵头像" cacheAsBitmap="true" centerPoint3DX="450.35" centerPoint3DY="231.2">
+                  <matrix>
+                    <Matrix tx="428.4" ty="209.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="学生妹头像" name="学生妹头像" cacheAsBitmap="true" centerPoint3DX="397.95" centerPoint3DY="217.3">
+                  <matrix>
+                    <Matrix tx="376" ty="195.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="学生妹_闪光提示" centerPoint3DX="433.9" centerPoint3DY="253.15">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="397.95" ty="217.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="∞天ㄙ★使的剪∞头像" name="杀马特头像" cacheAsBitmap="true" centerPoint3DX="349.7" centerPoint3DY="189.5">
+                  <matrix>
+                    <Matrix tx="327.75" ty="167.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="杀马特_闪光提示" centerPoint3DX="385.75" centerPoint3DY="225.3">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="349.8" ty="189.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="黑铁会外交部长头像" name="黑铁会外交部长头像" cacheAsBitmap="true" centerPoint3DX="347" centerPoint3DY="236.6">
+                  <matrix>
+                    <Matrix tx="325.05" ty="214.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="黑铁会外交部长_闪光提示" centerPoint3DX="383.05" centerPoint3DY="272.45">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="347.1" ty="236.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="前治安官头像" name="前治安官头像" cacheAsBitmap="true" centerPoint3DX="609.6" centerPoint3DY="209.2">
+                  <matrix>
+                    <Matrix tx="587.65" ty="187.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="前治安官_闪光提示" centerPoint3DX="644.7" centerPoint3DY="244.8">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="609.35" ty="209.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="宝石线人头像" name="宝石线人头像" cacheAsBitmap="true" centerPoint3DX="548.7" centerPoint3DY="221.9">
+                  <matrix>
+                    <Matrix tx="526.75" ty="199.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="宝石线人_闪光提示" centerPoint3DX="583.95" centerPoint3DY="257.45">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="548" ty="221.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="基地大厅" color="#9933CC" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="基地大厅整体" name="基地大厅" cacheAsBitmap="true" centerPoint3DX="482.7" centerPoint3DY="203.6">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="235.35" ty="146.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2122.6" y="449.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.基地一层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("基地1层");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="医务室npc" color="#808080" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="丽丽丝_闪光提示" centerPoint3DX="640.75" centerPoint3DY="181.4">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="605.4" ty="145.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="格格巫_闪光提示" centerPoint3DX="586.85" centerPoint3DY="181.5">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="550.9" ty="145.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="格格巫头像" name="格格巫头像" cacheAsBitmap="true" centerPoint3DX="550.9" centerPoint3DY="145.65">
+                  <matrix>
+                    <Matrix tx="528.95" ty="123.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="丽丽丝头像" name="丽丽丝头像" cacheAsBitmap="true" centerPoint3DX="605.55" centerPoint3DY="145.45">
+                  <matrix>
+                    <Matrix tx="583.6" ty="123.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="医务室" color="#FF800A" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="医务室整体" name="医务室" centerPoint3DX="575.25" centerPoint3DY="142.3">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="508.55" ty="95.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="581.65" y="410.75"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.基地一层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("医务室");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="宿舍" color="#FF4FFF" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="卧室整体" name="宿舍" cacheAsBitmap="true" centerPoint3DX="549.5" centerPoint3DY="91.75">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="487.85" ty="56.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.基地一层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("房间");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="佣兵酒吧npc" color="#FF4F4F" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="酒保_闪光提示" centerPoint3DX="464.3" centerPoint3DY="143">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="428.7" ty="108"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="酒保头像" name="酒保头像" cacheAsBitmap="true" centerPoint3DX="428.65" centerPoint3DY="107.9">
+                  <matrix>
+                    <Matrix tx="406.7" ty="85.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="舞女_闪光提示" centerPoint3DX="409.35" centerPoint3DY="147.9">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="373.4" ty="112.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="舞女头像" name="舞女头像" cacheAsBitmap="true" centerPoint3DX="373.65" centerPoint3DY="112.1">
+                  <matrix>
+                    <Matrix tx="351.7" ty="90.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="佣兵酒吧" color="#4FFFFF" parentLayerIndex="10" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="佣兵酒吧整体" name="佣兵酒吧" cacheAsBitmap="true" centerPoint3DX="409" centerPoint3DY="113.6">
+                  <matrix>
+                    <Matrix a="0.150588989257813" d="0.150588989257813" tx="307.1" ty="65.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="693.6" y="340.65"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.基地一层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("佣兵酒吧");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地下一层" color="#4FFF4F" autoNamed="false" visible="false" layerType="folder"/>
+        <DOMLayer name="地下一层npc" color="#31ECB9" parentLayerIndex="21" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="The Girl_闪光提示" centerPoint3DX="455.9" centerPoint3DY="340">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="420.1" ty="304.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Andy Law_闪光提示" centerPoint3DX="517.15" centerPoint3DY="336.5">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="481.4" ty="301.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Blue_闪光提示" centerPoint3DX="640.15" centerPoint3DY="345.15">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="604.75" ty="308.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="andy头像" name="andy头像" cacheAsBitmap="true" centerPoint3DX="481.4" centerPoint3DY="301.25">
+                  <matrix>
+                    <Matrix tx="459.45" ty="279.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="the girl头像" name="thegirl头像" cacheAsBitmap="true" centerPoint3DX="420.1" centerPoint3DY="304.5">
+                  <matrix>
+                    <Matrix tx="398.15" ty="282.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="blue头像" name="blue头像" cacheAsBitmap="true" centerPoint3DX="604.75" centerPoint3DY="308.65">
+                  <matrix>
+                    <Matrix tx="582.8" ty="286.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地下一层" color="#4FFF4F" parentLayerIndex="21" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地下一层整体" name="地下一层" cacheAsBitmap="true" centerPoint3DX="508.8" centerPoint3DY="303.4">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="349.55" ty="257.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1362.6" y="401.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.地下一层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("地下室1层");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="健身房" color="#9933CC" parentLayerIndex="21" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="健身房整体" name="健身房" cacheAsBitmap="true" centerPoint3DX="318.65" centerPoint3DY="303.1">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="233.25" ty="257.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="731.25" y="398.95"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.地下一层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("健身房");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器库npc" color="#FF4FFF" parentLayerIndex="21" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Shop Girl_闪光提示" centerPoint3DX="569.5" centerPoint3DY="298.9">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="533.8" ty="263.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="小F_闪光提示" centerPoint3DX="628.9" centerPoint3DY="287.3">
+                  <matrix>
+                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="593" ty="251.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shopgirl头像" name="shopgirl头像" cacheAsBitmap="true" centerPoint3DX="533.8" centerPoint3DY="263.05">
+                  <matrix>
+                    <Matrix tx="511.85" ty="241.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="小F头像" name="小F头像" cacheAsBitmap="true" centerPoint3DX="593.3" centerPoint3DY="251.95">
+                  <matrix>
+                    <Matrix tx="571.35" ty="229.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.95" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="武器库" color="#FF800A" parentLayerIndex="21" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="武器库整体" name="武器库" centerPoint3DX="556.05" centerPoint3DY="263.5">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="471.65" ty="217.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="736.45" y="398.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.地下一层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("武器库");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地下二层" color="#9933CC" autoNamed="false" visible="false" layerType="folder"/>
+        <DOMLayer name="地下二层npc" color="#FF4F4F" parentLayerIndex="27" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="走廊" color="#4FFFFF" parentLayerIndex="27" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="走廊整体" name="走廊" centerPoint3DX="424.9" centerPoint3DY="394.25">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="341" ty="348.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="732.55" y="398.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.地下二层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("地图-走廊");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="食堂" color="#808080" parentLayerIndex="27" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="食堂整体" name="食堂" cacheAsBitmap="true" centerPoint3DX="241.5" centerPoint3DY="378.65">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="56.6" ty="314.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1612.45" y="563.35"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.地下二层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("地图-食堂");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地下水" color="#FF4FFF" autoNamed="false" visible="false" layerType="folder"/>
+        <DOMLayer name="地下水npc" color="#4FFF4F" parentLayerIndex="31" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地下水" color="#808080" parentLayerIndex="31" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地下水整体" name="地下水" centerPoint3DX="410.45" centerPoint3DY="460.45">
+                  <matrix>
+                    <Matrix a="0.114669799804688" d="0.114669799804688" tx="340.25" ty="418.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="611.3" y="364.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.地下水可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("地下2层");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#EE56CF" autoNamed="false" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="背景" centerPoint3DX="512.05" centerPoint3DY="289.05">
+                  <matrix>
+                    <Matrix tx="0.1" ty="-1.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="511.75" y="290.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-10"/>
+                    <AdjustColorFilter contrast="-100"/>
+                  </filters>
+                  <color>
+                    <Color brightness="-0.49"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF" visible="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

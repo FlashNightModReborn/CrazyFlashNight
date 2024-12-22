@@ -444,7 +444,7 @@ _root.创建佣兵实体对象 = function(佣兵数据, X, Y)
 	var 佣兵名 = "佣兵" + 佣兵数据[1] + 生成佣兵计数;// 根据佣兵数据生成唯一的佣兵名
 
 	// 在游戏世界中创建佣兵对象
-	_root.gameworld.attachMovie("佣兵npc",佣兵名,_root.gameworld.getNextHighestDepth(),{_x:X, _y:Y});
+	_root.加载游戏世界人物("佣兵npc",佣兵名,_root.gameworld.getNextHighestDepth(),{_x:X, _y:Y});
 	var 佣兵对象 = _root.gameworld[佣兵名];
 
 	// 设置佣兵对象的各项属性
@@ -628,9 +628,9 @@ _root.竞技场随机对手选择 = function(条件)
 		_root.决斗场进入中 = false;
 	}
 };
-_root.abc = function()
-{
-};
+// _root.abc = function()
+// {
+// };
 _root.竞技场对手请求 = function(请求表达式)
 {
 	if (_root.确认佣兵库(请求表达式))
@@ -656,9 +656,9 @@ _root.更新重用限制 = function()
 	_root.竞技场佣兵重用基数 += _root.重用基数成长率;
 	_root.当前佣兵重用数 = 0;
 };
-_root.doNothing = function()
-{
-};
+// _root.doNothing = function()
+// {
+// };
 _root.清除佣兵库回调 = function()
 {
 	_root.佣兵请求成功回调 = _root.doNothing();

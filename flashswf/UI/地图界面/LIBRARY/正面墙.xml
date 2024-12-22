@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="正面墙" itemID="67458834-00000063" symbolType="graphic" lastModified="1732791857">
+  <timeline>
+    <DOMTimeline name="正面墙">
+      <layers>
+        <DOMLayer name="Layer_1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMBitmapInstance libraryItemName="纹理图/bitmap7.jpg">
+                  <matrix>
+                    <Matrix a="3.0765380859375" d="1.24211120605469" tx="-299" ty="-118"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.55" y="0.4"/>
+                  </transformationPoint>
+                </DOMBitmapInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

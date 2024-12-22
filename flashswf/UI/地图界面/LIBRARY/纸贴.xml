@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="纸贴" itemID="67459c8b-00000048" symbolType="graphic" lastModified="1732615307">
+  <timeline>
+    <DOMTimeline name="纸贴">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E5E5E5"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#B2B2B2"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!8460 2327S6|0 2327!0 2327|0 0!0 0|9231 0!9231 0|9231 1919"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!9231 1919S6|8460 2327"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!8460 2327S7|8460 1844!8460 1844|9231 1919"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

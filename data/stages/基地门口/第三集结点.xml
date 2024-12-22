@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
     <StageInfo>
-        <Type>初期关卡</Type>
+        <Type>无限过图</Type>
         <Name>第三集结点</Name>
-        <FadeTransitionFrame>关卡8-1</FadeTransitionFrame>
+        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
         <UnlockCondition>16</UnlockCondition>
         <Description>防线被破坏后，军队撤退到这里重整态势，可惜在这里遭到了僵尸群的围攻，全军覆没，对于A兵团成员来说这里也是一个危险的地方&amp;lt;BR&amp;gt;这里可以获得一些普通材料</Description>
     </StageInfo>
@@ -74,4 +74,222 @@
             <QuantityMax>1</QuantityMax>
         </Reward>
     </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk8_1_BG.swf</Background>
+            <PlayerX>90</PlayerX>
+            <PlayerY>609</PlayerY>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种3</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>15</Level>
+                        <x>1234</x>
+                        <y>752</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种1</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>15</Level>
+                        <x>1442</x>
+                        <y>702</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种1</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>15</Level>
+                        <x>992</x>
+                        <y>448</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>15</Level>
+                        <x>890</x>
+                        <y>682</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种3</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>15</Level>
+                        <x>650</x>
+                        <y>617</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>15</Level>
+                        <x>1490</x>
+                        <y>511</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk8_2_BG.swf</Background>
+            <PlayerX>848</PlayerX>
+            <PlayerY>404</PlayerY>
+            <Animation>
+                <Path>flashswf/movies/movie_gk_8_2.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+        </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>46</x>
+                <y>471</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>102</x>
+                <y>637</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>134</x>
+                <y>810</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="3">
+                <x>1786</x>
+                <y>852</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="4">
+                <x>1822</x>
+                <y>619</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="5">
+                <x>1636</x>
+                <y>429</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+        </SpawnPoint>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#微笑</Char>
+                <Text>恩，找到物资了！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#大笑</Char>
+                <Text>接下来就是等支援的同伴们来回收物资了！</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>啊！这个声音是......僵尸。好像数量还不少，我要小心了！</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>254</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>2</Level>
+                        <x>1678</x>
+                        <y>751</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>2</Level>
+                        <x>1492</x>
+                        <y>403</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>2</Level>
+                        <x>328</x>
+                        <y>762</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>2</Level>
+                        <x>236</x>
+                        <y>432</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种5</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>50</Quantity>
+                        <Level>3</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种8</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>50</Quantity>
+                        <Level>2</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种3</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>50</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种2</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>50</Quantity>
+                        <Level>3</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种4</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>50</Quantity>
+                        <Level>2</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种6</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>50</Quantity>
+                        <Level>1</Level>
+                        <SpawnIndex>5</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
 </GameStage>

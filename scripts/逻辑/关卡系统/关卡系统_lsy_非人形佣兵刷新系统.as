@@ -68,7 +68,7 @@ _root.创建可雇用敌人实体对象 = function(佣兵数据, X, Y)
 
 	// 在游戏世界中创建佣兵对象
 	var 兵种 = 佣兵数据.兵种;
-	var 佣兵对象 = _root.gameworld.attachMovie(兵种, 佣兵名, _root.gameworld.getNextHighestDepth(), {_x:X, _y:Y});
+	var 佣兵对象 = _root.加载游戏世界人物(兵种, 佣兵名, _root.gameworld.getNextHighestDepth(), {_x:X, _y:Y});
 
 	// 设置佣兵对象的各项属性
 	// 佣兵对象.佣兵库编号 = 佣兵数据.编号;

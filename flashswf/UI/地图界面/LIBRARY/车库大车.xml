@@ -1,0 +1,83 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="车库大车" itemID="67497a41-00000680" symbolType="graphic" lastModified="1732868673">
+  <timeline>
+    <DOMTimeline name="车库大车">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3001" centerPoint3DX="557.2" centerPoint3DY="158.05">
+                  <matrix>
+                    <Matrix a="0.59259033203125" d="0.59259033203125" tx="211.5" ty="112.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="28"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3061" centerPoint3DX="351.25" centerPoint3DY="116.35">
+                  <matrix>
+                    <Matrix a="0.59259033203125" d="0.59259033203125" tx="19.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3062" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.59259033203125" d="0.59259033203125" ty="34.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3063" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.59259033203125" d="0.59259033203125" tx="314.85" ty="48.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3063" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.59259033203125" d="0.59259033203125" tx="316.25" ty="34.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3064" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.59259033203125" d="0.59259033203125" tx="350.7" ty="-3.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3065" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.59259033203125" d="0.59259033203125" tx="32.85" ty="21.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.21903991699219" d="1.21903991699219" tx="154.75" ty="77.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

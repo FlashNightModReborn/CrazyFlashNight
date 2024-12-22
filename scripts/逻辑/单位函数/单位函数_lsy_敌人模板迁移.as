@@ -300,25 +300,36 @@ _root.初始化敌人模板 = function()
 	this.强制移动 = _root.敌人函数.强制移动;
 
 	
-	//以下15个是必须外部定义的参数，为了保险在这里检测一遍
-	最小经验值 = !isNaN(最小经验值) ? 最小经验值 : 100;
-	最大经验值 = !isNaN(最大经验值) ? 最大经验值 : 100;
-	hp_min = !isNaN(hp_min) ? hp_min : 100;
-	hp_max = !isNaN(hp_max) ? hp_max : 100;
-	速度_min = !isNaN(速度_min) ? 速度_min : 30;
-	速度_max = !isNaN(速度_max) ? 速度_max : 30;
-	空手攻击力_min = !isNaN(空手攻击力_min) ? 空手攻击力_min : 10;
-	空手攻击力_max = !isNaN(空手攻击力_max) ? 空手攻击力_max : 10;
-	被击硬直度_min = !isNaN(被击硬直度_min) ? 被击硬直度_min : 1000;
-	被击硬直度_max = !isNaN(被击硬直度_max) ? 被击硬直度_max : 1000;
-	躲闪率_min = !isNaN(躲闪率_min) ? 躲闪率_min : 10;
-	躲闪率_max = !isNaN(躲闪率_max) ? 躲闪率_max : 2;
-	基本防御力_min = !isNaN(基本防御力_min) ? 基本防御力_min : 1;
-	基本防御力_max = !isNaN(基本防御力_max) ? 基本防御力_max : 1;
-	装备防御力 = !isNaN(装备防御力) ? 装备防御力 : 0;
+	//敌人属性表涉及的参数，共17（魔法抗性导入后为18）项
+	if(!this.兵种) _root.发布消息("警告：敌人未加载兵种信息！")
+	var 敌人属性 = _root.敌人属性表[this.兵种];
+	if(!敌人属性) 敌人属性 = _root.敌人属性表["默认"];
+	
+	if (isNaN(最小经验值)) 最小经验值 = 敌人属性.最小经验值;
+	if (isNaN(最大经验值)) 最大经验值 = 敌人属性.最大经验值;
+	if (isNaN(hp_min)) hp_min = 敌人属性.hp_min;
+	if (isNaN(hp_max)) hp_max = 敌人属性.hp_max;
+	if (isNaN(速度_min)) 速度_min = 敌人属性.速度_min;
+	if (isNaN(速度_max)) 速度_max = 敌人属性.速度_max;
+	if (isNaN(空手攻击力_min)) 空手攻击力_min = 敌人属性.空手攻击力_min;
+	if (isNaN(空手攻击力_max)) 空手攻击力_max = 敌人属性.空手攻击力_max;
+	if (isNaN(躲闪率_min)) 躲闪率_min = 敌人属性.躲闪率_min;
+	if (isNaN(躲闪率_max)) 躲闪率_max = 敌人属性.躲闪率_max;
+	if (isNaN(基本防御力_min)) 基本防御力_min = 敌人属性.基本防御力_min;
+	if (isNaN(基本防御力_max)) 基本防御力_max = 敌人属性.基本防御力_max;
+	if (isNaN(装备防御力)) 装备防御力 = 敌人属性.装备防御力;
+	//
+	if (isNaN(性别)) 性别 = 敌人属性.性别;
+	if (isNaN(重量)) 重量 = 敌人属性.重量;
+	if (isNaN(韧性系数)) 韧性系数 = 敌人属性.韧性系数;
+	//
+	if (!label) label = 敌人属性.label;
+	//魔法抗性暂未导入
+	
+	// 被击硬直度_min = !isNaN(被击硬直度_min) ? 被击硬直度_min : 1000;
+	// 被击硬直度_max = !isNaN(被击硬直度_max) ? 被击硬直度_max : 1000;
 	
 	//以下是可以自定义的原版参数
-	性别 = 性别 ? 性别 : "男";
 	称号 = 称号 ? 称号 : "";
 	身高 = !isNaN(身高) ? 身高 : 175;
 	方向 = 方向 ? 方向 : "右";
@@ -337,8 +348,6 @@ _root.初始化敌人模板 = function()
 	攻击欲望 = !isNaN(攻击欲望) ? 攻击欲望 : 5;
 	
 	//以下是可以自定义的新增参数
-	重量 = !isNaN(重量) ? 重量 : 60;
-	韧性系数 = !isNaN(韧性系数) ? 韧性系数 : 1;
 	命中率 = !isNaN(命中率) ? 命中率 : 10;
 	免疫击退 = 免疫击退 ? true : false;
 	锁定方向 = 锁定方向 ? true : false;
