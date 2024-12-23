@@ -322,9 +322,16 @@ _root.初始化敌人模板 = function()
 	if (isNaN(性别)) 性别 = 敌人属性.性别;
 	if (isNaN(重量)) 重量 = 敌人属性.重量;
 	if (isNaN(韧性系数)) 韧性系数 = 敌人属性.韧性系数;
-	//
-	if (!label) label = 敌人属性.label;
-	//魔法抗性暂未导入
+	//label
+	if (!label) label = new Object();
+	for(var key in 敌人属性.label){
+		if(!label[key]) label[key] = 敌人属性.label[key];
+	}
+	//魔法抗性
+	if (!魔法抗性) 魔法抗性 = new Object();
+	for(var key in 敌人属性.魔法抗性){
+		if(isNaN(魔法抗性[key])) 魔法抗性[key] = 敌人属性.魔法抗性[key];
+	}
 	
 	// 被击硬直度_min = !isNaN(被击硬直度_min) ? 被击硬直度_min : 1000;
 	// 被击硬直度_max = !isNaN(被击硬直度_max) ? 被击硬直度_max : 1000;
