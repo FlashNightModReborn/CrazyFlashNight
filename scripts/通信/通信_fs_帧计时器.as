@@ -392,11 +392,15 @@ _root.帧计时器.定期更新天气 = function()
     //_root.服务器.发布服务器消息("正在更新天气" + _root.格式化对象为字符串(_root.天气系统.环境设置));
 };
 
+
+
 _root.帧计时器.键盘输入控制目标 = function()
 {
     var 控制对象 = _root.gameworld[_root.控制目标];
     if(!控制对象) return;
+
     if(_root.暂停){
+        // 清空所有状态
         控制对象.左行 = false;
         控制对象.右行 = false;
         控制对象.上行 = false;
@@ -406,16 +410,37 @@ _root.帧计时器.键盘输入控制目标 = function()
         控制对象.动作C = false;
         控制对象.强制奔跑 = false;
     }else{
-        控制对象.左行 = Key.isDown(控制对象.左键);
-        控制对象.右行 = Key.isDown(控制对象.右键);
-        控制对象.上行 = Key.isDown(控制对象.上键);
-        控制对象.下行 = Key.isDown(控制对象.下键);
-        控制对象.动作A = Key.isDown(控制对象.A键);
-        控制对象.动作B = Key.isDown(控制对象.B键);
-        控制对象.动作C = Key.isDown(控制对象.C键);
-        控制对象.强制奔跑 = !控制对象.动作A && !控制对象.动作B && !控制对象.动作C && Key.isDown(_root.奔跑键);
+        // 使用位掩码存储按键状态
+        var mask:Number =
+            (Key.isDown(控制对象.左键) ? 1 : 0) |
+            (Key.isDown(控制对象.右键) ? 2 : 0) |
+            (Key.isDown(控制对象.上键) ? 4 : 0) |
+            (Key.isDown(控制对象.下键) ? 8 : 0) |
+            (Key.isDown(控制对象.A键) ? 16 : 0) |
+            (Key.isDown(控制对象.B键) ? 32 : 0) |
+            (Key.isDown(控制对象.C键) ? 64 : 0) |
+            (Key.isDown(_root.奔跑键) ? 128 : 0); 
+
+        // 解码位掩码更新控制对象状态
+        控制对象.左行 = (mask & 1) != 0;
+        控制对象.右行 = (mask & 2) != 0;
+        控制对象.上行 = (mask & 4) != 0;
+        控制对象.下行 = (mask & 8) != 0;
+        控制对象.动作A = (mask & 16) != 0;
+        控制对象.动作B = (mask & 32) != 0;
+        控制对象.动作C = (mask & 64) != 0;
+        控制对象.强制奔跑 = !((mask & (16 | 32 | 64)) != 0) && (mask & 128) != 0;
     }
-}
+};
+
+
+
+
+// 定义按键事件
+// _root.帧计时器.onKeyDown = _root.帧计时器.onKeyUp = _root.帧计时器.键盘输入控制目标;
+
+// 注册监听器
+// Key.addListener(_root.帧计时器);
 
 _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     this.性能评估优化();
