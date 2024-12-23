@@ -194,11 +194,20 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             assertEquals(Math.round(collRes.overlapRatio * 100) / 100, 0.25, "Polygon overlapRatio ~ 0.25");
         }
 
+        // 新增样例：部分重叠
+        var box3:AABBCollider = new AABBCollider(75, 125, 75, 125);
+        var collRes2:CollisionResult = poly.checkCollision(box3, 0);
+        assertTrue(collRes2.isColliding, "PolygonCollider vs partially overlapping AABBCollider should collide");
+        if (collRes2.isColliding) {
+            assertEquals(Math.round(collRes2.overlapRatio * 100) / 100, 0.0625, "Polygon partial overlapRatio ~ 0.0625");
+        }
+
         // 3. 测试不碰撞场景
         var box2:AABBCollider = new AABBCollider(200, 300, 200, 300);
         collRes = poly.checkCollision(box2, 0);
         assertFalse(collRes.isColliding, "PolygonCollider vs far AABBCollider no collision");
     }
+
 
     //--------------------------------------------------------------------------
     // 5) 多边形碰撞器常见场景测试

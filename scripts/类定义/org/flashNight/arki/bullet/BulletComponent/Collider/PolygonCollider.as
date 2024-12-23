@@ -374,7 +374,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         var uniquePointsX:Array = new Array(MAX_POINTS);
         var uniquePointsY:Array = new Array(MAX_POINTS);
         var uniquePointsCount:Number = 0; // 记录唯一交点数量
-        var eps:Number = 0.00001; // 精度，用于四舍五入
+        var eps:Number = 0.01; // 精度，用于四舍五入
 
         for (var u:Number = 0; u < intersectionPointsCount; u++) {
             px = intersectionPointsX[u];
