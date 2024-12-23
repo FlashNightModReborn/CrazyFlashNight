@@ -216,6 +216,7 @@ _root.敌人函数.随机掉钱 = function()
 _root.敌人函数.计算经验值 = function()
 {
 	this.随机掉钱();
+	this.掉落物判定();
 
 	var 经验时间倍率 = _root.天气系统.经验时间倍率;
 	
@@ -272,10 +273,30 @@ _root.敌人函数.死亡检测 = function(){
 	}
 };
 
-_root.敌人函数.掉落物品 = function(){
+_root.敌人函数.掉落物判定 = function(){
 	if(!掉落物) return;
 	if(掉落物.length > 0){
+		for(var i = 0; i < 掉落物.length; i++){
+			掉落物品(掉落物[i]);
+			if(掉落物[i].总数 <= 0){
+				掉落物.splice(i,1);
+			}
+		}
+	}else if(掉落物.名字){
+		掉落物品(掉落物);
+		if(掉落物.总数 <= 0){
+			掉落物 = null;
+		}
+	}
+}
 
+_root.敌人函数.掉落物品 = function(item){
+	if(item.名字 && _root.成功率(item.概率) && item.最小数量 && item.最大数量){
+		if(isNaN(item.总数)) item.总数 = item.最大数量;
+		var 数量 = item.最小数量 + random(item.最大数量 - item.最小数量 + 1);
+		if(item.总数 < 数量) 数量 = item.总数;
+		item.总数 -= 数量;
+		_root.创建可拾取物(item.名字,数量,this._x,this._y,true);
 	}
 }
 
@@ -302,6 +323,7 @@ _root.初始化敌人模板 = function()
 	this.死亡检测 = _root.敌人函数.死亡检测;
 	this.强制移动 = _root.敌人函数.强制移动;
 	this.宠物属性初始化 = this.宠物属性初始化 ? this.宠物属性初始化 : _root.敌人函数.宠物属性初始化;
+	this.掉落物判定 = _root.敌人函数.掉落物判定;
 	this.掉落物品 = _root.敌人函数.掉落物品;
 	
 	//敌人属性表涉及的参数，共18项
