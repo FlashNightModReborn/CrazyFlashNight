@@ -892,7 +892,7 @@ _root.色彩引擎.加载并配置色彩预设 = function(xml文件地址:String
 				for(var j:Number = 0; j < presetLevels.length; ++j)
 				{
 					var preset:Object = presetLevels[j];
-					_root.服务器.发布服务器消息("单位获取成功: " + _root.常用工具函数.对象转JSON(preset, true));
+					//_root.服务器.发布服务器消息("单位获取成功: " + _root.常用工具函数.对象转JSON(preset, true));
 					var presetLevel:Number = Number(preset.level); // 将级别转为数字，用作数组索引
 					tempPreset[presetLevel] = {
 					亮度: preset.Brightness != undefined ? Number(preset.Brightness) : 0,

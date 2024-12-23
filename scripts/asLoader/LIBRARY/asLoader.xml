@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1733218158">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1734942146">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="45">
+    <DOMTimeline name="asLoader" currentFrame="68">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -59,7 +59,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 1" color="#FF800A" layerType="folder"/>
-        <DOMLayer name="load脚本1" color="#9933CC" autoNamed="false">
+        <DOMLayer name="load脚本1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -260,7 +260,7 @@ _root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="67" duration="22" keyMode="9728">
+            <DOMFrame index="67" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader;
 //import org.flashNight.gesh.object.ObjectUtil;
@@ -278,6 +278,25 @@ enemyPropertiesLoader.loadEnemyProperties(
     },
     function():Void {
         trace("主程序：敌人属性数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="21" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.MaterialDictionaryLoader;
+
+var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getInstance();
+
+材料大全loader.loadMaterialDictionary(
+    function(data:Object):Void {
+        trace("主程序：材料大全数据加载成功！");
+		if(!_root.图鉴信息) _root.图鉴信息 = new Object();
+		_root.图鉴信息.材料大全 = data.Material;
+    },
+    function():Void {
+        trace("主程序：材料大全数据加载失败！");
     }
 );]]></script>
               </Actionscript>
@@ -336,7 +355,7 @@ this.removeMovieClip();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="load脚本3" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="load脚本3" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
