@@ -1,13 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <Material>
-    <Name>战术导轨</Name>
-    <Description>用于改装的低级材料。</Description>
-    <Information>详细信息1</Information>
+    <Name>军用帆布</Name>
+    <Description>用于改装的低级材料。
+军用帆布耐用且廉价，是搭建临时建筑的优秀材料。末世之中的聪明人也会用它来加固装备。</Description>
+    <Information>【掉落单位】军人僵尸</Information>
+  </Material>
+    <Material>
+    <Name>上色涂料</Name>
+    <Description>用于改装的低级材料。
+为装备上色是必需的：不同阵营有着不同的色彩标记，这会让战场上的敌我分辨非常简单。除此之外，满足使用者的改造癖好也是一种小小的自我取悦。</Description>
+    <Information></Information>
   </Material>
   <Material>
     <Name>弹簧</Name>
-    <Description>用于改装的低级材料。</Description>
+    <Description>用于改装的低级材料。
+弹簧广泛用于枪械的制作中，并且因为末世普遍的机械工业水平退步，弹簧经常磨损因而需要频繁更换。</Description>
     <Information>详细信息2</Information>
   </Material>
+  <Material>
+    <Name>增效剂</Name>
+    <Description>用于改装的低级材料。
+增效剂是一类化学药品的总称，它们可以用于装甲的耐用性升级或者武器的增伤。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>可塑式钢板</Name>
+    <Description>用于改装的低级材料。
+可变型的钢板在护甲与武器的改造中得到了广泛使用，机械师们永远不会嫌它们多的。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>战术导轨</Name>
+    <Description>用于改装的低级材料。
+缺少战术导轨的枪械会极大损失精准度和杀伤力，往往沦为废品。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>螺丝套件</Name>
+    <Description>用于改装的低级材料。
+材料接合处需要用到大量的螺丝套件，后者的强度和稳定度极大影响了装备的耐用性。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>可充锂电池</Name>
+    <Description>用于改装的中等材料。
+在末日降临带来的emp风暴中，少量锂电池没有因此损坏，因而在末日中极其抢手。它们是耗电装备的必备品。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>小型液晶屏</Name>
+    <Description>用于改装的中等材料。
+末日前走入千家万户的液晶屏大多因为灾难而损坏，而电子工业的消逝也让液晶屏基本失去了大规模生产的机会。这种材料是装备电子化改造的必需品。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>战术背带</Name>
+    <Description>用于改装的中等材料。
+特种部队往往身穿可以挂载武器和道具的战术背带，这在末日后成为了优秀战士的标配。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>防沙皮革</Name>
+    <Description>用于改装的中等材料。
+末日前针对沙漠地区风沙灾难频发而大量投产的防沙皮革，因为末日的降临而变得稀有起来。没有了它，沙漠地区的作战会变得非常危险，因为战士们不能保证装备不会因为漏沙而损坏。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>烈性火药</Name>
+    <Description>用于改装的中等材料。
+尽管火药的制作方式非常简单，但是末日之中寻找原材料可不是一件轻松的事。除非化工产业重启，否则大规模自制弹药还需时日。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>生物催化剂</Name>
+    <Description>用于改装的中等材料。
+生物催化剂以其可重复利用能力而受到研究者的青睐。可惜的是，在生物化学工业停摆的如今，这种可重复利用的材料也终会耗尽。</Description>
+    <Information>详细信息1</Information>
+  </Material>
+  <Material>
+    <Name>护手</Name>
+    <Description>用于改装的中等材料。
+护手的强度会影响刀柄和刀身的稳定度。除此之外，对武器的外形格外着迷的战士也会刻意打造形态各异的护手。</Description>
+    <Information>详细信息1</Information>
+  </Material>  
+  <Material>
+    <Name>石英磨刀石</Name>
+    <Description>用于改装的中等材料。
+末世中冷兵器回归人类社会在所难免，也因此石英磨刀石的消耗量巨大。</Description>
+    <Information>详细信息1</Information>
+  </Material>    
+  <Material>
+    <Name>不锈钢材</Name>
+    <Description>用于改装的中等材料。
+不锈钢是建筑和装备的常用材料，但因为钢铁工业遭到了毁灭性打击，这种材料如今十分稀缺。</Description>
+    <Information>详细信息1</Information>
+  </Material>      
+  <Material>
+    <Name>高耐力橡胶</Name>
+    <Description>用于改装的中等材料。
+耐用的橡胶是车辆等载具以及大量装备的必需品。</Description>
+    <Information>详细信息1</Information>
+  </Material>        
+    
 </root>
