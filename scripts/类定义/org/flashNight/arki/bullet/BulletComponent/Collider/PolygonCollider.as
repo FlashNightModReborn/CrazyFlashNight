@@ -391,6 +391,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
             // 使用位运算生成唯一键
             var key:Number = (roundedX << 16) | (roundedY & 0xFFFF);
+            // var key:String = roundedX + "_" + roundedY;
             if (!uniqueMap[key]) { // 如果该键尚未存在，则添加到唯一交点数组
                 uniqueMap[key] = true;
                 uniquePointsX[uniquePointsCount] = px;
