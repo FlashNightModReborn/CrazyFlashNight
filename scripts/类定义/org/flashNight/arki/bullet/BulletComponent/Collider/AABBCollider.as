@@ -56,17 +56,6 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         super(left, right, top, bottom);
     }
 
-
-    public static function getAabbResult(overlapX:Number, overlapY:Number):CollisionResult
-    {
-        var aabbResult = AABBCollider.result;
-        var aabbResultCenter = aabbResult.overlapCenter;
-        aabbResultCenter.x = overlapX >> 1;
-        aabbResultCenter.y = overlapY >> 1;
-
-        return aabbResult;
-    }
-
     // ========================= 碰撞检测区域 ========== //
 
     /**

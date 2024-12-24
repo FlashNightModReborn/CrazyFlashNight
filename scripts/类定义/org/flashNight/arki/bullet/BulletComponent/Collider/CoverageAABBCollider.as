@@ -15,7 +15,11 @@ import org.flashNight.sara.util.*;
  */
 class org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBCollider 
     extends AABBCollider implements ICollider {
-    
+
+    /**
+     * 用于coverageaabb碰撞器的碰撞结果，缓存避免频繁创建
+     */
+    public static var result:CollisionResult = CollisionResult.Create(true, Vector(null) ,0);
     /**
      * 构造函数
      * 
@@ -44,35 +48,45 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBCollider
      * @return CollisionResult 碰撞结果对象，包含碰撞标识、覆盖率及中心点
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
+        // 提前声明并初始化本地变量
+        // 获取 other 的 AABB 并存储到本地变量中
+
         var otherAABB:AABB = other.getAABB(zOffset);
 
-        // 提前检查不相交的情况，提高性能
-        if (this.right <= otherAABB.left)  return CollisionResult.FALSE;
-        if (this.left >= otherAABB.right)  return CollisionResult.FALSE;
-        if (this.bottom <= otherAABB.top)  return CollisionResult.FALSE;
-        if (this.top >= otherAABB.bottom)  return CollisionResult.FALSE;
+        // 优化：提前返回不碰撞的情况，减少计算量
+        // 提前声明并初始化 this 的相关属性到本地变量中
+
+        var myRight:Number = this.right;
+        var otherLeft:Number = otherAABB.left;
+        if (myRight <= otherLeft) return CollisionResult.FALSE;
+
+        var myLeft:Number = this.left;
+        var otherRight:Number = otherAABB.right;
+        if (myLeft >= otherRight) return CollisionResult.FALSE;
+
+        var myBottom:Number = this.bottom;
+        var otherTop:Number = otherAABB.top;
+        if (myBottom <= otherTop) return CollisionResult.FALSE;
+
+        var myTop:Number = this.top;
+        var otherBottom:Number = otherAABB.bottom;
+        if (myTop >= otherBottom) return CollisionResult.FALSE;
 
         // 计算重叠区域边界
-        var overlapLeft:Number = Math.max(this.left, otherAABB.left);
-        var overlapRight:Number = Math.min(this.right, otherAABB.right);
-        var overlapTop:Number = Math.max(this.top, otherAABB.top);
-        var overlapBottom:Number = Math.min(this.bottom, otherAABB.bottom);
-
-        // 当前碰撞器的总面积
-        var currentWidth:Number = this.right - this.left;
-        var currentHeight:Number = this.bottom - this.top;
+        var overlapLeft:Number = myLeft > otherLeft ? myLeft : otherLeft;
+        var overlapRight:Number = myRight < otherRight ? myRight : otherRight;
+        var overlapTop:Number = myTop > otherTop ? myTop : otherTop;
+        var overlapBottom:Number = myBottom < otherBottom ? myBottom : otherBottom;
 
         // 创建碰撞结果对象
-        var result:CollisionResult = new CollisionResult(true);
+        var result:CollisionResult = CoverageAABBCollider.result;
 
         // 计算覆盖率
-        result.overlapRatio = ((overlapRight - overlapLeft) * (overlapBottom - overlapTop)) / (currentWidth * currentHeight);
+        result.overlapRatio = ((overlapRight - overlapLeft) * (overlapBottom - overlapTop)) / ((myRight - myLeft) * (myBottom - myTop));
+        var center:Vector = result.overlapCenter;
+        center.x = (overlapLeft + overlapRight) >> 1;
+        center.y = (overlapTop + overlapBottom) >> 1;
 
-        // 计算重叠区域的中心点
-        result.overlapCenter = new Vector(
-            (overlapLeft + overlapRight) >> 1,
-            (overlapTop + overlapBottom) >> 1
-        );
         return result;
     }
 
