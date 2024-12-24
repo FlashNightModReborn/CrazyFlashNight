@@ -1,14 +1,13 @@
-﻿class org.flashNight.naki.DataStructures.TreeNode
-{
-	public var value:Number;// The value held by the node
-	public var left:TreeNode;// Reference to the left child
-	public var right:TreeNode;// Reference to the right child
+﻿class org.flashNight.naki.DataStructures.TreeNode {
+    public var value:Object;
+    public var left:TreeNode;
+    public var right:TreeNode;
+    public var height:Number;
 
-	// Constructor to initialize the node with a value
-	public function TreeNode(value:Number)
-	{
-		this.value = value;
-		this.left = null;
-		this.right = null;
-	}
+    public function TreeNode(value:Object) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+        this.height = 1;
+    }
 }
