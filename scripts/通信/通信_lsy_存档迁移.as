@@ -1,17 +1,19 @@
-﻿_root.初始化物品栏 = function(){
+﻿import org.flashNight.arki.inventory.Inventory;
+
+_root.初始化物品栏 = function(){
     return {
-        背包:new Object(),
-        装备栏:new Object(),
-        药剂栏:new Object(),
-        仓库:new Object(),
-        战备箱:new Object(),
-        材料:new Object()
+        背包:new Inventory("item"),
+        装备栏:new Inventory("item"),
+        药剂栏:new Inventory("item"),
+        仓库:new Inventory("item"),
+        战备箱:new Inventory("item")
     };
 }
 
 _root.初始化成就栏 = function(){
     return {
-        情报:new Object()
+        材料:new Inventory("dict"),
+        情报:new Inventory("dict")
     }
 }
 
@@ -36,7 +38,7 @@ _root.物品栏数据迁移 = function(){
                 新物品栏.装备栏[use] = 新物品;
             }
         }else if(use == "材料"){
-            新物品栏.材料[旧物品[0]] = 旧物品[1];
+            成就栏.材料[旧物品[0]] = 旧物品[1];
         }else if(use == "情报"){
             成就栏.情报[旧物品[0]] = 旧物品[1];
         }else{
@@ -48,7 +50,7 @@ _root.物品栏数据迁移 = function(){
         var 旧物品 = 旧仓库[i];
         if(!旧物品 || 旧物品[0] == "空") continue;
         var use = _root.getItemData(旧物品[0]).use;
-        if(use == "材料") 新物品栏.材料[旧物品[0]] = 旧物品[1];
+        if(use == "材料") 成就栏.材料[旧物品[0]] = 旧物品[1];
         else if (use == "情报") 成就栏.情报[旧物品[0]] = 旧物品[1];
         else 新物品栏.仓库[i] = {name:旧物品[0],value:旧物品[1]};
     }
@@ -56,7 +58,7 @@ _root.物品栏数据迁移 = function(){
     for(var i=0; i<400; i++){
         var 旧物品 = 旧仓库[i+1200];
         if(!旧物品 || 旧物品[0] == "空") continue;
-        if(use == "材料") 新物品栏.材料[旧物品[0]] = 旧物品[1];
+        if(use == "材料") 成就栏.材料[旧物品[0]] = 旧物品[1];
         else if (use == "情报") 成就栏.情报[旧物品[0]] = 旧物品[1];
         else 新物品栏.战备箱[i] = {name:旧物品[0],value:旧物品[1]};
     }
