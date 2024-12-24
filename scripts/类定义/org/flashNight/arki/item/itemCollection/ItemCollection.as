@@ -35,7 +35,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
         return true;
     }
 
-    //放入物品
+    //添加物品
     public function add(key:String,item:Object):Boolean{
         if(isEmpty(key) && isAddable(key,item)){
             items[key] = item;

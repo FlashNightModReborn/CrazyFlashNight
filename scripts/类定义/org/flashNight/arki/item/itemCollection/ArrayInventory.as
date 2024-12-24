@@ -18,7 +18,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     //重构isEmpty函数，非数字键也会返回false
     public function isEmpty(key:Number):Boolean{
         if(key < 0 || key >= capacity) return false;
-        return super.isEmpty(key);
+        return super.isEmpty(key.toString());
     }
 
 

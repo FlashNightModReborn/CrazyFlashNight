@@ -1,4 +1,4 @@
-﻿import org.flashNight.arki.item.itemCollection.Inventory;
+﻿import org.flashNight.arki.item.itemCollection.ArrayInventory;
 
 /*
  * 药剂栏，继承定长物品栏

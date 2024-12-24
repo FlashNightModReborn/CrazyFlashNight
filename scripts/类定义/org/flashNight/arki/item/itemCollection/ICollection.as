@@ -39,5 +39,5 @@
      * 移除物品
      * @param key 目标键
      */
-    function function remove(key:String):Void;
+    function remove(key:String):Void;
 }

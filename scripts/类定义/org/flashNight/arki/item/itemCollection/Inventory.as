@@ -65,7 +65,7 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
     }
 
     //交换两个格子的物品
-    public function switch(target:Inventory, key:String, targetKey:String):Boolean{
+    public function swap(target:Inventory, key:String, targetKey:String):Boolean{
         var item = this.getItem(key);
         var targetItem = target.getItem(targetKey);
         if(!item || !targetItem || !this.isAddable(key,targetItem) || !target.isAddable(targetKey,item)) return false;

@@ -11,7 +11,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
         super(_items);
     }
 
-    //放入键值对
+    //添加键值对
     public function add(key:String,value:Number):Boolean{
         if(isNaN(value)) return false;
         if(isEmpty(key) && isAddable(key,value)){
