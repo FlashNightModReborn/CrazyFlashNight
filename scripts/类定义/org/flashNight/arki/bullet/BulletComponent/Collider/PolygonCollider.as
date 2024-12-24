@@ -23,6 +23,16 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
     private static var MAX_POINTS:Number = 8;
 
     /**
+     * 用于aabb碰撞器的碰撞结果，缓存避免频繁创建
+     */
+    public static var result:CollisionResult = CollisionResult.Create(true, Vector(null) ,1);
+
+    /**
+     * 用于aabb碰撞器的碰撞交互介质，缓存避免频繁创建
+     */
+    public static var AABB:AABB = new AABB(null);
+
+    /**
      * 构造函数
      * @param p1 第一个顶点
      * @param p2 第二个顶点
@@ -41,14 +51,229 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
         super(new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0));
     }
 
+
     /**
-     * 获取包围盒（AABB），并应用z轴偏移。
-     * @param zOffset z轴偏移量
-     * @return AABB 对象
+     * 获取当前碰撞器的 AABB 信息。
+     *
+     * @param zOffset Z轴偏移量，用于模拟高度差
+     * @return AABB 实例，包含边界坐标
      */
     public function getAABB(zOffset:Number):AABB {
-        var box:AABB = super.getBoundingBox();
-        return new AABB(box.left, box.right, box.top + zOffset, box.bottom + zOffset);
+        var aabb = PolygonCollider.AABB;
+
+        // 本地化点坐标以避免解引用开销
+        var p1x:Number = p1.x;
+        var p1y:Number = p1.y;
+        var p2x:Number = p2.x;
+        var p2y:Number = p2.y;
+        var p3x:Number = p3.x;
+        var p3y:Number = p3.y;
+        var p4x:Number = p4.x;
+        var p4y:Number = p4.y;
+
+        // 通过嵌套if-else确定left和right
+        if (p1x < p2x) {
+            if (p1x < p3x) {
+                if (p1x < p4x) {
+                    aabb.left = p1x;
+                    if (p2x > p3x) {
+                        if (p2x > p4x) {
+                            aabb.right = p2x;
+                        } else {
+                            aabb.right = p4x;
+                        }
+                    } else {
+                        if (p3x > p4x) {
+                            aabb.right = p3x;
+                        } else {
+                            aabb.right = p4x;
+                        }
+                    }
+                } else {
+                    aabb.left = p4x;
+                    if (p2x > p3x) {
+                        if (p2x > p1x) {
+                            aabb.right = p2x;
+                        } else {
+                            aabb.right = p1x;
+                        }
+                    } else {
+                        if (p3x > p1x) {
+                            aabb.right = p3x;
+                        } else {
+                            aabb.right = p1x;
+                        }
+                    }
+                }
+            } else {
+                aabb.left = p3x;
+                if (p1x > p2x) {
+                    if (p1x > p4x) {
+                        aabb.right = p1x;
+                    } else {
+                        aabb.right = p4x;
+                    }
+                } else {
+                    if (p2x > p4x) {
+                        aabb.right = p2x;
+                    } else {
+                        aabb.right = p4x;
+                    }
+                }
+            }
+        } else {
+            if (p2x < p3x) {
+                if (p2x < p4x) {
+                    aabb.left = p2x;
+                    if (p1x > p3x) {
+                        if (p1x > p4x) {
+                            aabb.right = p1x;
+                        } else {
+                            aabb.right = p4x;
+                        }
+                    } else {
+                        if (p3x > p4x) {
+                            aabb.right = p3x;
+                        } else {
+                            aabb.right = p4x;
+                        }
+                    }
+                } else {
+                    aabb.left = p4x;
+                    if (p1x > p3x) {
+                        if (p1x > p2x) {
+                            aabb.right = p1x;
+                        } else {
+                            aabb.right = p2x;
+                        }
+                    } else {
+                        if (p3x > p2x) {
+                            aabb.right = p3x;
+                        } else {
+                            aabb.right = p2x;
+                        }
+                    }
+                }
+            } else {
+                aabb.left = p3x;
+                if (p2x > p1x) {
+                    if (p2x > p4x) {
+                        aabb.right = p2x;
+                    } else {
+                        aabb.right = p4x;
+                    }
+                } else {
+                    if (p1x > p4x) {
+                        aabb.right = p1x;
+                    } else {
+                        aabb.right = p4x;
+                    }
+                }
+            }
+        }
+
+        // 通过嵌套if-else确定top和bottom（加上zOffset）
+        if (p1y < p2y) {
+            if (p1y < p3y) {
+                if (p1y < p4y) {
+                    aabb.top = p1y + zOffset;
+                    if (p2y > p3y) {
+                        if (p2y > p4y) {
+                            aabb.bottom = p2y + zOffset;
+                        } else {
+                            aabb.bottom = p4y + zOffset;
+                        }
+                    } else {
+                        if (p3y > p4y) {
+                            aabb.bottom = p3y + zOffset;
+                        } else {
+                            aabb.bottom = p4y + zOffset;
+                        }
+                    }
+                } else {
+                    aabb.top = p4y + zOffset;
+                    if (p2y > p3y) {
+                        if (p2y > p1y) {
+                            aabb.bottom = p2y + zOffset;
+                        } else {
+                            aabb.bottom = p1y + zOffset;
+                        }
+                    } else {
+                        if (p3y > p1y) {
+                            aabb.bottom = p3y + zOffset;
+                        } else {
+                            aabb.bottom = p1y + zOffset;
+                        }
+                    }
+                }
+            } else {
+                aabb.top = p3y + zOffset;
+                if (p1y > p2y) {
+                    if (p1y > p4y) {
+                        aabb.bottom = p1y + zOffset;
+                    } else {
+                        aabb.bottom = p4y + zOffset;
+                    }
+                } else {
+                    if (p2y > p4y) {
+                        aabb.bottom = p2y + zOffset;
+                    } else {
+                        aabb.bottom = p4y + zOffset;
+                    }
+                }
+            }
+        } else {
+            if (p2y < p3y) {
+                if (p2y < p4y) {
+                    aabb.top = p2y + zOffset;
+                    if (p1y > p3y) {
+                        if (p1y > p4y) {
+                            aabb.bottom = p1y + zOffset;
+                        } else {
+                            aabb.bottom = p4y + zOffset;
+                        }
+                    } else {
+                        if (p3y > p4y) {
+                            aabb.bottom = p3y + zOffset;
+                        } else {
+                            aabb.bottom = p4y + zOffset;
+                        }
+                    }
+                } else {
+                    aabb.top = p4y + zOffset;
+                    if (p1y > p3y) {
+                        if (p1y > p2y) {
+                            aabb.bottom = p1y + zOffset;
+                        } else {
+                            aabb.bottom = p2y + zOffset;
+                        }
+                    } else {
+                        if (p3y > p2y) {
+                            aabb.bottom = p3y + zOffset;
+                        } else {
+                            aabb.bottom = p2y + zOffset;
+                        }
+                    }
+                }
+            } else {
+                aabb.top = p3y + zOffset;
+                if (p2y > p1y) {
+                    if (p2y > p4y) {
+                        aabb.bottom = p2y + zOffset;
+                    } else {
+                        aabb.bottom = p4y + zOffset;
+                    }
+                } else {
+                    if (p1y > p4y) {
+                        aabb.bottom = p1y + zOffset;
+                    } else {
+                        aabb.bottom = p4y + zOffset;
+                    }
+                }
+            }
+        }
+
+        return aabb;
     }
 
     /**
@@ -495,9 +720,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
          */
         var area:Number = (p1.x * p2.y + p2.x * p3.y + p3.x * p4.y + p4.x * p1.y) - (p2.x * p1.y + p3.x * p2.y + p4.x * p3.y + p1.x * p4.y);
         var thisArea:Number = (area < 0) ? -area : area; // 手动取绝对值
-
-        var overlapRatio:Number = intersectionArea / thisArea; // 计算重叠比例
-
+        
         /**
          * 计算最终质心
          * 通过所有交点的平均位置来确定重叠区域的质心。
@@ -507,16 +730,14 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
             cxCentroid += uniquePointsX[iCentroid];
             cyCentroid += uniquePointsY[iCentroid];
         }
-        cxCentroid = cxCentroid / intersectionCount;
-        cyCentroid = cyCentroid / intersectionCount;
-
-        var overlapCenter:Vector = new Vector(cxCentroid, cyCentroid); // 创建重叠中心向量
 
         // 创建并返回碰撞结果
-        var result:CollisionResult = new CollisionResult(true);
+        var result:CollisionResult = PolygonCollider.result;
+        var center:Vector = result.overlapCenter;
 
-        result.overlapRatio = overlapRatio; // 设置重叠比例
-        result.overlapCenter = overlapCenter; // 设置重叠中心
+        center.x = cxCentroid / intersectionCount;
+        center.y = cyCentroid / intersectionCount;
+        result.overlapRatio = intersectionArea / thisArea; // 计算并设置重叠比例
         return result;
     }
 
