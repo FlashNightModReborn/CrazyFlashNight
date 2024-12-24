@@ -35,6 +35,16 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
     public var _currentFrame:Number;
 
     /**
+     * 用于aabb碰撞器的碰撞结果，缓存避免频繁创建
+     */
+    public static var result:CollisionResult = CollisionResult.Create(true, Vector(null) ,1);
+
+    /**
+     * 用于aabb碰撞器的碰撞交互介质，缓存避免频繁创建
+     */
+    public static var AABB:AABB = new AABB(null);
+
+    /**
      * 构造函数，初始化 AABB 的边界坐标。
      * 
      * @param left   左边界坐标
@@ -45,6 +55,19 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
     public function AABBCollider(left:Number, right:Number, top:Number, bottom:Number) {
         super(left, right, top, bottom);
     }
+
+
+    public static function getAabbResult(overlapX:Number, overlapY:Number):CollisionResult
+    {
+        var aabbResult = AABBCollider.result;
+        var aabbResultCenter = aabbResult.overlapCenter;
+        aabbResultCenter.x = overlapX >> 1;
+        aabbResultCenter.y = overlapY >> 1;
+
+        return aabbResult;
+    }
+
+    // ========================= 碰撞检测区域 ========== //
 
     /**
      * 检查与其他碰撞器的碰撞情况。
@@ -83,10 +106,12 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         var otherBottom:Number = otherAABB.bottom;
         if (myTop >= otherBottom) return CollisionResult.FALSE;
 
-        return CollisionResult.getAabbResult(
-            ((myLeft > otherLeft) ? myLeft : otherLeft) + ((myRight < otherRight) ? myRight : otherRight) >> 1,
-            ((myTop > otherTop) ? myTop : otherTop) + ((myBottom < otherBottom) ? myBottom : otherBottom) >> 1
-        )
+        var aabbResult = AABBCollider.result;
+        var aabbResultCenter = aabbResult.overlapCenter;
+        aabbResultCenter.x = ((myLeft > otherLeft) ? myLeft : otherLeft) + ((myRight < otherRight) ? myRight : otherRight) >> 1;
+        aabbResultCenter.y = ((myTop > otherTop) ? myTop : otherTop) + ((myBottom < otherBottom) ? myBottom : otherBottom) >> 1;
+
+        return aabbResult;
     }
 
     /**
@@ -96,7 +121,12 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @return AABB 实例，包含边界坐标
      */
     public function getAABB(zOffset:Number):AABB {
-        return new AABB(this.left, this.right, this.top + zOffset, this.bottom + zOffset);
+        var aabb = AABBCollider.AABB;
+        aabb.left = this.left;
+        aabb.right = this.right;
+        aabb.top = this.top + zOffset;
+        aabb.bottom = this.bottom + zOffset;   
+        return aabb;
     }
 
     // ========================= 静态辅助方法区域 ========================= //

@@ -20,6 +20,15 @@ class org.flashNight.arki.component.Collider.CollisionResult {
         this.isColliding = isColliding;
         // this.additionalInfo = {}; // 初始化为空对象，避免 null 检查
     }
+    
+    public static function Create(isColliding:Boolean, overlapCenter:Vector, overlapRatio:Number, additionalInfo:Object):CollisionResult
+    {
+        var cr:CollisionResult = new CollisionResult(isColliding);
+        cr.overlapCenter = overlapCenter;
+        cr.overlapRatio = overlapRatio;
+        cr.additionalInfo = additionalInfo;
+        return cr;
+    }
 
     /**
      * 设置碰撞中心的包装方法
@@ -48,16 +57,6 @@ class org.flashNight.arki.component.Collider.CollisionResult {
      */
     public function addInfo(key:String, value):Void {
         this.additionalInfo[key] = value;
-    }
-
-    //  特化结果区
-
-    public static function getAabbResult(overlapX:Number, overlapY:Number):CollisionResult
-    {
-        var aabbResult = new CollisionResult(true);
-        aabbResult.overlapCenter = new Vector(overlapX, overlapY);
-        aabbResult.overlapRatio = 1;
-        return aabbResult;
     }
 
     public function toString():String
