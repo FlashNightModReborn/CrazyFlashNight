@@ -43,7 +43,7 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
     
 
 
-    //物品格之间的操作
+    //物品移动操作
 
     //移动物品至另一空格
     public function move(target:Inventory, key:String, targetKey:String):Boolean{
@@ -59,8 +59,10 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
     public function merge(target:Inventory, key:String, targetKey:String):Boolean{
         var item = items[key];
         var targetItem = target.getItem(targetKey);
-        if(item.name != targetItem.name) return false;
+        if(item.name != targetItem.name || item.attr || targetItem.attr) return false;
         // var use = _root.getItemData(item.name).use;
+        targetItem.value += item.value;
+        remove(key);
         return true;
     }
 

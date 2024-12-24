@@ -20,7 +20,7 @@
     function isEmpty(key:String):Boolean;
     
     /**
-     * 判断是否能放入某个物品
+     * 判断是否能添加指定物品
      * @param key 目标键
      * @param item 目标物品
      * @return 判断结果
@@ -28,7 +28,7 @@
     function isAddable(key:String,item:Object):Boolean;
 
     /**
-     * 放入物品
+     * 添加物品
      * @param key 目标键
      * @param item 目标物品
      * @return 是否成功放入

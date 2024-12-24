@@ -30,7 +30,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
         return !(items[key] != null);
     }
 
-    //判断是否能放入某个物品
+    //判断是否能添加指定物品
     public function isAddable(key:String,item:Object):Boolean{
         return true;
     }
