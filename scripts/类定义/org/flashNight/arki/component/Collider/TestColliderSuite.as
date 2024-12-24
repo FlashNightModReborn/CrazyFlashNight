@@ -152,6 +152,51 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         if (cr.isColliding) {
             assertEquals(Math.round(cr.overlapRatio * 100) / 100, 0.25, "CoverageAABB overlapRatio ~ 0.25");
         }
+        
+        // 2.1 重叠比例为 0.1
+        var cov1_1:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 0, 100);
+        var cov2_1:CoverageAABBCollider = new CoverageAABBCollider(90, 110, 90, 110);
+        var cr1:CollisionResult = cov1_1.checkCollision(cov2_1, 0);
+        assertTrue(cr1.isColliding, "Collision should happen (overlap 0.1)");
+        if (cr1.isColliding) {
+            assertEquals(Math.round(cr1.overlapRatio * 100) / 100, 0.01, "Overlap ratio ~ 0.01");
+        }
+    
+        // 2.2 重叠比例为 0.3
+        var cov1_3:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 0, 100);
+        var cov2_3:CoverageAABBCollider = new CoverageAABBCollider(70, 130, 70, 130);
+        var cr3:CollisionResult = cov1_3.checkCollision(cov2_3, 0);
+        assertTrue(cr3.isColliding, "Collision should happen (overlap 0.3)");
+        if (cr3.isColliding) {
+            assertEquals(Math.round(cr3.overlapRatio * 100) / 100, 0.3, "Overlap ratio ~ 0.3");
+        }
+    
+        // 2.3 重叠比例为 0.5 (完全重叠一半)
+        var cov1_5:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 0, 100);
+        var cov2_5:CoverageAABBCollider = new CoverageAABBCollider(50, 150, 50, 150);
+        var cr5:CollisionResult = cov1_5.checkCollision(cov2_5, 0);
+        assertTrue(cr5.isColliding, "Collision should happen (overlap 0.5)");
+        if (cr5.isColliding) {
+            assertEquals(Math.round(cr5.overlapRatio * 100) / 100, 0.5, "Overlap ratio ~ 0.5");
+        }
+    
+        // 2.4 重叠比例为 0.7
+        var cov1_7:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 0, 100);
+        var cov2_7:CoverageAABBCollider = new CoverageAABBCollider(30, 130, 30, 130);
+        var cr7:CollisionResult = cov1_7.checkCollision(cov2_7, 0);
+        assertTrue(cr7.isColliding, "Collision should happen (overlap 0.7)");
+        if (cr7.isColliding) {
+            assertEquals(Math.round(cr7.overlapRatio * 100) / 100, 0.7, "Overlap ratio ~ 0.7");
+        }
+    
+        // 2.5 重叠比例为 0.9 (几乎完全重叠)
+        var cov1_9:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 0, 100);
+        var cov2_9:CoverageAABBCollider = new CoverageAABBCollider(10, 110, 10, 110);
+        var cr9:CollisionResult = cov1_9.checkCollision(cov2_9, 0);
+        assertTrue(cr9.isColliding, "Collision should happen (overlap 0.9)");
+        if (cr9.isColliding) {
+            assertEquals(Math.round(cr9.overlapRatio * 100) / 100, 0.9, "Overlap ratio ~ 0.9");
+        }
     }
 
     //--------------------------------------------------------------------------
