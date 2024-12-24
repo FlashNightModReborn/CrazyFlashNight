@@ -13,6 +13,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
 
     //放入键值对
     public function add(key:String,value:Number):Boolean{
+        if(isNaN(value)) return false;
         if(isEmpty(key) && isAddable(key,value)){
             items[key] = value;
             return true;
@@ -23,7 +24,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
     //获取对应键的值
     public function getValue(key:String):Number{
         var value = items[key];
-        if(isNaN(value)) return null;
+        if(value <= 0) return 0;
         return value;
     }
 

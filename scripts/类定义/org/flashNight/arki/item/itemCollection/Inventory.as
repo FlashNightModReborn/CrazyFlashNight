@@ -14,6 +14,22 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
     public function isAddable(key:String,item:Object):Boolean{
         return item.name && item.value;
     }
+
+    //根据物品名查找第一个物品对应的键
+    public function searchFirstKey(name:String):String{
+        for(var key in items){
+            if(items[key].name == name) return key;
+        }
+    }
+
+    //根据物品名查找所有同名物品对应的键
+    public function searchKeys(name:String):Array{
+        var list = [];
+        for(var key in items){
+            if(items[key].name == name) list.push(key);
+        }
+        return list;
+    }
     
     //改变物品value
     public function addValue(key:String,value:Number):Void{
@@ -25,6 +41,10 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
         }
     }
     
+
+
+    //物品格之间的操作
+
     //移动物品至另一空格
     public function move(target:Inventory, key:String, targetKey:String):Boolean{
         var item = items[key];
@@ -40,6 +60,7 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
         var item = items[key];
         var targetItem = target.getItem(targetKey);
         if(item.name != targetItem.name) return false;
+        // var use = _root.getItemData(item.name).use;
         return true;
     }
 

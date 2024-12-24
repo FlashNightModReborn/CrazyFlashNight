@@ -1,12 +1,12 @@
 ﻿import org.flashNight.arki.item.itemCollection.Inventory;
 
 /*
- * 药剂栏，继承物品栏基类
+ * 药剂栏，继承定长物品栏
 */
-class org.flashNight.arki.item.itemCollection.DrugInventory extends Inventory {
+class org.flashNight.arki.item.itemCollection.DrugInventory extends ArrayInventory {
 
-    public function DrugInventory(_items:Object) {
-        super(_items);
+    public function DrugInventory(_items:Object,_capacity:Number) {
+        super(_items,_capacity);
     }
 
     //重构isAddable函数，判定物品是否为药剂
