@@ -59,22 +59,34 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @return CollisionResult 实例，包含碰撞结果、重叠中心点等信息
      */
     public function checkCollision(other:ICollider, zOffset:Number):CollisionResult {
+        // 提前声明并初始化本地变量
+        // 获取 other 的 AABB 并存储到本地变量中
+
         var otherAABB:AABB = other.getAABB(zOffset);
 
         // 优化：提前返回不碰撞的情况，减少计算量
-        if (this.right <= otherAABB.left)  return CollisionResult.FALSE;
-        if (this.left >= otherAABB.right)  return CollisionResult.FALSE;
-        if (this.bottom <= otherAABB.top)  return CollisionResult.FALSE;
-        if (this.top >= otherAABB.bottom)  return CollisionResult.FALSE;
+        // 提前声明并初始化 this 的相关属性到本地变量中
 
-        // 计算碰撞结果
-        var result:CollisionResult = new CollisionResult(true);
-        result.overlapRatio = 1; // 默认完全重叠覆盖率为 1
-        result.overlapCenter = new Vector(
-            (((this.left > otherAABB.left) ? this.left : otherAABB.left) + ((this.right < otherAABB.right) ? this.right : otherAABB.right)) >> 1,
-            (((this.top > otherAABB.top) ? this.top : otherAABB.top) + ((this.bottom < otherAABB.bottom) ? this.bottom : otherAABB.bottom)) >> 1
-        );
-        return result;
+        var myRight:Number = this.right;
+        var otherLeft:Number = otherAABB.left;
+        if (myRight <= otherLeft) return CollisionResult.FALSE;
+
+        var myLeft:Number = this.left;
+        var otherRight:Number = otherAABB.right;
+        if (myLeft >= otherRight) return CollisionResult.FALSE;
+
+        var myBottom:Number = this.bottom;
+        var otherTop:Number = otherAABB.top;
+        if (myBottom <= otherTop) return CollisionResult.FALSE;
+
+        var myTop:Number = this.top;
+        var otherBottom:Number = otherAABB.bottom;
+        if (myTop >= otherBottom) return CollisionResult.FALSE;
+
+        return CollisionResult.getAabbResult(
+            ((myLeft > otherLeft) ? myLeft : otherLeft) + ((myRight < otherRight) ? myRight : otherRight) >> 1,
+            ((myTop > otherTop) ? myTop : otherTop) + ((myBottom < otherBottom) ? myBottom : otherBottom) >> 1
+        )
     }
 
     /**

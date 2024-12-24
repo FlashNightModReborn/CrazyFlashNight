@@ -1,4 +1,5 @@
 ﻿import org.flashNight.sara.util.*;
+import org.flashNight.gesh.object.*
 import org.flashNight.arki.component.Collider.*;
 
 class org.flashNight.arki.component.Collider.CollisionResult {
@@ -49,6 +50,16 @@ class org.flashNight.arki.component.Collider.CollisionResult {
         this.additionalInfo[key] = value;
     }
 
+    //  特化结果区
+
+    public static function getAabbResult(overlapX:Number, overlapY:Number):CollisionResult
+    {
+        var aabbResult = new CollisionResult(true);
+        aabbResult.overlapCenter = new Vector(overlapX, overlapY);
+        aabbResult.overlapRatio = 1;
+        return aabbResult;
+    }
+
     public function toString():String
     {
         var str:String = "[CR]" + String(isColliding);
@@ -60,5 +71,19 @@ class org.flashNight.arki.component.Collider.CollisionResult {
         if(!additionalInfo) return str;
 
         return str + " " + additionalInfo;
+    }
+
+    public function clone():CollisionResult
+    {
+        var cr:CollisionResult = new CollisionResult(null);
+        cr.isColliding = this.isColliding;
+        cr.overlapCenter = this.overlapCenter.clone();
+        cr.overlapRatio = this.overlapRatio;
+
+        if(!cr.addInfo)  return cr;
+
+        cr.addInfo = ObjectUtil.clone(this.additionalInfo);
+
+        return cr;
     }
 }

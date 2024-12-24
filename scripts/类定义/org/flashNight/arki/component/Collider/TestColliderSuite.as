@@ -410,7 +410,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         for (var i:Number = 0; i < count; i++) {
             var col1:AABBCollider = new AABBCollider(Math.random() * 1000, Math.random() * 1000 + 50, Math.random() * 1000, Math.random() * 1000 + 50);
             var col2:AABBCollider = new AABBCollider(Math.random() * 1000, Math.random() * 1000 + 50, Math.random() * 1000, Math.random() * 1000 + 50);
-            col1.checkCollision(col2, 0);
+            col1.checkCollision(col2, Math.random() * 10);
         }
         var endAABB:Number = getTimer();
         trace("AABBCollider performance: " + (endAABB - startAABB) + " ms for " + count + " collisions.");
@@ -420,7 +420,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         for (i = 0; i < count; i++) {
             var cov1:CoverageAABBCollider = new CoverageAABBCollider(Math.random() * 1000, Math.random() * 1000 + 50, Math.random() * 1000, Math.random() * 1000 + 50);
             var cov2:CoverageAABBCollider = new CoverageAABBCollider(Math.random() * 1000, Math.random() * 1000 + 50, Math.random() * 1000, Math.random() * 1000 + 50);
-            cov1.checkCollision(cov2, 0);
+            cov1.checkCollision(cov2, Math.random() * 10);
         }
         var endCov:Number = getTimer();
         trace("CoverageAABBCollider performance: " + (endCov - startCov) + " ms for " + count + " collisions.");
@@ -435,7 +435,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
             px = Math.random() * 1000;
             py = Math.random() * 1000;
             var poly2:PolygonCollider = new PolygonCollider(new Vector(px, py), new Vector(px + 50, py), new Vector(px + 50, py + 50), new Vector(px, py + 50));
-            poly1.checkCollision(poly2, 0);
+            poly1.checkCollision(poly2, Math.random() * 10);
         }
         var endPoly:Number = getTimer();
         trace("PolygonCollider performance: " + (endPoly - startPoly) + " ms for " + count + " collisions.");
