@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1734942146">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1735018022">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="68">
+    <DOMTimeline name="asLoader" currentFrame="6">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -92,6 +92,7 @@ _root.stop();
                 <script><![CDATA[#include "../通信/通信_fs_lsy_XML数据解析.as"
 #include "../通信/通信_fs_本地服务器.as"
 #include "../通信/通信_fs_帧计时器.as"
+#include "../通信/通信_lsy_存档迁移.as"
 #include "../通信/通信_lsy_原版存档系统.as"
 #include "../通信/通信_彬彬_存档系统.as"
 #include "../通信/通信_彬彬_存档组包.as"
