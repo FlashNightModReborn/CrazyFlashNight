@@ -1,8 +1,8 @@
 ﻿import org.flashNight.arki.item.itemCollection.Inventory;
 
 /*
-装备栏，继承物品栏基类
-装备栏的键直接代表能接受的装备类型
+ * 装备栏，继承物品栏基类
+ * 装备栏的键直接代表能接受的装备类型
 */
 class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Inventory {
 

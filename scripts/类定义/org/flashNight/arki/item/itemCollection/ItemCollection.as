@@ -1,8 +1,10 @@
-﻿/*
-物品集合基类
+﻿import org.flashNight.arki.item.itemCollection.ICollection;
+
+/*
+ * 物品集合基类
 */
 
-class org.flashNight.arki.item.itemCollection.Collection {
+class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollection{
     
     private var items:Object; //物品数据
 
@@ -11,11 +13,16 @@ class org.flashNight.arki.item.itemCollection.Collection {
         else this.items = _items;
     }
 
-    //获取物品对象索引
+    //获取物品对象
     public function getItem(key:String):Object{
         var item = items[key];
         if(!item) return null;
         return item;
+    }
+
+    //获取全部物品集合数据
+    public function getItems():Object{
+        return items;
     }
 
     //判断某个键是否为空
@@ -37,7 +44,7 @@ class org.flashNight.arki.item.itemCollection.Collection {
         return false;
     }
 
-    //删除物品
+    //移除物品
     public function remove(key:String):Void{
         delete items[key];
     }

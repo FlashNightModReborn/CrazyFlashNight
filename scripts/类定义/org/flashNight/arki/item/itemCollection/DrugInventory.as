@@ -1,7 +1,7 @@
 ﻿import org.flashNight.arki.item.itemCollection.Inventory;
 
 /*
-药剂栏，继承物品栏基类
+ * 药剂栏，继承物品栏基类
 */
 class org.flashNight.arki.item.itemCollection.DrugInventory extends Inventory {
 

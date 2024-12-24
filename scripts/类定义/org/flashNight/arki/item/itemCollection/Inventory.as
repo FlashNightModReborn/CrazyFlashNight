@@ -1,31 +1,22 @@
 ﻿import org.flashNight.arki.item.itemCollection.ItemCollection;
 
 /*
-物品栏基类
+ * 物品栏基类，继承物品集合基类
 */
 
 class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
-    
-    private var items:Object; //物品数据
 
     public function Inventory(_items:Object) {
         super(_items);
     }
 
-    //获取物品对象索引
-    public function getItem(key:String):Object{
-        var item = items[key];
-        if(!item) return null;
-        return item;
-    }
-
-    //重构isAddable，判断某格是否能放入某个物品
+    //重构isAddable函数，判断某格是否能放入某个物品
     public function isAddable(key:String,item:Object):Boolean{
         return item.name && item.value;
     }
     
     //改变物品value
-    public function changeValue(key:String,value:Number):Void{
+    public function addValue(key:String,value:Number):Void{
         if(isNaN(value)) return;
         var item = items[key];
         item.value += value;

@@ -1,7 +1,7 @@
 ﻿import org.flashNight.arki.item.itemCollection.Inventory;
 
 /*
-只以数字作为键的物品栏，继承物品栏基类
+ * 只以数字作为键的物品栏，继承物品栏基类
 */
 class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     
