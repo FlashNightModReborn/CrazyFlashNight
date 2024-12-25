@@ -3,82 +3,39 @@ import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Collider.BulletColliderHandler {
-    private var bullet:Object; // 当前子弹对象
-    private var filterMethod:Function; // 前置过滤方法
-    private var collisionMethod:Function; // 碰撞检测方法
 
     /**
-     * 构造函数
+     * 检查子弹与目标单位之间的碰撞
      * @param bullet 当前子弹对象
-     * @param filterMethod 前置过滤方法
-     * @param collisionMethod 碰撞检测方法
-     */
-    public function BulletColliderHandler(bullet:Object, filterMethod:Function, collisionMethod:Function) {
-        this.bullet = bullet;
-        this.filterMethod = filterMethod;
-        this.collisionMethod = collisionMethod;
-    }
-
-    /**
-     * 执行前置过滤逻辑
-     * @param target 当前目标对象
-     * @return Boolean 是否通过过滤
-     */
-    public function applyFilter(target:Object):Boolean {
-        return this.filterMethod(target, this.bullet);
-    }
-
-    /**
-     * 执行碰撞检测逻辑
-     * @param target 当前目标对象
+     * @param hitTarget 检测目标对象
+     * @param areaAABB 当前子弹的AABB碰撞器
+     * @param detectionArea 检测区域
      * @param zOffset Z轴偏移值
-     * @return CollisionResult 碰撞检测结果
+     * @param isPointSet 是否启用精确多边形检测
+     * @return CollisionResult 返回碰撞检测结果
      */
-    public function applyCollision(target:Object, zOffset:Number):CollisionResult {
-        return this.collisionMethod(target, this.bullet, zOffset);
-    }
+    public static function checkBulletCollision(
+        bullet:MovieClip, 
+        hitTarget:MovieClip, 
+        areaAABB:AABBCollider, 
+        detectionArea:MovieClip, 
+        zOffset:Number, 
+        isPointSet:Boolean
+    ):CollisionResult {
+        // 更新目标单位的碰撞区域
+        var unitArea:AABBCollider = hitTarget.aabbCollider;
+        unitArea.updateFromUnitArea(hitTarget);
 
-    /**
-     * 默认前置过滤逻辑
-     * @param target 当前目标对象
-     * @param bullet 当前子弹对象
-     * @return Boolean 是否通过过滤
-     */
-    public static function defaultFilterMethod(target:Object, bullet:Object):Boolean {
-        var zOffset:Number = target.Z轴坐标 - bullet.Z轴坐标;
-        if (Math.abs(zOffset) >= bullet.Z轴攻击范围) {
-            return false;
-        }
-        if (!(target.是否为敌人 == bullet.子弹敌我属性值)) {
-            return false;
-        }
-        if ((target._name != bullet.发射者名 || bullet.友军伤害) && target.防止无限飞 != true || (target.hp <= 0 && !bullet.近战检测)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 默认碰撞检测逻辑
-     * @param target 当前目标对象
-     * @param bullet 当前子弹对象
-     * @param zOffset Z轴偏移值
-     * @return CollisionResult 碰撞检测结果
-     */
-    public static function defaultCollisionMethod(target:MovieClip, bullet:MovieClip, zOffset:Number):CollisionResult {
-        var areaAABB:AABBCollider = bullet.aabbCollider;
-        areaAABB.updateFromBullet(bullet, bullet.area);
-
-        var unitArea:AABBCollider = target.aabbCollider;
-        unitArea.updateFromUnitArea(target);
-
+        // 执行初步的AABB碰撞检测
         var result:CollisionResult = areaAABB.checkCollision(unitArea, zOffset);
 
-        if (!result.isColliding && bullet.联弹检测 && bullet._rotation != 0 && bullet._rotation != 180) {
-            bullet.polygonCollider.updateFromBullet(bullet, bullet.area);
+        // 如果启用精确多边形检测，执行进一步检测
+        if (isPointSet && result.isColliding) {
+            bullet.polygonCollider.updateFromBullet(bullet, detectionArea);
             result = bullet.polygonCollider.checkCollision(unitArea, zOffset);
         }
 
+        // 返回最终的碰撞结果
         return result;
     }
 }
