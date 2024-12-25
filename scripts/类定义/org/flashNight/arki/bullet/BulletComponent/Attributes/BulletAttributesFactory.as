@@ -104,6 +104,135 @@ class org.flashNight.arki.bullet.BulletComponent.Attributes.BulletAttributesFact
     }
 
     /**
+     * 新增方法：创建并发射子弹
+     * 
+     * 该方法的参数与 _root.子弹区域shoot 完全一致，确保功能等价。
+     * 
+     * @param 声音:String
+     * @param 霰弹值:Number
+     * @param 子弹散射度:Number
+     * @param 发射效果:String
+     * @param 子弹种类:String
+     * @param 子弹威力:Number
+     * @param 子弹速度:Number
+     * @param Z轴攻击范围:Number
+     * @param 击中地图效果:String
+     * @param 发射者:String
+     * @param shootX:Number
+     * @param shootY:Number
+     * @param shootZ:Number
+     * @param 子弹敌我属性:Boolean
+     * @param 击倒率:Number
+     * @param 击中后子弹的效果:String
+     * @param 水平击退速度:Number
+     * @param 垂直击退速度:Number
+     * @param 命中率:Number
+     * @param 固伤:Number
+     * @param 百分比伤害:Number
+     * @param 血量上限击溃:Number
+     * @param 防御粉碎:Number
+     * @param area:Object
+     * @param 吸血:Number
+     * @param 毒:Number
+     * @param 最小霰弹值:Number
+     * @param 不硬直:Boolean
+     * @param 伤害类型:Object
+     * @param 魔法伤害属性:Object
+     * @param 速度X:Number
+     * @param 速度Y:Number
+     * @param ZY比例:Number
+     * @param 斩杀:Object
+     * @param 暴击:Object
+     * @param 水平击退反向:Boolean
+     * @param 角度偏移:Number
+     */
+    public static function createAndShoot(
+        声音:String,
+        霰弹值:Number,
+        子弹散射度:Number,
+        发射效果:String,
+        子弹种类:String,
+        子弹威力:Number,
+        子弹速度:Number,
+        Z轴攻击范围:Number,
+        击中地图效果:String,
+        发射者:String,
+        shootX:Number,
+        shootY:Number,
+        shootZ:Number,
+        子弹敌我属性:Boolean,
+        击倒率:Number,
+        击中后子弹的效果:String,
+        水平击退速度:Number,
+        垂直击退速度:Number,
+        命中率:Number,
+        固伤:Number,
+        百分比伤害:Number,
+        血量上限击溃:Number,
+        防御粉碎:Number,
+        area:Object,
+        吸血:Number,
+        毒:Number,
+        最小霰弹值:Number,
+        不硬直:Boolean,
+        伤害类型:Object,
+        魔法伤害属性:Object,
+        速度X:Number,
+        速度Y:Number,
+        ZY比例:Number,
+        斩杀:Object,
+        暴击:Object,
+        水平击退反向:Boolean,
+        角度偏移:Number
+    ):Void {
+        // 创建 BulletAttributes 实例
+        var bulletAttributes:BulletAttributes = createDefault();
+
+        // 初始化属性
+        bulletAttributes.initialize({
+            声音: 声音,
+            霰弹值: 霰弹值,
+            子弹散射度: 子弹散射度,
+            发射效果: 发射效果,
+            子弹种类: 子弹种类,
+            子弹威力: 子弹威力,
+            子弹速度: 子弹速度,
+            Z轴攻击范围: Z轴攻击范围,
+            击中地图效果: 击中地图效果,
+            发射者: 发射者,
+            shootX: shootX,
+            shootY: shootY,
+            shootZ: shootZ,
+            子弹敌我属性: 子弹敌我属性,
+            击倒率: 击倒率,
+            击中后子弹的效果: 击中后子弹的效果,
+            水平击退速度: 水平击退速度,
+            垂直击退速度: 垂直击退速度,
+            命中率: 命中率,
+            固伤: 固伤,
+            百分比伤害: 百分比伤害,
+            血量上限击溃: 血量上限击溃,
+            防御粉碎: 防御粉碎,
+            吸血: 吸血,
+            毒: 毒,
+            最小霰弹值: 最小霰弹值,
+            不硬直: 不硬直,
+            伤害类型: 伤害类型,
+            魔法伤害属性: 魔法伤害属性,
+            速度X: 速度X,
+            速度Y: 速度Y,
+            ZY比例: ZY比例,
+            斩杀: 斩杀,
+            暴击: 暴击,
+            水平击退反向: 水平击退反向,
+            角度偏移: 角度偏移
+        });
+
+        // 传递给 _root.子弹区域shoot传递
+        _root.子弹区域shoot传递(bulletAttributes);
+    }
+
+    /**
      * 释放 BulletAttributes 实例回对象池
      * 
      * @param instance 要释放的 BulletAttributes 实例

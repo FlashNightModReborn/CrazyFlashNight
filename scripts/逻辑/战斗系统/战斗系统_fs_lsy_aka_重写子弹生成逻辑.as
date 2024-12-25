@@ -125,34 +125,6 @@ _root.创建发射效果 = function(Obj, shooter){
     _root.播放音效(Obj.声音);
 }
 
-_root.设置默认值 = function(Obj, shooter){
-    Obj.固伤 = isNaN(Obj.固伤) ? 0 : Obj.固伤;
-    Obj.命中率 = isNaN(Obj.命中率) ? shooter.命中率 : Obj.命中率;
-    Obj.最小霰弹值 = isNaN(Obj.最小霰弹值) ? 1 : Obj.最小霰弹值;
-    Obj.远距离不消失 = Obj.手雷检测 || Obj.爆炸检测;
-}
-
-_root.继承发射者属性 = function(Obj, shooter){
-    Obj.伤害类型 = !Obj.伤害类型 && shooter.伤害类型 ? shooter.伤害类型 : Obj.伤害类型;
-    Obj.魔法伤害属性 = !Obj.魔法伤害属性 && shooter.魔法伤害属性 ? shooter.魔法伤害属性 : Obj.魔法伤害属性;
-    Obj.吸血 = Obj.吸血 || shooter.吸血 ? Math.max((isNaN(Obj.吸血) ? 0 : Obj.吸血), (isNaN(shooter.吸血) ? 0 : shooter.吸血)) : Obj.吸血;
-    Obj.击溃 = Obj.血量上限击溃 || shooter.击溃 ? Math.max((isNaN(Obj.血量上限击溃) ? 0 : Obj.血量上限击溃), (isNaN(shooter.击溃) ? 0 : shooter.击溃)) : Obj.血量上限击溃;
-}
-
-_root.计算击退速度 = function(Obj){
-    Obj.水平击退速度 = (isNaN(Obj.水平击退速度) || Obj.水平击退速度 < 0) ? 10 : Math.min(Obj.水平击退速度, _root.最大水平击退速度);
-    Obj.垂直击退速度 = isNaN(Obj.垂直击退速度) ? 0 : Math.min(Obj.垂直击退速度, _root.最大垂直击退速度);
-}
-
-_root.初始化子弹属性 = function(Obj){
-    Obj.发射者名 = Obj.发射者;
-    Obj.子弹敌我属性值 = Obj.子弹敌我属性;
-    Obj._x = Obj.shootX;
-    Obj._y = Obj.shootY;
-    Obj.Z轴坐标 = Obj.shootZ;
-    Obj.子弹区域area = Obj.区域定位area;
-}
-
 _root.创建子弹 = function(Obj, shooter, 射击角度){
     var 游戏世界 = _root.gameworld;
     var 子弹总数 = Obj.联弹检测 ? 1 : Obj.霰弹值;
