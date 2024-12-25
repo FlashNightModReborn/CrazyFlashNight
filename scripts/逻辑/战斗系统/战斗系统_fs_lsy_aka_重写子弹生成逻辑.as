@@ -6,6 +6,7 @@ import org.flashNight.arki.bullet.BulletComponent.Shell.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.bullet.BulletComponent.Attributes.*
+import org.flashNight.arki.bullet.BulletComponent.Init.*;
 
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
@@ -76,17 +77,17 @@ _root.子弹区域shoot传递 = function(Obj){
     // 设置子弹类型标志
     BulletTypesetter.setTypeFlags(Obj);
 
-    // 设置默认值
-    _root.设置默认值(Obj, shooter);
+    // 1. 设置默认值
+    BulletInitializer.setDefaults(Obj, shooter);
 
-    // 继承发射者属性
-    _root.继承发射者属性(Obj, shooter);
+    // 2. 继承发射者属性
+    BulletInitializer.inheritShooterAttributes(Obj, shooter);
 
-    // 计算击退速度
-    _root.计算击退速度(Obj);
+    // 3. 计算击退速度
+    BulletInitializer.calculateKnockback(Obj);
 
-    // 初始化子弹属性
-    _root.初始化子弹属性(Obj);
+    // 4. 初始化子弹属性
+    BulletInitializer.initializeBulletProperties(Obj);
 
     // 创建子弹
     var bulletInstance = 创建子弹(Obj, shooter, 射击角度);
