@@ -43,6 +43,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBCollider
      * 3. 基于重叠区域面积与当前碰撞器的总面积，计算覆盖率。
      * 4. 计算重叠区域的中心点。
      * 
+     * 检测边缘情况：边缘接触视作不碰撞，因为此时覆盖率为0
+     * 
      * @param other   另一个 ICollider 实例
      * @param zOffset 碰撞体之间的 Z 轴差值，用于模拟 3D 高度差
      * @return CollisionResult 碰撞结果对象，包含碰撞标识、覆盖率及中心点

@@ -20,7 +20,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
 
     // 定义最大点数量以避免动态push操作，提升性能
     // 矩形点集与aabb进行碰撞检测正常来说会返回3-8个交点，最多16个，因此选择8作为阈值
-    private static var MAX_POINTS:Number = 8;
+    private static var MAX_POINTS:Number = 16;
 
     /**
      * 用于aabb碰撞器的碰撞结果，缓存避免频繁创建
@@ -720,7 +720,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider extend
          */
         var area:Number = (p1.x * p2.y + p2.x * p3.y + p3.x * p4.y + p4.x * p1.y) - (p2.x * p1.y + p3.x * p2.y + p4.x * p3.y + p1.x * p4.y);
         var thisArea:Number = (area < 0) ? -area : area; // 手动取绝对值
-        
+
         /**
          * 计算最终质心
          * 通过所有交点的平均位置来确定重叠区域的质心。

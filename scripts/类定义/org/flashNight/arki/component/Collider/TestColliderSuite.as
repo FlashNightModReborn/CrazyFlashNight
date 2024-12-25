@@ -572,41 +572,76 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
      */
     private function testPerformance():Void {
         trace("---- testPerformance ----");
-        var count:Number = 500;
+        var countCamp1:Number = 15; // 阵营1的碰撞器数量
+        var countCamp2:Number = 50; // 阵营2的碰撞器数量
 
-        // 1) 测试 AABBCollider 性能
-        var startAABB:Number = getTimer();
-        for (var i:Number = 0; i < count; i++) {
-            var col1:AABBCollider = new AABBCollider(Math.random() * 1000, Math.random() * 1000 + 50, Math.random() * 1000, Math.random() * 1000 + 50);
-            var col2:AABBCollider = new AABBCollider(Math.random() * 1000, Math.random() * 1000 + 50, Math.random() * 1000, Math.random() * 1000 + 50);
-            col1.checkCollision(col2, Math.random() * 10);
-        }
-        var endAABB:Number = getTimer();
-        trace("AABBCollider performance: " + (endAABB - startAABB) + " ms for " + count + " collisions.");
+        var cc:Number = countCamp1 + countCamp2;
 
-        // 2) 测试 CoverageAABBCollider 性能
-        var startCov:Number = getTimer();
-        for (i = 0; i < count; i++) {
-            var cov1:CoverageAABBCollider = new CoverageAABBCollider(Math.random() * 1000, Math.random() * 1000 + 50, Math.random() * 1000, Math.random() * 1000 + 50);
-            var cov2:CoverageAABBCollider = new CoverageAABBCollider(Math.random() * 1000, Math.random() * 1000 + 50, Math.random() * 1000, Math.random() * 1000 + 50);
-            cov1.checkCollision(cov2, Math.random() * 10);
-        }
-        var endCov:Number = getTimer();
-        trace("CoverageAABBCollider performance: " + (endCov - startCov) + " ms for " + count + " collisions.");
+        var aabbFactory:AABBColliderFactory = new AABBColliderFactory(cc);
+        var coverageFactory:CoverageAABBColliderFactory = new CoverageAABBColliderFactory(cc);
+        var polygonFactory:PolygonColliderFactory = new PolygonColliderFactory(cc);
 
-        // 3) 测试 PolygonCollider 性能
-        //    这里仅用四边形做例子，若有更多顶点，可进一步测试
-        var startPoly:Number = getTimer();
-        for (i = 0; i < count; i++) {
-            var px:Number = Math.random() * 1000;
-            var py:Number = Math.random() * 1000;
-            var poly1:PolygonCollider = new PolygonCollider(new Vector(px, py), new Vector(px + 50, py), new Vector(px + 50, py + 50), new Vector(px, py + 50));
-            px = Math.random() * 1000;
-            py = Math.random() * 1000;
-            var poly2:PolygonCollider = new PolygonCollider(new Vector(px, py), new Vector(px + 50, py), new Vector(px + 50, py + 50), new Vector(px, py + 50));
-            poly1.checkCollision(poly2, Math.random() * 10);
+        var bulletObjArray:Array = [];
+        for(var i = (countCamp1 + countCamp2); i >= 0; --i)
+        {
+            var boa = new Object();
+            boa._x = Math.random() * 1000;
+            boa._y = Math.random() * 500;
+            bulletObjArray.push(boa);
         }
-        var endPoly:Number = getTimer();
-        trace("PolygonCollider performance: " + (endPoly - startPoly) + " ms for " + count + " collisions.");
+
+        // 测试不同类型碰撞器的性能
+        performCollisionTest("AABBCollider", aabbFactory, countCamp1, countCamp2, bulletObjArray);
+        performCollisionTest("CoverageAABBCollider", coverageFactory, countCamp1, countCamp2, bulletObjArray);
+        performCollisionTest("PolygonCollider", polygonFactory, countCamp1, countCamp2, bulletObjArray);
     }
+
+    /**
+     * 执行碰撞检测性能测试
+     * @param colliderType 碰撞器类型的名称（用于输出）
+     * @param factory 创建碰撞器的工厂函数
+     * @param count1 阵营1的碰撞器数量
+     * @param count2 阵营2的碰撞器数量
+     */
+    private function performCollisionTest(colliderType:String, factory:IColliderFactory, count1:Number, count2:Number, bulletObjArray:Array):Void {
+        trace("---- Testing " + colliderType + " ----");
+
+        var index:Number = 0;
+        
+        var startTime:Number = getTimer();
+
+        // 创建阵营1的碰撞器
+        var camp1:Array = [];
+        for (var i1:Number = 0; i1 < count1; i1++) {
+            camp1.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
+        }
+
+        var len1:Number = camp1.length;
+
+        // 创建阵营2的碰撞器
+        var camp2:Array = [];
+        for (var i2:Number = 0; i2 < count2; i2++) {
+            camp2.push(factory.createFromTransparentBullet(bulletObjArray[index++]));
+        }
+
+        var len2:Number = camp2.length;
+
+        var checkCount:Number = 0;
+
+        for(var ii1 = 0; ii1 < len1; ii1++) {
+            for(var ii2 = 0; ii2 < len2; ii2++) {
+                camp1[ii1].checkCollision(camp2[ii2], Math.random() * 10);
+            }
+        }
+        for(var jj1 = 0; jj1 < len1; jj1++) {
+            for(var jj2 = 0; jj2 < len2; jj2++) {
+                camp2[jj1].checkCollision(camp1[jj2], Math.random() * 10);
+            }
+        }
+
+
+        var endTime:Number = getTimer();
+        trace(colliderType + " performance: " + (endTime - startTime) + " ms for " + (len1 * len2 * 2) + " collisions.");
+    }
+
 }
