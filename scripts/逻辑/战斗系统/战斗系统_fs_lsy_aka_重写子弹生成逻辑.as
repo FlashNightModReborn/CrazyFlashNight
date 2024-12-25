@@ -5,6 +5,7 @@ import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.bullet.BulletComponent.Attributes.*
 
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
@@ -156,10 +157,10 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
     var 子弹总数 = Obj.联弹检测 ? 1 : Obj.霰弹值;
     var bulletInstance;
     if(Obj.联弹检测) {
-        Obj.子弹实例种类 = Obj.子弹种类.split("-")[0];
+        Obj.bulletAsset = Obj.子弹种类.split("-")[0];
         Obj.联弹霰弹值 = Obj.霰弹值;
     } else {
-        Obj.子弹实例种类 = Obj.子弹种类;
+        Obj.bulletAsset = Obj.子弹种类;
         Obj.联弹霰弹值 = 1;
     }
     for (var 子弹计数 = 0; 子弹计数 < 子弹总数; 子弹计数++) {
@@ -189,7 +190,7 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度){
         _root.子弹生成计数 = (_root.子弹生成计数 + 1) % 100;
         var depth = 游戏世界.子弹区域.getNextHighestDepth();
         var b_name = Obj.发射者名 + Obj.子弹种类 + depth + 散射角度 + _root.子弹生成计数;
-        bulletInstance = 游戏世界.子弹区域.attachMovie(Obj.子弹实例种类, b_name, depth, Obj);
+        bulletInstance = 游戏世界.子弹区域.attachMovie(Obj.bulletAsset, b_name, depth, Obj);
     }
     bulletInstance.xmov = bulletInstance.子弹速度 * Math.cos(angle);
     bulletInstance.ymov = bulletInstance.子弹速度 * Math.sin(angle);
@@ -806,60 +807,9 @@ _root.子弹区域shoot表演 = function(声音, 霰弹值, 子弹散射度, 发
 
 
 
-//将传递参数改为对象，需要严格对应属性名，使用格式详情见下方注释
-_root.子弹属性初始化 = function(子弹元件:MovieClip,子弹种类:String,发射者:MovieClip){
-	var myPoint = {x:子弹元件._x,y:子弹元件._y};
-	子弹元件._parent.localToGlobal(myPoint);
-	var 转换中间y = myPoint.y;
-	_root.gameworld.globalToLocal(myPoint);
-	shootX = myPoint.x;
-	shootY = myPoint.y;
-	if(!发射者){
-		发射者 = 子弹元件._parent._parent;
-	}
-	var 子弹属性 = {
-		声音:"",
-		霰弹值:1,
-		子弹散射度:1,
-		发射效果:"",
-		子弹种类:子弹种类 == undefined ? "普通子弹" : 子弹种类,
-		子弹威力:10,
-		子弹速度:10,
-		Z轴攻击范围:10,
-		击中地图效果:"火花",
-		发射者:发射者._name,
-		shootX:shootX,
-		shootY:shootY,
-		转换中间y:转换中间y,
-		shootZ:发射者.Z轴坐标,
-		子弹敌我属性:!发射者.是否为敌人,
-		击倒率:10,
-		击中后子弹的效果:"",
-		水平击退速度:NaN,
-		垂直击退速度:NaN,
-		命中率:NaN,
-		固伤:NaN,
-		百分比伤害:NaN,
-		血量上限击溃:NaN,
-		防御粉碎:NaN,
-		吸血:NaN,
-		毒:NaN,
-		最小霰弹值:1,
-		不硬直:false,
-		区域定位area:undefined,
-		伤害类型:undefined,
-		魔法伤害属性:undefined,
-		速度X:undefined,
-		速度Y:undefined,
-		ZY比例:undefined,
-		斩杀:undefined,
-		暴击:undefined,
-		水平击退反向:false,
-		角度偏移:0
-	}
-	return 子弹属性;
-}
+// 初始化函数
 
+_root.子弹属性初始化 = Delegate.create(BulletAttributesFactory, BulletAttributesFactory.initializeFromMovieClip);
 
 /*使用示例：
 
