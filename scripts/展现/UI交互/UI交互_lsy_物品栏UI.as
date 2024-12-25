@@ -408,3 +408,141 @@ _root.物品图标UI函数.装备槽对应物品类别 = function(类别, 强化
 	}
 }
 
+
+//新版
+_root.物品图标UI函数.背包 = new Object();
+
+_root.物品图标UI函数.inventoryInit = function(_collection,_index){
+	this.collection = _collection;
+	this.index = _index;
+	if(this.collection.isEmpty(this.index)){
+		this.item = null;
+		this.itemData = null;
+		this.gotoAndStop("空");
+	}else{
+		this.item = this.collection.getItem(this.index);
+		this.name = this.item.name;
+		this.value = this.item.value;
+		this.itemData = _root.getItemData(this.item.name);
+		this.gotoAndStop("默认图标");
+	}
+}
+
+_root.物品图标UI函数.collectionInit = function(_collection,_name){
+	this.collection = _collection;
+	this.name = _name;
+	if(this.collection.isEmpty(this.name)){
+		this.item = null;
+		this.itemData = null;
+		this.gotoAndStop("空");
+	}else{
+		this.value = this.collection.getItem(this.name);
+		this.itemData = _root.getItemData(this.name);
+		this.gotoAndStop("默认图标");
+	}
+}
+
+_root.物品图标UI函数.init = function(_item){
+	this.item = _item;
+	this.itemData = _root.getItemData(this.item.name);
+	this.gotoAndStop("默认图标");
+}
+
+_root.物品图标UI函数.背包.press = function(){
+	_root.注释结束();
+	if (!this.锁定)
+	{
+		this.图标壳.图标.gotoAndStop(2);
+		startDrag(this,1);
+		_root.鼠标.gotoAndStop("手型抓取");
+
+		if (_root.物品栏界面.getDepth() < _root.仓库界面.getDepth())
+		{
+			_root.物品栏界面.swapDepths(_root.仓库界面);
+		}
+		this.swapDepths(128 + random(512));
+		this.点击xmouse = _root._xmouse;
+		this.点击ymouse = _root._ymouse;
+	}
+}
+
+_root.物品图标UI函数.背包.release = function()
+{
+	stopDrag();
+	var 当前物品格 = _root.物品栏[this.对应数组号];
+	
+	var 移动目标 = null;
+	var 背包图标列表 = _root.物品栏界面.背包图标列表;
+
+	for (each in 背包图标列表)
+	{
+		var 目标元件 = 背包图标列表[each];
+		if(!目标元件.area.hitTest(_root._xmouse, _root._ymouse, true) || 目标元件 !== this){
+			continue;
+		}
+		var 目标物品格 = 目标元件.item;
+		if (tmp物品大类型 == "消耗品" && 当前物品格[0] === 目标物品格[0])
+		{
+			_root.合并物品格(当前物品格,目标物品格);
+		}
+		else
+		{
+			_root.交换物品格(当前物品格,目标物品格);
+		}
+		break;
+	}
+
+	if (目标元件._name === "垃圾箱")
+	{
+		_root.发布消息(_root.获得翻译("丢弃物品") + _root.获得翻译(当前物品格[0]));
+		_root.清空物品格(当前物品格);
+		break;
+	}
+	if (tmp_sz[3] === "药剂" && _root.玩家信息界面.快捷药剂界面.hitTest(_root._xmouse, _root._ymouse, true))
+	{
+		for (var i=1; i<=4; i++){
+			var 当前快捷物品栏 = _root.玩家信息界面.快捷药剂界面["快捷物品栏" + i];
+			if(当前快捷物品栏.hitTest(_root._xmouse, _root._ymouse, true)){
+				当前快捷物品栏.对应数组号 = this.对应数组号;
+				当前快捷物品栏.已装备名 = 当前物品格[0];
+				当前快捷物品栏.是否装备 = 1;
+				_root["快捷物品栏" + i] = 当前物品格[0];
+				当前快捷物品栏.图标 = "图标-" + _root.getItemData(_root.快捷物品栏1).icon;
+				当前快捷物品栏.gotoAndStop("默认图标");
+				当前快捷物品栏.数量 = 当前物品格[1];
+				当前物品格[2] = 1;
+				_root.玩家信息界面.快捷药剂界面.gotoAndPlay("刷新");
+				break;
+			}
+		}
+	}
+	if (_root.购买物品界面._visible && _root.购买物品界面.hitTest(_root._xmouse, _root._ymouse, true) && _root.物品栏界面.hitTest(_root._xmouse, _root._ymouse, true) && !_root.物品栏界面.窗体area.hitTest(_root._xmouse, _root._ymouse, true))
+	{
+		if (!isNaN(tmp_sz[5]))
+		{
+			var 售卖倍率 = 0.25;
+			if(_root.主角被动技能.口才 && _root.主角被动技能.口才.启用){
+				售卖倍率 += _root.主角被动技能.口才.等级 * 0.025;
+			}
+			if(tmp物品大类型 == "武器" || tmp物品大类型 == "防具"){
+				var 每石最大收益 = 当前物品格[1] * 200 + 600;
+				// var 强化石个数 = 0;
+				// for(var i = 0; i < 当前物品格[1]-1; i++){
+				// 	强化石个数 += Math.floor(i * i * i + 1);
+				// }
+				var 强化石个数 = Math.pow((当前物品格[1]-2) * (当前物品格[1]-1)/2,2) + 当前物品格[1]-1;
+				var 最大收益 = 强化石个数 * 每石最大收益;
+				var 强化收益 = Math.min(最大收益,(售卖倍率 * tmp_sz[5] * (Math.pow((当前物品格[1] - 1),4.2) / 216 )))
+				_root.金钱 += Math.floor(Number(售卖倍率 * tmp_sz[5] +  强化收益));
+				//_root.金钱 += Math.floor(Number(tmp_sz[5] * 售卖倍率 * (1 + Math.pow((当前物品格[1] - 1),4.2) / 216 ) ));
+			}else{
+				_root.金钱 += Math.floor(Number(tmp_sz[5] * 售卖倍率 * 当前物品格[1]));
+			}
+		}
+		_root.清空物品格(当前物品格);
+		_root.播放音效("收银机.mp3");
+	}
+
+	_root.排列物品图标();
+	this.removeMovieClip();
+}

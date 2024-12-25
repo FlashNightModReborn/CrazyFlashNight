@@ -27,7 +27,10 @@ _root.物品栏数据迁移 = function(){
         var 旧物品 = 旧背包[i];
         if(!旧物品 || 旧物品[0] == "空") continue;
         var 新物品 = {name:旧物品[0],value:旧物品[1]};
-        var use = _root.getItemData(旧物品[0]).use;
+        var itemData = _root.getItemData(旧物品[0]);
+        var type = itemData.type;
+        var use = itemData.use;
+        if(type == "武器" || type == "防具") 新物品.value = {level:旧物品[1]};
         if(旧物品[2] == 1){
             if(use == "药剂"){
                 if     (_root.快捷物品栏1 == 旧物品[0] && !新物品栏.药剂栏[0]) 新物品栏.药剂栏.add(0,新物品);
@@ -49,18 +52,27 @@ _root.物品栏数据迁移 = function(){
     for(var i=0; i<1200; i++){
         var 旧物品 = 旧仓库[i];
         if(!旧物品 || 旧物品[0] == "空") continue;
-        var use = _root.getItemData(旧物品[0]).use;
+        var 新物品 = {name:旧物品[0],value:旧物品[1]};
+        var itemData = _root.getItemData(旧物品[0]);
+        var type = itemData.type;
+        var use = itemData.use;
+        if(type == "武器" || type == "防具") 新物品.value = {level:旧物品[1]};
         if(use == "材料") 收集品栏.材料.add(旧物品[0],旧物品[1]);
         else if (use == "情报") 收集品栏.情报.add(旧物品[0],旧物品[1]);
-        else 新物品栏.仓库.add(i, {name:旧物品[0],value:旧物品[1]});
+        else 新物品栏.仓库.add(i, 新物品);
     }
     //迁移战备箱数据
     for(var i=0; i<400; i++){
         var 旧物品 = 旧仓库[i+1200];
         if(!旧物品 || 旧物品[0] == "空") continue;
+        var 新物品 = {name:旧物品[0],value:旧物品[1]};
+        var itemData = _root.getItemData(旧物品[0]);
+        var type = itemData.type;
+        var use = itemData.use;
+        if(type == "武器" || type == "防具") 新物品.value = {level:旧物品[1]};
         if(use == "材料") 收集品栏.材料.add(旧物品[0],旧物品[1]);
         else if (use == "情报") 收集品栏.情报.add(旧物品[0],旧物品[1]);
-        else 新物品栏.战备箱.add(i, {name:旧物品[0],value:旧物品[1]});
+        else 新物品栏.战备箱.add(i, 新物品);
     }
     // 完成
     // _root.物品栏 = 新物品栏;

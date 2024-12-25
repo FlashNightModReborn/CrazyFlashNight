@@ -59,7 +59,7 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
     public function merge(target:Inventory, key:String, targetKey:String):Boolean{
         var item = items[key];
         var targetItem = target.getItem(targetKey);
-        if(item.name != targetItem.name || item.attr || targetItem.attr) return false;
+        if(item.name != targetItem.name || isNaN(item.value) || isNaN(targetItem.value)) return false;
         // var use = _root.getItemData(item.name).use;
         targetItem.value += item.value;
         remove(key);
