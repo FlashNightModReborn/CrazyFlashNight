@@ -42,7 +42,7 @@ _root.物品栏数据迁移 = function(){
         }else if(use == "情报"){
             收集品栏.情报.add(旧物品[0],旧物品[1]);
         }else{
-            新物品栏.背包[i] = 新物品;
+            新物品栏.背包.add(i,新物品);
         }
     }
     //迁移仓库数据
@@ -62,13 +62,21 @@ _root.物品栏数据迁移 = function(){
         else if (use == "情报") 收集品栏.情报.add(旧物品[0],旧物品[1]);
         else 新物品栏.战备箱.add(i, {name:旧物品[0],value:旧物品[1]});
     }
-    完成
-    _root.物品栏 = 新物品栏;
-    _root.收集品栏 = 收集品栏;
-    _root.仓库栏 = null;
+    // 完成
+    // _root.物品栏 = 新物品栏;
+    // _root.收集品栏 = 收集品栏;
+    // _root.仓库栏 = null;
     //测试
-    // ServerManager.getInstance().sendServerMessage("测试迁移数据");
-    // ServerManager.getInstance().sendServerMessage(org.flashNight.gesh.object.ObjectUtil.toString(新物品栏));
+    ServerManager.getInstance().sendServerMessage("测试迁移数据");
+    var str = "";
+    for(var key in 新物品栏){
+        str += org.flashNight.gesh.object.ObjectUtil.toString(新物品栏[key].getItems());
+        str += "\n";
+    }
+    str += org.flashNight.gesh.object.ObjectUtil.toString(收集品栏.材料.getItems());
+    str += "\n";
+    str += org.flashNight.gesh.object.ObjectUtil.toString(收集品栏.情报.getItems());
+    ServerManager.getInstance().sendServerMessage(str);
 }
 
-
+//#func:_root.物品栏数据迁移()
