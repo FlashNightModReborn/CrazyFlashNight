@@ -409,9 +409,57 @@ _root.物品图标UI函数.装备槽对应物品类别 = function(类别, 强化
 }
 
 
-//新版
+//
+
 _root.物品图标UI函数.背包 = new Object();
 
+
+//排列图标
+_root.物品图标UI函数.创建背包图标 = function(){
+	if(_root.物品栏界面.界面图标 != "物品装备") return;
+
+	var 物品栏界面 = _root.物品栏界面;
+	var 背包 = _root.物品栏.背包;
+	
+	var 起始x = 物品栏界面.物品图标._x;
+	var 起始y = 物品栏界面.物品图标._y;
+	var 图标高度 = 28;
+	var 图标宽度 = 28;
+	var 列数 = 10;
+	var 行数 = 5;
+	var 总格数 = 行数*列数;
+	var 换行计数 = 0;
+	
+	for (var i = 0; i < 总格数; i++)
+	{
+		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i);
+		物品图标._x = 起始x;
+		物品图标._y = 起始y;
+		起始x += 图标宽度;
+		换行计数++;
+		if (换行计数 == 列数)
+		{
+			换行计数 = 0;
+			起始x = 物品栏界面.物品图标._x;
+			起始y += 图标高度;
+		}
+
+		物品图标.init = _root.物品图标UI函数.inventoryInit;
+		物品图标.init(背包,i);
+	}
+
+	var 装备栏 = _root.物品栏.装备栏;
+	var 装备栏位列表 = ["头部装备","上装装备","下装装备","手部装备","脚部装备","颈部装备","长枪","手枪","手枪2","刀","手雷"];
+
+	for (var i = 0; i < 装备栏位列表.length; i++){
+		var 装备类型 = 装备栏位列表[i];
+		var 物品图标 = 物品栏界面[装备类型];
+		物品图标.init = _root.物品图标UI函数.inventoryInit;
+		物品图标.init(装备栏,装备类型);
+	}
+}
+
+//图标初始化
 _root.物品图标UI函数.inventoryInit = function(_collection,_index){
 	this.collection = _collection;
 	this.index = _index;
@@ -448,6 +496,8 @@ _root.物品图标UI函数.init = function(_item){
 	this.gotoAndStop("默认图标");
 }
 
+
+//背包
 _root.物品图标UI函数.背包.press = function(){
 	_root.注释结束();
 	if (!this.锁定)
@@ -468,7 +518,7 @@ _root.物品图标UI函数.背包.press = function(){
 
 _root.物品图标UI函数.背包.release = function()
 {
-	stopDrag();
+	this.stopDrag();
 	var 当前物品格 = _root.物品栏[this.对应数组号];
 	
 	var 移动目标 = null;
