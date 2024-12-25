@@ -464,11 +464,11 @@ _root.子弹生命周期 = function()
         var hitTarget:MovieClip = this.命中对象;
         var zOffset = hitTarget.Z轴坐标 - this.Z轴坐标;
 
-        if (Math.abs(zOffset) >= this.Z轴攻击范围 || !(hitTarget.是否为敌人 == this.子弹敌我属性值))
+        if (Math.abs(zOffset) >= this.Z轴攻击范围)
         {
             continue;
         }
-        if ((hitTarget._name != this.发射者名 || this.友军伤害) && hitTarget.防止无限飞 != true || (hitTarget.hp <= 0 && !this.近战检测))
+        if (hitTarget.防止无限飞 != true || (hitTarget.hp <= 0 && !this.近战检测))
         {
             var overlapRatio = 1;
             var overlapCenter;
