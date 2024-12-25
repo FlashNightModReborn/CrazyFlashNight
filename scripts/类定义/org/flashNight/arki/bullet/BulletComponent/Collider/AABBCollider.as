@@ -37,7 +37,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
     /**
      * 用于aabb碰撞器的碰撞结果，缓存避免频繁创建
      */
-    public static var result:CollisionResult = CollisionResult.Create(true, Vector(null) ,1);
+    public static var result:CollisionResult = CollisionResult.Create(true, new Vector(0,0) ,1);
 
     /**
      * 用于aabb碰撞器的碰撞交互介质，缓存避免频繁创建

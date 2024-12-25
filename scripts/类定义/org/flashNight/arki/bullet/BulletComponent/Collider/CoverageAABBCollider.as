@@ -19,7 +19,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBCollider
     /**
      * 用于coverageaabb碰撞器的碰撞结果，缓存避免频繁创建
      */
-    public static var result:CollisionResult = CollisionResult.Create(true, Vector(null) ,0);
+    public static var result:CollisionResult = CollisionResult.Create(true, new Vector(0,0) ,0);
     /**
      * 构造函数
      * 
