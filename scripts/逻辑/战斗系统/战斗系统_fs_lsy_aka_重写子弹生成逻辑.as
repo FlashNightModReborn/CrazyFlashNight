@@ -461,19 +461,20 @@ _root.子弹生命周期 = function()
     for (var i = 0; i < 遍历敌人表.length ; ++i)
     {
         this.命中对象 = 遍历敌人表[i];
-        var zOffset = this.命中对象.Z轴坐标 - this.Z轴坐标;
+        var hitTarget:MovieClip = this.命中对象;
+        var zOffset = hitTarget.Z轴坐标 - this.Z轴坐标;
 
-        if (Math.abs(zOffset) >= this.Z轴攻击范围 || !(this.命中对象.是否为敌人 == this.子弹敌我属性值))
+        if (Math.abs(zOffset) >= this.Z轴攻击范围 || !(hitTarget.是否为敌人 == this.子弹敌我属性值))
         {
             continue;
         }
-        if ((this.命中对象._name != this.发射者名 || this.友军伤害) && this.命中对象.防止无限飞 != true || (this.命中对象.hp <= 0 && !this.近战检测))
+        if ((hitTarget._name != this.发射者名 || this.友军伤害) && hitTarget.防止无限飞 != true || (hitTarget.hp <= 0 && !this.近战检测))
         {
             var overlapRatio = 1;
             var overlapCenter;
 
-            var unitArea:AABBCollider = this.命中对象.aabbCollider;
-            unitArea.updateFromUnitArea(this.命中对象);
+            var unitArea:AABBCollider = hitTarget.aabbCollider;
+            unitArea.updateFromUnitArea(hitTarget);
 
             var result:CollisionResult = areaAABB.checkCollision(unitArea, zOffset);
 
@@ -491,38 +492,38 @@ _root.子弹生命周期 = function()
             击中次数++;
             if(_root.调试模式)
             {
-                _root.绘制线框(this.命中对象.area);
+                _root.绘制线框(hitTarget.area);
             }
-            var 命中对象血槽 = this.命中对象.新版人物文字信息 ? this.命中对象.新版人物文字信息.头顶血槽 : this.命中对象.人物文字信息.头顶血槽;
+            var 命中对象血槽 = hitTarget.新版人物文字信息 ? hitTarget.新版人物文字信息.头顶血槽 : hitTarget.人物文字信息.头顶血槽;
             命中对象血槽._visible = true;
             命中对象血槽.gotoAndPlay(2);
-            this.命中对象.攻击目标 = 发射对象._name;
+            hitTarget.攻击目标 = 发射对象._name;
 
-            _root.冲击力刷新(this.命中对象);
+            _root.冲击力刷新(hitTarget);
 
             // 命中率计算略，原代码有提到根据命中率计算闪避
-            var 躲闪状态 = this.伤害类型 == "真伤" ? "未躲闪": _root.躲闪状态计算(this.命中对象,_root.根据命中计算闪避结果(发射对象, this.命中对象, 命中率),this);
+            var 躲闪状态 = this.伤害类型 == "真伤" ? "未躲闪": _root.躲闪状态计算(hitTarget,_root.根据命中计算闪避结果(发射对象, hitTarget, 命中率),this);
 
             // 调用伤害结算函数
             var 消耗霰弹值 = 1; // 在伤害计算中实际会重新计算
-            _root.子弹伤害结算(this, 发射对象, this.命中对象, overlapRatio, 消耗霰弹值, 躲闪状态, overlapCenter);
+            _root.子弹伤害结算(this, 发射对象, hitTarget, overlapRatio, 消耗霰弹值, 躲闪状态, overlapCenter);
 
             //伤害结算结束后，继续原逻辑
-            if(!this.近战检测 && !this.爆炸检测 && this.命中对象.hp <= 0)
+            if(!this.近战检测 && !this.爆炸检测 && hitTarget.hp <= 0)
             {
-                this.命中对象.状态改变("血腥死");
+                hitTarget.状态改变("血腥死");
             }
 
-            var 被击方向 = (this.命中对象._x < 发射对象._x) ? "左" : "右" ;
+            var 被击方向 = (hitTarget._x < 发射对象._x) ? "左" : "右" ;
             if(this.水平击退反向){
                 被击方向 = 被击方向 === "左" ? "右" : "左";
             }
-            this.命中对象.方向改变(被击方向 === "左" ? "右" : "左");
+            hitTarget.方向改变(被击方向 === "左" ? "右" : "左");
 
             if (_root.血腥开关)
             {
                 var 子弹效果碎片 = "";
-                switch (this.命中对象.击中效果)
+                switch (hitTarget.击中效果)
                 {
                     case "飙血":
                         子弹效果碎片 = "子弹碎片-飞血";
@@ -536,82 +537,82 @@ _root.子弹生命周期 = function()
                 if(子弹效果碎片 != "")
                 {
                     var 效果对象 = _root.效果(子弹效果碎片, overlapCenter.x, overlapCenter.y, 发射对象._xscale);
-                    效果对象.出血来源 = this.命中对象._name;
+                    效果对象.出血来源 = hitTarget._name;
                 }
             }
 
-            var 刚体检测 = this.命中对象.刚体 || this.命中对象.man.刚体标签;
-            if (!this.命中对象.浮空 && !this.命中对象.倒地)
+            var 刚体检测 = hitTarget.刚体 || hitTarget.man.刚体标签;
+            if (!hitTarget.浮空 && !hitTarget.倒地)
             {
-                _root.冲击力结算(this.命中对象.损伤值,this.击倒率,this.命中对象);
-                this.命中对象.血条变色状态 = "常态";
+                _root.冲击力结算(hitTarget.损伤值,this.击倒率,hitTarget);
+                hitTarget.血条变色状态 = "常态";
 
-                if (!isNaN(this.命中对象.hp) && this.命中对象.hp <= 0)
+                if (!isNaN(hitTarget.hp) && hitTarget.hp <= 0)
                 {
-                    this.命中对象.状态改变(_root.血腥开关 ? "血腥死" : "击倒");
+                    hitTarget.状态改变(_root.血腥开关 ? "血腥死" : "击倒");
                 }
                 else if (躲闪状态 == "躲闪")
                 {
-                    this.命中对象.被击移动(被击方向,this.水平击退速度,3);
+                    hitTarget.被击移动(被击方向,this.水平击退速度,3);
                 }
                 else
                 {
-                    if (this.命中对象.残余冲击力 > this.命中对象.韧性上限)
+                    if (hitTarget.残余冲击力 > hitTarget.韧性上限)
                     {
                         if (!刚体检测)
                         {
-                            this.命中对象.状态改变("击倒");
-                            this.命中对象.血条变色状态 = "击倒";
+                            hitTarget.状态改变("击倒");
+                            hitTarget.血条变色状态 = "击倒";
                         }
-                        this.命中对象.残余冲击力 = 0;
-                        this.命中对象.被击移动(被击方向,this.水平击退速度,0.5);
+                        hitTarget.残余冲击力 = 0;
+                        hitTarget.被击移动(被击方向,this.水平击退速度,0.5);
                     }
-                    else if (this.命中对象.残余冲击力 > this.命中对象.韧性上限 / _root.踉跄判定 / this.命中对象.躲闪率)
+                    else if (hitTarget.残余冲击力 > hitTarget.韧性上限 / _root.踉跄判定 / hitTarget.躲闪率)
                     {
                         if (!刚体检测)
                         {
-                            this.命中对象.状态改变("被击");
-                            this.命中对象.血条变色状态 = "被击";
+                            hitTarget.状态改变("被击");
+                            hitTarget.血条变色状态 = "被击";
                         }
 
-                        this.命中对象.被击移动(被击方向,this.水平击退速度,2);
+                        hitTarget.被击移动(被击方向,this.水平击退速度,2);
                     }
                     else
                     {
-                        this.命中对象.被击移动(被击方向,this.水平击退速度,3);
+                        hitTarget.被击移动(被击方向,this.水平击退速度,3);
                     }
                 }
             }
             else
             {
-                this.命中对象.残余冲击力 = 0;
+                hitTarget.残余冲击力 = 0;
                 if (!刚体检测)
                 {
-                    this.命中对象.状态改变("击倒");
-                    this.命中对象.血条变色状态 = "击倒";
+                    hitTarget.状态改变("击倒");
+                    hitTarget.血条变色状态 = "击倒";
                     if (!(this.垂直击退速度 > 0))
                     {
                         var y速度 = 5;
-                        this.命中对象.man.垂直速度 = -y速度;
+                        hitTarget.man.垂直速度 = -y速度;
                     }
                 }
-                this.命中对象.被击移动(被击方向,this.水平击退速度,0.5);
+                hitTarget.被击移动(被击方向,this.水平击退速度,0.5);
             }
 
-            if(!this.近战检测 && !this.爆炸检测 && this.命中对象.hp <= 0)
+            if(!this.近战检测 && !this.爆炸检测 && hitTarget.hp <= 0)
             {
-                this.命中对象.状态改变("血腥死");
+                hitTarget.状态改变("血腥死");
             }
 
-            switch (this.命中对象.血条变色状态)
+            switch (hitTarget.血条变色状态)
             {
                 case "常态": _root.重置色彩(命中对象血槽);
                     break;
                 default: _root.暗化色彩(命中对象血槽);
             }
 
-            _root.效果(this.命中对象.击中效果, overlapCenter.x, overlapCenter.y, 发射对象._xscale);
-            if(this.命中对象.击中效果 == this.击中后子弹的效果) {
+            _root.效果(hitTarget.击中效果, overlapCenter.x, overlapCenter.y, 发射对象._xscale);
+            if(hitTarget.击中效果 == this.击中后子弹的效果) {
                 是否生成击中后效果 = false;
             }
 
@@ -626,12 +627,12 @@ _root.子弹生命周期 = function()
 
             if (this.垂直击退速度 > 0)
             {
-                this.命中对象.man.play();
-                clearInterval(this.命中对象.pauseInterval);
-                this.命中对象.硬直中 = false;
-                clearInterval(this.命中对象.pauseInterval2);
+                hitTarget.man.play();
+                clearInterval(hitTarget.pauseInterval);
+                hitTarget.硬直中 = false;
+                clearInterval(hitTarget.pauseInterval2);
 
-                _root.fly(this.命中对象,this.垂直击退速度,0);
+                _root.fly(hitTarget,this.垂直击退速度,0);
             }
         }
     }
