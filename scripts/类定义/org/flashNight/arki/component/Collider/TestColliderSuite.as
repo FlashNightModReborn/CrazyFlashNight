@@ -120,22 +120,22 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         // 4. 测试 checkCollision() - 边缘碰撞情形（左边缘接触）
         var other3:AABBCollider = new AABBCollider(100, 200, 50, 150);
         var result3:CollisionResult = collider.checkCollision(other3, 0);
-        assertTrue(result3.isColliding, "AABBCollider checkCollision edge contact left");
+        assertFalse(result3.isColliding, "AABBCollider checkCollision edge contact left");
 
         // 5. 测试 checkCollision() - 边缘碰撞情形（右边缘接触）
         var other4:AABBCollider = new AABBCollider(-50, 0, 50, 150);
         var result4:CollisionResult = collider.checkCollision(other4, 0);
-        assertTrue(result4.isColliding, "AABBCollider checkCollision edge contact right");
+        assertFalse(result4.isColliding, "AABBCollider checkCollision edge contact right");
 
         // 6. 测试 checkCollision() - 边缘碰撞情形（顶部边缘接触）
         var other5:AABBCollider = new AABBCollider(50, 150, 100, 200);
         var result5:CollisionResult = collider.checkCollision(other5, 0);
-        assertTrue(result5.isColliding, "AABBCollider checkCollision edge contact top");
+        assertFalse(result5.isColliding, "AABBCollider checkCollision edge contact top");
 
         // 7. 测试 checkCollision() - 边缘碰撞情形（底部边缘接触）
         var other6:AABBCollider = new AABBCollider(50, 150, -50, 0);
         var result6:CollisionResult = collider.checkCollision(other6, 0);
-        assertTrue(result6.isColliding, "AABBCollider checkCollision edge contact bottom");
+        assertFalse(result6.isColliding, "AABBCollider checkCollision edge contact bottom");
 
         // 8. 测试 checkCollision() - 一个AABB完全包含另一个AABB
         var other7:AABBCollider = new AABBCollider(25, 75, 25, 75);
@@ -170,22 +170,22 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         // 14. 测试 checkCollision() - AABB 相邻但不重叠（左边）
         var other13:AABBCollider = new AABBCollider(-50, 0, 50, 100);
         var result13:CollisionResult = collider.checkCollision(other13, 0);
-        assertTrue(result13.isColliding, "AABBCollider checkCollision adjacent left");
+        assertFalse(result13.isColliding, "AABBCollider checkCollision adjacent left");
     
         // 15. 测试 checkCollision() - AABB 相邻但不重叠（右边）
         var other14:AABBCollider = new AABBCollider(100, 200, 50, 150);
         var result14:CollisionResult = collider.checkCollision(other14, 0);
-        assertTrue(result14.isColliding, "AABBCollider checkCollision adjacent right");
+        assertFalse(result14.isColliding, "AABBCollider checkCollision adjacent right");
     
         // 16. 测试 checkCollision() - AABB 相邻但不重叠（上边）
         var other15:AABBCollider = new AABBCollider(50, 150, 100, 200);
         var result15:CollisionResult = collider.checkCollision(other15, 0);
-        assertTrue(result15.isColliding, "AABBCollider checkCollision adjacent top");
+        assertFalse(result15.isColliding, "AABBCollider checkCollision adjacent top");
     
         // 17. 测试 checkCollision() - AABB 相邻但不重叠（下边）
         var other16:AABBCollider = new AABBCollider(50, 150, -50, 0);
         var result16:CollisionResult = collider.checkCollision(other16, 0);
-        assertTrue(result16.isColliding, "AABBCollider checkCollision adjacent bottom");
+        assertFalse(result16.isColliding, "AABBCollider checkCollision adjacent bottom");
     
     
         // 18. 测试 checkCollision() - AABB 完全在另一个AABB的外部（远离）
@@ -467,15 +467,13 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var aabb1:AABBCollider = new AABBCollider(0, 100, 0, 100);
         var aabb2:AABBCollider = new AABBCollider(100, 200, 0, 100); // 右边缘与 aabb1 左边缘接触
         var result1:CollisionResult = aabb1.checkCollision(aabb2, 0);
-        assertTrue(result1.isColliding, "AABBCollider edge touching should collide");
-        // 对于 AABBCollider，碰撞覆盖率应为1
-        assertEquals(result1.overlapRatio, 1, "AABBCollider edge touching overlapRatio = 1");
+        assertFalse(result1.isColliding, "AABBCollider edge touching should collide");
 
         // 2. CoverageAABBCollider 边缘接触
         var cov1:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 0, 100);
         var cov2:CoverageAABBCollider = new CoverageAABBCollider(100, 200, 0, 100); // 右边缘与 cov1 左边缘接触
         var result2:CollisionResult = cov1.checkCollision(cov2, 0);
-        assertTrue(result2.isColliding, "CoverageAABBCollider edge touching should collide");
+        assertFalse(result2.isColliding, "CoverageAABBCollider edge touching should collide");
         // CoverageAABBCollider 计算重叠率为0（仅边缘接触），但由于实现中可能将其视为重叠
         // 根据实现逻辑，可能需要调整断言
         assertEquals(result2.overlapRatio, 0, "CoverageAABBCollider edge touching overlapRatio = 0");
@@ -484,7 +482,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var poly1:PolygonCollider = new PolygonCollider(new Vector(0, 0), new Vector(100, 0), new Vector(100, 100), new Vector(0, 100));
         var poly2:PolygonCollider = new PolygonCollider(new Vector(100, 0), new Vector(200, 0), new Vector(200, 100), new Vector(100, 100)); // poly2 左边缘与 poly1 右边缘接触
         var result3:CollisionResult = poly1.checkCollision(poly2, 0);
-        assertTrue(result3.isColliding, "PolygonCollider edge touching should collide");
+        assertFalse(result3.isColliding, "PolygonCollider edge touching should collide");
         // 由于仅边缘接触，交叠面积为0，但根据实现，可能被视为碰撞
         assertEquals(result3.overlapRatio, 0, "PolygonCollider edge touching overlapRatio = 0");
 
@@ -524,7 +522,7 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var poly5:PolygonCollider = new PolygonCollider(new Vector(100, 100), new Vector(200, 100), new Vector(200, 200), new Vector(100, 200));
         var cov6:CoverageAABBCollider = new CoverageAABBCollider(0, 100, 0, 100);
         var result8:CollisionResult = poly5.checkCollision(cov6, 0);
-        assertTrue(result8.isColliding, "PolygonCollider edge touching with CoverageAABBCollider should collide");
+        assertFalse(result8.isColliding, "PolygonCollider edge touching with CoverageAABBCollider should collide");
         assertEquals(result8.overlapRatio, 0, "PolygonCollider edge touching with CoverageAABBCollider overlapRatio = 0");
     }
 

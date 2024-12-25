@@ -41,8 +41,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBColliderFa
      */
     public function createFromTransparentBullet(bullet:Object):ICollider {
         var collider:CoverageAABBCollider = CoverageAABBCollider(this.getObject());
-        collider._update = CoverageAABBColliderFactory.nullUpdate; // 不需要更新边界
-        collider._update(bullet);
+        // collider._update = CoverageAABBColliderFactory.nullUpdate; // 不需要更新边界
+        // collider._update(bullet);
         return collider;
     }
 

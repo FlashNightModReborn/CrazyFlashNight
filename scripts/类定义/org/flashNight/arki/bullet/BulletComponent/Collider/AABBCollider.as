@@ -66,7 +66,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * 2. 通过边界坐标比较，快速判断是否发生碰撞。
      * 3. 如果碰撞，计算重叠区域的中心点和覆盖率。
      * 
-     * 检测边缘情况:边缘接触视作碰撞
+     * 检测边缘情况:边缘接触不视作碰撞
      * 
      * @param other   另一个 ICollider 实例
      * @param zOffset Z轴偏移量，用于模拟 3D 高度差
@@ -83,19 +83,19 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
 
         var myRight:Number = this.right;
         var otherLeft:Number = otherAABB.left;
-        if (myRight < otherLeft) return CollisionResult.FALSE;
+        if (myRight <= otherLeft) return CollisionResult.FALSE;
 
         var myLeft:Number = this.left;
         var otherRight:Number = otherAABB.right;
-        if (myLeft > otherRight) return CollisionResult.FALSE;
+        if (myLeft >= otherRight) return CollisionResult.FALSE;
 
         var myBottom:Number = this.bottom;
         var otherTop:Number = otherAABB.top;
-        if (myBottom < otherTop) return CollisionResult.FALSE;
+        if (myBottom <= otherTop) return CollisionResult.FALSE;
 
         var myTop:Number = this.top;
         var otherBottom:Number = otherAABB.bottom;
-        if (myTop > otherBottom) return CollisionResult.FALSE;
+        if (myTop >= otherBottom) return CollisionResult.FALSE;
 
         var aabbResult:CollisionResult = AABBCollider.result;
         var aabbResultCenter:Vector = aabbResult.overlapCenter;

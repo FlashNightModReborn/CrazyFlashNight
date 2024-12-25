@@ -91,41 +91,4 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBCollider
 
         return result;
     }
-
-    /**
-     * 静态方法：从透明子弹实例化 CoverageAABBCollider。
-     *
-     * @param bullet 透明子弹对象，包含坐标信息
-     * @return CoverageAABBCollider 实例
-     */
-    public static function fromTransparentBullet(bullet:Object):CoverageAABBCollider {
-        var collider:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
-        collider.updateFromTransparentBullet(bullet);
-        return collider;
-    }
-
-    /**
-     * 静态方法：从普通子弹和检测区域实例化 CoverageAABBCollider。
-     *
-     * @param bullet        子弹的 MovieClip 实例
-     * @param detectionArea 子弹的检测区域 MovieClip 实例
-     * @return CoverageAABBCollider 实例
-     */
-    public static function fromBullet(bullet:MovieClip, detectionArea:MovieClip):CoverageAABBCollider {
-        var collider:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
-        collider.updateFromBullet(bullet, detectionArea);
-        return collider;
-    }
-
-    /**
-     * 静态方法：从单位区域实例化 CoverageAABBCollider。
-     *
-     * @param unit 包含 area 属性的单位 MovieClip 实例
-     * @return CoverageAABBCollider 实例
-     */
-    public static function fromUnitArea(unit:MovieClip):CoverageAABBCollider {
-        var collider:CoverageAABBCollider = new CoverageAABBCollider(0, 0, 0, 0);
-        collider.updateFromUnitArea(unit);
-        return collider;
-    }
 }
