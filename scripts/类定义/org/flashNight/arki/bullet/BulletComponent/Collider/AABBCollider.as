@@ -81,19 +81,19 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
 
         var myRight:Number = this.right;
         var otherLeft:Number = otherAABB.left;
-        if (myRight <= otherLeft) return CollisionResult.FALSE;
+        if (myRight < otherLeft) return CollisionResult.FALSE;
 
         var myLeft:Number = this.left;
         var otherRight:Number = otherAABB.right;
-        if (myLeft >= otherRight) return CollisionResult.FALSE;
+        if (myLeft > otherRight) return CollisionResult.FALSE;
 
         var myBottom:Number = this.bottom;
         var otherTop:Number = otherAABB.top;
-        if (myBottom <= otherTop) return CollisionResult.FALSE;
+        if (myBottom < otherTop) return CollisionResult.FALSE;
 
         var myTop:Number = this.top;
         var otherBottom:Number = otherAABB.bottom;
-        if (myTop >= otherBottom) return CollisionResult.FALSE;
+        if (myTop > otherBottom) return CollisionResult.FALSE;
 
         var aabbResult:CollisionResult = AABBCollider.result;
         var aabbResultCenter:Vector = aabbResult.overlapCenter;

@@ -116,6 +116,36 @@ class org.flashNight.arki.component.Collider.TestColliderSuite {
         var other2:AABBCollider = new AABBCollider(200, 300, 200, 300);
         var result2:CollisionResult = collider.checkCollision(other2, 0);
         assertFalse(result2.isColliding, "AABBCollider checkCollision non-overlap");
+
+        // 4. 测试 checkCollision() - 边缘碰撞情形（左边缘接触）
+        var other3:AABBCollider = new AABBCollider(100, 200, 50, 150);
+        var result3:CollisionResult = collider.checkCollision(other3, 0);
+        assertTrue(result3.isColliding, "AABBCollider checkCollision edge contact left");
+
+        // 5. 测试 checkCollision() - 边缘碰撞情形（右边缘接触）
+        var other4:AABBCollider = new AABBCollider(-50, 0, 50, 150);
+        var result4:CollisionResult = collider.checkCollision(other4, 0);
+        assertTrue(result4.isColliding, "AABBCollider checkCollision edge contact right");
+
+        // 6. 测试 checkCollision() - 边缘碰撞情形（顶部边缘接触）
+        var other5:AABBCollider = new AABBCollider(50, 150, 100, 200);
+        var result5:CollisionResult = collider.checkCollision(other5, 0);
+        assertTrue(result5.isColliding, "AABBCollider checkCollision edge contact top");
+
+        // 7. 测试 checkCollision() - 边缘碰撞情形（底部边缘接触）
+        var other6:AABBCollider = new AABBCollider(50, 150, -50, 0);
+        var result6:CollisionResult = collider.checkCollision(other6, 0);
+        assertTrue(result6.isColliding, "AABBCollider checkCollision edge contact bottom");
+
+        // 8. 测试 checkCollision() - 一个AABB完全包含另一个AABB
+        var other7:AABBCollider = new AABBCollider(25, 75, 25, 75);
+        var result7:CollisionResult = collider.checkCollision(other7, 0);
+        assertTrue(result7.isColliding, "AABBCollider checkCollision containment");
+
+        // 9. 测试 checkCollision() - 一个AABB被另一个AABB完全包含
+        var other8:AABBCollider = new AABBCollider(-50, 150, -50, 150);
+        var result8:CollisionResult = other8.checkCollision(collider, 0);
+        assertTrue(result8.isColliding, "AABBCollider checkCollision contained");
     }
 
     //--------------------------------------------------------------------------
