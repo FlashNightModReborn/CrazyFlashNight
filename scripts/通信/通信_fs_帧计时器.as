@@ -822,6 +822,21 @@ _root.帧计时器.延迟执行任务 = function(任务ID, 延迟时间)
     return false; // Task not found, delay set failed
 };
 
+EventBus.getInstance().subscribe("地图已切换", function() {
+    var gameworld = _root.gameworld;
+    for (var each in gameworld) 
+    {
+        var target = gameworld[each];
+        if(target.hp > 0 && !target.aabbCollider)
+        {
+
+            target.aabbCollider = new AABBCollider();
+        }
+        //_root.服务器.发布服务器消息(目标 + " ," + 目标.命中率 + " ," + 目标.躲闪率);
+    }
+}, null); // 地图变动时，重新初始化子弹池
+
+
 
 _root.帧计时器.确保目标缓存存在 = function(自机状态, 请求类型) 
 {
@@ -873,8 +888,12 @@ _root.帧计时器.更新目标缓存 = function(自机:Object, 更新间隔:Num
         if(目标.hp > 0)
         {
             //if (目标.是否为敌人 === undefinded) 目标.是否为敌人 = true;
-            if (条件判断函数(目标)) 目标缓存对象.数据.push(目标);
-            if (!目标.aabbCollider) 目标.aabbCollider = new AABBCollider();
+            if (条件判断函数(目标)) 
+            {
+                目标缓存对象.数据.push(目标);
+                目标.aabbCollider.updateFromUnitArea(目标);
+                
+            }
         }
         //_root.服务器.发布服务器消息(目标 + " ," + 目标.命中率 + " ," + 目标.躲闪率);
     }

@@ -1,4 +1,6 @@
-﻿_root.玩家与佣兵区分装扮刷新 = false;
+﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+
+_root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
 
 
@@ -180,6 +182,8 @@ _root.佣兵装备位映射数组[16] = "手雷";
 _root.刷新人物装扮 = function(目标)
 {
 	var 目标人物 = _root.gameworld[目标];
+
+	目标人物.aabbCollider = new AABBCollider();
 	_root.帧计时器.注册目标缓存(目标人物);
 	var 是主角:Boolean = false;
 	var 头部装备:String;

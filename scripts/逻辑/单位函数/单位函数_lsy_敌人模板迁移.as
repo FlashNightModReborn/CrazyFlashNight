@@ -1,4 +1,6 @@
-﻿//容纳敌人函数的对象
+﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+
+//容纳敌人函数的对象
 _root.敌人函数 = new Object();
 
 
@@ -303,6 +305,8 @@ _root.敌人函数.掉落物品 = function(item){
 
 _root.初始化敌人模板 = function()
 {
+	this.aabbCollider = new AABBCollider();
+	
 	//以下14个是原版敌人的必要函数
 	this.根据等级初始数值 = this.根据等级初始数值 ? this.根据等级初始数值 : _root.敌人函数.根据等级初始数值;
 	this.行走 = this.行走 ? this.行走 : _root.敌人函数.行走;
