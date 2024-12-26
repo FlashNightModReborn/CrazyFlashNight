@@ -9,6 +9,7 @@ import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.gesh.arguments.*;
 import org.flashNight.naki.Sort.InsertionSort;
+import org.flashNight.gesh.xml.LoadXml.*;
 
 _root.帧计时器 = {};
 
@@ -63,6 +64,28 @@ _root.帧计时器.初始化任务栈 = function() {
     this.derivativeFilter = 0.2; // 平滑误差
     this.目标帧率 = 26;
     this.PID = new PIDController(this.kp, this.ki, this.kd, this.integralMax, this.derivativeFilter);
+
+    var pidControllerConfigLoader:PIDControllerConfigLoader = PIDControllerConfigLoader.getInstance();
+    var self = this; // 外界保存引用闭包传入
+
+    pidControllerConfigLoader.loadPIDControllerConfig(
+        function(data:Object):Void {
+            self.目标帧率 = data.targetFrameRate;
+            var param = data.parameters;
+            var pid = self.PID;
+
+            pid.setKd(param.kd);
+            pid.setKi(param.ki);
+            pid.setKd(param.kd);
+            pid.setIntegralMax(param.integralMax);
+            pid.setDerivativeFilter(param.derivativeFilter);
+
+            self.server.sendServerMessage(pid.toString() + " " + self.目标帧率);
+        },
+        function():Void {
+            self.server.sendServerMessage("主程序：PIDControllerConfig.xml 加载失败");
+        }
+    );
     
     // 任务调度器初始化
     this.ScheduleTimer = new CerberusScheduler();

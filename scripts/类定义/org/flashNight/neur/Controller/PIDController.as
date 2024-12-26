@@ -72,6 +72,14 @@
         kd = value;
     }
 
+    public function setIntegralMax(value:Number):Void {
+        integralMax = value;
+    }
+
+    public function setDerivativeFilter(value:Number):Void {
+        derivativeFilter = value;
+    }
+
     public function getKp():Number {
         return kp;
     }
@@ -82,5 +90,20 @@
 
     public function getKd():Number {
         return kd;
+    }
+
+    
+
+    public function toString():String {
+        return "PIDController {" +
+            " kp: " + kp +
+            ", ki: " + ki +
+            ", kd: " + kd +
+            ", integral: " + integral +
+            ", integralMax: " + integralMax +
+            ", derivativeFilter: " + derivativeFilter +
+            ", errorPrev: " + errorPrev +
+            ", derivativePrev: " + derivativePrev +
+            " }";
     }
 }
