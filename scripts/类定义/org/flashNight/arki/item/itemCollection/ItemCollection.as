@@ -9,7 +9,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     private var items:Object; //物品数据
 
     public function ItemCollection(_items:Object) {
-        if(!items) this.items = new Object();
+        if(!_items) this.items = new Object();
         else this.items = _items;
     }
 
