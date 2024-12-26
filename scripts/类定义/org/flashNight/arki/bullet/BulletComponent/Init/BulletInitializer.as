@@ -11,7 +11,7 @@
      * @param Obj {Object} 子弹对象
      * @param shooter {Object} 发射者对象
      */
-    static function setDefaults(Obj:Object, shooter:Object):Void
+    publish static function setDefaults(Obj:Object, shooter:Object):Void
     {
         // 相当于 _root.设置默认值(Obj, shooter);
         Obj.固伤 = (isNaN(Obj.固伤)) ? 0 : Obj.固伤;
@@ -27,7 +27,7 @@
      * @param Obj {Object} 子弹对象
      * @param shooter {Object} 发射者对象
      */
-    static function inheritShooterAttributes(Obj:Object, shooter:Object):Void
+    publish static function inheritShooterAttributes(Obj:Object, shooter:Object):Void
     {
         // 相当于 _root.继承发射者属性(Obj, shooter);
         Obj.伤害类型 = (!Obj.伤害类型 && shooter.伤害类型) ? shooter.伤害类型 : Obj.伤害类型;
@@ -54,7 +54,7 @@
      * 计算击退速度
      * @param Obj {Object} 子弹对象
      */
-    static function calculateKnockback(Obj:Object):Void
+    publish static function calculateKnockback(Obj:Object):Void
     {
         // 相当于 _root.计算击退速度(Obj);
         // 假设 _root.最大水平击退速度、_root.最大垂直击退速度 是在全局可访问的地方
@@ -75,7 +75,22 @@
      * 初始化子弹属性
      * @param Obj {Object} 子弹对象
      */
-    static function initializeBulletProperties(Obj:Object):Void
+    publish static function initializeBulletProperties(Obj:Object):Void
+    {
+        // 相当于 _root.初始化子弹属性(Obj);
+        Obj.发射者名 = Obj.发射者;
+        Obj.子弹敌我属性值 = Obj.子弹敌我属性;
+        Obj._x = Obj.shootX;
+        Obj._y = Obj.shootY;
+        Obj.Z轴坐标 = Obj.shootZ;
+        Obj.子弹区域area = Obj.区域定位area;
+    }
+
+    /**
+     * 初始化子弹属性
+     * @param Obj {Object} 子弹对象
+     */
+    publish static function initializeBulletProperties(Obj:Object):Void
     {
         // 相当于 _root.初始化子弹属性(Obj);
         Obj.发射者名 = Obj.发射者;
