@@ -427,6 +427,11 @@ _root.子弹生命周期 = function()
     if(this.友军伤害){
         var 遍历友军表 = _root.帧计时器.获取友军缓存(shooter,1);
         遍历敌人表 = 遍历敌人表.concat(遍历友军表);
+
+        遍历敌人表.sort(function(a:Object, b:Object):Number {
+            return a.aabbCollider.right - b.aabbCollider.right;
+        });
+
     }
     var 击中次数 = 0;
     var 是否生成击中后效果 = true;
@@ -451,12 +456,21 @@ _root.子弹生命周期 = function()
 
             var result:CollisionResult = areaAABB.checkCollision(unitArea, zOffset);
 
-            if(!result.isColliding) continue;
+            if(!result.isColliding)
+            {
+                if(result.isOrdered)
+                {
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
             if(isPointSet) {
                 this.polygonCollider.updateFromBullet(this, detectionArea)
                 result = this.polygonCollider.checkCollision(unitArea, zOffset);
             }
-            if(!result.isColliding) continue;
 
             overlapRatio = result.overlapRatio;
             overlapCenter = result.overlapCenter;

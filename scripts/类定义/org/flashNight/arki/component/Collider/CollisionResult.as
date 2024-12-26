@@ -4,12 +4,14 @@ import org.flashNight.arki.component.Collider.*;
 
 class org.flashNight.arki.component.Collider.CollisionResult {
     public var isColliding:Boolean;       // 碰撞是否发生（必要字段）
+    public var isOrdered:Boolean;         // 碰撞检测是否有序 (提前退出用)
     public var overlapCenter:Vector;      // 碰撞中心点（可选字段）
     public var overlapRatio:Number;       // 重叠比率（可选字段）
     public var additionalInfo:Object;    // 额外碰撞信息（可选字段）
 
     // 静态属性：表示无碰撞结果的常量实例
-    public static var FALSE:CollisionResult = new CollisionResult(false);
+    public static var FALSE:CollisionResult = CollisionResult.createFalse();
+    public static var ORDERFALSE:CollisionResult = CollisionResult.createOrderFalse();
 
     /**
      * 碰撞器进行碰撞检测的结果对象
@@ -28,6 +30,20 @@ class org.flashNight.arki.component.Collider.CollisionResult {
         cr.overlapRatio = overlapRatio;
         cr.additionalInfo = additionalInfo;
         return cr;
+    }
+
+    public static function createFalse():CollisionResult
+    {
+        var result:CollisionResult = new CollisionResult(false);
+        result.isOrdered = true;
+        return result;
+    }
+
+    public static function createOrderFalse():CollisionResult
+    {
+        var result:CollisionResult = new CollisionResult(false);
+        result.isOrdered = false;
+        return result;
     }
 
     /**

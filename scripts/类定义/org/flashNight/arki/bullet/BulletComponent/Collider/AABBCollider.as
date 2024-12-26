@@ -83,7 +83,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
 
         var myRight:Number = this.right;
         var otherLeft:Number = otherAABB.left;
-        if (myRight <= otherLeft) return CollisionResult.FALSE;
+        if (myRight <= otherLeft) return CollisionResult.ORDERFALSE;
 
         var myLeft:Number = this.left;
         var otherRight:Number = otherAABB.right;
