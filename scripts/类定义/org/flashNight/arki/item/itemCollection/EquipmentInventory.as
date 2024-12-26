@@ -14,6 +14,6 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
     public function isAddable(key:String,item:Object):Boolean{
         if(!super.isAddable(key,item)) return false;
         var use = _root.getItemData(item.name).use;
-        return use == key || (use == "手枪" && key == "手枪2");
+        return use == key;
     }
 }

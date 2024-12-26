@@ -401,7 +401,7 @@ _root.刷新人物装扮 = function(目标)
 	if (是主角)
 	{
 		使用缓存替换装备 = _root.玩家缓存状态;
-		// _root.物品栏界面.gotoAndPlay("物品栏刷新");
+		_root.物品栏界面.gotoAndPlay("物品栏刷新");
 	}
 	else
 	{
