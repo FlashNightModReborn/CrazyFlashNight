@@ -423,12 +423,12 @@ _root.子弹生命周期 = function()
     }
     var 游戏世界 = _root.gameworld;
     var shooter = 游戏世界[this.发射者名];
-    var 遍历敌人表 = _root.帧计时器.获取敌人缓存(shooter,1);
+    var unitMap = _root.帧计时器.获取敌人缓存(shooter,1);
     if(this.友军伤害){
         var 遍历友军表 = _root.帧计时器.获取友军缓存(shooter,1);
-        遍历敌人表 = 遍历敌人表.concat(遍历友军表);
+        unitMap = unitMap.concat(遍历友军表);
 
-        遍历敌人表.sort(function(a:Object, b:Object):Number {
+        unitMap.sort(function(a:Object, b:Object):Number {
             return a.aabbCollider.right - b.aabbCollider.right;
         });
 
@@ -436,9 +436,9 @@ _root.子弹生命周期 = function()
     var 击中次数 = 0;
     var 是否生成击中后效果 = true;
 
-    for (var i = 0; i < 遍历敌人表.length ; ++i)
+    for (var i = 0; i < unitMap.length ; ++i)
     {
-        this.hitTarget = 遍历敌人表[i];
+        this.hitTarget = unitMap[i];
         var hitTarget:MovieClip = this.hitTarget;
         var zOffset = hitTarget.Z轴坐标 - this.Z轴坐标;
 
