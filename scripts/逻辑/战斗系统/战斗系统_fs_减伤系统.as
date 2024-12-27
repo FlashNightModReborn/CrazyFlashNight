@@ -24,9 +24,9 @@ _root.softplus = function(x:Number):Number
 //防御计算公式
 _root.防御减伤比 = function(防御力:Number):Number 
 {
-	return 1 - (防御力 / (防御力 + 300));
-
+    return 300 / (防御力 + 300);
 };
+
 
 //跳弹模式可以减法过滤掉轻火力，最低伤害为1
 _root.跳弹伤害计算 = function(伤害:Number, 防御力:Number):Number 
