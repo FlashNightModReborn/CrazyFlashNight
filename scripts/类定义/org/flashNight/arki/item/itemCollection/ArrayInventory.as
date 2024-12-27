@@ -21,6 +21,25 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         return !(items[key] != null);
     }
 
+    //重构add函数，填写-1时自动寻找可用的索引
+    public function add(key:Number,item:Object):Boolean{
+        if(key == -1){
+            if(isNaN(item.value)){
+                key = getFirstVacancy();
+            }else{
+                for(var i:Number = 0; i < this.capacity; i++){
+                    if(items[i].name == item.name && !isNaN(items[i].value)) {
+                        key = i;
+                        break;
+                    }
+                }
+                if(key == -1) key = getFirstVacancy();
+            }
+        }
+        if(key == -1) return false;
+        return super.add(String(key),item);
+    }
+
 
     //寻找第一个空格的数字索引，若栏位全满则返回-1
     public function getFirstVacancy():Number{
