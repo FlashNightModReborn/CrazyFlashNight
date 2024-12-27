@@ -1,25 +1,31 @@
-﻿/*
- * 物品图标UI管理器
+﻿// import org.flashNight.arki.item.itemCollection.DictCollection;
+/*
+ * ItemUtil
 */
 
-class org.flashNight.arki.item.itemIcon.ItemIconManager{
+class org.flashNight.arki.item.ItemUtil{
     
-    private var instance:ItemIconManager;
+    private var instance:ItemUtil;
 
-    public function ItemIconManager() {
+    public function ItemUtil() {
         if (instance != null) {
-            trace("ItemIconManager 已经实例化。");
+            trace("ItemUtil 已经实例化。");
             return;
         }
     }
 
-    public function getInstance():ItemIconManager {
+    //虽然暂时好像用不到单例
+    public function getInstance():ItemUtil {
         if (instance == null) {
-            instance = new ItemIconManager();
+            instance = new ItemUtil();
         }
         return instance;
     }
 
+    /*
+     * 物品栏移动操作
+    */
+    //将物品移入另一物品栏
     public static function moveItemToInventory(icon1,icon2):Boolean{
         if(!icon1.item || icon1 === icon2) return false;
         var targetItem = icon2.item;
@@ -34,6 +40,7 @@ class org.flashNight.arki.item.itemIcon.ItemIconManager{
         return result;
     }
 
+    //将物品移入装备栏
     public static function moveItemToEquipment(icon,equipmentIcon,index):Boolean{
         if(index != equipmentIcon.index) return false;
         var itemData = icon.itemData;
@@ -44,7 +51,7 @@ class org.flashNight.arki.item.itemIcon.ItemIconManager{
         }
         var name = icon.name;
         var level = icon.value.level;
-        var result = ItemIconManager.moveItemToInventory(icon,equipmentIcon);
+        var result = ItemUtil.moveItemToInventory(icon,equipmentIcon);
         if(!result) return false;
         //
         var sound = "9mmclip2.wav";
@@ -73,16 +80,50 @@ class org.flashNight.arki.item.itemIcon.ItemIconManager{
             _root.刀强化等级 = level;
             _root.刀配置(_root.控制目标,name,level);
         }
-        _root[index] = name;//
+        _root[index] = name;
         _root.播放音效(sound);
         _root.发布消息("成功装备[" + use + "][" + itemData.displayname + "]");
         _root.刷新人物装扮(_root.控制目标);
         return true;
     }
 
+    //将物品移入药剂栏
     public static function moveItemToDrug(icon,drugIcon):Boolean{
         if(!drugIcon.isCoolDown()) return false;
-        var result = ItemIconManager.moveItemToInventory(icon,drugIcon);
+        var result = ItemUtil.moveItemToInventory(icon,drugIcon);
         return result;
+    }
+
+
+    /*
+     * 物品获得与提交
+    */
+    //检测背包是否有足够空位获得物品
+    public static function require(items):Object{
+        //
+        return null;
+    }
+    //获得物品
+    public static function acquire(items):Boolean{
+        //
+        return true;
+    }
+
+    //检测是否持有对应物品
+    public static function contain(items):Object{
+        var list = {背包:{},材料:{}};
+        var capacity = _root.物品栏.背包.capacity;
+        for(var i=0; i<capacity; i++){
+            // var item = 
+        }
+        for(var key in _root.收集栏.材料){
+        }
+        return null;
+    }
+    //提交物品
+    public static function submit(items):Boolean{
+        var list = ItemUtil.contain(items);
+        if(list == null) return false;
+        return true;
     }
 }

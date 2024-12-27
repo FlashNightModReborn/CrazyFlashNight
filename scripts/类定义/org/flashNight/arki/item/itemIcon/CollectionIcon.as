@@ -33,19 +33,4 @@ class org.flashNight.arki.item.itemIcon.CollectionIcon extends ItemIcon{
             super.init(_item.name,_item);
         }
     }
-
-    //图标刷新
-    public function refresh():Void{
-        icon.gotoAndStop("刷新");
-        init();
-    }
-
-    public function refreshValue():Void{
-        value = item.value;
-        valuetext.text = String(value);
-    }
-
-    // public function refreshLevel():Void{
-    //     leveltext.text = String(value.level);
-    // }
 }

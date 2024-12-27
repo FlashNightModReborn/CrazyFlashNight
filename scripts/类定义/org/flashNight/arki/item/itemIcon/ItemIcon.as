@@ -35,31 +35,38 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
             valuetext._visible = false;
             leveltext._visible = false;
         }else{
-            //检测是否来自集合
-            if(!isNaN(item)) this.value = item;
-            else this.value = item.value;
-            //
             this.itemData = _root.getItemData(name);
             icon.gotoAndStop("默认图标");
-            if(!isNaN(value)){
-                valuetext._visible = true;
-                leveltext._visible = false;
-                valuetext.text = String(value);
-            }else if(value.level > 1){
-                valuetext._visible = false;
-                leveltext._visible = true;
-                leveltext.text = String(value.level);
-            }else{
-                valuetext._visible = false;
-                leveltext._visible = false;
-            }
-            // icon.图标壳.attachMovie("图标-" + itemData.icon, "图标", 0);
-            // if(icon.图标壳.图标) icon.图标壳.基本款._visible = false;
+            refreshValue();
         }
     }
 
     public function getIconMovieClip():MovieClip{
         return icon;
+    }
+
+    //图标刷新
+    public function refresh():Void{
+        icon.gotoAndStop("刷新");
+        init();
+    }
+
+    public function refreshValue():Void{
+        //检测是否来自集合
+        if(!isNaN(item)) this.value = item;
+        else this.value = item.value;
+        if(value > 1){
+            valuetext._visible = true;
+            leveltext._visible = false;
+            valuetext.text = String(value);
+        }else if(value.level > 1){
+            valuetext._visible = false;
+            leveltext._visible = true;
+            leveltext.text = String(value.level);
+        }else{
+            valuetext._visible = false;
+            leveltext._visible = false;
+        }
     }
 
 

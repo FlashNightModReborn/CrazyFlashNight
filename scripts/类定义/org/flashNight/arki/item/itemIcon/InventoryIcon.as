@@ -1,12 +1,12 @@
 ﻿import org.flashNight.arki.item.itemIcon.CollectionIcon;
-import org.flashNight.arki.item.itemIcon.ItemIconManager;
+import org.flashNight.arki.item.ItemUtil;
 /*
- * 背包物品图标，继承CollectionIcon
+ * 在背包、仓库或战备箱中的物品图标，继承CollectionIcon
 */
 
-class org.flashNight.arki.item.itemIcon.BagIcon extends CollectionIcon{
+class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
 
-    public function BagIcon(_icon:MovieClip, _collection, _index) {
+    public function InventoryIcon(_icon:MovieClip, _collection, _index) {
         super(_icon, _collection, _index);
     }
 
@@ -59,7 +59,7 @@ class org.flashNight.arki.item.itemIcon.BagIcon extends CollectionIcon{
         if(_root.物品栏界面.窗体area.hitTest(xmouse, ymouse)){
             if(_root.物品栏界面.垃圾箱.area.hitTest(xmouse, ymouse)){
                 _root.发布消息("丢弃物品" + itemData.displayname);
-                _root.物品UI函数.清空物品格(this);
+                collection.remove(index);
                 return;
             }
 
@@ -68,13 +68,13 @@ class org.flashNight.arki.item.itemIcon.BagIcon extends CollectionIcon{
                 var targetIcon = 装备栏.icons[itemData.use];
                 var iconMovieClip = targetIcon.icon;
                 if(targetIcon.icon.area.hitTest(xmouse, ymouse)){
-                    ItemIconManager.moveItemToEquipment(this,targetIcon,itemData.use);
+                    ItemUtil.moveItemToEquipment(this,targetIcon,itemData.use);
                     return;
                 }
                 //对手枪2进行额外硬代码判定
                 var targetIcon = 装备栏.icons["手枪2"];
                 if(itemData.use == "手枪" && targetIcon.icon.area.hitTest(xmouse, ymouse)){
-                    ItemIconManager.moveItemToEquipment(this,targetIcon,"手枪2");
+                    ItemUtil.moveItemToEquipment(this,targetIcon,"手枪2");
                     return;
                 }
             }
@@ -83,7 +83,7 @@ class org.flashNight.arki.item.itemIcon.BagIcon extends CollectionIcon{
             for (var i in icons){
                 var iconMovieClip = icons[i].icon;
                 if(iconMovieClip.area.hitTest(xmouse, ymouse)){
-                    ItemIconManager.moveItemToInventory(this,icons[i]);
+                    ItemUtil.moveItemToInventory(this,icons[i]);
                     return;
                 }
             }
@@ -95,7 +95,7 @@ class org.flashNight.arki.item.itemIcon.BagIcon extends CollectionIcon{
             for (var i in icons){
                 var iconMovieClip = icons[i].icon;
                 if(iconMovieClip.area.hitTest(xmouse, ymouse)){
-                    ItemIconManager.moveItemToDrug(this,icons[i]);
+                    ItemUtil.moveItemToDrug(this,icons[i]);
                     return;
                 }
             }
@@ -103,7 +103,8 @@ class org.flashNight.arki.item.itemIcon.BagIcon extends CollectionIcon{
         }
 
         if (_root.购买物品界面._visible && _root.购买物品界面.hitTest(xmouse, ymouse)){
-            _root.物品UI函数.售卖物品(this);
+            _root.物品UI函数.出售物品(name,value);
+            collection.remove(index);
             return;
         }
     }

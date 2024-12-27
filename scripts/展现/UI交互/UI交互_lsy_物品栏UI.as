@@ -424,34 +424,26 @@ _root.物品UI函数.药剂栏 = new Object();
 
 //UI层面的移动操作
 
-_root.物品UI函数.获得物品 = function(item):Boolean{
-	var 背包 = _root.物品栏.背包;
-	var targetIndex = 背包.getFirstVacancy();
-	if(targetIndex == -1) return false;
-}
-
-_root.物品UI函数.售卖物品 = function(物品格){
-	var price = 物品格.itemData.price;
-	if (!isNaN(price))
-	{
-		var 售卖倍率 = 0.25;
-		var type = 物品格.itemData.type;
-		if(_root.主角被动技能.口才 && _root.主角被动技能.口才.启用){
-			售卖倍率 += _root.主角被动技能.口才.等级 * 0.025;
-		}
-		if(type == "武器" || type == "防具"){
-			var 强化等级 = 物品格.value.level;
-			if(isNaN(强化等级)) 强化等级 = 1;
-			var 每石最大收益 = 强化等级 * 200 + 600;
-			var 强化石个数 = Math.pow((强化等级-2) * (强化等级-1)/2,2) + 强化等级-1;
-			var 最大收益 = 强化石个数 * 每石最大收益;
-			var 强化收益 = Math.min(最大收益,(售卖倍率 * tmp_sz[5] * (Math.pow((强化等级 - 1),4.2) / 216 )))
-			_root.金钱 += Math.floor(Number(售卖倍率 * tmp_sz[5] +  强化收益));
-		}else{
-			_root.金钱 += Math.floor(Number(tmp_sz[5] * 售卖倍率 * 物品格.value));
-		}
+_root.物品UI函数.出售物品 = function(name,value){
+	var itemData = _root.getItemData(name);
+	var price = itemData.price;
+	if (isNaN(price)) return;
+	var 售卖倍率 = 0.25;
+	var type = itemData.type;
+	if(_root.主角被动技能.口才 && _root.主角被动技能.口才.启用){
+		售卖倍率 += _root.主角被动技能.口才.等级 * 0.025;
 	}
-	_root.物品UI函数.清空物品格(物品格);
+	if(type == "武器" || type == "防具"){
+		var 强化等级 = value.level;
+		if(isNaN(强化等级)) 强化等级 = 1;
+		var 每石最大收益 = 强化等级 * 200 + 600;
+		var 强化石个数 = Math.pow((强化等级-2) * (强化等级-1)/2,2) + 强化等级-1;
+		var 最大收益 = 强化石个数 * 每石最大收益;
+		var 强化收益 = Math.min(最大收益,(售卖倍率 * price * (Math.pow((强化等级 - 1),4.2) / 216 )))
+		_root.金钱 += Math.floor(Number(售卖倍率 * price + 强化收益));
+	}else{
+		_root.金钱 += Math.floor(Number(price * 售卖倍率 * value));
+	}
 	_root.播放音效("收银机.mp3");
 }
 
@@ -488,7 +480,7 @@ _root.物品UI函数.创建背包图标 = function(){
 			起始y += 图标高度;
 		}
 		物品栏界面.背包图标列表[i] = 物品图标;
-		物品图标.itemIcon = new BagIcon(物品图标,背包,i);
+		物品图标.itemIcon = new InventoryIcon(物品图标,背包,i);
 	}
 
 	var 装备栏 = _root.物品栏.装备栏;
@@ -503,10 +495,12 @@ _root.物品UI函数.创建背包图标 = function(){
 
 _root.物品UI函数.删除背包图标 = function(){
 	var 背包图标列表 = _root.物品栏界面.背包图标列表;
-	for(var i=0; i<背包图标列表; i++){
+	for(var i=0; i<背包图标列表.length; i++){
 		背包图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.背包图标列表 = null;
+	_root.物品栏.背包.clearIcon();
+	_root.物品栏.装备栏.clearIcon();
 }
 
 
@@ -522,4 +516,67 @@ _root.物品UI函数.初始化药剂栏图标 = function(){
 		物品图标.itemIcon = new DrugIcon(物品图标,药剂栏,i,进度条列表[i]);
 		_root["快捷物品栏" + this.index] = 物品图标.itemIcon.name;
 	}
+}
+
+//排列商店图标
+_root.物品UI函数.创建商店图标 = function(NPC物品栏){
+	var 购买物品界面 = _root.购买物品界面;
+	购买物品界面._visible = true;
+	购买物品界面.gotoAndStop("选择物品");
+
+	var 起始x = 购买物品界面.物品图标._x;
+	var 起始y = 购买物品界面.物品图标._y;
+	var 图标高度 = 28;
+	var 图标宽度 = 28;
+	var 列数 = 8;
+	var 行数 = 10;
+	var 总格数 = 行数*列数;
+	var 换行计数 = 0;
+
+	购买物品界面.图标列表 = new Array(总格数);
+
+	for (var i = 0; i < 总格数; i++)
+	{
+		var 物品图标 = 购买物品界面.attachMovie("物品图标","物品图标" + i,i);
+		物品图标._x = 起始x;
+		物品图标._y = 起始y;
+		起始x += 图标宽度;
+		换行计数++;
+		if (换行计数 == 列数)
+		{
+			换行计数 = 0;
+			起始x = 购买物品界面.物品图标._x;
+			起始y += 图标高度;
+		}
+		购买物品界面.图标列表[i] = 物品图标;
+		物品图标.itemIcon = new ItemIcon(物品图标, NPC物品栏[i][0], 1);
+		物品图标.itemIcon.Press = function(){
+			_root.购买物品界面.准备购买的物品 = this.name;
+			_root.购买物品界面.准备购买的物品单价 = this.itemData.price;
+			_root.购买物品界面.准备购买的物品等级限制 = this.itemData.level;
+			if (this.itemData.use == "消耗品")
+			{
+				_root.购买物品界面.gotoAndStop("购买数量");
+			}
+			else
+			{
+				_root.购买物品界面.gotoAndStop("结算");
+			}
+		}
+	}
+}
+
+_root.物品UI函数.刷新商店图标 = function(NPC物品栏){
+	if(!_root.购买物品界面.图标列表) {
+		_root.物品UI函数.创建商店图标(NPC物品栏);
+		return;
+	}
+}
+
+_root.物品UI函数.删除商店图标 = function(){
+	var 图标列表 = _root.购买物品界面.图标列表;
+	for(var i=0; i<图标列表.length; i++){
+		图标列表[i].removeMovieClip();
+	}
+	_root.购买物品界面.图标列表 = null;
 }
