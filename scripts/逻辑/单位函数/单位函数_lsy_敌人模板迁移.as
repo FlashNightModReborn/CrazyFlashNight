@@ -262,6 +262,7 @@ _root.敌人函数.死亡检测 = function(){
 	if (hp <= 0 && !已加经验值){
 		this.man.stop();
 		_root.帧计时器.注销目标缓存(this);
+		this.aabbCollider.getFactory().releaseCollider(this.aabbCollider);
 		if (是否为敌人){
 			_root.敌人死亡计数 += 1;
 			_root.gameworld[产生源].僵尸型敌人场上实际人数--;
@@ -401,6 +402,7 @@ _root.初始化敌人模板 = function()
 	倒地 = false;
 	硬直中 = false;
 	已加经验值 = false;
+	残余冲击力 = 0;
 	
 	//转换身高，调整层级
 	身高转换值 = _root.身高百分比转换(this.身高);

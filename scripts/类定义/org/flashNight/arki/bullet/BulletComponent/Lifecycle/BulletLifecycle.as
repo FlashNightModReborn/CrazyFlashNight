@@ -58,7 +58,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
         {
             if(isRotated)
             {
-                factory = factory = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.AABBFactory);
+                factory = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.AABBFactory);
 
                 target.polygonCollider = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.PolygonFactory).createFromBullet(target);
             }

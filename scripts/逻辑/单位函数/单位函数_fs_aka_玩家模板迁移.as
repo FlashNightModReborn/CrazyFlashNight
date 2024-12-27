@@ -827,6 +827,7 @@ _root.刷新人物装扮 = function(目标)
 
 	目标人物.命中率 = Math.max(目标人物.命中率 * (1 + 目标人物.命中加成 / 100), _root.命中率极限);
 	目标人物.韧性系数 = 目标人物.韧性系数 * (1 + 韧性加成 / 100);
+	目标人物.残余冲击力 = 0;
 
 	//_root.发布调试消息(目标人物.躲闪率 + " " + 闪避加成 + " " + 目标人物.躲闪率 * (1 + 闪避加成 / 100));
 
@@ -2435,6 +2436,8 @@ _root.主角函数.死亡检测 = function()
 				this.removeMovieClip();
 			}
 		}
+
+		this.aabbCollider.getFactory().releaseCollider(this.aabbCollider);
 	}
 }
 

@@ -12,6 +12,7 @@ import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.gesh.xml.LoadXml.*;
 
 _root.帧计时器 = {};
+ColliderFactoryRegistry.init();
 
 /**
  * 初始化任务栈和相关参数
@@ -401,7 +402,7 @@ _root.帧计时器.定期更新天气 = function()
             Delegate.clearCache();
             Dictionary.destroyStatic();
 
-            this.eventBus.publish("地图已切换");
+            this.eventBus.publish("SceneChanged");
             // 游戏世界.onUnload = function()
             // {
             //     _root.常用工具函数.释放对象绘图内存(游戏世界);
@@ -846,20 +847,24 @@ _root.帧计时器.延迟执行任务 = function(任务ID, 延迟时间)
     return false; // Task not found, delay set failed
 };
 
-EventBus.getInstance().subscribe("地图已切换", function() {
+EventBus.getInstance().subscribe("SceneChanged", function() {
     var gameworld = _root.gameworld;
+    var factory:IColliderFactory = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.AABBFactory);
     for (var each in gameworld) 
     {
         var target = gameworld[each];
-        if(target.hp > 0 && !target.aabbCollider)
+        if(target.hp > 0)
         {
+            if(!target.aabbCollider) target.aabbCollider = factory.createFromUnitArea(target);
+            if(isNaN(target.重量)) target.重量 = 60;
+            if(isNaN(target.韧性系数)) target.韧性系数 = 1;
+            if(isNaN(target.残余冲击力)) target.残余冲击力 = 0;
+            if(isNaN(target.命中率)) target.命中率 = 10;
 
-            target.aabbCollider = new AABBCollider();
         }
         //_root.服务器.发布服务器消息(目标 + " ," + 目标.命中率 + " ," + 目标.躲闪率);
     }
 }, null); // 地图变动时，重新初始化子弹池
-
 
 
 _root.帧计时器.确保目标缓存存在 = function(自机状态, 请求类型) 
