@@ -9,54 +9,55 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[import org.flashNight.gesh.property.*;
-import org.flashNight.arki.component.Buff.*;
+                                        <script><![CDATA[// 假设该代码放在主时间轴或某个frame中执行
+// 不使用新的 Class，仅使用函数和内联测试。
 
+// 定义测试循环的总次数
+var TEST_COUNT:Number = 1000000; // 1,000,000 次
 
-function main():Void {
-    // 创建一个空对象
-    var controller:Object = {};
+//======================//
+//    1. 原公式测试     //
+//======================//
+// 原公式： 1 - (def / (def + 300))
 
-    // 为该对象添加速度相关的访问器属性
-    addSpeedProperties(controller);
+var startTime:Number = getTimer();
 
-    // 设置 speed 为 10
-    trace("\n设置 speed 为 10");
-    controller.speed = 10;
-    trace("Speed: " + controller.speed);    // 应输出: Speed: 10
-    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 5
-    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 20
-
-    // 添加乘算 buff: speed * 1.5
-    trace("\n添加乘算 buff: 1.5");
-    controller.buff.addMultiplier(1.5);
-    trace("Speed: " + controller.speed);    // 应输出: Speed: 15
-    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 7.5
-    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 30
-
-    // 添加加算 buff: speed + 5
-    trace("\n添加加算 buff: 5");
-    controller.buff.addAddition(5);
-    trace("Speed: " + controller.speed);    // 应输出: Speed: 20
-    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 10
-    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 40
-
-    // 修改 speed 为 20
-    trace("\n设置 speed 为 20");
-    controller.speed = 20;
-    trace("Speed: " + controller.speed);    // 应输出: Speed: 35
-    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 17.5
-    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 70
-
-    // 尝试设置 speed 为 -5（无效）
-    trace("\n尝试设置 speed 为 -5");
-    controller.speed = -5; // 应输出: Invalid value: -5! 'speed_base' must be non-negative.
-    trace("Speed: " + controller.speed);    // 应输出: Speed: 35
-    trace("SpeedX: " + controller.speedX);  // 应输出: SpeedX: 17.5
-    trace("SpeedY: " + controller.speedY);  // 应输出: SpeedY: 70
+for (var i:Number = 0; i < TEST_COUNT; i++) {
+    // 模拟一些不同的防御力
+    var def:Number = (i % 500) + 1; 
+    // 原公式计算
+    var result:Number = 1 - (def / (def + 300));var result:Number = 1 - (def / (def + 300));var result:Number = 1 - (def / (def + 300));var result:Number = 1 - (def / (def + 300));var result:Number = 1 - (def / (def + 300));
 }
 
-main();
+var endTime:Number = getTimer();
+var oldMethodTime:Number = endTime - startTime;
+
+//======================//
+//   2. 简化公式测试    //
+//======================//
+// 简化公式： 300 / (def + 300)
+
+startTime = getTimer();
+
+for (i = 0; i < TEST_COUNT; i++) {
+    var def2:Number = (i % 500) + 1;
+    // 简化公式计算
+    var result2:Number = 300 / (def2 + 300);var result2:Number = 300 / (def2 + 300);var result2:Number = 300 / (def2 + 300);var result2:Number = 300 / (def2 + 300);var result2:Number = 300 / (def2 + 300);
+}
+
+endTime = getTimer();
+var newMethodTime:Number = endTime - startTime;
+
+// 输出测试结果
+trace("原公式总耗时: " + oldMethodTime + " ms");
+trace("简化公式总耗时: " + newMethodTime + " ms");
+
+// 评估性能提升（注意结果可能在不同环境差异很大）
+var speedupPercent:Number = 0;
+if (oldMethodTime != 0) {
+    speedupPercent = ((oldMethodTime - newMethodTime) / oldMethodTime) * 100;
+}
+trace("简化公式相对原公式的性能提升 ≈ " + speedupPercent + "%");
 ]]></script>
                                    </Actionscript>
                                    <elements/>
@@ -72,6 +73,14 @@ main();
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="240018" publishTime="1735291115"/>
+          <PublishItem publishSize="240022" publishTime="1735291045"/>
+          <PublishItem publishSize="240016" publishTime="1735290998"/>
+          <PublishItem publishSize="239718" publishTime="1735290989"/>
+          <PublishItem publishSize="240101" publishTime="1735290891"/>
+          <PublishItem publishSize="239716" publishTime="1735290878"/>
+          <PublishItem publishSize="239716" publishTime="1735290825"/>
+          <PublishItem publishSize="240666" publishTime="1735287251"/>
           <PublishItem publishSize="233362" publishTime="1735017715"/>
           <PublishItem publishSize="232758" publishTime="1734942113"/>
           <PublishItem publishSize="232789" publishTime="1734941903"/>
@@ -84,13 +93,5 @@ main();
           <PublishItem publishSize="232401" publishTime="1734577547"/>
           <PublishItem publishSize="232387" publishTime="1734577365"/>
           <PublishItem publishSize="232023" publishTime="1734576717"/>
-          <PublishItem publishSize="231912" publishTime="1734576544"/>
-          <PublishItem publishSize="231717" publishTime="1734576054"/>
-          <PublishItem publishSize="232083" publishTime="1734575088"/>
-          <PublishItem publishSize="232785" publishTime="1734574829"/>
-          <PublishItem publishSize="232436" publishTime="1734574709"/>
-          <PublishItem publishSize="232436" publishTime="1734574638"/>
-          <PublishItem publishSize="232435" publishTime="1734574623"/>
-          <PublishItem publishSize="232419" publishTime="1734574576"/>
      </publishHistory>
 </DOMDocument>
