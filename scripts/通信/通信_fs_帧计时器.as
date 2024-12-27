@@ -66,27 +66,21 @@ _root.帧计时器.初始化任务栈 = function() {
     this.目标帧率 = 26;
     this.PID = new PIDController(this.kp, this.ki, this.kd, this.integralMax, this.derivativeFilter);
 
-    var pidControllerConfigLoader:PIDControllerConfigLoader = PIDControllerConfigLoader.getInstance();
-    var self = this; // 外界保存引用闭包传入
+    var pidFactory:PIDControllerFactory = PIDControllerFactory.getInstance();
 
-    pidControllerConfigLoader.loadPIDControllerConfig(
-        function(data:Object):Void {
-            self.目标帧率 = data.targetFrameRate;
-            var param = data.parameters;
-            var pid = self.PID;
+    // 定义成功回调函数
+    function onPIDSuccess(pid:PIDController):Void {
+        // 保存 PIDController 实例
+        _root.帧计时器.PID = pid;
+    }
 
-            pid.setKd(param.kd);
-            pid.setKi(param.ki);
-            pid.setKd(param.kd);
-            pid.setIntegralMax(param.integralMax);
-            pid.setDerivativeFilter(param.derivativeFilter);
+    // 定义失败回调函数
+    function onPIDFailure():Void {
+        trace("主程序：PIDControllerConfig.xml 加载失败");
+    }
 
-            self.server.sendServerMessage(pid.toString() + " " + self.目标帧率);
-        },
-        function():Void {
-            self.server.sendServerMessage("主程序：PIDControllerConfig.xml 加载失败");
-        }
-    );
+    // 创建并配置 PIDController 实例
+    pidFactory.createPIDController(onPIDSuccess, onPIDFailure);
     
     // 任务调度器初始化
     this.ScheduleTimer = new CerberusScheduler();
@@ -403,6 +397,7 @@ _root.帧计时器.定期更新天气 = function()
             Dictionary.destroyStatic();
 
             this.eventBus.publish("SceneChanged");
+
             // 游戏世界.onUnload = function()
             // {
             //     _root.常用工具函数.释放对象绘图内存(游戏世界);
