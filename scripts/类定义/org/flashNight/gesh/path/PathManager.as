@@ -16,6 +16,10 @@
             trace("检测到浏览器环境，设置为浏览器模式。");
             // TODO: 设置服务器基础路径，例如 "http://yourserver.com/resources/"
             basePath = "http://yourserver.com/resources/"; // 占位用路径
+            // 确保 basePath 以斜杠结尾
+            if (basePath.charAt(basePath.length - 1) != "/") {
+                basePath += "/";
+            }
             isValidEnvironment = true;
             trace("基础路径设置为服务器路径: " + basePath);
         } else {
@@ -23,6 +27,10 @@
             var resourceIndex:Number = url.indexOf("resources/");
             if (resourceIndex != -1) {
                 basePath = url.substring(0, resourceIndex + "resources/".length); // 截断到 resources/ 为止
+                // 确保 basePath 以斜杠结尾
+                if (basePath.charAt(basePath.length - 1) != "/") {
+                    basePath += "/";
+                }
                 isValidEnvironment = true;
                 trace("检测到资源目录，基础路径设置为: " + basePath);
             } else {
@@ -93,8 +101,20 @@
             // 这里假设 basePath 已经设置为服务器的基础 URL
             return basePath + relativePath;
         } else {
-            // 本地环境，直接拼接本地路径
-            return basePath + relativePath;
+            // 本地环境，防止重复“resources/”
+            if (relativePath.indexOf("resources/") == 0) {
+                // 将 relativePath 从第一个 "resources/" 之后开始
+                relativePath = relativePath.substring("resources/".length);
+            }
+
+            // 确保 basePath 和 relativePath 之间有且只有一个斜杠
+            if (basePath.charAt(basePath.length - 1) != "/" && relativePath.charAt(0) != "/") {
+                return basePath + "/" + relativePath;
+            } else if (basePath.charAt(basePath.length - 1) == "/" && relativePath.charAt(0) == "/") {
+                return basePath + relativePath.substring(1);
+            } else {
+                return basePath + relativePath;
+            }
         }
     }
 
@@ -129,9 +149,8 @@
             return null;
         }
         // 假设 scripts/类定义/ 在 resources/ 下
-        return basePath + "scripts/类定义/";
+        return resolvePath("scripts/类定义/");
     }
-
 
     /**
      * 输出 PathManager 的关键信息。

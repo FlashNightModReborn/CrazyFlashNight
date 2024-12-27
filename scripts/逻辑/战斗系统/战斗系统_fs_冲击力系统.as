@@ -19,7 +19,7 @@ _root.躲闪状态校验 = function(重量:Number, 等级:Number) {
 //兼容性考虑
 _root.躲闪状态计算 = function(命中对象:MovieClip, 躲闪结果:Boolean, 子弹:MovieClip) {
 	var 计算用伤害值 = 命中对象.损伤值 + 子弹.附加层伤害计算;   
-	if(命中对象.懒闪避 > 0 and _root.lazyMiss(命中对象, 计算用伤害值, 命中对象.懒闪避)){
+	if(命中对象.懒闪避 > 0 && _root.lazyMiss(命中对象, 计算用伤害值, 命中对象.懒闪避)){
 		return "直感";
 	}
 
