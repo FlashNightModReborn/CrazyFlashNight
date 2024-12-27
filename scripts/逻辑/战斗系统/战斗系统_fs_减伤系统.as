@@ -6,7 +6,8 @@
 //sigmoid函数
 _root.sigmoid = function(x:Number):Number 
 {
-	return 1 / (1 + Math.exp(-x));
+    var expX:Number = Math.exp(x); // 避免重复计算 e^x
+    return expX / (1 + expX);      // 化简公式，减少一次减法操作
 };
 
 //relu函数
