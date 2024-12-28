@@ -554,12 +554,9 @@ _root.物品UI函数.创建商店图标 = function(NPC物品栏){
 			_root.购买物品界面.准备购买的物品 = this.name;
 			_root.购买物品界面.准备购买的物品单价 = this.itemData.price;
 			_root.购买物品界面.准备购买的物品等级限制 = this.itemData.level;
-			if (this.itemData.use == "消耗品")
-			{
+			if (this.itemData.type != "武器" && this.itemData.type != "防具"){
 				_root.购买物品界面.gotoAndStop("购买数量");
-			}
-			else
-			{
+			}else{
 				_root.购买物品界面.gotoAndStop("结算");
 			}
 		}
@@ -590,7 +587,8 @@ _root.物品UI函数.刷新仓库图标 = function(inventory,page){
 
 	仓库界面.inventory = inventory;
 	仓库界面.page = page;
-	仓库界面.仓库页数显示 = page + 1;
+	仓库界面.maxpage = maxpage;
+	仓库界面.仓库页数显示 = String(page + 1)+" / "+String(maxpage);
 
 	if(!仓库界面.图标列表) {
 		_root.物品UI函数.创建仓库图标(inventory,page);
@@ -646,14 +644,91 @@ _root.物品UI函数.删除仓库图标 = function(){
 	仓库界面.inventory.clearIcon();
 	仓库界面.inventory = null;
 	仓库界面.page = -1;
+	仓库界面.maxpage = 0;
+	仓库界面.仓库页数显示 = "";
 	_root.仓库名称 = null;
 }
 
 _root.物品UI函数.计算战备箱总页数 = function():Number{
 	if(_root.主线任务进度 <= 13) return 0;
 	var 页数 = 1;
-	if (_root.task_chains_progress.挑战 != null && _root.task_chains_progress.挑战 >= 1) 页数++;
-	if (_root.task_chains_progress.挑战 >= 3) 页数++;
+	var 挑战 = _root.task_chains_progress.挑战;
+	if (!isNaN(挑战)){
+		if(挑战 > 0) 页数++;
+		if(挑战 > 2) 页数++;
+	}
 	if (_root.主线任务进度 > 77) 页数 += 2;
 	return 页数;
+}
+
+
+//收集品栏相关（临时）
+_root.物品UI函数.创建收集品图标 = function(){
+	if(_root.物品栏界面.界面 != "收集品栏") return;
+
+	var 物品栏界面 = _root.物品栏界面;
+	var 材料 = _root.收集品栏.材料;
+	var 情报 = _root.收集品栏.情报;
+	
+	var 起始x = 物品栏界面.收集品图标._x;
+	var 起始y = 物品栏界面.收集品图标._y;
+	var 图标高度 = 28;
+	var 图标宽度 = 28;
+	var 列数 = 10;
+	var 行数 = 8;
+	var 总格数 = 行数*列数;
+	var 换行计数 = 0;
+
+	var 层级错位 = 50;
+
+	物品栏界面.收集品图标列表 = new Array(总格数);
+
+	var 材料列表 = [];
+	for(var key in 材料.getItems()){
+		材料列表.push(key);
+	}
+	var 情报列表 = [];
+	for(var key in 情报.getItems()){
+		情报列表.push(key);
+	}
+	
+	for (var i = 0; i < 40; i++){
+		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i + 层级错位);
+		物品图标._x = 起始x;
+		物品图标._y = 起始y;
+		起始x += 图标宽度;
+		换行计数++;
+		if (换行计数 == 列数)
+		{
+			换行计数 = 0;
+			起始x = 物品栏界面.物品图标._x;
+			起始y += 图标高度;
+		}
+		物品栏界面.收集品图标列表[i] = 物品图标;
+		物品图标.itemIcon = new CollectionIcon(物品图标,材料,材料列表[i]);
+	}
+	for (var i = 41; i < 80; i++){
+		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i + 层级错位);
+		物品图标._x = 起始x;
+		物品图标._y = 起始y;
+		起始x += 图标宽度;
+		换行计数++;
+		if (换行计数 == 列数)
+		{
+			换行计数 = 0;
+			起始x = 物品栏界面.物品图标._x;
+			起始y += 图标高度;
+		}
+		物品栏界面.收集品图标列表[i] = 物品图标;
+		物品图标.itemIcon = new CollectionIcon(物品图标,情报,情报列表[i - 40]);
+	}
+}
+
+_root.物品UI函数.删除收集品图标 = function(){
+	var 收集品图标列表 = _root.物品栏界面.收集品图标列表;
+	for(var i=0; i<收集品图标列表.length; i++){
+		收集品图标列表[i].removeMovieClip();
+	}
+	_root.物品栏界面.收集品图标列表 = null;
+	_root.收集品栏.材料.clearIcon();
 }

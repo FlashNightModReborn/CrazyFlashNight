@@ -19,10 +19,6 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         _root.注释结束();
         if (this.locked) return;
 
-        icon.图标壳.图标.gotoAndStop(2);
-        icon.startDrag(true);
-        _root.鼠标.gotoAndStop("手型抓取");
-
         //硬代码控制一下层级
         var container = icon._parent;
         if (container !== _root.仓库界面 && container.getDepth() < _root.仓库界面.getDepth()){
@@ -30,7 +26,11 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         }else if(container !== _root.物品栏界面 && container.getDepth() < _root.物品栏界面.getDepth()){
             container.swapDepths(_root.物品栏界面);
         }
-        icon.swapDepths(127);
+        icon.swapDepths(255);
+
+        icon.图标壳.图标.gotoAndStop(2);
+        icon.startDrag(true);
+        _root.鼠标.gotoAndStop("手型抓取");
 
         //高亮对应装备栏
         if(itemData.type == "武器" || itemData.type == "防具"){
@@ -109,8 +109,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             for(var i=0; i<图标列表.length;i++){
                 var iconMovieClip = 图标列表[i];
                 if(iconMovieClip.area.hitTest(xmouse, ymouse)){
-                    var icon = iconMovieClip.itemIcon;
-                    ItemUtil.moveItemToInventory(this,icon);
+                    ItemUtil.moveItemToInventory(this,iconMovieClip.itemIcon);
                     return;
                 }
             }

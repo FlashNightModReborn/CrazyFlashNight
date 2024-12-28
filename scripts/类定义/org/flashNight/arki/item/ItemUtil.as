@@ -98,32 +98,172 @@ class org.flashNight.arki.item.ItemUtil{
     /*
      * 物品获得与提交
     */
+    //根据原版物品数据生成itemRequirement
+    public static function getRequirement(itemArray:Array):Array{
+        var newArray = new Array(itemArray.length);
+        for(var i = 0; i<itemArray.length; i++){
+            newArray[i] = {name:itemArray[i].name, value:itemArray[i].value};
+        }
+        return newArray;
+    }
+
+
     //检测背包是否有足够空位获得物品
-    public static function require(items):Object{
-        //
-        return null;
+    public static function require(itemArray:Array):Object{
+        var 背包 = _root.物品栏.背包;
+        var list = {金币:0,K点:0,经验值:0,技能点:0,背包:{},材料:{},情报:{}};
+        var inventoryItems = {};
+        //提取材料和情报
+        for(var i = itemArray.length - 1; i > -1; i--){
+            var name = itemArray[i].name;
+            var value = itemArray[i].value;
+            if(name == "金币" || name == "K点" || name == "经验值" || name == "技能点"){
+                list[name] = value;
+                continue;
+            }
+            var itemData = _root.getItemData(name);
+            if(itemData.use == "材料"){
+                list.材料[name] = value;
+                itemArray.splice(i,1);
+            }else if(itemData.use == "情报"){
+                list.情报[name] = value;
+                itemArray.splice(i,1);
+            }else{
+                inventoryItems[name] = i;
+            }
+        }
+        //提取可堆叠物品
+        for(var i = 0; i < 背包.capacity; i++){
+            var bagItem = 背包.getItem(i);
+            var index = inventoryItems[bagItem.name];
+            if(index != null && !isNaN(bagItem.value)){
+                list.背包[i] = itemArray[index];
+                itemArray.splice(index,1);
+            }
+        }
+        //若背包空间不足以容纳不可堆叠物品则返回null;
+        var vacancyList = 背包.getVacancies();
+        if(isNaN(vacancyList.length) || vacancyList.length < itemArray.length) return null;
+        //为不可堆叠物品分配空间
+        for(var i = 0; i < itemArray.length; i++){
+            list.背包[vacancyList[i]] = itemArray[i];
+        }
+        //返回
+        return list;
     }
     //获得物品
-    public static function acquire(items):Boolean{
-        //
+    public static function acquire(itemArray:Array):Boolean{
+        var list = ItemUtil.require(itemArray);
+        if(list == null) return false;
+        //获取
+        if(list.金币 > 0) _root.金钱 += list.金币;
+        if(list.K点 > 0) _root.虚拟币 += list.K点;
+        if(list.经验值 > 0) {
+            _root.经验值 += list.经验值;
+            _root.主角是否升级(_root.等级,_root.经验值);
+        }
+        if(list.技能点 > 0) _root.技能点数 += list.技能点;
+        //材料
+        var 材料 = _root.收集品栏.材料;
+        for(var name in list.材料){
+            var value = list.材料[name];
+            if(材料.isEmpty(name)) 材料.add(name,value);
+            else 材料.addValue(name,value);
+        }
+        //情报
+        var 情报 = _root.收集品栏.情报;
+        for(var name in list.情报){
+            var value = list.情报[name];
+            if(情报.isEmpty(name)) 情报.add(name,value);
+            else 情报.addValue(name,value);
+        }
+        //背包
+        var 背包 = _root.物品栏.背包;
+        for(var i in list.背包){
+            if(背包.isEmpty(i)){
+                var item = {name:list.背包[i].name};
+                var itemData = _root.getItemData(item.name);
+                if(itemData.type == "武器" || itemData.type == "防具"){
+                    item.value = {level:list.背包[i].value};
+                }else{
+                    item.value = list.背包[i].value;
+                }
+                背包.add(i, item);
+            }else{
+                背包.addValue(i, list.背包[i].value);
+            }
+        }
         return true;
     }
 
     //检测是否持有对应物品
-    public static function contain(items):Object{
-        var list = {背包:{},材料:{}};
-        var capacity = _root.物品栏.背包.capacity;
-        for(var i=0; i<capacity; i++){
-            // var item = 
+    public static function contain(itemArray:Array):Object{
+        var list = {背包:{},材料:{},情报:{}};
+        var 背包 = _root.物品栏.背包;
+        var 材料 = _root.收集品栏.材料;
+        var 情报 = _root.收集品栏.情报;
+        var inventoryItems = {};
+        //
+        for(var i = 0; i < itemArray.length; i++){
+            var name = itemArray[i].name;
+            var value = itemArray[i].value;
+            var itemData = _root.getItemData(name);
+            if(itemData.use == "材料"){
+                if(材料.getValue(name) < value) return null;
+                list.材料[name] = value;
+                // itemArray.splice(i,1);
+            }else if(itemData.use == "情报"){
+                if(情报.getValue(name) < value) return null;
+                list.情报[name] = value;
+                // itemArray.splice(i,1);
+            }else{
+                for(var index = 0; index < 背包.capacity; index++){
+                    if(背包.isEmpty(index)) continue;
+                    var bagItem = 背包.getItem(index);
+                    if(name != bagItem.name) continue;
+                    if((itemData.type == "武器" || itemData.type == "防具") && bagItem.value.level >= value){
+                        list.背包[index] = value;
+                        value = 0;
+                        break;
+                    }
+                    if(bagItem.value >= value){
+                        list.背包[index] = value;
+                        value = 0;
+                        break;
+                    }
+                    list.背包[index] = bagItem.value;
+                    value -= bagItem.value;
+                }
+                if(value > 0) return null;
+            }
         }
-        for(var key in _root.收集栏.材料){
-        }
-        return null;
+        return list;
     }
     //提交物品
-    public static function submit(items):Boolean{
-        var list = ItemUtil.contain(items);
+    public static function submit(itemArray:Array):Boolean{
+        var list = ItemUtil.contain(itemArray);
         if(list == null) return false;
+        //材料
+        var 材料 = _root.收集品栏.材料;
+        for(var name in list.材料){
+            var value = list.材料[name];
+            材料.addValue(name,-value);
+        }
+        //情报
+        var 情报 = _root.收集品栏.情报;
+        for(var name in list.情报){
+            var value = list.情报[name];
+            情报.addValue(name,-value);
+        }
+        //背包
+        var 背包 = _root.物品栏.背包;
+        for(var i in list.背包){
+            var item = 背包.getItem(i);
+            if(isNaN(item.value)) 背包.remove(i);
+            else 背包.addValue(i, -list.背包[i].value);
+        }
         return true;
     }
 }
+
+//org.flashNight.arki.item.ItemUtil.acquire()

@@ -71,7 +71,8 @@ _root.人物信息函数.获得装备重量 = function(自机)
 };
 
 _root.人物信息函数.获得经验值 = function(){
-	return (String(_root.经验值) + " / " + String(_root.升级所需经验值));
+	// return (String(_root.经验值) + " / " + String(_root.升级所需经验值));
+	return (String(_root.经验值));
 }
 
 _root.人物信息函数.显示负重情况 = function(目标:MovieClip,自机:MovieClip){
