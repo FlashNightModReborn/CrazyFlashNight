@@ -29,8 +29,8 @@ _root.NPCTaskCheck = function(npcname)
 {
 	for (var index in tasks_to_do)
 	{
-		var _loc4_ = _root.getTaskData(tasks_to_do[index].id).finish_npc;
-		if (_loc4_ == npcname && taskFinished(index))
+		var finish_npc = _root.getTaskData(tasks_to_do[index].id).finish_npc;
+		if (finish_npc == npcname && _root.taskFinished(index))
 		{
 			return {result:"完成任务", id:index};
 		}
@@ -72,21 +72,28 @@ _root.GetTask = function(id)
 
 _root.taskFinished = function(index)
 {
+	var taskData = _root.getTaskData(tasks_to_do[index].id);
 	var requirements = tasks_to_do[index].requirements;
+	var submitItems = taskData.finish_submit_items;
 	if (requirements.stages.length != 0)
 	{
-		_root.任务完成提示._visible = 0;
+		_root.任务完成提示._visible = false;
 		return false;
 	}
-	for (var _loc4_ in requirements.items)
-	{
-		if (!_root.物品栏是否有(requirements.items[_loc4_].name, requirements.items[_loc4_].count))
-		{
-			_root.任务完成提示._visible = 0;
-			return false;
-		}
+	// for (var _loc4_ in requirements.items)
+	// {
+	// 	if (!_root.物品栏是否有(requirements.items[_loc4_].name, requirements.items[_loc4_].count))
+	// 	{
+	// 		_root.任务完成提示._visible = false;
+	// 		return false;
+	// 	}
+	// }
+	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems);
+	if(!org.flashNight.arki.item.ItemUtil.contain(itemArray)){
+		_root.任务完成提示._visible = false;
+		return false;
 	}
-	_root.任务完成提示._visible = 1;
+	_root.任务完成提示._visible = true;
 	return true;
 }
 
@@ -106,19 +113,21 @@ _root.taskAvailable = function(index)
 		i += 1;
 	}
 	var _loc4_ = 0;
-	var _loc5_ = _root.getTaskData(index).get_requirements;
-	while (_loc4_ < _loc5_.length)
+	var 前置任务 = _root.getTaskData(index).get_requirements;
+	while (_loc4_ < 前置任务.length)
 	{
-		if (_loc5_[_loc4_].__proto__ == Number.prototype)
+		if (前置任务[_loc4_].__proto__ == Number.prototype)
 		{
-			if (tasks_finished[String(_loc5_[_loc4_])] < 1 || tasks_finished[String(_loc5_[_loc4_])] == undefined)
+			if (tasks_finished[String(前置任务[_loc4_])] < 1 || tasks_finished[String(前置任务[_loc4_])] == undefined)
 			{
 				return false;
 			}
 		}
 		else
 		{
-			var _loc6_ = _loc5_[_loc4_].split("#");
+			var _loc6_ = 前置任务[_loc4_].split("#");
+			// var itemArray = org.flashNight.arki.item.ItemUtil.getRequirement(requirements.items);
+			// if(!org.flashNight.arki.item.ItemUtil.contain(itemArray))
 			if (!_root.物品栏是否有(_loc6_[0], Number(_loc6_[1])))
 			{
 				return false;
@@ -131,19 +140,41 @@ _root.taskAvailable = function(index)
 
 _root.FinishTask = function(index)
 {
-	var TaskData = _root.getTaskData(tasks_to_do[index].id);
-	var rewards = TaskData.rewards;
-	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirement(rewards);
+	var taskData = _root.getTaskData(tasks_to_do[index].id);
+	var rewards = taskData.rewards;
+	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(rewards);
+	var rewardList = [];
 	//处理任务奖励的金币和K点减半
+	for(var i = 0; i < itemArray.length; i++){
+		var itemName = itemArray[i].name;
+		var itemValue = itemArray[i].value;
+		if(itemName == "K点" && _root.isChallengeMode()) itemArray[i].value = Math.floor(itemValue * 0.1);
+		if(itemName == "金币" && _root.isChallengeMode()) itemArray[i].value = Math.floor(itemValue * 0.5);
+		// if(_root.isEasyMode()) itemArray[i].value = Math.floor(itemValue * 1.5);
+		rewardList.push([itemName, itemArray[i].value]);
+	}
+	//获得奖励
 	var result = org.flashNight.arki.item.ItemUtil.acquire(itemArray);
-	if(result){
+	if(!result){
 		_root.发布消息("背包无法装下奖励，无法交付任务！请清理背包后重试！");
 		return false;
 	}
-	for(var i = 0; i < rewards.length; i++){
-		_root.任务奖励提示界面.奖励品.push([itemArray[i].name, itemArray[i].value]);
-	}
+	_root.任务奖励提示界面.奖励品 = rewardList;
 	_root.任务奖励提示界面.刷新();
+	//消耗任务物品
+	// var needItems = tasks_to_do[index].requirements;
+	// for (var needi in needItems.items)
+	// {
+	// 	needItem = needItems.items[needi].name;
+	// 	needItemCount = needItems.items[needi].count;
+	// 	_root.物品栏删除指定物品(needItem,needItemCount);
+	// }
+	var submitItems = taskData.finish_submit_items;
+	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems);
+	var result = org.flashNight.arki.item.ItemUtil.submit(itemArray);
+	if(!result){
+		_root.发布消息("交付任务物品异常！");
+	}
 	// var 奖励格数 = 0;
 	// for(var i = 0; i < rewards.length; i++)
 	// {
@@ -215,33 +246,26 @@ _root.FinishTask = function(index)
 	// 	_root.任务奖励提示界面.奖励品.push([rewards[i][0], showNum]);
 	// }
 	// _root.任务奖励提示界面.刷新();
-	//消耗任务物品
-	var needItems = tasks_to_do[index].requirements;
-	for (var needi in needItems.items)
-	{
-		needItem = needItems.items[needi].name;
-		needItemCount = needItems.items[needi].count;
-		_root.物品栏删除指定物品(needItem,needItemCount);
-	}
-	_root.SetDialogue(_root.getTaskText(TaskData.finish_conversation));
+	//
+	_root.SetDialogue(_root.getTaskText(taskData.finish_conversation));
 	UpdateTaskProgress(tasks_to_do[index].id);
 	tasks_to_do.splice(index,1);
 	var _loc7_ = -1;
 	var _loc8_ = 0;
-	while (_loc8_ < task_in_chains_by_sequence[TaskData.chain[0]].length)
+	while (_loc8_ < task_in_chains_by_sequence[taskData.chain[0]].length)
 	{
-		if (task_chains[TaskData.chain[0]][String(task_in_chains_by_sequence[TaskData.chain[0]][_loc8_])] == TaskData.id)
+		if (task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][_loc8_])] == taskData.id)
 		{
 			_loc7_ = _loc8_;
 			break;
 		}
 		_loc8_ += 1;
 	}
-	var _loc9_ = task_in_chains_by_sequence[TaskData.chain[0]][_loc8_ + 1] != undefined && _loc7_ != -1;
-	var _loc10_ = taskAvailable(task_chains[TaskData.chain[0]][String(task_in_chains_by_sequence[TaskData.chain[0]][_loc8_ + 1])]);
+	var _loc9_ = task_in_chains_by_sequence[taskData.chain[0]][_loc8_ + 1] != undefined && _loc7_ != -1;
+	var _loc10_ = taskAvailable(task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][_loc8_ + 1])]);
 	if (_loc9_ && _loc10_)
 	{
-		_root.GetTask(task_chains[TaskData.chain[0]][String(task_in_chains_by_sequence[TaskData.chain[0]][_loc8_ + 1])]);
+		_root.GetTask(task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][_loc8_ + 1])]);
 	}
 	return true;
 }
@@ -291,7 +315,7 @@ _root.AddTask = function(id)
 		}
 	}
 	var _loc3_ = _root.getTaskData(id).finish_requirements;
-	var _loc4_ = {};
+	var 关卡要求 = {};
 	var _loc5_ = [];
 	var _loc6_ = [];
 	var _loc7_ = {};
@@ -306,19 +330,19 @@ _root.AddTask = function(id)
 			_loc7_.difficulty = _loc9_[1];
 			_loc6_.push(_loc7_);
 		}
-		else
-		{
-			_loc7_ = {};
-			_loc7_.name = _loc9_[0];
-			_loc7_.count = _loc9_[1];
-			_loc5_.push(_loc7_);
-		}
+		// else
+		// {
+		// 	_loc7_ = {};
+		// 	_loc7_.name = _loc9_[0];
+		// 	_loc7_.count = _loc9_[1];
+		// 	_loc5_.push(_loc7_);
+		// }
 	}
-	_loc4_.items = _loc5_;
-	_loc4_.stages = _loc6_;
+	// 关卡要求.items = _loc5_;
+	关卡要求.stages = _loc6_;
 	var _loc10_ = {};
 	_loc10_.id = id;
-	_loc10_.requirements = _loc4_;
+	_loc10_.requirements = 关卡要求;
 	tasks_to_do.push(_loc10_);
 }
 
@@ -390,12 +414,8 @@ _root.点击npc后检测任务 = function(npc名字)
 
 _root.是否达成任务检测 = function()
 {
-	for (var i in tasks_to_do)
-	{
-		if (taskFinished(i))
-		{
-			return true;
-		}
+	for (var i in tasks_to_do){
+		if (_root.taskFinished(i)) return true;
 	}
 	return false;
 }
@@ -427,3 +447,14 @@ _root.task_history = [];
 _root.可同时接的任务数 = 10;
 _root.事件日志每页条数 = 10;
 _root.主线任务进度 = 0;
+
+
+_root.tesktest=function(){
+	var taskData = _root.getTaskData(18);
+	var rewards = taskData.rewards;
+	ServerManager.getInstance().sendServerMessage(org.flashNight.gesh.object.ObjectUtil.toString(rewards));
+	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(rewards);
+	ServerManager.getInstance().sendServerMessage(org.flashNight.gesh.object.ObjectUtil.toString(itemArray));
+}
+
+//#func:_root.tesktest()

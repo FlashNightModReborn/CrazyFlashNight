@@ -84,8 +84,6 @@
     ServerManager.getInstance().sendServerMessage(str);
 }
 
-//#func:_root.物品栏数据迁移()
-
 _root.检查并迁移存档数据 = function(data){
     if(data[2] && !data.inventory){
         _root.物品栏数据迁移(data);

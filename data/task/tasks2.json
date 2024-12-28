@@ -201,7 +201,8 @@
             "get_conversation": "$SIDE_GET_10014",
             "get_npc": "格格巫",
 
-            "finish_requirements": [
+            "finish_requirements": [],
+            "finish_submit_items": [
                 "明矾#20"
             ],
             "finish_conversation": "$SIDE_FINISH_10014",
@@ -355,7 +356,8 @@
             "get_conversation": "$SIDE_GET_10021",
             "get_npc": "Shop Girl",
 
-            "finish_requirements": [
+            "finish_requirements": [],
+            "finish_submit_items": [
                 "碱液#10",
                 "王水#2"
             ],

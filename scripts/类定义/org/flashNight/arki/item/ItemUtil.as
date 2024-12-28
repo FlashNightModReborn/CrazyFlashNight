@@ -1,4 +1,6 @@
 ﻿// import org.flashNight.arki.item.itemCollection.DictCollection;
+import org.flashNight.neur.Server.ServerManager;
+import org.flashNight.gesh.object.ObjectUtil;
 /*
  * ItemUtil
 */
@@ -107,14 +109,24 @@ class org.flashNight.arki.item.ItemUtil{
         return newArray;
     }
 
+    public static function getRequirementFromTask(itemArray:Array):Array{
+        var newArray = new Array(itemArray.length);
+        for(var i = 0; i < itemArray.length; i++){
+            var arr = itemArray[i].split("#");
+            newArray[i] = {name:arr[0], value:Number(arr[1])};
+        }
+        return newArray;
+    }
+
+
 
     //检测背包是否有足够空位获得物品
     public static function require(itemArray:Array):Object{
-        var 背包 = _root.物品栏.背包;
         var list = {金币:0,K点:0,经验值:0,技能点:0,背包:{},材料:{},情报:{}};
-        var inventoryItems = {};
+        var mergables = {};
+        var unmergableList = [];
         //提取材料和情报
-        for(var i = itemArray.length - 1; i > -1; i--){
+        for(var i = 0; i < itemArray.length; i++){
             var name = itemArray[i].name;
             var value = itemArray[i].value;
             if(name == "金币" || name == "K点" || name == "经验值" || name == "技能点"){
@@ -124,31 +136,36 @@ class org.flashNight.arki.item.ItemUtil{
             var itemData = _root.getItemData(name);
             if(itemData.use == "材料"){
                 list.材料[name] = value;
-                itemArray.splice(i,1);
             }else if(itemData.use == "情报"){
                 list.情报[name] = value;
-                itemArray.splice(i,1);
+            }else if(itemData.type != "武器" && itemData.type != "防具"){
+                mergables[name] = value;
             }else{
-                inventoryItems[name] = i;
+                unmergableList.push(itemArray[i]);
             }
         }
         //提取可堆叠物品
+        var 背包 = _root.物品栏.背包;
         for(var i = 0; i < 背包.capacity; i++){
             var bagItem = 背包.getItem(i);
-            var index = inventoryItems[bagItem.name];
-            if(index != null && !isNaN(bagItem.value)){
-                list.背包[i] = itemArray[index];
-                itemArray.splice(index,1);
+            if(!isNaN(mergables[bagItem.name]) && !isNaN(bagItem.value)){
+                list.背包[i] = {name:bagItem.name, value:mergables[bagItem.name]};
+                mergables[bagItem.name] = null;
             }
         }
+        //未找到对应可堆叠物品则加入不可堆叠物品
+        for(var key in mergables){
+            if(!isNaN(mergables[key])) unmergableList.push({name:key, value:mergables[key]});
+        }
         //若背包空间不足以容纳不可堆叠物品则返回null;
-        var vacancyList = 背包.getVacancies();
-        if(isNaN(vacancyList.length) || vacancyList.length < itemArray.length) return null;
+        var vacancyList = 背包.getVacancies(unmergableList.length);
+        if(isNaN(vacancyList.length) || vacancyList.length < unmergableList.length) return null;
         //为不可堆叠物品分配空间
-        for(var i = 0; i < itemArray.length; i++){
-            list.背包[vacancyList[i]] = itemArray[i];
+        for(var i = 0; i < unmergableList.length; i++){
+            list.背包[vacancyList[i]] = unmergableList[i];
         }
         //返回
+        ServerManager.getInstance().sendServerMessage(ObjectUtil.toString(list));
         return list;
     }
     //获得物品
@@ -249,12 +266,12 @@ class org.flashNight.arki.item.ItemUtil{
             var value = list.材料[name];
             材料.addValue(name,-value);
         }
-        //情报
-        var 情报 = _root.收集品栏.情报;
-        for(var name in list.情报){
-            var value = list.情报[name];
-            情报.addValue(name,-value);
-        }
+        //不检索情报
+        // var 情报 = _root.收集品栏.情报;
+        // for(var name in list.情报){
+        //     var value = list.情报[name];
+        //     情报.addValue(name,-value);
+        // }
         //背包
         var 背包 = _root.物品栏.背包;
         for(var i in list.背包){
@@ -263,6 +280,15 @@ class org.flashNight.arki.item.ItemUtil{
             else 背包.addValue(i, -list.背包[i].value);
         }
         return true;
+    }
+
+    //获得单个物品
+    public static function singleAcquire(__name:String,__value:Number):Boolean{
+        return ItemUtil.acquire([{name:__name,value:__value}]);
+    }
+    //提交单个物品
+    public static function singleSubmit(__name:String,__value:Number):Boolean{
+        return ItemUtil.submit([{name:__name,value:__value}]);
     }
 }
 
