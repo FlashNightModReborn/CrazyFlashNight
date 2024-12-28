@@ -72,6 +72,12 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
         iconMovieClips[key] = icon.getIconMovieClip();
     }
 
+    //移除图标索引
+    public function removeIcon(key:String):Void{
+        delete icons[key];
+        delete iconMovieClips[key];
+    }
+
     //清空图标索引
     public function clearIcon():Void{
         icons = new Object();

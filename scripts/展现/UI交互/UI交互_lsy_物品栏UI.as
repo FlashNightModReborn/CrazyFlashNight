@@ -580,3 +580,80 @@ _root.物品UI函数.删除商店图标 = function(){
 	}
 	_root.购买物品界面.图标列表 = null;
 }
+
+//排列仓库图标
+_root.物品UI函数.刷新仓库图标 = function(inventory,page){
+	var 仓库界面 = _root.仓库界面;
+	var maxpage = 30;
+	if(_root.仓库名称 == "后勤战备箱") maxpage = _root.物品UI函数.计算战备箱总页数();
+	if(page < 0 || page >= maxpage) return;
+
+	仓库界面.inventory = inventory;
+	仓库界面.page = page;
+	仓库界面.仓库页数显示 = page + 1;
+
+	if(!仓库界面.图标列表) {
+		_root.物品UI函数.创建仓库图标(inventory,page);
+		return;
+	}
+	for (var i = 0; i < 仓库界面.图标列表.length; i++){
+		var index = i + 40 * page;
+		var 物品图标 = 仓库界面.图标列表[i];
+		物品图标.itemIcon.reset(inventory, index);
+	}
+}
+
+_root.物品UI函数.创建仓库图标 = function(inventory,page){
+	var 仓库界面 = _root.仓库界面;
+	仓库界面.gotoAndStop("完毕");
+
+	var 起始x = 仓库界面.物品图标._x;
+	var 起始y = 仓库界面.物品图标._y;
+	var 图标高度 = 28;
+	var 图标宽度 = 28;
+	var 列数 = 8;
+	var 行数 = 5;
+	var 总格数 = 行数*列数;
+	var 换行计数 = 0;
+
+	仓库界面.图标列表 = new Array(总格数);
+	
+	for (var i = 0; i < 总格数; i++){
+		var index = i + 40 * page;
+		var 物品图标 = 仓库界面.attachMovie("物品图标","物品图标" + i,i);
+		物品图标._x = 起始x;
+		物品图标._y = 起始y;
+		起始x += 图标宽度;
+		换行计数++;
+		if (换行计数 == 列数)
+		{
+			换行计数 = 0;
+			起始x = 仓库界面.物品图标._x;
+			起始y += 图标高度;
+		}
+		仓库界面.图标列表[i] = 物品图标;
+		物品图标.itemIcon = new InventoryIcon(物品图标, inventory, index);
+	}
+	仓库界面._visible = true;
+}
+
+_root.物品UI函数.删除仓库图标 = function(){
+	var 仓库界面 = _root.仓库界面;
+	var 图标列表 = 仓库界面.图标列表;
+	for(var i=0; i<图标列表.length; i++){
+		图标列表[i].removeMovieClip();
+	}
+	仓库界面.inventory.clearIcon();
+	仓库界面.inventory = null;
+	仓库界面.page = -1;
+	_root.仓库名称 = null;
+}
+
+_root.物品UI函数.计算战备箱总页数 = function():Number{
+	if(_root.主线任务进度 <= 13) return 0;
+	var 页数 = 1;
+	if (_root.task_chains_progress.挑战 != null && _root.task_chains_progress.挑战 >= 1) 页数++;
+	if (_root.task_chains_progress.挑战 >= 3) 页数++;
+	if (_root.主线任务进度 > 77) 页数 += 2;
+	return 页数;
+}

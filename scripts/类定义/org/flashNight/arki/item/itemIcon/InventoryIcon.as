@@ -23,11 +23,15 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         icon.startDrag(true);
         _root.鼠标.gotoAndStop("手型抓取");
 
-        // if (_root.物品栏界面.getDepth() < _root.仓库界面.getDepth())
-        // {
-        //     _root.物品栏界面.swapDepths(_root.仓库界面);
-        // }
+        //硬代码控制一下层级
+        var container = icon._parent;
+        if (container !== _root.仓库界面 && container.getDepth() < _root.仓库界面.getDepth()){
+            container.swapDepths(_root.仓库界面);
+        }else if(container !== _root.物品栏界面 && container.getDepth() < _root.物品栏界面.getDepth()){
+            container.swapDepths(_root.物品栏界面);
+        }
         icon.swapDepths(127);
+
         //高亮对应装备栏
         if(itemData.type == "武器" || itemData.type == "防具"){
             if(itemData.use == "手枪"){//对手枪2进行额外判定
@@ -48,7 +52,11 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         icon.stopDrag();
         icon._x = x;
         icon._y = y;
+        //硬代码还原层级
+        _root.物品栏界面.swapDepth(_root.物品栏界面.originalDepth);
+        _root.仓库界面.swapDepth(_root.仓库界面.originalDepth);
         icon.swapDepths(index);
+
         var xmouse = _root._xmouse;
         var ymouse = _root._ymouse;
         for(var i=0; i<icon.highlights.length;i++){
@@ -84,6 +92,25 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
                 var iconMovieClip = icons[i].icon;
                 if(iconMovieClip.area.hitTest(xmouse, ymouse)){
                     ItemUtil.moveItemToInventory(this,icons[i]);
+                    return;
+                }
+            }
+            return;
+        }
+
+        if(_root.仓库界面._visible && _root.仓库界面.窗体area.hitTest(xmouse, ymouse)){
+            if(_root.仓库界面.垃圾箱.area.hitTest(xmouse, ymouse)){
+                _root.发布消息("丢弃物品" + itemData.displayname);
+                collection.remove(index);
+                return;
+            }
+
+            var 图标列表 = _root.仓库界面.图标列表;
+            for(var i=0; i<图标列表.length;i++){
+                var iconMovieClip = 图标列表[i];
+                if(iconMovieClip.area.hitTest(xmouse, ymouse)){
+                    var icon = iconMovieClip.itemIcon;
+                    ItemUtil.moveItemToInventory(this,icon);
                     return;
                 }
             }

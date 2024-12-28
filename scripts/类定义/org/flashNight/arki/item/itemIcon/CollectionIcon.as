@@ -33,4 +33,13 @@ class org.flashNight.arki.item.itemIcon.CollectionIcon extends ItemIcon{
             super.init(_item.name,_item);
         }
     }
+
+    //重设物品集合与索引
+    public function reset(_collection, _index):Void{
+        this.collection.removeIcon(index)
+        this.collection = _collection;
+        this.index = _index;
+        this.collection.setIcon(this,index)
+        init();
+    }
 }
