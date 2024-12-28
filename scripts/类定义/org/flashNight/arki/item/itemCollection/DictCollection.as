@@ -7,6 +7,8 @@
 
 class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollection{
 
+    public var isDict:Boolean = true;
+
     public function DictCollection(_items:Object) {
         super(_items);
     }
@@ -16,6 +18,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
         if(isNaN(value)) return false;
         if(isEmpty(key) && isAddable(key,value)){
             items[key] = value;
+            if(icons[key]) icons[key].refresh();
             return true;
         }
         return false;
@@ -32,6 +35,7 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
     public function addValue(key:String,value:Number):Void{
         if(isNaN(value)) return;
         items[key] += value;
+        if(icons[key]) icons[key].refreshValue();
         if(items[key] <= 0){
             remove(key);
         }

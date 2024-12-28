@@ -133,77 +133,88 @@ _root.FinishTask = function(index)
 {
 	var TaskData = _root.getTaskData(tasks_to_do[index].id);
 	var rewards = TaskData.rewards;
-	var 奖励格数 = 0;
-	for(var i = 0; i < rewards.length; i++)
-	{
-		rewards[i] = rewards[i].split("#");
-		var item = _root.getItemData(rewards[i][0]);
-		if (!item.use || item.use != "货币")
-		{
-			if (item.type == "消耗品" || item.type == "防具" || item.type == "武器")
-			{
-				奖励格数 += 1;
-			}
-			else
-			{
-				if (Number(rewards[i][1]))
-				{
-					奖励格数 += Number(rewards[i][1]);
-				}
-				else
-				{
-					奖励格数 += 1;
-				}
-			}
-		}
-	}
-	if (_root.物品栏有空位数() < 奖励格数)
-	{
+	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirement(rewards);
+	//处理任务奖励的金币和K点减半
+	var result = org.flashNight.arki.item.ItemUtil.acquire(itemArray);
+	if(result){
 		_root.发布消息("背包无法装下奖励，无法交付任务！请清理背包后重试！");
 		return false;
 	}
-	_root.任务奖励提示界面.奖励品 = [];
-	for(var i = 0; i < rewards.length; i++)
-	{
-		var showNum = Number(rewards[i][1]);
-		switch (rewards[i][0])
-		{
-			case "金币" :
-				var goldNum = Number(rewards[i][1]);
-				if (_root.isChallengeMode() == true)
-				{
-					goldNum = Math.floor(goldNum * 0.5);
-				}
-				_root.金钱 += goldNum;
-				if (_root.isEasyMode() == true)
-				{
-					_root.虚拟币 += Math.floor(goldNum * 0.5);
-					_root.任务奖励提示界面.奖励品.push(["K点", Math.floor(goldNum * 0.5)]);
-				}
-				showNum = goldNum;
-				break;
-			case "K点" :
-				var kdotNum = Number(rewards[i][1]);
-				if (_root.isChallengeMode() == true)
-				{
-					kdotNum = Math.floor(kdotNum * 0.1);
-				}
-				_root.虚拟币 += kdotNum;
-				showNum = kdotNum;
-				break;
-			case "经验值" :
-				_root.经验值 += Number(rewards[i][1]);
-				_root.主角是否升级(_root.等级,_root.经验值);
-				break;
-			case "技能点" :
-				_root.技能点数 += Number(rewards[i][1]);
-				break;
-			default :
-				_root.物品栏添加(rewards[i][0],Number(rewards[i][1]),0);
-		}
-		_root.任务奖励提示界面.奖励品.push([rewards[i][0], showNum]);
+	for(var i = 0; i < rewards.length; i++){
+		_root.任务奖励提示界面.奖励品.push([itemArray[i].name, itemArray[i].value]);
 	}
 	_root.任务奖励提示界面.刷新();
+	// var 奖励格数 = 0;
+	// for(var i = 0; i < rewards.length; i++)
+	// {
+	// 	rewards[i] = rewards[i].split("#");
+	// 	var item = _root.getItemData(rewards[i][0]);
+	// 	if (!item.use || item.use != "货币")
+	// 	{
+	// 		if (item.type == "消耗品" || item.type == "防具" || item.type == "武器")
+	// 		{
+	// 			奖励格数 += 1;
+	// 		}
+	// 		else
+	// 		{
+	// 			if (Number(rewards[i][1]))
+	// 			{
+	// 				奖励格数 += Number(rewards[i][1]);
+	// 			}
+	// 			else
+	// 			{
+	// 				奖励格数 += 1;
+	// 			}
+	// 		}
+	// 	}
+	// }
+	// if (_root.物品栏有空位数() < 奖励格数)
+	// {
+	// 	_root.发布消息("背包无法装下奖励，无法交付任务！请清理背包后重试！");
+	// 	return false;
+	// }
+	// _root.任务奖励提示界面.奖励品 = [];
+	// for(var i = 0; i < rewards.length; i++)
+	// {
+	// 	var showNum = Number(rewards[i][1]);
+	// 	switch (rewards[i][0])
+	// 	{
+	// 		case "金币" :
+	// 			var goldNum = Number(rewards[i][1]);
+	// 			if (_root.isChallengeMode() == true)
+	// 			{
+	// 				goldNum = Math.floor(goldNum * 0.5);
+	// 			}
+	// 			_root.金钱 += goldNum;
+	// 			if (_root.isEasyMode() == true)
+	// 			{
+	// 				_root.虚拟币 += Math.floor(goldNum * 0.5);
+	// 				_root.任务奖励提示界面.奖励品.push(["K点", Math.floor(goldNum * 0.5)]);
+	// 			}
+	// 			showNum = goldNum;
+	// 			break;
+	// 		case "K点" :
+	// 			var kdotNum = Number(rewards[i][1]);
+	// 			if (_root.isChallengeMode() == true)
+	// 			{
+	// 				kdotNum = Math.floor(kdotNum * 0.1);
+	// 			}
+	// 			_root.虚拟币 += kdotNum;
+	// 			showNum = kdotNum;
+	// 			break;
+	// 		case "经验值" :
+	// 			_root.经验值 += Number(rewards[i][1]);
+	// 			_root.主角是否升级(_root.等级,_root.经验值);
+	// 			break;
+	// 		case "技能点" :
+	// 			_root.技能点数 += Number(rewards[i][1]);
+	// 			break;
+	// 		default :
+	// 			_root.物品栏添加(rewards[i][0],Number(rewards[i][1]),0);
+	// 	}
+	// 	_root.任务奖励提示界面.奖励品.push([rewards[i][0], showNum]);
+	// }
+	// _root.任务奖励提示界面.刷新();
 	//消耗任务物品
 	var needItems = tasks_to_do[index].requirements;
 	for (var needi in needItems.items)
