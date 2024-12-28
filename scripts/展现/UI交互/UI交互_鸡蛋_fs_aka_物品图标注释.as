@@ -1,11 +1,7 @@
-﻿_root.物品图标注释 = function(itemArr, 强化等级)
-{
-	if (强化等级 == undefined)
-	{
-		强化等级 = 1;
-	}
-	var 物品id = itemArr[0];
-	var 物品数据 = _root.getItemData(物品id);
+﻿_root.物品图标注释 = function(name, value){
+	var 强化等级 = value.level > 0 ? value.level : 0;
+	
+	var 物品数据 = _root.getItemData(name);
 	var 文本数据 = new Array();
 	文本数据.push("<B>");
 	文本数据.push(物品数据.displayname);
@@ -231,8 +227,7 @@
 			文本数据.push("净化度: " + (isNaN(物品数据.data.clean) ? 0 : 物品数据.data.clean) + "<BR>" );
 		}
 	}
-	if (物品数据.actiontype !== undefined)
-	{
+	if (物品数据.actiontype !== undefined){
 		文本数据.push("动作：");
 		文本数据.push(物品数据.actiontype);
 		文本数据.push("<BR>");
@@ -240,30 +235,26 @@
 
 
 	//是否为剧情碎片                                                                                                 
-	if (物品数据.chapter !== undefined && 物品数据.chapter > 0)
-	{
-		文本数据.push("[test0]剧情碎片收集进度111：" + 强化等级 + "/" + (物品数据.chapter + 1));
-		文本数据.push("[debugmsg]：" + 强化等级);
+	if (物品数据.chapter !== undefined && 物品数据.chapter > 0){
+		文本数据.push("[test0]剧情碎片收集进度111：" + value + "/" + (物品数据.chapter + 1));
+		文本数据.push("[debugmsg]：" + value);
 		文本数据.push("<BR>");
-		var 进度 = Math.min(强化等级 - 1, 物品数据.chapter);
-		if (进度 == 0)
-		{
+		var 进度 = Math.min(value - 1, 物品数据.chapter);
+		if (进度 == 0){
 			文本数据.push(物品数据.description);
-		}
-		else
-		{
+		}else{
 			文本数据.push(物品数据["description" + 进度]);
 		}
 
 		文本数据.push("<BR>");
 	}
-	else if (物品数据.loop !== undefined && 物品数据.loop > 0)
+	else if (物品数据.loop !== undefined && 物品数据.loop > 1)
 	{
 
-		if (强化等级 == 1)
+		if (value == 1)
 		{
-			文本数据.push("[test1]剧情碎片资料展示：" + 强化等级 + "/" + (物品数据.loop + 1));
-			文本数据.push("[物品数量]：" + 强化等级);
+			文本数据.push("[test1]剧情碎片资料展示：" + value + "/" + 物品数据.loop);
+			文本数据.push("[物品数量]：" + value);
 			文本数据.push("<BR>");
 			//文本数据.push(物品数据.description);
 			文本数据.push(物品数据.description);
@@ -271,22 +262,22 @@
 		}
 		else
 		{
-			//var 进度 = 强化等级 % 物品数据.loop;
-			var 进度 = 强化等级  % (物品数据.loop + 1);
+			//var 进度 = value % 物品数据.loop;
+			var 进度 = value  % 物品数据.loop;
 			
 			if (进度 == 0)
 			{
 				
-				文本数据.push("剧情碎片资料展示：" + (物品数据.loop + 1) + "/" + (物品数据.loop + 1));
-				//文本数据.push("[物品数量]：" + 强化等级 + "[进度]：" + 进度);
+				文本数据.push("剧情碎片资料展示：" + 物品数据.loop + "/" + 物品数据.loop);
+				//文本数据.push("[物品数量]：" + value + "[进度]：" + 进度);
 				文本数据.push("<BR>");
 				文本数据.push(物品数据["description" + 物品数据.loop]);
 				文本数据.push("<BR>");
 			}
 			else
 			{
-				文本数据.push("剧情碎片资料展示：" + 进度  + "/" + (物品数据.loop + 1));
-				//文本数据.push("[物品数量]：" + 强化等级 + "[进度]：" + 进度);
+				文本数据.push("剧情碎片资料展示：" + 进度  + "/" + 物品数据.loop);
+				//文本数据.push("[物品数量]：" + value + "[进度]：" + 进度);
 				进度 = 进度 - 1;
 				文本数据.push("<BR>");
 				if (进度 == 0)
@@ -392,10 +383,10 @@
 		文本数据.push(强化等级);
 		文本数据.push("</FONT>");
 	}
-	else if (物品数据.type == "消耗品" && 强化等级 > 1)
+	else if (物品数据.type == "消耗品" && value > 1)
 	{
 		文本数据.push("数量：");
-		文本数据.push(强化等级);
+		文本数据.push(value);
 	}
 
 	var 完整文本 = translateStrings(文本数据.join(''));

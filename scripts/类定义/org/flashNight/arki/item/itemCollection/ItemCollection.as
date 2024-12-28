@@ -14,7 +14,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     public var isDict:Boolean; //是否为字典集合
 
     public function ItemCollection(_items:Object) {
-        if(!items) this.items = new Object();
+        if(!_items) this.items = new Object();
         else this.items = _items;
         icons = new Object();
         iconMovieClips = new Object();

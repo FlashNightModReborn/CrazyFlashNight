@@ -707,7 +707,9 @@ _root.物品UI函数.创建收集品图标 = function(){
 		物品栏界面.收集品图标列表[i] = 物品图标;
 		物品图标.itemIcon = new CollectionIcon(物品图标,材料,材料列表[i]);
 	}
-	for (var i = 41; i < 80; i++){
+	var 起始x = 物品栏界面.收集品图标._x;
+	var 换行计数 = 0;
+	for (var i = 40; i < 80; i++){
 		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i + 层级错位);
 		物品图标._x = 起始x;
 		物品图标._y = 起始y;

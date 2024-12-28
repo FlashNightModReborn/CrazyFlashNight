@@ -12,13 +12,13 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         super(_items);
         if(_capacity <= 1) _capacity = 8;
         this.capacity = _capacity;
-        //建立索引数组
+         //建立索引数组（并没有建
     }
 
     //重构isEmpty函数，非数字键也会返回false
     public function isEmpty(key:Number):Boolean{
         if(key < 0 || key >= capacity) return false;
-        return super.isEmpty(key.toString());
+        return !(items[key] != null);
     }
 
     //重构add函数，填写-1时自动寻找可用的索引

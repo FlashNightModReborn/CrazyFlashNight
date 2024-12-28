@@ -1,25 +1,6 @@
-﻿import org.flashNight.arki.item.itemCollection.*;
-
-_root.初始化物品栏 = function(){
-    return {
-        背包:new ArrayInventory(null,50),
-        装备栏:new EquipmentInventory(null),
-        药剂栏:new DrugInventory(null,4),
-        仓库:new ArrayInventory(null,1200),
-        战备箱:new ArrayInventory(null,400)
-    };
-}
-
-_root.初始化收集品栏 = function(){
-    return {
-        材料:new DictCollection(null),
-        情报:new DictCollection(null)
-    }
-}
-
-_root.物品栏数据迁移 = function(){
-    var 旧背包 = _root.物品栏;
-    var 旧仓库 = _root.仓库栏;
+﻿_root.物品栏数据迁移 = function(data){
+    var 旧背包 = data[2];
+    var 旧仓库 = data[6];
     var 新物品栏 = _root.初始化物品栏();
     var 收集品栏 = _root.初始化收集品栏();
     //迁移背包数据
@@ -76,11 +57,22 @@ _root.物品栏数据迁移 = function(){
         else 新物品栏.战备箱.add(i, 新物品);
     }
     // 完成
-    // _root.物品栏 = 新物品栏;
-    // _root.收集品栏 = 收集品栏;
-    // _root.仓库栏 = null;
+    data.inventory = {
+        背包:  新物品栏.背包.getItems(),
+        装备栏:新物品栏.装备栏.getItems(),
+        药剂栏:新物品栏.药剂栏.getItems(),
+        仓库:  新物品栏.仓库.getItems(),
+        战备箱:新物品栏.战备箱.getItems()
+    };
+    data.collection = {
+        材料:收集品栏.材料.getItems(),
+        情报:收集品栏.情报.getItems()
+    };
+    data[2] = null;
+    data[6] = null;
+    _root.仓库栏 = null;
     //测试
-    ServerManager.getInstance().sendServerMessage("测试迁移数据");
+    ServerManager.getInstance().sendServerMessage("迁移背包仓库数据");
     var str = "";
     for(var key in 新物品栏){
         str += org.flashNight.gesh.object.ObjectUtil.toString(新物品栏[key].getItems());
@@ -93,3 +85,9 @@ _root.物品栏数据迁移 = function(){
 }
 
 //#func:_root.物品栏数据迁移()
+
+_root.检查并迁移存档数据 = function(data){
+    if(data[2] && !data.inventory){
+        _root.物品栏数据迁移(data);
+    }
+}

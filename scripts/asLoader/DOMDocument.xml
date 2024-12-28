@@ -13,7 +13,7 @@
 // 不使用新的 Class，仅使用函数和内联测试。
 
 // 定义测试循环的总次数
-var TEST_COUNT:Number = 1000000; // 1,000,000 次
+var TEST_COUNT:Number = 100; // 1,000,000 次
 
 //======================//
 //    1. 原公式测试     //
@@ -73,6 +73,10 @@ trace("简化公式相对原公式的性能提升 ≈ " + speedupPercent + "%");
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="245571" publishTime="1735400260"/>
+          <PublishItem publishSize="245554" publishTime="1735399785"/>
+          <PublishItem publishSize="245557" publishTime="1735399021"/>
+          <PublishItem publishSize="245545" publishTime="1735398238"/>
           <PublishItem publishSize="240018" publishTime="1735291115"/>
           <PublishItem publishSize="240022" publishTime="1735291045"/>
           <PublishItem publishSize="240016" publishTime="1735290998"/>
@@ -89,9 +93,5 @@ trace("简化公式相对原公式的性能提升 ≈ " + speedupPercent + "%");
           <PublishItem publishSize="232791" publishTime="1734941341"/>
           <PublishItem publishSize="231638" publishTime="1734582860"/>
           <PublishItem publishSize="232289" publishTime="1734579421"/>
-          <PublishItem publishSize="232640" publishTime="1734577912"/>
-          <PublishItem publishSize="232401" publishTime="1734577547"/>
-          <PublishItem publishSize="232387" publishTime="1734577365"/>
-          <PublishItem publishSize="232023" publishTime="1734576717"/>
      </publishHistory>
 </DOMDocument>
