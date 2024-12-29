@@ -288,17 +288,20 @@ _root.FinishStage = function(name, difficulty)
 	}
 	for (var i in tasks_to_do)
 	{
-		var _loc4_ = tasks_to_do[i].requirements.stages;
+		var task = tasks_to_do[i];
+		var stageArr = task.requirements.stages;
 		var j = 0;
-		var len = _loc4_.length;
-		while (j < len)
-		{
-			if (_loc4_[j].name == name && _loc4_[j].difficulty == difficulty)
-			{
-				tasks_to_do[i].requirements.stages.splice(j,1);
-				len -= 1;
+		var len = stageArr.length;
+		if(task.requirements.challenge && len == 1){
+			if(stageArr[0].name == name && task.requirements.challenge.difficulty == difficulty)
+			task.requirements.challenge.finished = true;
+			task.requirements.stages = [];
+		}else{
+			for (var j = len-1 ; j > -1; j--){
+				if (stageArr[j].name == name && stageArr[j].difficulty == difficulty){
+					task.requirements.stages.splice(j,1);
+				}
 			}
-			j += 1;
 		}
 	}
 	UpdateTaskProgress();
@@ -314,22 +317,20 @@ _root.AddTask = function(id)
 			return false;
 		}
 	}
-	var _loc3_ = _root.getTaskData(id).finish_requirements;
+	var taskData = _root.getTaskData(id);
+	var finish_requirements = _root.getTaskData(id).finish_requirements;
 	var 关卡要求 = {};
-	var _loc5_ = [];
-	var _loc6_ = [];
-	var _loc7_ = {};
-	var _loc8_ = 0;
-	for (_loc8_ in _loc3_)
+	// var _loc5_ = [];
+	var stageArr = [];
+	var i = 0;
+	for (i in finish_requirements)
 	{
-		var _loc9_ = _loc3_[_loc8_].split("#");
-		if (isNaN(Number(_loc9_[1])))
-		{
-			_loc7_ = {};
-			_loc7_.name = _loc9_[0];
-			_loc7_.difficulty = _loc9_[1];
-			_loc6_.push(_loc7_);
-		}
+		var _loc9_ = finish_requirements[i].split("#");
+		
+		var stage = {};
+		stage.name = _loc9_[0];
+		stage.difficulty = _loc9_[1];
+		stageArr.push(stage);
 		// else
 		// {
 		// 	_loc7_ = {};
@@ -339,11 +340,17 @@ _root.AddTask = function(id)
 		// }
 	}
 	// 关卡要求.items = _loc5_;
-	关卡要求.stages = _loc6_;
-	var _loc10_ = {};
-	_loc10_.id = id;
-	_loc10_.requirements = 关卡要求;
-	tasks_to_do.push(_loc10_);
+	关卡要求.stages = stageArr;
+	//记录挑战难度
+	if(taskData.challenge.difficulty){
+		关卡要求.challenge = {};
+		关卡要求.challenge.difficulty = taskData.challenge.difficulty;
+		关卡要求.challenge.finished = false;
+	}
+	var task = {};
+	task.id = id;
+	task.requirements = 关卡要求;
+	tasks_to_do.push(task);
 }
 
 _root.DeleteTask = function(index)

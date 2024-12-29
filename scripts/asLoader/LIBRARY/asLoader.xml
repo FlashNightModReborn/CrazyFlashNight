@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1735463418">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1735477513">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="47">
+    <DOMTimeline name="asLoader" currentFrame="49">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -428,6 +428,7 @@ this.removeMovieClip();]]></script>
 #include "../展现/UI交互/UI交互_lsy_对话文本.as"
 #include "../展现/UI交互/UI交互_lsy_商城系统.as"
 #include "../展现/UI交互/UI交互_lsy_物品栏UI.as"
+#include "../展现/UI交互/UI交互_lsy_任务栏UI.as"
 #include "../展现/UI交互/UI交互_鸡蛋_fs_aka_物品图标注释.as"
 #include "../展现/UI交互/UI交互_无名氏_改造系统.as"
 #include "../展现/UI交互/UI交互_aka_健身房训练.as"
