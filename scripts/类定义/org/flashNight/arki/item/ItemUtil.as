@@ -3,7 +3,7 @@ import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.ObjectUtil;
 /*
  * ItemUtil
-*/
+ */
 
 class org.flashNight.arki.item.ItemUtil{
     
@@ -25,8 +25,8 @@ class org.flashNight.arki.item.ItemUtil{
     }
 
     /*
-     * 物品栏移动操作
-    */
+     * 玩家的物品移动操作
+     */
     //将物品移入另一物品栏
     public static function moveItemToInventory(icon1,icon2):Boolean{
         if(!icon1.item || icon1 === icon2) return false;
@@ -56,10 +56,10 @@ class org.flashNight.arki.item.ItemUtil{
         var result = ItemUtil.moveItemToInventory(icon,equipmentIcon);
         if(!result) return false;
         //
-        var sound = "9mmclip2.wav";
+        var 音效 = "9mmclip2.wav";
         var use = itemData.use;
         if(itemData.type == "防具"){
-            sound = "ammopickup1.wav";
+            音效 = "ammopickup1.wav";
             if (use == "颈部装备"){
                 var 控制对象 = _root.gameworld[_root.控制目标];
                 控制对象.称号 = itemData.equipped.title;
@@ -83,7 +83,7 @@ class org.flashNight.arki.item.ItemUtil{
             _root.刀配置(_root.控制目标,name,level);
         }
         _root[index] = name;
-        _root.播放音效(sound);
+        _root.播放音效(音效);
         _root.发布消息("成功装备[" + use + "][" + itemData.displayname + "]");
         _root.刷新人物装扮(_root.控制目标);
         return true;
@@ -99,7 +99,9 @@ class org.flashNight.arki.item.ItemUtil{
 
     /*
      * 物品获得与提交
-    */
+     * 基础方法共4个：require, acquire, contain, submit
+     */
+
     //根据原版物品数据生成itemRequirement
     public static function getRequirement(itemArray:Array):Array{
         var newArray = new Array(itemArray.length);
@@ -109,6 +111,7 @@ class org.flashNight.arki.item.ItemUtil{
         return newArray;
     }
 
+    //根据任务文件内的物品字符串生成itemRequirement
     public static function getRequirementFromTask(itemArray:Array):Array{
         var newArray = new Array(itemArray.length);
         for(var i = 0; i < itemArray.length; i++){
@@ -118,9 +121,12 @@ class org.flashNight.arki.item.ItemUtil{
         return newArray;
     }
 
-
-
-    //检测背包是否有足够空位获得物品
+    /*
+     * require 函数检索背包是否有足够空位装下物品。
+     * 输入值为一个物品数组
+     * 返回带有背包，材料，情报，金币，K点，经验值，技能点7个键的Object。其中背包，材料，情报三项内记录要进行操作的物品栏位和对应物品
+     * 若背包空间不足，返回null
+     */
     public static function require(itemArray:Array):Object{
         var list = {金币:0,K点:0,经验值:0,技能点:0,背包:{},材料:{},情报:{}};
         var mergables = {};
@@ -168,7 +174,13 @@ class org.flashNight.arki.item.ItemUtil{
         ServerManager.getInstance().sendServerMessage(ObjectUtil.toString(list));
         return list;
     }
-    //获得物品
+
+    /* 
+     * acquire 函数处理获得物品事件。
+     * 输入值为一个物品数组，经过require函数处理后，在对应的位置添加对应的物品。
+     * 若成功获得所有物品，返回true
+     * 若背包空间不足，返回false
+     */
     public static function acquire(itemArray:Array):Boolean{
         var list = ItemUtil.require(itemArray);
         if(list == null) return false;
@@ -213,7 +225,12 @@ class org.flashNight.arki.item.ItemUtil{
         return true;
     }
 
-    //检测是否持有对应物品
+    /* 
+     * cantain 函数检索玩家是否持有对应的物品。
+     * 输入值为一个物品数组
+     * 返回带有背包，材料，情报3个键的Object。记录玩家持有物品的位置和数量
+     * 若对应栏位没有足够物品，返回null
+     */
     public static function contain(itemArray:Array):Object{
         var list = {背包:{},材料:{},情报:{}};
         var 背包 = _root.物品栏.背包;
@@ -256,7 +273,13 @@ class org.flashNight.arki.item.ItemUtil{
         }
         return list;
     }
-    //提交物品
+    
+    /* 
+     * submit 函数处理提交物品事件。
+     * 输入值为一个物品数组，经过contain函数处理后，在背包和材料栏对应的位置移除对应数量的物品。情报栏的物品不会被submit函数移除
+     * 若成功移除所有物品，返回true
+     * 若背包和材料栏没有足够物品，返回false
+     */
     public static function submit(itemArray:Array):Boolean{
         var list = ItemUtil.contain(itemArray);
         if(list == null) return false;
@@ -266,7 +289,7 @@ class org.flashNight.arki.item.ItemUtil{
             var value = list.材料[name];
             材料.addValue(name,-value);
         }
-        //不检索情报
+        //情报不需要提交
         // var 情报 = _root.收集品栏.情报;
         // for(var name in list.情报){
         //     var value = list.情报[name];
@@ -277,18 +300,45 @@ class org.flashNight.arki.item.ItemUtil{
         for(var i in list.背包){
             var item = 背包.getItem(i);
             if(isNaN(item.value)) 背包.remove(i);
-            else 背包.addValue(i, -list.背包[i].value);
+            else 背包.addValue(i, -list.背包[i]);
         }
         return true;
     }
 
+    //检索是否能放入单个物品
+    public static function singleRequire(__name:String,__value:Number):Object{
+        return ItemUtil.require([{name:__name,value:__value}]);
+    }
     //获得单个物品
     public static function singleAcquire(__name:String,__value:Number):Boolean{
         return ItemUtil.acquire([{name:__name,value:__value}]);
     }
+    //检索是否持有单个物品
+    public static function singleContain(__name:String,__value:Number):Object{
+        return ItemUtil.contain([{name:__name,value:__value}]);
+    }
     //提交单个物品
     public static function singleSubmit(__name:String,__value:Number):Boolean{
         return ItemUtil.submit([{name:__name,value:__value}]);
+    }
+
+    
+    
+    //查找物品总数
+    public static function getTotal(__name:String):Number{
+        var itemData = _root.getItemData(__name);
+        if(itemData.use == "材料") return _root.收集品栏.材料.getValue(__name);
+        if(itemData.use == "情报") return _root.收集品栏.情报.getValue(__name);
+        //遍历背包
+        var 背包 = _root.物品栏.背包;
+        var total = 0;
+        for(var i = 0; i < 背包.capacity; i++){
+            var bagItem = 背包.getItem(i);
+            if(bagItem.name == __name){
+                total += isNaN(bagItem.value) ? 1 : bagItem.value;
+            }
+        }
+        return total;
     }
 }
 

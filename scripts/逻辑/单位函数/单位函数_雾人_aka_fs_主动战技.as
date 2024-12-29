@@ -54,24 +54,9 @@ _root.主动战技函数.长枪.发射榴弹 = {
         //检测物品栏弹药
 		if(自机.当前弹夹副武器已发射数 > 0){
 			return true;
-		}else{
-        	for (var i = 0; i < _root.物品栏总数; i++)
-        	{
-         	   if (_root.物品栏[i][0] === 自机.副武器弹药类型)
-            	{
-                	if (_root.物品栏[i][1] > 1)
-                	{
-                    	_root.物品栏[i][1]--;
-                	}
-                	else
-                	{
-                    	_root.发布消息(自机.副武器弹药类型 + "耗尽！");
-                    	_root.物品栏[i] = ["空", 0, 0];
-                	}
-                	_root.排列物品图标();
-                	return true;
-            	}
-        	}
+		}else if(org.flashNight.arki.item.ItemUtil.singleSubmit(自机.副武器弹药类型,1)){
+            // _root.发布消息(自机.副武器弹药类型 + "耗尽！");
+            return true;
 		}
         return false;
     },

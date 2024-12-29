@@ -107,15 +107,18 @@ _root.主角函数.开始换弹 = function()
 	if(this.换弹标签 || _parent[攻击模式 + "射击次数"][_parent[攻击模式]] == 0) return;
 	if (_root.控制目标 === _parent._name)
 	{
-		for(var i = 0; i < _root.物品栏总数; i++)
-		{
-			if (_root.物品栏[i][0] === 使用弹匣名称 && _root.物品栏[i][1] >= 1)
-			{
-				this.弹匣所在物品栏编号 = i;
-				gotoAndPlay("换弹匣");
-				return;
-			}
+		if(org.flashNight.arki.item.ItemUtil.singleContain(使用弹匣名称,1) != null){
+			gotoAndPlay("换弹匣");
 		}
+		// for(var i = 0; i < _root.物品栏总数; i++)
+		// {
+		// 	if (_root.物品栏[i][0] === 使用弹匣名称 && _root.物品栏[i][1] >= 1)
+		// 	{
+		// 		this.弹匣所在物品栏编号 = i;
+		// 		gotoAndPlay("换弹匣");
+		// 		return;
+		// 	}
+		// }
 	}
 	else
 	{
@@ -128,9 +131,10 @@ _root.主角函数.换弹匣 = function(){
 	_parent[攻击模式 + "射击次数"][_parent[攻击模式]] = 0;
 	if (_root.控制目标 === _parent._name)
 	{
-		if(--_root.物品栏[弹匣所在物品栏编号][1] <= 0){
-			_root.物品栏[弹匣所在物品栏编号] = ["空", 0, 0];
-		}
+		org.flashNight.arki.item.ItemUtil.singleSubmit(使用弹匣名称,1);
+		// if(--_root.物品栏[弹匣所在物品栏编号][1] <= 0){
+		// 	_root.物品栏[弹匣所在物品栏编号] = ["空", 0, 0];
+		// }
 		剩余弹匣数 = _parent.检查弹匣数量(使用弹匣名称);
 		if(剩余弹匣数 === 0) _root.发布消息("弹匣耗尽！");
 		_root.排列物品图标();
@@ -386,25 +390,31 @@ _root.主角函数.初始化双枪射击函数 = function(){
 		if (_root.控制目标 === _parent._name)
 		{
 			if(_parent.手枪射击次数[_parent.手枪] > 0){
-				for(var i = 0; i < _root.物品栏总数; i++)
-				{
-					if (_root.物品栏[i][0] === 主手使用弹匣名称 && _root.物品栏[i][1] >= 1)
-					{
-						this.弹匣所在物品栏编号 = i;
-						gotoAndPlay("主手换弹匣");
-						return;
-					}
+				if(org.flashNight.arki.item.ItemUtil.singleContain(主手使用弹匣名称,1)){
+					gotoAndPlay("主手换弹匣");
+					return;
 				}
+				// for(var i = 0; i < _root.物品栏总数; i++)
+				// {
+				// 	if (_root.物品栏[i][0] === 主手使用弹匣名称 && _root.物品栏[i][1] >= 1)
+				// 	{
+				// 		this.弹匣所在物品栏编号 = i;
+				// 		gotoAndPlay("主手换弹匣");
+				// 		return;
+				// 	}
+				// }
 			}else if(_parent.手枪2射击次数[_parent.手枪2] > 0){
-			for(var i = 0; i < _root.物品栏总数; i++)
-				{
-					if (_root.物品栏[i][0] === 副手使用弹匣名称 && _root.物品栏[i][1] >= 1)
-					{
-						this.弹匣所在物品栏编号 = i;
-						gotoAndPlay("副手换弹匣");
-						return;
-					}
+				if(org.flashNight.arki.item.ItemUtil.singleContain(副手使用弹匣名称,1)){
+					gotoAndPlay("副手换弹匣");
+					return;
 				}
+				// for(var i = 0; i < _root.物品栏总数; i++){
+				// 	if (_root.物品栏[i][0] === 副手使用弹匣名称 && _root.物品栏[i][1] >= 1){
+				// 		this.弹匣所在物品栏编号 = i;
+				// 		gotoAndPlay("副手换弹匣");
+				// 		return;
+				// 	}
+				// }
 			}
 		}
 		else
@@ -415,11 +425,11 @@ _root.主角函数.初始化双枪射击函数 = function(){
 
 	this.主手换弹匣 = function(){
 		_parent.手枪射击次数[_parent.手枪] = 0;
-		if (_root.控制目标 === _parent._name)
-		{
-			if(--_root.物品栏[弹匣所在物品栏编号][1] <= 0){
-				_root.物品栏[弹匣所在物品栏编号] = ["空", 0, 0];
-			}
+		if (_root.控制目标 === _parent._name){
+			org.flashNight.arki.item.ItemUtil.singleSubmit(主手使用弹匣名称,1);
+			// if(--_root.物品栏[弹匣所在物品栏编号][1] <= 0){
+			// 	_root.物品栏[弹匣所在物品栏编号] = ["空", 0, 0];
+			// }
 			主手剩余弹匣数 = _parent.检查弹匣数量(主手使用弹匣名称);
 			副手剩余弹匣数 = _parent.检查弹匣数量(副手使用弹匣名称);
 			if(主手剩余弹匣数 === 0) _root.发布消息("弹匣耗尽！");
@@ -433,11 +443,11 @@ _root.主角函数.初始化双枪射击函数 = function(){
 
 	this.副手换弹匣 = function(){
 		_parent.手枪2射击次数[_parent.手枪2] = 0;
-		if (_root.控制目标 === _parent._name)
-		{
-			if(--_root.物品栏[弹匣所在物品栏编号][1] <= 0){
-				_root.物品栏[弹匣所在物品栏编号] = ["空", 0, 0];
-			}
+		if (_root.控制目标 === _parent._name){
+			org.flashNight.arki.item.ItemUtil.singleSubmit(副手使用弹匣名称,1);
+			// if(--_root.物品栏[弹匣所在物品栏编号][1] <= 0){
+			// 	_root.物品栏[弹匣所在物品栏编号] = ["空", 0, 0];
+			// }
 			主手剩余弹匣数 = _parent.检查弹匣数量(主手使用弹匣名称);
 			副手剩余弹匣数 = _parent.检查弹匣数量(副手使用弹匣名称);
 			if(副手剩余弹匣数 === 0) _root.发布消息("弹匣耗尽！");

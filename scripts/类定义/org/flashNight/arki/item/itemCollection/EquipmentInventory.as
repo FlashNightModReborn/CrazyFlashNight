@@ -14,6 +14,19 @@ class org.flashNight.arki.item.itemCollection.EquipmentInventory extends Invento
     public function isAddable(key:String,item:Object):Boolean{
         if(!super.isAddable(key,item)) return false;
         var use = _root.getItemData(item.name).use;
+        //对手枪2进行额外检测
         return use == key || (use == "手枪" && key == "手枪2");
+    }
+
+    //返回装备名称字符串，若未装备则返回空字符串
+    public function getNameString(key:String):String{
+        if(isEmpty(key)) return "";
+        return items[key].name;
+    }
+
+    //返回装备强化度
+    public function getLevel(key:String):Number{
+        if(isEmpty(key)) return 0;
+        return items[key].value.level;
     }
 }
