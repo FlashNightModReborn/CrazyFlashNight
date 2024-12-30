@@ -114,16 +114,16 @@ class org.flashNight.naki.Sort.InsertionSort {
             key = arr[i]; // 当前元素
             j = i - 1;
 
-            // 手动内联展开的插入过程
+            // 使用变量覆盖方式优化插入过程，并合并移动和递减操作
             while (j >= 0 && compare(arr[j], key) > 0) {
-                arr[j + 1] = arr[j]; // 移动元素
-                j--;
+                arr[j + 1] = arr[j--]; // 移动元素并递减 j
             }
             arr[j + 1] = key; // 插入元素
         }
 
         return arr; // 返回排序后的数组
     }
+
 
     /**
      * 基于插入排序算法的自定义 `sortOn` 方法，完全替代 AS2 的原生 `sortOn` 方法。
