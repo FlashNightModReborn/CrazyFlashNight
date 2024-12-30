@@ -115,9 +115,7 @@ class org.flashNight.naki.Sort.InsertionSort {
             j = i - 1;
 
             // 使用变量覆盖方式优化插入过程，并合并移动和递减操作
-            while (j >= 0 && compare(arr[j], key) > 0) {
-                arr[j + 1] = arr[j--]; // 移动元素并递减 j
-            }
+            while (j >= 0 && compare(arr[j], key) > 0) arr[j + 1] = arr[j--]; // 移动元素并递减 j
             arr[j + 1] = key; // 插入元素
         }
 

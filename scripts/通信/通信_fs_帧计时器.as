@@ -843,7 +843,7 @@ _root.帧计时器.延迟执行任务 = function(任务ID, 延迟时间)
     return false; // Task not found, delay set failed
 };
 
-EventBus.getInstance().subscribe("SceneChanged", StaticInitializer.onSceneChanged, StaticInitializer); // 地图变动时，重新初始化子弹池
+EventBus.getInstance().subscribe("SceneChanged", StaticInitializer.onSceneChanged, StaticInitializer); 
 
 
 _root.帧计时器.确保目标缓存存在 = function(自机状态, 请求类型) 

@@ -83,6 +83,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
         target.aabbCollider = areaAABB;
         // 判断是否需要绑定 onEnterFrame
 
+        target.附加层伤害计算 = 0;
+
         _root.子弹生命周期.call(target);
         if(!target.透明检测) target.onEnterFrame = _root.子弹生命周期;
     }
