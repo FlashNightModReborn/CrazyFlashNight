@@ -1,4 +1,4 @@
-﻿interface org.flashNight.arki.unit.UnitComponent.IInitializer {
+﻿interface org.flashNight.arki.unit.UnitComponent.Initializer.IInitializer {
     /**
      * 执行初始化操作。
      *

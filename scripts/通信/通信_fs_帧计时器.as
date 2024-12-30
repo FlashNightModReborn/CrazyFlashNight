@@ -10,6 +10,7 @@ import org.flashNight.arki.component.Collider.*;
 import org.flashNight.gesh.arguments.*;
 import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.gesh.xml.LoadXml.*;
+import org.flashNight.arki.unit.UnitComponent.*;
 
 _root.帧计时器 = {};
 ColliderFactoryRegistry.init();
