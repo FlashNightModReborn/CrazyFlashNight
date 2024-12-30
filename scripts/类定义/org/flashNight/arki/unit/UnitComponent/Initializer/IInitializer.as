@@ -5,5 +5,5 @@
      * 此方法应包含所有在对象创建后需要执行的初始化逻辑。
      *
      */
-    function initialize():Void;
+    function initialize(target:MovieClip):Void;
 }

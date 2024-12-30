@@ -10,7 +10,7 @@ import org.flashNight.arki.component.Collider.*;
 import org.flashNight.gesh.arguments.*;
 import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.gesh.xml.LoadXml.*;
-import org.flashNight.arki.unit.UnitComponent.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 
 _root.帧计时器 = {};
 ColliderFactoryRegistry.init();
@@ -843,24 +843,7 @@ _root.帧计时器.延迟执行任务 = function(任务ID, 延迟时间)
     return false; // Task not found, delay set failed
 };
 
-EventBus.getInstance().subscribe("SceneChanged", function() {
-    var gameworld = _root.gameworld;
-    var factory:IColliderFactory = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.AABBFactory);
-    for (var each in gameworld) 
-    {
-        var target = gameworld[each];
-        if(target.hp > 0)
-        {
-            if(!target.aabbCollider) target.aabbCollider = factory.createFromUnitArea(target);
-            if(isNaN(target.重量)) target.重量 = 60;
-            if(isNaN(target.韧性系数)) target.韧性系数 = 1;
-            if(isNaN(target.残余冲击力)) target.残余冲击力 = 0;
-            if(isNaN(target.命中率)) target.命中率 = 10;
-
-        }
-        //_root.服务器.发布服务器消息(目标 + " ," + 目标.命中率 + " ," + 目标.躲闪率);
-    }
-}, null); // 地图变动时，重新初始化子弹池
+EventBus.getInstance().subscribe("SceneChanged", StaticInitializer.onSceneChanged, StaticInitializer); // 地图变动时，重新初始化子弹池
 
 
 _root.帧计时器.确保目标缓存存在 = function(自机状态, 请求类型) 
