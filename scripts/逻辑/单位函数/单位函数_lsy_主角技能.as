@@ -614,3 +614,70 @@ _root.技能函数.迅斩攻击 = function()
 
 	_parent.刀口位置生成子弹(子弹参数);
 }
+
+_root.技能函数.翻滚换弹 = function(){
+	if (_root.控制目标 != _parent._name) {
+		_parent.长枪射击次数[_parent.长枪] = 0;
+		_parent.当前弹夹副武器已发射数 = 0;
+		_parent.手枪射击次数[_parent.手枪] = 0;
+		_parent.手枪2射击次数[_parent.手枪2] = 0;
+		return;
+	}
+	
+	var 长枪使用弹夹名称 = _parent.长枪属性数组[14][11];
+	if (_parent.长枪射击次数[_parent.长枪] > 0){
+		if(org.flashNight.arki.item.ItemUtil.singleSubmit(长枪使用弹夹名称,1)){
+			_parent.长枪射击次数[_parent.长枪] = 0;
+			_parent.当前弹夹副武器已发射数 = 0;
+		}
+	}
+	var 手枪使用弹夹名称 = _parent.手枪属性数组[14][11];
+	if (_parent.手枪射击次数[_parent.手枪] > 0){
+		if(org.flashNight.arki.item.ItemUtil.singleSubmit(手枪使用弹夹名称,1)){
+			_parent.手枪射击次数[_parent.手枪] = 0;
+			_parent.当前弹夹副武器已发射数 = 0;
+		}
+	}
+	var 手枪2使用弹夹名称 = _parent.手枪2属性数组[14][11];
+	if (_parent.手枪2射击次数[_parent.手枪2] > 0){
+		if(org.flashNight.arki.item.ItemUtil.singleSubmit(手枪2使用弹夹名称,1)){
+			_parent.手枪2射击次数[_parent.手枪2] = 0;
+			_parent.当前弹夹副武器已发射数 = 0;
+		}
+	}
+}
+
+_root.技能函数.火舞旋风攻击 = function(){
+	子弹属性 = _root.子弹属性初始化(this.攻击点);
+
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "常规旋风";
+	子弹属性.子弹速度 = 0;
+	if (_parent.刀属性数组[13]){
+		子弹属性.子弹威力 = _parent.空手攻击力 * 0.1 + 2 * _parent.内力 * (3 + _parent.技能等级 * 0.5) + _parent.刀属性数组[13] * (10 + _parent.技能等级) / 10;
+	}else{
+		子弹属性.子弹威力 = _parent.空手攻击力 * 0.1 + 2 * _parent.内力 * (3 + _parent.技能等级 * 0.5);
+	}
+	if (_parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent.mp攻击加成;
+	}
+	//消耗燃料罐
+	if (_parent._name == _root.控制目标){
+		if (org.flashNight.arki.item.ItemUtil.singleSubmit("火焰喷射器燃料罐",1)){
+			子弹属性.子弹种类 = "火舞旋风";
+			子弹属性.伤害类型 = "魔法";
+			子弹属性.魔法伤害属性 = "热";
+		}
+		if (Key.isDown(_parent.左键) || Key.isDown(_parent.右键)){
+			子弹属性.子弹速度 = 13;
+		}
+	}else{
+		子弹属性.子弹速度 = 13;
+	}
+	子弹属性.Z轴攻击范围 = 50;
+	子弹属性.击倒率 = 10;
+
+	_root.子弹区域shoot传递(子弹属性);
+}
