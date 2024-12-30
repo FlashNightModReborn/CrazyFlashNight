@@ -507,14 +507,28 @@ _root.物品UI函数.删除背包图标 = function(){
 //初始化药剂栏图标
 _root.物品UI函数.初始化药剂栏图标 = function(){
 	var 快捷药剂界面 = _root.玩家信息界面.快捷药剂界面;
-	var 药剂栏 = _root.物品栏.药剂栏;
-	快捷药剂界面.药剂图标列表 = [快捷药剂界面.快捷物品栏0,快捷药剂界面.快捷物品栏1,快捷药剂界面.快捷物品栏2,快捷药剂界面.快捷物品栏3];
+	if(快捷药剂界面.药剂图标列表.length == 4) return;
+	
+	var list = [快捷药剂界面.位置示意0,快捷药剂界面.位置示意1,快捷药剂界面.位置示意2,快捷药剂界面.位置示意3];
+	快捷药剂界面.药剂图标列表 = [];
+	var 控制器列表 = [快捷药剂界面.控制器0,快捷药剂界面.控制器1,快捷药剂界面.控制器2,快捷药剂界面.控制器3];
 	var 进度条列表 = [快捷药剂界面.进度条0,快捷药剂界面.进度条1,快捷药剂界面.进度条2,快捷药剂界面.进度条3];
 
 	for (var i = 0; i < 4; i++){
-		var 物品图标 = 快捷药剂界面.药剂图标列表[i];
-		物品图标.itemIcon = new DrugIcon(物品图标,药剂栏,i,进度条列表[i]);
-		_root["快捷物品栏" + this.index] = 物品图标.itemIcon.name;
+		var depth = list[i].getDepth();
+		var posx = list[i]._x;
+		var posy = list[i]._y;
+		list[i].removeMovieClip();
+		var 药剂图标 = 快捷药剂界面.attachMovie("物品图标", "快捷物品栏"+i, depth);
+		药剂图标._x = posx;
+		药剂图标._y = posy;
+		快捷药剂界面.药剂图标列表.push(药剂图标);
+		// 药剂图标.itemIcon = new DrugIcon(药剂图标, _root.物品栏.药剂栏, i, 进度条列表[i]);
+		控制器列表[i].药剂栏 = 药剂图标;
+		_root["快捷物品栏" + this.index] = 药剂图标.itemIcon.name;
+	}
+	for (var i = 0; i < 4; i++){
+		快捷药剂界面.药剂图标列表[i].itemIcon = new DrugIcon(快捷药剂界面.药剂图标列表[i], _root.物品栏.药剂栏, i, 进度条列表[i]);
 	}
 }
 

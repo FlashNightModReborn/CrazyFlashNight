@@ -41,6 +41,7 @@ _root.mydata数据组包 = function(){
     var 健身储存数据 = [_root.全局健身HP加成,_root.全局健身MP加成,_root.全局健身空攻加成,_root.全局健身防御加成,_root.全局健身内力加成];
 
     var mydata = {};
+    mydata.version = "2.5";
     mydata[0] = 主角储存数据;
     mydata[1] = 装备储存数据;
     mydata[2] = null;

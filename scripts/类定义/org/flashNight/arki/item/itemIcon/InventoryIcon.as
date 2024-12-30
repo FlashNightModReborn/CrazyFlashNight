@@ -118,7 +118,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
 
         if (itemData.use == "药剂" && _root.玩家信息界面.快捷药剂界面.hitTest(xmouse, ymouse)){
             var icons = _root.物品栏.药剂栏.icons;
-            for (var i in icons){
+            for (var i = 0; i < 4; i++){
                 var iconMovieClip = icons[i].icon;
                 if(iconMovieClip.area.hitTest(xmouse, ymouse)){
                     ItemUtil.moveItemToDrug(this,icons[i]);
