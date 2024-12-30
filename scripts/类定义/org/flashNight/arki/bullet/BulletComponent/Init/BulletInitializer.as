@@ -87,17 +87,23 @@
     }
 
     /**
-     * 初始化子弹属性
+     * 初始化子弹毒属性
      * @param Obj {Object} 子弹对象
      */
-    public static function initializeNano(Obj:Object):Void
+    public static function initializeNanoToxicfunction(Obj:Object, bullet:Object, shooter:Object):Void
     {
-        // 相当于 _root.初始化子弹属性(Obj);
-        Obj.发射者名 = Obj.发射者;
-        Obj.子弹敌我属性值 = Obj.子弹敌我属性;
-        Obj._x = Obj.shootX;
-        Obj._y = Obj.shootY;
-        Obj.Z轴坐标 = Obj.shootZ;
-        Obj.子弹区域area = Obj.区域定位area;
+        if(Obj.毒 || shooter.淬毒 || shooter.毒) {
+            var shooterToxic = isNaN(shooter.淬毒) ? 0 : shooter.淬毒;
+            Obj.毒 = Math.max((isNaN(Obj.毒) ? 0 : Obj.毒), (isNaN(shooter.毒) ? 0 : shooter.毒));
+            if(shooterToxic && shooterToxic > Obj.毒) {
+                bullet.nanoToxic = shooterToxic;
+                bullet.nanoToxicDecay = 1;
+                if(!bullet.近战检测 && shooter.淬毒 > 10) {
+                    shooter.淬毒 -= 1;
+                }
+            } else {
+                bullet.nanoToxic = Obj.毒;
+            }
+        }
     }
 }

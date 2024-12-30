@@ -81,12 +81,10 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
 
         // 绑定 AABB 碰撞区域到子弹实例
         target.aabbCollider = areaAABB;
-        // 判断是否需要直接调用生命周期函数或绑定 onEnterFrame
-        if (target.透明检测) {
-            _root.子弹生命周期.call(target);
-        } else {
-            target.onEnterFrame = _root.子弹生命周期;
-        }
+        // 判断是否需要绑定 onEnterFrame
+
+        _root.子弹生命周期.call(target);
+        if(!target.透明检测) target.onEnterFrame = _root.子弹生命周期;
     }
 
     /**
