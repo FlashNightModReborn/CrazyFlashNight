@@ -1,4 +1,6 @@
-﻿_root.可拾取物计数 = 0;
+﻿import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+
+_root.可拾取物计数 = 0;
 
 _root.创建可拾取物 = function(物品名, 数量, X位置, Y位置, 是否飞出, 参数对象)
 {
@@ -68,6 +70,6 @@ _root.初始化资源箱 = function(){
 	躲闪率 = 100;
 	击中效果 = "火花";
 	Z轴坐标 = this._y;
-	_root.帧计时器.注册目标缓存(this);
+	StaticInitializer.initializeUnit(this);
 	gotoAndStop("正常");
 }

@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
-
+import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
 
@@ -184,7 +185,7 @@ _root.刷新人物装扮 = function(目标)
 	var 目标人物 = _root.gameworld[目标];
 
 	目标人物.aabbCollider = new AABBCollider();
-	_root.帧计时器.注册目标缓存(目标人物);
+	StaticInitializer.initializeUnit(目标人物);
 	var 是主角:Boolean = false;
 	var 头部装备:String;
 	var 上装装备:String;
@@ -2021,7 +2022,6 @@ _root.主角函数.获取佣兵装备属性 = function(id)
 
 _root.主角函数.掉落装备 = function()
 {
-	_root.帧计时器.注销目标缓存(this);
 	if(不掉装备){
 		return;
 	}
@@ -2438,7 +2438,7 @@ _root.主角函数.死亡检测 = function()
 			}
 		}
 
-		this.aabbCollider.getFactory().releaseCollider(this.aabbCollider);
+		StaticDeinitializer.deInitializeUnit(this)
 	}
 }
 

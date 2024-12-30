@@ -1,4 +1,6 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();
@@ -261,8 +263,7 @@ _root.敌人函数.击倒呐喊 = function()
 _root.敌人函数.死亡检测 = function(){
 	if (hp <= 0 && !已加经验值){
 		this.man.stop();
-		_root.帧计时器.注销目标缓存(this);
-		this.aabbCollider.getFactory().releaseCollider(this.aabbCollider);
+		StaticDeinitializer.deInitializeUnit(this)
 		if (是否为敌人){
 			_root.敌人死亡计数 += 1;
 			_root.gameworld[产生源].僵尸型敌人场上实际人数--;
@@ -430,7 +431,7 @@ _root.初始化敌人模板 = function()
 	}
 		
 	//初始化完毕
-	_root.帧计时器.注册目标缓存(this);
+	StaticInitializer.initializeUnit(this);
 	根据等级初始数值(等级);
 	宠物属性初始化();
 	方向改变(方向);
