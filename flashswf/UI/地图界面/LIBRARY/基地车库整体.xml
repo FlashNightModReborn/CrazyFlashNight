@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="基地车库整体" itemID="67497c29-000006a9" symbolType="graphic" lastModified="1732957545" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="基地车库整体" itemID="67497c29-000006a9" symbolType="graphic" lastModified="1735553259" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="基地车库整体">
+    <DOMTimeline name="基地车库整体" currentFrame="1">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -18,11 +18,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_1" color="#00FFFF">
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 1" centerPoint3DX="1209.3" centerPoint3DY="554.3">
+                <DOMSymbolInstance libraryItemName="元件 1" centerPoint3DX="1209.3" centerPoint3DY="554.3" exportAsBitmap="true">
                   <transformationPoint>
                     <Point x="1209.1" y="554.3"/>
                   </transformationPoint>
@@ -31,7 +31,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 1" centerPoint3DX="1209.3" centerPoint3DY="554.3">
+                <DOMSymbolInstance libraryItemName="元件 1" centerPoint3DX="1209.3" centerPoint3DY="554.3" exportAsBitmap="true">
                   <transformationPoint>
                     <Point x="1209.1" y="554.3"/>
                   </transformationPoint>

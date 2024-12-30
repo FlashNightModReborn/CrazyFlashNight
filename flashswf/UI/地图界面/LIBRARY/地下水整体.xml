@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地下水整体" itemID="6748cb24-00000095" symbolType="graphic" lastModified="1732959012" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地下水整体" itemID="6748cb24-00000095" symbolType="graphic" lastModified="1735553376" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="地下水整体" currentFrame="1">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -18,11 +18,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_1" color="#00FFFF">
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 13" centerPoint3DX="611.95" centerPoint3DY="364.85">
+                <DOMSymbolInstance libraryItemName="元件 13" centerPoint3DX="611.95" centerPoint3DY="364.85" exportAsBitmap="true">
                   <transformationPoint>
                     <Point x="611.95" y="364.6"/>
                   </transformationPoint>
@@ -31,7 +31,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 13" centerPoint3DX="611.95" centerPoint3DY="364.85">
+                <DOMSymbolInstance libraryItemName="元件 13" selected="true" centerPoint3DX="611.95" centerPoint3DY="364.85" exportAsBitmap="true">
                   <transformationPoint>
                     <Point x="611.95" y="364.6"/>
                   </transformationPoint>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="走廊整体" itemID="6748cc01-000000dc" symbolType="graphic" lastModified="1733360941" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="走廊整体" itemID="6748cc01-000000dc" symbolType="graphic" lastModified="1735553364" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="走廊整体" currentFrame="1">
+    <DOMTimeline name="走廊整体">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -15,11 +15,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_1" color="#00FFFF">
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 11" centerPoint3DX="731.75" centerPoint3DY="398.5">
+                <DOMSymbolInstance libraryItemName="元件 11" selected="true" centerPoint3DX="731.75" centerPoint3DY="398.5" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="0.05"/>
                   </matrix>

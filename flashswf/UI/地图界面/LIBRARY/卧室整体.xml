@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="卧室整体" itemID="6748d0fd-000002cd" symbolType="graphic" lastModified="1732957580" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="卧室整体" itemID="6748d0fd-000002cd" symbolType="graphic" lastModified="1735553312" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="卧室整体" currentFrame="1">
       <layers>
@@ -22,7 +22,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 6" selected="true" centerPoint3DX="536.9" centerPoint3DY="310">
+                <DOMSymbolInstance libraryItemName="元件 6" centerPoint3DX="536.9" centerPoint3DY="310" exportAsBitmap="true">
                   <transformationPoint>
                     <Point x="536.85" y="310"/>
                   </transformationPoint>
@@ -31,7 +31,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 6" centerPoint3DX="536.9" centerPoint3DY="310">
+                <DOMSymbolInstance libraryItemName="元件 6" selected="true" centerPoint3DX="536.9" centerPoint3DY="310" exportAsBitmap="true">
                   <transformationPoint>
                     <Point x="536.85" y="310"/>
                   </transformationPoint>
