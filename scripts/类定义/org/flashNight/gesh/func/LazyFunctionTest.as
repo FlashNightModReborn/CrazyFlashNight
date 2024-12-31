@@ -1,5 +1,4 @@
-﻿// LazyFunctionTest.as
-import org.flashNight.gesh.func.LazyFunction;
+﻿import org.flashNight.gesh.func.LazyFunction;
 
 class org.flashNight.gesh.func.LazyFunctionTest {
     private var testCount:Number;
@@ -96,6 +95,88 @@ class org.flashNight.gesh.func.LazyFunctionTest {
     }
 
     /**
+     * 测试未传递参数的情况。
+     */
+    public function testNoArguments():Void {
+        var called:Boolean = false;
+
+        var lazyFunc:LazyFunction = new LazyFunction(
+            function() {},
+            function() {
+                called = true;
+            }
+        );
+
+        lazyFunc.execute();
+        assert(called, "Target function should execute without arguments.");
+    }
+
+    /**
+     * 测试初始化函数抛出异常的情况。
+     */
+    public function testInitializerException():Void {
+        var errorCaught:Boolean = false;
+
+        try {
+            var lazyFunc:LazyFunction = new LazyFunction(
+                function() {
+                    throw new Error("Initialization error");
+                },
+                function() {}
+            );
+
+            lazyFunc.execute();
+        } catch (e:Error) {
+            errorCaught = true;
+            assert(e.message == "Initialization error", "Exception message should match.");
+        }
+
+        assert(errorCaught, "Exception should be caught during initialization.");
+    }
+
+    /**
+     * 测试目标函数抛出异常的情况。
+     */
+    public function testTargetException():Void {
+        var errorCaught:Boolean = false;
+
+        var lazyFunc:LazyFunction = new LazyFunction(
+            function() {},
+            function() {
+                throw new Error("Target error");
+            }
+        );
+
+        try {
+            lazyFunc.execute();
+        } catch (e:Error) {
+            errorCaught = true;
+            assert(e.message == "Target error", "Exception message should match.");
+        }
+
+        assert(errorCaught, "Exception should be caught in target function.");
+    }
+
+    /**
+     * 测试在没有目标函数的情况下的行为。
+     */
+    public function testMissingTarget():Void {
+        var errorCaught:Boolean = false;
+
+        try {
+            var lazyFunc:LazyFunction = new LazyFunction(
+                function() {},
+                null // 传递 null 目标函数
+            );
+        } catch (e:Error) {
+            errorCaught = true;
+            assert(e.message.indexOf("Invalid parameters") >= 0, "Should throw an error for invalid parameters.");
+        }
+
+        assert(errorCaught, "Exception should be thrown for null target function.");
+    }
+
+    /**
      * 运行所有测试。
      */
     public function runTests():Void {
@@ -107,6 +188,18 @@ class org.flashNight.gesh.func.LazyFunctionTest {
 
         testMultipleCalls();
         trace("testMultipleCalls passed.");
+
+        testNoArguments();
+        trace("testNoArguments passed.");
+
+        testInitializerException();
+        trace("testInitializerException passed.");
+
+        testTargetException();
+        trace("testTargetException passed.");
+
+        testMissingTarget();
+        trace("testMissingTarget passed.");
 
         trace("All LazyFunction tests passed successfully.");
     }
