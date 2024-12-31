@@ -2,9 +2,13 @@
     private var items:Array; // 用于存储栈元素的数组
     private var top:Number;  // 栈顶索引，初始值为-1表示栈为空
 
-    public function ArrayStack() {
-        this.items = [];    // 初始化存储栈元素的数组
-        this.top = -1;      // 初始化栈顶索引为-1
+    /**
+     * 构造函数，初始化栈
+     * @param capacity 栈的预期大小（可选）
+     */
+    public function ArrayStack(capacity:Number) {
+        this.items = capacity ? new Array(capacity) : [];
+        this.top = -1;
     }
 
     /**
@@ -55,5 +59,18 @@
     public function clear():Void {
         this.top = -1;       // 重置栈顶索引为-1
         this.items.length = 0; // 清空存储元素的数组
+    }
+
+    /**
+     * 调整栈的大小
+     * @param newSize 新的大小
+     */
+    public function resize(newSize:Number):Void {
+        if (newSize < 0) return; // 无效大小，不进行操作
+        if (newSize < this.top + 1) {
+            // 截断数组并调整top
+            this.items.length = newSize;
+            this.top = newSize - 1;
+        }
     }
 }
