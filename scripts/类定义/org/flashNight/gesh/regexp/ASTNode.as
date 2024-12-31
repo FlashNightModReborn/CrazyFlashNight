@@ -98,15 +98,26 @@
 
             case 'Sequence':
                 var currentPos:Number = position;
+                var tempCapturesSeq:Array = captures.slice(); // 克隆 captures
+                var allMatchedSeq:Boolean = true;
+
                 for (var i:Number = 0; i < this.children.length; i++) {
-                    var childResult:Object = this.children[i].match(input, currentPos, captures, ignoreCase);
+                    var childResult:Object = this.children[i].match(input, currentPos, tempCapturesSeq, ignoreCase);
                     if (!childResult.matched) {
-                        return { matched: false, position: position };
+                        allMatchedSeq = false;
+                        break;
                     }
                     currentPos = childResult.position;
                 }
-                result.matched = true;
-                result.position = currentPos;
+
+                if (allMatchedSeq) {
+                    // 将 tempCapturesSeq 更新回 captures
+                    for (var k:Number = 0; k < tempCapturesSeq.length; k++) {
+                        captures[k] = tempCapturesSeq[k];
+                    }
+                    result.matched = true;
+                    result.position = currentPos;
+                }
                 break;
 
             case 'CharacterClass':
@@ -167,8 +178,8 @@
                     throw new Error("Quantifier node has no child.");
                 }
 
-                // 贪婪匹配：尽可能多地匹配
-                var maxPossible:Number = this.max;
+                // 限制 maxPossible 不超过输入字符串的剩余长度
+                var maxPossible:Number = Math.min(this.max, input.length - position);
                 var minRequired:Number = this.min;
                 var currentCount:Number = 0;
                 var currentMatchPos:Number = position;
@@ -189,7 +200,7 @@
                     // 尝试回溯，从最大匹配数到最小
                     for (var count:Number = currentCount; count >= minRequired; count--) {
                         var tempPos:Number = position;
-                        tempCaptures = captures.slice(); // Clone captures
+                        tempCaptures = captures.slice(); // 克隆 captures
                         var allMatched:Boolean = true;
 
                         for (var c:Number = 0; c < count; c++) {
@@ -205,7 +216,10 @@
                         if (allMatched) {
                             result.matched = true;
                             result.position = tempPos;
-                            captures = tempCaptures; // 更新捕获组
+                            // 正确更新 captures 数组
+                            for (var m:Number = 0; m < tempCaptures.length; m++) {
+                                captures[m] = tempCaptures[m];
+                            }
                             break;
                         }
                     }
@@ -234,13 +248,23 @@
                 break;
 
             case 'Alternation':
-                var leftResult:Object = this.left.match(input, position, captures, ignoreCase);
+                var leftCaptures:Array = captures.slice(); // 克隆 captures
+                var leftResult:Object = this.left.match(input, position, leftCaptures, ignoreCase);
                 if (leftResult.matched) {
+                    // 将左侧的 captures 更新回主 captures
+                    for (var l:Number = 0; l < leftCaptures.length; l++) {
+                        captures[l] = leftCaptures[l];
+                    }
                     result.matched = true;
                     result.position = leftResult.position;
                 } else {
-                    var rightResult:Object = this.right.match(input, position, captures, ignoreCase);
+                    var rightCaptures:Array = captures.slice(); // 克隆 captures
+                    var rightResult:Object = this.right.match(input, position, rightCaptures, ignoreCase);
                     if (rightResult.matched) {
+                        // 将右侧的 captures 更新回主 captures
+                        for (var r:Number = 0; r < rightCaptures.length; r++) {
+                            captures[r] = rightCaptures[r];
+                        }
                         result.matched = true;
                         result.position = rightResult.position;
                     }
@@ -249,15 +273,20 @@
 
             case 'Group':
                 var groupStartPos:Number = position;
-                var groupResult:Object = this.child.match(input, position, captures, ignoreCase);
+                var groupCaptures:Array = captures.slice(); // 克隆 captures
+                var groupResult:Object = this.child.match(input, position, groupCaptures, ignoreCase);
                 if (groupResult.matched) {
                     result.matched = true;
                     result.position = groupResult.position;
                     if (this.capturing) {
                         var groupMatch:String = input.substring(groupStartPos, groupResult.position);
                         if (this.groupNumber > 0) { // 确保是捕获组
-                            captures[this.groupNumber] = groupMatch;
+                            groupCaptures[this.groupNumber] = groupMatch;
                         }
+                    }
+                    // 更新 captures 数组
+                    for (var g:Number = 0; g < groupCaptures.length; g++) {
+                        captures[g] = groupCaptures[g];
                     }
                 }
                 break;
