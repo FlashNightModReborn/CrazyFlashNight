@@ -175,7 +175,7 @@ class org.flashNight.naki.Sort.InsertionSort {
      * @return 排序后的数组，或者如果启用了唯一性检查且发现重复元素时返回 null。
      */
 
-    public static function sortOn(arr:Array, fieldName:Object, options:Object):Object {
+    public static function sortOn(arr:Array, fieldName:Object, options:Object):Array {
         var length:Number = arr.length;
         if (length <= 1) {
             return arr; // 若数组长度小于等于 1，无需排序，直接返回
