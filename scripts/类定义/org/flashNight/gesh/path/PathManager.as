@@ -5,21 +5,32 @@
 
     /**
      * 初始化路径管理器，基于当前运行环境自动设置基础路径。
+     * @param testUrl String (可选) 外部传入的 URL，用于测试模式。如果不传，则使用默认逻辑获取 URL。
      */
-    public static function initialize():Void {
-        var url:String = decodeURL(_url); // 获取当前文件的 URL 并解码中文路径
-        trace("当前 URL: " + url);
-        
+    public static function initialize(testUrl:String):Void {
+        if (basePath != null) {
+            return; // 防止重复初始化
+        }
+
+        var url:String;
+
+        // 判断是否传入了测试 URL
+        if (testUrl != null) {
+            url = decodeURL(testUrl); // 使用传入的 URL 并解码
+            trace("测试模式：使用外部传入的 URL: " + url);
+        } else {
+            url = decodeURL(_url); // 使用默认逻辑获取当前文件的 URL 并解码
+            trace("正常模式：当前 URL: " + url);
+        }
+
         // 判断是否在浏览器环境中运行
         if (isRunningInBrowser(url)) {
             isBrowserEnvironment = true;
             trace("检测到浏览器环境，设置为浏览器模式。");
-            // TODO: 设置服务器基础路径，例如 "http://yourserver.com/resources/"
+            // 设置服务器基础路径，例如 "http://yourserver.com/resources/"
             basePath = "http://yourserver.com/resources/"; // 占位用路径
             // 确保 basePath 以斜杠结尾
-            if (basePath.charAt(basePath.length - 1) != "/") {
-                basePath += "/";
-            }
+            basePath = ensureTrailingSlash(basePath);
             isValidEnvironment = true;
             trace("基础路径设置为服务器路径: " + basePath);
         } else {
@@ -27,10 +38,7 @@
             var resourceIndex:Number = url.indexOf("resources/");
             if (resourceIndex != -1) {
                 basePath = url.substring(0, resourceIndex + "resources/".length); // 截断到 resources/ 为止
-                // 确保 basePath 以斜杠结尾
-                if (basePath.charAt(basePath.length - 1) != "/") {
-                    basePath += "/";
-                }
+                basePath = ensureTrailingSlash(basePath);
                 isValidEnvironment = true;
                 trace("检测到资源目录，基础路径设置为: " + basePath);
             } else {
@@ -47,7 +55,7 @@
      * @return Boolean 如果在浏览器环境中，返回 true；否则返回 false。
      */
     private static function isRunningInBrowser(url:String):Boolean {
-        // 简单判断 URL 是否以 http:// 或 https:// 开头
+        // 判断 URL 是否以 http:// 或 https:// 开头，排除 file://
         return (url.indexOf("http://") == 0 || url.indexOf("https://") == 0);
     }
 
@@ -96,25 +104,12 @@
         }
 
         if (isBrowserEnvironment) {
-            // 在浏览器环境中，通过服务器端口通信获取文件
-            // TODO: 实现通过端口通信获取文件的逻辑
-            // 这里假设 basePath 已经设置为服务器的基础 URL
             return basePath + relativePath;
         } else {
-            // 本地环境，防止重复“resources/”
             if (relativePath.indexOf("resources/") == 0) {
-                // 将 relativePath 从第一个 "resources/" 之后开始
                 relativePath = relativePath.substring("resources/".length);
             }
-
-            // 确保 basePath 和 relativePath 之间有且只有一个斜杠
-            if (basePath.charAt(basePath.length - 1) != "/" && relativePath.charAt(0) != "/") {
-                return basePath + "/" + relativePath;
-            } else if (basePath.charAt(basePath.length - 1) == "/" && relativePath.charAt(0) == "/") {
-                return basePath + relativePath.substring(1);
-            } else {
-                return basePath + relativePath;
-            }
+            return basePath + relativePath;
         }
     }
 
@@ -148,8 +143,28 @@
             trace("当前不在有效的资源环境中，无法获取 scripts/类定义/ 路径。");
             return null;
         }
-        // 假设 scripts/类定义/ 在 resources/ 下
         return resolvePath("scripts/类定义/");
+    }
+
+    /**
+     * 重置 PathManager 的状态。
+     */
+    public static function reset():Void {
+        basePath = null;
+        isValidEnvironment = false;
+        isBrowserEnvironment = false;
+    }
+
+    /**
+     * 确保路径以斜杠结尾。
+     * @param path String 路径。
+     * @return String 以斜杠结尾的路径。
+     */
+    private static function ensureTrailingSlash(path:String):String {
+        if (path.charAt(path.length - 1) != "/") {
+            path += "/";
+        }
+        return path;
     }
 
     /**

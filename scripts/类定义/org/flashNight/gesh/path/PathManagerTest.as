@@ -18,10 +18,19 @@ class org.flashNight.gesh.path.PathManagerTest {
         // 3. 测试在 非 C 盘 环境中的路径解析
         testResolvePathOnNonCDrive();
 
-        // 4. 测试在浏览器环境中的解析 (如可能，需要在浏览器里运行此测试)
+        // 4. 测试在浏览器环境中的解析
         testBrowserEnvironment();
 
-        // 5. 打印最终汇总
+        // 5. 测试无效 URL 处理
+        testInvalidURL();
+
+        // 6. 测试相对路径以 "resources/" 开头的情况
+        testRelativePathWithResources();
+
+        // 7. 测试相对路径不以 "resources/" 开头的情况
+        testRelativePathWithoutResources();
+
+        // 8. 打印最终汇总
         trace("=== PathManager 测试结束 ===\n");
     }
 
@@ -31,8 +40,11 @@ class org.flashNight.gesh.path.PathManagerTest {
     private static function testEnvironmentCheck():Void {
         trace("[Test] testEnvironmentCheck()");
 
-        // 强制初始化
-        var basePath:String = PathManager.getBasePath();
+        // Reset PathManager
+        PathManager.reset();
+
+        // Initialize without parameters
+        PathManager.initialize();
 
         // 检测是否有效环境
         var valid:Boolean = PathManager.isEnvironmentValid();
@@ -48,10 +60,16 @@ class org.flashNight.gesh.path.PathManagerTest {
 
     /**
      * 测试: C 盘上的路径解析
-     * 假设你在 C 盘下运行 SWF 文件，进行解析并查看是否成功。
      */
     private static function testResolvePathOnCDrive():Void {
         trace("[Test] testResolvePathOnCDrive()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate C drive environment
+        var cDriveUrl:String = "file:///C:/path/to/resources/";
+        PathManager.initialize(cDriveUrl);
 
         // 假定要解析的相对路径
         var relativePath:String = "images/test.png";
@@ -72,13 +90,18 @@ class org.flashNight.gesh.path.PathManagerTest {
 
     /**
      * 测试: 非 C 盘上的路径解析
-     * 已知问题：在非 C 盘上无法成功运行。
-     * 这里模拟或真实验证该场景，以便定位和确认 bug。
      */
     private static function testResolvePathOnNonCDrive():Void {
         trace("[Test] testResolvePathOnNonCDrive()");
 
-        // 同理，假定要解析的相对路径
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate non-C drive environment
+        var nonCDriveUrl:String = "file:///D:/path/to/resources/";
+        PathManager.initialize(nonCDriveUrl);
+
+        // 假定要解析的相对路径
         var relativePath:String = "resources/data/config.xml";
         var resolvedPath:String = PathManager.resolvePath(relativePath);
 
@@ -104,20 +127,118 @@ class org.flashNight.gesh.path.PathManagerTest {
     }
 
     /**
-     * 测试: 浏览器环境解析（如需要在浏览器中测试）
+     * 测试: 浏览器环境解析
      */
     private static function testBrowserEnvironment():Void {
         trace("[Test] testBrowserEnvironment()");
 
-        var isBrowser:Boolean = PathManager.isBrowserEnv();
-        if (!isBrowser) {
-            trace("  [提示] 当前并未检测到浏览器环境，跳过浏览器测试。");
-            return;
-        }
+        // Reset PathManager
+        PathManager.reset();
 
-        // 假设服务器资源路径为 http://yourserver.com/resources/
+        // Simulate browser environment
+        var browserUrl:String = "http://yourserver.com/resources/";
+        PathManager.initialize(browserUrl);
+
+        // 检测是否浏览器环境
+        var isBrowser:Boolean = PathManager.isBrowserEnv();
+        trace("  isBrowserEnv = " + isBrowser);
+
         // 测试解析 scripts/类定义/ 路径
         var scriptsPath:String = PathManager.getScriptsClassDefinitionPath();
         trace("  浏览器环境下 scripts/类定义/ 路径: " + scriptsPath);
+
+        // Check if scriptsPath is as expected
+        if (scriptsPath == browserUrl + "scripts/类定义/") {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + browserUrl + "scripts/类定义/，实际: " + scriptsPath);
+        }
+    }
+
+    /**
+     * 测试: 无效 URL 处理
+     */
+    private static function testInvalidURL():Void {
+        trace("[Test] testInvalidURL()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Pass an invalid URL
+        var invalidUrl:String = "invalid://url";
+        PathManager.initialize(invalidUrl);
+
+        // 检测是否有效环境
+        var valid:Boolean = PathManager.isEnvironmentValid();
+        trace("  isEnvironmentValid = " + valid);
+
+        // 检测是否浏览器环境
+        var isBrowser:Boolean = PathManager.isBrowserEnv();
+        trace("  isBrowserEnv = " + isBrowser);
+
+        // Check if environment is invalid
+        if (!valid) {
+            trace("  [成功] 无效 URL 正确识别为无效环境。");
+        } else {
+            trace("  [失败] 无效 URL 被识别为有效环境。");
+        }
+    }
+
+    /**
+     * 测试: 相对路径以 "resources/" 开头的情况
+     */
+    private static function testRelativePathWithResources():Void {
+        trace("[Test] testRelativePathWithResources()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate C drive environment
+        var cDriveUrl:String = "file:///C:/path/to/resources/";
+        PathManager.initialize(cDriveUrl);
+
+        // Relative path starting with "resources/"
+        var relativePath:String = "resources/data/config.xml";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+
+        // Expected resolved path: "file:///C:/path/to/resources/data/config.xml"
+        var expectedPath:String = "file:///C:/path/to/resources/data/config.xml";
+        if (resolvedPath == expectedPath) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 测试: 相对路径不以 "resources/" 开头的情况
+     */
+    private static function testRelativePathWithoutResources():Void {
+        trace("[Test] testRelativePathWithoutResources()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate C drive environment
+        var cDriveUrl:String = "file:///C:/path/to/resources/";
+        PathManager.initialize(cDriveUrl);
+
+        // Relative path not starting with "resources/"
+        var relativePath:String = "data/config.xml";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+
+        // Expected resolved path: "file:///C:/path/to/resources/data/config.xml"
+        var expectedPath:String = "file:///C:/path/to/resources/data/config.xml";
+        if (resolvedPath == expectedPath) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + resolvedPath);
+        }
     }
 }
