@@ -1,18 +1,49 @@
-﻿// KeyManager.as
+﻿/**
+ * KeyManager 类用于管理键盘键码与键名的映射关系，并提供键值设定的刷新和查询功能。
+ * 该类为静态类，所有方法和属性均为静态，无需实例化即可使用。
+ * 
+ * @class org.flashNight.arki.key.KeyManager
+ * @author 作者名
+ * @version 1.0
+ * @date 创建日期
+ */
 class org.flashNight.arki.key.KeyManager {
-    // 静态属性：存储键码与键名的映射
+    /**
+     * 静态属性：存储键码与键名的映射关系。
+     * 键为键码（Number），值为键名（String）。
+     * @private
+     * @static
+     * @type Object
+     */
     private static var keyMap:Object;
+
+    /**
+     * 静态属性：缓存键值设定，用于快速查询键名对应的键值。
+     * 键为键名（String），值为键值（Number）。
+     * @private
+     * @static
+     * @type Object
+     */
     private static var keySettingsCache:Object;
 
-    // 构造函数
+    /**
+     * 构造函数。初始化 KeyManager 时输出调试信息。
+     * @constructor
+     */
     public function KeyManager() {
         trace("KeyManager initialized.");
     }
 
-    // 静态方法：初始化 keyMap
+    /**
+     * 静态方法：初始化键码与键名的映射表。
+     * 该方法应在使用 KeyManager 其他功能前调用。
+     * @static
+     * @return Void
+     */
     public static function init():Void {
         keyMap = new Object();
 
+        // 初始化键码与键名的映射
         keyMap[8] = "Backspace";
         keyMap[9] = "Tab";
         keyMap[12] = "Clear";
@@ -110,29 +141,54 @@ class org.flashNight.arki.key.KeyManager {
         keyMap[222] = "‘”";
     }
 
-    // 静态方法：根据键码获取键名
+    /**
+     * 静态方法：根据键码获取对应的键名。
+     * @static
+     * @param {Number} keycode - 键码。
+     * @return {String} 键名，如果键码不存在则返回空字符串。
+     */
     public static function getKeyName(keycode:Number):String {
         return keyMap[keycode] || "";
     }
 
-    // 静态方法：添加或更新键码映射
+    /**
+     * 静态方法：添加或更新键码与键名的映射。
+     * @static
+     * @param {Number} keycode - 键码。
+     * @param {String} keyname - 键名。
+     * @return Void
+     */
     public static function addKeyMapping(keycode:Number, keyname:String):Void {
         keyMap[keycode] = keyname;
     }
 
-    // 静态方法：移除键码映射
+    /**
+     * 静态方法：移除键码与键名的映射。
+     * @static
+     * @param {Number} keycode - 键码。
+     * @return Void
+     */
     public static function removeKeyMapping(keycode:Number):Void {
         if (keyMap[keycode] != undefined) {
             delete keyMap[keycode];
         }
     }
 
-    // 静态方法：检查键码是否存在
+    /**
+     * 静态方法：检查键码是否存在映射。
+     * @static
+     * @param {Number} keycode - 键码。
+     * @return {Boolean} 如果键码存在映射则返回 true，否则返回 false。
+     */
     public static function hasKeyName(keycode:Number):Boolean {
         return keyMap[keycode] != undefined;
     }
 
-    // 静态方法：获取所有键码
+    /**
+     * 静态方法：获取所有键码。
+     * @static
+     * @return {Array} 包含所有键码的数组。
+     */
     public static function getAllKeycodes():Array {
         var keycodes:Array = [];
         for (var keycode in keyMap) {
@@ -141,7 +197,11 @@ class org.flashNight.arki.key.KeyManager {
         return keycodes;
     }
 
-    // 静态方法：获取所有键名
+    /**
+     * 静态方法：获取所有键名。
+     * @static
+     * @return {Array} 包含所有键名的数组。
+     */
     public static function getAllKeynames():Array {
         var keynames:Array = [];
         for (var keycode in keyMap) {
@@ -150,7 +210,16 @@ class org.flashNight.arki.key.KeyManager {
         return keynames;
     }
 
-    // 静态方法：刷新键值设定
+    /**
+     * 静态方法：刷新键值设定。
+     * 如果键值设定长度小于 30，会自动添加默认按键。
+     * 同时会更新缓存字典和操控目标按键设定表。
+     * @static
+     * @param {Array} keySettings - 键值设定数组。
+     * @param {Function} translationFunction - 翻译函数，用于翻译键名。
+     * @param {Array} controlSettings - 操控目标按键设定表。
+     * @return Void
+     */
     public static function refreshKeySettings(keySettings:Array, translationFunction:Function, controlSettings:Array):Void {
         // 如果键值设定长度小于30，添加默认按键
         if (keySettings.length < 30) {
@@ -191,7 +260,12 @@ class org.flashNight.arki.key.KeyManager {
         controlSettings[3] = _root.右键;
     }
 
-    // 静态方法：根据键名获取键值
+    /**
+     * 静态方法：根据键名获取对应的键值。
+     * @static
+     * @param {String} keyName - 键名。
+     * @return {Number} 键值，如果键名不存在则返回 undefined。
+     */
     public static function getKeySetting(keyName:String):Number {
         return KeyManager.keySettingsCache[keyName];
     }
