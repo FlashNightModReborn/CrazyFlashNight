@@ -49,7 +49,25 @@ class org.flashNight.gesh.path.PathManagerTest {
         // 13. 新增测试：完全无效的路径格式
         testCompletelyInvalidPath();
 
-        // 14. 打印最终汇总
+        // 14. 新增测试：配置多个基础路径
+        testConfigureMultipleBasePaths();
+
+        // 15. 新增测试：基础路径优先级
+        testBasePathPriority();
+
+        // 16. 新增测试：解析路径在多个基础路径下的表现
+        testResolvePathWithMultipleBasePaths();
+
+        // 17. 新增测试：添加基础路径后重置
+        testAddBasePathAndReset();
+
+        // 18. 新增测试：设置所有基础路径
+        testSetAllBasePaths();
+
+        // 19. 新增测试：本地环境下 CrazyFlashNight/ 基础路径解析
+        testLocalCrazyFlashNightPath();
+
+        // 20. 打印最终汇总
         trace("=== PathManager 测试结束 ===\n");
     }
 
@@ -167,10 +185,11 @@ class org.flashNight.gesh.path.PathManagerTest {
         trace("  浏览器环境下 scripts/类定义/ 路径: " + scriptsPath);
 
         // Check if scriptsPath is as expected
-        if (scriptsPath == browserUrl + "scripts/类定义/") {
+        var expectedPath:String = "http://yourserver.com/resources/scripts/类定义/";
+        if (scriptsPath == expectedPath) {
             trace("  [成功] 路径解析正确。");
         } else {
-            trace("  [失败] 路径解析错误，预期: " + browserUrl + "scripts/类定义/，实际: " + scriptsPath);
+            trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + scriptsPath);
         }
     }
 
@@ -460,6 +479,278 @@ class org.flashNight.gesh.path.PathManagerTest {
             trace("  [成功] 完全无效的路径被正确识别，无法解析。");
         } else {
             trace("  [失败] 完全无效的路径未被正确处理，解析结果: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 新增测试: 配置多个基础路径
+     */
+    private static function testConfigureMultipleBasePaths():Void {
+        trace("[Test] testConfigureMultipleBasePaths()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // 设置多个基础路径
+        PathManager.setBasePaths(["resources/", "CrazyFlashNight/"]);
+
+        // Simulate browser environment with multiple base paths
+        var browserUrl:String = "http://yourserver.com/CrazyFlashNight/";
+        PathManager.initialize(browserUrl);
+
+        // 检测是否浏览器环境
+        var isBrowser:Boolean = PathManager.isBrowserEnv();
+        trace("  isBrowserEnv = " + isBrowser);
+
+        // 获取基础路径
+        var basePath:String = PathManager.getBasePath();
+        trace("  basePath = " + basePath);
+
+        // 预期基础路径应为 "http://yourserver.com/CrazyFlashNight/"
+        var expectedBasePath:String = "http://yourserver.com/CrazyFlashNight/";
+        if (basePath == expectedBasePath) {
+            trace("  [成功] 基础路径配置正确。");
+        } else {
+            trace("  [失败] 基础路径配置错误，预期: " + expectedBasePath + "，实际: " + basePath);
+        }
+    }
+
+    /**
+     * 新增测试: 基础路径优先级
+     */
+    private static function testBasePathPriority():Void {
+        trace("[Test] testBasePathPriority()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // 设置多个基础路径，先设置 "CrazyFlashNight/"，后设置 "resources/"
+        PathManager.setBasePaths(["CrazyFlashNight/", "resources/"]);
+
+        // Simulate environment where both base paths are present
+        var testUrl:String = "http://yourserver.com/CrazyFlashNight/";
+        PathManager.initialize(testUrl);
+
+        // 基础路径应为 "CrazyFlashNight/"，因为它在列表中排在前面
+        var basePath:String = PathManager.getBasePath();
+        var expectedBasePath:String = "http://yourserver.com/CrazyFlashNight/";
+        if (basePath == expectedBasePath) {
+            trace("  [成功] 基础路径优先级正确，选择了列表中第一个匹配的路径。");
+        } else {
+            trace("  [失败] 基础路径优先级错误，预期: " + expectedBasePath + "，实际: " + basePath);
+        }
+    }
+
+    /**
+     * 新增测试: 解析路径在多个基础路径下的表现
+     */
+    private static function testResolvePathWithMultipleBasePaths():Void {
+        trace("[Test] testResolvePathWithMultipleBasePaths()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // 设置多个基础路径
+        PathManager.setBasePaths(["CrazyFlashNight/", "resources/"]);
+
+        // Simulate environment with "resources/" in URL
+        var testUrl:String = "http://yourserver.com/resources/";
+        PathManager.initialize(testUrl);
+
+        // 解析一个以 "resources/" 开头的相对路径
+        var relativePath1:String = "resources/assets/image.png";
+        var resolvedPath1:String = PathManager.resolvePath(relativePath1);
+        var expectedPath1:String = "http://yourserver.com/resources/assets/image.png";
+        trace("  Relative Path: " + relativePath1);
+        trace("  解析后的路径: " + resolvedPath1);
+        if (resolvedPath1 == expectedPath1) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath1 + "，实际: " + resolvedPath1);
+        }
+
+        // 解析一个不以 "resources/" 开头的相对路径
+        var relativePath2:String = "assets/data.json";
+        var resolvedPath2:String = PathManager.resolvePath(relativePath2);
+        var expectedPath2:String = "http://yourserver.com/resources/assets/data.json";
+        trace("  Relative Path: " + relativePath2);
+        trace("  解析后的路径: " + resolvedPath2);
+        if (resolvedPath2 == expectedPath2) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath2 + "，实际: " + resolvedPath2);
+        }
+    }
+
+    /**
+     * 新增测试: 添加基础路径后重置
+     */
+    private static function testAddBasePathAndReset():Void {
+        trace("[Test] testAddBasePathAndReset()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // 添加一个新的基础路径
+        PathManager.addBasePath("newBasePath/");
+        trace("  添加新的基础路径 'newBasePath/'");
+
+        // 设置基础路径列表
+        PathManager.setBasePaths(["resources/", "CrazyFlashNight/", "newBasePath/"]);
+
+        // 初始化 PathManager
+        var testUrl:String = "http://yourserver.com/newBasePath/";
+        PathManager.initialize(testUrl);
+
+        // 获取基础路径
+        var basePath:String = PathManager.getBasePath();
+        var expectedBasePath:String = "http://yourserver.com/newBasePath/";
+        trace("  basePath = " + basePath);
+
+        if (basePath == expectedBasePath) {
+            trace("  [成功] 新添加的基础路径被正确识别和设置。");
+        } else {
+            trace("  [失败] 新添加的基础路径未被正确识别，预期: " + expectedBasePath + "，实际: " + basePath);
+        }
+
+        // 重置 PathManager
+        PathManager.reset();
+        trace("  PathManager 已重置。");
+
+        // 检查 PathManager 状态
+        var valid:Boolean = PathManager.isEnvironmentValid();
+        trace("  初始化后是否有效环境: " + valid);
+    }
+
+    /**
+     * 新增测试: 设置所有基础路径
+     */
+    private static function testSetAllBasePaths():Void {
+        trace("[Test] testSetAllBasePaths()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // 设置所有基础路径
+        var newBasePaths:Array = ["resources/", "CrazyFlashNight/", "assets/"];
+        PathManager.setBasePaths(newBasePaths);
+        trace("  设置所有基础路径为: " + newBasePaths.join(", "));
+
+        // Simulate environment matching "assets/"
+        var testUrl:String = "file:///C:/app/assets/";
+        PathManager.initialize(testUrl);
+
+        // 获取基础路径
+        var basePath:String = PathManager.getBasePath();
+        var expectedBasePath:String = "file:///C:/app/assets/";
+        trace("  basePath = " + basePath);
+
+        if (basePath == expectedBasePath) {
+            trace("  [成功] 基础路径 'assets/' 被正确识别和设置。");
+        } else {
+            trace("  [失败] 基础路径 'assets/' 未被正确识别，预期: " + expectedBasePath + "，实际: " + basePath);
+        }
+
+        // 解析一个相对路径
+        var relativePath:String = "images/logo.png";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+        var expectedResolvedPath:String = "file:///C:/app/assets/images/logo.png";
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+        if (resolvedPath == expectedResolvedPath) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedResolvedPath + "，实际: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 新增测试: 基础路径优先级 - 列表中后面的基础路径优先级更低
+     */
+    private static function testBasePathPriorityMultipleMatches():Void {
+        trace("[Test] testBasePathPriorityMultipleMatches()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // 设置多个基础路径
+        PathManager.setBasePaths(["resources/", "CrazyFlashNight/", "assets/"]);
+
+        // Simulate environment where URL contains multiple base paths
+        var testUrl:String = "http://yourserver.com/resources/CrazyFlashNight/";
+        PathManager.initialize(testUrl);
+
+        // 获取基础路径
+        var basePath:String = PathManager.getBasePath();
+        var expectedBasePath:String = "http://yourserver.com/resources/CrazyFlashNight/";
+        trace("  basePath = " + basePath);
+
+        // 基础路径应为 "resources/"，因为它在列表中排在前面
+        var expectedFirstMatch:String = "http://yourserver.com/resources/CrazyFlashNight/";
+        if (basePath == expectedFirstMatch) {
+            trace("  [成功] 基础路径优先级正确，选择了列表中第一个匹配的路径。");
+        } else {
+            trace("  [失败] 基础路径优先级错误，预期: " + expectedFirstMatch + "，实际: " + basePath);
+        }
+    }
+
+    /**
+     * 新增测试: 本地环境下 CrazyFlashNight/ 基础路径解析
+     */
+    private static function testLocalCrazyFlashNightPath():Void {
+        trace("[Test] testLocalCrazyFlashNightPath()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // 设置基础路径列表
+        PathManager.setBasePaths(["resources/", "CrazyFlashNight/"]);
+
+        // Simulate local environment with CrazyFlashNight/
+        var crazyFlashNightUrl:String = "file:///C:/path/to/CrazyFlashNight/";
+        PathManager.initialize(crazyFlashNightUrl);
+
+        // 检查是否有效环境
+        var valid:Boolean = PathManager.isEnvironmentValid();
+        trace("  isEnvironmentValid = " + valid);
+
+        // 检查是否浏览器环境
+        var isBrowser:Boolean = PathManager.isBrowserEnv();
+        trace("  isBrowserEnv = " + isBrowser);
+
+        // 获取基础路径
+        var basePath:String = PathManager.getBasePath();
+        var expectedBasePath:String = "file:///C:/path/to/CrazyFlashNight/";
+        trace("  basePath = " + basePath);
+
+        if (basePath == expectedBasePath) {
+            trace("  [成功] 本地环境下 'CrazyFlashNight/' 基础路径被正确识别和设置。");
+        } else {
+            trace("  [失败] 本地环境下 'CrazyFlashNight/' 基础路径识别错误，预期: " + expectedBasePath + "，实际: " + basePath);
+        }
+
+        // 解析一个以 "CrazyFlashNight/" 开头的相对路径
+        var relativePath1:String = "CrazyFlashNight/assets/image.png";
+        var resolvedPath1:String = PathManager.resolvePath(relativePath1);
+        var expectedPath1:String = "file:///C:/path/to/CrazyFlashNight/assets/image.png";
+        trace("  Relative Path: " + relativePath1);
+        trace("  解析后的路径: " + resolvedPath1);
+        if (resolvedPath1 == expectedPath1) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath1 + "，实际: " + resolvedPath1);
+        }
+
+        // 解析一个不以基础路径开头的相对路径
+        var relativePath2:String = "assets/data.json";
+        var resolvedPath2:String = PathManager.resolvePath(relativePath2);
+        var expectedPath2:String = "file:///C:/path/to/CrazyFlashNight/assets/data.json";
+        trace("  Relative Path: " + relativePath2);
+        trace("  解析后的路径: " + resolvedPath2);
+        if (resolvedPath2 == expectedPath2) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath2 + "，实际: " + resolvedPath2);
         }
     }
 }
