@@ -586,7 +586,6 @@ _root.物品UI函数.刷新商店图标 = function(NPC物品栏){
 			图标列表[i].itemIcon.init(NPC物品栏[i][0], 1);
 		}
 	}
-	_root.发布消息("frame "+_root.购买物品界面._currentframe);
 	_root.购买物品界面.NPC物品栏 = NPC物品栏;
 }
 
@@ -661,6 +660,7 @@ _root.物品UI函数.删除仓库图标 = function(){
 	for(var i=0; i<图标列表.length; i++){
 		图标列表[i].removeMovieClip();
 	}
+	仓库界面.图标列表 = null;
 	仓库界面.inventory.clearIcon();
 	仓库界面.inventory = null;
 	仓库界面.page = -1;
@@ -694,8 +694,8 @@ _root.物品UI函数.创建收集品图标 = function(){
 	var 起始y = 物品栏界面.收集品图标._y;
 	var 图标高度 = 28;
 	var 图标宽度 = 28;
-	var 列数 = 10;
-	var 行数 = 8;
+	var 列数 = 8;
+	var 行数 = 10;
 	var 总格数 = 行数*列数;
 	var 换行计数 = 0;
 
@@ -721,7 +721,7 @@ _root.物品UI函数.创建收集品图标 = function(){
 		if (换行计数 == 列数)
 		{
 			换行计数 = 0;
-			起始x = 物品栏界面.物品图标._x;
+			起始x = 物品栏界面.收集品图标._x;
 			起始y += 图标高度;
 		}
 		物品栏界面.收集品图标列表[i] = 物品图标;
@@ -738,7 +738,7 @@ _root.物品UI函数.创建收集品图标 = function(){
 		if (换行计数 == 列数)
 		{
 			换行计数 = 0;
-			起始x = 物品栏界面.物品图标._x;
+			起始x = 物品栏界面.收集品图标._x;
 			起始y += 图标高度;
 		}
 		物品栏界面.收集品图标列表[i] = 物品图标;

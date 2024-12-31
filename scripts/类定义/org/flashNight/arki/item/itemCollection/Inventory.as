@@ -61,7 +61,7 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
         var item = items[key];
         var targetItem = target.getItem(targetKey);
         if(item.name != targetItem.name || isNaN(item.value) || isNaN(targetItem.value)) return false;
-        target.addValue(item.value);
+        target.addValue(targetKey,item.value);
         remove(key);
         return true;
     }
