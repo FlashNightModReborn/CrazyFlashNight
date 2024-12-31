@@ -1,0 +1,138 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/药剂控制器" itemID="669b6a55-00000fbc" lastModified="1735533147">
+  <timeline>
+    <DOMTimeline name="药剂控制器">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#96BF3E">
+          <frames>
+            <DOMFrame index="0" duration="9" name="没扣扳机" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" name="已扣扳机" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#E81C96" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.药剂栏 = _parent[控制参数];
+this.药剂进度条 = _parent[控制参数2];
+mytext.text = _root.keyshow(_root[扳机键]);
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.icon = _parent[控制参数].itemIcon;
+this.药剂进度条 = _parent[控制参数2];
+
+function 解除快捷物品栏装备()
+{
+	_root.发布消息(drugName + "耗尽！");
+	_root[控制参数] = "";
+}
+
+var 控制对象 = _root.gameworld[_root.控制目标];
+
+if (控制对象.hp > 0)
+{
+	if (icon.value > 0)
+	{
+		var drugName = icon.name;
+		_root.使用药剂(icon.name);
+		药剂进度条.冷却开始(_root.吃药冷却时间);
+		icon.collection.addValue(icon.index,-1);
+		if (!icon.item)
+		{
+			解除快捷物品栏装备(drugName);
+		}
+	}
+	else
+	{
+		解除快捷物品栏装备();
+	}
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#7682EB">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="mytext" fontRenderingMode="device" width="12.35" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-6.2" ty="-18.4"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>q</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#911BD8">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" centerPoint3DX="11.1" centerPoint3DY="11.1">
+                  <matrix>
+                    <Matrix a="0.11199951171875" d="0.11199951171875" tx="-1.4" ty="-1.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if (!_root.暂停 && _root.当前玩家总数 == 1)
+	{
+		if (_parent.药剂栏.itemIcon.item && Key.isDown(_root[_parent.扳机键]) && _parent._parent[_parent.控制参数2].冷却)
+		{
+			_parent.gotoAndStop("已扣扳机");
+		}
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" centerPoint3DX="11.1" centerPoint3DY="11.1">
+                  <matrix>
+                    <Matrix a="0.11199951171875" d="0.11199951171875" tx="-1.4" ty="-1.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	if (Key.isDown(_root[_parent.扳机键]) == false)
+	{
+		_parent.gotoAndStop("没扣扳机");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

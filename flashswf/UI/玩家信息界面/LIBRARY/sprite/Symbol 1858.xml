@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1858" itemID="6597607e-00000a2b" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 1858">
+      <layers>
+        <DOMLayer name="Script Layer" color="#C8D754">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.刷新显示();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#D6BD68" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 1784" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

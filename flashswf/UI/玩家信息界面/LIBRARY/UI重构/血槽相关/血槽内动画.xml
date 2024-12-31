@@ -1,0 +1,77 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/血槽相关/血槽内动画" itemID="6649b33f-00002e3f" lastModified="1717561326" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="血槽内动画">
+      <layers>
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="99" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="99" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="99" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/血槽相关/血槽-图案2" centerPoint3DX="37.15" centerPoint3DY="37.1">
+                  <matrix>
+                    <Matrix a="0.979995727539063" d="0.979995727539063"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/血槽相关/血槽-图案2" centerPoint3DX="1" centerPoint3DY="52.45">
+                  <matrix>
+                    <Matrix a="0.70489501953125" b="0.680709838867188" c="-0.680709838867188" d="0.70489501953125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="99" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/血槽相关/血槽-图案-1">
+                  <matrix>
+                    <Matrix a="0.765945434570313" b="0.642745971679688" c="-0.642745971679688" d="0.765960693359375" tx="-4.05" ty="-46.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.05" y="33.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/血槽相关/血槽-图案-1">
+                  <matrix>
+                    <Matrix tx="-33.05" ty="-33.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.05" y="33.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

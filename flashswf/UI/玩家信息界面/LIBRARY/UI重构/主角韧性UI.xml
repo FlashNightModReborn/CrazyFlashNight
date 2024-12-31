@@ -1,0 +1,163 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/主角韧性UI" itemID="664c984c-00000c11" lastModified="1716465471">
+  <timeline>
+    <DOMTimeline name="主角韧性UI">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <transformationPoint>
+                    <Point y="8.15"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="3.85" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="35.05" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="14.25" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108795166015625" d="0.0190277099609375" tx="24.65" ty="7.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF9900" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!415 451|415 331!415 331[490 363 571 383!571 383|571 451!571 451|415 451"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!624 392[698 404 778 404!778 404|780 404!780 404|780 451!780 451|624 451!624 451|624 392"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!364 306|364 451!364 451|208 451!208 451|208 197!208 197[281 260 364 306"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!0 451|0 -98!0 -98[48 36 156 148!156 148|156 451!156 451|0 451"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.1988525390625" d="1.1988525390625" tx="-188.5" ty="-359.15"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!3836 6324[3848 6312 3865 6312!3865 6312[3882 6312 3894 6324!3894 6324[3906 6336 3906 6353!3906 6353[3906 6370 3894 6382!3894 6382[3882 6394 3865 6394!3865 6394[3848 6394 3836 6382!3836 6382[3825 6370 3825 6353!3825 6353[3825 6336 3836
+ 6324!3831 6387[3845 6401 3865 6401!3865 6401[3885 6401 3899 6387!3899 6387[3913 6373 3913 6353!3913 6353[3913 6333 3899 6319!3899 6319[3885 6305 3865 6305!3865 6305[3845 6305 3831 6319!3831 6319[3817 6333 3817 6353!3817 6353[3817 6373
+ 3831 6387!3886 6353[3886 6344 3880 6338!3880 6338[3874 6332 3865 6332!3865 6332[3856 6332 3850 6338!3850 6338[3844 6344 3844 6353!3844 6353[3844 6362 3850 6368!3850 6368[3856 6374 3865 6374!3865 6374[3874 6374 3880 6368!3880 6368[3886
+ 6362 3886 6353"/>
+                    <Edge cubics="!3865 6394(;3843,6394 3825,6375 3825,6353q3865 6394Q3848 6394q3836 6382Q3825 6370q3825 6353);"/>
+                    <Edge cubics="!3825 6353(;3825,6331 3843,6312 3865,6312q3825 6353Q3825 6336q3836 6324Q3848 6312q3865 6312);"/>
+                    <Edge cubics="!3865 6312(;3888,6312 3906,6331 3906,6353q3865 6312Q3882 6312q3894 6324Q3906 6336q3906 6353);"/>
+                    <Edge cubics="!3906 6353(;3906,6375 3888,6394 3865,6394q3906 6353Q3906 6370q3894 6382Q3882 6394q3865 6394);"/>
+                    <Edge cubics="!3865 6305(;3839,6305 3817,6326 3817,6353q3865 6305Q3845 6305q3831 6319Q3817 6333q3817 6353);"/>
+                    <Edge cubics="!3817 6353(;3817,6379 3839,6401 3865,6401q3817 6353Q3817 6373q3831 6387Q3845 6401q3865 6401);"/>
+                    <Edge cubics="!3865 6401(;3892,6401 3913,6379 3913,6353q3865 6401Q3885 6401q3899 6387Q3913 6373q3913 6353);"/>
+                    <Edge cubics="!3913 6353(;3913,6326 3892,6305 3865,6305q3913 6353Q3913 6333q3899 6319Q3885 6305q3865 6305);"/>
+                    <Edge cubics="!3886 6353(;3886,6341 3877,6332 3865,6332q3886 6353Q3886 6344q3880 6338Q3874 6332q3865 6332);"/>
+                    <Edge cubics="!3865 6332(;3854,6332 3844,6341 3844,6353q3865 6332Q3856 6332q3850 6338Q3844 6344q3844 6353);"/>
+                    <Edge cubics="!3844 6353(;3844,6364 3854,6374 3865,6374q3844 6353Q3844 6362q3850 6368Q3856 6374q3865 6374);"/>
+                    <Edge cubics="!3865 6374(;3877,6374 3886,6364 3886,6353q3865 6374Q3874 6374q3880 6368Q3886 6362q3886 6353);"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.1988525390625" d="1.1988525390625" tx="-188.5" ty="-453.85"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor color="#FFCC00"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!3912 7933|4149 7933!4149 7933|4253 7879!4253 7879|4695 7879!4695 7879|5588 7879!5588 7879|6298 7879!4695 7879|4799 7933!4799 7933|5484 7933!5484 7933|5588 7879"/>
+                  </edges>
+                </DOMShape>
+                <DOMStaticText fontRenderingMode="standard" width="40.3" height="15.15" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.1988525390625" d="1.1988525390625" tx="77.75" ty="2.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>Poise</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="14" bitmapSize="280" face="Aero" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="standard" width="34.6" height="15.15" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.1988525390625" d="1.1988525390625" tx="130.9" ty="2.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>100%</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="14" bitmapSize="280" face="Aero" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix c="-0.262496948242188" tx="5.45" ty="0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="71.9" y="12.05"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFCC00"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!1478 201|1478 281!1478 281|1398 281!1398 281|1478 201"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

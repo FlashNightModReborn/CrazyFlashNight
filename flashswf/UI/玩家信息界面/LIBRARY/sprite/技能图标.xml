@@ -1,0 +1,175 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/技能图标" itemID="66433dc8-0000156b" lastModified="1726334406" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="技能图标" currentFrame="2">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#D7A936" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" name="空" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" name="默认图标" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#0FEFD6" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[/*function 装备槽对应物品类别(类别)
+{
+   if(_parent._name == "物品栏界面")
+   {
+      if(_root.物品栏界面[eval("each")].装备槽类别 == 类别)
+      {
+         temp类别 = _root.根据物品名查找属性(_root.物品栏[this.对应数组号][0],3);
+         if(temp类别 == 类别)
+         {
+            if(_root.物品栏界面[eval("each")].是否装备 == 0)
+            {
+               _root.物品栏界面[eval("each")].是否装备 = 1;
+               _root.物品栏[this.对应数组号][2] = 1;
+            }
+            else if(_root.物品栏界面[eval("each")].是否装备 == 1)
+            {
+               _root.物品栏[_root.物品栏界面[eval("each")].对应数组号][2] = 0;
+               _root.物品栏[this.对应数组号][2] = 1;
+            }
+            _root[_root.物品栏界面[eval("each")].对应装备] = _root.物品栏[this.对应数组号][0];
+            _root[_root.物品栏界面[eval("each")].数量] = _root.物品栏[this.对应数组号][1];
+            _root.物品栏界面[eval("each")].对应数组号 = this.对应数组号;
+            _root.物品栏界面[eval("each")].数量 = _root[_root.物品栏界面[eval("each")].数量];
+            if(_root.物品栏[this.对应数组号][0] == "空")
+            {
+               _root.物品栏界面[eval("each")].gotoAndStop(_root.物品栏[this.对应数组号][0]);
+            }
+            else
+            {
+               _root.物品栏界面[eval("each")].图标 = "图标-" + _root.物品栏[this.对应数组号][0];
+               _root.物品栏界面[eval("each")].gotoAndStop("默认图标");
+            }
+            _root.发布消息(_root.获得翻译("成功装备") + 类别 + _root.物品栏[this.对应数组号][0] + "!");
+            if(类别 == "长枪")
+            {
+               _root.长枪配置("man1",_root.物品栏[this.对应数组号][0]);
+            }
+            else if(类别 == "手枪")
+            {
+               if(对应装备 == "手枪")
+               {
+                  _root.手枪配置("man1",_root.物品栏[this.对应数组号][0]);
+               }
+               else if(对应装备 == "手枪2")
+               {
+                  _root.手枪2配置("man1",_root.物品栏[this.对应数组号][0]);
+               }
+            }
+            else if(类别 == "手雷")
+            {
+               _root.手雷配置("man1",_root.物品栏[this.对应数组号][0]);
+            }
+            else if(类别 == "刀")
+            {
+               _root.刀配置("man1",_root.物品栏[this.对应数组号][0]);
+            }
+            _root.刷新人物装扮("man1");
+         }
+      }
+   }
+   else if(_parent._name == "购买物品界面")
+   {
+   }
+}*/
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#39AFB1" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#9A8F9C">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="mytext" fontRenderingMode="device" width="20.75" height="12.7" isSelectable="false" variableName="数量">
+                  <matrix>
+                    <Matrix d="1.0035400390625" tx="-10" ty="-13"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>0</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="9" bitmapSize="180" face="_sans" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#7A54C0">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/图标壳" name="图标壳" centerPoint3DX="12" centerPoint3DY="12">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.attachMovie(_parent.图标,"图标",this.getNextHighestDepth());
+	if (this.图标._x != undefined)
+	{
+		this.基本款._visible = 0;
+	}
+	else
+	{
+		this.基本款._visible = 1;
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#EE73D6" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" name="area">
+                  <matrix>
+                    <Matrix tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

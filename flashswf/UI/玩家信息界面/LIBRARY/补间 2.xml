@@ -1,0 +1,68 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="补间 2" itemID="66a0f596-0000025f" symbolType="graphic" lastModified="1721824662">
+  <timeline>
+    <DOMTimeline name="补间 2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="24.15" height="17.3" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-58.9" ty="-15.8"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>MP</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="16" face="Aero*" fillColor="#0099FF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMDynamicText name="MP百分比" selected="true" fontRenderingMode="standard" width="29.75" height="15.6" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-63.85" ty="0.25"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>100%</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="Aero*" fillColor="#5EEFFB"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="当前MP" selected="true" fontRenderingMode="standard" width="44.95" height="14.5" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-32.1" ty="-13.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="13" bitmapSize="260" face="Aero*" fillColor="#0099FF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText name="最大MP" selected="true" fontRenderingMode="standard" left="26.85" width="44.95" height="14.5" autoExpand="true" includeOutlines="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-7.9" ty="-13.3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>99999</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="13" bitmapSize="260" face="Aero*" fillColor="#0099FF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
