@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="走廊整体" itemID="6748cc01-000000dc" symbolType="graphic" lastModified="1735553364" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="走廊整体" itemID="6748cc01-000000dc" symbolType="graphic" lastModified="1735607235" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="走廊整体">
+    <DOMTimeline name="走廊整体" currentFrame="1">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -19,7 +19,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 11" selected="true" centerPoint3DX="731.75" centerPoint3DY="398.5" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="元件 11" centerPoint3DX="731.75" centerPoint3DY="398.5" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="0.05"/>
                   </matrix>
@@ -31,7 +31,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 11" centerPoint3DX="731.75" centerPoint3DY="398.5">
+                <DOMSymbolInstance libraryItemName="元件 11" centerPoint3DX="731.75" centerPoint3DY="398.5" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="0.05"/>
                   </matrix>
@@ -39,7 +39,7 @@
                     <Point x="731.7" y="398.5"/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="10" blurY="10" color="#CCFF00"/>
+                    <GlowFilter blurX="255" blurY="255" color="#CCFF00"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地下一层整体" itemID="674864be-000002b0" symbolType="graphic" lastModified="1735553339" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地下一层整体" itemID="674864be-000002b0" symbolType="graphic" lastModified="1735607211" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="地下一层整体">
+    <DOMTimeline name="地下一层整体" currentFrame="1">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -22,7 +22,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 8" selected="true" centerPoint3DX="1387.25" centerPoint3DY="401.25" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="元件 8" centerPoint3DX="1387.25" centerPoint3DY="401.25" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="0.05"/>
                   </matrix>
@@ -42,7 +42,7 @@
                     <Point x="1387.05" y="401.25"/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="10" blurY="10" color="#CCFF00"/>
+                    <GlowFilter blurX="253" blurY="253" color="#CCFF00"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>

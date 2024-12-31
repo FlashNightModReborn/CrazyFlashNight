@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1735553542" lastUniqueIdentifier="154">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1735607418" lastUniqueIdentifier="154">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
@@ -1283,14 +1283,14 @@ function 设置NPC闪光提示() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="7" autoNamed="false">
+        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="7" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" centerPoint3DX="484.75" centerPoint3DY="159.15">
+                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" selected="true" centerPoint3DX="484.75" centerPoint3DY="159.15">
                   <matrix>
                     <Matrix a="0.200958251953125" d="0.200958251953125" tx="223.6" ty="95.25"/>
                   </matrix>
@@ -1577,14 +1577,14 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地大厅" color="#9933CC" parentLayerIndex="10" autoNamed="false">
+        <DOMLayer name="基地大厅" color="#9933CC" parentLayerIndex="10" autoNamed="false" visible="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="基地大厅整体" name="基地大厅" centerPoint3DX="482.7" centerPoint3DY="203.6">
+                <DOMSymbolInstance libraryItemName="基地大厅整体" name="基地大厅" selected="true" centerPoint3DX="482.7" centerPoint3DY="203.6">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="235.35" ty="146.7"/>
                   </matrix>
@@ -1871,7 +1871,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下一层" color="#4FFF4F" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="地下一层" color="#4FFF4F" parentLayerIndex="21" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1988,14 +1988,14 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器库" color="#FF800A" parentLayerIndex="21" autoNamed="false">
+        <DOMLayer name="武器库" color="#FF800A" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="武器库整体" name="武器库" centerPoint3DX="556.05" centerPoint3DY="263.5">
+                <DOMSymbolInstance libraryItemName="武器库整体" name="武器库" selected="true" centerPoint3DX="556.05" centerPoint3DY="263.5">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="471.65" ty="217.9"/>
                   </matrix>
