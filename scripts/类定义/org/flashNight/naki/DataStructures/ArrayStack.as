@@ -1,65 +1,59 @@
 ﻿class org.flashNight.naki.DataStructures.ArrayStack {
-    
-    // 用于存储栈元素的数组
-    private var items:Array;
-    
-    /**
-     * 构造函数，初始化栈
-     */
+    private var items:Array; // 用于存储栈元素的数组
+    private var top:Number;  // 栈顶索引，初始值为-1表示栈为空
+
     public function ArrayStack() {
-        this.items = [];
+        this.items = [];    // 初始化存储栈元素的数组
+        this.top = -1;      // 初始化栈顶索引为-1
     }
-    
+
     /**
-     * 入栈操作，将元素压入栈顶
+     * 将元素压入栈中
      * @param value 要压入栈的元素
      */
     public function push(value:Object):Void {
-        this.items.push(value);
+        this.items[++this.top] = value; // 先将top自增1，然后将value存入items[top]
     }
-    
+
     /**
-     * 出栈操作，移除并返回栈顶元素
-     * @return 栈顶元素，如果栈为空则返回 null
+     * 从栈中弹出顶部元素
+     * @return 栈顶元素，如果栈为空则返回null
      */
     public function pop():Object {
-        if (this.isEmpty()) {
-            return null; // 栈为空
-        }
-        return this.items.pop(); // 移除并返回数组末尾的元素
+        if (this.top == -1) return null; // 栈为空，返回null
+        return this.items[this.top--]; // 返回items[top]，然后将top自减1
     }
-    
+
     /**
-     * 查看栈顶的元素但不移除
-     * @return 栈顶的元素，如果栈为空则返回 null
+     * 查看栈顶元素但不移除
+     * @return 栈顶元素，如果栈为空则返回null
      */
     public function peek():Object {
-        if (this.isEmpty()) {
-            return null; // 栈为空
-        }
-        return this.items[this.items.length - 1]; // 返回数组末尾的元素
+        if (this.top == -1) return null; // 栈为空，返回null
+        return this.items[this.top]; // 返回栈顶元素
     }
-    
+
     /**
      * 检查栈是否为空
-     * @return 如果栈为空，返回 true；否则返回 false
+     * @return 如果栈为空，返回true；否则返回false
      */
     public function isEmpty():Boolean {
-        return this.items.length == 0;
+        return this.top == -1; // top为-1表示栈为空
     }
-    
+
     /**
      * 获取栈的大小
      * @return 栈中的元素数量
      */
     public function getSize():Number {
-        return this.items.length;
+        return this.top + 1; // 栈的大小为top加1
     }
-    
+
     /**
      * 清空栈
      */
     public function clear():Void {
-        this.items = [];
+        this.top = -1;       // 重置栈顶索引为-1
+        this.items.length = 0; // 清空存储元素的数组
     }
 }
