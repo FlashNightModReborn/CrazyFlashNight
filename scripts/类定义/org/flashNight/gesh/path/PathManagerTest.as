@@ -30,7 +30,26 @@ class org.flashNight.gesh.path.PathManagerTest {
         // 7. 测试相对路径不以 "resources/" 开头的情况
         testRelativePathWithoutResources();
 
-        // 8. 打印最终汇总
+        // 8. 新增测试：不同驱动器的路径解析
+        testResolvePathOnDDrive();
+        testResolvePathOnEDrive();
+
+        // 9. 新增测试：路径中包含空格
+        testPathWithSpaces();
+
+        // 10. 新增测试：路径中包含中文字符
+        testPathWithChineseCharacters();
+
+        // 11. 新增测试：路径缺少尾部斜杠
+        testPathWithoutTrailingSlash();
+
+        // 12. 新增测试：使用反斜杠作为路径分隔符
+        testPathWithBackslashes();
+
+        // 13. 新增测试：完全无效的路径格式
+        testCompletelyInvalidPath();
+
+        // 14. 打印最终汇总
         trace("=== PathManager 测试结束 ===\n");
     }
 
@@ -239,6 +258,208 @@ class org.flashNight.gesh.path.PathManagerTest {
             trace("  [成功] 路径解析正确。");
         } else {
             trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 新增测试: D 盘上的路径解析
+     */
+    private static function testResolvePathOnDDrive():Void {
+        trace("[Test] testResolvePathOnDDrive()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate D drive environment
+        var dDriveUrl:String = "file:///D:/projects/resources/";
+        PathManager.initialize(dDriveUrl);
+
+        // Relative path to resolve
+        var relativePath:String = "assets/images/logo.png";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+
+        // Expected resolved path: "file:///D:/projects/resources/assets/images/logo.png"
+        var expectedPath:String = "file:///D:/projects/resources/assets/images/logo.png";
+        if (resolvedPath == expectedPath) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 新增测试: E 盘上的路径解析
+     */
+    private static function testResolvePathOnEDrive():Void {
+        trace("[Test] testResolvePathOnEDrive()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate E drive environment
+        var eDriveUrl:String = "file:///E:/media/resources/";
+        PathManager.initialize(eDriveUrl);
+
+        // Relative path to resolve
+        var relativePath:String = "videos/intro.mp4";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+
+        // Expected resolved path: "file:///E:/media/resources/videos/intro.mp4"
+        var expectedPath:String = "file:///E:/media/resources/videos/intro.mp4";
+        if (resolvedPath == expectedPath) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 新增测试: 路径中包含空格
+     */
+    private static function testPathWithSpaces():Void {
+        trace("[Test] testPathWithSpaces()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate C drive environment with spaces in path
+        var spacedPathUrl:String = "file:///C:/Program Files/My App/resources/";
+        PathManager.initialize(spacedPathUrl);
+
+        // Relative path to resolve
+        var relativePath:String = "assets/images/my logo.png";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+
+        // Expected resolved path: "file:///C:/Program Files/My App/resources/assets/images/my logo.png"
+        var expectedPath:String = "file:///C:/Program Files/My App/resources/assets/images/my logo.png";
+        if (resolvedPath == expectedPath) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 新增测试: 路径中包含中文字符
+     */
+    private static function testPathWithChineseCharacters():Void {
+        trace("[Test] testPathWithChineseCharacters()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate C drive environment with Chinese characters in path
+        var chinesePathUrl:String = "file:///C:/项目/resources/";
+        PathManager.initialize(chinesePathUrl);
+
+        // Relative path to resolve
+        var relativePath:String = "数据/config.xml";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+
+        // Expected resolved path: "file:///C:/项目/resources/数据/config.xml"
+        var expectedPath:String = "file:///C:/项目/resources/数据/config.xml";
+        if (resolvedPath == expectedPath) {
+            trace("  [成功] 路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 新增测试: 路径缺少尾部斜杠
+     */
+    private static function testPathWithoutTrailingSlash():Void {
+        trace("[Test] testPathWithoutTrailingSlash()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate C drive environment without trailing slash
+        var noSlashUrl:String = "file:///C:/path/to/resources";
+        PathManager.initialize(noSlashUrl);
+
+        // Relative path to resolve
+        var relativePath:String = "assets/data.json";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+
+        // Expected resolved path: "file:///C:/path/to/resources/assets/data.json"
+        var expectedPath:String = "file:///C:/path/to/resources/assets/data.json";
+        if (resolvedPath == expectedPath) {
+            trace("  [成功] 路径解析正确，并正确添加尾部斜杠。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 新增测试: 使用反斜杠作为路径分隔符
+     */
+    private static function testPathWithBackslashes():Void {
+        trace("[Test] testPathWithBackslashes()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Simulate C drive environment with backslashes in URL
+        var backslashUrl:String = "file:///C:\\path\\to\\resources\\";
+        PathManager.initialize(backslashUrl);
+
+        // Relative path to resolve
+        var relativePath:String = "assets\\images\\logo.png";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+
+        // Expected resolved path: "file:///C:/path/to/resources/assets/images/logo.png"
+        var expectedPath:String = "file:///C:/path/to/resources/assets/images/logo.png";
+        if (resolvedPath == expectedPath) {
+            trace("  [成功] 反斜杠被正确转换为斜杠，路径解析正确。");
+        } else {
+            trace("  [失败] 路径解析错误，预期: " + expectedPath + "，实际: " + resolvedPath);
+        }
+    }
+
+    /**
+     * 新增测试: 完全无效的路径格式
+     */
+    private static function testCompletelyInvalidPath():Void {
+        trace("[Test] testCompletelyInvalidPath()");
+
+        // Reset PathManager
+        PathManager.reset();
+
+        // Pass a completely invalid URL
+        var invalidPath:String = "ht!tp://@invalid_path";
+        PathManager.initialize(invalidPath);
+
+        // Attempt to resolve a path
+        var relativePath:String = "assets/data.json";
+        var resolvedPath:String = PathManager.resolvePath(relativePath);
+
+        trace("  Relative Path: " + relativePath);
+        trace("  解析后的路径: " + resolvedPath);
+
+        // Expected: null, since the environment is invalid
+        if (resolvedPath == null) {
+            trace("  [成功] 完全无效的路径被正确识别，无法解析。");
+        } else {
+            trace("  [失败] 完全无效的路径未被正确处理，解析结果: " + resolvedPath);
         }
     }
 }

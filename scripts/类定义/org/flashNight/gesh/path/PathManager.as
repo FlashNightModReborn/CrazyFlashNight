@@ -2,13 +2,14 @@
     private static var basePath:String = null; // 资源根路径
     private static var isValidEnvironment:Boolean = false; // 是否在 resource 环境中运行
     private static var isBrowserEnvironment:Boolean = false; // 是否在浏览器环境中运行
+    private static var initialized:Boolean = false; // 标记是否已初始化
 
     /**
      * 初始化路径管理器，基于当前运行环境自动设置基础路径。
      * @param testUrl String (可选) 外部传入的 URL，用于测试模式。如果不传，则使用默认逻辑获取 URL。
      */
     public static function initialize(testUrl:String):Void {
-        if (basePath != null) {
+        if (initialized) {
             return; // 防止重复初始化
         }
 
@@ -23,13 +24,24 @@
             trace("正常模式：当前 URL: " + url);
         }
 
+        // 统一路径分隔符为斜杠
+        url = normalizePath(url);
+
+        // 确保 basePath 以斜杠结尾
+        url = ensureTrailingSlash(url);
+
         // 判断是否在浏览器环境中运行
         if (isRunningInBrowser(url)) {
             isBrowserEnvironment = true;
             trace("检测到浏览器环境，设置为浏览器模式。");
-            // 设置服务器基础路径，例如 "http://yourserver.com/resources/"
-            basePath = "http://yourserver.com/resources/"; // 占位用路径
-            // 确保 basePath 以斜杠结尾
+            // 动态计算 basePath
+            var resourceIndex:Number = url.indexOf("resources/");
+            if (resourceIndex != -1) {
+                basePath = url.substring(0, resourceIndex + "resources/".length);
+            } else {
+                // 如果 URL 中不包含 'resources/'，则默认设置
+                basePath = url;
+            }
             basePath = ensureTrailingSlash(basePath);
             isValidEnvironment = true;
             trace("基础路径设置为服务器路径: " + basePath);
@@ -47,6 +59,8 @@
                 trace("未检测到资源目录，路径管理器未启用。");
             }
         }
+
+        initialized = true; // 标记为已初始化
     }
 
     /**
@@ -64,7 +78,7 @@
      * @return String 基础路径，如果未检测到资源环境，返回 null。
      */
     public static function getBasePath():String {
-        if (basePath == null) {
+        if (!initialized) {
             initialize();
         }
         return basePath;
@@ -75,7 +89,7 @@
      * @return Boolean 如果在有效的资源环境中，返回 true；否则返回 false。
      */
     public static function isEnvironmentValid():Boolean {
-        if (basePath == null) {
+        if (!initialized) {
             initialize();
         }
         return isValidEnvironment;
@@ -86,7 +100,7 @@
      * @return Boolean 如果在浏览器环境中，返回 true；否则返回 false。
      */
     public static function isBrowserEnv():Boolean {
-        if (basePath == null) {
+        if (!initialized) {
             initialize();
         }
         return isBrowserEnvironment;
@@ -102,6 +116,9 @@
             trace("当前不在有效的资源环境中，无法解析路径: " + relativePath);
             return null;
         }
+
+        // 统一相对路径中的路径分隔符为斜杠
+        relativePath = normalizePath(relativePath);
 
         if (isBrowserEnvironment) {
             return basePath + relativePath;
@@ -122,7 +139,9 @@
         if (filePath == null) {
             return null;
         }
-        return "file:///" + filePath.split("\\").join("/");
+        // 统一路径分隔符为斜杠
+        filePath = normalizePath(filePath);
+        return "file:///" + filePath;
     }
 
     /**
@@ -153,6 +172,7 @@
         basePath = null;
         isValidEnvironment = false;
         isBrowserEnvironment = false;
+        initialized = false; // 重置初始化标志
     }
 
     /**
@@ -165,6 +185,15 @@
             path += "/";
         }
         return path;
+    }
+
+    /**
+     * 统一路径分隔符，将反斜杠替换为斜杠。
+     * @param path String 路径。
+     * @return String 统一后的路径。
+     */
+    private static function normalizePath(path:String):String {
+        return path.split("\\").join("/");
     }
 
     /**
