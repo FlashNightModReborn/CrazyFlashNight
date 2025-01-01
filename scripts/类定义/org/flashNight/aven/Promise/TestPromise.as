@@ -1,5 +1,11 @@
 ﻿import org.flashNight.aven.Promise.*;
-
+import org.flashNight.neur.Event.*;
+/**
+ * org.flashNight.aven.Promise.TestPromise
+ * 
+ * 一个用于测试 org.flashNight.aven.Promise.Promise 类的测试套件。
+ * 包含多种测试用例，确保 Promise 实现符合 Promises/A+ 规范。
+ */
 class org.flashNight.aven.Promise.TestPromise {
     public static function main():Void {
         // ---------------------- 现有测试用例 ----------------------
