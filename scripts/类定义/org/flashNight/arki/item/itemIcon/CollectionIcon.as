@@ -36,10 +36,10 @@ class org.flashNight.arki.item.itemIcon.CollectionIcon extends ItemIcon{
 
     //重设物品集合与索引
     public function reset(_collection, _index):Void{
-        this.collection.removeIcon(index)
+        this.collection.removeIcon(index);
         this.collection = _collection;
         this.index = _index;
-        this.collection.setIcon(this,index)
+        this.collection.setIcon(this,this.index);
         init();
     }
 }

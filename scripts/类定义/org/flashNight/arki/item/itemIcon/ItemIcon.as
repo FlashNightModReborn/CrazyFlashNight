@@ -27,27 +27,27 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
 
     //初始化图标
     public function init(__name:String, _item):Void{
-        name = __name;
-        item = _item;
-        if(!name || !item){
+        this.icon.gotoAndStop("空");
+        this.name = __name;
+        this.item = _item;
+        if(!this.name || !this.item){
             this.itemData = null;
-            icon.gotoAndStop("空");
             valuetext._visible = false;
             leveltext._visible = false;
         }else{
-            this.itemData = _root.getItemData(name);
-            icon.gotoAndStop("默认图标");
+            this.itemData = _root.getItemData(this.name);
+            this.icon.gotoAndStop("默认图标");
             refreshValue();
         }
     }
 
     public function getIconMovieClip():MovieClip{
-        return icon;
+        return this.icon;
     }
 
     //图标刷新
     public function refresh():Void{
-        icon.gotoAndStop("刷新");
+        this.icon.gotoAndStop("刷新");
         init();
     }
 

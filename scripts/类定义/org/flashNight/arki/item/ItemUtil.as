@@ -65,22 +65,6 @@ class org.flashNight.arki.item.ItemUtil{
                 控制对象.称号 = itemData.equipped.title;
                 _root.玩家称号 = 控制对象.称号;
             }
-        }else if (use == "长枪"){
-            _root.长枪强化等级 = level;
-            _root.长枪配置(_root.控制目标,name,level);
-        }else if (use == "手枪"){
-            if (index == "手枪2"){
-                _root.手枪2强化等级 = level;
-                _root.手枪2配置(_root.控制目标,name,level);
-            }else{
-                _root.手枪强化等级 = level;
-                _root.手枪配置(_root.控制目标,name,level);
-            }
-        }else if (use == "手雷"){
-            _root.手雷配置(_root.控制目标,name);
-        }else if (use == "刀"){
-            _root.刀强化等级 = level;
-            _root.刀配置(_root.控制目标,name,level);
         }
         _root[index] = name;
         _root.播放音效(音效);
