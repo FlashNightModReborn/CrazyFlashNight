@@ -1,11 +1,10 @@
 ﻿/**
- * 惰性求值类：LazyValue
- * 允许延迟计算，并缓存结果，支持链式调用。
+ * 优化后的惰性求值类：LazyValue
+ * 采用函数重定义的方式，减少每次调用get时的判断开销。
  */
 class org.flashNight.gesh.func.LazyValue {
-    private var value;                      // 存储计算结果
-    private var evaluator:Function;           // 计算逻辑
-    private var isEvaluated:Boolean = false;  // 是否已经计算完成
+    private var value;                // 存储计算结果
+    private var evaluator:Function;   // 计算逻辑
 
     /**
      * 构造函数
@@ -20,14 +19,19 @@ class org.flashNight.gesh.func.LazyValue {
 
     /**
      * 获取值
+     * 第一次调用时执行计算，并重定义get方法以直接返回缓存值。
      * @return {*} 返回计算结果
      */
     public function get() {
-        if (!isEvaluated) {           // 第一次调用时执行计算
-            value = evaluator();
-            isEvaluated = true;       // 标记为已计算
-        }
-        return value;                 // 返回结果
+        // 执行计算并缓存结果
+        value = evaluator();
+        // 将get方法重定义为直接返回缓存值的函数
+        this.get = function() {
+            return value;
+        };
+        // 清理引用，帮助垃圾回收
+        evaluator = null;
+        return value;
     }
 
     /**
@@ -51,6 +55,14 @@ class org.flashNight.gesh.func.LazyValue {
         if (typeof(newEvaluator) == "function") {
             this.evaluator = newEvaluator;  // 替换计算逻辑
         }
-        isEvaluated = false;  // 重置状态，允许重新计算
+        // 将get方法重定义为重新计算的初始状态
+        this.get = function() {
+            value = evaluator();
+            this.get = function() {
+                return value;
+            };
+            evaluator = null;
+            return value;
+        };
     }
 }
