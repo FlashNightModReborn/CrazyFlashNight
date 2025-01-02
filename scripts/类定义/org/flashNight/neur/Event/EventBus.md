@@ -213,6 +213,16 @@ eventBus.publish("USER_LOGIN", userData);
 
 
 
+// 导入 EventBusTest 类
+import org.flashNight.neur.Event.EventBusTest;
+
+// 创建 EventBusTest 实例，自动运行所有测试
+var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
+
+
+
+
+
 
 
 
