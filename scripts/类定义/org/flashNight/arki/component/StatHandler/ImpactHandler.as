@@ -2,6 +2,7 @@
     // 常量配置，便于外部调整
     public static var IMPACT_COEFFICIENT:Number = 50; // 冲击系数
     public static var IMPACT_DECAY_TIME:Number = 5;  // 冲击残余时间
+    public static var IMPACT_STAGGER_COEFFICIENT:Number = 2;
     public static var IMPACT_DECAY_FRAME:Number = ImpactHandler.IMPACT_DECAY_TIME * 30;
     public static var IMPACT_DECAY_DFRAME:Number = ImpactHandler.IMPACT_DECAY_FRAME * 2;
 
@@ -12,15 +13,12 @@
      * @param target Object 被命中的对象
      */
     public static function settleImpactForce(damage:Number, knockRate:Number, target:Object):Void {
-        // 内联计算冲击力
-        var impactForce:Number = damage * IMPACT_COEFFICIENT / knockRate;
-
-        // 避免非有限数值影响
-        if (isFinite(impactForce)) {
-            target.remainingImpactForce += impactForce; 
-        } else {
-            target.remainingImpactForce = target.韧性上限 + 1; 
+        if (knockRate == 0 || !isFinite(knockRate)) {
+            target.remainingImpactForce = target.韧性上限 + 1;
+            return;
         }
+        var impactForce:Number = damage * IMPACT_COEFFICIENT / knockRate;
+        target.remainingImpactForce += impactForce;
     }
 
     /**

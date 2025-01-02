@@ -1,4 +1,15 @@
-﻿_root.is119 = function(x:Number):Boolean 
+﻿//计算闪避
+_root.躲闪率极限 = 0.01;
+_root.命中率极限 = 0.01;
+_root.闪避系统闪避率上限 = 0.5 * 100;
+_root.基准躲闪率 = 3;
+_root.基准命中率 = 10;
+_root.跳弹基准重量 = 100;
+_root.过穿基准重量 = 20;
+_root.跳弹防御系数 = 5;
+
+
+_root.is119 = function(x:Number):Boolean 
 {
 	return x == _root.闪客之夜;
 };
@@ -47,12 +58,50 @@ _root.sig_tyler = function(x:Number):Number
 	return 3 * x / 40 + 0.5 - x * x * x / 4000;
 };//展开节约性能
 
-//计算闪避
-_root.躲闪率极限 = 0.01;
-_root.命中率极限 = 0.01;
-_root.闪避系统闪避率上限 = 0.5 * 100;
-_root.基准躲闪率 = 3;
-_root.基准命中率 = 10;
+
+//根据重量判断是跳弹还是过穿
+_root.躲闪状态校验 = function(重量:Number, 等级:Number) {
+    if (_root.成功率((等级 - 重量))) {
+        return "躲闪";
+    } else if (_root.成功率(100 * (重量 - _root.过穿基准重量) / (_root.跳弹基准重量 - _root.过穿基准重量))) {
+        return "跳弹";
+    } else {
+        return "过穿";
+    }
+};
+
+//兼容性考虑
+_root.躲闪状态计算 = function(命中对象:MovieClip, 躲闪结果:Boolean, 子弹:MovieClip) {
+	var 计算用伤害值 = 命中对象.损伤值 + 子弹.附加层伤害计算;
+    计算用伤害值 = isNaN(计算用伤害值) ? 0 : 计算用伤害值;
+	if(命中对象.懒闪避 > 0)
+    {
+        // _root.服务器.发布服务器消息("损伤:" + 命中对象.损伤值 + "附加:" + 子弹.附加层伤害计算 + " 伤害:" + 计算用伤害值 + " 高危闪避:" + 命中对象.懒闪避);
+        if(_root.lazyMiss(命中对象, 计算用伤害值, 命中对象.懒闪避))
+        {
+            return "直感";
+        }
+	}
+
+    if (躲闪结果) {
+        if (isNaN(命中对象.等级)) {
+            命中对象.等级 = 1;
+            _root.发布消息(命中对象 + " 触发异常等级 " + 命中对象.等级)
+        }
+        if (isNaN(命中对象.重量)) {
+
+            命中对象.重量 = 999;
+            _root.发布消息(命中对象 + " 触发异常重量 " + 命中对象.重量)
+        }
+		return _root.躲闪状态校验(命中对象.重量, 命中对象.等级);
+    }
+	else if(命中对象.受击反制){
+		return "格挡";
+	}
+	return "未躲闪";
+};
+
+
 _root.根据等级计算闪避率 = function(攻击者等级, 闪避者等级, 躲闪率, 命中率)
 {
 	//_root.调试模式 = true;
@@ -99,37 +148,3 @@ _root.根据命中计算闪避结果 = function(发射者对象, 命中者对象
 	return _root.成功率(闪避率);
 };
 
-
-//目前已弃用
-
-_root.根据等级计算闪避结果 = function(发射者, 命中者)
-{
-
-	if (isNaN(_root.gameworld[发射者].命中率))
-	{
-		_root.gameworld[发射者].命中率 = 10;
-	}
-	if (isNaN(_root.gameworld[发射者].等级))
-	{
-		_root.gameworld[发射者].等级 = 1;
-	}
-	if (isNaN(_root.gameworld[命中者].等级))
-	{
-		_root.gameworld[命中者].等级 = 1;
-	}
-	if (isNaN(_root.gameworld[命中者].躲闪率))
-	{
-		_root.gameworld[命中者].躲闪率 = 999;
-	}
-	if (_root.is119(_root.gameworld[命中者].躲闪率))
-	{
-		//_root.调试模式 = true;
-		//_root.发布调试消息("119注视着你");
-
-		return false;
-	}
-
-
-	闪避率 = _root.根据等级计算闪避率(_root.gameworld[发射者].等级, _root.gameworld[命中者].等级, _root.gameworld[命中者].躲闪率, _root.gameworld[发射者].命中率);
-	return _root.成功率(闪避率);
-};
