@@ -2,7 +2,7 @@
  * NormalizationUtil
  * 提供常用的数学函数，用于归一化计算和激活函数
  */
-class org.flashNight.naki.NormalizationUtil
+class org.flashNight.naki.Normalization.NormalizationUtil
 {
     /**
      * sigmoid函数

@@ -1,10 +1,13 @@
-﻿/**
+﻿import org.flashNight.naki.NormalizationUtil;
+import org.flashNight.naki.RandomNumberEngine.*;
+
+/**
  * DodgeHandler
  * 负责与闪避、命中计算相关的逻辑，如：
- *  - sigmoid、relu 等数学函数
  *  - 躲闪状态校验
  *  - 根据等级计算闪避率
  *  - 根据命中率计算是否闪避成功
+ *  - 懒闪避（Lazy Miss）处理
  */
 class org.flashNight.arki.component.StatHandler.DodgeHandler
 {
@@ -20,63 +23,9 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
     public static var JUMP_BOUNCE_BASE_WEIGHT:Number = 100;     // 跳弹基准重量
     public static var PENETRATION_BASE_WEIGHT:Number = 20;      // 过穿基准重量
 
-    // ------------------------------------------------------------
-    // 下面是移植原脚本中的函数
-    // ------------------------------------------------------------
+    private static var RandomNumberEngine:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 
-    /**
-     * 是否是119（原 _root.is119）
-     * @param x 传入数值
-     * @return Boolean
-     */
-    public static function is119(x:Number):Boolean
-    {
-        // 注意：这里仍然依赖 _root.闪客之夜
-        // 若要彻底去除 _root 依赖，需要单独传入或在外部管理
-        return (x == _root.闪客之夜);
-    }
-
-    /**
-     * sigmoid函数（原 _root.sigmoid）
-     * @param x 输入数值
-     * @return sigmoid(x)
-     */
-    public static function sigmoid(x:Number):Number
-    {
-        var expX:Number = Math.exp(x);
-        return expX / (1 + expX);
-    }
-
-    /**
-     * ReLU函数（原 _root.relu）
-     * @param x 输入数值
-     * @return relu(x)
-     */
-    public static function relu(x:Number):Number
-    {
-        return Math.max(0, x);
-    }
-
-    /**
-     * softplus函数（原 _root.softplus）
-     * @param x 输入数值
-     * @return softplus(x)
-     */
-    public static function softplus(x:Number):Number
-    {
-        return Math.log(1 + Math.exp(x));
-    }
-
-    /**
-     * sig_tyler函数（原 _root.sig_tyler）
-     * @param x 输入数值
-     * @return 计算结果
-     */
-    public static function sig_tyler(x:Number):Number
-    {
-        // 原脚本: 3 * x / 40 + 0.5 - x * x * x / 4000
-        return 3 * x / 40 + 0.5 - (x * x * x) / 4000;
-    }
+    // ----------------- 方法定义 -----------------
 
     /**
      * 根据重量判断躲闪类型（跳弹/过穿/躲闪），对应 _root.躲闪状态校验
@@ -86,16 +35,11 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
      */
     public static function checkDodgeState(weight:Number, level:Number):String
     {
-        // 对应原脚本:
-        // if (_root.成功率((等级 - 重量))) return "躲闪";
-        // else if (_root.成功率(100 * (重量 - 过穿基准重量) / (跳弹基准重量 - 过穿基准重量))) return "跳弹";
-        // else return "过穿";
-        if (_root.成功率(level - weight))
+        if (DodgeHandler.RandomNumberEngine.successRate(level - weight))
         {
             return "躲闪";
         }
-        else if (_root.成功率(100 * (weight - PENETRATION_BASE_WEIGHT) 
-                    / (JUMP_BOUNCE_BASE_WEIGHT - PENETRATION_BASE_WEIGHT)))
+        else if (DodgeHandler.RandomNumberEngine.successRate(100 * (weight - PENETRATION_BASE_WEIGHT) / (JUMP_BOUNCE_BASE_WEIGHT - PENETRATION_BASE_WEIGHT)))
         {
             return "跳弹";
         }
@@ -121,7 +65,7 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
         // 懒闪避相关逻辑
         if (targetMC.懒闪避 > 0)
         {
-            if (_root.lazyMiss(targetMC, calcDamage, targetMC.懒闪避))
+            if (lazyMiss(targetMC, calcDamage, targetMC.懒闪避))
             {
                 return "直感";
             }
@@ -169,7 +113,7 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
         var dodgeIndex:Number = (dodgerLevel * BASE_HIT_RATE / dodgeRate 
                                - attackerLevel * hitRate / BASE_DODGE_RATE) / 40;
         // 通过 sigmoid 进行压缩，再乘以闪避上限
-        var finalRate:Number = sigmoid(dodgeIndex) * DODGE_SYSTEM_MAX;
+        var finalRate:Number = NormalizationUtil.sigmoid(dodgeIndex) * DODGE_SYSTEM_MAX;
         return finalRate;
     }
 
@@ -197,7 +141,63 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
             dodgeRate = calcDodgeRateByLevel(shooter.等级, target.等级, target.躲闪率, shooter.命中率);
         }
 
-        // 3. 最终通过 _root.成功率(dodgeRate) 来判断是否成功闪避
-        return _root.成功率(dodgeRate);
+        // 3. 最终通过 RandomNumberEngine.successRate(dodgeRate) 来判断是否成功闪避
+        return RandomNumberEngine.successRate(dodgeRate);
+    }
+
+    /**
+     * 懒闪避（Lazy Miss）逻辑
+     * 低于5%总血量不闪避，高于100%时达到最大闪避
+     * @param Obj 被攻击对象
+     * @param damage 伤害值
+     * @param lazyMissValue 懒闪避值
+     * @return Boolean 是否进行懒闪避
+     */
+    private static function lazyMiss(Obj:Object, damage:Number, lazyMissValue:Number):Boolean
+    {
+        // 检查对象的生命值是否有效
+        if (!Obj.hp满血值 || !Obj.hp || Obj.hp <= 0)
+        {
+            return false;
+        }
+
+        var fullHp:Number = Obj.hp满血值;
+        var currentHp:Number = Obj.hp;
+        var successRate:Number;
+
+        // 如果伤害大于半血
+        if (damage > fullHp / 2)
+        {
+            successRate = 100 * lazyMissValue;
+        }
+        // 如果当前血量小于半血
+        else if (currentHp < fullHp / 2)
+        {
+            if (damage > fullHp / 5)
+            {
+                successRate = 100 * lazyMissValue;
+            }
+            else if (damage < fullHp * 0.025)
+            {
+                return false; // 伤害小于2.5%不闪避
+            }
+            else
+            {
+                // 计算动态闪避率
+                successRate = 100 * lazyMissValue * damage * 5 / fullHp;
+            }
+        }
+        // 当前血量大于或等于半血
+        else
+        {
+            if (damage < fullHp * 0.05)
+            {
+                return false; // 伤害小于5%不闪避
+            }
+            // 计算动态闪避率
+            successRate = 100 * lazyMissValue * damage * 2 / fullHp;
+        }
+
+        return successRate > 0 ? RandomNumberEngine.successRate(successRate) : false;
     }
 }
