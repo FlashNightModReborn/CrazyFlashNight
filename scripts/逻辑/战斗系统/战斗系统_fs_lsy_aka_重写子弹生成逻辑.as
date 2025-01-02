@@ -526,17 +526,17 @@ _root.子弹生命周期 = function()
                 }
                 else
                 {
-                    if (hitTarget.残余冲击力 > hitTarget.韧性上限)
+                    if (hitTarget.remainingImpactForce > hitTarget.韧性上限)
                     {
                         if (!刚体检测)
                         {
                             hitTarget.状态改变("击倒");
                             hitTarget.血条变色状态 = "击倒";
                         }
-                        hitTarget.残余冲击力 = 0;
+                        hitTarget.remainingImpactForce = 0;
                         hitTarget.被击移动(被击方向,this.水平击退速度,0.5);
                     }
-                    else if (hitTarget.残余冲击力 > hitTarget.韧性上限 / _root.踉跄判定 / hitTarget.躲闪率)
+                    else if (hitTarget.remainingImpactForce > hitTarget.韧性上限 / _root.踉跄判定 / hitTarget.躲闪率)
                     {
                         if (!刚体检测)
                         {
@@ -554,7 +554,7 @@ _root.子弹生命周期 = function()
             }
             else
             {
-                hitTarget.残余冲击力 = 0;
+                hitTarget.remainingImpactForce = 0;
                 if (!刚体检测)
                 {
                     hitTarget.状态改变("击倒");

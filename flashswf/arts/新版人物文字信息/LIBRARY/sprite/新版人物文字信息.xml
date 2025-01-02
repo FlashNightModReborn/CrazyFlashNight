@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1735804244" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1735806255" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="新版人物文字信息">
       <layers>
@@ -6,58 +6,73 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[自机 = _parent;
+                <script><![CDATA[// 获取父级对象（自机）
+var self:Object = _parent;
 
-if (自机.是否为敌人 == false)
-{
-	名字 = "<FONT COLOR=\'#00FF00\'>" + 自机.名字 + "</FONT>";
+// 根据自机的状态设置名字颜色
+if (self.是否为敌人 == false) {
+    名字 = "<FONT COLOR='#00FF00'>" + self.名字 + "</FONT>";
 }
-else if (自机.是否为敌人 == true)
-{
-	名字 = "<FONT COLOR=\'#CC0000\'>" + 自机.名字 + "</FONT>";
+else if (self.是否为敌人 == true) {
+    名字 = "<FONT COLOR='#CC0000'>" + self.名字 + "</FONT>";
 }
-else if (自机._name == _root.控制目标)
-{
-	名字 = "<FONT COLOR=\'#FFFF00\'>" + 自机.名字 + "</FONT>";
+else if (self._name == _root.控制目标) {
+    名字 = "<FONT COLOR='#FFFF00'>" + self.名字 + "</FONT>";
 }
-else
-{
-	名字 = "<FONT COLOR=\'#FFFFFF\'>" + 自机.名字 + "</FONT>";
+else {
+    名字 = "<FONT COLOR='#FFFFFF'>" + self.名字 + "</FONT>";
 }
-血槽x = this.头顶血槽.血槽底._x;
-血槽长度 = this.头顶血槽.血槽底._width;
 
-this.onEnterFrame = function()
-{
-	this._alpha = _root.天气系统.人物信息透明度;
-	this._visible = 自机.状态 == "登场" ? false : this._alpha > 0;
+// 获取血槽的初始位置和长度
+var bloodBarX:Number = this.头顶血槽.血槽底._x;
+var bloodBarLength:Number = this.头顶血槽.血槽底._width;
 
-	this.头顶血槽.血槽条._width = 自机.hp / 自机.hp满血值 * 血槽长度;
+// 设置 onEnterFrame 事件处理函数
+this.onEnterFrame = function() {
+    // 设置透明度和可见性
+    this._alpha = _root.天气系统.人物信息透明度;
+    this._visible = self.状态 == "登场" ? false : this._alpha > 0;
 
-	//计算残余冲击力
-	var 残余冲击力 = 自机.残余冲击力;
-	if (自机.浮空 || 自机.倒地 || 残余冲击力 >= 自机.韧性上限)
-	{
-		残余冲击力 = 自机.韧性上限;
-	}
-	else
-	{
-		//照搬冲击力衰减
-		var 当前时间:Number = getTimer();
-		if (!isNaN(自机.上次受击时间))
-		{
-			var 受击间隔:Number = 当前时间 - 自机.上次受击时间;
-			if (受击间隔 > 1000 * _root.冲击残余时间)
-			{
-				残余冲击力 = Math.max(0, 自机.残余冲击力 * _root.冲击力衰减(受击间隔));
-			}
-		}
-	}
-	this.头顶血槽.韧性条._x = 血槽x - 残余冲击力 / 自机.韧性上限 * 血槽长度;
+    // 更新血槽长度
+    this.头顶血槽.血槽条._width = self.hp / self.hp满血值 * bloodBarLength;
 
-	//霸体状态下改变韧性条底部颜色
-	this.头顶血槽.刚体遮罩._visible = (自机.刚体 || 自机.man.刚体标签) ? true : false;
-};]]></script>
+    // 计算剩余冲击力
+    var remainingImpactForce:Number = self.remainingImpactForce;
+
+    if (self.浮空 || self.倒地 || remainingImpactForce >= self.韧性上限) {
+        remainingImpactForce = self.韧性上限;
+    }
+    else {
+        // 使用帧计时器获取当前帧数
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+
+        if (!isNaN(self.lastHitTime)) {
+            var intervalFrames:Number = currentFrame - self.lastHitTime; // 受击间隔（帧数）
+
+            // 将冲击残余时间从秒转换为帧数（30帧/秒）
+            var decayThresholdFrames:Number = _root.冲击残余时间 * 30; // e.g., 5秒 * 30 = 150帧
+
+            // 若受击间隔超过设定时间（帧数），计算衰减
+            if (intervalFrames > decayThresholdFrames) {
+                // 计算衰减比率
+                // 原公式: (2000 * 冲击残余时间 - interval) / (2000 * 冲击残余时间)
+                // 假设 2000 ms 对应 60帧（2秒），因此调整为：
+                var decayRate:Number = (60 * _root.冲击残余时间 - intervalFrames) / (60 * _root.冲击残余时间);
+                remainingImpactForce = Math.max(0, self.remainingImpactForce * decayRate);
+            }
+        }
+    }
+
+    // 更新韧性条的位置
+    this.头顶血槽.韧性条._x = bloodBarX - remainingImpactForce / self.韧性上限 * bloodBarLength;
+
+    // 在霸体状态下改变韧性条底部颜色
+    this.头顶血槽.刚体遮罩._visible = (self.刚体 || self.man.刚体标签) ? true : false;
+    
+    // 更新 lastHitTime 为当前帧数
+    self.lastHitTime = _root.帧计时器.当前帧数;
+};
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

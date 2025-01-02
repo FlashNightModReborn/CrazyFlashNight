@@ -34,26 +34,26 @@ this.onEnterFrame = function()
 
 	this.头顶血槽.血槽条._width = 自机.hp / 自机.hp满血值 * 血槽长度;
 
-	//计算残余冲击力
-	var 残余冲击力 = 自机.残余冲击力;
-	if (自机.浮空 || 自机.倒地 || 残余冲击力 >= 自机.韧性上限)
+	//计算remainingImpactForce
+	var remainingImpactForce = 自机.remainingImpactForce;
+	if (自机.浮空 || 自机.倒地 || remainingImpactForce >= 自机.韧性上限)
 	{
-		残余冲击力 = 自机.韧性上限;
+		remainingImpactForce = 自机.韧性上限;
 	}
 	else
 	{
 		//照搬冲击力衰减
 		var 当前时间:Number = getTimer();
-		if (!isNaN(自机.上次受击时间))
+		if (!isNaN(自机.lastHitTime))
 		{
-			var 受击间隔:Number = 当前时间 - 自机.上次受击时间;
+			var 受击间隔:Number = 当前时间 - 自机.lastHitTime;
 			if (受击间隔 > 1000 * _root.冲击残余时间)
 			{
-				残余冲击力 = Math.max(0, 自机.残余冲击力 * _root.冲击力衰减(受击间隔));
+				remainingImpactForce = Math.max(0, 自机.remainingImpactForce * _root.冲击力衰减(受击间隔));
 			}
 		}
 	}
-	this.头顶血槽.韧性条._x = 血槽x - 残余冲击力 / 自机.韧性上限 * 血槽长度;
+	this.头顶血槽.韧性条._x = 血槽x - remainingImpactForce / 自机.韧性上限 * 血槽长度;
 
 	//霸体状态下改变韧性条底部颜色
 	this.头顶血槽.刚体遮罩._visible = (自机.刚体 || 自机.man.刚体标签) ? true : false;

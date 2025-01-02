@@ -6,7 +6,7 @@ _root.过穿基准重量 = 20;
 _root.跳弹防御系数 = 5;
 _root.踉跄判定 = 2;
 _root.冲击系数 = 50;
-_root.冲击残余时间 = 5;
+_root.冲击残余时间 = ImpactHandler.IMPACT_DECAY_TIME;
 
 //根据重量判断是跳弹还是过穿
 _root.躲闪状态校验 = function(重量:Number, 等级:Number) {

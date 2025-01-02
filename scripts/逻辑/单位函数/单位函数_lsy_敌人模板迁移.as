@@ -403,7 +403,7 @@ _root.初始化敌人模板 = function()
 	倒地 = false;
 	硬直中 = false;
 	已加经验值 = false;
-	残余冲击力 = 0;
+	remainingImpactForce = 0;
 	
 	//转换身高，调整层级
 	身高转换值 = _root.身高百分比转换(this.身高);
