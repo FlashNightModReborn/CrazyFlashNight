@@ -21,6 +21,10 @@ class org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine extends Ba
     public static function getInstance():LinearCongruentialEngine {
         if (instance == null) {
             instance = new LinearCongruentialEngine();
+            // redefine getInstance to return instance directly
+            getInstance = function():LinearCongruentialEngine {
+                return instance;
+            };
         }
         return instance;
     }

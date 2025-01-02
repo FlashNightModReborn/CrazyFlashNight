@@ -23,6 +23,10 @@ class org.flashNight.naki.RandomNumberEngine.MersenneTwister extends BaseRandomN
     public static function getInstance():MersenneTwister {
         if (instance == null) {
             instance = new MersenneTwister();
+            // redefine getInstance to return instance directly
+            getInstance = function():MersenneTwister {
+                return instance;
+            };
         }
         return instance;
     }

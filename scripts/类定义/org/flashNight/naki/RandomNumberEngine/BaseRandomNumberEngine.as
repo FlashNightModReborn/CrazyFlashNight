@@ -18,6 +18,10 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
     public static function getInstance():BaseRandomNumberEngine {
         if (instance == null) {
             instance = new BaseRandomNumberEngine();
+            // Replace getInstance with a function that returns the instance directly
+            getInstance = function():BaseRandomNumberEngine {
+                return instance;
+            };
         }
         return instance;
     }
