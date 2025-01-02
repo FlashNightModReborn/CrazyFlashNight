@@ -6,7 +6,7 @@
  *  - 根据等级计算闪避率
  *  - 根据命中率计算是否闪避成功
  */
-class org.flashNight.arki.component.DodgeHandler
+class org.flashNight.arki.component.StatHandler.DodgeHandler
 {
     // ----------------- 常量定义 -----------------
     // 对应原脚本中的各类闪避相关常量
