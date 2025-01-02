@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1207" itemID="6577b699-00000c80" lastModified="1702343951">
+  <timeline>
+    <DOMTimeline name="Symbol 1207">
+      <layers>
+        <DOMLayer name="Layer 1" color="#C87648" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1206" name="枪" centerPoint3DX="55.25" centerPoint3DY="26.65">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.基本款._visible = 0;
+   if(_parent._parent._parent.手枪2_装扮 != undefined)
+   {
+      this.attachMovie(_parent._parent._parent.手枪2_装扮,"装扮",this.getNextHighestDepth());
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

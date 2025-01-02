@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="余烬小队/余烬剑痴/手枪2" itemID="665de9e4-000008d1" lastModified="1718943872" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="手枪2">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B0DFF4" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 28" name="枪" selected="true" centerPoint3DX="58.75" centerPoint3DY="32.15">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.基本款._visible = 0;
+	var 手枪2 = _parent._parent._parent.手枪2_装扮;
+	if (手枪2 != undefined)
+	{
+		_root.装备引用配置.配置装扮(this,手枪2,"装扮","手枪2_引用");
+	}
+
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

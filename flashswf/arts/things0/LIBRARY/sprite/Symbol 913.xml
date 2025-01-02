@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 913" itemID="6577b699-00000bcf" lastModified="1702343951">
+  <timeline>
+    <DOMTimeline name="Symbol 913">
+      <layers>
+        <DOMLayer name="Script Layer" color="#A34CE9">
+          <frames>
+            <DOMFrame index="0" duration="131" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="131" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.暂时刚体控制器.gotoAndPlay(2);
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7DA1C3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="131" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 5" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="131" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,86 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="狮子斩刀光" itemID="66fac585-0000073c" lastModified="1731920115">
+  <timeline>
+    <DOMTimeline name="狮子斩刀光" currentFrame="5">
+      <layers>
+        <DOMLayer name="图层_29" color="#009999" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.32965087890625" b="-0.43878173828125" c="0.353927612304688" d="0.16778564453125" tx="506.2" ty="679.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!6415 9862[7597 8288 9269 7498!9269 7498[14291 8463 11776 14718!11776 14718[10980 15320 10043 15693!10043 15693[8087 16468 6653 15788!6653 15788[5220 15110 5150 13374!5150 13374[5082 11638 6415 9862"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#9.F1, #3F.2A" startPointB="0, #3A.FC" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#9.F1, #2A.D9" anchorPointA="#18.4E, #1C.7C" controlPointB="0, #22.8D" anchorPointB="#11.48, #11.48"/>
+                    <MorphCurves controlPointA="#26.AC, #E.1E" anchorPointA="#3A.FC, #E.1E" controlPointB="#22.8E, 0" anchorPointB="#3A.FC, 0"/>
+                    <MorphCurves controlPointA="#4F.4D, #E.1E" anchorPointA="#5D.AA, #1C.7C" controlPointB="#53.6C, 0" anchorPointB="#64.B2, #11.48"/>
+                    <MorphCurves controlPointA="#6C.08, #2A.D9" anchorPointA="#6C.08, #3F.2A" controlPointB="#75.FA, #22.8D" anchorPointB="#75.FA, #3A.FC"/>
+                    <MorphCurves controlPointA="#6C.08, #4D.64" anchorPointA="#64.FC, #58.B3" controlPointB="#75.FA, #4C.1A" anchorPointB="#6D.81, #59.B4"/>
+                    <MorphCurves controlPointA="#38.6A, #52.EB" anchorPointA="#B.D7, #4D.22" controlPointB="#37.E5, 82.75" anchorPointB="#2.48, #4B.CB" isLine="true"/>
+                    <MorphCurves controlPointA="#9.F1, #46.8A" anchorPointA="#9.F1, #3F.2A" controlPointB="0, #43.DC" anchorPointB="0, #3A.FC"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="1.33203125" b="0.356842041015625" c="-0.356842041015625" d="1.33203125" tx="417.8" ty="789.55"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!23978 7292S2[27656 10969 27656 16170!27656 16170[27656 19812 25852 22707!25852 22707|3031 19746!3031 19746[2545 18058 2545 16170!2545 16170[2545 10969 6222 7292!6222 7292[9900 3614 15100 3614!15100 3614[20301 3614 23978 7292"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="2.64697265625" b="0.709136962890625" c="-0.709136962890625" d="2.64697265625" tx="424.5" ty="487.95"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.482352941176471"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.768627450980392"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!28033 22964S2|584 19403!584 19403[0 17372 0 15100!0 15100[0 8845 4424 4424!4424 4424[8846 0 15100 0!15100 0[21356 0 25778 4424!25778 4424[30202 8845 30202 15100!30202 15100[30202 19482 28033 22964"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

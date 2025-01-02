@@ -1,0 +1,2706 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角动画层/长枪攻击" itemID="66560654-000014f8" lastModified="1726418405" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="长枪攻击">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#9781A7">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="6" name="射击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="7" name="上射击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" name="下射击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="5" name="结束" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="5" name="空枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="6" name="换弹夹" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#967A7D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.长枪射击ing = true;
+_parent.UpdateSmallState("长枪攻击前");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 射击()
+{
+   if(_parent.是否允许发送联机数据 == true)
+   {
+      clearInterval(_parent.keepshooting);
+   }
+   if(_parent.长枪射击次数 >= 弹夹容量)
+   {
+      delete this.onEnterFrame;
+      换弹夹();
+   }
+   else
+   {
+      _parent.长枪射击次数++;
+      if(_root.控制目标 == _parent._name)
+      {
+         _root.玩家信息界面.玩家必要信息界面.子弹数 = 弹夹容量 - _parent.长枪射击次数;
+      }
+      _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,_parent._name,shootX,shootY,_parent.Z轴坐标,子弹敌我属性,击倒率,击中后子弹的效果);
+
+      if(长枪是否单发)
+      {
+         _parent.单发枪计时();
+      }
+      if(_root.控制目标全自动 == false and _parent.操控编号 != -1)
+      {
+         if(Key.isDown(_parent.下键))
+         {
+            if(射击方向传值 != 1)
+            {
+               射击方向传值 = 1;
+            }
+            gotoAndStop("下射击");
+            play();
+         }
+         else if(Key.isDown(_parent.上键))
+         {
+            if(射击方向传值 != 2)
+            {
+               射击方向传值 = 2;
+            }
+            gotoAndStop("上射击");
+            play();
+         }
+         else
+         {
+            if(射击方向传值 != 0)
+            {
+               射击方向传值 = 0;
+            }
+            gotoAndStop("射击");
+            play();
+         }
+      }
+   }
+}
+function 换弹夹()
+{
+   delete this.onEnterFrame;
+   clearInterval(_parent.keepshooting);
+   if(_root.控制目标 == _parent._name)
+   {
+      i2 = 0;
+      while(i2 < _root.物品栏总数)
+      {
+         if(_root.物品栏[i2][0] == 使用弹夹名称)
+         {
+            if(_root.物品栏[i2][1] >= 1)
+            {
+               gotoAndStop("换弹夹");
+               play();
+               break;
+            }
+            _root.发布消息("弹夹耗尽！");
+            _root.物品栏[i2] = ["空",0,0];
+            _root.排列物品图标();
+            if(_parent.长枪射击次数 >= 弹夹容量)
+            {
+               gotoAndStop("结束");
+            }
+            break;
+         }
+         i2++;
+      }
+   }
+   else if(_parent.操控编号 != -1 && _root.playerCurrent != _parent.操控编号)
+   {
+      _root.发布消息("其他人物子弹检查。。。");
+      _root.发布消息(_root.playerData[_parent.操控编号][2].length);
+      var _loc4_ = 0;
+      while(_loc4_ < _root.playerData[_parent.操控编号][2].length)
+      {
+         if(_root.playerData[_parent.操控编号][2][_loc4_][0] == 使用弹夹名称)
+         {
+            if(_root.playerData[_parent.操控编号][2][_loc4_][1] >= 1)
+            {
+               _root.playerData[_parent.操控编号][2][_loc4_][1]--;
+               _root.排列物品图标();
+               _parent.长枪射击次数 = 0;
+               gotoAndStop("换弹夹");
+               play();
+               break;
+            }
+            _root.发布消息("弹夹耗尽！");
+            _root.playerData[_parent.操控编号][2][_loc4_] = ["空",0,0];
+            if(_parent.长枪射击次数 >= 弹夹容量)
+            {
+               gotoAndStop("结束");
+            }
+            break;
+         }
+         _loc4_ += 1;
+      }
+   }
+   else
+   {
+      _parent.长枪射击次数 = 0;
+      gotoAndStop("换弹夹");
+      play();
+   }
+}
+function 检查下是否有弹夹()
+{
+   var _loc3_ = 0;
+   if(_loc3_ < _root.物品栏总数)
+   {
+      if(_root.物品栏[_loc3_][0] == 使用弹夹名称)
+      {
+         return _root.物品栏[_loc3_][1];
+      }
+      return 0;
+   }
+   if(_parent.操控编号 != -1 && _root.playerCurrent != _parent.操控编号)
+   {
+      _root.发布消息("检查弹夹2: " + _parent._name);
+      _loc3_ = 0;
+      while(_loc3_ < _root.playerData[_parent.操控编号][2].length)
+      {
+         if(_root.playerData[_parent.操控编号][2][_loc3_][0] == 使用弹夹名称)
+         {
+            return _root.playerData[_parent.操控编号][2][_loc3_][1];
+         }
+         _loc3_ += 1;
+      }
+      _root.发布消息("其他玩家弹夹耗尽！");
+   }
+   return 0;
+}
+
+射击速度 = _parent.长枪属性数组[14][5];
+_parent.单发枪射击速度 = 射击速度;
+长枪是否单发 = _parent.长枪属性数组[14][3];
+弹夹容量 = _parent.长枪属性数组[14][0];
+使用弹夹名称 = _parent.长枪属性数组[14][11];
+声音 = _parent.长枪属性数组[14][8];
+霰弹值 = _parent.长枪属性数组[14][1];
+子弹散射度 = _parent.长枪属性数组[14][2];
+发射效果 = _parent.长枪属性数组[14][9];
+子弹种类 = _parent.长枪属性数组[14][7];
+子弹威力 = _parent.长枪属性数组[14][13] * 1.5 + 30 ;
+if(_parent.长枪额外攻击加成倍率){
+	子弹威力 +=_parent.长枪属性数组[14][13] * _parent.长枪额外攻击加成倍率;
+}
+子弹速度 = _parent.长枪属性数组[14][6];
+击中地图效果 = _parent.长枪属性数组[14][10];
+Z轴攻击范围 = _parent.长枪属性数组[14][12];
+击倒率 = _parent.长枪属性数组[14][14];
+击中后子弹的效果 = _parent.长枪属性数组[14][15];
+if(_parent.是否为敌人 == true)
+{
+   子弹敌我属性 = false;
+}
+else
+{
+   子弹敌我属性 = true;
+}
+var myPoint = {x:this.枪.枪.装扮.枪口位置._x,y:this.枪.枪.装扮.枪口位置._y};
+this.枪.枪.装扮.localToGlobal(myPoint);
+if(myPoint.y == this.枪.枪.装扮.枪口位置._y)
+{
+   _parent.长枪射击ing = false;
+   _parent.动画完毕();
+}
+_root.gameworld.globalToLocal(myPoint);
+
+shootX = myPoint.x;
+shootY = myPoint.y;
+剩余弹夹数 = 检查下是否有弹夹();
+if(_parent.强制换弹夹 == true and 剩余弹夹数 >= 0 and _parent.长枪射击次数 > 0)
+{
+   换弹夹();
+}
+else
+{
+   _parent.强制换弹夹 = false;
+}
+if(剩余弹夹数 <= 0 and _parent.长枪射击次数 >= 弹夹容量 and _parent.强制换弹夹 != true)
+{
+   delete this.onEnterFrame;
+   clearInterval(_parent.keepshooting);
+   _parent.UpdateSmallState("长枪攻击结束");
+   gotoAndStop("空枪");
+   play();
+}
+else if(剩余弹夹数 >= 0 and _parent.长枪射击次数 < 弹夹容量 and _parent.强制换弹夹 != true)
+{
+   if(长枪是否单发)
+   {
+      if(_parent.单发枪计时_时间结束 == true)
+      {
+         //_parent.UpdateSmallState("长枪攻击中");
+         射击();
+      }
+      else
+      {
+         //_parent.UpdateSmallState("长枪攻击结束");
+         gotoAndStop("结束");
+      }
+   }
+   else
+   {
+     //_parent.UpdateSmallState("长枪攻击中");
+      射击();
+   }
+   _parent.keepshooting = setInterval(射击,射击速度);
+}
+结束攻击计数 = 0;
+结束攻击数 = random(200);
+this.onEnterFrame = function()
+{
+   if(_parent.长枪射击次数 >= 弹夹容量)
+   {
+      换弹夹();
+      _parent.UpdateSmallState("长枪攻击结束");
+      delete this.onEnterFrame;
+   }
+   if(_root.控制目标全自动 == false and _parent.操控编号 != -1 and Key.isDown(_parent.A键) == false)
+   {
+      clearInterval(_parent.keepshooting);
+      _parent.长枪射击ing = false;
+      _parent.UpdateSmallState("长枪攻击结束");
+      _parent.动画完毕();
+   }
+   结束攻击计数++;
+   if(结束攻击数 < 结束攻击计数)
+   {
+      _parent.长枪射击ing = false;
+      _parent.UpdateSmallState("长枪攻击结束");
+      _parent.动画完毕();
+   }
+};
+this.onUnload = function()
+{
+   _parent.长枪射击ing = false;
+   clearInterval(_parent.keepshooting);
+   delete this.onEnterFrame;
+};
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var myPoint = {x:this.枪.枪.装扮.枪口位置._x,y:this.枪.枪.装扮.枪口位置._y};
+this.枪.枪.装扮.localToGlobal(myPoint);
+if(myPoint.y == this.枪.枪.装扮.枪口位置._y)
+{
+   _parent.动画完毕();
+}
+_root.gameworld.globalToLocal(myPoint);
+shootX = myPoint.x;
+shootY = myPoint.y;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var myPoint = {x:this.枪.枪.装扮.枪口位置._x,y:this.枪.枪.装扮.枪口位置._y};
+this.枪.枪.装扮.localToGlobal(myPoint);
+if(myPoint.y == this.枪.枪.装扮.枪口位置._y)
+{
+   _parent.动画完毕();
+}
+_root.gameworld.globalToLocal(myPoint);
+shootX = myPoint.x;
+shootY = myPoint.y;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var myPoint = {x:this.枪.枪.装扮.枪口位置._x,y:this.枪.枪.装扮.枪口位置._y};
+this.枪.枪.装扮.localToGlobal(myPoint);
+if(myPoint.y == this.枪.枪.装扮.枪口位置._y)
+{
+   _parent.动画完毕();
+}
+_root.gameworld.globalToLocal(myPoint);
+shootX = myPoint.x;
+shootY = myPoint.y;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[clearInterval(_parent.keepshooting);
+_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.联机2015发送角色数据();
+clearInterval(_parent.keepshooting);
+play();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.控制目标全自动 == true and _root.控制目标 == _parent._name)
+{
+   _parent.随机切换攻击模式();
+}
+_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.联机2015发送角色数据();
+clearInterval(_parent.keepshooting);
+delete this.onEnterFrame;
+_parent.强制换弹夹 = false;
+play();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.控制目标 == _parent._name)
+{
+   _root.物品栏[i2][1]--;
+   _root.排列物品图标();
+   _parent.长枪射击次数 = 0;
+   _parent.当前弹夹副武器已发射数 = 0;
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#7F56AE">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 630" centerPoint3DX="25.3" centerPoint3DY="-259.9">
+                  <matrix>
+                    <Matrix tx="7.3" ty="-278.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(unload){
+   clearInterval(_parent._parent.keepshooting);
+}
+onClipEvent(load){
+   _parent._parent.联机2015发送角色数据();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" duration="5" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="133" height="30.1" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="290.65" ty="793.8"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>_parent.</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="3" bitmapSize="240" face="TimesNewRomanPS-BoldMT"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>联</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="3" bitmapSize="240" face="SimSun"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>机</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="3" bitmapSize="240" face="MS-PGothic"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>_</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="3" bitmapSize="240" face="TimesNewRomanPS-BoldMT"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>长枪</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="3" bitmapSize="240" face="SimSun"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>是否射</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="3" bitmapSize="240" face="MS-PGothic"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>&#xD;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="3" bitmapSize="240" face="SimSun"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>击</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="3" bitmapSize="240" face="SimSun"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters> = true;</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="3" bitmapSize="240" face="TimesNewRomanPS-BoldMT"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#CFDF6C">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" selected="true" centerPoint3DX="110.15" centerPoint3DY="-83.05">
+                  <matrix>
+                    <Matrix a="0.806793212890625" b="-0.25946044921875" c="0.25946044921875" d="0.806793212890625" tx="80.65" ty="-104.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="103.65" centerPoint3DY="-83.05">
+                  <matrix>
+                    <Matrix a="0.806793212890625" b="-0.25946044921875" c="0.25946044921875" d="0.806793212890625" tx="74.15" ty="-104.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="106.9" centerPoint3DY="-83.05">
+                  <matrix>
+                    <Matrix a="0.806793212890625" b="-0.25946044921875" c="0.25946044921875" d="0.806793212890625" tx="77.4" ty="-104.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="110.15" centerPoint3DY="-83.05">
+                  <matrix>
+                    <Matrix a="0.806793212890625" b="-0.25946044921875" c="0.25946044921875" d="0.806793212890625" tx="80.65" ty="-104.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="98.2" centerPoint3DY="-106.55">
+                  <matrix>
+                    <Matrix a="0.790542602539063" b="-0.304962158203125" c="0.304962158203125" d="0.790542602539063" tx="68.7" ty="-127.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="105.45" centerPoint3DY="-105.65">
+                  <matrix>
+                    <Matrix a="0.806793212890625" b="-0.25946044921875" c="0.25946044921875" d="0.806793212890625" tx="75.95" ty="-127.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="111.95" centerPoint3DY="-105.65">
+                  <matrix>
+                    <Matrix a="0.806793212890625" b="-0.25946044921875" c="0.25946044921875" d="0.806793212890625" tx="82.45" ty="-127.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="78.95" centerPoint3DY="-76.6">
+                  <matrix>
+                    <Matrix a="0.816055297851563" b="0.221542358398438" c="-0.221542358398438" d="0.816055297851563" tx="49.45" ty="-98"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="82.2" centerPoint3DY="-70.1">
+                  <matrix>
+                    <Matrix a="0.816055297851563" b="0.221542358398438" c="-0.221542358398438" d="0.816055297851563" tx="52.7" ty="-91.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="86.7" centerPoint3DY="-64.65">
+                  <matrix>
+                    <Matrix a="0.816055297851563" b="0.221542358398438" c="-0.221542358398438" d="0.816055297851563" tx="57.2" ty="-86.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="110.15" centerPoint3DY="-83.05">
+                  <matrix>
+                    <Matrix a="0.806793212890625" b="-0.25946044921875" c="0.25946044921875" d="0.806793212890625" tx="80.65" ty="-104.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="75.85" centerPoint3DY="-46.05">
+                  <matrix>
+                    <Matrix a="0.69244384765625" b="0.486297607421875" c="-0.486297607421875" d="0.69244384765625" tx="46.35" ty="-67.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#95D330">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" selected="true" centerPoint3DX="35.45" centerPoint3DY="-16.6">
+                  <matrix>
+                    <Matrix a="-0.39141845703125" b="-0.748367309570313" c="0.748367309570313" d="-0.39141845703125" tx="18" ty="-72.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="28.95" centerPoint3DY="-16.6">
+                  <matrix>
+                    <Matrix a="-0.39141845703125" b="-0.748367309570313" c="0.748367309570313" d="-0.39141845703125" tx="11.5" ty="-72.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="32.2" centerPoint3DY="-16.6">
+                  <matrix>
+                    <Matrix a="-0.39141845703125" b="-0.748367309570313" c="0.748367309570313" d="-0.39141845703125" tx="14.75" ty="-72.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="35.45" centerPoint3DY="-16.6">
+                  <matrix>
+                    <Matrix a="-0.39141845703125" b="-0.748367309570313" c="0.748367309570313" d="-0.39141845703125" tx="18" ty="-72.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="31.9" centerPoint3DY="-19.95">
+                  <matrix>
+                    <Matrix a="-0.59368896484375" b="-0.599472045898438" c="0.599472045898438" d="-0.59368896484375" tx="14.45" ty="-75.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="33.6" centerPoint3DY="-24.55">
+                  <matrix>
+                    <Matrix a="-0.527587890625" b="-0.658782958984375" c="0.658782958984375" d="-0.527587890625" tx="16.15" ty="-80.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="36.85" centerPoint3DY="-24.55">
+                  <matrix>
+                    <Matrix a="-0.503952026367188" b="-0.677169799804688" c="0.677169799804688" d="-0.503952026367188" tx="19.4" ty="-80.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="-5.6" centerPoint3DY="-13.4">
+                  <matrix>
+                    <Matrix a="-0.325515747070313" b="-0.774978637695313" c="0.774978637695313" d="-0.325515747070313" tx="-23.05" ty="-69.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="2.15" centerPoint3DY="-10.75">
+                  <matrix>
+                    <Matrix a="-0.305206298828125" b="-0.783599853515625" c="0.783599853515625" d="-0.305206298828125" tx="-15.3" ty="-66.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="2.15" centerPoint3DY="-10.75">
+                  <matrix>
+                    <Matrix a="-0.239181518554688" b="-0.80657958984375" c="0.80657958984375" d="-0.239181518554688" tx="-15.3" ty="-66.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="35.45" centerPoint3DY="-16.6">
+                  <matrix>
+                    <Matrix a="-0.39141845703125" b="-0.748367309570313" c="0.748367309570313" d="-0.39141845703125" tx="18" ty="-72.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="-10.35" centerPoint3DY="-10.25">
+                  <matrix>
+                    <Matrix a="0.0177459716796875" b="-0.841949462890625" c="0.841949462890625" d="0.0177459716796875" tx="-27.8" ty="-65.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#5D68BC">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" selected="true" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.7769775390625" b="-0.33453369140625" c="0.33453369140625" d="0.7769775390625" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.80316162109375" b="-0.264755249023438" c="0.264755249023438" d="0.80316162109375" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.794418334960938" b="-0.289688110351563" c="0.289688110351563" d="0.794418334960938" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.7769775390625" b="-0.33453369140625" c="0.33453369140625" d="0.7769775390625" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.15" centerPoint3DY="-80.05">
+                  <matrix>
+                    <Matrix a="0.786544799804688" b="-0.309860229492188" c="0.309860229492188" d="0.786544799804688" tx="-22.5" ty="-147.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.766143798828125" b="-0.357772827148438" c="0.357772827148438" d="0.766143798828125" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.748046875" b="-0.39453125" c="0.39453125" d="0.748046875" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.842361450195313" b="0.05609130859375" c="-0.05609130859375" d="0.842361450195313" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.844131469726563" b="0.018798828125" c="-0.018798828125" d="0.844131469726563" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.844390869140625" b="0.00390625" c="-0.00390625" d="0.844390869140625" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.7769775390625" b="-0.33453369140625" c="0.33453369140625" d="0.7769775390625" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.831573486328125" b="0.140335083007813" c="-0.140335083007813" d="0.831573486328125" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#008EFD">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" selected="true" centerPoint3DX="199.8" centerPoint3DY="-48.95">
+                  <matrix>
+                    <Matrix a="0.9993896484375" b="0.012908935546875" c="-0.012908935546875" d="0.9993896484375" tx="59.4" ty="-102.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="194.3" centerPoint3DY="-45.35">
+                  <matrix>
+                    <Matrix a="0.996734619140625" b="-0.07000732421875" c="0.07000732421875" d="0.996734619140625" tx="53.9" ty="-98.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="197.3" centerPoint3DY="-46.35">
+                  <matrix>
+                    <Matrix a="0.997970581054688" b="-0.0475311279296875" c="0.0475311279296875" d="0.997970581054688" tx="56.9" ty="-99.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="199.8" centerPoint3DY="-48.95">
+                  <matrix>
+                    <Matrix a="0.9993896484375" b="0.012908935546875" c="-0.012908935546875" d="0.9993896484375" tx="59.4" ty="-102.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="192.1" centerPoint3DY="-63.55">
+                  <matrix>
+                    <Matrix a="0.907135009765625" b="-0.416305541992188" c="0.416305541992188" d="0.907135009765625" tx="51.7" ty="-116.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="197.65" centerPoint3DY="-64.8">
+                  <matrix>
+                    <Matrix a="0.921295166015625" b="-0.38421630859375" c="0.38421630859375" d="0.921295166015625" tx="57.25" ty="-118.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="205.9" centerPoint3DY="-66.95">
+                  <matrix>
+                    <Matrix a="0.942001342773438" b="-0.330795288085938" c="0.330795288085938" d="0.942001342773438" tx="65.5" ty="-120.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="166.35" centerPoint3DY="-45.4">
+                  <matrix>
+                    <Matrix a="0.954269409179688" b="0.292068481445313" c="-0.292068481445313" d="0.954269409179688" tx="25.95" ty="-98.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="169.75" centerPoint3DY="-40.85">
+                  <matrix>
+                    <Matrix a="0.94061279296875" b="0.333938598632813" c="-0.333938598632813" d="0.94061279296875" tx="29.35" ty="-94.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="176.55" centerPoint3DY="-39.85">
+                  <matrix>
+                    <Matrix a="0.92327880859375" b="0.379669189453125" c="-0.379669189453125" d="0.92327880859375" tx="36.15" ty="-93.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="199.8" centerPoint3DY="-48.95">
+                  <matrix>
+                    <Matrix a="0.9993896484375" b="0.012908935546875" c="-0.012908935546875" d="0.9993896484375" tx="59.4" ty="-102.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="35" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" name="枪" centerPoint3DX="169.25" centerPoint3DY="-28.25">
+                  <matrix>
+                    <Matrix a="0.793731689453125" b="0.604812622070313" c="-0.604812622070313" d="0.793731689453125" tx="28.85" ty="-81.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#6AF18F">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪" selected="true" centerPoint3DX="14.3" centerPoint3DY="-22.65">
+                  <matrix>
+                    <Matrix a="-0.117630004882813" b="0.992660522460938" c="-0.992660522460938" d="-0.117630004882813" tx="-44.45" ty="-54.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#73FEE3">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" selected="true" centerPoint3DX="-32.4" centerPoint3DY="194.25">
+                  <matrix>
+                    <Matrix a="0.777359008789063" b="0.3507080078125" c="-0.3507080078125" d="0.777359008789063" tx="-54" ty="120.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#86DFC2">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" selected="true" centerPoint3DX="-58.3" centerPoint3DY="241.6">
+                  <matrix>
+                    <Matrix a="0.846328735351563" b="0.0995941162109375" c="-0.0995941162109375" d="0.846328735351563" tx="-97.45" ty="207.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#E819B0">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 62" selected="true" centerPoint3DX="0.05" centerPoint3DY="101.7">
+                  <matrix>
+                    <Matrix a="0.822006225585938" b="0.224685668945313" c="-0.224685668945313" d="0.822006225585938" tx="-26.2" ty="23.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#F25ABC">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" selected="true" centerPoint3DX="89.25" centerPoint3DY="171.8">
+                  <matrix>
+                    <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="67.65" ty="97.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#3EF65F">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" selected="true" centerPoint3DX="99.05" centerPoint3DY="227.8">
+                  <matrix>
+                    <Matrix a="0.85345458984375" b="0.0361328125" c="-0.0361328125" d="0.85345458984375" tx="59.9" ty="194.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#AC9AEB">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 50" selected="true" centerPoint3DX="43" centerPoint3DY="40">
+                  <matrix>
+                    <Matrix a="0.8533935546875" b="0.0520477294921875" c="-0.0520477294921875" d="0.8533935546875" tx="-3" ty="4.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#B1F2BD">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 46" selected="true" centerPoint3DX="62.3" centerPoint3DY="-143.1">
+                  <matrix>
+                    <Matrix a="0.915084838867188" b="0.310546875" c="-0.310546875" d="0.915084838867188" tx="29.75" ty="-183.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 46" centerPoint3DX="81.55" centerPoint3DY="-174.4">
+                  <matrix>
+                    <Matrix a="0.896163940429688" b="-0.361526489257813" c="0.361526489257813" d="0.896163940429688" tx="29.75" ty="-183.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 46" centerPoint3DX="47.45" centerPoint3DY="-136.05">
+                  <matrix>
+                    <Matrix a="0.803543090820313" b="0.53680419921875" c="-0.53680419921875" d="0.803543090820313" tx="26.5" ty="-183.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="47" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 46" centerPoint3DX="62.3" centerPoint3DY="-143.1">
+                  <matrix>
+                    <Matrix a="0.915084838867188" b="0.310546875" c="-0.310546875" d="0.915084838867188" tx="29.75" ty="-183.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#56BAFB">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 37" selected="true" centerPoint3DX="60.8" centerPoint3DY="61.05">
+                  <matrix>
+                    <Matrix a="0.8385009765625" b="0.15185546875" c="-0.15185546875" d="0.8385009765625" tx="2.7" ty="-47.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#61B4B5">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 33" selected="true" centerPoint3DX="43.2" centerPoint3DY="83.35">
+                  <matrix>
+                    <Matrix a="0.728927612304688" b="-0.438980102539063" c="0.438980102539063" d="0.728927612304688" tx="16.95" ty="5.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#68ECB9">
+          <frames>
+            <DOMFrame index="0" duration="72" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪2" selected="true" centerPoint3DX="83.75" centerPoint3DY="7.65">
+                  <matrix>
+                    <Matrix a="-0.052642822265625" b="0.9984130859375" c="-0.9984130859375" d="-0.052642822265625" tx="25" ty="-24.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#DAD094">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" selected="true" centerPoint3DX="213.8" centerPoint3DY="-94.55">
+                  <matrix>
+                    <Matrix a="0.686203002929688" b="-0.494171142578125" c="0.494171142578125" d="0.686203002929688" tx="184.3" ty="-116"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="210.2" centerPoint3DY="-96.2">
+                  <matrix>
+                    <Matrix a="0.647293090820313" b="-0.543792724609375" c="0.543792724609375" d="0.647293090820313" tx="180.7" ty="-117.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="213.45" centerPoint3DY="-96.2">
+                  <matrix>
+                    <Matrix a="0.647293090820313" b="-0.543792724609375" c="0.543792724609375" d="0.647293090820313" tx="183.95" ty="-117.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="213.8" centerPoint3DY="-94.55">
+                  <matrix>
+                    <Matrix a="0.686203002929688" b="-0.494171142578125" c="0.494171142578125" d="0.686203002929688" tx="184.3" ty="-116"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="182.9" centerPoint3DY="-161.35">
+                  <matrix>
+                    <Matrix a="0.714187622070313" b="-0.450119018554688" c="0.450119018554688" d="0.714187622070313" tx="153.4" ty="-182.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="206.4" centerPoint3DY="-161.35">
+                  <matrix>
+                    <Matrix a="0.714187622070313" b="-0.450119018554688" c="0.450119018554688" d="0.714187622070313" tx="176.9" ty="-182.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="223.55" centerPoint3DY="-157.75">
+                  <matrix>
+                    <Matrix a="0.714187622070313" b="-0.450119018554688" c="0.450119018554688" d="0.714187622070313" tx="194.05" ty="-179.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="169.95" centerPoint3DY="-58.6">
+                  <matrix>
+                    <Matrix a="0.828338623046875" b="0.163101196289063" c="-0.163101196289063" d="0.828338623046875" tx="140.45" ty="-80.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="172.3" centerPoint3DY="-44.85">
+                  <matrix>
+                    <Matrix a="0.828338623046875" b="0.163101196289063" c="-0.163101196289063" d="0.828338623046875" tx="142.8" ty="-66.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="189.45" centerPoint3DY="-39.45">
+                  <matrix>
+                    <Matrix a="0.828338623046875" b="0.163101196289063" c="-0.163101196289063" d="0.828338623046875" tx="159.95" ty="-60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="213.8" centerPoint3DY="-94.55">
+                  <matrix>
+                    <Matrix a="0.686203002929688" b="-0.494171142578125" c="0.494171142578125" d="0.686203002929688" tx="184.3" ty="-116"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="158.8" centerPoint3DY="1.15">
+                  <matrix>
+                    <Matrix a="0.768417358398438" b="0.348556518554688" c="-0.348556518554688" d="0.768417358398438" tx="129.3" ty="-20.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="123.6" centerPoint3DY="1.15">
+                  <matrix>
+                    <Matrix a="0.768417358398438" b="0.348556518554688" c="-0.348556518554688" d="0.768417358398438" tx="94.1" ty="-20.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="100.15" centerPoint3DY="26.45">
+                  <matrix>
+                    <Matrix a="0.626846313476563" b="0.563629150390625" c="-0.563629150390625" d="0.626846313476563" tx="70.65" ty="5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="80.3" centerPoint3DY="33.7">
+                  <matrix>
+                    <Matrix a="0.379150390625" b="0.751846313476563" c="-0.751846313476563" d="0.379150390625" tx="50.8" ty="12.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="100.15" centerPoint3DY="26.45">
+                  <matrix>
+                    <Matrix a="0.626846313476563" b="0.563629150390625" c="-0.563629150390625" d="0.626846313476563" tx="70.65" ty="5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="123.6" centerPoint3DY="1.15">
+                  <matrix>
+                    <Matrix a="0.768417358398438" b="0.348556518554688" c="-0.348556518554688" d="0.768417358398438" tx="94.1" ty="-20.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="158.8" centerPoint3DY="1.15">
+                  <matrix>
+                    <Matrix a="0.768417358398438" b="0.348556518554688" c="-0.348556518554688" d="0.768417358398438" tx="129.3" ty="-20.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="186.75" centerPoint3DY="-39.5">
+                  <matrix>
+                    <Matrix a="0.818756103515625" b="0.205978393554688" c="-0.205978393554688" d="0.818756103515625" tx="157.25" ty="-60.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="138" centerPoint3DY="-67.5">
+                  <matrix>
+                    <Matrix a="0.818756103515625" b="0.205978393554688" c="-0.205978393554688" d="0.818756103515625" tx="108.5" ty="-88.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="62" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="186.75" centerPoint3DY="-39.5">
+                  <matrix>
+                    <Matrix a="0.818756103515625" b="0.205978393554688" c="-0.205978393554688" d="0.818756103515625" tx="157.25" ty="-60.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="200.3" centerPoint3DY="-44">
+                  <matrix>
+                    <Matrix a="0.842910766601563" b="-0.0317535400390625" c="0.0317535400390625" d="0.842910766601563" tx="170.8" ty="-65.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="70" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="84.9" centerPoint3DY="-71.3">
+                  <matrix>
+                    <Matrix a="0.781097412109375" b="0.32379150390625" c="-0.32379150390625" d="0.781097412109375" tx="55.4" ty="-92.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#D0BFD7">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" selected="true" centerPoint3DX="132.5" centerPoint3DY="-32.25">
+                  <matrix>
+                    <Matrix a="-0.364227294921875" b="-0.76251220703125" c="0.76251220703125" d="-0.364227294921875" tx="115.05" ty="-87.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="127.1" centerPoint3DY="-28.75">
+                  <matrix>
+                    <Matrix a="-0.397308349609375" b="-0.745651245117188" c="0.745651245117188" d="-0.397308349609375" tx="109.65" ty="-84.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="132.5" centerPoint3DY="-32.25">
+                  <matrix>
+                    <Matrix a="-0.364227294921875" b="-0.76251220703125" c="0.76251220703125" d="-0.364227294921875" tx="115.05" ty="-87.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="148.15" centerPoint3DY="-59.9">
+                  <matrix>
+                    <Matrix a="-0.810958862304688" b="-0.22930908203125" c="0.22930908203125" d="-0.810958862304688" tx="130.7" ty="-115.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="153.6" centerPoint3DY="-69.5">
+                  <matrix>
+                    <Matrix a="-0.704788208007813" b="-0.463592529296875" c="0.463592529296875" d="-0.704788208007813" tx="136.15" ty="-125.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="156.2" centerPoint3DY="-68.9">
+                  <matrix>
+                    <Matrix a="-0.613510131835938" b="-0.579696655273438" c="0.579696655273438" d="-0.613510131835938" tx="138.75" ty="-124.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="79.8" centerPoint3DY="-3.7">
+                  <matrix>
+                    <Matrix a="-0.167678833007813" b="-0.8251953125" c="0.8251953125" d="-0.167678833007813" tx="62.35" ty="-59.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="85.8" centerPoint3DY="-2.55">
+                  <matrix>
+                    <Matrix a="-0.073150634765625" b="-0.839187622070313" c="0.839187622070313" d="-0.073150634765625" tx="68.35" ty="-58.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="100.7" centerPoint3DY="-6.9">
+                  <matrix>
+                    <Matrix a="-0.0283050537109375" b="-0.842041015625" c="0.842041015625" d="-0.0283050537109375" tx="83.25" ty="-62.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="132.5" centerPoint3DY="-32.25">
+                  <matrix>
+                    <Matrix a="-0.364227294921875" b="-0.76251220703125" c="0.76251220703125" d="-0.364227294921875" tx="115.05" ty="-87.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="75.6" centerPoint3DY="-1.5">
+                  <matrix>
+                    <Matrix a="0.389678955078125" b="-0.747406005859375" c="0.747406005859375" d="0.389678955078125" tx="58.15" ty="-57.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="43.1" centerPoint3DY="-1.5">
+                  <matrix>
+                    <Matrix a="0.389678955078125" b="-0.747406005859375" c="0.747406005859375" d="0.389678955078125" tx="25.65" ty="-57.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="43.1" centerPoint3DY="-1.5">
+                  <matrix>
+                    <Matrix a="0.673324584960938" b="-0.505264282226563" c="0.505264282226563" d="0.673324584960938" tx="25.65" ty="-57.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="43.1" centerPoint3DY="-1.5">
+                  <matrix>
+                    <Matrix a="0.797210693359375" b="-0.267791748046875" c="0.267791748046875" d="0.797210693359375" tx="25.65" ty="-57.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="43.1" centerPoint3DY="-1.5">
+                  <matrix>
+                    <Matrix a="0.673324584960938" b="-0.505264282226563" c="0.505264282226563" d="0.673324584960938" tx="25.65" ty="-57.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="43.1" centerPoint3DY="-1.5">
+                  <matrix>
+                    <Matrix a="0.389678955078125" b="-0.747406005859375" c="0.747406005859375" d="0.389678955078125" tx="25.65" ty="-57.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="75.6" centerPoint3DY="-1.5">
+                  <matrix>
+                    <Matrix a="0.389678955078125" b="-0.747406005859375" c="0.747406005859375" d="0.389678955078125" tx="58.15" ty="-57.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="98.2" centerPoint3DY="-10.55">
+                  <matrix>
+                    <Matrix a="0.0598907470703125" b="-0.841705322265625" c="0.841705322265625" d="0.0598907470703125" tx="80.75" ty="-66.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="61.15" centerPoint3DY="-3.3">
+                  <matrix>
+                    <Matrix a="-0.366104125976563" b="-0.758956909179688" c="0.758956909179688" d="-0.366104125976563" tx="43.7" ty="-58.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="62" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="98.2" centerPoint3DY="-10.55">
+                  <matrix>
+                    <Matrix a="0.0598907470703125" b="-0.841705322265625" c="0.841705322265625" d="0.0598907470703125" tx="80.75" ty="-66.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="108.15" centerPoint3DY="-18.65">
+                  <matrix>
+                    <Matrix a="0.0598907470703125" b="-0.841705322265625" c="0.841705322265625" d="0.0598907470703125" tx="90.7" ty="-74.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="70" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="2.3" centerPoint3DY="-14.8">
+                  <matrix>
+                    <Matrix a="-0.28619384765625" b="-0.790969848632813" c="0.790969848632813" d="-0.28619384765625" tx="-15.15" ty="-70.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#5BE9EB">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" selected="true" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.5115966796875" b="-0.672393798828125" c="0.672393798828125" d="0.5115966796875" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="71.5" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.593246459960938" b="-0.601089477539063" c="0.601089477539063" d="0.593246459960938" tx="47.85" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.5115966796875" b="-0.672393798828125" c="0.672393798828125" d="0.5115966796875" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="75.7" centerPoint3DY="-70.2">
+                  <matrix>
+                    <Matrix a="0.267105102539063" b="-0.8001708984375" c="0.8001708984375" d="0.267105102539063" tx="52.05" ty="-137.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.210617065429688" b="-0.81719970703125" c="0.81719970703125" d="0.210617065429688" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.837890625" b="-0.0921173095703125" c="0.0921173095703125" d="0.837890625" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.828140258789063" b="-0.158462524414063" c="0.158462524414063" d="0.828140258789063" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.792007446289063" b="-0.29058837890625" c="0.29058837890625" d="0.792007446289063" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.5115966796875" b="-0.672393798828125" c="0.672393798828125" d="0.5115966796875" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.842697143554688" b="-0.0042724609375" c="0.0042724609375" d="0.842697143554688" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.787155151367188" b="0.298263549804688" c="-0.298263549804688" d="0.787155151367188" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.787155151367188" b="0.298263549804688" c="-0.298263549804688" d="0.787155151367188" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.787155151367188" b="0.298263549804688" c="-0.298263549804688" d="0.787155151367188" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.787155151367188" b="0.298263549804688" c="-0.298263549804688" d="0.787155151367188" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.787155151367188" b="0.298263549804688" c="-0.298263549804688" d="0.787155151367188" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.842697143554688" b="-0.0042724609375" c="0.0042724609375" d="0.842697143554688" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.77874755859375" b="-0.324600219726563" c="0.324600219726563" d="0.77874755859375" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.83819580078125" b="0.08380126953125" c="-0.08380126953125" d="0.83819580078125" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="62" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.77874755859375" b="-0.324600219726563" c="0.324600219726563" d="0.77874755859375" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="74.75" centerPoint3DY="-71.8">
+                  <matrix>
+                    <Matrix a="0.734527587890625" b="-0.414413452148438" c="0.414413452148438" d="0.734527587890625" tx="51.1" ty="-138.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="70" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="1.65" centerPoint3DY="-81.55">
+                  <matrix>
+                    <Matrix a="0.842880249023438" b="0.0009307861328125" c="-0.0009307861328125" d="0.842880249023438" tx="-22" ty="-148.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#04E2FB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/刀" selected="true" centerPoint3DX="175" centerPoint3DY="-34.95">
+                  <matrix>
+                    <Matrix a="0.692703247070313" b="0.714859008789063" c="-0.714859008789063" d="0.692703247070313" tx="138.45" ty="-236.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/刀" centerPoint3DX="175" centerPoint3DY="-34.95">
+                  <matrix>
+                    <Matrix a="0.692703247070313" b="0.714859008789063" c="-0.714859008789063" d="0.692703247070313" tx="138.45" ty="-236.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#8153AF">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                  <matrix>
+                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
+                  <matrix>
+                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-15.2" ty="233.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 0" color="#C9C9D4">
+          <frames>
+            <DOMFrame index="0" duration="43" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" duration="29" keyMode="9728" soundName="sound/sound148.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 1" color="#DCB1E5">
+          <frames>
+            <DOMFrame index="0" duration="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="47" duration="25" keyMode="9728" soundName="sound/sound635.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Sound Layer 2" color="#DF77C9">
+          <frames>
+            <DOMFrame index="0" duration="49" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="49" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" duration="10" keyMode="9728" soundName="sound/sound146.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

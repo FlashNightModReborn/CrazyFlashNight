@@ -1,4 +1,7 @@
-﻿_root.跳弹基准重量 = 100;
+﻿import org.flashNight.arki.component.StatHandler.*;
+import org.flashNight.neur.Event.*;
+
+_root.跳弹基准重量 = 100;
 _root.过穿基准重量 = 20;
 _root.跳弹防御系数 = 5;
 _root.踉跄判定 = 2;
@@ -46,53 +49,6 @@ _root.躲闪状态计算 = function(命中对象:MovieClip, 躲闪结果:Boolean
 	}
 	return "未躲闪";
 };
-//根据时间确定残余冲击力衰减
-_root.冲击力衰减 = function(受击间隔:Number) {
-    return (2000 * _root.冲击残余时间 - 受击间隔) / (2000 * _root.冲击残余时间);
-};
 
-
-
-_root.冲击力刷新 = function(命中对象) {
-    var 当前时间:Number = getTimer();
-
-    if (isNaN(命中对象.残余冲击力)) {
-        _root.发布消息(命中对象 + " 触发异常残余 " + 命中对象.残余冲击力)
-        命中对象.残余冲击力 = 0;
-    }
-    if (isNaN(命中对象.韧性系数)) {
-        命中对象.韧性系数 = 1;
-        _root.发布消息(命中对象 + " 触发异常韧性 " + 命中对象.韧性系数)
-    }
-    
-    命中对象.韧性上限 = 命中对象.韧性系数 * 命中对象.hp / _root.防御减伤比(命中对象.防御力);
-
-    if (!isNaN(命中对象.上次受击时间)) {
-        var 受击间隔:Number = 当前时间 - 命中对象.上次受击时间;
-        if (受击间隔 > 1000 * _root.冲击残余时间) {
-            命中对象.残余冲击力 = Math.max(0, 命中对象.残余冲击力 * _root.冲击力衰减(受击间隔));
-        }
-    }
-    命中对象.上次受击时间 = 当前时间;
-    return;
-};
-
-//根据伤害转换冲击力
-
-_root.冲击力计算 = function(伤害:Number, 击倒率:Number) {
-    return 伤害 * _root.冲击系数 / 击倒率;
-};
-
-
-_root.冲击力结算 = function(伤害:Number, 击倒率:Number, 命中对象) {
-
-    var 冲击力:Number = 伤害 * _root.冲击系数 / 击倒率;
-
-    //未定位到产生无穷大的原因，姑且写着
-    if (isFinite(冲击力)) {
-        命中对象.残余冲击力 += 冲击力;
-    } else {
-        命中对象.残余冲击力 = 命中对象.韧性上限 + 1;
-    }
-    return;
-};
+_root.冲击力刷新 = Delegate.create(ImpactHandler, ImpactHandler.refreshImpactForce);
+_root.冲击力结算 = Delegate.create(ImpactHandler, ImpactHandler.settleImpactForce);

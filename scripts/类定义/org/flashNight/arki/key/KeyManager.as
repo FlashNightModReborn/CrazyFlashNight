@@ -15,7 +15,7 @@ class org.flashNight.arki.key.KeyManager {
      * @static
      * @type Object
      */
-    private static var keyMap:Object;
+    private static var keyMap:Object = KeyManager.init();
 
     /**
      * 静态属性：缓存键值设定，用于快速查询键名对应的键值。
@@ -38,9 +38,9 @@ class org.flashNight.arki.key.KeyManager {
      * 静态方法：初始化键码与键名的映射表。
      * 该方法应在使用 KeyManager 其他功能前调用。
      * @static
-     * @return Void
+     * @return Object
      */
-    public static function init():Void {
+    public static function init():Object {
         keyMap = new Object();
 
         // 初始化键码与键名的映射
@@ -139,6 +139,8 @@ class org.flashNight.arki.key.KeyManager {
         keyMap[220] = "\\|";
         keyMap[221] = "]}";
         keyMap[222] = "‘”";
+
+        return keyMap;
     }
 
     /**

@@ -1,0 +1,84 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 101" itemID="6577b699-0000099b" lastModified="1702343951">
+  <timeline>
+    <DOMTimeline name="Symbol 101">
+      <layers>
+        <DOMLayer name="Layer 1" color="#E6BA98">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 100" name="战队段位图标" centerPoint3DX="-45.7" centerPoint3DY="22.25">
+                  <matrix>
+                    <Matrix tx="-68.65" ty="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   function 刷新(战队等级)
+   {
+      段位等级 = (战队等级 - 1) % 10 + 1;
+      段位 = Math.floor((战队等级 - 1) / 10 + 1);
+      gotoAndStop(段位);
+      if(段位 == 1)
+      {
+         段位名称 = "粗钢";
+      }
+      else if(段位 == 2)
+      {
+         段位名称 = "黄铜";
+      }
+      else if(段位 == 3)
+      {
+         段位名称 = "白银";
+      }
+      else if(段位 == 4)
+      {
+         段位名称 = "黄金";
+      }
+      else if(段位 == 5)
+      {
+         段位名称 = "无畏";
+      }
+      else if(段位 == 6)
+      {
+         段位名称 = "传说";
+      }
+   }
+   刷新(Number(_root.我的战队等级));
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9EB2E5" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="112" height="15.55" isSelectable="false" variableName="_root.我的战队名">
+                  <matrix>
+                    <Matrix tx="-56" ty="-6.35"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" quality="3" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

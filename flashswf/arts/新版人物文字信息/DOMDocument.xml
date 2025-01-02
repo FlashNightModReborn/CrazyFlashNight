@@ -1,0 +1,39 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <folders>
+          <DOMFolderItem name="shape" itemID="65a6bb2a-00001374" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="6776444d-00001ef9" isExpanded="true"/>
+     </folders>
+     <symbols>
+          <Include href="shape/Symbol 80.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000992" lastModified="1702343951"/>
+          <Include href="sprite/Symbol 83.xml" loadImmediate="false" itemID="6577b699-00000994" lastModified="1702343951"/>
+          <Include href="sprite/刚体遮罩.xml" loadImmediate="false" itemID="65c9a9f5-0000062e" lastModified="1707753394"/>
+          <Include href="sprite/韧性条.xml" loadImmediate="false" itemID="65c9a44e-0000061e" lastModified="1707754293"/>
+          <Include href="sprite/新版人物文字信息.xml" itemID="65c9a1af-000005fc" lastModified="1735804244"/>
+          <Include href="sprite/血槽底.xml" loadImmediate="false" itemID="65c9a8c3-00000624" lastModified="1707753328"/>
+          <Include href="sprite/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1707755072"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="sprite/新版人物文字信息" selected="true" centerPoint3DX="269.5" centerPoint3DY="199.95">
+                                             <matrix>
+                                                  <Matrix tx="264" ty="202.9"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="5.5" y="-2.85"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <PrinterSettings/>
+     <publishHistory/>
+</DOMDocument>

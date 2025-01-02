@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火舞旋风刀光1" itemID="673b0fa9-000003f2" lastModified="1731923881">
+  <timeline>
+    <DOMTimeline name="火舞旋风刀光1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.493927001953125" b="0.07135009765625" c="-0.3270263671875" d="0.285003662109375" tx="323.1" ty="222.65"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.619607843137255"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.92156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!11452 4357S2[10443 5236 8944 5857!8944 5857|0 2402!0 2402[1570 1182 4168 506!4168 506[7030 -239 9467 113!9467 113[11902 465 12484 1708!12484 1708[13066 2951 11452 4357"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

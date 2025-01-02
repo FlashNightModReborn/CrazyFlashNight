@@ -9,56 +9,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[// 假设该代码放在主时间轴或某个frame中执行
-// 不使用新的 Class，仅使用函数和内联测试。
-
-// 定义测试循环的总次数
-var TEST_COUNT:Number = 100; // 1,000,000 次
-
-//======================//
-//    1. 原公式测试     //
-//======================//
-// 原公式： 1 - (def / (def + 300))
-
-var startTime:Number = getTimer();
-
-for (var i:Number = 0; i < TEST_COUNT; i++) {
-    // 模拟一些不同的防御力
-    var def:Number = (i % 500) + 1; 
-    // 原公式计算
-    var result:Number = 1 - (def / (def + 300));var result:Number = 1 - (def / (def + 300));var result:Number = 1 - (def / (def + 300));var result:Number = 1 - (def / (def + 300));var result:Number = 1 - (def / (def + 300));
-}
-
-var endTime:Number = getTimer();
-var oldMethodTime:Number = endTime - startTime;
-
-//======================//
-//   2. 简化公式测试    //
-//======================//
-// 简化公式： 300 / (def + 300)
-
-startTime = getTimer();
-
-for (i = 0; i < TEST_COUNT; i++) {
-    var def2:Number = (i % 500) + 1;
-    // 简化公式计算
-    var result2:Number = 300 / (def2 + 300);var result2:Number = 300 / (def2 + 300);var result2:Number = 300 / (def2 + 300);var result2:Number = 300 / (def2 + 300);var result2:Number = 300 / (def2 + 300);
-}
-
-endTime = getTimer();
-var newMethodTime:Number = endTime - startTime;
-
-// 输出测试结果
-trace("原公式总耗时: " + oldMethodTime + " ms");
-trace("简化公式总耗时: " + newMethodTime + " ms");
-
-// 评估性能提升（注意结果可能在不同环境差异很大）
-var speedupPercent:Number = 0;
-if (oldMethodTime != 0) {
-    speedupPercent = ((oldMethodTime - newMethodTime) / oldMethodTime) * 100;
-}
-trace("简化公式相对原公式的性能提升 ≈ " + speedupPercent + "%");
-]]></script>
+                                        <script><![CDATA[org.flashNight.aven.Promise.TestPromise.main();]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
@@ -73,6 +24,11 @@ trace("简化公式相对原公式的性能提升 ≈ " + speedupPercent + "%");
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="254928" publishTime="1735780895"/>
+          <PublishItem publishSize="251050" publishTime="1735780777"/>
+          <PublishItem publishSize="254823" publishTime="1735780375"/>
+          <PublishItem publishSize="254731" publishTime="1735780164"/>
+          <PublishItem publishSize="255305" publishTime="1735780049"/>
           <PublishItem publishSize="248206" publishTime="1735483061"/>
           <PublishItem publishSize="248203" publishTime="1735482896"/>
           <PublishItem publishSize="248199" publishTime="1735482533"/>
@@ -88,10 +44,5 @@ trace("简化公式相对原公式的性能提升 ≈ " + speedupPercent + "%");
           <PublishItem publishSize="240016" publishTime="1735290998"/>
           <PublishItem publishSize="239718" publishTime="1735290989"/>
           <PublishItem publishSize="240101" publishTime="1735290891"/>
-          <PublishItem publishSize="239716" publishTime="1735290878"/>
-          <PublishItem publishSize="239716" publishTime="1735290825"/>
-          <PublishItem publishSize="240666" publishTime="1735287251"/>
-          <PublishItem publishSize="233362" publishTime="1735017715"/>
-          <PublishItem publishSize="232758" publishTime="1734942113"/>
      </publishHistory>
 </DOMDocument>

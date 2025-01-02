@@ -1,0 +1,103 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 85" itemID="6577b699-00000995" lastModified="1707713420" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="Symbol 85">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#6788CD">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="256" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#F27FAC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="255" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="256" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = 0;
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#2ABBDE" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-424 -15|424 -15!424 -15|424 75!424 75|-424 75!-424 75|-424 -15"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="256" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#88E458" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 83" name="血槽条" centerPoint3DX="20.25" centerPoint3DY="0.75">
+                  <matrix>
+                    <Matrix a="0.511459350585938" d="1.5" tx="-21.2" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="256" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#FA3CAB" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 82" name="血槽底" centerPoint3DX="20.25" centerPoint3DY="0.75">
+                  <matrix>
+                    <Matrix a="0.511459350585938" d="1.5" tx="-21.2" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="256" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

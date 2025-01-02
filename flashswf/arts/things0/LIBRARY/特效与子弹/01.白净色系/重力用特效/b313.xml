@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/01.白净色系/重力用特效/b313" itemID="4f7e582e-0000179f" symbolType="graphic" lastModified="1717962775">
+  <timeline>
+    <DOMTimeline name="b313">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="17" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSync="true" motionTweenSnap="true" keyMode="24065">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/重力用特效/b312" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix d="2.87492370605469" tx="-2.55" ty="27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" tweenType="motion" motionTweenSync="true" motionTweenSnap="true" keyMode="24065">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/重力用特效/b312" symbolType="graphic" firstFrame="17" loop="loop">
+                  <matrix>
+                    <Matrix a="2.21331787109375" d="6.3631591796875" tx="-2.5" ty="27.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

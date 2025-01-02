@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="余烬小队/余烬剑痴/Symbol 62" itemID="6577b699-00000983" lastModified="1718940320" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="Symbol 62">
+      <layers>
+        <DOMLayer name="Layer 1" color="#D3B46A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 61" selected="true" centerPoint3DX="28.2" centerPoint3DY="128.85">
+                  <matrix>
+                    <Matrix tx="1.95" ty="50.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	var 自机 = _parent._parent._parent;
+	var 装扮 = _root.装备引用配置.配置装扮(this, 自机.右大腿, "装扮", "右大腿_引用");
+	if (装扮)
+	{
+		this.基本款._visible = false;
+	}
+	else if (自机.性别 == "女")
+	{
+		_root.装备引用配置.配置装扮(this, "女变装-裸体右大腿", "装扮", "右大腿_引用");
+		this.基本款._visible = false;
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

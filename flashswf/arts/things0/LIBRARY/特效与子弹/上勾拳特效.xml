@@ -1,0 +1,429 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效与子弹/上勾拳特效" itemID="668c1995-00001fcc" lastModified="1720457795">
+  <timeline>
+    <DOMTimeline name="上勾拳特效" currentFrame="18">
+      <layers>
+        <DOMLayer name="图层 8" color="#FF4F4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 6" color="#808080">
+          <frames>
+            <DOMFrame index="0" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 217" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.12191772460938" d="2.16717529296875" tx="83.5" ty="106.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 218" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.12191772460938" d="2.67315673828125" tx="83.5" ty="139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 219" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.12191772460938" d="2.67315673828125" tx="83.5" ty="139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 220" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.12191772460938" d="2.67315673828125" tx="83.5" ty="139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 221" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.12191772460938" d="2.67315673828125" tx="83.5" ty="139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 222" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.12191772460938" d="2.67315673828125" tx="83.5" ty="139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 223" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.12191772460938" d="2.67315673828125" tx="83.5" ty="139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 223" blendMode="overlay" centerPoint3DX="29.9" centerPoint3DY="-33.1">
+                  <matrix>
+                    <Matrix a="1.12191772460938" d="2.67315673828125" tx="83.5" ty="139.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="0" b="-1.892578125" c="1.39260864257813" d="0" tx="145.05" ty="-42.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1049" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="0" b="-1.892578125" c="1.39260864257813" d="0" tx="145.05" ty="-42.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1050" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="0" b="-2.23751831054688" c="1.39260864257813" d="0" tx="145.05" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1051" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="0" b="-2.23751831054688" c="1.39260864257813" d="0" tx="145.05" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="0" b="-2.476318359375" c="1.39260864257813" d="0" tx="145.05" ty="-52.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1049" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="0" b="-2.476318359375" c="1.39260864257813" d="0" tx="145.05" ty="-52.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1050" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="0" b="-2.6900634765625" c="1.39260864257813" d="0" tx="145.05" ty="-55.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1048" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="0" b="-2.6900634765625" c="1.39260864257813" d="0" tx="145.05" ty="-55.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 1049" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="0" b="-2.6900634765625" c="1.39260864257813" d="0" tx="145.05" ty="-55.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="7" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 209" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="1.52468872070313" tx="47.85" ty="82.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 210" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="1.52468872070313" tx="47.85" ty="75.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 211" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="1.80258178710938" tx="47.85" ty="90.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 212" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="1.80258178710938" tx="47.85" ty="90.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 213" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="1.99497985839844" tx="47.85" ty="102.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 214" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="1.99497985839844" tx="47.85" ty="102.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 215" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="2.16717529296875" tx="47.85" ty="112.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 209" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="2.16717529296875" tx="47.85" ty="122"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 210" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="2.16717529296875" tx="47.85" ty="112.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 210" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.6669921875" d="2.16717529296875" tx="41.6" ty="112.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 211" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="2.16717529296875" tx="47.85" ty="112.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 212" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="2.67315673828125" tx="47.85" ty="146.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 213" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="2.67315673828125" tx="47.85" ty="146.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 214" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="2.67315673828125" tx="47.85" ty="146.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="特效与子弹/01.白净色系/上勾拳特效组件/shape 215" blendMode="overlay">
+                  <matrix>
+                    <Matrix a="1.46659851074219" d="2.67315673828125" tx="47.85" ty="146.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
