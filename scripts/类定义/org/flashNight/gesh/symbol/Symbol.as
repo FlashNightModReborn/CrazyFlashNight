@@ -9,14 +9,9 @@ class org.flashNight.gesh.symbol.Symbol {
     // 私有静态变量用于全局注册表
     private static var _globalRegistry: Object = {};
 
-    // 隐藏全局注册表，防止枚举
-    private static function initializeRegistry(): Void {
-        _global.ASSetPropFlags(_globalRegistry, null, 1, 0); // 设置为不可枚举
-    }
-
     // 静态构造函数
     private static function __static_constructor__(): Void {
-        initializeRegistry();
+        _global.ASSetPropFlags(_globalRegistry, null, 1, 0); // 设置为不可枚举
     }
 
     private static var __static_init__ = __static_constructor__();
@@ -27,30 +22,13 @@ class org.flashNight.gesh.symbol.Symbol {
      */
     private function Symbol(description: String) {
         this._description = description || "";
-        // 生成唯一的 key
-        this._key = Symbol.generateUUIDKey(this._description);
-    }
-
-    /**
-     * 使用 UUID (Version 4) 生成唯一的 key
-     * @param description 描述符
-     * @return 唯一 key
-     */
-    private static function generateUUIDKey(description: String): String {
         var mt:MersenneTwister = MersenneTwister.getInstance();
-
-        // 生成 UUID 各个部分
-        var part1:String = mt.next().toString(16); // 8 位
-        var part2:String = mt.next().toString(16); // 8 位
-        var part3:String = (mt.next() & 0x0fff | 0x4000).toString(16); // 4 位 (Version 4)
-        var part4:String = (mt.next() & 0x3fff | 0x8000).toString(16); // 4 位 (Variant 1)
-        var part5:String = mt.next().toString(16) + mt.next().toString(16); // 12 位
-
-        // 拼接 UUID
-        var uuid:String = part1 + "-" + part2 + "-" + part3 + "-" + part4 + "-" + part5;
-
-        // 返回最终的唯一 key
-        return "Symbol(" + description + "):" + uuid;
+        this._key = "Symbol(" + this._description + "):" +
+                    mt.next().toString(16) + "-" +
+                    mt.next().toString(16) + "-" +
+                    (mt.next() & 0x0fff | 0x4000).toString(16) + "-" +
+                    (mt.next() & 0x3fff | 0x8000).toString(16) + "-" +
+                    mt.next().toString(16) + mt.next().toString(16);
     }
 
     /**
@@ -111,14 +89,6 @@ class org.flashNight.gesh.symbol.Symbol {
     }
 
     /**
-     * 获取 Symbol 的完整 key（内部使用）
-     * @return 完整 key
-     */
-    private function getKey(): String {
-        return this._key;
-    }
-
-    /**
      * 比较两个 Symbol 是否相同
      * @param other 另一个 Symbol
      * @return 是否相同
@@ -127,6 +97,6 @@ class org.flashNight.gesh.symbol.Symbol {
         if (other == null || !(other instanceof Symbol)) {
             return false;
         }
-        return this._key === other.getKey();
+        return this._key === other._key;
     }
 }
