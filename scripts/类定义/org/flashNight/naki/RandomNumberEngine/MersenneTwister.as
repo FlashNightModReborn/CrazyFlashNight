@@ -73,7 +73,7 @@ class org.flashNight.naki.RandomNumberEngine.MersenneTwister extends BaseRandomN
         y ^= (y << 15) & 0xefc60000;
         y ^= (y >> 18);
 
-        trace("mersenne next: " + y); // 输出当前生成的随机数
+        // trace("mersenne next: " + y); // 输出当前生成的随机数
 
         return y;
     }

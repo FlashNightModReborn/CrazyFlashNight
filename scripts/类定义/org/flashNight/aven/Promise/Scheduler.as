@@ -8,7 +8,6 @@ import org.flashNight.neur.Event.*;
 class org.flashNight.aven.Promise.Scheduler {
     private static var _instance:Scheduler;
     private var _queue:Array;
-    private var _isRunning:Boolean;
     private var _clip:MovieClip;
     
     /**
@@ -26,7 +25,6 @@ class org.flashNight.aven.Promise.Scheduler {
      */
     private function Scheduler() {
         this._queue = [];
-        this._isRunning = false;
         
         // 创建一个隐藏的影片剪辑来驱动 onEnterFrame
         this._clip = _root.createEmptyMovieClip("_promiseScheduler", _root.getNextHighestDepth());
@@ -42,16 +40,14 @@ class org.flashNight.aven.Promise.Scheduler {
     }
     
     /**
-     * 处理函数队列，每帧执行一个或多个函数
+     * 处理函数队列，每帧执行队列中所有函数
      */
     private function processQueue():Void {
-        if (this._queue.length === 0) {
-            // 如果队列为空，停止处理
-            this._isRunning = false;
+        if (this._queue.length == 0) {
             return;
         }
         
-        // 复制当前队列，并清空原队列以允许新的异步调用
+        // 复制当前队列，并清空原队列
         var currentQueue:Array = this._queue.slice();
         this._queue = [];
         

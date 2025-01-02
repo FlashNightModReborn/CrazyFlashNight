@@ -2,8 +2,6 @@
  * org.flashNight.aven.Promise.Promise
  * 
  * 一个符合 Promises/A+ 规范的 Promise 类在 ActionScript 2 中的实现示例。
- * 
- * 
  */
 import org.flashNight.aven.Promise.Scheduler;
 import org.flashNight.neur.Event.*;
@@ -32,12 +30,13 @@ class org.flashNight.aven.Promise.Promise {
 
         var self:Promise = this;
 
-        // 内部 resolve 函数
+        // --------------------- 内部 resolve 函数 ---------------------
         this._resolve = function(value:Object):Void {
             // 状态只能从 pending 转到 fulfilled
             if (self._state === "pending") {
                 // 处理 thenable
                 if (value instanceof Promise) {
+                    // 若返回值本身是个 Promise，需等待它 resolve/reject
                     value.then(self._resolve, self._reject);
                     return;
                 }
@@ -47,20 +46,20 @@ class org.flashNight.aven.Promise.Promise {
 
                 // 异步执行所有 onFulfilled 回调
                 var callbacks:Array = self._onFulfilledCallbacks;
-                self._onFulfilledCallbacks = null; 
-                self._onRejectedCallbacks = null; 
+                self._onFulfilledCallbacks = null;
+                self._onRejectedCallbacks = null;
 
                 for (var i:Number = 0; i < callbacks.length; i++) {
-                    (function(cb:Function):Void {
+                    (function(cb:Function, val:Object):Void {
                         asyncCall(function():Void {
-                            cb(value);
+                            cb(val);
                         });
-                    })(callbacks[i]);
+                    })(callbacks[i], value);
                 }
             }
         };
 
-        // 内部 reject 函数
+        // --------------------- 内部 reject 函数 ---------------------
         this._reject = function(reason:Object):Void {
             // 状态只能从 pending 转到 rejected
             if (self._state === "pending") {
@@ -73,16 +72,16 @@ class org.flashNight.aven.Promise.Promise {
                 self._onRejectedCallbacks = null;
 
                 for (var i:Number = 0; i < callbacks.length; i++) {
-                    (function(cb:Function):Void {
+                    (function(cb:Function, rsn:Object):Void {
                         asyncCall(function():Void {
-                            cb(reason);
+                            cb(rsn);
                         });
-                    })(callbacks[i]);
+                    })(callbacks[i], reason);
                 }
             }
         };
 
-        // 立即执行传入的executor，并捕获异常
+        // --------------------- 执行传入 executor ---------------------
         try {
             executor(this._resolve, this._reject);
         } catch (e:Object) {
@@ -140,7 +139,7 @@ class org.flashNight.aven.Promise.Promise {
                 });
             }
 
-            // 根据当前 promise 的状态，决定是立刻异步调用，还是加入回调队列
+            // 根据当前 promise 的状态，决定立刻异步调用还是加入回调队列
             if (self._state === "fulfilled") {
                 fulfilled(self._value);
             } else if (self._state === "rejected") {
@@ -164,9 +163,8 @@ class org.flashNight.aven.Promise.Promise {
         return this.then(null, onRejected);
     }
 
-    /**
-     * 内部工具函数：判断是否是函数
-     */
+    /* ------------------- 工具与静态方法 ------------------- */
+
     private static function isFunction(obj:Object):Boolean {
         return (typeof(obj) == "function");
     }
@@ -262,6 +260,7 @@ class org.flashNight.aven.Promise.Promise {
     public static function all(promises:Array):Promise {
         return new Promise(function(resolve:Function, reject:Function):Void {
             if (promises.length == 0) {
+                trace("[Promise.all] 空数组，立即返回 []");
                 resolve([]);
                 return;
             }
@@ -299,7 +298,8 @@ class org.flashNight.aven.Promise.Promise {
     public static function race(promises:Array):Promise {
         return new Promise(function(resolve:Function, reject:Function):Void {
             if (promises.length == 0) {
-                // 空数组意味着不会完成
+                trace("[Promise.race] 空数组，不会触发 resolve 或 reject");
+                // 根据 Promises/A+ 规范，空数组的 race 不会触发任何状态改变
                 return;
             }
             for (var i:Number = 0; i < promises.length; i++) {
@@ -323,6 +323,7 @@ class org.flashNight.aven.Promise.Promise {
     public static function allSettled(promises:Array):Promise {
         return new Promise(function(resolve:Function, reject:Function):Void {
             if (promises.length == 0) {
+                trace("[Promise.allSettled] 空数组，立即返回 []");
                 resolve([]);
                 return;
             }
@@ -354,12 +355,11 @@ class org.flashNight.aven.Promise.Promise {
 
     /* ================== 模拟异步函数 ================== */
     /**
-     * 在下一帧/事件循环时调用给定函数，模拟微任务调度
-     * 使用 Scheduler 类和 onEnterFrame 事件驱动
+     * 在下一帧/事件循环时调用给定函数
+     * 使用 Scheduler 类的队列，模拟微任务调度
      * @param fn 要异步执行的函数
      */
     private static function asyncCall(fn:Function):Void {
-        // 获取 Scheduler 实例并将函数加入队列
         Scheduler.getInstance().enqueue(fn);
     }
 }
