@@ -69,6 +69,8 @@ var sortedArrayAdaptive:Array = QuickSort.adaptiveSort(arr);
 通过以上指南，您可以根据数据集的特性选择合适的排序方法，同时在不确定数据类型时优先选择 `adaptiveSort` 以获得最佳的排序性能和一致性。
 
 */
+import org.flashNight.naki.Sort.*;
+
 class org.flashNight.naki.Sort.QuickSort {
 
     /**
@@ -230,7 +232,7 @@ class org.flashNight.naki.Sort.QuickSort {
         }
 
         // 定义小数组的长度阈值
-        var smallArrayThreshold:Number = 50; // 小于等于50个元素的数组，直接使用内建排序
+        var smallArrayThreshold:Number = 50; // 小于等于50个元素的数组，直接使用插入排序
         var duplicateRatioThreshold:Number = 0.9; // 重复元素比例超过90%，使用内建排序
 
         // 定义局部比较函数
@@ -248,7 +250,7 @@ class org.flashNight.naki.Sort.QuickSort {
         // 第一步：判断数组长度
         if (length <= smallArrayThreshold) {
             // 数组较小，使用内建排序以提高效率
-            arr.sort(compareFunction);
+            InsertionSort.sort(arr,compareFunction);
             return arr;
         }
 
