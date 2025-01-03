@@ -1,0 +1,219 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="弹出公告UI/弹出公告界面" itemID="65bb977f-00000c80" lastModified="1706874282" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="弹出公告界面">
+      <layers>
+        <DOMLayer name="labels" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="118" name="主线任务" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" duration="134" name="公告" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="254" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.任务名称 = null;
+this.公告消息列表 = [];
+this.当前公告 = null;
+stop();
+
+function 弹出新任务(id)
+{
+	var 任务信息 = _root.getTaskData(id);
+	this.任务名称 = _root.getTaskText(任务信息.title);
+	//this.任务系列 = 任务系列;
+	var announcement = 任务信息.announcement;
+	if (announcement and announcement.length > 0)
+	{
+		//#$#;用于分割多条公告
+		var announcement_Arr = announcement.split("#$#;");
+		this.公告消息列表 = this.公告消息列表.concat(announcement_Arr);
+		//this.公告消息列表.push(announcement);
+	}
+	this.gotoAndPlay("主线任务");
+}
+function 弹出公告(公告消息)
+{
+	if (公告消息 and String(公告消息).length > 0)
+	{
+		this.公告消息列表.push(公告消息);
+		this.gotoAndPlay("公告");
+	}
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="119" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[任务名称 = null;
+if (公告消息列表.length <= 0)
+{
+	stop();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" duration="134" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (公告消息列表.length > 0)
+{
+	当前公告 = 公告消息列表[0];
+}
+else
+{
+	stop();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="254" duration="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[公告消息列表.shift();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="274" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if (公告消息列表.length > 0)
+{
+	gotoAndPlay("公告");
+}
+else
+{
+	stop();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹出公告UI/任务开启栏" centerPoint3DX="962.5" centerPoint3DY="122.5">
+                  <matrix>
+                    <Matrix tx="800" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="162.5" y="22.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹出公告UI/任务开启栏" centerPoint3DX="962.5" centerPoint3DY="122.5">
+                  <matrix>
+                    <Matrix tx="800" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="162.5" y="22.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="57" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹出公告UI/任务开启栏" centerPoint3DX="662.5" centerPoint3DY="122.5">
+                  <matrix>
+                    <Matrix tx="500" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="162.5" y="22.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="69" duration="30" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹出公告UI/任务开启栏" selected="true" centerPoint3DX="662.5" centerPoint3DY="122.5">
+                  <matrix>
+                    <Matrix tx="500" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="162.5" y="22.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="99" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹出公告UI/任务开启栏" selected="true" centerPoint3DX="962.5" centerPoint3DY="122.5">
+                  <matrix>
+                    <Matrix tx="800" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="162.5" y="22.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="44" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹出公告UI/公告消息栏" centerPoint3DX="980" centerPoint3DY="115">
+                  <matrix>
+                    <Matrix tx="800" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="180" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="164" duration="61" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹出公告UI/公告消息栏" centerPoint3DX="620" centerPoint3DY="115">
+                  <matrix>
+                    <Matrix tx="440" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="180" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="225" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹出公告UI/公告消息栏" selected="true" centerPoint3DX="620" centerPoint3DY="115">
+                  <matrix>
+                    <Matrix tx="440" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="180" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="254" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="弹出公告UI/公告消息栏" centerPoint3DX="980" centerPoint3DY="115">
+                  <matrix>
+                    <Matrix tx="800" ty="100"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="180" y="15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

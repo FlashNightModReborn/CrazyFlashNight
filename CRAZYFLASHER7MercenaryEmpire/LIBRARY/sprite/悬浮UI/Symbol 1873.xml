@@ -1,0 +1,544 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1735479150" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="Symbol 1873">
+      <layers>
+        <DOMLayer name="Script Layer" color="#BBD388" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 显示任务明细(任务数组)
+{
+	var 获取任务文档数据 = _root.getTaskData(任务数组[0]);
+	收集品条件 = _root.获得翻译("需收集：");
+	var i = 0;
+	while (i < 任务数组[8].length)
+	{
+		收集品条件 += _root.获得翻译(任务数组[8][i][0]) + "   " + 任务数组[8][i][1] + "   ";
+		i++;
+	}
+	if (收集品条件 == _root.获得翻译("需收集："))
+	{
+		收集品条件 = _root.获得翻译("无需收集");
+	}
+	if (任务数组[12] == "无限制")
+	{
+		通关条件 = "";
+	}
+	else
+	{
+		通关条件 = "\r" + _root.获得翻译("通关要求：") + _root.获得翻译(任务数组[12]);
+	}
+	//提交任务 = "\r" + _root.获得翻译("提交任务：") + _root.获得翻译(任务数组[3]);
+	提交任务 = "\r" + _root.获得翻译("提交任务：") + _root.获得翻译(获取任务文档数据.finish_npc);
+	奖励物品 = "\r" + _root.获得翻译("奖励：");
+	var i = 0;
+	/*
+	while (i < 任务数组[9].length)
+	{
+		奖励物品 += _root.获得翻译(任务数组[9][i][0]) + "   " + 任务数组[9][i][1] + "   ";
+		i++;
+	}
+	*/
+	while (i < 获取任务文档数据.rewards.length)
+	{
+		奖励物品分割 = 获取任务文档数据.rewards[i].split("#");
+		奖励物品 += _root.获得翻译(奖励物品分割[0]) + "   " + 奖励物品分割[1] + "   ";
+		i++;
+	}
+	if (奖励物品 == "\r" + _root.获得翻译("奖励："))
+	{
+		奖励物品 = "";
+	}
+	关卡难度 = 任务数组[6];
+	NPC任务_任务_契约金 =  获取任务文档数据.deposit  || 获取任务文档数据.deposit === 0 ? Number(获取任务文档数据.deposit) : NPC任务_任务_契约金;
+	NPC任务_任务_K点 = 获取任务文档数据.Kdeposit || 获取任务文档数据.Kdeposit === 0 ? Number(获取任务文档数据.Kdeposit) : NPC任务_任务_K点;
+	NPC任务_任务_等级限制 = 获取任务文档数据.restricted_level  || 获取任务文档数据.restricted_level == 0 ? Number(获取任务文档数据.restricted_level) : NPC任务_任务_等级限制;
+	推荐等级 = 获取任务文档数据.recommended_level ?  "   "  + _root.获得翻译("推荐等级：") + 获取任务文档数据.recommended_level : "";
+	
+	任务明细 = 任务数组[0] + "\r" + _root.获得翻译("难度限制：") + _root.getDifficultyString(关卡难度) + "\r " + _root.获得翻译("完成条件：") + 收集品条件 + 通关条件 + 提交任务 + 奖励物品 + "\r " + _root.获得翻译或不显示(任务数组[5]);
+	接收条件 = _root.获得翻译("委托领取条件") + "\r" + _root.获得翻译("任务_契约金：") + NPC任务_任务_契约金 + "   " +  _root.获得翻译("情报费（K点）：") + NPC任务_任务_K点 + "\r" + _root.获得翻译("任务等级限制：") + NPC任务_任务_等级限制 + 推荐等级 + "\r";
+	进入挑战 = false;
+	if(获取任务文档数据.challenge){
+		this.挑战难度 = 获取任务文档数据.challenge.difficulty;
+		挑战内容 = "挑战" + "\r" + "难度：" + _root.getDifficultyString(this.挑战难度);
+		if(获取任务文档数据.challenge.description) 挑战内容 += "\r" + "* " + 获取任务文档数据.challenge.description;
+		进入挑战按钮._visible = true;
+		取消按钮._visible = false;
+	}else{
+		进入挑战按钮._visible = false;
+		取消按钮._visible = true;
+		挑战内容 = "";
+	}
+	if (NPC任务_任务_动画 != "")
+	{
+		var list = NPC任务_任务_动画.split("/");
+		var url = list[list.length - 1];
+		url = "flashswf/images/" + url;
+		委托任务动画壳.loadMovie(url);
+		委托任务背景.visible = false;
+	}
+	else
+	{
+		委托任务动画壳.unloadMovie();
+		委托任务背景.visible = true;
+	}
+}
+function 虚拟币支付(amount, 商品编号)
+{
+	var _loc5_ = _root.getTaskData(NPC任务_任务[0]);
+	if (amount > 0)
+	{
+		if (_root.虚拟币 >= amount)
+		{
+			_root.虚拟币 -= amount;
+			_root.发布消息(_root.获得翻译("支付成功！"));
+			_root.金钱 -= NPC任务_任务_契约金;
+			_root.AddTask(_loc5_.id);
+			_root.任务栏界面.排列任务图标();
+			_root.发布消息(_root.获得翻译("领取新任务！"));
+			_root.最上层发布文字提示(_root.获得翻译("领取新任务！"));
+			_root.当前通关的关卡 = "";
+			_root.当前关卡名 = NPC任务_任务[12];
+
+			_root.场景进入位置名 = "出生地";
+			this._visible = false;
+			_root.对话框界面._visible = false;
+			_root.获取虚拟币值();
+			if(this.进入挑战){
+				this.委托界面进入关卡(挑战难度);
+			}else{
+				this.委托界面进入关卡(关卡难度);
+			}
+		}
+		else
+		{
+			_root.发布消息(_root.获得翻译("K点不足！"));
+			return;
+		}
+	}
+	else if (amount == 0)
+	{
+		if (_root.金钱 >= NPC任务_任务_契约金)
+		{
+			_root.发布消息(_root.获得翻译("支付成功！"));
+			_root.金钱 -= NPC任务_任务_契约金;
+			_root.AddTask(_loc5_.id);
+			_root.任务栏界面.排列任务图标();
+			_root.发布消息(_root.获得翻译("领取新任务！"));
+			_root.最上层发布文字提示(_root.获得翻译("领取新任务！"));
+			_root.当前通关的关卡 = "";
+			_root.当前关卡名 = NPC任务_任务[12];
+
+			_root.场景进入位置名 = "出生地";
+			this._visible = false;
+			_root.对话框界面._visible = false;
+			if(this.进入挑战){
+				this.委托界面进入关卡(挑战难度);
+			}else{
+				this.委托界面进入关卡(关卡难度);
+			}
+		}
+		else
+		{
+			_root.发布消息(_root.获得翻译("金钱不足！"));
+		}
+	}
+}
+this.配置关卡属性 = _root.配置关卡属性;
+this.委托界面进入关卡 = _root.委托界面进入关卡;
+this._visible = false;
+_root.全部翻译(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="委托任务动画壳" color="#BCC96F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1872" name="委托任务动画壳" centerPoint3DX="91.2" centerPoint3DY="162">
+                  <matrix>
+                    <Matrix a="0.944015502929688" d="0.944015502929688" tx="9.65" ty="32.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="82.65" y="86.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="委托任务背景" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1872" name="委托任务背景" centerPoint3DX="91.2" centerPoint3DY="162">
+                  <matrix>
+                    <Matrix a="0.944015502929688" d="0.944015502929688" tx="9.65" ty="32.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="82.65" y="86.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#35B7C8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1024" name="取消按钮" centerPoint3DX="71.4" centerPoint3DY="346.7">
+                  <matrix>
+                    <Matrix tx="32.05" ty="334.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
+}
+on (release) {
+	gotoAndStop(1);
+	_parent._visible = false;
+}
+on (press) {
+	gotoAndStop(3);
+}
+on (rollOver) {
+	gotoAndStop(2);
+}
+on (rollOut) {
+	gotoAndStop(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="开始按钮" color="#CDBAD2" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/开始副本按钮" centerPoint3DX="89.9" centerPoint3DY="316.25">
+                  <matrix>
+                    <Matrix tx="32.05" ty="303.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
+}
+on (release) {
+	this.gotoAndStop(1);
+	_parent.符合条件 = true;
+	if (_root.金钱 < _parent.NPC任务_任务_契约金)
+	{
+		_parent.符合条件 = false;
+		_root.发布消息(_root.获得翻译("金钱不足，无法支付契约金！"));
+	}
+	if (_root.等级 < _parent.NPC任务_任务_等级限制)
+	{
+		_parent.符合条件 = false;
+		_root.发布消息(_root.获得翻译("等级不足，无法领取该委托！"));
+	}
+	if (_parent.符合条件)
+	{
+		if (_parent.商品编号 == undefined)
+		{
+			_parent.默认商品编号 = "O20111009000000003";
+		}
+		else
+		{
+			_parent.默认商品编号 = _parent.商品编号;
+		}
+		_parent.虚拟币支付(_parent.NPC任务_任务_K点,_parent.默认商品编号);
+	}
+}
+on (press) {
+	gotoAndStop(3);
+}
+on (rollOver) {
+	gotoAndStop(2);
+}
+on (rollOut) {
+	gotoAndStop(1);
+}
+on (rollOver) {
+	_root.注释(150,_root.获得翻译("点击后直接进入战斗！"));
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/开始挑战按钮" name="进入挑战按钮" centerPoint3DX="89.9" centerPoint3DY="346.75">
+                  <matrix>
+                    <Matrix tx="32.05" ty="334.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
+}
+on (release) {
+	this.gotoAndStop(1);
+	_parent.符合条件 = true;
+	if (_root.金钱 < _parent.NPC任务_任务_契约金)
+	{
+		_parent.符合条件 = false;
+		_root.发布消息(_root.获得翻译("金钱不足，无法支付契约金！"));
+	}
+	if (_root.等级 < _parent.NPC任务_任务_等级限制)
+	{
+		_parent.符合条件 = false;
+		_root.发布消息(_root.获得翻译("等级不足，无法领取该委托！"));
+	}
+	if (_parent.符合条件)
+	{
+		if (_parent.商品编号 == undefined)
+		{
+			_parent.默认商品编号 = "O20111009000000003";
+		}
+		else
+		{
+			_parent.默认商品编号 = _parent.商品编号;
+		}
+		_parent.进入挑战 = true;
+		_parent.虚拟币支付(_parent.NPC任务_任务_K点,_parent.默认商品编号);
+	}
+}
+on (press) {
+	gotoAndStop(3);
+}
+on (rollOver) {
+	gotoAndStop(2);
+}
+on (rollOut) {
+	gotoAndStop(1);
+}
+on (rollOver) {
+	_root.注释(150,_root.获得翻译("点击后直接进入战斗！"));
+}
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文本框" color="#60C7E6" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="270" height="74.95" isSelectable="false" variableName="接收条件" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="180" ty="292"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="12" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="270" height="169.5" isSelectable="false" variableName="任务明细" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="180" ty="38.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="12" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+                <DOMDynamicText fontRenderingMode="device" width="270" height="68" isSelectable="false" variableName="挑战内容" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="180" ty="216"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="12" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFEE99"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#DFD8DC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#8721EA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="330.55" centerPoint3DY="28.75">
+                  <matrix>
+                    <Matrix a="1.1195068359375" tx="228.05" ty="27.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#F1E420">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="106.55" centerPoint3DY="28.75">
+                  <matrix>
+                    <Matrix a="1.1195068359375" tx="4.05" ty="27.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#A86BA4">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 538" symbolType="button">
+                  <matrix>
+                    <Matrix tx="443.05" ty="13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   this._visible = 0;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#81DCF9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 728" symbolType="button">
+                  <matrix>
+                    <Matrix tx="11.6" ty="12.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#CBA045">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="395.9" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="28.05" ty="5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>副本任务</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="12" color="#E4947C" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="228.45" centerPoint3DY="165.95">
+                  <matrix>
+                    <Matrix d="1.11871337890625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

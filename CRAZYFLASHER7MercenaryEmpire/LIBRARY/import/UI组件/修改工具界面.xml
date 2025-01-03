@@ -1,0 +1,357 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/UI组件/修改工具界面" itemID="6749becf-0000094f" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="修改工具界面" linkageURL="flashswf/UI/修改工具界面.swf" lastModified="1732886280" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="修改工具界面">
+      <layers>
+        <DOMLayer name="Layer 3" color="#A9ED33">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2224" centerPoint3DX="448.15" centerPoint3DY="20.2">
+                  <matrix>
+                    <Matrix tx="439.05" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   _root.修改工具界面.缩略图.图.removeMovieClip();
+   _parent._visible = 0;
+}
+onClipEvent(unload){
+}
+onClipEvent(load){
+   stop();
+}
+on(rollOver){
+   gotoAndStop(2);
+}
+on(rollOut){
+   gotoAndStop(1);
+}
+on(press){
+   gotoAndStop(3);
+}
+on(release){
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#FA1AE8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 928" symbolType="button">
+                  <matrix>
+                    <Matrix tx="11.6" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   stopDrag();
+}
+on(press){
+   startDrag(this,0);
+   _root.鼠标.gotoAndStop("手型抓取");
+}
+on(rollOver){
+   _root.鼠标.gotoAndStop("手型准备抓取");
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字" color="#B6E4D5" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="49.25" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="27" ty="32.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>经济</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="50" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="87.75" ty="32.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>物品</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="50" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="149.25" ty="32.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>关卡</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="47.75" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="210.75" ty="32.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>兵种</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#9E9FA1"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#6350D1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="301.05" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="28.9" ty="3.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>修改工具</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#C8D435">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2223" symbolType="button">
+                  <matrix>
+                    <Matrix tx="234.5" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   gotoAndStop("阵营");
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("兵种"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#75A2A8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="106.35" centerPoint3DY="55.35">
+                  <matrix>
+                    <Matrix a="2.1761474609375" tx="3.85" ty="54.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#BD5386">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2222" symbolType="button">
+                  <matrix>
+                    <Matrix tx="51.6" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   gotoAndStop("经济");
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("经济"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#6E8EB7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2221" symbolType="button">
+                  <matrix>
+                    <Matrix tx="174" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   gotoAndStop("关卡");
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("关卡"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#C3AA7C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2220" symbolType="button">
+                  <matrix>
+                    <Matrix tx="112.8" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   gotoAndStop("物品");
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("物品"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color redMultiplier="0.69921875" blueMultiplier="0.69921875" greenMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 39" color="#75E69B" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 726" centerPoint3DX="225.45" centerPoint3DY="162.95">
+                  <matrix>
+                    <Matrix tx="-3" ty="-3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                    <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/通缉令UI/点酒-啤酒" itemID="660d3328-00001dbc" lastModified="1714926702" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="点酒-啤酒" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="txt" fontRenderingMode="device" width="86" height="18.45" isSelectable="false" variableName="显示文字">
+                  <matrix>
+                    <Matrix tx="-22.55" ty="48.25"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>多人按键设置</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/酒吧UI专用啤酒" centerPoint3DX="20.45" centerPoint3DY="22.65">
+                  <matrix>
+                    <Matrix tx="0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="22.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/酒吧UI专用啤酒-空" centerPoint3DX="20.45" centerPoint3DY="22.65">
+                  <matrix>
+                    <Matrix tx="0.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="22.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

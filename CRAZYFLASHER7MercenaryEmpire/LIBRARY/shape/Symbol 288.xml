@@ -1,0 +1,113 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="shape/Symbol 288" itemID="6597607e-00000791" symbolType="graphic" lastModified="1704810395">
+  <timeline>
+    <DOMTimeline name="Symbol 288">
+      <layers>
+        <DOMLayer name="Layer 3" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1B2838"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#1F2F42"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#273B52"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="1.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!16002 -64|16002 9615!16002 9615|-77 9615!-77 9615|-77 -64!-77 -64|16002 -64"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!13152 856|2773 856!2773 856[2653 856 2653 976!2653 976|2653 6975!2653 6975[2653 7095 2773 7095!2773 7095|13152 7095!13152 7095[13272 7095 13272 6975!13272 6975|13272 976!13272 976[13272 856 13152 856"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!13038 2125[13038 2005 12912 2005!12912 2005|2922 2005!2922 2005[2795 2005 2795 2125!2795 2125|2795 6684!2795 6684[2795 6804 2922 6804!2922 6804|12912 6804!12912 6804[13038 6804 13038 6684!13038 6684|13038 2125"/>
+                  </edges>
+                </DOMShape>
+                <DOMStaticText fontRenderingMode="device" width="403.95" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="177.85" ty="162.95"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>现在可以关闭窗口了。</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#C6D4DF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#C6D4DF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMStaticText fontRenderingMode="device" width="264.45" height="26.4" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="177.85" ty="117.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>闪客快打</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#66BEEA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>7</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#66BEEA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>佣兵帝国</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#66BEEA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>  </characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#66BEEA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>退出游戏</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#66BEEA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="20" bitmapSize="400" face="MicrosoftYaHei" fillColor="#66BEEA"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 240" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="396.7" ty="71.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

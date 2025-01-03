@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/冷武器商人/肢体/冷兵商人肢体-背武" itemID="666557d5-00001459" symbolType="graphic" lastModified="1717917653">
+  <timeline>
+    <DOMTimeline name="冷兵商人肢体-背武">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵/刀-玳瑁长柄剑" selected="true" centerPoint3DX="39.3" centerPoint3DY="80.3">
+                  <matrix>
+                    <Matrix a="0.2230224609375" b="0.113006591796875" c="-0.113006591796875" d="0.2230224609375" tx="55.95" ty="46.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1" y="151.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵/刀-虎彻" selected="true" centerPoint3DX="46.8" centerPoint3DY="70.25">
+                  <matrix>
+                    <Matrix a="0.236160278320313" b="-0.0788726806640625" c="0.0885467529296875" d="0.265213012695313" tx="34.6" ty="29.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="149.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵/刀-唐朝直刀" selected="true" centerPoint3DX="43.2" centerPoint3DY="83.55">
+                  <matrix>
+                    <Matrix a="0.2265625" b="-0.0791015625" c="0.0791015625" d="0.2265625" tx="33.55" ty="47.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.15" y="160.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵/刀-CF手斧" selected="true" centerPoint3DX="34.2" centerPoint3DY="58.75">
+                  <matrix>
+                    <Matrix a="0.181106567382813" b="-0.171768188476563" c="-0.171783447265625" d="-0.181137084960938" tx="48.55" ty="70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-9" y="72.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

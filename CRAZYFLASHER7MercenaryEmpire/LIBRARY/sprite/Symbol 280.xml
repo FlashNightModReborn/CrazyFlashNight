@@ -1,0 +1,77 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 280" itemID="6597607e-0000078e" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 280" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#B37BEA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.isSWF == false or _root.isSWF == undefined)
+{
+   _root.removeMovieClip();
+   _root.unloadMovie();
+   fscommand("quit");
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#CD45ED">
+          <frames>
+            <DOMFrame index="0" duration="46" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/加载UI/背景元素-加载提示块动画" centerPoint3DX="14.2" centerPoint3DY="18.45">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="-1.2" ty="3.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="48" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#CD71F7">
+          <frames>
+            <DOMFrame index="0" duration="46" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 215" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-1.15" ty="-2.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="46" duration="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 216" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-1.15" ty="-2.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="78" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

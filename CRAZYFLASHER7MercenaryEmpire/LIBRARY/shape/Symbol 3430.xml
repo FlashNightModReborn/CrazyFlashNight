@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="shape/Symbol 3430" itemID="6597607e-00000e6b" symbolType="graphic" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 3430">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="3">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!405 -525|-405 -525!-405 -525[-565 -525 -565 -365!-565 -365|-565 445!-565 445[-565 605 -405 605!-405 605|405 605!405 605[565 605 565 445!565 445|565 -365!565 -365[565 -525 405 -525"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!35 305|35 -222!35 -222|364 43!364 43|35 305!-324 -222|5 43!5 43|-324 305!-324 305|-324 -222"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

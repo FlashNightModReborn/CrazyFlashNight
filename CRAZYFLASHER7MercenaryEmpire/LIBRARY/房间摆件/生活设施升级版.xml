@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="房间摆件/生活设施升级版" itemID="663498e5-0000326f" lastModified="1716536051" lastUniqueIdentifier="10">
+  <timeline>
+    <DOMTimeline name="生活设施升级版">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/摆件精制床" selected="true" centerPoint3DX="180.95" centerPoint3DY="114.8">
+                  <matrix>
+                    <Matrix tx="37.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="145.8" y="42.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="房间摆件/摆件精制梯子" centerPoint3DX="31.75" centerPoint3DY="118.65">
+                  <matrix>
+                    <Matrix ty="33.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.75" y="85.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

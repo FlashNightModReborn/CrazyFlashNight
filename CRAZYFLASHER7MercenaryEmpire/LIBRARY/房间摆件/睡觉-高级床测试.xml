@@ -1,0 +1,57 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="房间摆件/睡觉-高级床测试" itemID="66bb575d-000044fb" symbolType="button" lastModified="1723553629">
+  <timeline>
+    <DOMTimeline name="睡觉-高级床测试" currentFrame="3">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/马桶" centerPoint3DX="223.7" centerPoint3DY="183.4">
+                  <transformationPoint>
+                    <Point x="223.45" y="183.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/马桶" centerPoint3DX="223.7" centerPoint3DY="183.4">
+                  <transformationPoint>
+                    <Point x="223.45" y="183.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFCC00" strength="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/马桶" centerPoint3DX="223.7" centerPoint3DY="183.4">
+                  <transformationPoint>
+                    <Point x="223.45" y="183.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFCC00"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/马桶" centerPoint3DX="223.7" centerPoint3DY="183.4">
+                  <transformationPoint>
+                    <Point x="223.45" y="183.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFCC00" strength="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

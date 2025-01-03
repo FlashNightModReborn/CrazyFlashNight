@@ -1,0 +1,100 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2209" itemID="6597607e-00000ac7" lastModified="1715094776">
+  <timeline>
+    <DOMTimeline name="Symbol 2209">
+      <layers>
+        <DOMLayer name="酒杯" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="130" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/通缉令UI/92副本酒杯" centerPoint3DX="-13.75" centerPoint3DY="-35.3">
+                  <matrix>
+                    <Matrix a="0.290603637695313" d="0.290603637695313" tx="-43.45" ty="-74.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.95" y="133"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="阴影" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="130" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.16241455078125" d="1.16241455078125" tx="-1.15" ty="17.2"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0364990234375" d="0.01617431640625" tx="-11.85" ty="-19.4"/>
+                        </matrix>
+                        <GradientEntry alpha="0.850980392156863" ratio="0.396078431372549"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!188 -206[12 -131 -237 -131!-237 -131[-486 -131 -663 -206!-663 -206[-839 -281 -839 -388!-839 -388[-839 -494 -663 -570!-663 -570[-486 -645 -237 -645!-237 -645[12 -645 188 -570!188 -570[364 -494 364 -388!364 -388[364 -281 188 -206"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="字体" color="#34ACC6" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="130" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" left="102.2" width="18" height="108.2" autoExpand="true" isSelectable="false" orientation="vertical right to left">
+                  <matrix>
+                    <Matrix tx="-78.2" ty="-88.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>裝甲惡靈村正</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="18" bitmapSize="360" face="ChillDuanHeiSongSoft" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" rotation="true" lineSpacing="0" size="18" bitmapSize="360" face="ChillDuanHeiSongSoft" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="5"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#0000FF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="130" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2202" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.739669799804688" d="3.05133056640625" tx="10.7" ty="-39.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-75.7" y="18.55"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

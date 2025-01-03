@@ -1,0 +1,60 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/消息窗" itemID="66611486-00000fff" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="消息窗" linkageURL="flashswf/UI/消息窗.swf" lastModified="1717638332">
+  <timeline>
+    <DOMTimeline name="消息窗" currentFrame="37">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#FC4D57">
+          <frames>
+            <DOMFrame index="0" duration="359" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="359" name="字消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#8C99B6">
+          <frames>
+            <DOMFrame index="0" duration="359" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="359" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[mytext = "";
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E080BE" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="359" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="文字显示框" fontRenderingMode="device" width="282" height="117" isSelectable="false" variableName="mytext" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <DropShadowFilter distance="0"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="359" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

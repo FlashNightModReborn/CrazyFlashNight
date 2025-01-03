@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1152" itemID="6597607e-00000887" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 1152">
+      <layers>
+        <DOMLayer name="Layer 1" color="#77E439" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1151" centerPoint3DX="55" centerPoint3DY="58.5">
+                  <matrix>
+                    <Matrix tx="15.85" ty="24.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.attachMovie(_parent._parent._parent.脚,"装扮",this.getNextHighestDepth());
+   if(this.装扮._x != undefined)
+   {
+      this.基本款._visible = 0;
+   }
+   else
+   {
+      this.基本款._visible = 1;
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

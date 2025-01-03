@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 947" itemID="6597607e-0000081b" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 947">
+      <layers>
+        <DOMLayer name="Layer 1" color="#F96B9B">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#990000"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!252 3827|252 3829!252 3829|263 3829!263 3829|263 24!263 24|252 24"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!252 24|252 3827"/>
+                    <Edge strokeStyle="1" edges="!252 3827|-259 3827"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-259 3827|-259 24"/>
+                    <Edge fillStyle0="2" edges="!-259 24|-263 24!-263 24|-263 3829!-263 3829|-259 3829!-259 3829|-259 3827"/>
+                    <Edge strokeStyle="1" edges="!-259 24|-259 22!-259 22|252 22!252 22|252 24"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#BB8ADB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 945" symbolType="button">
+                  <matrix>
+                    <Matrix d="7.4320068359375" tx="-0.45" ty="96.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   开始刷新 = true;
+   startDrag(this,0,_parent.bartop._x,_parent.bartop._y,_parent.bartop._x,_parent.barbottom._y - _parent.bar._height);
+}
+on(release, releaseOutside){
+   开始刷新 = false;
+   stopDrag();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

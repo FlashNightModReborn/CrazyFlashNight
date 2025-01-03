@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="按键显示" itemID="662dea68-00000ba1" lastModified="1714285699">
+  <timeline>
+    <DOMTimeline name="按键显示">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="3">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!590 0|110 0!110 0[0 0 0 110!0 110|0 590!0 590[0 700 110 700!110 700|590 700!590 700[638 700 665 679!665 679[700 652 700 590!700 590|700 110!700 110[700 0 590 0"/>
+                  </edges>
+                </DOMShape>
+                <DOMDynamicText fontRenderingMode="device" left="3" width="31" height="26.65" isSelectable="false" variableName="key" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="-1" ty="5.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>W</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="18" bitmapSize="360" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,69 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="房间摆件/睡觉-普通床" itemID="66503821-000010e7" symbolType="button" lastModified="1716536184">
+  <timeline>
+    <DOMTimeline name="睡觉-普通床" currentFrame="2" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/生活设施" centerPoint3DX="143.8" centerPoint3DY="-24.3">
+                  <matrix>
+                    <Matrix tx="-79.9" ty="-207.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="242.45" y="301"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/生活设施" centerPoint3DX="143.8" centerPoint3DY="-24.3">
+                  <matrix>
+                    <Matrix tx="-79.9" ty="-207.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="242.45" y="301"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFCC00" strength="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/生活设施" centerPoint3DX="143.8" centerPoint3DY="-24.3">
+                  <matrix>
+                    <Matrix tx="-79.9" ty="-207.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="242.45" y="301"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFCC00"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/生活设施" centerPoint3DX="143.8" centerPoint3DY="-24.3">
+                  <matrix>
+                    <Matrix tx="-79.9" ty="-207.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="242.45" y="301"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFCC00" strength="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

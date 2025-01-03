@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="房间摆件/乐器/摆件话筒" itemID="66329235-000015d7" lastModified="1714592483">
+  <timeline>
+    <DOMTimeline name="摆件话筒">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/乐器/话筒/Symbol 646" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.507980346679688" d="0.507980346679688" tx="21.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="房间摆件/乐器/话筒/Symbol 647" centerPoint3DX="20.5" centerPoint3DY="81.8">
+                  <matrix>
+                    <Matrix a="-0.507980346679688" d="0.507980346679688" tx="41.05" ty="33.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

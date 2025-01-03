@@ -1,0 +1,173 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2017" itemID="6597607e-00000a7b" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 2017">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F4F3A0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 刷新显示()
+{
+   if(_root.gameworld[当前NPC].默认对话 == undefined)
+   {
+      text1._visible = 0;
+   }
+   else
+   {
+      text1._visible = 1;
+   }
+   if(_root.gameworld[当前NPC].物品栏 == undefined)
+   {
+      text2._visible = 0;
+   }
+   else
+   {
+      text2._visible = 1;
+   }
+   if(_root.gameworld[当前NPC].NPC任务_任务 == undefined)
+   {
+      text3._visible = 0;
+   }
+   else
+   {
+      text3._visible = 1;
+   }
+   if(_root.gameworld[当前NPC].可学的技能 == undefined)
+   {
+      text4._visible = 0;
+   }
+   else
+   {
+      text4._visible = 1;
+   }
+}
+当前NPC = "";
+物品栏 = [];
+NPC任务_任务 = [];
+_root.全部翻译(this);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F43BED">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2016" symbolType="button">
+                  <matrix>
+                    <Matrix a="3.24359130859375" d="0.666000366210938" tx="41.8" ty="26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   _root.佣兵信息界面._visible = 1;
+   this._visible = 0;
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("解雇佣兵"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#9D51C8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="button/Symbol 2015" symbolType="button">
+                  <matrix>
+                    <Matrix a="3.24359130859375" d="0.666000366210938" tx="41.8" ty="8.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   _root.发布消息(_root.获得翻译("开发中"));
+   this._visible = 0;
+}
+on(rollOver){
+   _root.注释(150,_root.获得翻译("开发中"));
+}
+on(rollOut){
+   _root.注释结束();
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C3577C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="76.95" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="4.8" ty="20.5"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>解雇佣兵</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#64C7FD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="76.95" height="14.25" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="4.8" ty="1.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>查看</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#96D2D6">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/通用背景" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.407669067382813" d="0.7105712890625" tx="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

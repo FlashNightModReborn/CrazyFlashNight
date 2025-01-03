@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 3412" itemID="6597607e-00000e62" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 3412">
+      <layers>
+        <DOMLayer name="Script Layer" color="#96B746">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.联机2015获取延迟();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A16C7C">
+          <frames>
+            <DOMFrame index="0" duration="150" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="30" height="15.85" isSelectable="false" variableName="_root.网络延迟时间">
+                  <matrix>
+                    <Matrix tx="-14.55" ty="12"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>0</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#99CC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DF59D2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="150" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 3410" name="显示条" centerPoint3DX="24.6" centerPoint3DY="9.3">
+                  <matrix>
+                    <Matrix a="0.890716552734375" d="0.890716552734375" tx="4.85" ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   最大延迟时间设定 = 1000;
+   跳转帧 = Math.floor(this._totalframes * _root.网络延迟时间 / 最大延迟时间设定);
+   this.gotoAndStop(跳转帧);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

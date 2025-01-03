@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/杰克霜精/零件/霜精头" itemID="65e968e9-000001db" lastModified="1709829788">
+  <timeline>
+    <DOMTimeline name="霜精头">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.21929931640625" d="0.21929931640625" tx="62.8" ty="56.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.549019607843137"/>
+                        <GradientEntry color="#999999" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#010101"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!3456 3920[2228 4553 806 3849!806 3849[-440 2765 241 1090!241 1090[1057 -104 2236 10!2236 10[4196 296 4266 2135!4266 2135[4255 3216 3456 3920"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!486 1780[634 1766 736 1505!736 1505[891 1109 746 1025!746 1025[535 1069 426 1440!426 1440[359 1710 486 1780!1116 1665[1049 1935 1176 2005!1176 2005[1478 2174 1614 1767!1614 1767[1750 1359 1496 1260!1496 1260[1237 1277 1116 1665!1089
+ 2519|1016 2310!1016 2310|517 2131!517 2131|417 2279!417 2279|336 2085!336 2085[116 2050 77 2130!77 2130[76 2138 76 2146!76 2146[28 2767 481 3210!481 3210[965 3558 1431 3350!1431 3350[1779 3231 1996 2830!1996 2830[1724 2582 1246 2420
+!1246 2420|1089 2519"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/外部地图/地图-小马地图" itemID="66ad09e0-00000bcd" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="地图-小马地图" linkageURL="flashswf\levels\地图-小马地图.swf" lastModified="1722616321">
+  <timeline>
+    <DOMTimeline name="地图-小马地图">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText selected="true" fontRenderingMode="standard" width="156" height="91.4" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>小马地图</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="35" bitmapSize="700" face="MicrosoftYaHeiLight" fillColor="#666666"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

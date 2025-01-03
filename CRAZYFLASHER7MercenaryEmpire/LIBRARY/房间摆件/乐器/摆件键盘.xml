@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="房间摆件/乐器/摆件键盘" itemID="66329049-0000159b" lastModified="1714589769">
+  <timeline>
+    <DOMTimeline name="摆件键盘">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="房间摆件/乐器/键盘/Symbol 567" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.063201904296875" b="-0.501052856445313" c="-0.501052856445313" d="-0.063201904296875" tx="80.2" ty="25.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="房间摆件/乐器/键盘/Symbol 569" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0617523193359375" b="0.500930786132813" c="0.500930786132813" d="0.0617523193359375" tx="25.7" ty="9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="房间摆件/乐器/键盘/Symbol 570" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.460067749023438" b="-0.206329345703125" c="-0.206329345703125" d="0.460067749023438" tx="82.85" ty="20.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,400 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/文天/Symbol 35518" itemID="6597607e-00000d18" lastModified="1707198663" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="Symbol 35518" currentFrame="21">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FB0B7F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/文天彩蛋UI所用素材/文天" centerPoint3DX="87.35" centerPoint3DY="180">
+                  <matrix>
+                    <Matrix tx="-53.65" ty="-122.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="141.1" y="291.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35505" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35509" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35513" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35517" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#F754B9">
+          <frames>
+            <DOMFrame index="0" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35500" centerPoint3DX="73.85" centerPoint3DY="258.1">
+                  <matrix>
+                    <Matrix a="0.9256591796875" b="-0.135910034179688" c="0.145248413085938" d="0.989288330078125" tx="-56.25" ty="173.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35500" centerPoint3DX="76.45" centerPoint3DY="260.8">
+                  <matrix>
+                    <Matrix a="0.9256591796875" b="-0.135910034179688" c="0.145248413085938" d="0.989288330078125" tx="-53.65" ty="175.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4ECD90">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="32" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0A0A08"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#027575"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#03C0BF"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#024241"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2022 9373[2041 9415 2008 9516!2008 9516|1976 9537"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1976 9537[1800 9643 1638 9655!1638 9655[1414 9655 1114 9452!1114 9452[981 9376 880 9186!880 9186|801 9203!801 9203[688 9094 608 9060!608 9060[520 9016 470 8934!470 8934[484 8764 587 8544!587 8544|636 8426!636 8426[634 8285 761 8152"/>
+                    <Edge fillStyle1="2" edges="!761 8152|1347 8243"/>
+                    <Edge fillStyle1="3" edges="!1347 8243|1354 8215!1354 8215|1411 8248"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!1411 8248|1411 8250!1411 8250[1399 8365 1412 8439"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!1412 8439[1454 8559 1542 8707!1542 8707[1610 8863 1761 9015!1761 9015[2080 9277 2022 9373"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!2022 9373[1935 9466 1822 9513"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!1822 9513[1772 9535 1717 9547!1717 9547[1655 9565 1579 9548!1579 9548[1460 9520 1327 9450"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!1327 9450[1531 9605 1706 9576!1706 9576[1880 9548 1992 9455!1992 9455|1976 9537"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!1504 9464[1633 9481 1701 9463!1701 9463[1863 9410 1845 9258!1845 9258[1771 9138 1618 9029!1618 9029[1455 8766 1369 8530!1369 8530[1336 8383 1300 8354!1300 8354[1196 8355 1135 8386!1135 8386[1101 8519 1014 8610"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!1014 8610|1215 9117!1215 9117[1370 9375 1504 9464"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!1504 9464[1549 9493 1593 9503!1593 9503[1720 9550 1822 9513"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!1347 8243|1338 8278"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!1338 8278|1373 8274!1373 8274[1381 8349 1412 8439"/>
+                    <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!920 8685[979 8629 1026 8520!1026 8520[1063 8433 1088 8316!1088 8316[1198 8290 1338 8278"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!1014 8610[972 8653 920 8685"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!920 8685[849 8754 755 8742!755 8742[723 9012 895 9124!895 9124|1038 9257!1038 9257[1189 9376 1327 9450"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!755 8742[713 8498 636 8426!880 9186|825 9111!825 9111|801 9203"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#E3DE30">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#BDEE7C">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#024241"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#027575"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#03C0BF"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#0A0A08"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!3881 8005[3843 7917 3831 7843!3831 7843|3796 7849"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!3796 7849[3657 7870 3549 7904!3549 7904[3530 8024 3500 8112!3500 8112[3463 8225 3407 8285"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!3407 8285[3456 8249 3493 8204"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!3493 8204|3732 8697!3732 8697[3904 8944 4043 9024"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!4043 9024[4174 9032 4241 9010!4241 9010[4401 8945 4371 8794!4371 8794[4288 8680 4129 8581!4129 8581[3947 8329 3844 8098!3844 8098[3801 7954 3764 7928!3764 7928[3659 7937 3601 7972!3601 7972[3576 8108 3493 8204"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!3867 7814|3866 7816!3866 7816[3863 7931 3881 8005"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!3881 8005[3933 8122 4029 8263!4029 8263[4109 8415 4270 8556!4270 8556[4608 8795 4557 8897"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!4557 8897[4579 8938 4552 9041!4552 9041|4522 9064"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4522 9064[4353 9183 4192 9206!4192 9206[3967 9221 3653 9040!3653 9040[3516 8974 3402 8790"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!3402 8790|3341 8717!3341 8717|3323 8812"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3323 8812|3402 8790"/>
+                    <Edge fillStyle1="3" edges="!3803 7814|3808 7784!3808 7784|3867 7814"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!3803 7814|3796 7849"/>
+                    <Edge fillStyle1="2" edges="!3231 7832|3803 7814"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!3407 8285[3339 8358 3245 8353!3245 8353[3233 8626 3411 8726!3411 8726|3564 8849!3564 8849[3723 8958 3866 9022"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!3866 9022[4005 9083 4126 9103!4126 9103[4203 9115 4263 9092!4263 9092[4318 9077 4366 9052"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!4366 9052[4267 9095 4136 9057!4136 9057[4092 9050 4043 9024"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!3866 9022[4081 9164 4254 9122!4254 9122[4426 9081 4532 8980!4532 8980|4522 9064"/>
+                    <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="!4557 8897[4476 8996 4366 9052"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!3323 8812[3202 8711 3119 8683!3119 8683[3028 8644 2972 8566!2972 8566[2975 8395 3063 8167!3063 8167|3105 8046!3105 8046[3144 7919 3231 7832"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!3245 8353[3185 8114 3105 8046"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#024241"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#027575"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#03C0BF"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#0A0A08"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!3881 8005[3843 7917 3831 7843!3831 7843|3796 7849"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!3796 7849[3657 7870 3549 7904!3549 7904[3530 8024 3500 8112!3500 8112[3463 8225 3407 8285"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!3407 8285[3456 8249 3493 8204"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!3493 8204|3732 8697!3732 8697[3904 8944 4043 9024"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!4043 9024[4174 9032 4241 9010!4241 9010[4401 8945 4371 8794!4371 8794[4288 8680 4129 8581!4129 8581[3947 8329 3844 8098!3844 8098[3801 7954 3764 7928!3764 7928[3659 7937 3601 7972!3601 7972[3576 8108 3493 8204"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!3796 7849|3803 7814"/>
+                    <Edge fillStyle0="2" edges="!3803 7814|3231 7832"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3231 7832[3144 7919 3105 8046"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!3105 8046[3185 8114 3245 8353"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!3245 8353[3339 8358 3407 8285"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!3881 8005[3863 7931 3866 7816!3866 7816|3867 7814"/>
+                    <Edge fillStyle0="3" edges="!3867 7814|3808 7784!3808 7784|3803 7814"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!4557 8897[4608 8795 4270 8556!4270 8556[4109 8415 4029 8263!4029 8263[3933 8122 3881 8005"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!3866 9022[3723 8958 3564 8849!3564 8849|3411 8726!3411 8726[3233 8626 3245 8353"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!3323 8812|3341 8717!3341 8717|3402 8790"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3402 8790[3516 8974 3653 9040!3653 9040[3967 9221 4192 9206!4192 9206[4353 9183 4522 9064"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!4522 9064|4532 8980!4532 8980[4426 9081 4254 9122!4254 9122[4081 9164 3866 9022"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!3866 9022[4005 9083 4126 9103!4126 9103[4203 9115 4263 9092!4263 9092[4318 9077 4366 9052"/>
+                    <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="!4366 9052[4476 8996 4557 8897"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!4557 8897[4579 8938 4552 9041!4552 9041|4522 9064"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3323 8812|3402 8790"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!4043 9024[4092 9050 4136 9057!4136 9057[4267 9095 4366 9052"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3105 8046|3063 8167!3063 8167[2975 8395 2972 8566!2972 8566[3028 8644 3119 8683!3119 8683[3202 8711 3323 8812"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="16" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#024241"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#027575"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#03C0BF"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#0A0A08"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!3881 8005[3863 7931 3866 7816!3866 7816|3867 7814"/>
+                    <Edge fillStyle0="3" edges="!3867 7814|3808 7784!3808 7784|3803 7814"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!3803 7814|3796 7849"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!3796 7849[3657 7870 3549 7904!3549 7904[3530 8024 3500 8112!3500 8112[3463 8225 3407 8285"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!3407 8285[3456 8249 3493 8204"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!3493 8204|3732 8697!3732 8697[3904 8944 4043 9024"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!4043 9024[4174 9032 4241 9010!4241 9010[4401 8945 4371 8794!4371 8794[4288 8680 4129 8581!4129 8581[3947 8329 3844 8098!3844 8098[3801 7954 3764 7928!3764 7928[3659 7937 3601 7972!3601 7972[3576 8108 3493 8204"/>
+                    <Edge fillStyle0="3" fillStyle1="1" strokeStyle="1" edges="!3796 7849|3831 7843!3831 7843[3843 7917 3881 8005"/>
+                    <Edge fillStyle0="2" edges="!3803 7814|3231 7832"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3231 7832[3144 7919 3105 8046!3105 8046|3063 8167!3063 8167[2975 8395 2972 8566!2972 8566[3028 8644 3119 8683!3119 8683[3202 8711 3323 8812"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!3323 8812|3341 8717!3341 8717|3402 8790"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3402 8790[3516 8974 3653 9040!3653 9040[3967 9221 4192 9206!4192 9206[4353 9183 4522 9064"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!4522 9064|4532 8980!4532 8980[4426 9081 4254 9122!4254 9122[4081 9164 3866 9022"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!3866 9022[4005 9083 4126 9103!4126 9103[4203 9115 4263 9092!4263 9092[4318 9077 4366 9052"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!4366 9052[4267 9095 4136 9057!4136 9057[4092 9050 4043 9024"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!3881 8005[3933 8122 4029 8263!4029 8263[4109 8415 4270 8556!4270 8556[4608 8795 4557 8897"/>
+                    <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="!4557 8897[4476 8996 4366 9052"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!3407 8285[3339 8358 3245 8353!3245 8353[3233 8626 3411 8726!3411 8726|3564 8849!3564 8849[3723 8958 3866 9022"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3323 8812|3402 8790"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!4522 9064|4552 9041!4552 9041[4579 8938 4557 8897"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!3245 8353[3185 8114 3105 8046"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#B07F93">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#9487AF">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 35476" centerPoint3DX="135.25" centerPoint3DY="-101.2">
+                  <matrix>
+                    <Matrix a="0.998886108398438" b="0.023162841796875" c="-0.023162841796875" d="0.998886108398438" tx="92.4" ty="-149.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 35476" centerPoint3DX="135.25" centerPoint3DY="-98.45">
+                  <matrix>
+                    <Matrix a="0.998886108398438" b="0.023162841796875" c="-0.023162841796875" d="0.998886108398438" tx="92.4" ty="-146.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#11DF93">
+          <frames>
+            <DOMFrame index="0" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35502" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35506" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35510" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/文天/Symbol 35514" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

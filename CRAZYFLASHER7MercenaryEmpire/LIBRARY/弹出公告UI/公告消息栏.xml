@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="弹出公告UI/公告消息栏" itemID="65bb922d-000001f2" lastModified="1706795494">
+  <timeline>
+    <DOMTimeline name="公告消息栏">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.2197265625" d="0.010986328125" tx="180" ty="9"/>
+                        </matrix>
+                        <GradientEntry color="#00FF00" alpha="0" ratio="0.2"/>
+                        <GradientEntry color="#00FF00" alpha="0.447058823529412" ratio="0.619607843137255"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.2197265625" d="0.01739501953125" tx="180" ty="12.5"/>
+                        </matrix>
+                        <GradientEntry color="#00FF00" alpha="0" ratio="0"/>
+                        <GradientEntry color="#00FF00" alpha="0.6" ratio="0.462745098039216"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.2197265625" d="0.010986328125" tx="180" ty="16"/>
+                        </matrix>
+                        <GradientEntry color="#00FF00" alpha="0" ratio="0.2"/>
+                        <GradientEntry color="#00FF00" alpha="0.447058823529412" ratio="0.619607843137255"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="3" edges="!0 440|0 500!0 500|7200 500!7200 500|7200 440"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!7200 440|0 440"/>
+                    <Edge fillStyle1="2" edges="!0 440|0 60"/>
+                    <Edge fillStyle1="1" edges="!0 60|0 0!0 0|7200 0!7200 0|7200 60"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!7200 60|0 60"/>
+                    <Edge fillStyle1="2" edges="!7200 60|7200 440"/>
+                  </edges>
+                </DOMShape>
+                <DOMDynamicText fontRenderingMode="device" width="326.45" height="18.45" isSelectable="false" variableName="_parent.当前公告">
+                  <matrix>
+                    <Matrix tx="22" ty="3"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>公告消息</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="right" aliasText="false" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="1.25"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

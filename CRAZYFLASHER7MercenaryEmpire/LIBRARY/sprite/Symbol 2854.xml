@@ -1,0 +1,78 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2854" itemID="6597607e-00000da8" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 2854">
+      <layers>
+        <DOMLayer name="Layer 1" color="#E0CE54" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2853" blendMode="add" centerPoint3DX="155.25" centerPoint3DY="334.25">
+                  <matrix>
+                    <Matrix a="0.249588012695313" b="0.186721801757813" c="-0.18670654296875" d="0.249603271484375" tx="82.4" ty="223.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="24" blurY="24"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#EF831C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2853" blendMode="add" centerPoint3DX="198.9" centerPoint3DY="315.8">
+                  <matrix>
+                    <Matrix a="0.0945281982421875" b="-0.29742431640625" c="0.297439575195313" d="0.0945281982421875" tx="126.05" ty="205.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="24" blurY="24"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#88FE6C">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2853" centerPoint3DX="197.4" centerPoint3DY="315.95">
+                  <matrix>
+                    <Matrix a="1.56463623046875" b="0.08990478515625" c="-0.08990478515625" d="1.56463623046875" tx="124.55" ty="205.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="24" blurY="24"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#AAACA5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2851" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

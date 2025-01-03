@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 3417" itemID="6597607e-00000e64" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 3417">
+      <layers>
+        <DOMLayer name="Script Layer" color="#AD20F7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = 1;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="397" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="399" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#C1A09A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="400" keyMode="9728">
+              <elements>
+                <DOMDynamicText name="文字显示框" fontRenderingMode="device" width="251.55" height="162.3" isSelectable="false" variableName="mytext" renderAsHTML="true" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="-126.05" ty="-74.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,66 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 596" itemID="6597607e-000007d1" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 596">
+      <layers>
+        <DOMLayer name="Layer 1" color="#70FE55" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.126312255859375" c="-0.14404296875" d="0" tx="118" ty="103.45"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.126312255859375" c="-0.14404296875" d="0" tx="218" ty="103.45"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.126312255859375" c="-0.14404296875" d="0" tx="218" ty="253.45"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.126312255859375" c="-0.14404296875" d="0" tx="118" ty="253.45"/>
+                        </matrix>
+                        <GradientEntry color="#31322C" ratio="0"/>
+                        <GradientEntry color="#111111" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="2" edges="!6720 6086|6720 100!6720 100[6720 0 6560 0!6560 0|5870 0"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!5870 0|5870 6086"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!5870 6086|6720 6086"/>
+                    <Edge fillStyle1="3" edges="!6720 6086|6720 7039!6720 7039[6720 7139 6560 7139!6560 7139|5870 7139"/>
+                    <Edge fillStyle1="4" edges="!5870 7139|160 7139!160 7139[0 7139 0 7039!0 7039|0 6086"/>
+                    <Edge fillStyle1="1" edges="!0 6086|0 100!0 100[0 0 160 0!160 0|5870 0"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!5870 7139|5870 6086"/>
+                    <Edge fillStyle0="4" fillStyle1="1" edges="!5870 6086|0 6086"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

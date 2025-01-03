@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/标题画面/Symbol 987" itemID="6597607e-0000082a" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 987">
+      <layers>
+        <DOMLayer name="Layer 1" color="#61E48C" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="image/bitmap985.png" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="33.9013671875" d="33.9013671875" tx="-21.6"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-432 0|12281 0!12281 0|12281 17459!12281 17459|-432 17459!-432 17459|-432 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

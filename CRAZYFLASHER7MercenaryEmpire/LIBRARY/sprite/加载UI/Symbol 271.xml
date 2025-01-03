@@ -1,0 +1,65 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/加载UI/Symbol 271" itemID="6597607e-00000788" linkageExportForAS="true" linkageIdentifier="自制下拉框文字块2" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 271">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A5AEFC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="105.25" height="15.55" isSelectable="false" variableName="文字" lineType="multiline">
+                  <matrix>
+                    <Matrix tx="5.25" ty="2.25"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>文字</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#5CEA4E" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 269" centerPoint3DX="58.6" centerPoint3DY="10.05">
+                  <matrix>
+                    <Matrix ty="0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   _root.普通播放音效("targetack.wav");
+   _parent._parent.初始化(_parent.文字,_parent.值,_parent.方法名);
+   _parent._parent.删除文字块();
+}
+on(rollOver){
+   gotoAndStop("滑过");
+}
+on(rollOut){
+   gotoAndStop("初始");
+}
+on(press){
+   gotoAndStop("按下");
+}
+on(release){
+   gotoAndStop("初始");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

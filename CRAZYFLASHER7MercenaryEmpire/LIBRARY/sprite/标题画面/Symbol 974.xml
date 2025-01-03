@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/标题画面/Symbol 974" itemID="6597607e-00000825" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 974">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A8FE4A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="image/bitmap972.png" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="33.604736328125" d="33.604736328125" tx="2.1"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2630 0|2630 4335!2630 4335|42 4335!42 4335|42 0!42 0|2630 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

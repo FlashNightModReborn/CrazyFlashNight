@@ -1,0 +1,69 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2743" itemID="6597607e-00000d0b" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 2743">
+      <layers>
+        <DOMLayer name="Script Layer" color="#6B8990">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function moveUp()
+{
+   oriY = this._y;
+   v = 5;
+   this.onEnterFrame = function()
+   {
+      this._y -= v;
+      v -= 0.5;
+      if(this._y <= oriY - 20)
+      {
+         this._y = oriY - 20;
+         delete this.onEnterFrame;
+      }
+   };
+}
+function moveDown()
+{
+   oriY = this._y;
+   v = 5;
+   this.onEnterFrame = function()
+   {
+      this._y += v;
+      v -= 0.5;
+      if(this._y >= oriY + 20)
+      {
+         this._y = oriY + 20;
+         delete this.onEnterFrame;
+      }
+   };
+}
+stop();
+oriY = this._y;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#1FF581" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 31" centerPoint3DX="96.25" centerPoint3DY="10">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this._visible = false;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
