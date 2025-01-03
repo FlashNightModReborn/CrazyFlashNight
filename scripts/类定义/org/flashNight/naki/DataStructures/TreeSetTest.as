@@ -46,9 +46,17 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         testSize();
         testToArray();
         testEdgeCases();
+
+        // 新增测试
+        testBuildFromArray();
+        testChangeCompareFunctionAndResort();
+
         testPerformance();
+
         trace("测试完成。通过: " + testPassed + " 个，失败: " + testFailed + " 个。");
     }
+
+    //====================== 原有正确性测试 ======================//
 
     /**
      * 测试 add 方法
@@ -177,6 +185,79 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         }
     }
 
+    //====================== 新增测试点 ======================//
+
+    /**
+     * 测试通过数组构建 TreeSet (buildFromArray)
+     * 1. 使用给定数组和比较函数构建 TreeSet
+     * 2. 检查大小、顺序、以及包含性
+     */
+    private function testBuildFromArray():Void {
+        trace("\n测试 buildFromArray 方法...");
+
+        // 测试数组
+        var arr:Array = [10, 3, 5, 20, 15, 7, 2];
+        // 调用静态方法快速构建平衡树
+        var newSet:TreeSet = TreeSet.buildFromArray(arr, numberCompare);
+
+        // 检查大小
+        assert(newSet.size() == arr.length, "buildFromArray 后，size 应该等于数组长度 " + arr.length);
+
+        // 检查是否有序 (调用 toArray)
+        var sortedArr:Array = newSet.toArray();
+        // 由于 numberCompare，是升序，所以 toArray() 应该是 [2, 3, 5, 7, 10, 15, 20]
+        var expected:Array = [2, 3, 5, 7, 10, 15, 20];
+        assert(sortedArr.length == expected.length, "buildFromArray 后，toArray().length 应该为 " + expected.length);
+
+        for (var i:Number = 0; i < expected.length; i++) {
+            assert(sortedArr[i] == expected[i], "buildFromArray -> 第 " + i + " 个元素应为 " + expected[i] + "，实际是 " + sortedArr[i]);
+        }
+
+        // 再测试一下 contains
+        assert(newSet.contains(15), "buildFromArray 后，TreeSet 应包含 15");
+        assert(!newSet.contains(999), "TreeSet 不应包含 999");
+    }
+
+    /**
+     * 测试动态切换比较函数并重排 (changeCompareFunctionAndResort)
+     * 1. 给 TreeSet 添加一些元素
+     * 2. 调用 changeCompareFunctionAndResort 换成降序
+     * 3. 检查排序结果
+     */
+    private function testChangeCompareFunctionAndResort():Void {
+        trace("\n测试 changeCompareFunctionAndResort 方法...");
+
+        // 建立一个 TreeSet 并插入元素
+        treeSet = new TreeSet(numberCompare);
+        var elements:Array = [10, 3, 5, 20, 15, 7, 2, 25];
+        for (var i:Number = 0; i < elements.length; i++) {
+            treeSet.add(elements[i]);
+        }
+        assert(treeSet.size() == elements.length, "初始插入后，size 应为 " + elements.length);
+
+        // 定义降序比较函数
+        var descCompare:Function = function(a, b):Number {
+            return b - a; // 反向比较
+        };
+
+        // 调用 changeCompareFunctionAndResort
+        treeSet.changeCompareFunctionAndResort(descCompare);
+
+        // 检查是否按降序输出
+        var sortedDesc:Array = treeSet.toArray();
+        // 期望：[25, 20, 15, 10, 7, 5, 3, 2]
+        var expected:Array = [25, 20, 15, 10, 7, 5, 3, 2];
+
+        assert(sortedDesc.length == expected.length, "changeCompareFunctionAndResort 后，size 不变，依旧为 " + expected.length);
+
+        for (i = 0; i < expected.length; i++) {
+            assert(sortedDesc[i] == expected[i], 
+                "changeCompareFunctionAndResort -> 第 " + i + " 个元素应为 " + expected[i] + "，实际是 " + sortedDesc[i]);
+        }
+    }
+
+    //====================== 性能测试 ======================//
+
     /**
      * 测试性能表现
      * 分别测试容量为100、1000、10000的情况，每个容量级别执行不同次数的测试。
@@ -195,9 +276,18 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
             var totalSearchTime:Number = 0;
             var totalRemoveTime:Number = 0;
 
+            // [新增加的计时变量]
+            var totalBuildTime:Number = 0;
+            var totalReSortTime:Number = 0;
+
+            // 定义在循环外以便最后做断言
+            var removeAll:Boolean = true;
+            var containsAll:Boolean = true;
+            var largeSet:TreeSet = null;
+
             for (var i:Number = 0; i < iteration; i++) {
-                // 创建新的 TreeSet 实例
-                var largeSet:org.flashNight.naki.DataStructures.TreeSet = new org.flashNight.naki.DataStructures.TreeSet(numberCompare);
+                //------------------ 1) 测试添加性能 ------------------//
+                largeSet = new org.flashNight.naki.DataStructures.TreeSet(numberCompare);
 
                 // 添加元素
                 var startTime:Number = getTimer();
@@ -207,9 +297,9 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                 var addTime:Number = getTimer() - startTime;
                 totalAddTime += addTime;
 
-                // 搜索元素
+                //--------------- 2) 测试搜索性能 -------------------//
                 startTime = getTimer();
-                var containsAll:Boolean = true;
+                containsAll = true;
                 for (k = 0; k < capacity; k++) {
                     if (!largeSet.contains(k)) {
                         containsAll = false;
@@ -219,9 +309,9 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                 var searchTime:Number = getTimer() - startTime;
                 totalSearchTime += searchTime;
 
-                // 移除元素
+                //--------------- 3) 测试移除性能 -------------------//
                 startTime = getTimer();
-                var removeAll:Boolean = true;
+                removeAll = true;
                 for (k = 0; k < capacity; k++) {
                     if (!largeSet.remove(k)) {
                         removeAll = false;
@@ -231,6 +321,48 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                 var removeTime:Number = getTimer() - startTime;
                 totalRemoveTime += removeTime;
 
+                //----------------- 4) 测试 buildFromArray ----------------//
+                // 重新生成一个数组 [0, 1, 2, ... capacity-1]
+                // 或者使用随机数数组以模拟更真实场景
+                var arr:Array = [];
+                for (k = 0; k < capacity; k++) {
+                    arr.push(k);
+                }
+
+                // 打乱或保持顺序均可
+                // arr.sort(function() { return Math.random() - 0.5; });
+
+                // 计时
+                startTime = getTimer();
+                // build一个新的TreeSet
+                var tempSet:TreeSet = TreeSet.buildFromArray(arr, numberCompare);
+                var buildTime:Number = getTimer() - startTime;
+                totalBuildTime += buildTime;
+
+                // 简单校验
+                if (tempSet.size() != capacity) {
+                    trace("FAIL: buildFromArray 后 size 不匹配，期望=" + capacity + " 实际=" + tempSet.size());
+                    testFailed++;
+                }
+
+                //----------------- 5) 测试 changeCompareFunctionAndResort --------------//
+                // 给新构建的树，换成降序比较函数
+                var descCompare:Function = function(a, b) {
+                    return b - a;
+                };
+
+                startTime = getTimer();
+                tempSet.changeCompareFunctionAndResort(descCompare);
+                var reSortTime:Number = getTimer() - startTime;
+                totalReSortTime += reSortTime;
+
+                // 再做一次简单校验（降序）
+                var descArr:Array = tempSet.toArray();
+                // 检查首尾是否符合降序（快速检测）
+                if (descArr[0] < descArr[descArr.length - 1]) {
+                    trace("FAIL: changeCompareFunctionAndResort 未生效，数组似乎不是降序");
+                    testFailed++;
+                }
             }
 
             // 最终检查
@@ -243,14 +375,24 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
             var avgSearchTime:Number = totalSearchTime / iteration;
             var avgRemoveTime:Number = totalRemoveTime / iteration;
 
+            // [新增] 计算 buildFromArray 与 changeCompareFunctionAndResort 的平均耗时
+            var avgBuildTime:Number = totalBuildTime / iteration;
+            var avgReSortTime:Number = totalReSortTime / iteration;
+
+            // 输出性能结果
             trace("添加 " + capacity + " 个元素平均耗时: " + avgAddTime + " 毫秒");
             trace("搜索 " + capacity + " 个元素平均耗时: " + avgSearchTime + " 毫秒");
             trace("移除 " + capacity + " 个元素平均耗时: " + avgRemoveTime + " 毫秒");
+
+            // 输出新增方法的测试结果
+            trace("buildFromArray(" + capacity + " 个元素)平均耗时: " + avgBuildTime + " 毫秒");
+            trace("changeCompareFunctionAndResort(" + capacity + " 个元素)平均耗时: " + avgReSortTime + " 毫秒");
         }
     }
 
+
     /**
-     * 比较函数，用于数字比较
+     * 比较函数，用于数字比较 (升序)
      * @param a 第一个数字
      * @param b 第二个数字
      * @return a - b
