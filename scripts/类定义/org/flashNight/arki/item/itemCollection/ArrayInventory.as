@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.itemCollection.Inventory;
+import org.flashNight.naki.DataStructures.TreeSet;
 
 /*
  * 只以数字作为键的定长物品栏，继承物品栏基类
@@ -6,19 +7,23 @@
 class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     
     public var capacity:Number; //总格数
-    private var indexes:Array; //索引数组
+    private var indexes:TreeSet; //索引TreeSet
 
     public function ArrayInventory(_items:Object,_capacity:Number) {
         super(_items);
         if(_capacity <= 1) _capacity = 8;
         this.capacity = _capacity;
-         //建立索引数组（并没有建
+        //建立索引TreeSet
+        indexes = new TreeSet(null);
+        for(var key in this.items){
+            indexes.add(Number(key));
+        }
     }
 
     //重构isEmpty函数，非数字键也会返回false
     public function isEmpty(key:Number):Boolean{
         if(key < 0 || key >= capacity) return false;
-        return !(items[key] != null);
+        return items[key] == null;
     }
 
     //重构add函数，填写-1时自动寻找可用的索引
@@ -27,9 +32,11 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             if(isNaN(item.value)){
                 key = getFirstVacancy();
             }else{
-                for(var i:Number = 0; i < this.capacity; i++){
-                    if(items[i].name == item.name && !isNaN(items[i].value)) {
-                        key = i;
+                var indexArr = indexes.toArray();
+                for(var i:Number = 0; i < indexArr.length; i++){
+                    var index = indexArr[i];
+                    if(items[index].name == item.name && !isNaN(items[index].value)) {
+                        key = index;
                         break;
                     }
                 }
@@ -37,7 +44,20 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             }
         }
         if(key == -1) return false;
-        return super.add(String(key),item);
+        var result = super.add(String(key),item);
+        if(!result) return false;
+        indexes.add(key);
+        return true;
+    }
+
+    public function remove(key:Number):Void{
+        super.remove(String(key));
+        indexes.remove(key);
+    }
+
+    //返回索引TreeSet的数组形式
+    public function getIndexes():Array{
+        return indexes.toArray();
     }
 
 

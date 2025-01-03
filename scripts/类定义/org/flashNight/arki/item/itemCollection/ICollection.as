@@ -25,7 +25,7 @@
      * @param item 目标物品
      * @return 判断结果
      */
-    function isAddable(key:String,item:Object):Boolean;
+    function isAddable(key:String,item):Boolean;
 
     /**
      * 添加物品
@@ -33,7 +33,7 @@
      * @param item 目标物品
      * @return 是否成功放入
      */
-    function add(key:String,item:Object):Boolean;
+    function add(key:String,item):Boolean;
 
     /**
      * 移除物品

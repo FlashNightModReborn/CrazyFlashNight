@@ -113,8 +113,8 @@ class org.flashNight.arki.item.ItemUtil{
      */
     public static function require(itemArray:Array):Object{
         var list = {金币:0,K点:0,经验值:0,技能点:0,背包:{},材料:{},情报:{}};
-        var mergables = {};
-        var unmergableList = [];
+        var mergables = {};//可堆叠物品
+        var unmergableList = [];//不可堆叠物品
         //提取材料和情报
         for(var i = 0; i < itemArray.length; i++){
             var name = itemArray[i].name;
@@ -235,8 +235,9 @@ class org.flashNight.arki.item.ItemUtil{
                 list.情报[name] = value;
                 // itemArray.splice(i,1);
             }else{
-                for(var index = 0; index < 背包.capacity; index++){
-                    if(背包.isEmpty(index)) continue;
+                var indexArr = 背包.getIndexes();
+                for(var arri:Number = 0; arri < indexArr.length; arri++){
+                    var index = indexArr[arri];
                     var bagItem = 背包.getItem(index);
                     if(name != bagItem.name) continue;
                     if((itemData.type == "武器" || itemData.type == "防具") && bagItem.value.level >= value){
@@ -316,8 +317,10 @@ class org.flashNight.arki.item.ItemUtil{
         //遍历背包
         var 背包 = _root.物品栏.背包;
         var total = 0;
-        for(var i = 0; i < 背包.capacity; i++){
-            var bagItem = 背包.getItem(i);
+        var indexArr = 背包.getIndexes();
+        for(var i:Number = 0; i < indexArr.length; i++){
+            var index = indexArr[i];
+            var bagItem = 背包.getItem(index);
             if(bagItem.name == __name){
                 total += isNaN(bagItem.value) ? 1 : bagItem.value;
             }

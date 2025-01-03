@@ -21,7 +21,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     }
 
     //获取物品对象
-    public function getItem(key:String){
+    public function getItem(key:String):Object{
         var item = items[key];
         if(!item) return null;
         return item;
@@ -45,7 +45,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     }
 
     //判断是否能添加指定物品
-    public function isAddable(key:String,item:Object):Boolean{
+    public function isAddable(key:String,item):Boolean{
         return true;
     }
 
