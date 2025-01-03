@@ -125,6 +125,10 @@ class org.flashNight.naki.DataStructures.TreeSet {
         return arr;
     }
 
+    public function getRoot():TreeNode {
+        return this.root;
+    }
+
     //================== 以下是私有函数 ==================//
 
     /**
@@ -346,7 +350,7 @@ class org.flashNight.naki.DataStructures.TreeSet {
     private function inOrderTraversal(node:TreeNode, arr:Array):Void {
         if (node != null) {
             inOrderTraversal(node.left, arr);
-            arr.push(node.value);
+            arr[arr.length] = node.value;
             inOrderTraversal(node.right, arr);
         }
     }

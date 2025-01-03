@@ -176,13 +176,14 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         assert(treeSet.contains(25), "TreeSet 应包含 25");
         assert(treeSet.contains(35), "TreeSet 应包含 35");
 
-        // 检查平衡性
+        // 检查平衡性和有序性
         var arr:Array = treeSet.toArray();
         var expected:Array = [25, 35, 40, 50];
         assert(arr.length == expected.length, "删除节点后，toArray 返回的数组长度应为4");
         for (var i:Number = 0; i < expected.length; i++) {
             assert(arr[i] == expected[i], "删除节点后，数组元素应为 " + expected[i] + "，实际为 " + arr[i]);
         }
+
     }
 
     //====================== 新增测试点 ======================//
@@ -191,6 +192,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 测试通过数组构建 TreeSet (buildFromArray)
      * 1. 使用给定数组和比较函数构建 TreeSet
      * 2. 检查大小、顺序、以及包含性
+     * 3. 进行全面的平衡性和有序性验证
      */
     private function testBuildFromArray():Void {
         trace("\n测试 buildFromArray 方法...");
@@ -216,6 +218,12 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         // 再测试一下 contains
         assert(newSet.contains(15), "buildFromArray 后，TreeSet 应包含 15");
         assert(!newSet.contains(999), "TreeSet 不应包含 999");
+
+        // 全面验证 AVL 树的平衡性
+        assert(isBalanced(newSet.getRoot()), "buildFromArray 后，TreeSet 应保持平衡");
+
+        // 全面验证有序性
+        assert(isSorted(sortedArr, numberCompare), "buildFromArray 后，TreeSet 的 toArray 应按升序排列");
     }
 
     /**
@@ -223,6 +231,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 1. 给 TreeSet 添加一些元素
      * 2. 调用 changeCompareFunctionAndResort 换成降序
      * 3. 检查排序结果
+     * 4. 进行全面的平衡性和有序性验证
      */
     private function testChangeCompareFunctionAndResort():Void {
         trace("\n测试 changeCompareFunctionAndResort 方法...");
@@ -254,6 +263,12 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
             assert(sortedDesc[i] == expected[i], 
                 "changeCompareFunctionAndResort -> 第 " + i + " 个元素应为 " + expected[i] + "，实际是 " + sortedDesc[i]);
         }
+
+        // 全面验证 AVL 树的平衡性
+        assert(isBalanced(treeSet.getRoot()), "changeCompareFunctionAndResort 后，TreeSet 应保持平衡");
+
+        // 全面验证有序性
+        assert(isSorted(sortedDesc, descCompare), "changeCompareFunctionAndResort 后，TreeSet 的 toArray 应按降序排列");
     }
 
     //====================== 性能测试 ======================//
@@ -345,9 +360,26 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                     testFailed++;
                 }
 
+                // 额外的全面验证
+                var sortedArr:Array = tempSet.toArray();
+                var expectedSortedArr:Array = arr.slice(); // 复制数组
+                expectedSortedArr.sort(numberCompare); // 排序为升序
+
+                // 检查有序性
+                if (!isSorted(sortedArr, numberCompare)) {
+                    trace("FAIL: buildFromArray 后，toArray() 未按升序排列");
+                    testFailed++;
+                }
+
+                // 检查 AVL 平衡性
+                if (!isBalanced(tempSet.getRoot())) {
+                    trace("FAIL: buildFromArray 后，TreeSet 未保持平衡");
+                    testFailed++;
+                }
+
                 //----------------- 5) 测试 changeCompareFunctionAndResort --------------//
                 // 给新构建的树，换成降序比较函数
-                var descCompare:Function = function(a, b) {
+                var descCompare:Function = function(a, b):Number {
                     return b - a;
                 };
 
@@ -361,6 +393,22 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                 // 检查首尾是否符合降序（快速检测）
                 if (descArr[0] < descArr[descArr.length - 1]) {
                     trace("FAIL: changeCompareFunctionAndResort 未生效，数组似乎不是降序");
+                    testFailed++;
+                }
+
+                // 额外的全面验证
+                var expectedDescArr:Array = arr.slice();
+                expectedDescArr.sort(descCompare); // 排序为降序
+
+                // 检查有序性
+                if (!isSorted(descArr, descCompare)) {
+                    trace("FAIL: changeCompareFunctionAndResort 后，toArray() 未按降序排列");
+                    testFailed++;
+                }
+
+                // 检查 AVL 平衡性
+                if (!isBalanced(tempSet.getRoot())) {
+                    trace("FAIL: changeCompareFunctionAndResort 后，TreeSet 未保持平衡");
                     testFailed++;
                 }
             }
@@ -389,7 +437,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
             trace("changeCompareFunctionAndResort(" + capacity + " 个元素)平均耗时: " + avgReSortTime + " 毫秒");
         }
     }
-
+    //====================== 性能测试 ======================//
 
     /**
      * 比较函数，用于数字比较 (升序)
@@ -399,5 +447,46 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      */
     private function numberCompare(a:Number, b:Number):Number {
         return a - b;
+    }
+
+    //====================== 辅助验证方法 ======================//
+
+    /**
+     * 检查 AVL 树是否平衡
+     * 递归检查每个节点的平衡因子是否在 [-1, 1] 范围内。
+     * @param node 当前子树根节点
+     * @return 如果树平衡，返回 true；否则返回 false
+     */
+    private function isBalanced(node:TreeNode):Boolean {
+        if (node == null) {
+            return true;
+        }
+
+        var leftHeight:Number = (node.left != null) ? node.left.height : 0;
+        var rightHeight:Number = (node.right != null) ? node.right.height : 0;
+
+        var balanceFactor:Number = leftHeight - rightHeight;
+
+        if (balanceFactor > 1 || balanceFactor < -1) {
+            return false;
+        }
+
+        // 递归检查子树
+        return isBalanced(node.left) && isBalanced(node.right);
+    }
+
+    /**
+     * 检查数组是否按指定的比较函数排序
+     * @param arr 待检查的数组
+     * @param compare 比较函数
+     * @return 如果数组按 compare 排序，返回 true；否则返回 false
+     */
+    private function isSorted(arr:Array, compare:Function):Boolean {
+        for (var i:Number = 0; i < arr.length - 1; i++) {
+            if (compare(arr[i], arr[i + 1]) > 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
