@@ -66,7 +66,6 @@ class org.flashNight.arki.component.StatHandler.DamageResistanceHandler
         // floor(t)
         t = t - (t % 1);
 
-        
         return t < 1 ? 1 : t; // max(t, 1)
     }
 }
