@@ -125,6 +125,10 @@ class org.flashNight.naki.DataStructures.TreeSet {
         return arr;
     }
 
+    /**
+     * 获取树
+     * @return 树
+     */
     public function getRoot():TreeNode {
         return this.root;
     }
@@ -368,7 +372,7 @@ class org.flashNight.naki.DataStructures.TreeSet {
         if (start > end) {
             return null;
         }
-        var mid:Number = Math.floor((start + end) / 2);
+        var mid:Number = (start + end) >> 1;
         var newNode:TreeNode = new TreeNode(sortedArr[mid]);
 
         // 递归构建左右子树
