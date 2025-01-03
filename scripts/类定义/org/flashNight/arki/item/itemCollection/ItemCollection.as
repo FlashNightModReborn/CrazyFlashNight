@@ -21,7 +21,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     }
 
     //获取物品对象
-    public function getItem(key:String):Object{
+    public function getItem(key:String){
         var item = items[key];
         if(!item) return null;
         return item;
@@ -41,7 +41,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
 
     //判断某个键是否为空
     public function isEmpty(key:String):Boolean{
-        return !(items[key] != null);
+        return items[key] == null;
     }
 
     //判断是否能添加指定物品
@@ -50,7 +50,7 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     }
 
     //添加物品
-    public function add(key:String,item:Object):Boolean{
+    public function add(key:String,item):Boolean{
         if(isEmpty(key) && isAddable(key,item)){
             items[key] = item;
             if(icons[key]) icons[key].refresh();
@@ -68,19 +68,19 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     //物品图标相关函数
     //设置图标索引
     public function setIcon(icon,key:String):Void{
-        icons[key] = icon;
-        iconMovieClips[key] = icon.getIconMovieClip();
+        this.icons[key] = icon;
+        this.iconMovieClips[key] = icon.getIconMovieClip();
     }
 
     //移除图标索引
     public function removeIcon(key:String):Void{
-        delete icons[key];
-        delete iconMovieClips[key];
+        delete this.icons[key];
+        delete this.iconMovieClips[key];
     }
 
     //清空图标索引
     public function clearIcon():Void{
-        icons = new Object();
-        iconMovieClips = new Object();
+        this.icons = new Object();
+        this.iconMovieClips = new Object();
     }
 }

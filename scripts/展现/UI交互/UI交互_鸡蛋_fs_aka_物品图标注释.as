@@ -1,5 +1,5 @@
 ﻿_root.物品图标注释 = function(name, value){
-	var 强化等级 = value.level > 0 ? value.level : 0;
+	var 强化等级 = value.level > 0 ? value.level : 1;
 	
 	var 物品数据 = _root.getItemData(name);
 	var 文本数据 = new Array();
@@ -19,7 +19,7 @@
 	文本数据.push("$");
 	文本数据.push(物品数据.price);
 	文本数据.push("<BR>");
-	if (物品数据.weight !== undefined && 物品数据.weight !== 0)
+	if (物品数据.weight != null && 物品数据.weight !== 0)
 	{
 		文本数据.push("重量：");
 		文本数据.push(物品数据.weight + "kg");
@@ -263,29 +263,22 @@
 		else
 		{
 			//var 进度 = value % 物品数据.loop;
-			var 进度 = value  % 物品数据.loop;
+			var 进度 = value % 物品数据.loop;
 			
-			if (进度 == 0)
-			{
-				
+			if (进度 == 0){
 				文本数据.push("剧情碎片资料展示：" + 物品数据.loop + "/" + 物品数据.loop);
 				//文本数据.push("[物品数量]：" + value + "[进度]：" + 进度);
 				文本数据.push("<BR>");
 				文本数据.push(物品数据["description" + 物品数据.loop]);
 				文本数据.push("<BR>");
-			}
-			else
-			{
+			}else{
 				文本数据.push("剧情碎片资料展示：" + 进度  + "/" + 物品数据.loop);
 				//文本数据.push("[物品数量]：" + value + "[进度]：" + 进度);
 				进度 = 进度 - 1;
 				文本数据.push("<BR>");
-				if (进度 == 0)
-				{
+				if (进度 == 0){
 					文本数据.push(物品数据.description);
-				}
-				else
-				{
+				}else{
 					文本数据.push(物品数据["description" + 进度]);
 				}
 				
@@ -295,17 +288,14 @@
 			文本数据.push("<BR>");
 		}
 			
-	}
-	else
-	{
+	}else{
 		文本数据.push(物品数据.description);
 		文本数据.push("<BR>");
 	}
 
 
 	//合成材料
-	if (物品数据.synthesis !== undefined && 物品数据.synthesis !== 0)
-	{
+	if (物品数据.synthesis !== undefined && 物品数据.synthesis !== 0){
 		var 合成表 = _root.改装清单对象[物品数据.synthesis].Material;
 		if(合成表.length > 0){
 			文本数据.push("合成材料：<BR>");
@@ -337,8 +327,7 @@
 
 	//战技信息
 	var 战技 = 物品数据.skill;
-	if (战技 !== undefined && 战技 !== 0)
-	{
+	if (战技 != null){
 		if(战技.description){
 			文本数据.push('<font color="#FFCC00">【主动战技】</font>');
 			文本数据.push(战技.description);
@@ -366,7 +355,7 @@
 	//生命周期信息
 
 	var 生命周期 = 物品数据.lifecycle;
-	if (生命周期 !== undefined && 生命周期 !== 0)
+	if (生命周期 != null)
 	{
 		if(生命周期.description)
 		{
@@ -485,7 +474,6 @@ _root.注释 = function(宽度, 内容)
 	_root.注释框._y = Math.min(Stage.height - _root.注释框._height, Math.max(0, _root._ymouse - _root.注释框._height - 20));
 };
 
-_root.注释结束 = function()
-{
+_root.注释结束 = function(){
 	_root.注释框._visible = false;
 };
