@@ -70,34 +70,39 @@ class org.flashNight.naki.DataStructures.TreeSet {
             return node;
         }
 
+        // 更新高度
         node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
 
+        // 获取平衡因子
         var balance:Number = getBalance(node);
 
-        // 左左情况
-        if (balance > 1 && compareFunction(element, node.left.value) < 0) {
-            return rightRotate(node);
+        // 检查是否失衡
+        if (balance > 1) { // 左子树过高
+            if (compareFunction(element, node.left.value) < 0) {
+                // 左左情况
+                return rightRotate(node);
+            } else {
+                // 左右情况
+                node.left = leftRotate(node.left);
+                return rightRotate(node);
+            }
         }
 
-        // 右右情况
-        if (balance < -1 && compareFunction(element, node.right.value) > 0) {
-            return leftRotate(node);
+        if (balance < -1) { // 右子树过高
+            if (compareFunction(element, node.right.value) > 0) {
+                // 右右情况
+                return leftRotate(node);
+            } else {
+                // 右左情况
+                node.right = rightRotate(node.right);
+                return leftRotate(node);
+            }
         }
 
-        // 左右情况
-        if (balance > 1 && compareFunction(element, node.left.value) > 0) {
-            node.left = leftRotate(node.left);
-            return rightRotate(node);
-        }
-
-        // 右左情况
-        if (balance < -1 && compareFunction(element, node.right.value) < 0) {
-            node.right = rightRotate(node.right);
-            return leftRotate(node);
-        }
-
+        // 如果节点平衡，无需旋转
         return node;
     }
+
 
     private function deleteNode(node:TreeNode, element:Object):TreeNode {
         if (node == null) {
@@ -130,38 +135,46 @@ class org.flashNight.naki.DataStructures.TreeSet {
             }
         }
 
+        // 如果树只有一个节点
         if (node == null) {
             return node;
         }
 
+        // 更新高度
         node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
 
+        // 获取平衡因子
         var balance:Number = getBalance(node);
 
-        // 左左情况
-        if (balance > 1 && getBalance(node.left) >= 0) {
-            return rightRotate(node);
+        // 检查是否失衡
+        if (balance > 1) { // 左子树过高
+            var leftBalance:Number = getBalance(node.left);
+            if (leftBalance >= 0) {
+                // 左左情况
+                return rightRotate(node);
+            } else {
+                // 左右情况
+                node.left = leftRotate(node.left);
+                return rightRotate(node);
+            }
         }
 
-        // 左右情况
-        if (balance > 1 && getBalance(node.left) < 0) {
-            node.left = leftRotate(node.left);
-            return rightRotate(node);
+        if (balance < -1) { // 右子树过高
+            var rightBalance:Number = getBalance(node.right);
+            if (rightBalance <= 0) {
+                // 右右情况
+                return leftRotate(node);
+            } else {
+                // 右左情况
+                node.right = rightRotate(node.right);
+                return leftRotate(node);
+            }
         }
 
-        // 右右情况
-        if (balance < -1 && getBalance(node.right) <= 0) {
-            return leftRotate(node);
-        }
-
-        // 右左情况
-        if (balance < -1 && getBalance(node.right) > 0) {
-            node.right = rightRotate(node.right);
-            return leftRotate(node);
-        }
-
+        // 如果节点平衡，无需旋转
         return node;
-    }
+}
+
 
     private function search(node:TreeNode, element:Object):TreeNode {
         if (node == null) {
