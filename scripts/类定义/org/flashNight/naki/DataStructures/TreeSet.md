@@ -226,3 +226,7 @@ trace(setFromArray.toArray()); // [15, 10, 7, 5, 3, 2]
 - 通过更高维度的测试（如 10 万或百万级别数据）和分析，更好地挖掘 TreeSet 的性能上限。
 
 > **综上所述**，`TreeSet`（AVL 树）是一个稳健、灵活的动态有序数据结构，实现了**高效增删改查**与**灵活排序**，在广泛的应用场景中都能为开发者带来**高效率**和**易用**的体验。
+
+
+var a = new org.flashNight.naki.DataStructures.TreeSetTest()
+a. runTests();
