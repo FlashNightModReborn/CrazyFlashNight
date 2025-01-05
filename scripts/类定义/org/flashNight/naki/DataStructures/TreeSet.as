@@ -167,16 +167,16 @@ class org.flashNight.naki.DataStructures.TreeSet {
         var rightNode:TreeNode  = node.right;
         var leftHeight:Number   = (leftNode != null) ? leftNode.height : 0;
         var rightHeight:Number  = (rightNode != null) ? rightNode.height : 0;
-        var newHeigth:Number    = (leftHeight > rightHeight) ? leftHeight : rightHeight;
+        var newHeight:Number    = (leftHeight > rightHeight) ? leftHeight : rightHeight;
 
         // ------------------- 差分高度更新的关键：早退出 -------------------
-        if (++newHeigth == oldHeight) {
+        if (++newHeight == oldHeight) {
             // 如果高度没有变化，不必继续回溯，也不用检查平衡
             return node;
         }
 
         // 更新节点高度
-        node.height = newHeigth;
+        node.height = newHeight;
 
         // 4. 检查平衡因子并作旋转
         var balance:Number = leftHeight - rightHeight;
