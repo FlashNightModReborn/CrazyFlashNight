@@ -1,5 +1,5 @@
 ﻿import org.flashNight.naki.DataStructures.*;
-import org.flashNight.naki.Sort.QuickSort;
+import org.flashNight.naki.Sort.*;
 
 class org.flashNight.naki.DataStructures.TreeSet {
     private var root:TreeNode;                 // 树的根节点
@@ -29,7 +29,7 @@ class org.flashNight.naki.DataStructures.TreeSet {
      * [新增 - 静态方法]
      * 从给定数组构建一个新的平衡 AVL 树（TreeSet）。
      * 实现方式：
-     *  1. 先对输入数组排序（可自定义快速排序或内建排序）。
+     *  1. 先对输入数组排序。
      *  2. 使用分治法一次性构建平衡树，避免逐个插入导致的大量旋转。
      * 
      * @param arr 包含元素的数组
@@ -41,7 +41,7 @@ class org.flashNight.naki.DataStructures.TreeSet {
         var treeSet:TreeSet = new TreeSet(compareFunction);
 
         // 先对数组进行排序
-        QuickSort.sort(arr, compareFunction);
+        PDQSort.sort(arr, compareFunction);
 
         // 平衡构建: 用分治方式将有序数组变为平衡 BST
         treeSet.root = treeSet.buildBalancedTree(arr, 0, arr.length - 1);
@@ -57,7 +57,7 @@ class org.flashNight.naki.DataStructures.TreeSet {
      * 实现流程：
      *  1. 更新 compareFunction
      *  2. 将现有 TreeSet 数据导出为数组
-     *  3. 使用快排 (QuickSort.sort) 排序该数组
+     *  3. 使用 PDQSort 排序该数组
      *  4. 清空并重新构建平衡 AVL 树
      *  5. 更新 treeSize
      * 
@@ -70,8 +70,8 @@ class org.flashNight.naki.DataStructures.TreeSet {
         // 2. 导出所有节点到数组
         var arr:Array = toArray();
 
-        // 3. 使用 QuickSort 排序
-        QuickSort.sort(arr, newCompareFunction);
+        // 3. 使用 PDQSort 排序
+        PDQSort.sort(arr, newCompareFunction);
 
         // 4. 使用排序后的数组重建平衡 AVL
         this.root = buildBalancedTree(arr, 0, arr.length - 1);
