@@ -1,4 +1,7 @@
-﻿//计算闪避
+﻿import org.flashNight.arki.component.StatHandler.*;
+import org.flashNight.neur.Event.*;
+
+//计算闪避
 _root.躲闪率极限 = 0.01;
 _root.命中率极限 = 0.01;
 _root.闪避系统闪避率上限 = 0.5 * 100;
@@ -34,23 +37,13 @@ _root.softplus = function(x:Number):Number
 };
 
 //防御计算公式
-_root.防御减伤比 = function(防御力:Number):Number 
-{
-    return 300 / (防御力 + 300);
-};
-
+_root.防御减伤比 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.defenseDamageRatio);
 
 //跳弹模式可以减法过滤掉轻火力，最低伤害为1
-_root.跳弹伤害计算 = function(伤害:Number, 防御力:Number):Number 
-{
-	return Math.max(Math.floor(伤害 - 防御力 / _root.跳弹防御系数), 1);
-};
+_root.跳弹伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.bounceDamageCalculation);
 
 //过穿模式可以二次减伤重火力，最低伤害为1
-_root.过穿伤害计算 = function(伤害:Number, 防御力:Number):Number 
-{
-	return Math.max(Math.floor(伤害 * _root.防御减伤比(防御力)), 1);
-};
+_root.过穿伤害计算 = Delegate.create(DamageResistanceHandler, DamageResistanceHandler.penetrationDamageCalculation);
 
 _root.sig_tyler = function(x:Number):Number 
 {
