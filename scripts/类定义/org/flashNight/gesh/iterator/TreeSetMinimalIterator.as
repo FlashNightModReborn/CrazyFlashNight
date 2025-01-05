@@ -6,7 +6,7 @@ import org.flashNight.naki.DataStructures.*;
  * 只在迭代器中持有「当前节点」和「下一节点」的引用，
  * 无需用栈或数组来缓存大量节点，从而降低额外内存占用。
  */
-class org.flashNight.gesh.iterator.TreeSetMinimalIterator implements IIterator
+class org.flashNight.gesh.iterator.TreeSetMinimalIterator extends BaseIterator  implements IIterator
 {
     private var _treeSet:TreeSet;        // 要遍历的 TreeSet
     private var _root:TreeNode;          // 记录下的根节点引用（用于查找 successor）
