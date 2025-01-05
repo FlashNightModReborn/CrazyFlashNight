@@ -133,6 +133,10 @@ class org.flashNight.naki.DataStructures.TreeSet {
         return this.root;
     }
 
+    public function getCompareFunction():Function {
+        return this.compareFunction;
+    }
+
     //================== 以下是私有函数 ==================//
 
     /**

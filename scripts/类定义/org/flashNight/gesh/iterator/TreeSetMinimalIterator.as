@@ -10,6 +10,7 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator implements IIterator
 {
     private var _treeSet:TreeSet;        // 要遍历的 TreeSet
     private var _root:TreeNode;          // 记录下的根节点引用（用于查找 successor）
+    private var _func:Function;          // 记录比较函数引用
     private var _nextNode:TreeNode;      // 中序遍历中“下一个要访问”的节点
 
     /**
@@ -20,30 +21,28 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator implements IIterator
     {
         this._treeSet = treeSet;
         this._root    = treeSet.getRoot();
-
+        this._func    = treeSet.getCompareFunction();
         // 初始化时，将 _nextNode 设置为整棵树的最小节点
         this._nextNode = findMinNode(this._root);
     }
 
     /**
-     * 返回迭代的下一个结果 (IterationResult)。
-     * 如果没有更多元素，则返回 done=true。
-     */
+    * 返回迭代的下一个结果 (IterationResult)。
+    * 如果没有更多元素，则返回 done=true。
+    */
     public function next():IterationResult
     {
-        if (!hasNext())
+        // 将 hasNext 内联展开
+        if (this._nextNode == null)  // 直接判断是否有下一个节点
         {
             return new IterationResult(undefined, true);
         }
 
-        // 当前要返回的节点，即中序遍历序列的“下一个节点”
+        // 继续迭代逻辑
         var current:TreeNode = this._nextNode;
-
-        // 计算新的 _nextNode
         this._nextNode = findSuccessor(current);
 
-        // 返回一个 IterationResult
-        return new IterationResult(current.value, (this._nextNode == null));
+        return new IterationResult(current.value, false);
     }
 
     /**
@@ -61,6 +60,7 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator implements IIterator
     {
         this._root     = _treeSet.getRoot();
         this._nextNode = findMinNode(this._root);
+        this._func     = _treeSet.getCompareFunction(); 
     }
 
     /**
@@ -70,6 +70,7 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator implements IIterator
     {
         this._treeSet  = null;
         this._root     = null;
+        this._func     = null;
         this._nextNode = null;
     }
 
@@ -109,7 +110,7 @@ class org.flashNight.gesh.iterator.TreeSetMinimalIterator implements IIterator
 
         // 2. 没有右子树 => 需要从根开始，找到「大于 current.value」的最小节点
         var successor:TreeNode = null;
-        var compare:Function   = this._treeSet["compareFunction"]; // 访问 TreeSet 的比较函数
+        var compare:Function   = this._func; // 访问 TreeSet 的比较函数
         var rootNode:TreeNode  = this._root;
 
         while (rootNode != null)
