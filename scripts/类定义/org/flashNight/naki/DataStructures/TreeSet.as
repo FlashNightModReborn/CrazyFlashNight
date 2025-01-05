@@ -2,20 +2,22 @@
 import org.flashNight.naki.Sort.*;
 
 class org.flashNight.naki.DataStructures.TreeSet {
-    private var root:TreeNode;                 // 树的根节点
-    private var compareFunction:Function;      // 用于比较元素的函数
-    private var treeSize:Number;               // 树中元素的数量
+    private var root:TreeNode; // 树的根节点
+    private var compareFunction:Function; // 用于比较元素的函数
+    private var treeSize:Number; // 树中元素的数量
 
     /**
      * 构造函数
-     * @param compareFunction 可选的比较函数，如果未提供，则使用默认的大小比较逻辑
+     * @param compareFunction 可选的比较函数，如果未提供，则使用默认的大小比较
      */
     public function TreeSet(compareFunction:Function) {
         if (compareFunction == undefined || compareFunction == null) {
-            // 默认的比较函数，基于基本的大小比较
+            // 默认的比较函数
             this.compareFunction = function(a, b):Number {
-                if (a < b) return -1;
-                if (a > b) return 1;
+                if (a < b)
+                    return -1;
+                if (a > b)
+                    return 1;
                 return 0;
             };
         } else {
@@ -26,176 +28,154 @@ class org.flashNight.naki.DataStructures.TreeSet {
     }
 
     /**
-     * [新增 - 静态方法]
-     * 从给定数组构建一个新的平衡 AVL 树（TreeSet）。
-     * 实现方式：
-     *  1. 先对输入数组排序。
-     *  2. 使用分治法一次性构建平衡树，避免逐个插入导致的大量旋转。
-     * 
-     * @param arr 包含元素的数组
-     * @param compareFunction 比较函数，可自定义排序规则
-     * @return 构建完成的 TreeSet 实例
+     * [静态方法] 从给定数组构建一个新的平衡 AVL 树（TreeSet）。
+     *   1. 先对输入数组排序
+     *   2. 使用分治法一次性构建平衡树，避免逐个插入导致的大量旋转
      */
     public static function buildFromArray(arr:Array, compareFunction:Function):TreeSet {
-        // 创建新的 TreeSet
         var treeSet:TreeSet = new TreeSet(compareFunction);
-
-        // 先对数组进行排序
         PDQSort.sort(arr, compareFunction);
-
-        // 平衡构建: 用分治方式将有序数组变为平衡 BST
         treeSet.root = treeSet.buildBalancedTree(arr, 0, arr.length - 1);
         treeSet.treeSize = arr.length;
-
         return treeSet;
     }
 
     /**
-     * [新增 - 实例方法]
-     * 更换当前 TreeSet 的比较函数，并对所有数据重新排序和建树。
-     * 
-     * 实现流程：
-     *  1. 更新 compareFunction
-     *  2. 将现有 TreeSet 数据导出为数组
-     *  3. 使用 PDQSort 排序该数组
-     *  4. 清空并重新构建平衡 AVL 树
-     *  5. 更新 treeSize
-     * 
-     * @param newCompareFunction 新的比较函数
+     * [实例方法] 更换当前 TreeSet 的比较函数，并对所有数据重新排序和建树。
      */
     public function changeCompareFunctionAndResort(newCompareFunction:Function):Void {
         // 1. 更新比较函数
         this.compareFunction = newCompareFunction;
 
         // 2. 导出所有节点到数组
-        var arr:Array = toArray();
+        var arr:Array = this.toArray();
 
-        // 3. 使用 PDQSort 排序
+        // 3. 排序
         PDQSort.sort(arr, newCompareFunction);
 
-        // 4. 使用排序后的数组重建平衡 AVL
+        // 4. 重建平衡AVL
         this.root = buildBalancedTree(arr, 0, arr.length - 1);
         this.treeSize = arr.length;
     }
 
     /**
      * 添加元素到树中
-     * @param element 要添加的元素
      */
     public function add(element:Object):Void {
-        root = insert(root, element);
+        this.root = insert(this.root, element);
     }
 
     /**
-     * 从树中移除元素
-     * @param element 要移除的元素
-     * @return 如果成功移除则返回 true，否则返回 false
+     * 移除元素
      */
     public function remove(element:Object):Boolean {
-        var initialSize:Number = this.treeSize;  // 删除前的大小
-        root = deleteNode(root, element);
-        return this.treeSize < initialSize;      // 如果大小减少，表示删除成功
+        var oldSize:Number = this.treeSize;
+        this.root = deleteNode(this.root, element);
+        return (this.treeSize < oldSize);
     }
 
     /**
      * 检查树中是否包含某个元素
-     * @param element 要检查的元素
-     * @return 如果包含返回 true，否则返回 false
      */
     public function contains(element:Object):Boolean {
-        var node:TreeNode = search(root, element);
-        return node != null;
+        var node:TreeNode = search(this.root, element);
+        return (node != null);
     }
 
     /**
-     * 获取树的大小
-     * @return 树中元素的数量
+     * 获取树大小
      */
     public function size():Number {
-        return treeSize;
+        return this.treeSize;
     }
 
     /**
-     * 将树的元素转换为数组（中序遍历）
-     * @return 包含树中所有元素的数组
+     * 中序遍历转换为数组
      */
     public function toArray():Array {
         var arr:Array = [];
-        inOrderTraversal(root, arr);
+        inOrderTraversal(this.root, arr);
         return arr;
     }
 
     /**
-     * 获取树
-     * @return 树
+     * 返回根节点
      */
     public function getRoot():TreeNode {
         return this.root;
     }
 
+    /**
+     * 返回当前的比较函数
+     */
     public function getCompareFunction():Function {
         return this.compareFunction;
     }
 
-    //================== 以下是私有函数 ==================//
+    //======================== 私有辅助函数 ========================//
 
     /**
-     * 插入元素到AVL树中，并保持树的平衡
-     * @param node 当前子树根节点
-     * @param element 要插入的元素
-     * @return 插入后的子树根节点
+     * 递归插入新元素，并保持AVL平衡
      */
     private function insert(node:TreeNode, element:Object):TreeNode {
         if (node == null) {
-            treeSize++;
+            this.treeSize++;
             return new TreeNode(element);
         }
 
-        var cmp:Number = compareFunction(element, node.value);
+        var cmp:Number = this.compareFunction(element, node.value);
         if (cmp < 0) {
             node.left = insert(node.left, element);
         } else if (cmp > 0) {
             node.right = insert(node.right, element);
         } else {
-            // 元素已存在，不插入
+            // 已存在，直接返回
             return node;
         }
 
-        // 更新高度
-        var leftHeight:Number = (node.left != null) ? node.left.height : 0;
-        var rightHeight:Number = (node.right != null) ? node.right.height : 0;
+        // 维护当前节点的高度
+        // 尽量使用局部变量以减少对 node.left, node.right 的重复访问
+        var leftNode:TreeNode = node.left;
+        var rightNode:TreeNode = node.right;
+        var leftHeight:Number = (leftNode != null) ? leftNode.height : 0;
+        var rightHeight:Number = (rightNode != null) ? rightNode.height : 0;
         node.height = 1 + ((leftHeight > rightHeight) ? leftHeight : rightHeight);
 
         // 检查平衡因子
         var balance:Number = leftHeight - rightHeight;
 
-        // 失衡时进行相应旋转
+        // 根据平衡因子选择对应的旋转方式
         if (balance > 1) {
-            // 左侧过高
-            var leftNode:TreeNode = node.left;
-            var leftBalance:Number = (leftNode.left != null ? leftNode.left.height : 0) -
-                                     (leftNode.right != null ? leftNode.right.height : 0);
+            // 左侧高
+            // 判断是 LL 还是 LR
+            var childLeftNode:TreeNode = leftNode.left;
+            var childRightNode:TreeNode = leftNode.right;
+            var childLeftHeight:Number = (childLeftNode != null) ? childLeftNode.height : 0;
+            var childRightHeight:Number = (childRightNode != null) ? childRightNode.height : 0;
+            var leftBalance:Number = childLeftHeight - childRightHeight;
+
             if (leftBalance >= 0) {
-                // LL 场景: 单右旋
-                node = rotateRightInline(node);
+                // LL
+                node = rotateLL(node);
             } else {
-                // LR 场景: 先左旋左子节点，再右旋自己
-                node.left = rotateLeftInline(leftNode);
-                node = rotateRightInline(node);
+                // LR
+                node = rotateLR(node);
             }
-        } 
-        else if (balance < -1) {
-            // 右侧过高
-            var rightNode:TreeNode = node.right;
-            var rightBalance:Number = (rightNode.left != null ? rightNode.left.height : 0) -
-                                      (rightNode.right != null ? rightNode.right.height : 0);
+        } else if (balance < -1) {
+            // 右侧高
+            // 判断是 RR 还是 RL
+            var rLeftNode:TreeNode = rightNode.left;
+            var rRightNode:TreeNode = rightNode.right;
+            var rLeftHeight:Number = (rLeftNode != null) ? rLeftNode.height : 0;
+            var rRightHeight:Number = (rRightNode != null) ? rRightNode.height : 0;
+            var rightBalance:Number = rLeftHeight - rRightHeight;
+
             if (rightBalance <= 0) {
-                // RR 场景: 单左旋
-                node = rotateLeftInline(node);
+                // RR
+                node = rotateRR(node);
             } else {
-                // RL 场景: 先右旋右子节点，再左旋自己
-                node.right = rotateRightInline(rightNode);
-                node = rotateLeftInline(node);
+                // RL
+                node = rotateRL(node);
             }
         }
 
@@ -203,75 +183,81 @@ class org.flashNight.naki.DataStructures.TreeSet {
     }
 
     /**
-     * 删除元素并保持AVL平衡
-     * @param node 当前子树根节点
-     * @param element 要删除的元素
-     * @return 删除后的子树根节点
+     * 递归删除元素，并保持AVL平衡
      */
     private function deleteNode(node:TreeNode, element:Object):TreeNode {
         if (node == null) {
-            return node;
+            return null;
         }
 
-        var cmp:Number = compareFunction(element, node.value);
+        var cmp:Number = this.compareFunction(element, node.value);
         if (cmp < 0) {
             node.left = deleteNode(node.left, element);
         } else if (cmp > 0) {
             node.right = deleteNode(node.right, element);
         } else {
             // 找到要删除的节点
-            treeSize--;
+            this.treeSize--;
+            // 1. 无子节点 or 单子节点
             if (node.left == null || node.right == null) {
-                // 一个子节点或无子节点
                 node = (node.left != null) ? node.left : node.right;
             } else {
-                // 两个子节点: 用中序后继替换
+                // 2. 有两个子节点：寻找中序后继（右子树最左侧节点）
                 var temp:TreeNode = node.right;
                 while (temp.left != null) {
                     temp = temp.left;
                 }
+                // 用后继的值覆盖当前节点
                 node.value = temp.value;
+                // 删除后继节点
                 node.right = deleteNode(node.right, temp.value);
             }
         }
 
+        // 删除后，这个子树可能为空
         if (node == null) {
-            return node; // 删除后整棵子树为空
+            return null;
         }
 
-        // 更新高度
-        var leftHeight:Number = (node.left != null) ? node.left.height : 0;
-        var rightHeight:Number = (node.right != null) ? node.right.height : 0;
+        // 更新当前节点的高度
+        var leftNode:TreeNode = node.left;
+        var rightNode:TreeNode = node.right;
+        var leftHeight:Number = (leftNode != null) ? leftNode.height : 0;
+        var rightHeight:Number = (rightNode != null) ? rightNode.height : 0;
         node.height = 1 + ((leftHeight > rightHeight) ? leftHeight : rightHeight);
 
-        // 检查平衡因子
+        // 重新检查平衡
         var balance:Number = leftHeight - rightHeight;
 
-        // 失衡时进行相应旋转
         if (balance > 1) {
-            var leftNode:TreeNode = node.left;
-            var leftBalance:Number = (leftNode.left != null ? leftNode.left.height : 0) -
-                                     (leftNode.right != null ? leftNode.right.height : 0);
+            // 左侧高
+            var childLeftNode:TreeNode = leftNode.left;
+            var childRightNode:TreeNode = leftNode.right;
+            var childLeftHeight:Number = (childLeftNode != null) ? childLeftNode.height : 0;
+            var childRightHeight:Number = (childRightNode != null) ? childRightNode.height : 0;
+            var leftBalance:Number = childLeftHeight - childRightHeight;
+
             if (leftBalance >= 0) {
-                // LL 场景
-                node = rotateRightInline(node);
+                // LL
+                node = rotateLL(node);
             } else {
-                // LR 场景
-                node.left = rotateLeftInline(leftNode);
-                node = rotateRightInline(node);
+                // LR
+                node = rotateLR(node);
             }
-        } 
-        else if (balance < -1) {
-            var rightNode:TreeNode = node.right;
-            var rightBalance:Number = (rightNode.left != null ? rightNode.left.height : 0) -
-                                      (rightNode.right != null ? rightNode.right.height : 0);
+        } else if (balance < -1) {
+            // 右侧高
+            var rLeftNode:TreeNode = rightNode.left;
+            var rRightNode:TreeNode = rightNode.right;
+            var rLeftHeight:Number = (rLeftNode != null) ? rLeftNode.height : 0;
+            var rRightHeight:Number = (rRightNode != null) ? rRightNode.height : 0;
+            var rightBalance:Number = rLeftHeight - rRightHeight;
+
             if (rightBalance <= 0) {
-                // RR 场景
-                node = rotateLeftInline(node);
+                // RR
+                node = rotateRR(node);
             } else {
-                // RL 场景
-                node.right = rotateRightInline(rightNode);
-                node = rotateLeftInline(node);
+                // RL
+                node = rotateRL(node);
             }
         }
 
@@ -279,72 +265,18 @@ class org.flashNight.naki.DataStructures.TreeSet {
     }
 
     /**
-     * 右旋操作（内联实现）并更新节点高度
-     * @param y 需要右旋的节点
-     * @return 旋转后的新根节点
-     */
-    private function rotateRightInline(y:TreeNode):TreeNode {
-        var x:TreeNode = y.left;
-        var T2:TreeNode = x.right;
-
-        // 右旋
-        x.right = y;
-        y.left = T2;
-
-        // 更新 y 的高度
-        var yLeftHeight:Number = (T2 != null) ? T2.height : 0;
-        var yRightHeight:Number = (y.right != null) ? y.right.height : 0;
-        y.height = 1 + ((yLeftHeight > yRightHeight) ? yLeftHeight : yRightHeight);
-
-        // 更新 x 的高度
-        var xLeftHeight:Number = (x.left != null) ? x.left.height : 0;
-        var xRightHeight:Number = y.height; 
-        x.height = 1 + ((xLeftHeight > xRightHeight) ? xLeftHeight : xRightHeight);
-
-        return x;
-    }
-
-    /**
-     * 左旋操作（内联实现）并更新节点高度
-     * @param x 需要左旋的节点
-     * @return 旋转后的新根节点
-     */
-    private function rotateLeftInline(x:TreeNode):TreeNode {
-        var y:TreeNode = x.right;
-        var T2:TreeNode = y.left;
-
-        // 左旋
-        y.left = x;
-        x.right = T2;
-
-        // 更新 x 的高度
-        var xLeftHeight:Number = (x.left != null) ? x.left.height : 0;
-        var xRightHeight:Number = (T2 != null) ? T2.height : 0;
-        x.height = 1 + ((xLeftHeight > xRightHeight) ? xLeftHeight : xRightHeight);
-
-        // 更新 y 的高度
-        var yRightHeight:Number = (y.right != null) ? y.right.height : 0;
-        y.height = 1 + ((x.height > yRightHeight) ? x.height : yRightHeight);
-
-        return y;
-    }
-
-    /**
      * 在树中搜索指定元素
-     * @param node 当前子树根节点
-     * @param element 要搜索的元素
-     * @return 如果找到则返回对应节点，否则返回 null
      */
     private function search(node:TreeNode, element:Object):TreeNode {
         var current:TreeNode = node;
         while (current != null) {
-            var cmp:Number = compareFunction(element, current.value);
+            var cmp:Number = this.compareFunction(element, current.value);
             if (cmp < 0) {
                 current = current.left;
             } else if (cmp > 0) {
                 current = current.right;
             } else {
-                return current; // 找到目标
+                return current;
             }
         }
         return null;
@@ -352,25 +284,17 @@ class org.flashNight.naki.DataStructures.TreeSet {
 
     /**
      * 中序遍历，将节点依次添加到数组 arr 中
-     * @param node 当前子树根节点
-     * @param arr 存储遍历结果的数组
      */
     private function inOrderTraversal(node:TreeNode, arr:Array):Void {
         if (node != null) {
             inOrderTraversal(node.left, arr);
-            arr[arr.length] = node.value;
+            arr.push(node.value);
             inOrderTraversal(node.right, arr);
         }
     }
 
     /**
-     * [辅助函数] 使用分治法，从已排序数组中构建平衡 AVL。
-     * 可被 buildFromArray 和 changeCompareFunctionAndResort 内部使用。
-     *
-     * @param sortedArr 已排好序的数组
-     * @param start 起始下标
-     * @param end 结束下标
-     * @return 构建后的子树根节点
+     * [辅助函数] 使用分治法，从已排序数组中构建平衡 AVL
      */
     private function buildBalancedTree(sortedArr:Array, start:Number, end:Number):TreeNode {
         if (start > end) {
@@ -379,15 +303,97 @@ class org.flashNight.naki.DataStructures.TreeSet {
         var mid:Number = (start + end) >> 1;
         var newNode:TreeNode = new TreeNode(sortedArr[mid]);
 
-        // 递归构建左右子树
         newNode.left = buildBalancedTree(sortedArr, start, mid - 1);
         newNode.right = buildBalancedTree(sortedArr, mid + 1, end);
 
-        // 更新节点高度
-        var leftHeight:Number = (newNode.left != null) ? newNode.left.height : 0;
-        var rightHeight:Number = (newNode.right != null) ? newNode.right.height : 0;
+        // 更新高度
+        var leftNode:TreeNode = newNode.left;
+        var rightNode:TreeNode = newNode.right;
+        var leftHeight:Number = (leftNode != null) ? leftNode.height : 0;
+        var rightHeight:Number = (rightNode != null) ? rightNode.height : 0;
         newNode.height = 1 + ((leftHeight > rightHeight) ? leftHeight : rightHeight);
 
         return newNode;
     }
+
+    //======================== 旋转函数：LL, LR, RR, RL ========================//
+
+    /**
+     * 处理 LL 型失衡：对 node 进行右旋
+     * (因为 node.left 子树高度过高，且 node.left.left 也更高)
+     */
+    private function rotateLL(node:TreeNode):TreeNode {
+        var leftNode:TreeNode = node.left;
+        // 右旋
+        node.left = leftNode.right;
+        leftNode.right = node;
+
+        // 局部化变量以减少属性解引用
+        var nodeLeft:TreeNode = node.left;
+        var nodeRight:TreeNode = node.right; // 这里其实就是 leftNode.right => node
+        var leftLeft:TreeNode = leftNode.left;
+        var leftRight:TreeNode = leftNode.right;
+
+        // 更新 node 高度
+        var leftH:Number = (nodeLeft != null) ? nodeLeft.height : 0;
+        var rightH:Number = (nodeRight != null) ? nodeRight.height : 0;
+        node.height = 1 + ((leftH > rightH) ? leftH : rightH);
+
+        // 更新 leftNode 高度
+        var leftNodeLeftH:Number = (leftLeft != null) ? leftLeft.height : 0;
+        var leftNodeRightH:Number = (leftRight != null) ? leftRight.height : 0;
+        leftNode.height = 1 + ((leftNodeLeftH > node.height) ? leftNodeLeftH : node.height);
+
+        return leftNode;
+    }
+
+    /**
+     * 处理 RR 型失衡：对 node 进行左旋
+     * (因为 node.right 子树高度过高，且 node.right.right 也更高)
+     */
+    private function rotateRR(node:TreeNode):TreeNode {
+        var rightNode:TreeNode = node.right;
+        // 左旋
+        node.right = rightNode.left;
+        rightNode.left = node;
+
+        // 局部化变量
+        var nodeLeft:TreeNode = node.left;
+        var nodeRight:TreeNode = node.right; // rightNode.left => node
+        var rightLeft:TreeNode = rightNode.left;
+        var rightRight:TreeNode = rightNode.right;
+
+        // 更新 node 高度
+        var leftH:Number = (nodeLeft != null) ? nodeLeft.height : 0;
+        var rightH:Number = (nodeRight != null) ? nodeRight.height : 0;
+        node.height = 1 + ((leftH > rightH) ? leftH : rightH);
+
+        // 更新 rightNode 高度
+        var rightNodeLeftH:Number = (rightLeft != null) ? rightLeft.height : 0;
+        var rightNodeRightH:Number = (rightRight != null) ? rightRight.height : 0;
+        rightNode.height = 1 + ((node.height > rightNodeRightH) ? node.height : rightNodeRightH);
+
+        return rightNode;
+    }
+
+    /**
+     * 处理 LR 型失衡：先对 node.left 进行左旋，再对 node 进行右旋
+     */
+    private function rotateLR(node:TreeNode):TreeNode {
+        // 先对左子树做 RR 旋转
+        node.left = rotateRR(node.left);
+        // 再对自己做 LL 旋转
+        return rotateLL(node);
+    }
+
+    /**
+     * 处理 RL 型失衡：先对 node.right 进行右旋，再对 node 进行左旋
+     */
+    private function rotateRL(node:TreeNode):TreeNode {
+        // 先对右子树做 LL 旋转
+        node.right = rotateLL(node.right);
+        // 再对自己做 RR 旋转
+        return rotateRR(node);
+    }
 }
+
