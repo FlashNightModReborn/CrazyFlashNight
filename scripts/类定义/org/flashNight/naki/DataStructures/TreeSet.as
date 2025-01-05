@@ -115,14 +115,15 @@ class org.flashNight.naki.DataStructures.TreeSet {
     //======================== 私有辅助函数 ========================//
 
     /**
-     * 递归插入新元素，并保持AVL平衡
-     */
+    * 递归插入新元素，并保持AVL平衡（差分高度更新）
+    */
     private function insert(node:TreeNode, element:Object):TreeNode {
         if (node == null) {
             this.treeSize++;
             return new TreeNode(element);
         }
 
+        // 1. 递归插入
         var cmp:Number = this.compareFunction(element, node.value);
         if (cmp < 0) {
             node.left = insert(node.left, element);
@@ -133,63 +134,57 @@ class org.flashNight.naki.DataStructures.TreeSet {
             return node;
         }
 
-        // 维护当前节点的高度
-        // 尽量使用局部变量以减少对 node.left, node.right 的重复访问
-        var leftNode:TreeNode = node.left;
-        var rightNode:TreeNode = node.right;
-        var leftHeight:Number = (leftNode != null) ? leftNode.height : 0;
-        var rightHeight:Number = (rightNode != null) ? rightNode.height : 0;
+        // 2. 更新高度前，记录旧高度
+        var oldHeight:Number = node.height;
+
+        // 3. 计算左右子树高度并更新当前节点高度
+        var leftNode:TreeNode   = node.left;
+        var rightNode:TreeNode  = node.right;
+        var leftHeight:Number   = (leftNode != null) ? leftNode.height : 0;
+        var rightHeight:Number  = (rightNode != null) ? rightNode.height : 0;
         node.height = 1 + ((leftHeight > rightHeight) ? leftHeight : rightHeight);
 
-        // 检查平衡因子
+        // ------------------- 差分高度更新的关键：早退出 -------------------
+        if (node.height == oldHeight) {
+            // 如果高度没有变化，不必继续回溯，也不用检查平衡
+            return node;
+        }
+
+        // 4. 检查平衡因子并作旋转
         var balance:Number = leftHeight - rightHeight;
 
-        // 根据平衡因子选择对应的旋转方式
         if (balance > 1) {
-            // 左侧高
-            // 判断是 LL 还是 LR
-            var childLeftNode:TreeNode = leftNode.left;
-            var childRightNode:TreeNode = leftNode.right;
-            var childLeftHeight:Number = (childLeftNode != null) ? childLeftNode.height : 0;
-            var childRightHeight:Number = (childRightNode != null) ? childRightNode.height : 0;
-            var leftBalance:Number = childLeftHeight - childRightHeight;
+            // 左侧高: 判断是 LL 还是 LR
+            var childLeftNode:TreeNode   = leftNode.left;
+            var childRightNode:TreeNode  = leftNode.right;
+            var childLeftHeight:Number   = (childLeftNode  != null) ? childLeftNode.height  : 0;
+            var childRightHeight:Number  = (childRightNode != null) ? childRightNode.height : 0;
+            var leftBalance:Number       = childLeftHeight - childRightHeight;
 
-            if (leftBalance >= 0) {
-                // LL
-                node = rotateLL(node);
-            } else {
-                // LR
-                node = rotateLR(node);
-            }
+            node = leftBalance >= 0 ? rotateLL(node) : rotateLR(node);
         } else if (balance < -1) {
-            // 右侧高
-            // 判断是 RR 还是 RL
-            var rLeftNode:TreeNode = rightNode.left;
-            var rRightNode:TreeNode = rightNode.right;
-            var rLeftHeight:Number = (rLeftNode != null) ? rLeftNode.height : 0;
-            var rRightHeight:Number = (rRightNode != null) ? rRightNode.height : 0;
-            var rightBalance:Number = rLeftHeight - rRightHeight;
+            // 右侧高: 判断是 RR 还是 RL
+            var rLeftNode:TreeNode       = rightNode.left;
+            var rRightNode:TreeNode      = rightNode.right;
+            var rLeftHeight:Number       = (rLeftNode  != null) ? rLeftNode.height  : 0;
+            var rRightHeight:Number      = (rRightNode != null) ? rRightNode.height : 0;
+            var rightBalance:Number      = rLeftHeight - rRightHeight;
 
-            if (rightBalance <= 0) {
-                // RR
-                node = rotateRR(node);
-            } else {
-                // RL
-                node = rotateRL(node);
-            }
+            node = rightBalance <= 0 ? rotateRR(node) : rotateRL(node);
         }
 
         return node;
     }
 
     /**
-     * 递归删除元素，并保持AVL平衡
-     */
+    * 递归删除元素，并保持AVL平衡（差分高度更新）
+    */
     private function deleteNode(node:TreeNode, element:Object):TreeNode {
         if (node == null) {
             return null;
         }
 
+        // 1. 递归删除
         var cmp:Number = this.compareFunction(element, node.value);
         if (cmp < 0) {
             node.left = deleteNode(node.left, element);
@@ -214,55 +209,53 @@ class org.flashNight.naki.DataStructures.TreeSet {
             }
         }
 
-        // 删除后，这个子树可能为空
+        // 2. 如果当前子树已被删空，无需再平衡
         if (node == null) {
             return null;
         }
 
-        // 更新当前节点的高度
-        var leftNode:TreeNode = node.left;
-        var rightNode:TreeNode = node.right;
-        var leftHeight:Number = (leftNode != null) ? leftNode.height : 0;
-        var rightHeight:Number = (rightNode != null) ? rightNode.height : 0;
+        // 3. 更新高度前，记录旧高度
+        var oldHeight:Number = node.height;
+
+        // 4. 计算左右子树高度并更新当前节点高度
+        var leftNode:TreeNode   = node.left;
+        var rightNode:TreeNode  = node.right;
+        var leftHeight:Number   = (leftNode != null) ? leftNode.height : 0;
+        var rightHeight:Number  = (rightNode != null) ? rightNode.height : 0;
         node.height = 1 + ((leftHeight > rightHeight) ? leftHeight : rightHeight);
 
-        // 重新检查平衡
+        // ------------------- 差分高度更新的关键：早退出 -------------------
+        if (node.height == oldHeight) {
+            // 高度没变，不必再检查平衡
+            return node;
+        }
+
+        // 5. 重新检查平衡
         var balance:Number = leftHeight - rightHeight;
 
         if (balance > 1) {
             // 左侧高
-            var childLeftNode:TreeNode = leftNode.left;
-            var childRightNode:TreeNode = leftNode.right;
-            var childLeftHeight:Number = (childLeftNode != null) ? childLeftNode.height : 0;
-            var childRightHeight:Number = (childRightNode != null) ? childRightNode.height : 0;
-            var leftBalance:Number = childLeftHeight - childRightHeight;
+            var childLeftNode:TreeNode   = leftNode.left;
+            var childRightNode:TreeNode  = leftNode.right;
+            var childLeftHeight:Number   = (childLeftNode  != null) ? childLeftNode.height  : 0;
+            var childRightHeight:Number  = (childRightNode != null) ? childRightNode.height : 0;
+            var leftBalance:Number       = childLeftHeight - childRightHeight;
 
-            if (leftBalance >= 0) {
-                // LL
-                node = rotateLL(node);
-            } else {
-                // LR
-                node = rotateLR(node);
-            }
+            node = leftBalance >= 0 ? rotateLL(node) : rotateLR(node);
         } else if (balance < -1) {
             // 右侧高
-            var rLeftNode:TreeNode = rightNode.left;
-            var rRightNode:TreeNode = rightNode.right;
-            var rLeftHeight:Number = (rLeftNode != null) ? rLeftNode.height : 0;
-            var rRightHeight:Number = (rRightNode != null) ? rRightNode.height : 0;
-            var rightBalance:Number = rLeftHeight - rRightHeight;
+            var rLeftNode:TreeNode       = rightNode.left;
+            var rRightNode:TreeNode      = rightNode.right;
+            var rLeftHeight:Number       = (rLeftNode  != null) ? rLeftNode.height  : 0;
+            var rRightHeight:Number      = (rRightNode != null) ? rRightNode.height : 0;
+            var rightBalance:Number      = rLeftHeight - rRightHeight;
 
-            if (rightBalance <= 0) {
-                // RR
-                node = rotateRR(node);
-            } else {
-                // RL
-                node = rotateRL(node);
-            }
+            node = rightBalance <= 0 ? rotateRR(node) : rotateRL(node);
         }
 
         return node;
     }
+
 
     /**
      * 在树中搜索指定元素
