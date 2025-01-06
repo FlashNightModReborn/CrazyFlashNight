@@ -200,4 +200,15 @@ class org.flashNight.naki.Normalization.NormalizationUtil
         // 假设 value 在 [0, 1] 范围内
         return scaledValue * (targetMax - targetMin) + targetMin;
     }
+
+    /**
+     * Fractional Linear Transformation (FLT) 函数
+     * 提供类似sigmoid的归一化效果，避免使用开销较大的exp函数
+     * @param x 输入值
+     * @return 归一化后的值，范围在 (-1, 1)
+     */
+    public static function flt(x:Number):Number
+    {
+        return x / (1 + ((x < 0) ? -x : x)); // 使用三元运算符替代 Math.abs
+    }
 }
