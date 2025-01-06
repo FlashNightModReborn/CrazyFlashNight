@@ -202,7 +202,7 @@ _root.主角函数.初始化长枪射击函数 = function(){
 	{
 		子弹属性.子弹威力 += 长枪属性[13] * _parent.长枪额外攻击加成倍率;
 	}
-	//var 暴击 =  _root.物品属性列表[_parent.长枪].equipped.criticalhit;
+	
 	var 暴击 =  _parent.长枪暴击;
 	if (暴击)
 	{
@@ -222,7 +222,7 @@ _root.主角函数.初始化长枪射击函数 = function(){
 			}
 		}
 	}
-	//var 斩杀 =  _root.物品属性列表[_parent.长枪].equipped.slay;
+	
 	var 斩杀 =  _parent.长枪斩杀;
 	if(斩杀 && !isNaN(Number(斩杀))){
 		子弹属性.斩杀 = Number(斩杀);
@@ -276,7 +276,7 @@ _root.主角函数.初始化手枪射击函数 = function(){
 	{
 		this.子弹属性.子弹威力 += 手枪属性[13] * _parent.短枪额外攻击加成倍率;
 	}
-	//var 暴击 =  _root.物品属性列表[_parent.手枪].equipped.criticalhit;
+	
 	var 暴击 =  _parent.手枪暴击;
 	if (暴击)
 	{
@@ -296,7 +296,7 @@ _root.主角函数.初始化手枪射击函数 = function(){
 			}
 		}
 	}
-	//var 斩杀 =  _root.物品属性列表[_parent.手枪].equipped.slay;
+	
 	var 斩杀 =  _parent.手枪斩杀;
 	if(斩杀 && !isNaN(Number(斩杀))){
 		子弹属性.斩杀 = Number(斩杀);
@@ -349,7 +349,7 @@ _root.主角函数.初始化手枪2射击函数 = function(){
 	{
 		this.子弹属性.子弹威力 += 手枪2属性[13] * _parent.短枪额外攻击加成倍率;
 	}
-	//var 暴击 =  _root.物品属性列表[_parent.手枪2].equipped.criticalhit;
+	
 	var 暴击 =  _parent.手枪2暴击;
 	if (暴击)
 	{
@@ -369,7 +369,7 @@ _root.主角函数.初始化手枪2射击函数 = function(){
 			}
 		}
 	}
-	//var 斩杀 =  _root.物品属性列表[_parent.手枪2].equipped.slay;
+	
 	var 斩杀 =  _parent.手枪2斩杀;
 	if(斩杀 && !isNaN(Number(斩杀))){
 		子弹属性.斩杀 = Number(斩杀);
@@ -548,7 +548,7 @@ _root.主角函数.初始化双枪射击函数 = function(){
 	{
 		this.子弹属性.血量上限击溃 = _parent.手枪击溃;
 	}
-	//var 暴击 =  _root.物品属性列表[_parent.手枪].equipped.criticalhit;
+	
 	var 暴击 =  _parent.手枪暴击;
 	if (暴击)
 	{
@@ -568,7 +568,7 @@ _root.主角函数.初始化双枪射击函数 = function(){
 			}
 		}
 	}
-	//var 斩杀 =  _root.物品属性列表[_parent.手枪].equipped.slay;
+	
 	var 斩杀 =  _parent.手枪斩杀;
 	if(斩杀 && !isNaN(Number(斩杀))){
 		子弹属性.斩杀 = Number(斩杀);
@@ -618,7 +618,7 @@ _root.主角函数.初始化双枪射击函数 = function(){
 	{
 		this.子弹属性2.血量上限击溃 = _parent.手枪2击溃;
 	}
-	//var 暴击 =  _root.物品属性列表[_parent.手枪2].equipped.criticalhit;
+	
 	var 暴击 =  _parent.手枪2暴击;
 	if (暴击)
 	{
@@ -638,7 +638,7 @@ _root.主角函数.初始化双枪射击函数 = function(){
 			}
 		}
 	}
-	//var 斩杀 =  _root.物品属性列表[_parent.手枪2].equipped.slay;
+	
 	var 斩杀 =  _parent.手枪2斩杀;
 	if(斩杀 && !isNaN(Number(斩杀))){
 		子弹属性2.斩杀 = Number(斩杀);

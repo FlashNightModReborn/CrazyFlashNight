@@ -9,7 +9,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>1000</price>
-    <loop>3</loop>
+    <maxvalue>3</maxvalue>
     <description>已确认XXXXXX放丧尸的钻头的科技来自XXXXXXXX嫌疑者为XXX。但XXXXXX先前被andylaw挫败，后趋于崩溃，考虑到动机因素，和XXXXXXX一定程度合作的XXXXXXXXX业均可能回收相关科技。
 据解剖验证，XXXXXXX与长期暴露在野外的丧尸相比，身体状况较好，较少出XXXX水现象，怀疑有XXXXXX的情况，XXXX释放饲养的丧尸，动机不明。
 据XXXXX已派遣人XXXXXXXXXXX况，怀疑其目标XXXXXXX的情况。继续观察。</description>
@@ -115,7 +115,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>5000</price>
-    <loop>1</loop>
+    <maxvalue>1</maxvalue>
     <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
     游荡在堕落城的浮士德兄弟以迅猛的刀法和强大的火力压制闻名。他们的组合是坚不可摧的——人们往往这么认为。然而，只要你击败了其中之一···</description>
     <level>1</level>
@@ -129,7 +129,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>5000</price>
-    <loop>1</loop>  
+    <maxvalue>1</maxvalue>  
     <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
     将军倒台后，牛仔收拢了军阀残部，在荒野重新站住脚跟。手持枪械，身揣炸药的牛仔是无数试图挑战军阀威严的战士的噩梦。不过，据说牛仔有一个护士模样的情人。</description>
     <level>1</level>
@@ -143,7 +143,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>3000</price>
-    <loop>1</loop>
+    <maxvalue>1</maxvalue>
     <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
     黑铁会保有的绝密资料，据知情人士透露，这之中很可能记载了有关“&lt;font color=&quot;#ff00ff&quot;&gt;诺亚方舟&lt;/font&gt;”的信息。</description>
     <level>1</level>
@@ -157,7 +157,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>4000</price>
-    <loop>1</loop>
+    <maxvalue>1</maxvalue>
     <description>黑铁会内部会通过信物快速传递消息，不过也因此，外人可以利用这个规则渗透黑铁会。但能统治堕落城如此之久的黑铁会，又岂能是随随便便渗透的？</description>
     <level>1</level>
   </item>
@@ -170,7 +170,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>2000</price>
-    <loop>3</loop>
+    <maxvalue>3</maxvalue>
     <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。
     翅虎堂盘踞着大量刺客，他们用钩锁锁定敌人，然后只需一击就可以刺穿敌人的喉咙。如此有偏向性的队伍组成似乎暗示了堂主的战斗策略。</description>
     <description1>据传言，翅虎本是一名靠盗窃为生的盗贼，而后归顺黑铁会，并且成为黑铁会的三大堂主之一。一手飞刀被他玩的出神入化，说他的飞刀抵得上精准的枪支也不为过。
@@ -188,7 +188,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>2000</price>
-    <loop>2</loop>
+    <maxvalue>2</maxvalue>
     <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。
     火凤堂外一直布置重兵，据说是因为堂主本人讨厌外人打扰。尽管消息很零碎，但是似乎相当多的情报流出，
     火凤堂主本人是一名美艳，冷酷，忠心，且杀人不眨眼的一朵妖艳的玫瑰，美丽而致命。但这朵玫瑰，似乎只对一个人开放。</description>
@@ -205,7 +205,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>2000</price>
-    <loop>1</loop>  
+    <maxvalue>1</maxvalue>  
     <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。
     黑铁会所所有的重装士兵，在黑龙的带领下所向披靡。传说，黑龙堂的铁骑尽是些连子弹都无法伤他们分毫的壮硕战士。
     而黑龙本是黑铁的本家兄弟，在接受邪术的改造后之后体型和实力增强了一倍还多，他的一身身铠甲更是刀枪不如，百毒不侵。传说黑龙只听从他兄长的命令，
@@ -221,7 +221,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>5000</price>
-    <loop>2</loop>
+    <maxvalue>2</maxvalue>
     <description>上面记录了翅虎堂相关的部分任务内容。
     “今日子时，运送物资至摇滚公园处，与主唱接头，若来者非本人，则携物资撤回。”</description>
     <description1>上面记录了翅虎堂相关的部分任务内容。
@@ -237,7 +237,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>5000</price>
-    <loop>1</loop>  
+    <maxvalue>1</maxvalue>  
     <description>上面记录了火凤堂相关的部分内容，但不全面。
     “堂主有令，需闭关三天。房间内除教主画像之外，不可留任何物品。”
     “堂主欲修行凤凰涅槃之术，除教主外，任何人不得靠近，违者，斩！”</description>
@@ -343,7 +343,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>5000</price>
-    <loop>2</loop>
+    <maxvalue>2</maxvalue>
     <description>黑龙令牌的大小要超过其他两个堂口令牌的大小，但对于那些黑龙堂的壮汉来说，这并不算什么。
     “黑龙堂将士注意，今日战军阀于残垣断壁外，教主吩咐，不留活口！”</description>
     <description1>黑龙令牌的大小要超过其他两个堂口令牌的大小，但对于那些黑龙堂的壮汉来说，这并不算什么。
@@ -962,7 +962,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>2000</price>
-    <loop>3</loop>
+    <maxvalue>3</maxvalue>
     <description>通关证明是某一强敌所在区域的珍贵收藏，获取他们意味着击败了常人无法战胜的敌人。
     地铁站盘踞的巨型丧尸和丧尸潮最终被消灭，然而地铁站四通八达，废城内流窜的丧尸迟早会再次占据这里。手握战斧的巨型丧尸似乎身着奇特的服装，或许是某种人造的产物。
     然而我们对他的了解少之又少，只能从为数不多的幸存者口中了解到关于这个巨型丧尸的信息。</description>
@@ -982,7 +982,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>3000</price>
-    <loop>2</loop>
+    <maxvalue>2</maxvalue>
     <description>通关证明是某一强敌所在区域的珍贵收藏，获取他们意味着击败了常人无法战胜的敌人。
     因为与军阀有冲突，且效忠的黑铁会与前者有来往，摇滚女皇最终决定反叛。A兵团接下委托并战胜了摇滚女皇，然而无论是他们还是其他势力都不打算处死摇滚女皇，毕竟后者永远是堕落城不落的炙热太阳。</description>
     <description1>“摇滚公园那些娘们儿难道不是想睡就睡的？”一个盗贼把手中的啤酒一饮而尽后，随手把酒瓶扔向了远处。“装什么清高？都这个时代了，还讲究什么清白身子？能帮黑铁会那帮人泄泄火，
@@ -999,7 +999,7 @@
     <use>情报</use>
     <weight>0</weight>
     <price>5000</price>
-    <loop>2</loop>
+    <maxvalue>2</maxvalue>
     <description>通关证明是某一强敌所在区域的珍贵收藏，获取他们意味着击败了常人无法战胜的敌人。
     莱昂里亚自由解放党，或者说莱昂里亚自由革命军是由绰号为“将军”的男人领导的暴力组织。他们以劫掠为生，凭借着强大火力在末世占有一席之地。然而尽管是弱肉强食的末世，也不能容忍绝对的破坏者。</description>
     <description1>“我们一定要和那个什么狗屁黑铁会结盟么？一群连枪都玩儿不明白的废物们。”

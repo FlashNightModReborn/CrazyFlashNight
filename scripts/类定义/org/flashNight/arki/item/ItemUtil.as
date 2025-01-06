@@ -2,27 +2,29 @@
 import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.ObjectUtil;
 /*
- * ItemUtil
+ * ItemUtil 静态类，存储物品数据与物品工具函数
+ * 
  */
 
 class org.flashNight.arki.item.ItemUtil{
     
-    private var instance:ItemUtil;
+    public static var itemDataDict:Object;
+    public static var itemDataArray:Array;
+    public static var itemNamesByID:Object;
+    public static var maxID:Number;
+    public static var informationMaxValueDict:Object;
 
-    public function ItemUtil() {
-        if (instance != null) {
-            trace("ItemUtil 已经实例化。");
-            return;
-        }
+
+    /*
+     * 获取物品数据
+     */
+    public static function getItemData(index){
+        if (index.__proto__ == String.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[index]);
+        if (index.__proto__ == Number.prototype) return ObjectUtil.clone(ItemUtil.itemNamesByID[index]);
     }
 
-    //虽然暂时好像用不到单例
-    public function getInstance():ItemUtil {
-        if (instance == null) {
-            instance = new ItemUtil();
-        }
-        return instance;
-    }
+
+
 
     /*
      * 玩家的物品移动操作
@@ -90,7 +92,7 @@ class org.flashNight.arki.item.ItemUtil{
     public static function getRequirement(itemArray:Array):Array{
         var newArray = new Array(itemArray.length);
         for(var i = 0; i<itemArray.length; i++){
-            newArray[i] = {name:itemArray[i].name, value:itemArray[i].value};
+            newArray[i] = {name:itemArray[i][0], value:itemArray[i][1]};
         }
         return newArray;
     }
@@ -123,7 +125,7 @@ class org.flashNight.arki.item.ItemUtil{
                 list[name] = value;
                 continue;
             }
-            var itemData = _root.getItemData(name);
+            var itemData = ItemUtil.getItemData(name);
             if(itemData.use == "材料"){
                 list.材料[name] = value;
             }else if(itemData.use == "情报"){
@@ -136,10 +138,12 @@ class org.flashNight.arki.item.ItemUtil{
         }
         //提取可堆叠物品
         var 背包 = _root.物品栏.背包;
-        for(var i = 0; i < 背包.capacity; i++){
-            var bagItem = 背包.getItem(i);
+        var indexArr = 背包.getIndexes();
+        var itemArr = 背包.getItemArray();
+        for(var i = 0; i < itemArr.length; i++){
+            var bagItem = itemArr[i];
             if(!isNaN(mergables[bagItem.name]) && !isNaN(bagItem.value)){
-                list.背包[i] = {name:bagItem.name, value:mergables[bagItem.name]};
+                list.背包[indexArr[i]] = {name:bagItem.name, value:mergables[bagItem.name]};
                 mergables[bagItem.name] = null;
             }
         }
@@ -155,7 +159,7 @@ class org.flashNight.arki.item.ItemUtil{
             list.背包[vacancyList[i]] = unmergableList[i];
         }
         //返回
-        ServerManager.getInstance().sendServerMessage(ObjectUtil.toString(list));
+        // ServerManager.getInstance().sendServerMessage(ObjectUtil.toString(list));
         return list;
     }
 
@@ -195,7 +199,7 @@ class org.flashNight.arki.item.ItemUtil{
         for(var i in list.背包){
             if(背包.isEmpty(i)){
                 var item = {name:list.背包[i].name};
-                var itemData = _root.getItemData(item.name);
+                var itemData = ItemUtil.getItemData(item.name);
                 if(itemData.type == "武器" || itemData.type == "防具"){
                     item.value = {level:list.背包[i].value};
                 }else{
@@ -225,15 +229,13 @@ class org.flashNight.arki.item.ItemUtil{
         for(var i = 0; i < itemArray.length; i++){
             var name = itemArray[i].name;
             var value = itemArray[i].value;
-            var itemData = _root.getItemData(name);
+            var itemData = ItemUtil.getItemData(name);
             if(itemData.use == "材料"){
                 if(材料.getValue(name) < value) return null;
                 list.材料[name] = value;
-                // itemArray.splice(i,1);
             }else if(itemData.use == "情报"){
                 if(情报.getValue(name) < value) return null;
                 list.情报[name] = value;
-                // itemArray.splice(i,1);
             }else{
                 var indexArr = 背包.getIndexes();
                 for(var arri:Number = 0; arri < indexArr.length; arri++){
@@ -311,7 +313,7 @@ class org.flashNight.arki.item.ItemUtil{
     
     //查找物品总数
     public static function getTotal(__name:String):Number{
-        var itemData = _root.getItemData(__name);
+        var itemData = ItemUtil.getItemData(__name);
         if(itemData.use == "材料") return _root.收集品栏.材料.getValue(__name);
         if(itemData.use == "情报") return _root.收集品栏.情报.getValue(__name);
         //遍历背包

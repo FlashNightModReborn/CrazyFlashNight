@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <symbols>
-          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1735477513"/>
+          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1736132397"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -8,6 +8,52 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.ItemDataLoader;
+import org.flashNight.gesh.object.ObjectUtil;
+
+// 获取 ItemDataLoader 实例
+var ItemDataLoader:ItemDataLoader = ItemDataLoader.getInstance();
+
+// 加载物品数据
+ItemDataLoader.loadItemData(
+    function(combinedData:Object):Void {
+        trace("主程序：物品数据加载成功！");
+        // 在此处处理合并后的物品数据
+		var itemDataDict = new Object();
+		var itemDataArray = new Array();
+		var itemNamesByID = new Object();
+		var maxID = 0;
+		var informationMaxValueDict = new Object();
+		for(var i in combinedData){
+			var itemData = combinedData[i];
+			itemDataDict[itemData.name] = itemData;
+			itemNamesByID[itemData.id] = itemData.name;
+			itemDataArray.push(itemData.id);
+			if(itemData.id > maxID) maxID = itemData.id;
+			if(itemData.use =="情报") informationMaxValueDict[itemData.name] = itemData.maxvalue;
+		}
+		itemDataArray = org.flashNight.naki.Sort.QuickSort.adaptiveSort(itemDataArray, function(a, b) {
+            return a - b; // Numeric comparison
+        });
+		org.flashNight.arki.item.ItemUtil.itemDataDict = itemDataDict;
+		org.flashNight.arki.item.ItemUtil.itemDataArray = itemDataArray;
+		org.flashNight.arki.item.ItemUtil.itemNamesByID = itemNamesByID;
+		org.flashNight.arki.item.ItemUtil.maxID = maxID;
+		org.flashNight.arki.item.ItemUtil.informationMaxValueDict = informationMaxValueDict;
+		 _root.物品属性列表 = itemDataDict;
+		_root.id物品名对应表 = itemNamesByID;
+		_root.物品最大id = maxID;
+		//测试物品工具函数
+		var test = new org.flashNight.arki.item.itemCollection.InventoryTest();
+		test.runTests();
+    },
+    function():Void {
+        trace("主程序：物品数据加载失败！");
+    }
+);
+]]></script>
+                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -21,25 +67,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="256631" publishTime="1736132363"/>
+          <PublishItem publishSize="256517" publishTime="1736129056"/>
+          <PublishItem publishSize="256520" publishTime="1736128928"/>
+          <PublishItem publishSize="256525" publishTime="1736128893"/>
+          <PublishItem publishSize="256438" publishTime="1736128710"/>
+          <PublishItem publishSize="256429" publishTime="1736128639"/>
+          <PublishItem publishSize="256406" publishTime="1736128466"/>
+          <PublishItem publishSize="256308" publishTime="1736128436"/>
+          <PublishItem publishSize="256321" publishTime="1736128397"/>
+          <PublishItem publishSize="255506" publishTime="1736128269"/>
+          <PublishItem publishSize="255487" publishTime="1736127031"/>
+          <PublishItem publishSize="255423" publishTime="1736126921"/>
+          <PublishItem publishSize="255382" publishTime="1736126853"/>
+          <PublishItem publishSize="255301" publishTime="1736126776"/>
           <PublishItem publishSize="251291" publishTime="1735805615"/>
           <PublishItem publishSize="251278" publishTime="1735803032"/>
           <PublishItem publishSize="251252" publishTime="1735802596"/>
           <PublishItem publishSize="251031" publishTime="1735800773"/>
           <PublishItem publishSize="254118" publishTime="1735800080"/>
           <PublishItem publishSize="254057" publishTime="1735799932"/>
-          <PublishItem publishSize="254219" publishTime="1735799890"/>
-          <PublishItem publishSize="254054" publishTime="1735799519"/>
-          <PublishItem publishSize="254024" publishTime="1735799336"/>
-          <PublishItem publishSize="254039" publishTime="1735799132"/>
-          <PublishItem publishSize="253912" publishTime="1735798654"/>
-          <PublishItem publishSize="254319" publishTime="1735798222"/>
-          <PublishItem publishSize="252972" publishTime="1735797971"/>
-          <PublishItem publishSize="252414" publishTime="1735795297"/>
-          <PublishItem publishSize="251837" publishTime="1735791705"/>
-          <PublishItem publishSize="251320" publishTime="1735791356"/>
-          <PublishItem publishSize="251319" publishTime="1735791340"/>
-          <PublishItem publishSize="251284" publishTime="1735791306"/>
-          <PublishItem publishSize="253456" publishTime="1735787225"/>
-          <PublishItem publishSize="253456" publishTime="1735786997"/>
      </publishHistory>
 </DOMDocument>

@@ -248,12 +248,12 @@
 
 		文本数据.push("<BR>");
 	}
-	else if (物品数据.loop !== undefined && 物品数据.loop > 1)
+	else if (物品数据.maxvalue !== undefined && 物品数据.maxvalue > 1)
 	{
 
 		if (value == 1)
 		{
-			文本数据.push("[test1]剧情碎片资料展示：" + value + "/" + 物品数据.loop);
+			文本数据.push("[test1]剧情碎片资料展示：" + value + "/" + 物品数据.maxvalue);
 			文本数据.push("[物品数量]：" + value);
 			文本数据.push("<BR>");
 			//文本数据.push(物品数据.description);
@@ -262,17 +262,16 @@
 		}
 		else
 		{
-			//var 进度 = value % 物品数据.loop;
-			var 进度 = value % 物品数据.loop;
+			var 进度 = value % 物品数据.maxvalue;
 			
 			if (进度 == 0){
-				文本数据.push("剧情碎片资料展示：" + 物品数据.loop + "/" + 物品数据.loop);
+				文本数据.push("剧情碎片资料展示：" + 物品数据.maxvalue + "/" + 物品数据.maxvalue);
 				//文本数据.push("[物品数量]：" + value + "[进度]：" + 进度);
 				文本数据.push("<BR>");
-				文本数据.push(物品数据["description" + 物品数据.loop]);
+				文本数据.push(物品数据["description" + 物品数据.maxvalue]);
 				文本数据.push("<BR>");
 			}else{
-				文本数据.push("剧情碎片资料展示：" + 进度  + "/" + 物品数据.loop);
+				文本数据.push("剧情碎片资料展示：" + 进度  + "/" + 物品数据.maxvalue);
 				//文本数据.push("[物品数量]：" + value + "[进度]：" + 进度);
 				进度 = 进度 - 1;
 				文本数据.push("<BR>");

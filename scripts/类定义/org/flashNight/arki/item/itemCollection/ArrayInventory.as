@@ -60,7 +60,18 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         return indexes.toArray();
     }
 
+    //以数字索引顺序返回物品数组
+    public function getItemArray():Array{
+        var indexArr = this.indexes.toArray();
+        var list = [];
+        for(var i = 0; i<indexArr.length; i++){
+            list.push(this.items[indexArr[i]]);
+        }
+        return list;
+    }
 
+
+    //寻找空格
     //寻找第一个空格的数字索引，若栏位全满则返回-1
     public function getFirstVacancy():Number{
         for(var i:Number=0; i<this.capacity; i++){
@@ -68,7 +79,6 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         }
         return -1;
     }
-
     //返回前n个空格的数字索引，若未填写数量则返回至多16个空索引
     public function getVacancies(amount:Number):Array{
         if(isNaN(amount)) amount = 16;
@@ -82,5 +92,27 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             }
         }
         return list;
+    }
+
+    
+    //寻找物品格
+    //返回第一个满足条件的物品
+    public function find(callback:Function){
+        var indexArr = this.getIndexes();
+        for(var i:Number = 0; i < indexArr.length; i++){
+            var item = this.items[indexArr[i]];
+            if(callback(item) == true) return item;
+        }
+        return null;
+    }
+
+    //返回第一个满足条件的物品索引
+    public function findIndex(callback:Function){
+        var indexArr = this.getIndexes();
+        for(var i:Number = 0; i < indexArr.length; i++){
+            var index = indexArr[i];
+            if(callback(this.items[index]) == true) return index;
+        }
+        return -1;
     }
 }

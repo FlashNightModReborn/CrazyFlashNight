@@ -84,9 +84,14 @@
     ServerManager.getInstance().sendServerMessage(str);
 }
 
+_root.检查情报物品最大值 = function(data){
+    //
+}
+
 _root.检查并迁移存档数据 = function(data){
     data.version = "2.5";
     if(data[2] && !data.inventory){
         _root.物品栏数据迁移(data);
     }
+    _root.检查情报物品最大值(data);
 }
