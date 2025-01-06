@@ -20,7 +20,7 @@ class org.flashNight.arki.item.ItemUtil{
      */
     public static function getItemData(index){
         if (index.__proto__ == String.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[index]);
-        if (index.__proto__ == Number.prototype) return ObjectUtil.clone(ItemUtil.itemNamesByID[index]);
+        if (index.__proto__ == Number.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[itemNamesByID[index]]);
     }
 
 

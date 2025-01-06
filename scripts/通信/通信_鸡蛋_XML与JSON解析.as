@@ -112,16 +112,8 @@ _root.json_parser = new JSON();
 
 
 //物品
-_root.getItemData = function(index)
-{
-	if (index.__proto__ == String.prototype)
-	{
-		return _root.duplicateOf(_root.物品属性列表[index]);
-	}
-	if (index.__proto__ == Number.prototype)
-	{
-		return _root.duplicateOf(_root.物品属性列表[_root.id物品名对应表[index]]);
-	}
+_root.getItemData = function(index){
+	return org.flashNight.arki.item.ItemUtil.getItemData(index);
 };
 
 //关卡

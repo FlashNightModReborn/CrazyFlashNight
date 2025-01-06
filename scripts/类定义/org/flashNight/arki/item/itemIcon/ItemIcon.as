@@ -1,4 +1,5 @@
-﻿/*
+﻿import org.flashNight.arki.item.ItemUtil;
+/*
  * 物品图标UI基类
 */
 
@@ -35,7 +36,7 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
             valuetext._visible = false;
             leveltext._visible = false;
         }else{
-            this.itemData = _root.getItemData(this.name);
+            this.itemData = ItemUtil.getItemData(this.name);
             this.icon.gotoAndStop("默认图标");
             refreshValue();
         }

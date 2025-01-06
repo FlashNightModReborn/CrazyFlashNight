@@ -31,4 +31,13 @@ class org.flashNight.arki.item.itemCollection.InformationCollection extends Dict
         var maxval = getMaxValue(key);
         if(items[key] > maxval) items[key] = maxval;
     }
+
+
+    //检查所有情报物品的值
+    public function checkValues():Void{
+        for(var key in items){
+            var maxval = getMaxValue(key);
+            if(items[key] > maxval) items[key] = maxval;
+        }
+    }
 }

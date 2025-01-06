@@ -13,14 +13,6 @@
         var use = itemData.use;
         if(type == "武器" || type == "防具") 新物品.value = {level:旧物品[1]};
         if(旧物品[2] == 1 && use != "药剂"){
-            // if(use == "药剂"){
-            //     if     (_root.快捷物品栏1 == 旧物品[0] && !新物品栏.药剂栏[0]) 新物品栏.药剂栏.add(0,新物品);
-            //     else if(_root.快捷物品栏2 == 旧物品[0] && !新物品栏.药剂栏[1]) 新物品栏.药剂栏.add(1,新物品);
-            //     else if(_root.快捷物品栏3 == 旧物品[0] && !新物品栏.药剂栏[2]) 新物品栏.药剂栏.add(2,新物品);
-            //     else if(_root.快捷物品栏4 == 旧物品[0] && !新物品栏.药剂栏[3]) 新物品栏.药剂栏.add(3,新物品);
-            // }else{
-            //     新物品栏.装备栏.add(use,新物品);
-            // }
             新物品栏.装备栏.add(use,新物品);
         }else if(use == "材料"){
             收集品栏.材料.add(旧物品[0],旧物品[1]);
@@ -84,14 +76,10 @@
     ServerManager.getInstance().sendServerMessage(str);
 }
 
-_root.检查情报物品最大值 = function(data){
-    //
-}
 
 _root.检查并迁移存档数据 = function(data){
     data.version = "2.5";
     if(data[2] && !data.inventory){
         _root.物品栏数据迁移(data);
     }
-    _root.检查情报物品最大值(data);
 }

@@ -33,7 +33,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         _root.鼠标.gotoAndStop("手型抓取");
 
         //高亮对应装备栏
-        if(itemData.type == "武器" || itemData.type == "防具" || itemData.type.use == "手雷"){
+        if(itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷"){
             if(itemData.use == "手枪"){//对手枪2进行额外判定
                 icon.highlights = [_root.物品栏界面.手枪,_root.物品栏界面.手枪2];
             }else{
