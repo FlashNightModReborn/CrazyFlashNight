@@ -122,33 +122,28 @@ _root.天气系统.配置环境 = function (环境信息)
     if (环境信息.最小光照 != undefined) this.最小光照 = 环境信息.最小光照;
 }
 
-_root.天气系统.获得当前光照等级 = function()
-{
+_root.天气系统.获得当前光照等级 = function() {
     var 时间 = this.获得当前时间();
-    var 光照等级 = 0;
-    if((时间 < 4 and 时间 > 1) or (时间 < 13 and 时间 > 11) or (时间 < 21 and 时间 > 18))
-    {
+    var 光照等级 = 7; // 默认光照等级
+
+    // 检查是否在需要插值的时间范围内
+    if ((时间 > 1 && 时间 < 4) || (时间 > 11 && 时间 < 13) || (时间 > 18 && 时间 < 21)) {
         var baseLevel = Math.floor(时间);
         var nextLevel = Math.ceil(时间);
         光照等级 = Interpolation.linear(时间, baseLevel, nextLevel, this.昼夜光照[baseLevel], this.昼夜光照[nextLevel]);
     }
-    else if((时间 <= 11 and 时间 >= 4) or (时间 <= 18 and 时间 >= 13))
-    {
-        光照等级 = 7;
+
+    // 限制光照等级在最小值和最大值之间
+    光照等级 = Math.max(this.最小光照, Math.min(光照等级, this.最大光照));
+
+    // 更新当前光照等级如果变化超过阈值或当前光照等级未定义
+    if (Math.abs(光照等级 - this.当前光照等级) > this.光照等级更新阈值 || this.当前光照等级 == undefined) {
+        this.当前光照等级 = 光照等级;
     }
-    
-    if(光照等级 > this.最大光照)
-    {
-        光照等级 = this.最大光照;
-    }
-    else if(光照等级 < this.最小光照)
-    {
-        光照等级 = this.最小光照;
-    }
-    
-    if(Math.abs(光照等级 - this.当前光照等级) > this.光照等级更新阈值 || !this.当前光照等级) this.当前光照等级 = 光照等级;
+
     return this.当前光照等级;
 };
+
 
 _root.天气系统.设置当前天气 = function()
 {
