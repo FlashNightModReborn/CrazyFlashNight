@@ -10,4 +10,12 @@
         this.right = null;
         this.height = 1;
     }
+
+    /**
+     * 返回节点值的字符串表示
+     * @return 节点值的字符串
+     */
+    public function toString():String {
+        return String(this.value);
+    }
 }

@@ -1,5 +1,7 @@
 ﻿import org.flashNight.naki.DataStructures.*;
 import org.flashNight.naki.Sort.*;
+import org.flashNight.gesh.string.*;
+
 
 /**
  * @class TreeSet
@@ -110,10 +112,29 @@ class org.flashNight.naki.DataStructures.TreeSet {
      * @return 一个按升序排列的元素数组
      */
     public function toArray():Array {
-        var arr:Array = [];
-        inOrderTraversal(this.root, arr);
+        var arr:Array = [];                // 存储遍历结果
+        var stack:Array = [];              // 模拟堆栈
+        var index:Number = 0;              // 堆栈索引
+        var node:TreeNode = this.root;     // 当前节点
+
+        while (node != null || index > 0) {
+            // 模拟递归，处理左子树
+            while (node != null) {
+                stack[index++] = node;     // 将当前节点压入堆栈
+                node = node.left;          // 移动到左子树
+            }
+
+            // 取出堆栈中的节点
+            node = stack[--index];         // 弹出栈顶节点
+            arr[arr.length] = node.value;  // 访问当前节点值
+
+            // 移动到右子树继续处理
+            node = node.right;
+        }
+
         return arr;
     }
+
 
     /**
      * 返回根节点
@@ -129,6 +150,33 @@ class org.flashNight.naki.DataStructures.TreeSet {
      */
     public function getCompareFunction():Function {
         return this.compareFunction;
+    }
+
+    /**
+     * 返回 AVL 树的字符串表示，基于前序遍历
+     * @return 树的前序遍历字符串
+     */
+    public function toString():String {
+        var str:String = "";
+        var stack:Array = [];    // 模拟堆栈
+        var index:Number = 0;    // 堆栈索引
+        var node:TreeNode = this.root; // 当前节点
+
+        while (node != null || index > 0) {
+            // 遍历左子树，同时将右子节点压入堆栈
+            while (node != null) {
+                str += node.toString() + " "; // 访问当前节点
+                stack[index++] = node.right;   // 压入右子节点
+                node = node.left;              // 移动到左子节点
+            }
+
+            // 弹出堆栈中的下一个节点
+            if (index > 0) {
+                node = stack[--index];
+            }
+        }
+
+        return StringUtils.trim(str); // 去除末尾的空格
     }
 
     //======================== 私有辅助函数 ========================//
