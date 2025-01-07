@@ -101,7 +101,7 @@ class org.flashNight.naki.Sort.PDQSort {
             //------------------------------------------------------
             // (a) 小区间 -> 直接插入排序 (内联展开)
             //------------------------------------------------------
-            if (size <= 10) { // 如果区间大小小于等于10，使用插入排序
+            if (size <= 32) { // 如果区间大小小于等于10，使用插入排序
                 for (var iIns:Number = left + 1; iIns <= right; iIns++) { // 从第二个元素开始
                     var keyVal:Number = arr[iIns]; // 当前元素作为插入的关键值
                     var jIns:Number = iIns - 1; // 插入位置的前一个索引
@@ -302,8 +302,3 @@ class org.flashNight.naki.Sort.PDQSort {
 
 
 
-/*
-
-org.flashNight.naki.Sort.PDQSortTest.runTests();
-
-*/

@@ -639,3 +639,45 @@ PDQSort 作为一种基于快速排序的高效排序算法，通过多种优化
 - 根据具体应用场景，适当调整优化参数，如小区间阈值和递归深度限制，以达到最佳性能表现。
 
 ---
+
+```actionscript
+
+org.flashNight.naki.Sort.PDQSortTest.runTests();
+
+```
+
+```output
+
+Starting PDQSort Tests...
+PASS: Empty Array Test
+PASS: Single Element Array Test
+PASS: Already Sorted Array Test
+PASS: Reverse Sorted Array Test
+PASS: Random Array Test
+PASS: Duplicate Elements Array Test
+PASS: All Same Elements Array Test
+PASS: Custom Compare Function Test
+
+Starting Performance Tests...
+Size: 1000, Distribution: random, Time: 19ms, Correct: true
+Size: 1000, Distribution: sorted, Time: 1ms, Correct: true
+Size: 1000, Distribution: reverse, Time: 1ms, Correct: true
+Size: 1000, Distribution: duplicates, Time: 4ms, Correct: true
+Size: 1000, Distribution: allSame, Time: 1ms, Correct: true
+Size: 10000, Distribution: random, Time: 273ms, Correct: true
+Size: 10000, Distribution: sorted, Time: 7ms, Correct: true
+Size: 10000, Distribution: reverse, Time: 9ms, Correct: true
+Size: 10000, Distribution: duplicates, Time: 41ms, Correct: true
+Size: 10000, Distribution: allSame, Time: 7ms, Correct: true
+Size: 100000, Distribution: random, Time: 3622ms, Correct: true
+Size: 100000, Distribution: sorted, Time: 70ms, Correct: true
+Size: 100000, Distribution: reverse, Time: 92ms, Correct: true
+Size: 100000, Distribution: duplicates, Time: 386ms, Correct: true
+Size: 100000, Distribution: allSame, Time: 67ms, Correct: true
+Performance Tests Completed.
+
+All PDQSort Tests Completed.
+
+
+```
+
