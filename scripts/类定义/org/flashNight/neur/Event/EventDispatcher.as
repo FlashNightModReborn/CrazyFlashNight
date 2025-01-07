@@ -13,6 +13,7 @@ import org.flashNight.naki.DataStructures.Dictionary;
  * 3. **轻量级封装**：底层事件处理由 EventBus 完成，此类仅提供业务级接口。
  * 4. **可控销毁**：destroy 方法仅移除本实例订阅的事件，保证资源的合理释放。
  * 5. **业务友好**：使用简单的 subscribe、unsubscribe、publish、subscribeOnce 接口满足基本事件需求。
+ * 6. **全局广播支持**：提供 subscribeGlobal、unsubscribeGlobal、publishGlobal 方法，实现跨实例事件广播。
  */
 class org.flashNight.neur.Event.EventDispatcher {
     private static var instanceCounter:Number = 0; // 静态计数器，用于生成唯一实例 ID
@@ -109,24 +110,89 @@ class org.flashNight.neur.Event.EventDispatcher {
         // 将事件名称附加上唯一的实例 ID，确保事件隔离
         var uniqueEventName:String = eventName + this.instanceID;
         
-        // 利用 Array 构造函数将 arguments 转为数组，并从索引 1 开始裁剪
-        var slicedArgs:Array = Array.prototype.slice.call(arguments, 1);
+        // 构建参数数组，从第二个参数开始（索引1）
+        var slicedArgs:Array = [];
+        for (var i:Number = 1; i < arguments.length; i++) {
+            slicedArgs.push(arguments[i]);
+        }
         
-        // 使用 apply 传递所有参数，包括 uniqueEventName 和 slicedArgs
+        // 发布事件，传递参数
         this.bus.publish.apply(this.bus, [uniqueEventName].concat(slicedArgs));
     }
-
+    
+    /**
+     * 全局订阅特定事件，跨所有 EventDispatcher 实例。
+     * 不附加实例 ID，实现全局事件隔离。
+     * 
+     * @param eventName 要订阅的全局事件名称
+     * @param callback 回调函数
+     * @param scope 回调函数执行时的作用域 (this)
+     */
+    public function subscribeGlobal(eventName:String, callback:Function, scope:Object):Void {
+        // 通过 EventBus 订阅全局事件（不附加实例 ID）
+        this.bus.subscribe(eventName, callback, scope);
+        
+        // 记录全局订阅信息，用于销毁时清理
+        // 使用特殊标识区分全局订阅
+        this.subscriptions.push({eventName: eventName, callback: callback, isGlobal: true});
+    }
+    
+    /**
+     * 取消全局事件的订阅。
+     * 
+     * @param eventName 要取消的全局事件名称
+     * @param callback 对应的回调函数
+     */
+    public function unsubscribeGlobal(eventName:String, callback:Function):Void {
+        // 通过 EventBus 取消订阅全局事件
+        this.bus.unsubscribe(eventName, callback);
+        
+        // 从本实例的订阅记录中移除指定全局事件和回调对应的记录
+        var len:Number = this.subscriptions.length;
+        for (var i:Number = 0; i < len; i++) {
+            var sub:Object = this.subscriptions[i];
+            if (sub.eventName == eventName && sub.callback == callback && sub.isGlobal) {
+                // 从数组中移除该订阅记录
+                this.subscriptions.splice(i, 1);
+                return; // 退出循环，一般一个事件只对应一个回调
+            }
+        }
+    }
+    
+    /**
+     * 发布全局事件，通知所有订阅该事件的回调函数执行。
+     * 不附加实例 ID，实现全局事件隔离。
+     * 
+     * @param eventName 全局事件名称
+     * @param ...args 发布事件时传递的可选参数列表
+     */
+    public function publishGlobal(eventName:String):Void {
+        // 构建参数数组，从第二个参数开始（索引1）
+        var slicedArgs:Array = [];
+        for (var i:Number = 1; i < arguments.length; i++) {
+            slicedArgs.push(arguments[i]);
+        }
+        
+        // 发布全局事件，传递参数
+        this.bus.publish.apply(this.bus, [eventName].concat(slicedArgs));
+    }
     
     /**
      * 销毁当前 EventDispatcher 实例，取消所有由此实例订阅的事件。
-     * 此操作仅影响本实例创建的订阅，不会影响全局 EventBus 或其他实例。
+     * 此操作仅影响本实例创建的订阅，不会影响全局 EventBus 或其他实例的订阅。
      */
     public function destroy():Void {
         var len:Number = this.subscriptions.length;
         for (var i:Number = 0; i < len; i++) {
             var sub:Object = this.subscriptions[i];
-            // 再次尝试取消订阅，如果已自动取消则不会产生问题
-            this.bus.unsubscribe(sub.eventName, sub.callback);
+            // 根据是否为全局订阅决定取消方式
+            if (sub.isGlobal) {
+                // 取消全局订阅
+                this.bus.unsubscribe(sub.eventName, sub.callback);
+            } else {
+                // 取消实例级订阅
+                this.bus.unsubscribe(sub.eventName, sub.callback);
+            }
         }
         // 清空订阅列表
         this.subscriptions = [];
