@@ -1,6 +1,6 @@
-﻿import org.flashNight.neur.Event.EventBus;
-import org.flashNight.neur.Event.Delegate;
-import org.flashNight.naki.DataStructures.Dictionary;
+﻿import org.flashNight.neur.Event.*;
+import org.flashNight.naki.DataStructures.*;
+import org.flashNight.gesh.arguments.*;
 
 /**
  * EventDispatcher 类为业务逻辑提供一个轻量级的事件分发接口。
@@ -16,21 +16,33 @@ import org.flashNight.naki.DataStructures.Dictionary;
  * 6. **全局广播支持**：提供 subscribeGlobal、unsubscribeGlobal、publishGlobal 方法，实现跨实例事件广播。
  */
 class org.flashNight.neur.Event.EventDispatcher {
-    private static var instanceCounter:Number = 0; // 静态计数器，用于生成唯一实例 ID
+    // -----------------------
+    //  静态成员
+    // -----------------------
     
-    private var bus:EventBus;          // 引用全局 EventBus 实例
-    private var subscriptions:Array;   // 存储当前实例所有订阅信息 { eventName:String, callback:Function }
+    // 所有实例共享同一个 EventBus (全局单例)
+    private static var bus:EventBus = EventBus.getInstance();
+    
+    // 静态计数器，用于生成唯一实例 ID
+    private static var instanceCounter:Number = 0;
+    
+    // -----------------------
+    //  实例成员
+    // -----------------------
+    
+    private var subscriptions:Array;   // 存储当前实例所有订阅信息 { eventName:String, callback:Function, isGlobal?:Boolean }
     private var instanceID:String;     // 当前实例的唯一 ID，用于事件名称隔离
-    
+    private var _isDestroyed:Boolean;  // 标志是否已销毁，避免重复销毁
+
     /**
      * 构造函数：创建一个新的 EventDispatcher 实例。
      * 每个实例都有独立的订阅列表，方便在销毁时统一清理。
      * 通过附加唯一的实例 ID 实现事件名称的隔离。
      */
     public function EventDispatcher() {
-        this.bus = EventBus.getInstance(); // 获取全局的 EventBus 实例
-        this.subscriptions = [];           // 初始化订阅记录数组
-        this.instanceID = String(":" + EventDispatcher.instanceCounter++); // 分配唯一的实例 ID
+        this.subscriptions = [];   
+        this.instanceID = ":" + (EventDispatcher.instanceCounter++);
+        this._isDestroyed = false;
     }
     
     /**
@@ -42,14 +54,19 @@ class org.flashNight.neur.Event.EventDispatcher {
      * @param scope 回调函数执行时的作用域 (this)
      */
     public function subscribe(eventName:String, callback:Function, scope:Object):Void {
-        // 将事件名称附加上唯一的实例 ID，确保事件隔离
+        if (this._isDestroyed) {
+            trace("Warning: subscribe called on a destroyed EventDispatcher.");
+            return;
+        }
+        
         var uniqueEventName:String = eventName + this.instanceID;
         
-        // 通过 EventBus 订阅事件
-        this.bus.subscribe(uniqueEventName, callback, scope);
+        EventDispatcher.bus.subscribe(uniqueEventName, callback, scope);
         
-        // 记录订阅信息，用于销毁时清理
-        this.subscriptions.push({eventName: uniqueEventName, callback: callback});
+        this.subscriptions.push({
+            eventName: uniqueEventName,
+            callback: callback
+        });
     }
     
     /**
@@ -61,16 +78,20 @@ class org.flashNight.neur.Event.EventDispatcher {
      * @param scope 回调函数执行时的作用域 (this)
      */
     public function subscribeOnce(eventName:String, callback:Function, scope:Object):Void {
-        // 将事件名称附加上唯一的实例 ID，确保事件隔离
+        if (this._isDestroyed) {
+            trace("Warning: subscribeOnce called on a destroyed EventDispatcher.");
+            return;
+        }
+        
         var uniqueEventName:String = eventName + this.instanceID;
         
-        // 通过 EventBus 一次性订阅事件
-        this.bus.subscribeOnce(uniqueEventName, callback, scope);
+        EventDispatcher.bus.subscribeOnce(uniqueEventName, callback, scope);
         
-        // 记录订阅信息，用于销毁时清理
-        // 虽然 subscribeOnce 内部在事件触发后自动取消，但为安全起见，仍记录订阅。
-        // 在 destroy 时尝试二次清除不会有副作用，只是无效操作。
-        this.subscriptions.push({eventName: uniqueEventName, callback: callback});
+        // 记录到 subscriptions
+        this.subscriptions.push({
+            eventName: uniqueEventName,
+            callback: callback
+        });
     }
     
     /**
@@ -81,20 +102,23 @@ class org.flashNight.neur.Event.EventDispatcher {
      * @param callback 对应的回调函数
      */
     public function unsubscribe(eventName:String, callback:Function):Void {
-        // 将事件名称附加上唯一的实例 ID，确保事件隔离
+        if (this._isDestroyed) {
+            trace("Warning: unsubscribe called on a destroyed EventDispatcher.");
+            return;
+        }
+        
         var uniqueEventName:String = eventName + this.instanceID;
         
-        // 通过 EventBus 取消订阅
-        this.bus.unsubscribe(uniqueEventName, callback);
+        // 通过静态 bus 取消订阅
+        EventDispatcher.bus.unsubscribe(uniqueEventName, callback);
         
-        // 从本实例的订阅记录中移除指定事件和回调对应的记录
+        // 从本实例的订阅记录中移除
         var len:Number = this.subscriptions.length;
         for (var i:Number = 0; i < len; i++) {
             var sub:Object = this.subscriptions[i];
             if (sub.eventName == uniqueEventName && sub.callback == callback) {
-                // 从数组中移除该订阅记录
                 this.subscriptions.splice(i, 1);
-                return; // 退出循环，一般一个事件只对应一个回调
+                return;
             }
         }
     }
@@ -107,17 +131,21 @@ class org.flashNight.neur.Event.EventDispatcher {
      * @param ...args 发布事件时传递的可选参数列表
      */
     public function publish(eventName:String):Void {
-        // 将事件名称附加上唯一的实例 ID，确保事件隔离
-        var uniqueEventName:String = eventName + this.instanceID;
-        
-        // 构建参数数组，从第二个参数开始（索引1）
-        var slicedArgs:Array = [];
-        for (var i:Number = 1; i < arguments.length; i++) {
-            slicedArgs.push(arguments[i]);
+        if (this._isDestroyed) {
+            trace("Warning: publish called on a destroyed EventDispatcher.");
+            return;
         }
         
-        // 发布事件，传递参数
-        this.bus.publish.apply(this.bus, [uniqueEventName].concat(slicedArgs));
+        var uniqueEventName:String = eventName + this.instanceID;
+        
+        // 构建参数数组 (从索引1开始)
+        var args:Array = [];
+        var argLen:Number = arguments.length; // 缓存 length
+        for (var i:Number = 1; i < argLen; i++) {
+            args[i-1] = arguments[i];
+        }
+        
+        EventDispatcher.bus.publish.apply(EventDispatcher.bus, [uniqueEventName].concat(args));
     }
     
     /**
@@ -129,12 +157,19 @@ class org.flashNight.neur.Event.EventDispatcher {
      * @param scope 回调函数执行时的作用域 (this)
      */
     public function subscribeGlobal(eventName:String, callback:Function, scope:Object):Void {
-        // 通过 EventBus 订阅全局事件（不附加实例 ID）
-        this.bus.subscribe(eventName, callback, scope);
+        if (this._isDestroyed) {
+            trace("Warning: subscribeGlobal called on a destroyed EventDispatcher.");
+            return;
+        }
         
-        // 记录全局订阅信息，用于销毁时清理
-        // 使用特殊标识区分全局订阅
-        this.subscriptions.push({eventName: eventName, callback: callback, isGlobal: true});
+        EventDispatcher.bus.subscribe(eventName, callback, scope);
+        
+        // 标记 isGlobal 以便在 destroy() 时区分
+        this.subscriptions.push({
+            eventName: eventName,
+            callback: callback,
+            isGlobal: true
+        });
     }
     
     /**
@@ -144,17 +179,20 @@ class org.flashNight.neur.Event.EventDispatcher {
      * @param callback 对应的回调函数
      */
     public function unsubscribeGlobal(eventName:String, callback:Function):Void {
-        // 通过 EventBus 取消订阅全局事件
-        this.bus.unsubscribe(eventName, callback);
+        if (this._isDestroyed) {
+            trace("Warning: unsubscribeGlobal called on a destroyed EventDispatcher.");
+            return;
+        }
         
-        // 从本实例的订阅记录中移除指定全局事件和回调对应的记录
+        EventDispatcher.bus.unsubscribe(eventName, callback);
+        
+        // 从本实例的订阅记录中移除
         var len:Number = this.subscriptions.length;
         for (var i:Number = 0; i < len; i++) {
             var sub:Object = this.subscriptions[i];
             if (sub.eventName == eventName && sub.callback == callback && sub.isGlobal) {
-                // 从数组中移除该订阅记录
                 this.subscriptions.splice(i, 1);
-                return; // 退出循环，一般一个事件只对应一个回调
+                return;
             }
         }
     }
@@ -167,14 +205,18 @@ class org.flashNight.neur.Event.EventDispatcher {
      * @param ...args 发布事件时传递的可选参数列表
      */
     public function publishGlobal(eventName:String):Void {
-        // 构建参数数组，从第二个参数开始（索引1）
-        var slicedArgs:Array = [];
-        for (var i:Number = 1; i < arguments.length; i++) {
-            slicedArgs.push(arguments[i]);
+        if (this._isDestroyed) {
+            trace("Warning: publishGlobal called on a destroyed EventDispatcher.");
+            return;
         }
         
-        // 发布全局事件，传递参数
-        this.bus.publish.apply(this.bus, [eventName].concat(slicedArgs));
+        var args:Array = [];
+        var argLen:Number = arguments.length;
+        for (var i:Number = 1; i < argLen; i++) {
+            args[i-1] = arguments[i];
+        }
+        
+        EventDispatcher.bus.publish.apply(EventDispatcher.bus, [eventName].concat(args));
     }
     
     /**
@@ -182,19 +224,29 @@ class org.flashNight.neur.Event.EventDispatcher {
      * 此操作仅影响本实例创建的订阅，不会影响全局 EventBus 或其他实例的订阅。
      */
     public function destroy():Void {
+        if (this._isDestroyed) {
+            return; // 避免重复销毁
+        }
+        this._isDestroyed = true;
+        
         var len:Number = this.subscriptions.length;
+        // 如果没有任何订阅，直接返回
+        if (len == 0) {
+            this.subscriptions = null;
+            return;
+        }
+        
+        // 逐个退订
         for (var i:Number = 0; i < len; i++) {
             var sub:Object = this.subscriptions[i];
-            // 根据是否为全局订阅决定取消方式
-            if (sub.isGlobal) {
-                // 取消全局订阅
-                this.bus.unsubscribe(sub.eventName, sub.callback);
+            if (sub.isGlobal == true) {
+                EventDispatcher.bus.unsubscribe(sub.eventName, sub.callback);
             } else {
-                // 取消实例级订阅
-                this.bus.unsubscribe(sub.eventName, sub.callback);
+                EventDispatcher.bus.unsubscribe(sub.eventName, sub.callback);
             }
         }
+        
         // 清空订阅列表
-        this.subscriptions = [];
+        this.subscriptions = null;
     }
 }

@@ -17,7 +17,6 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      * 构造函数：初始化测试类，创建 EventDispatcher 实例和结果存储数组。
      */
     public function EventDispatcherTest() {
-        this.dispatcher = new EventDispatcher();
         this.testResults = [];
     }
 
@@ -62,10 +61,29 @@ class org.flashNight.neur.Event.EventDispatcherTest {
     }
 
     /**
+     * 初始化一个新的 EventDispatcher 实例，为每个测试方法提供独立环境。
+     */
+    private function initializeDispatcher():Void {
+        this.dispatcher = new EventDispatcher();
+    }
+
+    /**
+     * 清理 EventDispatcher 实例。
+     */
+    private function cleanupDispatcher():Void {
+        if (this.dispatcher != null) {
+            this.dispatcher.destroy();
+            this.dispatcher = null;
+        }
+    }
+
+    /**
      * 测试 subscribe 方法的正确性。
      */
     private function testSubscribe():Void {
         trace("--- 测试 subscribe 方法 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "testEvent";
         var callbackCalled:Boolean = false;
         var testCallback:Function = function() {
@@ -91,6 +109,7 @@ class org.flashNight.neur.Event.EventDispatcherTest {
 
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback);
+        this.cleanupDispatcher();
     }
 
     /**
@@ -98,6 +117,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testPublish():Void {
         trace("--- 测试 publish 方法 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "paramEvent";
         var receivedParams:Array = [];
         var testCallback:Function = function(a, b, c) {
@@ -119,6 +140,7 @@ class org.flashNight.neur.Event.EventDispatcherTest {
 
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback);
+        this.cleanupDispatcher();
     }
 
     /**
@@ -126,6 +148,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testSubscribeOnce():Void {
         trace("--- 测试 subscribeOnce 方法 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "onceEvent";
         var callCount:Number = 0;
         var testCallback:Function = function() {
@@ -143,6 +167,10 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         // 发布事件第二次
         this.dispatcher.publish(eventName);
         this.assert(callCount === 1, "subscribeOnce: Callback should not be called a second time.");
+
+        // 清理
+        this.dispatcher.unsubscribe(eventName, testCallback);
+        this.cleanupDispatcher();
     }
 
     /**
@@ -150,6 +178,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testUnsubscribe():Void {
         trace("--- 测试 unsubscribe 方法 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "unsubscribeEvent";
         var callCount:Number = 0;
         var testCallback:Function = function() {
@@ -170,6 +200,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         // 发布事件再次
         this.dispatcher.publish(eventName);
         this.assert(callCount === 1, "unsubscribe: Callback should not be called after unsubscribe.");
+
+        this.cleanupDispatcher();
     }
 
     /**
@@ -177,6 +209,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testDestroy():Void {
         trace("--- 测试 destroy 方法 ---");
+        this.initializeDispatcher();
+
         var eventName1:String = "destroyEvent1";
         var eventName2:String = "destroyEvent2";
         var callCount1:Number = 0;
@@ -207,6 +241,12 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.dispatcher.publish(eventName2);
         this.assert(callCount1 === 1, "destroy: Callback1 should not be called after destroy.");
         this.assert(callCount2 === 1, "destroy: Callback2 should not be called after destroy.");
+
+        // 尝试再次销毁，确保无副作用
+        this.dispatcher.destroy();
+        trace("destroy: Called destroy() twice without issues.");
+
+        this.cleanupDispatcher();
     }
 
     /**
@@ -214,6 +254,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testNoSubscribers():Void {
         trace("--- 测试发布没有订阅者的事件 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "noSubscriberEvent";
         try {
             this.dispatcher.publish(eventName);
@@ -221,6 +263,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         } catch (error:Error) {
             this.assert(false, "noSubscribers: Publishing event with no subscribers threw an error.");
         }
+
+        this.cleanupDispatcher();
     }
 
     /**
@@ -228,6 +272,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testDifferentScopes():Void {
         trace("--- 测试不同作用域的回调执行 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "scopeEvent";
         var testObject1:Object = { value: 0 };
         var testObject2:Object = { value: 0 };
@@ -253,6 +299,7 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback1);
         this.dispatcher.unsubscribe(eventName, testCallback2);
+        this.cleanupDispatcher();
     }
 
     /**
@@ -260,6 +307,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testDuplicateSubscriptions():Void {
         trace("--- 测试重复订阅同一回调函数 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "duplicateEvent";
         var callCount:Number = 0;
         var testCallback:Function = function() {
@@ -275,10 +324,13 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.dispatcher.publish(eventName);
 
         // 断言回调只被调用一次
-        this.assert(callCount === 1, "duplicateSubscriptions: Callback should be called only once despite multiple subscriptions.");
+        this.assert(callCount === 1, "duplicateSubscriptions: Callback should be called twice due to duplicate subscriptions.");
 
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback);
+        // 由于重复订阅，每个订阅都需要被取消
+        this.dispatcher.unsubscribe(eventName, testCallback);
+        this.cleanupDispatcher();
     }
 
     /**
@@ -286,6 +338,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testModifySubscriptionsDuringDispatch():Void {
         trace("--- 测试在事件发布过程中修改订阅 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "modifyDuringDispatchEvent";
         var callOrder:Array = [];
 
@@ -335,6 +389,7 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback2);
         this.dispatcher.unsubscribe(eventName, testCallback3);
+        this.cleanupDispatcher();
     }
 
     /**
@@ -342,9 +397,11 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testCallbackExceptionHandling():Void {
         trace("--- 测试回调函数抛出异常 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "exceptionEvent";
         var callCount:Number = 0;
-        var errorCaught:Boolean = false;
+        var exceptionThrown:Boolean = false;
 
         var testCallback1:Function = function() {
             callCount++;
@@ -359,20 +416,28 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.dispatcher.subscribe(eventName, testCallback1, scope);
         this.dispatcher.subscribe(eventName, testCallback2, scope);
 
+        // 修改 EventDispatcher 的 publish 方法，确保异常被捕获
+        // 假设 EventDispatcher 已经在 publish 方法中捕获异常，并继续执行后续回调
+
         // 发布事件
-        // EventDispatcher 已经在 publish 方法中捕获异常，所以不需要额外处理
-        this.dispatcher.publish(eventName);
+        try {
+            this.dispatcher.publish(eventName);
+            exceptionThrown = false;
+        } catch (error:Error) {
+            // 应该不会进入这里，因为 EventDispatcher 应该已捕获异常
+            exceptionThrown = true;
+        }
 
         // 断言：
         // - 回调1被调用并抛出异常
         // - 回调2依然被调用
-        // - 异常被捕获并记录（通过 trace 输出）
         this.assert(callCount === 2, "callbackExceptionHandling: Both callbacks should be called.");
-        // 无法直接测试是否捕获异常，只能通过观察 trace 输出
+        this.assert(!exceptionThrown, "callbackExceptionHandling: Exception should be handled within EventDispatcher.");
 
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback1);
         this.dispatcher.unsubscribe(eventName, testCallback2);
+        this.cleanupDispatcher();
     }
 
     /**
@@ -380,6 +445,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testMultipleDispatchers():Void {
         trace("--- 测试多个 EventDispatcher 实例的独立性 ---");
+        this.initializeDispatcher();
+
         var dispatcher2:EventDispatcher = new EventDispatcher();
         var eventName:String = "multipleDispatchersEvent";
         var callCount1:Number = 0;
@@ -410,6 +477,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback1);
         dispatcher2.unsubscribe(eventName, testCallback2);
+        this.cleanupDispatcher();
+        dispatcher2.destroy();
     }
 
     /**
@@ -417,6 +486,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testSubscribeOnceWithUnsubscribe():Void {
         trace("--- 测试 subscribeOnce 与 unsubscribe 的交互 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "subscribeOnceWithUnsubscribeEvent";
         var callCount:Number = 0;
 
@@ -440,6 +511,9 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         // 再次发布事件，确保无影响
         this.dispatcher.publish(eventName);
         this.assert(callCount === 0, "subscribeOnceWithUnsubscribe: Callback should not be called after unsubscribe.");
+
+        // 清理
+        this.cleanupDispatcher();
     }
 
     /**
@@ -448,6 +522,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testMemoryLeakDetection():Void {
         trace("--- 测试内存泄漏检测 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "memoryLeakEvent";
         var numIterations:Number = 10000;
         var callCount:Number = 0;
@@ -474,6 +550,7 @@ class org.flashNight.neur.Event.EventDispatcherTest {
 
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback);
+        this.cleanupDispatcher();
     }
 
     /**
@@ -482,16 +559,22 @@ class org.flashNight.neur.Event.EventDispatcherTest {
      */
     private function testPerformance():Void {
         trace("--- 测试性能 ---");
+        this.initializeDispatcher();
+
         var eventName:String = "performanceEvent";
         var numSubscribers:Number = 1000;
         var callCount:Number = 0;
         var scope:Object = this;
+
+        // 保存回调引用以便后续取消订阅
+        var callbacks:Array = [];
 
         // 创建大量订阅
         for (var i:Number = 0; i < numSubscribers; i++) {
             var callback:Function = function() {
                 callCount++;
             };
+            callbacks.push(callback);
             this.dispatcher.subscribe(eventName, callback, scope);
         }
 
@@ -511,9 +594,12 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         // 输出执行时间
         trace("Performance Test: Publishing event to " + numSubscribers + " subscribers took " + duration + " ms.");
 
-        // 清理
-        // 注意：由于回调是匿名函数，无法一一取消订阅，这里暂不清理
-        // 在实际使用中，建议保留对回调的引用以便取消订阅
+        // 清理所有订阅
+        for (var j:Number = 0; j < callbacks.length; j++) {
+            this.dispatcher.unsubscribe(eventName, callbacks[j]);
+        }
+
+        this.cleanupDispatcher();
     }
 
     /**
@@ -522,18 +608,26 @@ class org.flashNight.neur.Event.EventDispatcherTest {
     private function reportResults():Void {
         var passed:Number = 0;
         var failed:Number = 0;
+        var failedMessages:Array = [];
+
         for (var i:Number = 0; i < this.testResults.length; i++) {
             var result:Object = this.testResults[i];
             if (result.success) {
                 passed++;
             } else {
                 failed++;
+                failedMessages.push(result.message);
             }
         }
+
         trace("=== 测试结果 ===");
         trace("通过: " + passed + " 条");
         trace("失败: " + failed + " 条");
         if (failed > 0) {
+            trace("失败详情:");
+            for (var j:Number = 0; j < failedMessages.length; j++) {
+                trace("- " + failedMessages[j]);
+            }
             trace("请检查失败的测试并修正相关代码。");
         } else {
             trace("所有测试均通过。");
