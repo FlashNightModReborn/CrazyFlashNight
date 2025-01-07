@@ -18,6 +18,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
     public static function initializeUnit(target:MovieClip):Void 
     {
         if (!target.aabbCollider) target.aabbCollider = StaticInitializer.factory.createFromUnitArea(target);
+        if (!target.dispatcher) target.dispatcher = new LifecycleEventDispatcher(target);
         if (isNaN(target.重量)) target.重量 = 60;
         if (isNaN(target.韧性系数)) target.韧性系数 = 1;
         if (isNaN(target.remainingImpactForce)) target.remainingImpactForce = 0;

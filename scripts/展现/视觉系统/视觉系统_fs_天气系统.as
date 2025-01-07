@@ -1,4 +1,5 @@
 ﻿import org.flashNight.neur.Event.*;
+import org.flashNight.naki.Interpolation.*;
 
 _root.天气系统 = {};
 //_root.开启昼夜系统 = true;
@@ -89,7 +90,7 @@ _root.天气系统.获得当前光照等级 = function()
     {
         var baseLevel = Math.floor(时间);
         var nextLevel = Math.ceil(时间);
-        光照等级 = _root.常用工具函数.线性插值(时间, baseLevel, nextLevel, this.昼夜光照[baseLevel], this.昼夜光照[nextLevel]);
+        光照等级 = Interpolation.linear(时间, baseLevel, nextLevel, this.昼夜光照[baseLevel], this.昼夜光照[nextLevel]);
     }
     else if((时间 <= 11 and 时间 >= 4) or (时间 <= 18 and 时间 >= 13))
     {
@@ -131,9 +132,10 @@ _root.天气系统.设置当前天气 = function()
     //_root.服务器.发布服务器消息(_root.常用工具函数.对象转JSON(夜视仪));
     if(光照等级 <= this.时间倍率启动等级 && !夜视仪.视觉情况)
     {
-        this.金币时间倍率 = _root.常用工具函数.线性插值(光照等级, 0, this.时间倍率启动等级, this.金币时间最大倍率, 1);
-        this.经验时间倍率 = _root.常用工具函数.线性插值(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1);
-        this.人物信息透明度 = _root.常用工具函数.线性插值(光照等级, 0, this.时间倍率启动等级, 0, 100);
+        this.金币时间倍率 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.金币时间最大倍率, 1);
+        this.经验时间倍率 = Interpolation.linear(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1);
+        this.人物信息透明度 = Interpolation.linear(光照等级, 0, this.时间倍率启动等级, 0, 100);
+
     }
     else
     {
@@ -152,3 +154,8 @@ _root.天气系统.设置当前天气 = function()
         default: break;
     }
 };
+
+
+EventBus.getInstance().subscribe("WeatherUpdated", function() {
+    this.设置当前天气();
+}, _root.天气系统);
