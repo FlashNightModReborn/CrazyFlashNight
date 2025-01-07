@@ -43,11 +43,14 @@
 
 ## 功能概述与接口说明
 
-- **subscribe(eventName, callback, scope)**：订阅指定事件，将回调函数与事件关联，并在事件触发时执行。
-- **unsubscribe(eventName, callback)**：取消订阅某个事件的特定回调函数，防止后续重复触发。
-- **publish(eventName, ...args)**：发布事件，可携带可变数量的参数，所有订阅该事件的回调函数将接收这些参数。
-- **subscribeOnce(eventName, callback, scope)**：一次性订阅事件，事件被触发一次后自动取消订阅，适用于只需响应单次事件的逻辑。
-- **destroy()**：销毁当前 `EventDispatcher` 实例，释放其所有订阅资源，避免内存泄漏。
+- **`subscribe(eventName, callback, scope)`**：订阅指定事件，将回调函数与事件关联，并在事件触发时执行。
+- **`unsubscribe(eventName, callback)`**：取消订阅某个事件的特定回调函数，防止后续重复触发。
+- **`publish(eventName, ...args)`**：发布事件，可携带可变数量的参数，所有订阅该事件的回调函数将接收这些参数。
+- **`subscribeOnce(eventName, callback, scope)`**：一次性订阅事件，事件被触发一次后自动取消订阅，适用于只需响应单次事件的逻辑。
+- **`destroy()`**：销毁当前 `EventDispatcher` 实例，释放其所有订阅资源，避免内存泄漏。
+- **`subscribeGlobal(eventName, callback, scope)`**：全局订阅事件，跨所有 `EventDispatcher` 实例。
+- **`unsubscribeGlobal(eventName, callback)`**：取消全局事件的订阅。
+- **`publishGlobal(eventName, ...args)`**：发布全局事件，通知所有订阅该事件的回调函数执行。
 
 ## 实现原理与底层逻辑
 
@@ -59,7 +62,7 @@
 
 ### 4.2 事件订阅与回调索引管理
 
-**底层支持**：`EventBus` 提供核心的订阅与回调管理功能，包括维护回调池、可用索引列表及查询回调函数的映射。`EventDispatcher` 调用 `EventBus` 的 `subscribe`、`unsubscribe` 函数完成底层注册与取消注册。
+**底层支持**：`EventBus` 提供核心的订阅与回调管理功能，包括维护回调池、可用索引列表及查询回调函数的映射。`EventDispatcher` 调用 `EventBus` 的 `subscribe`, `unsubscribe` 函数完成底层注册与取消注册。
 
 **回调记录**：`EventDispatcher` 在内部维护一个 `subscriptions` 数组，记录当前实例所订阅的所有事件的唯一名称（含 `instanceID`）及对应的回调函数，方便在销毁时集中清理。
 
@@ -81,15 +84,23 @@
 
 **问题背景**：AS2 函数调用开销较高，在高频事件下可能造成性能瓶颈。
 
-**优化举措**：将 `getUniqueEventName`、`removeSubscriptionRecord`、`sliceArguments` 等逻辑内联到公共方法中，避免多余的函数调用。
+**优化举措**：
+1. **使用静态引用**：将 `EventBus` 定义为静态属性，避免每个实例都持有一个独立的引用，减少内存占用和访问层级。
+2. **缓存循环边界**：在循环中缓存 `arguments.length`，避免每次循环都访问 `arguments.length`。
+3. **减少函数调用**：将频繁调用的小函数内联到主流程，降低函数调用开销。
+4. **优化字符串处理**：在订阅时预先生成并缓存 `uniqueEventName`，避免在发布时频繁拼接字符串。
 
-**效果**：减少函数调用层级，使核心路径（`subscribe`、`publish`、`unsubscribe`）在执行时更为直接高效。
+**效果**：减少函数调用层级和不必要的操作，使核心路径（`subscribe`, `publish`, `unsubscribe`）在执行时更为直接高效。
 
 ### 4.6 销毁机制与资源释放
 
 **问题背景**：长期运行的应用中，如果不对订阅进行清理，可能导致内存或资源泄漏。
 
 **方案**：`destroy()` 方法在调用时，遍历 `subscriptions` 数组，对所有订阅事件逐一调用 `unsubscribe`，确保彻底释放资源。销毁后该实例不再有效，相关订阅全部清空。
+
+**优化**：
+- **销毁标志**：引入 `_isDestroyed` 标志，防止重复销毁导致的多余操作和潜在错误。
+- **性能优化**：在 `destroy()` 中，若 `subscriptions` 数组为空或已销毁，提前返回，减少不必要的循环。
 
 ## 使用指南与最佳实践
 
@@ -112,7 +123,7 @@ var onDataReceived:Function = function(data) {
 dispatcher.subscribe("dataEvent", onDataReceived, this);
 ```
 
-**要点**：  
+**要点**：
 - 使用具名函数或提前保存匿名函数引用，有利于后续取消订阅。
 - `scope` 参数确保回调在正确对象上下文中执行。
 
@@ -161,10 +172,13 @@ dispatcher.destroy();
 
 ## 性能优化策略与建议
 
-1. **减少函数调用层级**：通过内联方法和减少不必要的函数调用，加快事件处理路径。
-2. **控制回调函数数量**：虽然本实现已优化底层性能，但大量回调仍会增加处理开销。优化业务逻辑，减少无用订阅。
-3. **及时取消不需要的订阅**：避免累积无用回调，降低长期运行中的性能与内存损耗。
-4. **保持参数简洁**：发布事件时，传递过于复杂的对象或过多参数会增加处理负担。
+1. **使用静态 `EventBus`**：所有 `EventDispatcher` 实例共享同一个 `EventBus`，减少内存占用和访问层级。
+2. **减少函数调用层级**：通过内联方法和减少不必要的函数调用，加快事件处理路径。
+3. **缓存循环边界**：在循环中缓存 `arguments.length`，避免每次循环都访问 `arguments.length`。
+4. **控制回调函数数量**：虽然本实现已优化底层性能，但大量回调仍会增加处理开销。优化业务逻辑，减少无用订阅。
+5. **及时取消不需要的订阅**：避免累积无用回调，降低长期运行中的性能与内存损耗。
+6. **保持参数简洁**：发布事件时，传递过于复杂的对象或过多参数会增加处理负担。
+7. **预生成唯一事件名称**：在订阅时预先生成并缓存 `uniqueEventName`，避免在发布时频繁拼接字符串。
 
 ## 示例代码与实践案例
 
@@ -199,16 +213,52 @@ dispatcherA.publish("commonEvent"); // 输出：A event triggered
 dispatcherB.publish("commonEvent"); // 输出：B event triggered
 ```
 
+### 全局事件订阅与发布
+
+```actionscript
+var onGlobalEvent:Function = function(data) {
+    trace("Global event received:", data);
+};
+
+dispatcher.subscribeGlobal("globalEvent", onGlobalEvent, this);
+dispatcher.publishGlobal("globalEvent", "Global Data"); // 输出：Global event received: Global Data
+dispatcher.unsubscribeGlobal("globalEvent", onGlobalEvent);
+dispatcher.publishGlobal("globalEvent", "No listener"); // 无输出
+```
+
+### 一次性订阅示例
+
+```actionscript
+var onInit:Function = function() {
+    trace("Initialization event triggered once.");
+};
+dispatcher.subscribeOnce("initEvent", onInit, this);
+
+dispatcher.publish("initEvent"); // 输出：Initialization event triggered once.
+dispatcher.publish("initEvent"); // 无输出
+```
+
 ## 常见问题与解决方案
 
 **Q1：如何避免重复订阅同一个回调？**  
-确保在同一事件上订阅时检查逻辑，或者在订阅前先 `unsubscribe`。在实际项目中，可通过维护状态记录。
+**A1**：确保在同一事件上订阅时检查逻辑，或者在订阅前先 `unsubscribe`。在实际项目中，可通过维护状态记录。例如：
+
+```actionscript
+dispatcher.unsubscribe("dataEvent", onDataReceived);
+dispatcher.subscribe("dataEvent", onDataReceived, this);
+```
 
 **Q2：对同一事件多次 `publish` 会影响性能吗？**  
-对于大量发布事件的场景，可通过减少冗余订阅、优化回调执行逻辑来控制性能消耗。
+**A2**：对于大量发布事件的场景，可通过减少冗余订阅、优化回调执行逻辑来控制性能消耗。确保只订阅必要的事件，并在不需要时及时取消订阅。
 
 **Q3：是否可以动态改变事件名称前缀？**  
-当前通过 `instanceID` 动态生成唯一后缀，原则上可在构造函数中扩展逻辑，生成更复杂的标识，但需确保实例之间的唯一性与不可变性。
+**A3**：当前通过 `instanceID` 动态生成唯一后缀，原则上可在构造函数中扩展逻辑，生成更复杂的标识，但需确保实例之间的唯一性与不可变性。
+
+**Q4：重复订阅同一回调函数会导致多次调用吗？**  
+**A4**：目前的实现允许同一回调函数被多次订阅，每次订阅都会导致回调在事件触发时被调用一次。因此，如果不希望回调被多次调用，请避免重复订阅，或者在订阅前先取消订阅。
+
+**Q5：一次性订阅后如何确认订阅已被取消？**  
+**A5**：在调用 `publish` 后，`subscribeOnce` 的回调将自动取消。无需手动管理，但可以通过调试或日志确认回调是否被调用。
 
 ## 总结与展望
 
@@ -216,8 +266,13 @@ dispatcherB.publish("commonEvent"); // 输出：B event triggered
 
 随着项目扩张与复杂度提升，`EventDispatcher` 的设计理念和实现基础为后续新增特性（如事件优先级、批处理、筛选器）提供了良好基础。开发者可在此基础上进一步拓展，以满足更多自定义需求。
 
-以上文档旨在使读者对 `EventDispatcher` 的实现与使用有全面、深入的理解，为实际项目开发提供参考与指南。
+**未来展望**：
+1. **事件优先级**：引入事件优先级机制，使高优先级的回调先于低优先级的回调执行。
+2. **批量操作**：提供批量订阅和取消订阅接口，提升在大量事件管理时的效率。
+3. **事件过滤器**：支持事件过滤器，根据条件选择性地执行回调函数。
+4. **性能监控工具**：集成性能监控工具，实时监测事件分发的性能指标，帮助开发者优化应用性能。
 
+以上文档旨在使读者对 `EventDispatcher` 的实现与使用有全面、深入的理解，为实际项目开发提供参考与指南。
 
 ```actionscript2
 
@@ -246,20 +301,24 @@ Assertion Passed: unsubscribe: Callback should not be called after unsubscribe.
 --- 测试 destroy 方法 ---
 Assertion Passed: destroy: Callback1 should be called once before destroy.
 Assertion Passed: destroy: Callback2 should be called once before destroy.
+Warning: publish called on a destroyed EventDispatcher.
+Warning: publish called on a destroyed EventDispatcher.
 Assertion Passed: destroy: Callback1 should not be called after destroy.
 Assertion Passed: destroy: Callback2 should not be called after destroy.
+destroy: Called destroy() twice without issues.
 --- 测试发布没有订阅者的事件 ---
 Assertion Passed: noSubscribers: Publishing event with no subscribers should not throw an error.
 --- 测试不同作用域的回调执行 ---
 Assertion Passed: differentScopes: Callback1 should increment testObject1.value by 1.
 Assertion Passed: differentScopes: Callback2 should increment testObject2.value by 2.
 --- 测试重复订阅同一回调函数 ---
-Assertion Passed: duplicateSubscriptions: Callback should be called only once despite multiple subscriptions.
+Assertion Passed: duplicateSubscriptions: Callback should be called twice due to duplicate subscriptions.
 --- 测试在事件发布过程中修改订阅 ---
 Assertion Passed: modifySubscriptionsDuringDispatch: Call order should match expected order.
 --- 测试回调函数抛出异常 ---
-Error executing callback for event 'exceptionEvent:0': Test exception
+Error executing callback for event 'exceptionEvent:9': Test exception
 Assertion Passed: callbackExceptionHandling: Both callbacks should be called.
+Assertion Passed: callbackExceptionHandling: Exception should be handled within EventDispatcher.
 --- 测试多个 EventDispatcher 实例的独立性 ---
 Assertion Passed: multipleDispatchers: Callback1 should be called once by dispatcher1.
 Assertion Passed: multipleDispatchers: Callback2 should be called once by dispatcher2.
@@ -271,11 +330,10 @@ Assertion Passed: memoryLeakDetection: Callback should not be called after repea
 Assertion Passed: memoryLeakDetection: Callback should be called after final subscribe.
 --- 测试性能 ---
 Assertion Passed: performance: All 1000 callbacks should be called.
-Performance Test: Publishing event to 1000 subscribers took 9 ms.
+Performance Test: Publishing event to 1000 subscribers took 10 ms.
 === 测试结果 ===
-通过: 27 条
+通过: 28 条
 失败: 0 条
 所有测试均通过。
 === EventDispatcherTest 结束 ===
-
 ```
