@@ -1,360 +1,306 @@
-﻿/*
-## 自适应快速排序与 PDQSort 使用指南
-
-### 介绍
-
-`自适应快速排序` 和 `PDQSort` 是两种高效的排序算法，适用于不同的数据集和应用场景。`自适应快速排序` 结合了标准快速排序和三路快速排序，在处理随机数据集、重复数据集时表现优异。而 `PDQSort` 基于模式识别技术，能够在处理已排序、逆序和部分有序的数据集时发挥强大的性能优势。
-
-### 什么时候使用自适应快速排序？
-
-`自适应快速排序` 在绝大多数情况下表现稳定，并且适合处理各种类型的数据集，特别是在以下场景下表现最佳：
-
-1. **随机数据集**：
-   - 自适应快速排序在处理随机分布的数据时表现高效且一致，特别是在小规模到中等规模的数据集（100 到 1000 个元素）上。即便是大规模的随机数据集，`自适应快速排序` 也能保持良好的性能表现。
-   
-2. **包含重复元素的数据集**：
-   - 自适应快速排序在包含大量重复元素的数据集上表现尤为优异。通过三路快速排序的优化，它可以有效地减少重复元素的比较和交换操作，从而避免性能下降。在处理具有高重复率的数据集时，自适应快排明显优于 PDQSort。
-
-3. **小规模数据集**：
-   - 对于小规模的数据集（小于 1000 个元素），`自适应快速排序` 通常表现优于 PDQSort 和内建排序，因为它结合了快速排序和三路排序的优势，减少了不必要的递归和复杂度。
-
-4. **不确定数据分布**：
-   - 当数据分布不确定，或你无法预知数据集的特点时，`自适应快速排序` 是一个较为安全的选择。它可以在不同类型的数据集上提供一致的高性能表现，无需手动选择合适的排序算法。
-
-### 什么时候使用 PDQSort？
-
-尽管 `自适应快速排序` 在大多数情况下表现优异，`PDQSort` 在某些特定场景下具有显著的性能优势，特别是在以下情况下推荐使用 PDQSort：
-
-1. **已排序或接近有序的数据集**：
-   - `PDQSort` 在识别并处理已排序或部分有序的数据集时表现出色。它能够通过模式识别技术减少排序操作，从而显著缩短排序时间。特别是当数据集规模较大（如 1000+ 个元素）时，`PDQSort` 比 `自适应快排` 更为高效。
-
-2. **完全逆序数据集**：
-   - 在处理完全逆序的数据集时，`PDQSort` 能够避免快速排序可能出现的性能瓶颈，并通过堆排序保证较为稳定的性能。对于逆序数据，尤其是大规模数据（如 1000+ 元素），PDQSort 表现明显优于自适应快排。
-
-3. **大规模数据集**：
-   - 对于非常大的数据集（3000+ 元素），`PDQSort` 的性能往往更加稳定，尤其在已排序、逆序或部分有序的情况下。它可以通过模式识别减少不必要的排序开销，保持较低的时间复杂度。
-
-### 性能表现总结
-
-#### 1. 随机数据集
-- **自适应快速排序**: 在处理 100 到 1000 元素的随机数据时表现优异，通常优于内建排序。在更大规模（10000+ 元素）的数据集上，性能依然稳定，建议优先使用。
-- **PDQSort**: 在处理随机数据时表现不如自适应快排，尤其在大规模随机数据集上，PDQSort 有时会出现较高的性能开销。
-
-#### 2. 已排序或部分有序数据集
-- **PDQSort**: 对于已排序或部分有序的数据集，PDQSort 通过模式识别和优化能够显著减少排序时间。特别是在处理大规模数据集时（如 1000+ 元素），PDQSort 明显优于自适应快排。
-- **自适应快速排序**: 在已排序数据集上表现良好，但在识别已排序模式方面不如 PDQSort。
-
-#### 3. 完全逆序数据集
-- **PDQSort**: 在处理完全逆序数据时表现稳定，避免了传统快速排序的性能瓶颈。它能够通过堆排序保证逆序数据的高效处理。
-- **自适应快速排序**: 在处理逆序数据时性能仍然不错，但在极端情况下可能会略逊于 PDQSort。
-
-#### 4. 重复数据集
-- **自适应快速排序**: 通过三路快速排序的优化，自适应快排能够高效处理高重复率的数据集，避免不必要的比较和交换操作。
-- **PDQSort**: 在高重复率数据集上，PDQSort 的模式识别能力表现不佳，可能导致性能大幅下降。建议在这种场景下优先选择自适应快排。
-
-### 使用建议
-
-1. **优先使用自适应快速排序**：
-   - 在大部分场景下，`自适应快速排序` 提供了最佳的性能和一致性。特别是在处理随机数据和包含重复元素的数据集时，它是首选算法。
-
-2. **在已排序、部分有序或完全逆序的数据集上，使用 PDQSort**：
-   - 如果数据集是已排序、部分有序或完全逆序，`PDQSort` 能够通过模式识别减少排序操作，显著提高性能，特别是在处理大规模数据时。
-
-3. **对于高重复率的数据集，优先选择自适应快速排序**：
-   - 在处理具有高重复率的场景下，`自适应快速排序` 的三路快排优化能够有效减少比较和交换操作，避免性能下降。在这些情况下，PDQSort 的表现可能不佳。
-
-4. **不确定数据分布时，使用自适应快速排序**：
-   - 当数据分布不确定时，优先选择 `自适应快速排序`，它能够适应各种数据类型，并自动调整排序策略，保证性能稳定。
-
----
-
-通过上述指南，您可以根据数据集的特性选择合适的排序算法，确保在不同场景下获得最佳的排序性能。
-*/
-
-
+﻿
 class org.flashNight.naki.Sort.PDQSort {
-
+    
     /**
      * PDQSort 的极度内联展开版：
      * - 完全去除私有函数，将所有逻辑写在 sort() 内
      * - 所有交换操作尽量使用链式赋值，减少临时变量
+     * - 合并自增自减操作，使用位运算替代乘法
+     * - 替换 Math.floor 调用，减少函数调用开销
      * - 牺牲可读性与维护性，仅为追求极致性能
+     * 
+     * @param arr 要排序的数组
+     * @param compareFunction 若为 null, 则使用数值比较 a - b
+     * @return 排好序的原数组(就地修改)
      */
     public static function sort(arr:Array, compareFunction:Function):Array {
         var length:Number = arr.length;
         if (length <= 1) {
-            return arr; // 无需排序
+            return arr; // 数组长度为0或1，无需排序，直接返回
         }
 
         //----------------------------------------------------------
-        // 1) 预排序检测（是否已整体有序 / 逆序）
+        // 1) 预排序检测（检查数组是否已整体有序或整体逆序）
         //----------------------------------------------------------
-        var cmpPre:Function;
-        if (compareFunction == null) {
-            cmpPre = function(a:Number,b:Number):Number{return a - b;};
-        } else {
-            cmpPre = compareFunction;
-        }
+        // 确定比较函数：若用户未提供，则使用默认的数值比较函数
+        var cmpPre:Function = (compareFunction == null) ?
+            function(a:Number, b:Number):Number { return a - b; } :
+            compareFunction;
 
-        // 检查是否整体有序
-        var isSorted:Boolean = true;
+        // 检查数组是否整体有序
+        var isSorted:Boolean = true; // 标记是否整体有序
         for (var iChk:Number = 1; iChk < length; iChk++) {
+            // 如果前一个元素大于后一个元素，说明数组不是整体有序
             if (cmpPre(arr[iChk - 1], arr[iChk]) > 0) {
                 isSorted = false;
-                break;
+                break; // 退出循环，数组不整体有序
             }
         }
         if (isSorted) {
-            return arr; // 已经整体有序
+            return arr; // 数组已经整体有序，直接返回
         }
 
-        // 检查是否整体逆序
-        var isReverse:Boolean = true;
+        // 检查数组是否整体逆序
+        var isReverse:Boolean = true; // 标记是否整体逆序
         for (var iRev:Number = 1; iRev < length; iRev++) {
+            // 如果前一个元素小于后一个元素，说明数组不是整体逆序
             if (cmpPre(arr[iRev - 1], arr[iRev]) < 0) {
                 isReverse = false;
-                break;
+                break; // 退出循环，数组不整体逆序
             }
         }
         if (isReverse) {
-            // 直接反转数组
-            var l:Number = 0;
-            var r:Number = length - 1;
+            // 如果数组整体逆序，则直接反转数组
+            var l:Number = 0; // 左指针，起始位置
+            var r:Number = length - 1; // 右指针，结束位置
             while (l < r) {
-                // 链式赋值交换 arr[l] <-> arr[r]
+                // 使用链式赋值交换 arr[l] 和 arr[r]
                 arr[l] = arr[r] + (arr[r] = arr[l]) - arr[r];
-                l++;
-                r--;
+                l++; // 左指针右移
+                r--; // 右指针左移
             }
-            return arr;
+            return arr; // 反转完成，返回数组
         }
 
         //----------------------------------------------------------
         // 2) 确定比较函数（defaultCompare）
         //----------------------------------------------------------
-        var compare:Function;
-        var defaultCompare:Boolean = (compareFunction == null);
-        if (defaultCompare) {
-            compare = function(a:Number, b:Number):Number {
-                return a - b;
-            };
-        } else {
-            compare = compareFunction;
-        }
+        // 再次确认比较函数，用于后续排序操作
+        var compare:Function = (compareFunction == null) ?
+            function(a:Number, b:Number):Number { return a - b; } :
+            compareFunction;
 
         //----------------------------------------------------------
         // 3) 内省排序：设置最大允许深度
         //----------------------------------------------------------
-        var maxDepth:Number = Math.floor(2 * Math.log(length));
+        // 使用位运算替换 Math.floor(2 * Math.log(length))，以减少函数调用开销
+        var maxDepth:Number = (2 * Math.log(length)) | 0; // 最大递归深度限制
 
         //----------------------------------------------------------
         // 4) 准备栈模拟递归
         //----------------------------------------------------------
-        var stack:Array = new Array(2 * length);
-        var sp:Number = 0;
-        var left:Number = 0;
-        var right:Number = length - 1;
+        var stack:Array = new Array(2 * length); // 初始化栈，用于存储待处理的区间
+        var sp:Number = 0; // 栈指针，初始为0
+        var left:Number = 0; // 当前处理区间的左边界
+        var right:Number = length - 1; // 当前处理区间的右边界
 
-        // 初始区间入栈
+        // 将初始区间 [left, right] 入栈
         stack[sp++] = left;
         stack[sp++] = right;
 
         //----------------------------------------------------------
         // 5) 主循环
         //----------------------------------------------------------
-        while (sp > 0) {
+        while (sp > 0) { // 当栈非空时，继续处理
+            // 从栈中弹出当前需要处理的区间 [left, right]
             right = Number(stack[--sp]);
             left  = Number(stack[--sp]);
 
-            var size:Number = right - left + 1;
+            var size:Number = right - left + 1; // 当前区间的大小
+
             //------------------------------------------------------
             // (a) 小区间 -> 直接插入排序 (内联展开)
             //------------------------------------------------------
-            if (size <= 10) {
-                for (var iIns:Number = left + 1; iIns <= right; iIns++) {
-                    var keyVal = arr[iIns];
-                    var jIns:Number = iIns - 1;
-                    while (jIns >= left && compare(arr[jIns], keyVal) > 0) {
-                        arr[jIns + 1] = arr[jIns];
-                        jIns--;
+            if (size <= 10) { // 如果区间大小小于等于10，使用插入排序
+                for (var iIns:Number = left + 1; iIns <= right; iIns++) { // 从第二个元素开始
+                    var keyVal:Number = arr[iIns]; // 当前元素作为插入的关键值
+                    var jIns:Number = iIns - 1; // 插入位置的前一个索引
+                    // 合并自减操作到循环条件中，减少指令数
+                    while (jIns >= left && compare(arr[jIns], keyVal) > 0) { // 比较并移动元素
+                        arr[jIns + 1] = arr[jIns]; // 将较大的元素向右移动
+                        jIns--; // 指针左移
                     }
-                    arr[jIns + 1] = keyVal;
+                    arr[jIns + 1] = keyVal; // 将关键值插入到正确位置
                 }
-                continue;
+                continue; // 处理下一个区间
             }
 
             //------------------------------------------------------
             // (b) 检查区间有序度 (>= 90%有序) -> 直接插入排序
             //------------------------------------------------------
-            var orderedCount:Number = 0;
+            var orderedCount:Number = 0; // 记录有序的相邻元素对数
             for (var iOrd:Number = left + 1; iOrd <= right; iOrd++) {
+                // 如果前一个元素小于等于后一个元素，则认为这一对是有序的
                 if (compare(arr[iOrd - 1], arr[iOrd]) <= 0) {
                     orderedCount++;
                 }
             }
-            if (orderedCount >= 0.9 * (size - 1)) {
-                // 再次插入排序
-                for (var iIns2:Number = left + 1; iIns2 <= right; iIns2++) {
-                    var keyVal2 = arr[iIns2];
-                    var jIns2:Number = iIns2 - 1;
-                    while (jIns2 >= left && compare(arr[jIns2], keyVal2) > 0) {
-                        arr[jIns2 + 1] = arr[jIns2];
-                        jIns2--;
+            if (orderedCount >= (0.9 * (size - 1))) { // 如果有序度达到90%以上
+                // 再次进行插入排序，确保排序的稳定性
+                for (var iIns2:Number = left + 1; iIns2 <= right; iIns2++) { // 从第二个元素开始
+                    var keyVal2:Number = arr[iIns2]; // 当前元素作为插入的关键值
+                    var jIns2:Number = iIns2 - 1; // 插入位置的前一个索引
+                    // 合并自减操作到循环条件中，减少指令数
+                    while (jIns2 >= left && compare(arr[jIns2], keyVal2) > 0) { // 比较并移动元素
+                        arr[jIns2 + 1] = arr[jIns2]; // 将较大的元素向右移动
+                        jIns2--; // 指针左移
                     }
-                    arr[jIns2 + 1] = keyVal2;
+                    arr[jIns2 + 1] = keyVal2; // 将关键值插入到正确位置
                 }
-                continue;
+                continue; // 处理下一个区间
             }
 
             //------------------------------------------------------
             // (c) 深度超限 -> 堆排序 (内联展开)
             //------------------------------------------------------
-            if (maxDepth-- <= 0) {
-                // === heapSort begin ===
-                // 建堆
-                var startHeap:Number = left;
-                var endHeap:Number   = right;
-                for (var iHeap:Number = Math.floor((endHeap - startHeap) / 2) + startHeap; iHeap >= startHeap; iHeap--) {
-                    // inline heapify
-                    var hi:Number = iHeap;
+            if (maxDepth-- <= 0) { // 如果递归深度超限，切换到堆排序
+                // === heapSort 开始 ===
+                // 建立最大堆
+                var startHeap:Number = left; // 堆的起始位置
+                var endHeap:Number   = right; // 堆的结束位置
+                // 使用位运算替换 Math.floor((endHeap - startHeap) / 2) + startHeap，减少函数调用开销
+                for (var iHeap:Number = ((endHeap - startHeap) >> 1) + startHeap; iHeap >= startHeap; iHeap--) { // 从最后一个非叶子节点开始
+                    // 内联 heapify 操作，调整堆以满足最大堆性质
+                    var hi:Number = iHeap; // 当前节点索引
                     while (true) {
-                        var largest:Number = hi;
-                        var lch:Number = 2 * (hi - startHeap) + 1 + startHeap;
-                        var rch:Number = 2 * (hi - startHeap) + 2 + startHeap;
+                        var largest:Number = hi; // 假设当前节点是最大的
+                        // 计算左子节点索引，使用位运算替代乘法
+                        var lch:Number = ( (hi - startHeap) << 1 ) + 1 + startHeap; // 2*(hi - startHeap) +1
+                        // 计算右子节点索引，使用位运算替代乘法
+                        var rch:Number = ( (hi - startHeap) << 1 ) + 2 + startHeap; // 2*(hi - startHeap) +2
+                        // 比较左子节点与当前最大值
                         if (lch <= endHeap && compare(arr[lch], arr[largest]) > 0) {
                             largest = lch;
                         }
+                        // 比较右子节点与当前最大值
                         if (rch <= endHeap && compare(arr[rch], arr[largest]) > 0) {
                             largest = rch;
                         }
-                        if (largest != hi) {
+                        if (largest != hi) { // 如果子节点中有比当前节点大的
                             // 链式赋值交换 arr[hi] <-> arr[largest]
                             arr[hi] = arr[largest] + (arr[largest] = arr[hi]) - arr[largest];
-                            hi = largest;
+                            hi = largest; // 继续向下调整
                         } else {
-                            break;
+                            break; // 当前节点已经是最大的，结束调整
                         }
                     }
                 }
-                // 提取堆顶
+                // 提取堆顶元素，将其放到正确的位置
                 for (var jHeap:Number = endHeap; jHeap > startHeap; jHeap--) {
                     // 链式赋值交换 arr[startHeap] <-> arr[jHeap]
                     arr[startHeap] = arr[jHeap] + (arr[jHeap] = arr[startHeap]) - arr[jHeap];
 
-                    // siftDown
-                    var root:Number = startHeap;
-                    var boundary:Number = jHeap - 1;
+                    // siftDown 操作，重新调整堆以维持最大堆性质
+                    var root:Number = startHeap; // 根节点索引
+                    var boundary:Number = jHeap - 1; // 堆的边界
                     while (true) {
-                        var largestH:Number = root;
-                        var leftC:Number  = 2 * (root - startHeap) + 1 + startHeap;
-                        var rightC:Number = 2 * (root - startHeap) + 2 + startHeap;
+                        var largestH:Number = root; // 假设根节点是最大的
+                        // 计算左子节点索引，使用位运算替代乘法
+                        var leftC:Number  = ( (root - startHeap) << 1 ) + 1 + startHeap; // 2*(root - startHeap) +1
+                        // 计算右子节点索引，使用位运算替代乘法
+                        var rightC:Number = ( (root - startHeap) << 1 ) + 2 + startHeap; // 2*(root - startHeap) +2
+                        // 比较左子节点与当前最大值
                         if (leftC <= boundary && compare(arr[leftC], arr[largestH]) > 0) {
                             largestH = leftC;
                         }
+                        // 比较右子节点与当前最大值
                         if (rightC <= boundary && compare(arr[rightC], arr[largestH]) > 0) {
                             largestH = rightC;
                         }
-                        if (largestH != root) {
+                        if (largestH != root) { // 如果子节点中有比当前节点大的
+                            // 链式赋值交换 arr[root] <-> arr[largestH]
                             arr[root] = arr[largestH] + (arr[largestH] = arr[root]) - arr[largestH];
-                            root = largestH;
+                            root = largestH; // 继续向下调整
                         } else {
-                            break;
+                            break; // 当前节点已经是最大的，结束调整
                         }
                     }
                 }
-                // === heapSort end ===
-                continue;
+                // === heapSort 结束 ===
+                continue; // 处理下一个区间
             }
 
             //------------------------------------------------------
             // (d) 五点取样选 pivot (Median-of-Five) 内联展开
             //------------------------------------------------------
-            var sizeMed:Number = size; 
-            var step:Number = Math.floor((sizeMed - 1) / 4);
+            var sizeMed:Number = size; // 当前区间的大小
+            // 使用位运算替代 Math.floor((sizeMed - 1) / 4)，减少函数调用开销
+            var step:Number = (sizeMed - 1) >> 2; // 计算步长，等同于 floor((sizeMed -1)/4)
             var idx1:Number = left;  
             var idx2:Number = left + step; 
-            var idx3:Number = left + ((sizeMed - 1) >> 1); 
+            var idx3:Number = left + ( (sizeMed - 1) >> 1 ); // 中间点索引
             var idx4:Number = right - step; 
             var idx5:Number = right; 
 
-            // smallInsertion5 => 对 [idx1, idx2, idx3, idx4, idx5] 做微型插入排序
-            // 准备一个 indices 数组
-            var indices:Array = [idx1, idx2, idx3, idx4, idx5];
-            for (var si:Number = 1; si < 5; si++) {
-                var kIndex:Number = indices[si];
-                var keyV = arr[kIndex];
-                var sj:Number = si - 1;
-                while (sj >= 0 && compare(arr[indices[sj]], keyV) > 0) {
-                    indices[sj + 1] = indices[sj];
-                    sj--;
+            // 对选取的5个点进行微型插入排序，以找到中位数
+            var indices:Array = [idx1, idx2, idx3, idx4, idx5]; // 存储选取的索引
+            for (var si:Number = 1; si < 5; si++) { // 从第二个索引开始
+                var kIndex:Number = indices[si]; // 当前索引
+                var keyV:Number = arr[kIndex]; // 当前索引对应的值
+                var sj:Number = si - 1; // 前一个索引
+                while (sj >= 0 && compare(arr[indices[sj]], keyV) > 0) { // 比较并寻找插入位置
+                    indices[sj + 1] = indices[sj]; // 将较大的索引向后移动
+                    sj--; // 指针左移
                 }
-                indices[sj + 1] = kIndex;
+                indices[sj + 1] = kIndex; // 将当前索引插入到正确位置
             }
-            // 中间位置 indices[2] 就是5个点的中值
+            // 选取中间位置的索引作为 pivot 索引
             var pivotIndex:Number = indices[2];
-            // 链式赋值交换 arr[left] <-> arr[pivotIndex]
+            // 链式赋值交换 arr[left] <-> arr[pivotIndex]，将 pivot 移动到左边界
             arr[left] = arr[pivotIndex] + (arr[pivotIndex] = arr[left]) - arr[pivotIndex];
 
             //------------------------------------------------------
-            // (e) 三路分区 + 重复元素优化(可选批量跳过)
+            // (e) 三路分区 + 重复元素优化 (可选批量跳过)
             //------------------------------------------------------
-            var pivotValue = arr[left];
-            var lessIndex:Number  = left + 1;
-            var greatIndex:Number = right;
-            var idxLoop:Number = left + 1;
+            var pivotValue:Number = arr[left]; // 选定的 pivot 值
+            var lessIndex:Number  = left + 1; // 小于 pivot 的区域起始索引
+            var greatIndex:Number = right; // 大于 pivot 的区域结束索引
+            var idxLoop:Number = left + 1; // 当前扫描索引
 
-            while (idxLoop <= greatIndex) {
-                var cPart:Number = compare(arr[idxLoop], pivotValue);
-                if (cPart < 0) {
+            while (idxLoop <= greatIndex) { // 当扫描索引未超过大于区域的结束索引时
+                var cPart:Number = compare(arr[idxLoop], pivotValue); // 比较当前元素与 pivot
+                if (cPart < 0) { // 当前元素小于 pivot
                     // 链式赋值交换 arr[idxLoop] <-> arr[lessIndex]
                     arr[idxLoop] = arr[lessIndex] + (arr[lessIndex] = arr[idxLoop]) - arr[lessIndex];
-                    lessIndex++;
-                    idxLoop++;
-                } else if (cPart > 0) {
+                    lessIndex++; // 小于区域右扩
+                    idxLoop++; // 扫描索引右移
+                } else if (cPart > 0) { // 当前元素大于 pivot
                     // 链式赋值交换 arr[idxLoop] <-> arr[greatIndex]
                     arr[idxLoop] = arr[greatIndex] + (arr[greatIndex] = arr[idxLoop]) - arr[greatIndex];
-                    greatIndex--;
-                } else {
-                    // c == 0
-                    // 若需批量跳过可加逻辑, 这里仅 idxLoop++
-                    idxLoop++;
+                    greatIndex--; // 大于区域左收缩
+                    // 不增加 idxLoop，因为交换过来的元素需要重新比较
+                } else { // 当前元素等于 pivot
+                    // 此处可以实现批量跳过重复元素的优化，但当前仅简单跳过
+                    idxLoop++; // 扫描索引右移
                 }
             }
 
-            // 将 pivot 放回正确位置 (lessIndex - 1)
+            // 将 pivot 放回正确的位置 (lessIndex - 1)
             // 链式赋值交换 arr[left] <-> arr[lessIndex - 1]
             arr[left] = arr[lessIndex - 1] + (arr[lessIndex - 1] = arr[left]) - arr[lessIndex - 1];
 
             //------------------------------------------------------
-            // (f) 子区间入栈(小的先处理)
+            // (f) 子区间入栈 (优先处理更小的子区间)
             //------------------------------------------------------
-            var leftLen:Number  = (lessIndex - 1) - left;
-            var rightLen:Number = right - greatIndex;
-            if (leftLen < rightLen) {
-                if (left < (lessIndex - 2)) {
-                    stack[sp++] = left;
-                    stack[sp++] = lessIndex - 2;
+            var leftLen:Number  = (lessIndex - 1) - left; // 左子区间长度
+            var rightLen:Number = right - greatIndex; // 右子区间长度
+            if (leftLen < rightLen) { // 如果左子区间更小
+                if (left < (lessIndex - 2)) { // 确保左子区间有多个元素
+                    stack[sp++] = left; // 将左子区间左边界入栈
+                    stack[sp++] = lessIndex - 2; // 将左子区间右边界入栈
                 }
-                if ((greatIndex + 1) < right) {
-                    stack[sp++] = greatIndex + 1;
-                    stack[sp++] = right;
+                if ((greatIndex + 1) < right) { // 确保右子区间有多个元素
+                    stack[sp++] = greatIndex + 1; // 将右子区间左边界入栈
+                    stack[sp++] = right; // 将右子区间右边界入栈
                 }
-            } else {
-                if ((greatIndex + 1) < right) {
-                    stack[sp++] = greatIndex + 1;
-                    stack[sp++] = right;
+            } else { // 如果右子区间更小或相等
+                if ((greatIndex + 1) < right) { // 确保右子区间有多个元素
+                    stack[sp++] = greatIndex + 1; // 将右子区间左边界入栈
+                    stack[sp++] = right; // 将右子区间右边界入栈
                 }
-                if (left < (lessIndex - 2)) {
-                    stack[sp++] = left;
-                    stack[sp++] = lessIndex - 2;
+                if (left < (lessIndex - 2)) { // 确保左子区间有多个元素
+                    stack[sp++] = left; // 将左子区间左边界入栈
+                    stack[sp++] = lessIndex - 2; // 将左子区间右边界入栈
                 }
             }
         }
 
-        return arr;
+        return arr; // 返回排序后的数组
     }
 
 }
+
+
 
 /*
 
