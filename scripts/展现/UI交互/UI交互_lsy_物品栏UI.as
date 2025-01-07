@@ -422,29 +422,69 @@ _root.物品UI函数.背包 = new Object();
 _root.物品UI函数.装备栏 = new Object();
 _root.物品UI函数.药剂栏 = new Object();
 
-//UI层面的移动操作
+//商店购买售卖函数
 
-_root.物品UI函数.出售物品 = function(name,value){
-	var itemData = _root.getItemData(name);
-	var price = itemData.price;
-	if (isNaN(price)) return;
-	var 售卖倍率 = 0.25;
-	var type = itemData.type;
-	if(_root.主角被动技能.口才 && _root.主角被动技能.口才.启用){
-		售卖倍率 += _root.主角被动技能.口才.等级 * 0.025;
+_root.物品UI函数.购买物品 = function(){
+	if(this.购买等级 > _root.等级){
+		pricetext.htmlText = "你的等级不足，无法购买！";
+		return false;
 	}
-	if(type == "武器" || type == "防具"){
-		var 强化等级 = value.level;
-		if(isNaN(强化等级)) 强化等级 = 1;
-		var 每石最大收益 = 强化等级 * 200 + 600;
-		var 强化石个数 = Math.pow((强化等级-2) * (强化等级-1)/2,2) + 强化等级-1;
-		var 最大收益 = 强化石个数 * 每石最大收益;
-		var 强化收益 = Math.min(最大收益,(售卖倍率 * price * (Math.pow((强化等级 - 1),4.2) / 216 )))
-		_root.金钱 += Math.floor(Number(售卖倍率 * price + 强化收益));
+	if(this.总价 > _root.金钱 || isNaN(_root.金钱) || isNaN(this.总价)){
+		pricetext.htmlText = "金钱不足！";
+		return false;
+	}
+	if(org.flashNight.arki.item.ItemUtil.singleAcquire(this.物品名,this.数量) != true){
+		pricetext.htmlText = "物品栏空间不足！";
+		return false;
+	}
+	_root.金钱 -= this.总价;
+	_root.最上层发布文字提示(this.displayname + " X " + this.数量 + "已放入物品栏");
+	this.gotoAndStop("空");
+	this.showtext.text = "购买成功，花费 $" + this.总价;
+	this.物品名 = null;
+	return true;
+}
+
+_root.物品UI函数.出售物品 = function(){
+	var item = this.sellCollection.getItem(this.sellIndex)
+	if(item !== this.sellItem) {
+		this.gotoAndStop("空");
+		this.showtext.text = "出售失败：物品已不在原位"
+		return false;
+	}
+	if(isNaN(this.物品强化度)){
+		if(item.value < this.数量){
+			this.gotoAndStop("空");
+			this.showtext.text = "出售失败：物品数量不足"
+			return false;
+		}
+		if(item.value > this.数量) this.sellCollection.addValue(this.sellIndex,-this.数量);
+		else this.sellCollection.remove(this.sellIndex);
 	}else{
-		_root.金钱 += Math.floor(Number(price * 售卖倍率 * value));
+		if(item.value.level != this.物品强化度) {
+			this.showtext.text = "出售失败：物品强化度错误"
+			return false;
+		}
+		this.sellCollection.remove(this.sellIndex);
 	}
+	_root.金钱 += this.总价;
 	_root.播放音效("收银机.mp3");
+	this.gotoAndStop("空");
+	this.showtext.text = "出售成功，获得 $" + this.总价;
+	this.物品名 = null;
+	this.sellCollection = null;
+	this.sellIndex = null;
+	return true;
+}
+
+_root.物品UI函数.计算强化收益 = function(当前总价, 强化等级){
+	if(isNaN(强化等级)) 强化等级 = 1;
+	var 每石最大收益 = 强化等级 * 200 + 600;
+	var 强化石个数 = Math.pow((强化等级-2) * (强化等级-1)/2,2) + 强化等级 - 1;
+	var 最大收益 = 强化石个数 * 每石最大收益;
+	var 强化收益 = Math.floor(当前总价 * (Math.pow((强化等级 - 1), 4.2) / 216 ));
+	if(强化收益 > 最大收益) 强化收益 = 最大收益;
+	return 强化收益;
 }
 
 
@@ -568,11 +608,12 @@ _root.物品UI函数.创建商店图标 = function(NPC物品栏){
 			_root.购买物品界面.准备购买的物品 = this.name;
 			_root.购买物品界面.准备购买的物品单价 = this.itemData.price;
 			_root.购买物品界面.准备购买的物品等级限制 = this.itemData.level;
-			if (this.itemData.type != "武器" && this.itemData.type != "防具"){
-				_root.购买物品界面.gotoAndStop("购买数量");
-			}else{
-				_root.购买物品界面.gotoAndStop("结算");
-			}
+			// if (this.itemData.type != "武器" && this.itemData.type != "防具"){
+			// 	_root.购买物品界面.gotoAndStop("购买数量");
+			// }else{
+			// 	_root.购买物品界面.gotoAndStop("结算");
+			// }
+			_root.购买物品界面.购买执行界面.购买确认(this.name);
 		}
 	}
 }

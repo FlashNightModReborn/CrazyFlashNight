@@ -68,7 +68,7 @@ class org.flashNight.arki.item.ItemUtil{
                 _root.玩家称号 = 控制对象.称号;
             }
         }
-        _root[index] = name;
+        // _root[index] = name;
         _root.播放音效(音效);
         _root.发布消息("成功装备[" + use + "][" + itemData.displayname + "]");
         _root.刷新人物装扮(_root.控制目标);

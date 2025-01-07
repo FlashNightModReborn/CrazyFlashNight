@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <symbols>
-          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1736132397"/>
+          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1736270392"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -29,21 +29,24 @@ ItemDataLoader.loadItemData(
 			var itemData = combinedData[i];
 			itemDataDict[itemData.name] = itemData;
 			itemNamesByID[itemData.id] = itemData.name;
-			itemDataArray.push(itemData.id);
+			itemDataArray.push(itemData);
 			if(itemData.id > maxID) maxID = itemData.id;
 			if(itemData.use =="情报") informationMaxValueDict[itemData.name] = itemData.maxvalue;
 		}
 		itemDataArray = org.flashNight.naki.Sort.QuickSort.adaptiveSort(itemDataArray, function(a, b) {
-            return a - b; // Numeric comparison
+            return a.id - b.id; // Numeric comparison
         });
 		org.flashNight.arki.item.ItemUtil.itemDataDict = itemDataDict;
 		org.flashNight.arki.item.ItemUtil.itemDataArray = itemDataArray;
 		org.flashNight.arki.item.ItemUtil.itemNamesByID = itemNamesByID;
 		org.flashNight.arki.item.ItemUtil.maxID = maxID;
 		org.flashNight.arki.item.ItemUtil.informationMaxValueDict = informationMaxValueDict;
-		 _root.物品属性列表 = itemDataDict;
+		_root.物品属性列表 = itemDataDict;
+		_root.物品属性数组 = itemDataArray;
 		_root.id物品名对应表 = itemNamesByID;
 		_root.物品最大id = maxID;
+		//测试物品属性数组完整度
+		trace("itemDataArray总长度："+_root.物品属性数组.length);
 		//测试物品工具函数
 		var test = new org.flashNight.arki.item.itemCollection.InventoryTest();
 		test.runTests();
@@ -67,6 +70,15 @@ ItemDataLoader.loadItemData(
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="258154" publishTime="1736270397"/>
+          <PublishItem publishSize="260373" publishTime="1736270242"/>
+          <PublishItem publishSize="260371" publishTime="1736269829"/>
+          <PublishItem publishSize="260371" publishTime="1736269818"/>
+          <PublishItem publishSize="258136" publishTime="1736269799"/>
+          <PublishItem publishSize="260341" publishTime="1736269758"/>
+          <PublishItem publishSize="260332" publishTime="1736269619"/>
+          <PublishItem publishSize="260342" publishTime="1736269537"/>
+          <PublishItem publishSize="260334" publishTime="1736268856"/>
           <PublishItem publishSize="256631" publishTime="1736132363"/>
           <PublishItem publishSize="256517" publishTime="1736129056"/>
           <PublishItem publishSize="256520" publishTime="1736128928"/>
@@ -78,14 +90,5 @@ ItemDataLoader.loadItemData(
           <PublishItem publishSize="256321" publishTime="1736128397"/>
           <PublishItem publishSize="255506" publishTime="1736128269"/>
           <PublishItem publishSize="255487" publishTime="1736127031"/>
-          <PublishItem publishSize="255423" publishTime="1736126921"/>
-          <PublishItem publishSize="255382" publishTime="1736126853"/>
-          <PublishItem publishSize="255301" publishTime="1736126776"/>
-          <PublishItem publishSize="251291" publishTime="1735805615"/>
-          <PublishItem publishSize="251278" publishTime="1735803032"/>
-          <PublishItem publishSize="251252" publishTime="1735802596"/>
-          <PublishItem publishSize="251031" publishTime="1735800773"/>
-          <PublishItem publishSize="254118" publishTime="1735800080"/>
-          <PublishItem publishSize="254057" publishTime="1735799932"/>
      </publishHistory>
 </DOMDocument>
