@@ -164,19 +164,20 @@ ItemDataLoader.loadItemData(
 			var itemData = combinedData[i];
 			itemDataDict[itemData.name] = itemData;
 			itemNamesByID[itemData.id] = itemData.name;
-			itemDataArray.push(itemData.id);
+			itemDataArray.push(itemData);
 			if(itemData.id > maxID) maxID = itemData.id;
 			if(itemData.use =="情报") informationMaxValueDict[itemData.name] = itemData.maxvalue;
 		}
 		itemDataArray = org.flashNight.naki.Sort.QuickSort.adaptiveSort(itemDataArray, function(a, b) {
-            return a - b; // Numeric comparison
+            return a.id - b.id; // Numeric comparison
         });
 		org.flashNight.arki.item.ItemUtil.itemDataDict = itemDataDict;
 		org.flashNight.arki.item.ItemUtil.itemDataArray = itemDataArray;
 		org.flashNight.arki.item.ItemUtil.itemNamesByID = itemNamesByID;
 		org.flashNight.arki.item.ItemUtil.maxID = maxID;
 		org.flashNight.arki.item.ItemUtil.informationMaxValueDict = informationMaxValueDict;
-		 _root.物品属性列表 = itemDataDict;
+		_root.物品属性列表 = itemDataDict;
+        _root.物品属性数组 = itemDataArray;
 		_root.id物品名对应表 = itemNamesByID;
 		_root.物品最大id = maxID;
     },

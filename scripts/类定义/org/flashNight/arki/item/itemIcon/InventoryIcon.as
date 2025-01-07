@@ -26,7 +26,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         }else if(container !== _root.物品栏界面 && container.getDepth() < _root.物品栏界面.getDepth()){
             container.swapDepths(_root.物品栏界面);
         }
-        icon.swapDepths(255);
+        icon.swapDepths(1023);
 
         icon.图标壳.图标.gotoAndStop(2);
         icon.startDrag(true);
@@ -128,9 +128,8 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             return;
         }
 
-        if (_root.购买物品界面._visible && _root.购买物品界面.hitTest(xmouse, ymouse)){
-            _root.物品UI函数.出售物品(name,value);
-            collection.remove(index);
+        if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle && _root.购买物品界面.购买执行界面.hitTest(xmouse, ymouse)){
+            _root.购买物品界面.购买执行界面.售卖确认(this.collection,this.index);
             return;
         }
 
