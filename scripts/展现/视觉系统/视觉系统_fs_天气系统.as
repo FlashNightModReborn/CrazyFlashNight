@@ -115,12 +115,13 @@ _root.天气系统.设置当前天气 = function()
     var 光照等级 = this.获得当前光照等级();
     var 视觉情况 = this.视觉情况;
     var 夜视仪 = this.夜视仪;
+    var bus:EventBus = EventBus.getInstance();
     if(夜视仪.视觉情况)
     {
         if(光照等级 <= 夜视仪.最大启动亮度 && 光照等级 >= 夜视仪.最小启动亮度)
         {
             视觉情况 = 夜视仪.视觉情况;
-            EventBus.getInstance().publish("夜视仪启动");
+            bus.publish("夜视仪启动", 光照等级);
         }
 
         else
@@ -132,10 +133,7 @@ _root.天气系统.设置当前天气 = function()
     //_root.服务器.发布服务器消息(_root.常用工具函数.对象转JSON(夜视仪));
     if(光照等级 <= this.时间倍率启动等级 && !夜视仪.视觉情况)
     {
-        this.金币时间倍率 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.金币时间最大倍率, 1);
-        this.经验时间倍率 = Interpolation.linear(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1);
-        this.人物信息透明度 = Interpolation.linear(光照等级, 0, this.时间倍率启动等级, 0, 100);
-
+        bus.publish("WeatherTimeRateUpdated");
     }
     else
     {
@@ -158,4 +156,10 @@ _root.天气系统.设置当前天气 = function()
 
 EventBus.getInstance().subscribe("WeatherUpdated", function() {
     this.设置当前天气();
+}, _root.天气系统);
+
+EventBus.getInstance().subscribe("WeatherTimeRateUpdated", function(光照等级) {
+    this.金币时间倍率 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.金币时间最大倍率, 1);
+    this.经验时间倍率 = Interpolation.linear(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1);
+    this.人物信息透明度 = Interpolation.linear(光照等级, 0, this.时间倍率启动等级, 0, 100);
 }, _root.天气系统);
