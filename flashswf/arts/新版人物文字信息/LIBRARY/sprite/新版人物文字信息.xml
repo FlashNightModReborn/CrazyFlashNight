@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1735806255" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1736324542" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="新版人物文字信息">
       <layers>
@@ -8,7 +8,7 @@
               <Actionscript>
                 <script><![CDATA[// 获取父级对象（自机）
 var self:Object = _parent;
-
+var _this:MovieClip = this;
 // 根据自机的状态设置名字颜色
 if (self.是否为敌人 == false) {
     名字 = "<FONT COLOR='#00FF00'>" + self.名字 + "</FONT>";
@@ -27,10 +27,22 @@ else {
 var bloodBarX:Number = this.头顶血槽.血槽底._x;
 var bloodBarLength:Number = this.头顶血槽.血槽底._width;
 
+self.dispatcher.subscribe("hit", function(){
+	_root.冲击力刷新(self);
+	_this.头顶血槽._visible = true;
+    _this.头顶血槽.gotoAndPlay(2);
+});
+
+
+self.dispatcher.subscribeGlobal("WeatherTimeRateUpdated", function(){
+    _this._alpha = _root.天气系统.人物信息透明度;
+});
+
+
+this._alpha = _root.天气系统.人物信息透明度;
 // 设置 onEnterFrame 事件处理函数
 this.onEnterFrame = function() {
     // 设置透明度和可见性
-    this._alpha = _root.天气系统.人物信息透明度;
     this._visible = self.状态 == "登场" ? false : this._alpha > 0;
 
     // 更新血槽长度

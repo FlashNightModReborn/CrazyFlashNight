@@ -469,6 +469,7 @@ _root.子弹生命周期 = function()
             hitTarget.攻击目标 = shooter._name;
 
             _root.冲击力刷新(hitTarget);
+            hitTarget.dispatcher.publish("hit");
 
             // 命中率计算略，原代码有提到根据命中率计算闪避
             var 躲闪状态 = this.伤害类型 == "真伤" ? "未躲闪": _root.躲闪状态计算(hitTarget,_root.根据命中计算闪避结果(shooter, hitTarget, 命中率),this);
