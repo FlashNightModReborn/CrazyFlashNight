@@ -63,11 +63,6 @@ Reward的必要参数：
             <QuantityMax>3</QuantityMax>
         </Reward>
         <Reward>
-            <Name>突击步枪通用弹药</Name>
-            <AcquisitionProbability>5</AcquisitionProbability>
-            <QuantityMax>3</QuantityMax>
-        </Reward>
-        <Reward>
             <Name>普通hp粉尘</Name>
             <AcquisitionProbability>10</AcquisitionProbability>
             <QuantityMax>1</QuantityMax>
@@ -85,7 +80,7 @@ Reward的必要参数：
         <Reward>
             <Name>摇滚公园通关证明</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>3</QuantityMax>
+            <QuantityMax>1</QuantityMax>
         </Reward>
     </Rewards>
     <!-- 每个SubStage描述无限过图一关的信息。具体参数详见SubStage id="4" -->

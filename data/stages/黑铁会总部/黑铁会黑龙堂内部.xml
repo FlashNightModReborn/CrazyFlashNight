@@ -29,11 +29,6 @@
             <QuantityMax>10</QuantityMax>
         </Reward>
         <Reward>
-            <Name>黑龙令</Name>
-            <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>3</QuantityMax>
-        </Reward>
-        <Reward>
             <Name>电脑芯片</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>3</QuantityMax>
@@ -129,7 +124,15 @@
                         <Level>30</Level>
                         <x>900</x>
                         <y>450</y>
-                        <Parameters>方向:左</Parameters>
+                        <Parameters>
+                            <方向>左</方向>
+                            <掉落物>
+                                <名字>黑龙令</名字>
+                                <概率>25</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -172,6 +175,15 @@
                         <Interval>1500</Interval>
                         <Quantity>2</Quantity>
                         <Level>35</Level>
+                        <Parameters>
+                            <方向>左</方向>
+                            <掉落物>
+                                <名字>黑龙令</名字>
+                                <概率>25</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
