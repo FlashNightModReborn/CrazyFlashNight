@@ -536,41 +536,10 @@ _root.仓库栏总数 = 1240;
 
 
 //新函数
-_root.清空物品格 = function(物品格:Array){
-	物品格[0] = "空";
-	物品格[1] = 0;
-	物品格[2] = 0;
+_root.singleSubmit = function(name,value):Boolean{
+	return org.flashNight.arki.item.ItemUtil.singleSubmit(name,value);
 }
 
-_root.交换物品格 = function(当前物品格:Array, 目标物品格:Array){
-	if(当前物品格[2] === 1 or 目标物品格[2] === 1){
-		return;
-	}
-	var i0 = 当前物品格[0];
-	var i1 = 当前物品格[1];
-	当前物品格[0] = 目标物品格[0];
-	当前物品格[1] = 目标物品格[1];
-	目标物品格[0] = i0;
-	目标物品格[1] = i1;
+_root.singleAcquire = function(name,value):Boolean{
+	return org.flashNight.arki.item.ItemUtil.singleAcquire(name,value);
 }
-
-_root.合并物品格 = function(当前物品格:Array, 目标物品格:Array){
-	目标物品格[1] += Number(当前物品格[1]);
-	_root.清空物品格(当前物品格);
-}
-
-
-_root.物品栏卸载装备 = function(装备类型:String){
-	var 目标元件 = _root.物品栏界面[装备类型];
-	if(目标元件.是否装备 == 1){
-		_root[装备类型] = "";
-		目标元件.已装备名 = "";
-		_root.物品栏[目标元件.对应数组号][2] = 0;
-		目标元件.是否装备 = 0;
-		目标元件.gotoAndStop(1);
-		_root.排列物品图标();
-		_root.刷新人物装扮(_root.控制目标);
-		_root.client.sendData(DataPackage.换装备(目标元件,"null"));
-	}
-}
-
