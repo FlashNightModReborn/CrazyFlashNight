@@ -250,7 +250,7 @@ class org.flashNight.naki.Sort.QuickSort {
         // 第一步：判断数组长度
         if (length <= smallArrayThreshold) {
             // 数组较小，使用内建排序以提高效率
-            InsertionSort.sort(arr,compareFunction);
+            InsertionSort.sort(arr,compare);
             return arr;
         }
 
@@ -273,14 +273,14 @@ class org.flashNight.naki.Sort.QuickSort {
         // 第三步：根据重复比例选择排序算法
         if (duplicateRatio >= duplicateRatioThreshold) {
             // 重复元素比例高，使用内建排序，处理效率更高
-            arr.sort(compareFunction);
+            arr.sort(compare);
             return arr;
         } else if (duplicateRatio >= 0.5) {
             // 重复元素较多，使用三路快速排序，专门优化大量重复数据的场景
-            return threeWaySort(arr, compareFunction);
+            return threeWaySort(arr, compare);
         } else {
             // 重复元素较少，使用标准快速排序
-            return sort(arr, compareFunction);
+            return sort(arr, compare);
         }
     }
 

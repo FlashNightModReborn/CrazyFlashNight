@@ -41,8 +41,8 @@ class org.flashNight.naki.DataStructures.TreeSet {
      */
     public static function buildFromArray(arr:Array, compareFunction:Function):TreeSet {
         var treeSet:TreeSet = new TreeSet(compareFunction);
-        // 使用 PDQSort 排序输入数组，确保数组有序以便分治法构建平衡树
-        PDQSort.sort(arr, compareFunction);
+        // 使用 TimSort 排序输入数组，确保数组有序以便分治法构建平衡树
+        TimSort.sort(arr, compareFunction);
         // 使用分治法构建平衡 AVL 树
         treeSet.root = treeSet.buildBalancedTree(arr, 0, arr.length - 1);
         // 设置树的大小为数组长度
@@ -63,7 +63,7 @@ class org.flashNight.naki.DataStructures.TreeSet {
         var arr:Array = this.toArray();
 
         // 3. 使用新的比较函数对数组进行排序
-        PDQSort.sort(arr, newCompareFunction);
+        TimSort.sort(arr, newCompareFunction);
 
         // 4. 使用分治法重建平衡 AVL 树
         this.root = buildBalancedTree(arr, 0, arr.length - 1);
