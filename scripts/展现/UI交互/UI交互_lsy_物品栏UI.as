@@ -869,5 +869,7 @@ _root.物品UI函数.显示情报信息 = function(name,value){
 
 _root.物品UI函数.刷新情报信息 = function(){
 	this.pagetext.text = String(this.当前信息序号 + 1) + " / " + this.已解明数量;
-	this.infotext.htmlText = this.情报信息表[this.当前信息序号].Text;
+	var txt = this.情报信息表[this.当前信息序号].Text;
+	txt = txt.split("\r\n").join("<BR>");//避免回车换两行
+	this.infotext.htmlText = txt;
 }

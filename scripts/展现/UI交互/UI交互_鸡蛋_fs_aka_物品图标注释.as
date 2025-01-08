@@ -233,8 +233,8 @@
 		文本数据.push("<BR>");
 	}
 
-
-	文本数据.push(物品数据.description);
+	//避免回车换两行
+	文本数据.push(物品数据.description.split("\r\n").join("<BR>"));
 	文本数据.push("<BR>");
 
 	//是否为剧情碎片                                                                                                 

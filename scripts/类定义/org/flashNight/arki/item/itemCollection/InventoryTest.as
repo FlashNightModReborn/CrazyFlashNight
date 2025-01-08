@@ -120,7 +120,7 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
             ["AK47",1]
         ];
         itemArray = ItemUtil.getRequirement(array3);
-        assert(ItemUtil.acquire(itemArray), "添加 3 个物品，其中 1 个物品可叠加，应由于空间不足而添加失败");
+        assert(!ItemUtil.acquire(itemArray), "添加 3 个物品，其中 1 个物品可叠加，应由于空间不足而添加失败");
 
         var array4 = [
             ["普通hp药剂",5],
@@ -140,7 +140,7 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
             ["牛肉罐头",1]
         ];
         itemArray = ItemUtil.getRequirement(array5);
-        assert(ItemUtil.submit(itemArray), "提交 2 个物品，应由于物品不足而提交失败");
+        assert(!ItemUtil.submit(itemArray), "提交 2 个物品，应由于物品不足而提交失败");
 
         // 输出 submit 后背包的物品
         trace(ObjectUtil.toString(_root.物品栏.背包.getItems()));
@@ -201,7 +201,7 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
 
         // 测试 searchFirstKey
         var firstKey = inventory.searchFirstKey("AK47");
-        assert(firstKey == "0", "searchFirstKey 返回应为第一个 AK47 的格子 (key=0)");
+        assert(firstKey == "0", "searchFirstKey 返回应为第一个 AK47 的格子 (key=0)" + firstKey);
 
         var noneKey = inventory.searchFirstKey("不存在的物品");
         assert(noneKey == undefined, "searchFirstKey 对不存在的物品应返回 undefined");
