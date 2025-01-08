@@ -724,36 +724,32 @@ _root.物品UI函数.计算战备箱总页数 = function():Number{
 
 
 //收集品栏相关（临时）
-_root.物品UI函数.创建收集品图标 = function(){
-	if(_root.物品栏界面.界面 != "收集品栏") return;
+_root.物品UI函数.创建材料图标 = function(){
+	if(_root.物品栏界面.界面 != "材料") return;
 
 	var 物品栏界面 = _root.物品栏界面;
 	var 材料 = _root.收集品栏.材料;
-	var 情报 = _root.收集品栏.情报;
+	// var 情报 = _root.收集品栏.情报;
 	
-	var 起始x = 物品栏界面.收集品图标._x;
-	var 起始y = 物品栏界面.收集品图标._y;
+	var 起始x = 物品栏界面.材料图标._x;
+	var 起始y = 物品栏界面.材料图标._y;
 	var 图标高度 = 28;
 	var 图标宽度 = 28;
-	var 列数 = 8;
+	var 列数 = 10;
 	var 行数 = 10;
 	var 总格数 = 行数*列数;
 	var 换行计数 = 0;
 
 	var 层级错位 = 50;
 
-	物品栏界面.收集品图标列表 = new Array(总格数);
+	物品栏界面.材料图标列表 = new Array(总格数);
 
 	var 材料列表 = [];
 	for(var key in 材料.getItems()){
 		材料列表.push(key);
 	}
-	var 情报列表 = [];
-	for(var key in 情报.getItems()){
-		情报列表.push(key);
-	}
 	
-	for (var i = 0; i < 40; i++){
+	for (var i = 0; i < 100; i++){
 		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i + 层级错位);
 		物品图标._x = 起始x;
 		物品图标._y = 起始y;
@@ -762,36 +758,116 @@ _root.物品UI函数.创建收集品图标 = function(){
 		if (换行计数 == 列数)
 		{
 			换行计数 = 0;
-			起始x = 物品栏界面.收集品图标._x;
+			起始x = 物品栏界面.材料图标._x;
 			起始y += 图标高度;
 		}
-		物品栏界面.收集品图标列表[i] = 物品图标;
+		物品栏界面.材料图标列表[i] = 物品图标;
 		物品图标.itemIcon = new CollectionIcon(物品图标,材料,材料列表[i]);
-	}
-	var 起始x = 物品栏界面.收集品图标._x;
-	var 换行计数 = 0;
-	for (var i = 40; i < 80; i++){
-		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i + 层级错位);
-		物品图标._x = 起始x;
-		物品图标._y = 起始y;
-		起始x += 图标宽度;
-		换行计数++;
-		if (换行计数 == 列数)
-		{
-			换行计数 = 0;
-			起始x = 物品栏界面.收集品图标._x;
-			起始y += 图标高度;
-		}
-		物品栏界面.收集品图标列表[i] = 物品图标;
-		物品图标.itemIcon = new CollectionIcon(物品图标,情报,情报列表[i - 40]);
 	}
 }
 
-_root.物品UI函数.删除收集品图标 = function(){
-	var 收集品图标列表 = _root.物品栏界面.收集品图标列表;
-	for(var i=0; i<收集品图标列表.length; i++){
-		收集品图标列表[i].removeMovieClip();
+_root.物品UI函数.删除材料图标 = function(){
+	var 材料图标列表 = _root.物品栏界面.材料图标列表;
+	for(var i=0; i<材料图标列表.length; i++){
+		材料图标列表[i].removeMovieClip();
 	}
-	_root.物品栏界面.收集品图标列表 = null;
+	_root.物品栏界面.材料图标列表 = null;
 	_root.收集品栏.材料.clearIcon();
+}
+
+_root.物品UI函数.创建情报图标 = function(){
+	if(_root.物品栏界面.界面 != "情报") return;
+
+	var 物品栏界面 = _root.物品栏界面;
+	var 情报 = _root.收集品栏.情报;
+	
+	var 起始x = 物品栏界面.情报物品图标._x;
+	var 起始y = 物品栏界面.情报物品图标._y;
+	var 图标高度 = 28;
+	var 图标宽度 = 28;
+	var 列数 = 10;
+	var 行数 = 10;
+	var 总格数 = 行数*列数;
+	var 换行计数 = 0;
+
+	var 层级错位 = 150;
+
+	物品栏界面.情报图标列表 = new Array(总格数);
+	
+	for (var i = 0; i < 列数 * 行数; i++){
+		var 情报名 = _root.图鉴信息.情报显示位置表[i];
+		if(!情报名) {
+			起始x += 图标宽度;
+			换行计数++;
+			if (换行计数 == 列数){
+				换行计数 = 0;
+				起始x = 物品栏界面.情报物品图标._x;
+				起始y += 图标高度;
+			}
+			continue;
+		}
+		var 物品图标 = 物品栏界面.attachMovie("物品图标","情报物品图标" + i,i + 层级错位);
+		物品图标._x = 起始x;
+		物品图标._y = 起始y;
+		起始x += 图标宽度;
+		换行计数++;
+		if (换行计数 == 列数){
+			换行计数 = 0;
+			起始x = 物品栏界面.情报物品图标._x;
+			起始y += 图标高度;
+		}
+		物品栏界面.情报图标列表[i] = 物品图标;
+		物品图标.itemIcon = new CollectionIcon(物品图标,情报,情报名);
+		物品图标.itemIcon.Press = function(){
+			_root.物品栏界面.情报信息界面.显示情报信息(this.name,this.item);
+		}
+	}
+}
+
+_root.物品UI函数.删除情报图标 = function(){
+	var 情报图标列表 = _root.物品栏界面.情报图标列表;
+	for(var i=0; i<情报图标列表.length; i++){
+		情报图标列表[i].removeMovieClip();
+	}
+	_root.物品栏界面.情报图标列表 = null;
+	_root.收集品栏.情报.clearIcon();
+}
+
+_root.物品UI函数.初始化情报信息界面 = function(){
+	this.nametext.text = "";
+	this.valuetext.text = "";
+	this.infovaluetext.text = "";
+	this.pagetext.text = "";
+	this.当前情报物品图标.itemIcon = new ItemIcon(this.当前情报物品图标,null,null);
+	this.当前情报物品图标.itemIcon.RollOver = null;
+	this.当前情报物品图标.itemIcon.RollOut = null;
+	this.btn1._visible = false;
+	this.btn2._visible = false;
+}
+
+_root.物品UI函数.显示情报信息 = function(name,value){
+	var itemData = org.flashNight.arki.item.ItemUtil.getItemData(name);
+	this.当前情报物品图标.itemIcon.init(name, 1);
+	this.情报信息表 = [];
+	var info = _root.图鉴信息.情报信息[name].Information;
+	for(var i = 0; i < info.length; i++){
+		if(info[i].Value <= value){
+			this.情报信息表.push(info[i]);
+		}
+	}
+	this.当前信息序号 = 0;
+	this.已解明数量 = this.情报信息表.length;
+	this.总信息数量 = info.length;
+	//
+	this.btn1._visible = true;
+	this.btn2._visible = true;
+	this.nametext.text = itemData.displayname;
+	this.valuetext.text = "收集进度：" + value + " / " + itemData.maxvalue;
+	this.infovaluetext.text = "已解明 " + this.已解明数量 + " / " + this.总信息数量 + " 条信息";
+	this.刷新情报信息();
+}
+
+_root.物品UI函数.刷新情报信息 = function(){
+	this.pagetext.text = String(this.当前信息序号 + 1) + " / " + this.已解明数量;
+	this.infotext.htmlText = this.情报信息表[this.当前信息序号].Text;
 }

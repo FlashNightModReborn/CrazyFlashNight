@@ -1,32 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <item>
-    <id>1</id>
-    <name>资料</name>
-    <displayname>资料</displayname>
-    <icon>资料</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>1000</price>
-    <maxvalue>3</maxvalue>
-    <description>已确认XXXXXX放丧尸的钻头的科技来自XXXXXXXX嫌疑者为XXX。但XXXXXX先前被andylaw挫败，后趋于崩溃，考虑到动机因素，和XXXXXXX一定程度合作的XXXXXXXXX业均可能回收相关科技。
-据解剖验证，XXXXXXX与长期暴露在野外的丧尸相比，身体状况较好，较少出XXXX水现象，怀疑有XXXXXX的情况，XXXX释放饲养的丧尸，动机不明。
-据XXXXX已派遣人XXXXXXXXXXX况，怀疑其目标XXXXXXX的情况。继续观察。</description>
-    <description1>已确认废城内向外释放丧尸的钻头的科技来自XXXXXXXX嫌疑者为XXX。但XXXXXX先前被andylaw挫败，后趋于崩溃，考虑到动机因素，和XXXXXXX一定程度合作的XXXXXXXXX业均可能回收相关科技。
-据解剖验证，XXXXXXX与长期暴露在野外的丧尸相比，身体状况较好，较少出现体内积水现象，怀疑有人为饲养丧尸的情况，XXXX释放饲养的丧尸，动机不明。
-据悉，A兵团已派遣人前往废城贫民窟调查情况，怀疑其目标是摸清狂暴丧尸的情况。继续观察。</description1>
-    <description2>已确认废城内向外释放丧尸的钻头的科技来自末日前巨企，最大嫌疑者为3xf。但3xf的企图先前被andylaw挫败，后趋于崩溃，考虑到动机因素，和andylaw一定程度合作的政府或者其他巨型企业均可能回收相关科技。
-据解剖验证，钻头放出的丧尸与长期暴露在野外的丧尸相比，身体状况较好，较少出现体内积水现象，怀疑有人为饲养丧尸的情况，通过钻头释放饲养的丧尸，动机不明。
-据悉，A兵团已派遣人前往废城贫民窟调查情况，怀疑其目标是摸清狂暴丧尸的情况。继续观察。</description2>
-    <level>1</level>
-  </item>
-  <item>
     <id>50</id>
     <name>Andy套装碎片</name>
     <displayname>Andy套装碎片</displayname>
     <icon>Andy套装碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1</price>
@@ -39,7 +18,7 @@
     <name>月之碎片</name>
     <displayname>月之碎片</displayname>
     <icon>月之碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>10000</price>
@@ -51,7 +30,7 @@
     <name>国庆纪念币</name>
     <displayname>国庆纪念币</displayname>
     <icon>国庆纪念币</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>10000</price>
@@ -63,7 +42,7 @@
     <name>战宠灵石</name>
     <displayname>战宠灵石</displayname>
     <icon>战宠灵石</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1</price>
@@ -75,7 +54,7 @@
     <name>圣诞糖果</name>
     <displayname>圣诞糖果</displayname>
     <icon>圣诞糖果</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>10000</price>
@@ -87,7 +66,7 @@
     <name>蓝晶</name>
     <displayname>蓝晶</displayname>
     <icon>蓝晶</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -99,7 +78,7 @@
     <name>冰魄矿石</name>
     <displayname>冰魄矿石</displayname>
     <icon>冰魄矿石</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>10000</price>
@@ -107,148 +86,11 @@
     <level>0</level>
   </item>
   <item>
-    <id>311</id>
-    <name>浮士德的情报书</name>
-    <displayname>浮士德的情报书</displayname>
-    <icon>浮士德的情报书</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>5000</price>
-    <maxvalue>1</maxvalue>
-    <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
-    游荡在堕落城的浮士德兄弟以迅猛的刀法和强大的火力压制闻名。他们的组合是坚不可摧的——人们往往这么认为。然而，只要你击败了其中之一···</description>
-    <level>1</level>
-  </item>
-  <item>
-    <id>312</id>
-    <name>牛仔的情报书</name>
-    <displayname>牛仔的情报书</displayname>
-    <icon>牛仔的情报书</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>5000</price>
-    <maxvalue>1</maxvalue>  
-    <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
-    将军倒台后，牛仔收拢了军阀残部，在荒野重新站住脚跟。手持枪械，身揣炸药的牛仔是无数试图挑战军阀威严的战士的噩梦。不过，据说牛仔有一个护士模样的情人。</description>
-    <level>1</level>
-  </item>
-  <item>
-    <id>313</id>
-    <name>黑铁会的秘密情报书</name>
-    <displayname>黑铁会的秘密情报书</displayname>
-    <icon>黑铁会的秘密情报书</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>3000</price>
-    <maxvalue>1</maxvalue>
-    <description>情报书记载了大量重要信息，掌握它们的野心家往往更有可能获取主动权。
-    黑铁会保有的绝密资料，据知情人士透露，这之中很可能记载了有关“&lt;font color=&quot;#ff00ff&quot;&gt;诺亚方舟&lt;/font&gt;”的信息。</description>
-    <level>1</level>
-  </item>
-  <item>
-    <id>314</id>
-    <name>黑铁会信物</name>
-    <displayname>黑铁会信物</displayname>
-    <icon>黑铁会信物</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>4000</price>
-    <maxvalue>1</maxvalue>
-    <description>黑铁会内部会通过信物快速传递消息，不过也因此，外人可以利用这个规则渗透黑铁会。但能统治堕落城如此之久的黑铁会，又岂能是随随便便渗透的？</description>
-    <level>1</level>
-  </item>
-  <item>
-    <id>315</id>
-    <name>翅虎堂徽章</name>
-    <displayname>翅虎堂徽章</displayname>
-    <icon>翅虎堂徽章</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>2000</price>
-    <maxvalue>3</maxvalue>
-    <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。
-    翅虎堂盘踞着大量刺客，他们用钩锁锁定敌人，然后只需一击就可以刺穿敌人的喉咙。如此有偏向性的队伍组成似乎暗示了堂主的战斗策略。</description>
-    <description1>据传言，翅虎本是一名靠盗窃为生的盗贼，而后归顺黑铁会，并且成为黑铁会的三大堂主之一。一手飞刀被他玩的出神入化，说他的飞刀抵得上精准的枪支也不为过。
-    他许多天资聪颖的手下纷纷跟他学习飞刀技术，但他们中最强的人使尽全力，也抵不上翅虎的凤毛麟角。</description1>
-    <description2>没有人知道翅虎是如何从一个盗贼摇身一变成为黑铁会的中流砥柱，但谁也不敢提起他的过去，自从成为了三大堂主之一，他便试图忘记他曾是一个盗贼。
-    而他本人对黑铁的忠心，天地可鉴。</description2>
-    <level>1</level>
-  </item>
-  <item>
-    <id>316</id>
-    <name>火凤堂徽章</name>
-    <displayname>火凤堂徽章</displayname>
-    <icon>火凤堂徽章</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>2000</price>
-    <maxvalue>2</maxvalue>
-    <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。
-    火凤堂外一直布置重兵，据说是因为堂主本人讨厌外人打扰。尽管消息很零碎，但是似乎相当多的情报流出，
-    火凤堂主本人是一名美艳，冷酷，忠心，且杀人不眨眼的一朵妖艳的玫瑰，美丽而致命。但这朵玫瑰，似乎只对一个人开放。</description>
-    <description1>“我们老大是真的太美了......美得让人没有非分之想”一名火凤堂的士兵这样形容。
-    在没有任务的日子，火凤每天的日常就是练功和欣赏一副人的画像，她曾经说，这画上的人，就是她的全部。而画像上的人，此时就站在黑铁会的巅峰位置。</description1>
-    <level>1</level>
-  </item>
-  <item>
-    <id>317</id>
-    <name>黑龙堂徽章</name>
-    <displayname>黑龙堂徽章</displayname>
-    <icon>黑龙堂徽章</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>2000</price>
-    <maxvalue>1</maxvalue>  
-    <description>黑铁会的徽章与令牌体系保证了全会上下的高组织度。
-    黑铁会所所有的重装士兵，在黑龙的带领下所向披靡。传说，黑龙堂的铁骑尽是些连子弹都无法伤他们分毫的壮硕战士。
-    而黑龙本是黑铁的本家兄弟，在接受邪术的改造后之后体型和实力增强了一倍还多，他的一身身铠甲更是刀枪不如，百毒不侵。传说黑龙只听从他兄长的命令，
-    而有人曾看见他只身闯入军阀队伍中，徒手将一个重装兵，拦腰撕成了两半。</description>
-    <level>1</level>
-  </item>
-  <item>
-    <id>318</id>
-    <name>翅虎令</name>
-    <displayname>翅虎令</displayname>
-    <icon>翅虎令</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>5000</price>
-    <maxvalue>2</maxvalue>
-    <description>上面记录了翅虎堂相关的部分任务内容。
-    “今日子时，运送物资至摇滚公园处，与主唱接头，若来者非本人，则携物资撤回。”</description>
-    <description1>上面记录了翅虎堂相关的部分任务内容。
-    “教主有令，斩所有降头师，面部朝下，斩头颅及双手，碎其脊椎，弃尸于野外，野狗及僵尸会食其肉，不可声张，做完即刻返回。”</description1>
-    <level>1</level>
-  </item>
-  <item>
-    <id>319</id>
-    <name>火凤令</name>
-    <displayname>火凤令</displayname>
-    <icon>火凤令</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>5000</price>
-    <maxvalue>1</maxvalue>  
-    <description>上面记录了火凤堂相关的部分内容，但不全面。
-    “堂主有令，需闭关三天。房间内除教主画像之外，不可留任何物品。”
-    “堂主欲修行凤凰涅槃之术，除教主外，任何人不得靠近，违者，斩！”</description>
-    <level>1</level>
-  </item>
-  <item>
     <id>320</id>
     <name>军用帆布</name>
     <displayname>军用帆布</displayname>
     <icon>军用帆布</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -261,7 +103,7 @@
     <name>上色涂料</name>
     <displayname>上色涂料</displayname>
     <icon>上色涂料</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -274,7 +116,7 @@
     <name>弹簧</name>
     <displayname>弹簧</displayname>
     <icon>弹簧</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -287,7 +129,7 @@
     <name>增效剂</name>
     <displayname>增效剂</displayname>
     <icon>增效剂</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -300,7 +142,7 @@
     <name>可塑式钢板</name>
     <displayname>可塑式钢板</displayname>
     <icon>可塑式钢板</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -313,7 +155,7 @@
     <name>战术导轨</name>
     <displayname>战术导轨</displayname>
     <icon>战术导轨</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -326,7 +168,7 @@
     <name>螺丝套件</name>
     <displayname>螺丝套件</displayname>
     <icon>螺丝套件</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -335,28 +177,12 @@
     <level>1</level>
   </item>
   <item>
-    <id>327</id>
-    <name>黑龙令</name>
-    <displayname>黑龙令</displayname>
-    <icon>黑龙令</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>5000</price>
-    <maxvalue>2</maxvalue>
-    <description>黑龙令牌的大小要超过其他两个堂口令牌的大小，但对于那些黑龙堂的壮汉来说，这并不算什么。
-    “黑龙堂将士注意，今日战军阀于残垣断壁外，教主吩咐，不留活口！”</description>
-    <description1>黑龙令牌的大小要超过其他两个堂口令牌的大小，但对于那些黑龙堂的壮汉来说，这并不算什么。
-    “堂主之战马食物已尽，须五个时辰内斩军阀，游寇等敌人四肢，携其血肉归堂。事关堂主爱马，不可出差错，任务完成，迅速返回！”</description1>
-    <level>1</level>
-  </item>
-  <item>
     <id>328</id>
     <name>僵尸血液样本</name>
     <displayname>僵尸血液样本</displayname>
     <icon>僵尸血液样本</icon>
-    <type>消耗品</type>
-    <use>资料</use>
+    <type>收集品</type>
+    <use>材料</use>
     <weight>0</weight>
     <price>4000</price>
     <description>游戏后期乱七八糟的收集品之一，是否保留看重置组规划。</description>
@@ -367,7 +193,7 @@
     <name>未知金属</name>
     <displayname>未知金属</displayname>
     <icon>未知金属</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -379,7 +205,7 @@
     <name>A兵团精致项链制作图纸</name>
     <displayname>A兵团精致项链制作图纸</displayname>
     <icon>A兵团精致项链制作图纸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>30000</price>
@@ -392,7 +218,7 @@
     <name>试验材料</name>
     <displayname>试验材料</displayname>
     <icon>试验材料</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>4000</price>
@@ -404,7 +230,7 @@
     <name>可充锂电池</name>
     <displayname>可充锂电池</displayname>
     <icon>可充锂电池</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -417,7 +243,7 @@
     <name>小型液晶屏</name>
     <displayname>小型液晶屏</displayname>
     <icon>小型液晶屏</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -430,7 +256,7 @@
     <name>战术背带</name>
     <displayname>战术背带</displayname>
     <icon>战术背带</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -443,7 +269,7 @@
     <name>防沙皮革</name>
     <displayname>防沙皮革</displayname>
     <icon>防沙皮革</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -456,7 +282,7 @@
     <name>烈性火药</name>
     <displayname>烈性火药</displayname>
     <icon>烈性火药</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -469,7 +295,7 @@
     <name>生物催化剂</name>
     <displayname>生物催化剂</displayname>
     <icon>生物催化剂</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -482,7 +308,7 @@
     <name>护手</name>
     <displayname>护手</displayname>
     <icon>护手</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -495,7 +321,7 @@
     <name>石英磨刀石</name>
     <displayname>石英磨刀石</displayname>
     <icon>石英磨刀石</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -508,7 +334,7 @@
     <name>不锈钢材</name>
     <displayname>不锈钢材</displayname>
     <icon>不锈钢材</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -521,7 +347,7 @@
     <name>高耐力橡胶</name>
     <displayname>高耐力橡胶</displayname>
     <icon>高耐力橡胶</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -534,7 +360,7 @@
     <name>强化金属管</name>
     <displayname>强化金属管</displayname>
     <icon>强化金属管</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -547,7 +373,7 @@
     <name>复合式军用塑料</name>
     <displayname>复合式军用塑料</displayname>
     <icon>复合式军用塑料</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -560,7 +386,7 @@
     <name>透镜</name>
     <displayname>透镜</displayname>
     <icon>透镜</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -573,7 +399,7 @@
     <name>高强度合金</name>
     <displayname>高强度合金</displayname>
     <icon>高强度合金</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -586,7 +412,7 @@
     <name>强力胶</name>
     <displayname>强力胶</displayname>
     <icon>强力胶</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -599,7 +425,7 @@
     <name>枪械内构强化套件</name>
     <displayname>枪械内构强化套件</displayname>
     <icon>枪械内构强化套件</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -612,7 +438,7 @@
     <name>高级木料</name>
     <displayname>高级木料</displayname>
     <icon>高级木料</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -625,7 +451,7 @@
     <name>爆炸僵尸样本</name>
     <displayname>爆炸僵尸样本</displayname>
     <icon>爆炸僵尸样本</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>4000</price>
@@ -637,7 +463,7 @@
     <name>尸母标本</name>
     <displayname>尸母标本</displayname>
     <icon>尸母标本</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>4000</price>
@@ -649,7 +475,7 @@
     <name>诺亚机枪</name>
     <displayname>诺亚机枪</displayname>
     <icon>诺亚机枪</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>4000</price>
@@ -661,7 +487,7 @@
     <name>方舟秘钥</name>
     <displayname>方舟秘钥</displayname>
     <icon>方舟秘钥</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>4000</price>
@@ -673,7 +499,7 @@
     <name>研究文件</name>
     <displayname>研究文件</displayname>
     <icon>研究文件</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>4000</price>
@@ -685,7 +511,7 @@
     <name>动力液压杆</name>
     <displayname>动力液压杆</displayname>
     <icon>动力液压杆</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -698,7 +524,7 @@
     <name>碳纤维布料</name>
     <displayname>碳纤维布料</displayname>
     <icon>碳纤维布料</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -711,7 +537,7 @@
     <name>电脑芯片</name>
     <displayname>电脑芯片</displayname>
     <icon>电脑芯片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -724,7 +550,7 @@
     <name>传感器</name>
     <displayname>传感器</displayname>
     <icon>传感器</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -737,7 +563,7 @@
     <name>传动装置</name>
     <displayname>传动装置</displayname>
     <icon>传动装置</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -750,7 +576,7 @@
     <name>水冷机构</name>
     <displayname>水冷机构</displayname>
     <icon>水冷机构</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -763,7 +589,7 @@
     <name>突击型光学瞄具</name>
     <displayname>突击型光学瞄具</displayname>
     <icon>突击型光学瞄具</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -776,7 +602,7 @@
     <name>战术鱼骨零件</name>
     <displayname>战术鱼骨零件</displayname>
     <icon>战术鱼骨零件</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -789,7 +615,7 @@
     <name>KM型消声器</name>
     <displayname>KM型消声器</displayname>
     <icon>KM型消声器</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -802,7 +628,7 @@
     <name>镭射瞄准具</name>
     <displayname>镭射瞄准具</displayname>
     <icon>镭射瞄准具</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -815,7 +641,7 @@
     <name>加长弹匣</name>
     <displayname>加长弹匣</displayname>
     <icon>加长弹匣</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -828,7 +654,7 @@
     <name>战术握把</name>
     <displayname>战术握把</displayname>
     <icon>战术握把</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -841,7 +667,7 @@
     <name>非栓式机构</name>
     <displayname>非栓式机构</displayname>
     <icon>非栓式机构</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -854,7 +680,7 @@
     <name>镜之虎彻制作图纸</name>
     <displayname>镜之虎彻制作图纸</displayname>
     <icon>镜之虎彻制作图纸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>10000</price>
@@ -867,7 +693,7 @@
     <name>加强版MP7制作图纸</name>
     <displayname>加强版MP7制作图纸</displayname>
     <icon>加强版MP7制作图纸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>10000</price>
@@ -880,7 +706,7 @@
     <name>双管白火铳制作图纸</name>
     <displayname>双管白火铳制作图纸</displayname>
     <icon>双管白火铳制作图纸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>10000</price>
@@ -893,7 +719,7 @@
     <name>精致战术猪鼻式防毒面具制作图纸</name>
     <displayname>精致战术猪鼻式防毒面具制作图纸</displayname>
     <icon>精致战术猪鼻式防毒面具制作图纸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>30000</price>
@@ -906,7 +732,7 @@
     <name>A兵团精致战术背心制作图纸</name>
     <displayname>A兵团精致战术背心制作图纸</displayname>
     <icon>A兵团精致战术背心制作图纸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>30000</price>
@@ -919,7 +745,7 @@
     <name>A兵团精致战术手套制作图纸</name>
     <displayname>A兵团精致战术手套制作图纸</displayname>
     <icon>A兵团精致战术手套制作图纸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>30000</price>
@@ -932,7 +758,7 @@
     <name>A兵团精致战术裤制作图纸</name>
     <displayname>A兵团精致战术裤制作图纸</displayname>
     <icon>A兵团精致战术裤制作图纸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>30000</price>
@@ -945,7 +771,7 @@
     <name>A兵团精致战术皮鞋制作图纸</name>
     <displayname>A兵团精致战术皮鞋制作图纸</displayname>
     <icon>A兵团精致战术皮鞋制作图纸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>30000</price>
@@ -954,66 +780,11 @@
     <level>1</level>
   </item>
   <item>
-    <id>380</id>
-    <name>地铁站通关证明</name>
-    <displayname>地铁站通关证明</displayname>
-    <icon>地铁站通关证明</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>2000</price>
-    <maxvalue>3</maxvalue>
-    <description>通关证明是某一强敌所在区域的珍贵收藏，获取他们意味着击败了常人无法战胜的敌人。
-    地铁站盘踞的巨型丧尸和丧尸潮最终被消灭，然而地铁站四通八达，废城内流窜的丧尸迟早会再次占据这里。手握战斧的巨型丧尸似乎身着奇特的服装，或许是某种人造的产物。
-    然而我们对他的了解少之又少，只能从为数不多的幸存者口中了解到关于这个巨型丧尸的信息。</description>
-    <description1>“它就像是那个地区的王一样.....”从废城逃出来的幸存者如此形容它。“那把巨斧像是能劈开一切，我的妻子在我面前被那个怪物活生生劈成两半！我.....我要为她报仇！”
-    三天后，他只身一人再次进入了地铁站，这次却再也没有见过他出来过。大家都认为，地铁站的某处，又多了一具被劈成两半的尸体，或者是一堆尸块。</description1>
-    <description2>“要被杀了......要被杀死了......要成为这群怪物的食物了，该死，我的母亲还在等我搜集物资回去救她，我的手臂被咬伤了，脚踝也扭断了。我在这角落里撑不了多久了。
-    如果有人看到这封信，请把背包里的抗生素送到A兵团，我的母亲在那里等待治疗，并转达我的死讯。我不能，让她一生都为我的失踪担心......”
-    地铁站破碎的车厢下，录音设备诉说着这样的故事。</description2>
-    <level>1</level>
-  </item>
-  <item>
-    <id>381</id>
-    <name>摇滚公园通关证明</name>
-    <displayname>摇滚公园通关证明</displayname>
-    <icon>摇滚公园通关证明</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>3000</price>
-    <maxvalue>2</maxvalue>
-    <description>通关证明是某一强敌所在区域的珍贵收藏，获取他们意味着击败了常人无法战胜的敌人。
-    因为与军阀有冲突，且效忠的黑铁会与前者有来往，摇滚女皇最终决定反叛。A兵团接下委托并战胜了摇滚女皇，然而无论是他们还是其他势力都不打算处死摇滚女皇，毕竟后者永远是堕落城不落的炙热太阳。</description>
-    <description1>“摇滚公园那些娘们儿难道不是想睡就睡的？”一个盗贼把手中的啤酒一饮而尽后，随手把酒瓶扔向了远处。“装什么清高？都这个时代了，还讲究什么清白身子？能帮黑铁会那帮人泄泄火，
-    让我泄泄火怎么了？！老子也不是没物资，五个牛肉罐头还不够玩儿上一个？他妈的，老子就不信这个邪，我今天就必须玩儿上一个！”
-    第二天，在堕落城的某处角落，四条野狗正在啃食一具盗贼的尸体，而那个盗贼的尸体旁，随意的摆放着五个被子弹射穿的牛肉罐头。</description1>
-    <level>1</level>
-  </item>
-  <item>
-    <id>382</id>
-    <name>军阀前线基地通关证明</name>
-    <displayname>军阀前线基地通关证明</displayname>
-    <icon>军阀前线基地通关证明</icon>
-    <type>消耗品</type>
-    <use>情报</use>
-    <weight>0</weight>
-    <price>5000</price>
-    <maxvalue>2</maxvalue>
-    <description>通关证明是某一强敌所在区域的珍贵收藏，获取他们意味着击败了常人无法战胜的敌人。
-    莱昂里亚自由解放党，或者说莱昂里亚自由革命军是由绰号为“将军”的男人领导的暴力组织。他们以劫掠为生，凭借着强大火力在末世占有一席之地。然而尽管是弱肉强食的末世，也不能容忍绝对的破坏者。</description>
-    <description1>“我们一定要和那个什么狗屁黑铁会结盟么？一群连枪都玩儿不明白的废物们。”
-    “我倒是无所谓，将军让我和谁好，我就和谁好；将军让我打谁，我就打谁。你小子别搞错了，当初是将军在废墟中把咱俩救出来的，要是没有将军，我估计咱俩早都烂在某个地方了。”
-    “这我知道，可是你也亲眼看到了，老三被那个人高马大的家伙直接撕成两截！那家伙不是普通人，他绝对有问题！”
-    “别想那么多，能活一天是一天，我现在就只期待明天的掠夺任务不要交给我，A兵团那帮家伙不好惹，而且我听说，他们最近在野外捡了个毛头小子，这小子好像不一般啊......”</description1>
-    <level>1</level>
-  </item>
-  <item>
     <id>383</id>
     <name>兵工厂备份硬盘</name>
     <displayname>兵工厂备份硬盘</displayname>
     <icon>兵工厂备份硬盘</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>20000</price>
@@ -1025,7 +796,7 @@
     <name>剑圣碎片</name>
     <displayname>剑圣碎片</displayname>
     <icon>剑圣碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>10000</price>
@@ -1037,7 +808,7 @@
     <name>方舟卫士样本</name>
     <displayname>方舟卫士样本</displayname>
     <icon>方舟卫士样本</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -1049,7 +820,7 @@
     <name>诺亚枪械碎片</name>
     <displayname>诺亚枪械碎片</displayname>
     <icon>诺亚枪械碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -1061,7 +832,7 @@
     <name>诺亚僵尸证明</name>
     <displayname>诺亚僵尸证明</displayname>
     <icon>诺亚僵尸证明</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -1073,7 +844,7 @@
     <name>无人机残骸</name>
     <displayname>无人机残骸</displayname>
     <icon>无人机残骸</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -1085,7 +856,7 @@
     <name>冰雪之心线索文件</name>
     <displayname>冰雪之心线索文件</displayname>
     <icon>冰雪之心线索文件</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -1097,7 +868,7 @@
     <name>诺亚医疗器械</name>
     <displayname>诺亚医疗器械</displayname>
     <icon>诺亚医疗器械</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -1109,7 +880,7 @@
     <name>诺亚雪山山顶情报</name>
     <displayname>诺亚雪山山顶情报</displayname>
     <icon>诺亚雪山山顶情报</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -1121,7 +892,7 @@
     <name>烈炎矿石</name>
     <displayname>烈炎矿石</displayname>
     <icon>烈炎矿石</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>4000</price>
@@ -1133,7 +904,7 @@
     <name>残破的枪械</name>
     <displayname>残破的枪械</displayname>
     <icon>残破的枪械</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>3000</price>
@@ -1145,7 +916,7 @@
     <name>秘钥A</name>
     <displayname>秘钥A</displayname>
     <icon>秘钥A</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>5000</price>
@@ -1157,7 +928,7 @@
     <name>秘钥B</name>
     <displayname>秘钥B</displayname>
     <icon>秘钥B</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>5000</price>
@@ -1169,7 +940,7 @@
     <name>秘钥C</name>
     <displayname>秘钥C</displayname>
     <icon>秘钥C</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>5000</price>
@@ -1181,7 +952,7 @@
     <name>辛火草</name>
     <displayname>辛火草</displayname>
     <icon>辛火草</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>3000</price>
@@ -1193,7 +964,7 @@
     <name>毒素样本</name>
     <displayname>毒素样本</displayname>
     <icon>毒素样本</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>1</weight>
     <price>3000</price>
@@ -1205,7 +976,7 @@
     <name>羊年新年碎片</name>
     <displayname>羊年新年碎片</displayname>
     <icon>羊年新年碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1</price>
@@ -1218,7 +989,7 @@
     <name>猴年新年碎片</name>
     <displayname>猴年新年碎片</displayname>
     <icon>猴年新年碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1</price>
@@ -1231,7 +1002,7 @@
     <name>鸡年碎片</name>
     <displayname>鸡年碎片</displayname>
     <icon>鸡年碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1</price>
@@ -1244,7 +1015,7 @@
     <name>狗年碎片</name>
     <displayname>狗年碎片</displayname>
     <icon>狗年碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1</price>
@@ -1257,7 +1028,7 @@
     <name>猪年碎片</name>
     <displayname>猪年碎片</displayname>
     <icon>猪年碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1</price>
@@ -1270,7 +1041,7 @@
     <name>鼠年碎片</name>
     <displayname>鼠年碎片</displayname>
     <icon>鼠年碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1</price>
@@ -1283,7 +1054,7 @@
     <name>异形龙骨碎片</name>
     <displayname>异形龙骨碎片</displayname>
     <icon>异形龙骨碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1000</price>
@@ -1295,7 +1066,7 @@
     <name>兽王碎片</name>
     <displayname>兽王碎片</displayname>
     <icon>兽王碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>6000</price>
@@ -1308,7 +1079,7 @@
     <name>方舟碎片</name>
     <displayname>方舟碎片</displayname>
     <icon>方舟碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>1</price>
@@ -1321,7 +1092,7 @@
     <name>远古碎片</name>
     <displayname>远古碎片</displayname>
     <icon>远古碎片</icon>
-    <type>消耗品</type>
+    <type>收集品</type>
     <use>材料</use>
     <weight>0</weight>
     <price>15000</price>

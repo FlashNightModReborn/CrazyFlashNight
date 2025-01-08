@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1736270392">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1736321690">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="67">
+    <DOMTimeline name="asLoader" currentFrame="70">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -329,7 +329,7 @@ enemyPropertiesLoader.loadEnemyProperties(
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="69" duration="28" keyMode="9728">
+            <DOMFrame index="69" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.MaterialDictionaryLoader;
 
@@ -343,6 +343,35 @@ var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getIn
     },
     function():Void {
         trace("主程序：材料大全数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="70" duration="27" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.InformationDictionaryLoader;
+
+var 情报信息loader:InformationDictionaryLoader = InformationDictionaryLoader.getInstance();
+
+情报信息loader.loadInformationDictionary(
+    function(data:Object):Void {
+        trace("主程序：情报信息数据加载成功！");
+		if(!_root.图鉴信息) _root.图鉴信息 = new Object();
+		_root.图鉴信息.情报信息 = new Object();
+		_root.图鉴信息.情报显示位置表 = new Object();
+		for(var i = 0; i < data.Item.length; i++){
+			var item = data.Item[i];
+			var info = item.Information;
+			if(isNaN(info.length)){
+				item.Information = [info];
+			}
+			_root.图鉴信息.情报信息[item.Name] = item;
+			_root.图鉴信息.情报显示位置表[item.Index] = item.Name;
+		}
+    },
+    function():Void {
+        trace("主程序：情报信息数据加载失败！");
     }
 );]]></script>
               </Actionscript>

@@ -234,62 +234,12 @@
 	}
 
 
+	文本数据.push(物品数据.description);
+	文本数据.push("<BR>");
+
 	//是否为剧情碎片                                                                                                 
-	if (物品数据.chapter !== undefined && 物品数据.chapter > 0){
-		文本数据.push("[test0]剧情碎片收集进度111：" + value + "/" + (物品数据.chapter + 1));
-		文本数据.push("[debugmsg]：" + value);
-		文本数据.push("<BR>");
-		var 进度 = Math.min(value - 1, 物品数据.chapter);
-		if (进度 == 0){
-			文本数据.push(物品数据.description);
-		}else{
-			文本数据.push(物品数据["description" + 进度]);
-		}
-
-		文本数据.push("<BR>");
-	}
-	else if (物品数据.maxvalue !== undefined && 物品数据.maxvalue > 1)
-	{
-
-		if (value == 1)
-		{
-			文本数据.push("[test1]剧情碎片资料展示：" + value + "/" + 物品数据.maxvalue);
-			文本数据.push("[物品数量]：" + value);
-			文本数据.push("<BR>");
-			//文本数据.push(物品数据.description);
-			文本数据.push(物品数据.description);
-			//当玩家手上只有一个叠加解锁剧情道具时
-		}
-		else
-		{
-			var 进度 = value % 物品数据.maxvalue;
-			
-			if (进度 == 0){
-				文本数据.push("剧情碎片资料展示：" + 物品数据.maxvalue + "/" + 物品数据.maxvalue);
-				//文本数据.push("[物品数量]：" + value + "[进度]：" + 进度);
-				文本数据.push("<BR>");
-				文本数据.push(物品数据["description" + 物品数据.maxvalue]);
-				文本数据.push("<BR>");
-			}else{
-				文本数据.push("剧情碎片资料展示：" + 进度  + "/" + 物品数据.maxvalue);
-				//文本数据.push("[物品数量]：" + value + "[进度]：" + 进度);
-				进度 = 进度 - 1;
-				文本数据.push("<BR>");
-				if (进度 == 0){
-					文本数据.push(物品数据.description);
-				}else{
-					文本数据.push(物品数据["description" + 进度]);
-				}
-				
-				文本数据.push("<BR>");
-				
-			}
-			文本数据.push("<BR>");
-		}
-			
-	}else{
-		文本数据.push(物品数据.description);
-		文本数据.push("<BR>");
+	if (物品数据.use == "情报"){
+		文本数据.push("<FONT COLOR=\'#FFCC00\'>详细信息可在物品栏的情报界面查阅</FONT><BR>");
 	}
 
 
@@ -371,7 +321,7 @@
 		文本数据.push(强化等级);
 		文本数据.push("</FONT>");
 	}
-	else if (物品数据.type == "消耗品" && value > 1)
+	else if (value > 1)
 	{
 		文本数据.push("数量：");
 		文本数据.push(value);
