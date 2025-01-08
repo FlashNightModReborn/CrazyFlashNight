@@ -1,5 +1,4 @@
 ﻿class org.flashNight.naki.Sort.TimSort {
-    
     /**
      * TimSort 的最终优化版 (AS2)
      * - 严格遵循 TimSort 的堆栈不变量，确保正确性
@@ -16,9 +15,7 @@
             return arr; // 长度<=1，直接返回
         }
 
-        //----------------------------------------------------------
-        // 0) 确定比较函数：若用户未提供，则使用默认的比较函数
-        //----------------------------------------------------------
+        // 0) 确定比较函数
         var compare:Function = (compareFunction == null)
             ? function(a, b):Number { 
                 if (a < b) return -1;
@@ -27,9 +24,7 @@
               }
             : compareFunction;
 
-        //----------------------------------------------------------
         // 1) 预检测：检查是否整体有序或整体逆序
-        //----------------------------------------------------------
         var isSorted:Boolean = true;
         for (var iCheck:Number = 1; iCheck < length; iCheck++) {
             if (compare(arr[iCheck -1], arr[iCheck]) > 0) {
@@ -42,15 +37,15 @@
         }
 
         var isReversed:Boolean = true;
-        for (var jCheck:Number =1; jCheck < length; jCheck++) {
-            if (compare(arr[jCheck -1], arr[jCheck]) <0 ) {
+        for (var jCheck:Number = 1; jCheck < length; jCheck++) {
+            if (compare(arr[jCheck -1], arr[jCheck]) < 0) {
                 isReversed = false;
                 break;
             }
         }
         if (isReversed) {
             // 整体逆序，直接反转
-            var lRev:Number =0;
+            var lRev:Number = 0;
             var rRev:Number = length -1;
             while (lRev < rRev) {
                 var tempSwap:Object = arr[lRev];
@@ -62,41 +57,28 @@
             return arr;
         }
 
-        //----------------------------------------------------------
-        // 2) 设定最小 run 长度 MIN_RUN（常用 32）
-        //----------------------------------------------------------
+        // 2) 设定最小 run 长度 MIN_RUN
         var MIN_RUN:Number = 32;
 
-        //----------------------------------------------------------
         // 3) 初始化模拟栈 + 临时数组
-        //    - stackRuns用于存储 (start, end)，sp为栈指针
-        //    - temp 数组大小预设为 length，避免动态扩容
-        //----------------------------------------------------------
-        var stackRuns:Array = new Array(2 * length); // [run1Start, run1End, run2Start, run2End, ...]
-        var sp:Number =0; // 栈指针初始化为0
+        var stackRuns:Array = new Array(2 * length);
+        var sp:Number = 0;
+        var temp:Array = new Array(length);
 
-        var temp:Array = new Array(length); // 临时数组用于归并
-
-        //----------------------------------------------------------
-        // 4) 收集 run：从左到右扫描数组，找非降序（或非升序）区间
-        //    - 若遇到降序 run，则翻转区间以升序
-        //    - run 长度 < MIN_RUN 时进行插入排序以扩充
-        //----------------------------------------------------------
-        var startRun:Number =0;
+        // 4) 收集 run 并合并
+        var startRun:Number = 0;
         while (startRun < length) {
             var runStart:Number = startRun;
-            var runEnd:Number = runStart +1; // 至少含1个元素
+            var runEnd:Number = runStart + 1;
 
-            // 检测单调性（包含重复元素时仍视为升序）
+            // 检测单调性
             if (runEnd < length) {
-                if (compare(arr[runStart], arr[runEnd]) <=0 ) {
-                    // 升序 run
-                    while (runEnd < length -1 && compare(arr[runEnd], arr[runEnd +1]) <=0 ) {
+                if (compare(arr[runStart], arr[runEnd]) <= 0) {
+                    while (runEnd < length -1 && compare(arr[runEnd], arr[runEnd +1]) <= 0) {
                         runEnd++;
                     }
                 } else {
-                    // 降序 run
-                    while (runEnd < length -1 && compare(arr[runEnd], arr[runEnd +1]) >0 ) {
+                    while (runEnd < length -1 && compare(arr[runEnd], arr[runEnd +1]) > 0) {
                         runEnd++;
                     }
                     // 反转降序区间
@@ -112,195 +94,360 @@
                 }
             }
 
-            var currentRunSize:Number = runEnd - runStart +1;
+            var currentRunSize:Number = runEnd - runStart + 1;
 
             // 扩展小 run 到 MIN_RUN 使用插入排序
             if (currentRunSize < MIN_RUN) {
                 var endBound:Number = (runStart + MIN_RUN -1 < length -1) ? (runStart + MIN_RUN -1) : (length -1);
-                for (var iIns:Number = runStart +1; iIns <= endBound; iIns++) {
+                for (var iIns:Number = runStart + 1; iIns <= endBound; iIns++) {
                     var keyVal:Object = arr[iIns];
                     var left:Number = runStart;
                     var right:Number = iIns;
-                    // Binary search to find the insertion point
                     while (left < right) {
                         var mid:Number = (left + right) >> 1;
-                        if (compare(arr[mid], keyVal) >0 ) {
+                        if (compare(arr[mid], keyVal) > 0) {
                             right = mid;
                         } else {
-                            left = mid +1;
+                            left = mid + 1;
                         }
                     }
-                    // Shift elements to make space
                     for (var k:Number = iIns; k > left; k--) {
                         arr[k] = arr[k-1];
                     }
                     arr[left] = keyVal;
                 }
                 runEnd = endBound;
-                currentRunSize = runEnd - runStart +1;
+                currentRunSize = runEnd - runStart + 1;
             }
 
             // 将该 run 入栈
             stackRuns[sp++] = runStart;
             stackRuns[sp++] = runEnd;
 
-            // 检查并合并满足条件的 run
-            sp = mergeInvariant(stackRuns, temp, compare, sp, arr);
+            // 内联 mergeInvariant
+            while (sp >= 4) {
+                if (sp >= 6) {
+                    var runXStart:Number = stackRuns[sp - 6];
+                    var runXEnd:Number = stackRuns[sp - 5];
+                    var runYStart:Number = stackRuns[sp - 4];
+                    var runYEnd:Number = stackRuns[sp - 3];
+                    var runZStart:Number = stackRuns[sp - 2];
+                    var runZEnd:Number = stackRuns[sp - 1];
 
-            startRun = runEnd +1;
+                    var sizeX:Number = runXEnd - runXStart + 1;
+                    var sizeY:Number = runYEnd - runYStart + 1;
+                    var sizeZ:Number = runZEnd - runZStart + 1;
+
+                    if (sizeX <= sizeY + sizeZ && sizeY <= sizeZ) {
+                        if (sizeX < sizeZ) {
+                            // 合并 runX 和 runY
+                            sp -= 4;
+                            // 内联 doMerge
+                            if (runYStart < runXStart) {
+                                var tmpStart:Number = runXStart;
+                                var tmpEnd:Number = runXEnd;
+                                runXStart = runYStart;
+                                runXEnd = runYEnd;
+                                runYStart = tmpStart;
+                                runYEnd = tmpEnd;
+                            }
+                            var sizeA:Number = runXEnd - runXStart + 1;
+                            var sizeB:Number = runYEnd - runYStart + 1;
+                            for (var i:Number = 0; i < sizeA; i++) {
+                                temp[i] = arr[runXStart + i];
+                            }
+                            var idxTemp:Number = 0;
+                            var idxArr:Number = runXStart;
+                            var idxBPtr:Number = runYStart;
+                            var endA:Number = sizeA;
+                            var endB:Number = runYEnd + 1;
+                            while (idxTemp < endA && idxBPtr < endB) {
+                                if (compare(temp[idxTemp], arr[idxBPtr]) <= 0) {
+                                    arr[idxArr++] = temp[idxTemp++];
+                                } else {
+                                    arr[idxArr++] = arr[idxBPtr++];
+                                }
+                            }
+                            while (idxTemp < endA) {
+                                arr[idxArr++] = temp[idxTemp++];
+                            }
+                            stackRuns[sp++] = runXStart;
+                            stackRuns[sp++] = runYEnd;
+                        } else {
+                            // 合并 runY 和 runZ
+                            sp -= 4;
+                            // 内联 doMerge
+                            if (runZStart < runYStart) {
+                                var tmpStart2:Number = runYStart;
+                                var tmpEnd2:Number = runYEnd;
+                                runYStart = runZStart;
+                                runYEnd = runZEnd;
+                                runZStart = tmpStart2;
+                                runZEnd = tmpEnd2;
+                            }
+                            var sizeA2:Number = runYEnd - runYStart + 1;
+                            var sizeB2:Number = runZEnd - runZStart + 1;
+                            for (var j:Number = 0; j < sizeA2; j++) {
+                                temp[j] = arr[runYStart + j];
+                            }
+                            var idxTemp2:Number = 0;
+                            var idxArr2:Number = runYStart;
+                            var idxBPtr2:Number = runZStart;
+                            var endA2:Number = sizeA2;
+                            var endB2:Number = runZEnd + 1;
+                            while (idxTemp2 < endA2 && idxBPtr2 < endB2) {
+                                if (compare(temp[idxTemp2], arr[idxBPtr2]) <= 0) {
+                                    arr[idxArr2++] = temp[idxTemp2++];
+                                } else {
+                                    arr[idxArr2++] = arr[idxBPtr2++];
+                                }
+                            }
+                            while (idxTemp2 < endA2) {
+                                arr[idxArr2++] = temp[idxTemp2++];
+                            }
+                            stackRuns[sp++] = runYStart;
+                            stackRuns[sp++] = runZEnd;
+                        }
+                        continue;
+                    }
+                }
+
+                // 如果只有两个 run，检查 Y ≤ Z
+                if (sp >= 4) {
+                    var runYStart2:Number = stackRuns[sp - 4];
+                    var runYEnd2:Number = stackRuns[sp - 3];
+                    var runZStart2:Number = stackRuns[sp - 2];
+                    var runZEnd2:Number = stackRuns[sp - 1];
+
+                    var sizeY2:Number = runYEnd2 - runYStart2 + 1;
+                    var sizeZ2:Number = runZEnd2 - runZStart2 + 1;
+
+                    if (sizeY2 <= sizeZ2) {
+                        // 合并 runY 和 runZ
+                        sp -= 4;
+                        // 内联 doMerge
+                        if (runZStart2 < runYStart2) {
+                            var tmpStart3:Number = runYStart2;
+                            var tmpEnd3:Number = runYEnd2;
+                            runYStart2 = runZStart2;
+                            runYEnd2 = runZEnd2;
+                            runZStart2 = tmpStart3;
+                            runZEnd2 = tmpEnd3;
+                        }
+                        var sizeA3:Number = runYEnd2 - runYStart2 + 1;
+                        var sizeB3:Number = runZEnd2 - runZStart2 + 1;
+                        for (var m:Number = 0; m < sizeA3; m++) {
+                            temp[m] = arr[runYStart2 + m];
+                        }
+                        var idxTemp3:Number = 0;
+                        var idxArr3:Number = runYStart2;
+                        var idxBPtr3:Number = runZStart2;
+                        var endA3:Number = sizeA3;
+                        var endB3:Number = runZEnd2 + 1;
+                        while (idxTemp3 < endA3 && idxBPtr3 < endB3) {
+                            if (compare(temp[idxTemp3], arr[idxBPtr3]) <= 0) {
+                                arr[idxArr3++] = temp[idxTemp3++];
+                            } else {
+                                arr[idxArr3++] = arr[idxBPtr3++];
+                            }
+                        }
+                        while (idxTemp3 < endA3) {
+                            arr[idxArr3++] = temp[idxTemp3++];
+                        }
+                        stackRuns[sp++] = runYStart2;
+                        stackRuns[sp++] = runZEnd2;
+                        continue;
+                    }
+                }
+
+                break;
+            }
+
+            startRun = runEnd + 1;
         }
 
-        //----------------------------------------------------------
-        // 5) 最终合并：反复合并栈中剩余的 runs，直到只剩一个 run
-        //----------------------------------------------------------
+        // 5) 最终合并
         while (sp > 2) {
-            sp = mergeInvariant(stackRuns, temp, compare, sp, arr);
-            if (sp >2) {
-                // 如果栈中仍有超过两个 run，强制合并栈顶两个 run
-                var run2End:Number = stackRuns[sp -1];
-                var run2Start:Number = stackRuns[sp -2];
-                var run1End:Number = stackRuns[sp -3];
-                var run1Start:Number = stackRuns[sp -4];
-                sp -=4;
-                doMerge(run1Start, run1End, run2Start, run2End, arr, temp, compare);
+            // 内联 mergeInvariant
+            while (sp >= 4) {
+                if (sp >= 6) {
+                    var runXStart:Number = stackRuns[sp - 6];
+                    var runXEnd:Number = stackRuns[sp - 5];
+                    var runYStart:Number = stackRuns[sp - 4];
+                    var runYEnd:Number = stackRuns[sp - 3];
+                    var runZStart:Number = stackRuns[sp - 2];
+                    var runZEnd:Number = stackRuns[sp - 1];
+
+                    var sizeX:Number = runXEnd - runXStart + 1;
+                    var sizeY:Number = runYEnd - runYStart + 1;
+                    var sizeZ:Number = runZEnd - runZStart + 1;
+
+                    if (sizeX <= sizeY + sizeZ && sizeY <= sizeZ) {
+                        if (sizeX < sizeZ) {
+                            // 合并 runX 和 runY
+                            sp -= 4;
+                            // 内联 doMerge
+                            if (runYStart < runXStart) {
+                                var tmpStart:Number = runXStart;
+                                var tmpEnd:Number = runXEnd;
+                                runXStart = runYStart;
+                                runXEnd = runYEnd;
+                                runYStart = tmpStart;
+                                runYEnd = tmpEnd;
+                            }
+                            var sizeA:Number = runXEnd - runXStart + 1;
+                            var sizeB:Number = runYEnd - runYStart + 1;
+                            for (var i:Number = 0; i < sizeA; i++) {
+                                temp[i] = arr[runXStart + i];
+                            }
+                            var idxTemp:Number = 0;
+                            var idxArr:Number = runXStart;
+                            var idxBPtr:Number = runYStart;
+                            var endA:Number = sizeA;
+                            var endB:Number = runYEnd + 1;
+                            while (idxTemp < endA && idxBPtr < endB) {
+                                if (compare(temp[idxTemp], arr[idxBPtr]) <= 0) {
+                                    arr[idxArr++] = temp[idxTemp++];
+                                } else {
+                                    arr[idxArr++] = arr[idxBPtr++];
+                                }
+                            }
+                            while (idxTemp < endA) {
+                                arr[idxArr++] = temp[idxTemp++];
+                            }
+                            stackRuns[sp++] = runXStart;
+                            stackRuns[sp++] = runYEnd;
+                        } else {
+                            // 合并 runY 和 runZ
+                            sp -= 4;
+                            // 内联 doMerge
+                            if (runZStart < runYStart) {
+                                var tmpStart2:Number = runYStart;
+                                var tmpEnd2:Number = runYEnd;
+                                runYStart = runZStart;
+                                runYEnd = runZEnd;
+                                runZStart = tmpStart2;
+                                runZEnd = tmpEnd2;
+                            }
+                            var sizeA2:Number = runYEnd - runYStart + 1;
+                            var sizeB2:Number = runZEnd - runZStart + 1;
+                            for (var j:Number = 0; j < sizeA2; j++) {
+                                temp[j] = arr[runYStart + j];
+                            }
+                            var idxTemp2:Number = 0;
+                            var idxArr2:Number = runYStart;
+                            var idxBPtr2:Number = runZStart;
+                            var endA2:Number = sizeA2;
+                            var endB2:Number = runZEnd + 1;
+                            while (idxTemp2 < endA2 && idxBPtr2 < endB2) {
+                                if (compare(temp[idxTemp2], arr[idxBPtr2]) <= 0) {
+                                    arr[idxArr2++] = temp[idxTemp2++];
+                                } else {
+                                    arr[idxArr2++] = arr[idxBPtr2++];
+                                }
+                            }
+                            while (idxTemp2 < endA2) {
+                                arr[idxArr2++] = temp[idxTemp2++];
+                            }
+                            stackRuns[sp++] = runYStart;
+                            stackRuns[sp++] = runZEnd;
+                        }
+                        continue;
+                    }
+                }
+
+                // 如果只有两个 run，检查 Y ≤ Z
+                if (sp >= 4) {
+                    var runYStart2:Number = stackRuns[sp - 4];
+                    var runYEnd2:Number = stackRuns[sp - 3];
+                    var runZStart2:Number = stackRuns[sp - 2];
+                    var runZEnd2:Number = stackRuns[sp - 1];
+
+                    var sizeY2:Number = runYEnd2 - runYStart2 + 1;
+                    var sizeZ2:Number = runZEnd2 - runZStart2 + 1;
+
+                    if (sizeY2 <= sizeZ2) {
+                        // 合并 runY 和 runZ
+                        sp -= 4;
+                        // 内联 doMerge
+                        if (runZStart2 < runYStart2) {
+                            var tmpStart3:Number = runYStart2;
+                            var tmpEnd3:Number = runYEnd2;
+                            runYStart2 = runZStart2;
+                            runYEnd2 = runZEnd2;
+                            runZStart2 = tmpStart3;
+                            runZEnd2 = tmpEnd3;
+                        }
+                        var sizeA3:Number = runYEnd2 - runYStart2 + 1;
+                        var sizeB3:Number = runZEnd2 - runZStart2 + 1;
+                        for (var m:Number = 0; m < sizeA3; m++) {
+                            temp[m] = arr[runYStart2 + m];
+                        }
+                        var idxTemp3:Number = 0;
+                        var idxArr3:Number = runYStart2;
+                        var idxBPtr3:Number = runZStart2;
+                        var endA3:Number = sizeA3;
+                        var endB3:Number = runZEnd2 + 1;
+                        while (idxTemp3 < endA3 && idxBPtr3 < endB3) {
+                            if (compare(temp[idxTemp3], arr[idxBPtr3]) <= 0) {
+                                arr[idxArr3++] = temp[idxTemp3++];
+                            } else {
+                                arr[idxArr3++] = arr[idxBPtr3++];
+                            }
+                        }
+                        while (idxTemp3 < endA3) {
+                            arr[idxArr3++] = temp[idxTemp3++];
+                        }
+                        stackRuns[sp++] = runYStart2;
+                        stackRuns[sp++] = runZEnd2;
+                        continue;
+                    }
+                }
+
+                break;
+            }
+
+            if (sp > 2) {
+                // 强制合并栈顶两个 run
+                var run2End:Number = stackRuns[sp - 1];
+                var run2Start:Number = stackRuns[sp - 2];
+                var run1End:Number = stackRuns[sp - 3];
+                var run1Start:Number = stackRuns[sp - 4];
+                sp -= 4;
+                // 内联 doMerge
+                if (run2Start < run1Start) {
+                    var tmpStart4:Number = run1Start;
+                    var tmpEnd4:Number = run1End;
+                    run1Start = run2Start;
+                    run1End = run2End;
+                    run2Start = tmpStart4;
+                    run2End = tmpEnd4;
+                }
+                var sizeA4:Number = run1End - run1Start + 1;
+                var sizeB4:Number = run2End - run2Start + 1;
+                for (var n:Number = 0; n < sizeA4; n++) {
+                    temp[n] = arr[run1Start + n];
+                }
+                var idxTemp4:Number = 0;
+                var idxArr4:Number = run1Start;
+                var idxBPtr4:Number = run2Start;
+                var endA4:Number = sizeA4;
+                var endB4:Number = run2End + 1;
+                while (idxTemp4 < endA4 && idxBPtr4 < endB4) {
+                    if (compare(temp[idxTemp4], arr[idxBPtr4]) <= 0) {
+                        arr[idxArr4++] = temp[idxTemp4++];
+                    } else {
+                        arr[idxArr4++] = arr[idxBPtr4++];
+                    }
+                }
+                while (idxTemp4 < endA4) {
+                    arr[idxArr4++] = temp[idxTemp4++];
+                }
                 stackRuns[sp++] = run1Start;
                 stackRuns[sp++] = run2End;
             }
         }
 
         return arr; // 数组已整体有序
-    }
-
-    /**
-     * Merge runs to maintain stack invariants
-     * Invariant:
-     *   |A| > |B| + |C|
-     *   |B| > |C|
-     * where A is the third last run, B is the second last, C is the last run
-     * 
-     * @param stackRuns Array containing runs as [start1, end1, start2, end2, ...]
-     * @param temp Temporary array for merging
-     * @param compare Comparison function
-     * @param sp Stack pointer
-     * @param arr The main array being sorted
-     * @return Updated stack pointer
-     */
-    private static function mergeInvariant(stackRuns:Array, temp:Array, compare:Function, sp:Number, arr:Array):Number {
-        while (sp >=4) { // 至少两个 run
-            if (sp >=6) { // 至少三个 run
-                var runXStart:Number = stackRuns[sp -6];
-                var runXEnd:Number = stackRuns[sp -5];
-                var runYStart:Number = stackRuns[sp -4];
-                var runYEnd:Number = stackRuns[sp -3];
-                var runZStart:Number = stackRuns[sp -2];
-                var runZEnd:Number = stackRuns[sp -1];
-
-                var sizeX:Number = runXEnd - runXStart +1;
-                var sizeY:Number = runYEnd - runYStart +1;
-                var sizeZ:Number = runZEnd - runZStart +1;
-
-                // TimSort 合并条件: X ≤ Y + Z && Y ≤ Z
-                if (sizeX <= sizeY + sizeZ && sizeY <= sizeZ) {
-                    // 判断是否 X < Z 来决定合并 X & Y 或 Y & Z
-                    if (sizeX < sizeZ) {
-                        // 合并 runX 和 runY
-                        sp -=4;
-                        doMerge(runXStart, runXEnd, runYStart, runYEnd, arr, temp, compare);
-                        stackRuns[sp++] = runXStart;
-                        stackRuns[sp++] = runYEnd;
-                    } else {
-                        // 合并 runY 和 runZ
-                        sp -=4;
-                        doMerge(runYStart, runYEnd, runZStart, runZEnd, arr, temp, compare);
-                        stackRuns[sp++] = runYStart;
-                        stackRuns[sp++] = runZEnd;
-                    }
-                    continue; // 继续检查
-                }
-            }
-
-            // 如果只有两个 run，检查 Y ≤ Z
-            if (sp >=4) {
-                var runYStart2:Number = stackRuns[sp -4];
-                var runYEnd2:Number = stackRuns[sp -3];
-                var runZStart2:Number = stackRuns[sp -2];
-                var runZEnd2:Number = stackRuns[sp -1];
-
-                var sizeY2:Number = runYEnd2 - runYStart2 +1;
-                var sizeZ2:Number = runZEnd2 - runZStart2 +1;
-
-                if (sizeY2 <= sizeZ2) {
-                    // 合并 runY 和 runZ
-                    sp -=4;
-                    doMerge(runYStart2, runYEnd2, runZStart2, runZEnd2, arr, temp, compare);
-                    stackRuns[sp++] = runYStart2;
-                    stackRuns[sp++] = runZEnd2;
-                    continue; // 继续检查
-                }
-            }
-
-            break; // 不满足合并条件，退出
-        }
-
-        return sp;
-    }
-
-    /**
-     * 合并两个 run 到 arr 中
-     * - 左 run 拷贝到 temp，右 run 原地比较并合并
-     * - 稳定排序：相等时优先放左 run 的元素
-     * 
-     * @param runAStart Start index of run A
-     * @param runAEnd End index of run A
-     * @param runBStart Start index of run B
-     * @param runBEnd End index of run B
-     * @param arr The main array being sorted
-     * @param temp Temporary array for merging
-     * @param compare Comparison function
-     */
-    private static function doMerge(
-        runAStart:Number, runAEnd:Number,
-        runBStart:Number, runBEnd:Number,
-        arr:Array, temp:Array, compare:Function
-    ):Void {
-        if (runBStart < runAStart) {
-            // Swap runs to ensure runA is on the left
-            var tmpStart:Number = runAStart;
-            var tmpEnd:Number = runAEnd;
-            runAStart = runBStart;
-            runAEnd = runBEnd;
-            runBStart = tmpStart;
-            runBEnd = tmpEnd;
-        }
-
-        var sizeA:Number = runAEnd - runAStart +1;
-        var sizeB:Number = runBEnd - runBStart +1;
-
-        // 拷贝 runA 到 temp
-        for (var i:Number =0; i < sizeA; i++) {
-            temp[i] = arr[runAStart +i];
-        }
-
-        var idxTemp:Number =0;
-        var idxArr:Number = runAStart;
-        var idxBPtr:Number = runBStart;
-        var endA:Number = sizeA;
-        var endB:Number = runBEnd +1;
-
-        // 归并过程（稳定排序：相等时优先 temp）
-        while (idxTemp < endA && idxBPtr < endB) {
-            if (compare(temp[idxTemp], arr[idxBPtr]) <=0 ) {
-                arr[idxArr++] = temp[idxTemp++];
-            } else {
-                arr[idxArr++] = arr[idxBPtr++];
-            }
-        }
-
-        // 若左 run 还有剩余，直接复制到 arr
-        while (idxTemp < endA) {
-            arr[idxArr++] = temp[idxTemp++];
-        }
-
-        // 右 run 的剩余元素，已在 arr 中，无需复制
     }
 }
