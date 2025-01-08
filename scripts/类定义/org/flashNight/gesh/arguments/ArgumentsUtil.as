@@ -49,7 +49,40 @@ class org.flashNight.gesh.arguments.ArgumentsUtil {
     }
 
 
+    /**
+     * 将固定参数与动态参数组合成一个数组。
+     * 
+     * @param fixedArgs Array - 固定参数数组
+     * @param dynamicArgs Object - 动态参数对象 (通常是 arguments)
+     * @param startIndex Number - 动态参数起始索引 (默认从0开始)
+     * @return Array 返回组合后的参数数组
+     */
+    public static function combineArgs(fixedArgs:Array, dynamicArgs:Object, startIndex:Number):Array {
+        var len:Number = dynamicArgs.length - startIndex; // 动态参数长度
+        if (len <= 0) {
+            return fixedArgs.concat(); // 无动态参数，返回固定参数的副本
+        }
 
+        // 针对动态参数数量为 1-10 的情况展开逻辑
+        if (len == 1) return fixedArgs.concat([dynamicArgs[startIndex]]);
+        if (len == 2) return fixedArgs.concat([dynamicArgs[startIndex], dynamicArgs[startIndex + 1]]);
+        if (len == 3) return fixedArgs.concat([dynamicArgs[startIndex], dynamicArgs[startIndex + 1], dynamicArgs[startIndex + 2]]);
+        if (len == 4) return fixedArgs.concat([dynamicArgs[startIndex], dynamicArgs[startIndex + 1], dynamicArgs[startIndex + 2], dynamicArgs[startIndex + 3]]);
+        if (len == 5) return fixedArgs.concat([dynamicArgs[startIndex], dynamicArgs[startIndex + 1], dynamicArgs[startIndex + 2], dynamicArgs[startIndex + 3], dynamicArgs[startIndex + 4]]);
+        if (len == 6) return fixedArgs.concat([dynamicArgs[startIndex], dynamicArgs[startIndex + 1], dynamicArgs[startIndex + 2], dynamicArgs[startIndex + 3], dynamicArgs[startIndex + 4], dynamicArgs[startIndex + 5]]);
+        if (len == 7) return fixedArgs.concat([dynamicArgs[startIndex], dynamicArgs[startIndex + 1], dynamicArgs[startIndex + 2], dynamicArgs[startIndex + 3], dynamicArgs[startIndex + 4], dynamicArgs[startIndex + 5], dynamicArgs[startIndex + 6]]);
+        if (len == 8) return fixedArgs.concat([dynamicArgs[startIndex], dynamicArgs[startIndex + 1], dynamicArgs[startIndex + 2], dynamicArgs[startIndex + 3], dynamicArgs[startIndex + 4], dynamicArgs[startIndex + 5], dynamicArgs[startIndex + 6], dynamicArgs[startIndex + 7]]);
+        if (len == 9) return fixedArgs.concat([dynamicArgs[startIndex], dynamicArgs[startIndex + 1], dynamicArgs[startIndex + 2], dynamicArgs[startIndex + 3], dynamicArgs[startIndex + 4], dynamicArgs[startIndex + 5], dynamicArgs[startIndex + 6], dynamicArgs[startIndex + 7], dynamicArgs[startIndex + 8]]);
+        if (len == 10) return fixedArgs.concat([dynamicArgs[startIndex], dynamicArgs[startIndex + 1], dynamicArgs[startIndex + 2], dynamicArgs[startIndex + 3], dynamicArgs[startIndex + 4], dynamicArgs[startIndex + 5], dynamicArgs[startIndex + 6], dynamicArgs[startIndex + 7], dynamicArgs[startIndex + 8], dynamicArgs[startIndex + 9]]);
+
+        // 对于参数数量大于 10 的情况，使用通用循环逻辑
+        var result:Array = fixedArgs.concat(); // 复制固定参数到结果数组
+        for (var k:Number = startIndex; k < dynamicArgs.length; k++) {
+            result.push(dynamicArgs[k]);
+        }
+        return result;
+    }
+    
     /**
      * 将 arguments 对象从指定的起始索引转换为一个数组。
      * @param args arguments 对象。
