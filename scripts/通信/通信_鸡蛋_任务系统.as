@@ -74,7 +74,6 @@ _root.taskFinished = function(index)
 {
 	var taskData = _root.getTaskData(tasks_to_do[index].id);
 	var requirements = tasks_to_do[index].requirements;
-	var submitItems = taskData.finish_submit_items;
 	if (requirements.stages.length != 0)
 	{
 		_root.任务完成提示._visible = false;
@@ -88,10 +87,21 @@ _root.taskFinished = function(index)
 	// 		return false;
 	// 	}
 	// }
-	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems);
-	if(!org.flashNight.arki.item.ItemUtil.contain(itemArray)){
-		_root.任务完成提示._visible = false;
-		return false;
+	var containItems = taskData.finish_contain_items;
+	if(containItems != null){
+		var itemArray1 = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(containItems);
+		if(!org.flashNight.arki.item.ItemUtil.contain(itemArray1)){
+			_root.任务完成提示._visible = false;
+			return false;
+		}
+	}
+	var submitItems = taskData.finish_submit_items;
+	if(submitItems != null){
+		var itemArray2 = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems);
+		if(!org.flashNight.arki.item.ItemUtil.contain(itemArray2)){
+			_root.任务完成提示._visible = false;
+			return false;
+		}
 	}
 	_root.任务完成提示._visible = true;
 	return true;
@@ -142,6 +152,10 @@ _root.FinishTask = function(index)
 {
 	var taskData = _root.getTaskData(tasks_to_do[index].id);
 	var rewards = taskData.rewards;
+	//检测挑战是否完成
+	if(taskData.challenge.rewards && tasks_to_do[index].requirements.challenge.finished == true){
+		rewards = rewards.concat(taskData.challenge.rewards);
+	}
 	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(rewards);
 	var rewardList = [];
 	//处理任务奖励的金币和K点减半
@@ -170,10 +184,12 @@ _root.FinishTask = function(index)
 	// 	_root.物品栏删除指定物品(needItem,needItemCount);
 	// }
 	var submitItems = taskData.finish_submit_items;
-	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems);
-	var result = org.flashNight.arki.item.ItemUtil.submit(itemArray);
-	if(!result){
-		_root.发布消息("交付任务物品异常！");
+	if(submitItems){
+		var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems);
+		var result = org.flashNight.arki.item.ItemUtil.submit(itemArray);
+		if(!result){
+			_root.发布消息("交付任务物品异常！");
+		}
 	}
 	// var 奖励格数 = 0;
 	// for(var i = 0; i < rewards.length; i++)
@@ -455,13 +471,5 @@ _root.可同时接的任务数 = 10;
 _root.事件日志每页条数 = 10;
 _root.主线任务进度 = 0;
 
-
-_root.tesktest=function(){
-	var taskData = _root.getTaskData(18);
-	var rewards = taskData.rewards;
-	ServerManager.getInstance().sendServerMessage(org.flashNight.gesh.object.ObjectUtil.toString(rewards));
-	var itemArray = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(rewards);
-	ServerManager.getInstance().sendServerMessage(org.flashNight.gesh.object.ObjectUtil.toString(itemArray));
-}
 
 //#func:_root.tesktest()

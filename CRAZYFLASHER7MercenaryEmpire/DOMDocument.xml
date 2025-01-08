@@ -1503,7 +1503,7 @@
           <Include href="sprite/Symbol 1545.xml" loadImmediate="false" itemID="6597607e-0000095c" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1631.xml" itemID="6597607e-000009b1" lastModified="1719209581"/>
           <Include href="sprite/Symbol 1638.xml" loadImmediate="false" itemID="6597607e-000009b4" lastModified="1735478251"/>
-          <Include href="sprite/Symbol 1647.xml" loadImmediate="false" itemID="6597607e-000009bb" lastModified="1735478244"/>
+          <Include href="sprite/Symbol 1647.xml" loadImmediate="false" itemID="6597607e-000009bb" lastModified="1736348953"/>
           <Include href="sprite/Symbol 1650.xml" loadImmediate="false" itemID="6597607e-000009bd" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1652.xml" loadImmediate="false" itemID="6597607e-000009be" lastModified="1704196122"/>
           <Include href="sprite/Symbol 1654.xml" loadImmediate="false" itemID="6597607e-000009bf" lastModified="1704196122"/>
@@ -1549,7 +1549,7 @@
           <Include href="sprite/Symbol 2391.xml" loadImmediate="false" itemID="6597607e-00000b3c" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2392.xml" loadImmediate="false" itemID="6597607e-00000b3d" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2393.xml" loadImmediate="false" itemID="6597607e-00000b3e" lastModified="1704196122"/>
-          <Include href="sprite/Symbol 2396.xml" loadImmediate="false" itemID="6597607e-00000b40" lastModified="1721664943"/>
+          <Include href="sprite/Symbol 2396.xml" loadImmediate="false" itemID="6597607e-00000b40" lastModified="1736351464"/>
           <Include href="sprite/Symbol 2398.xml" loadImmediate="false" itemID="6597607e-00000b41" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2400.xml" loadImmediate="false" itemID="6597607e-00000b42" lastModified="1731691915"/>
           <Include href="sprite/Symbol 2406.xml" loadImmediate="false" itemID="6597607e-00000b44" lastModified="1704196122"/>
@@ -1764,7 +1764,7 @@
           <Include href="sprite/悬浮UI/Symbol 923.xml" loadImmediate="false" itemID="6597607e-0000080e" lastModified="1735727389"/>
           <Include href="sprite/悬浮UI/Symbol 1861.xml" loadImmediate="false" itemID="6597607e-00000a2d" lastModified="1715310672"/>
           <Include href="sprite/悬浮UI/Symbol 1872.xml" loadImmediate="false" itemID="6597607e-00000a2f" lastModified="1715014705"/>
-          <Include href="sprite/悬浮UI/Symbol 1873.xml" loadImmediate="false" itemID="6597607e-00000a30" lastModified="1735479150"/>
+          <Include href="sprite/悬浮UI/Symbol 1873.xml" loadImmediate="false" itemID="6597607e-00000a30" lastModified="1736349542"/>
           <Include href="sprite/悬浮UI/Symbol 1893.xml" loadImmediate="false" itemID="6597607e-00000a3c" lastModified="1704196122"/>
           <Include href="sprite/悬浮UI/Symbol 1894.xml" loadImmediate="false" itemID="6597607e-00000a3d" lastModified="1704196122"/>
           <Include href="sprite/悬浮UI/Symbol 1934.xml" loadImmediate="false" itemID="6597607e-00000a56" lastModified="1735470868"/>
@@ -1997,7 +1997,7 @@
           <Include href="性能-帧率显示器/帧率显示器画布.xml" loadImmediate="false" itemID="662dac72-00000bfa" lastModified="1714271598"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="240" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="259" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -5165,7 +5165,43 @@ stop();
                                              </matrix>
                                              <textRuns>
                                                   <DOMTextRun>
-                                                       <characters>2023不联网单机版</characters>
+                                                       <characters>2023</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>不</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>联</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>网</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>单</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>机版</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
                                                        <textAttrs>
                                                             <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
                                                        </textAttrs>
@@ -5969,7 +6005,43 @@ on (rollOut) {
                                              </matrix>
                                              <textRuns>
                                                   <DOMTextRun>
-                                                       <characters>2023不联网单机版</characters>
+                                                       <characters>2023</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>不</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>联</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>网</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>单</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters>机版</characters>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                                  <DOMTextRun>
+                                                       <characters></characters>
                                                        <textAttrs>
                                                             <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
                                                        </textAttrs>
@@ -7610,15 +7682,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9672 4908|9975 4908!9975 4908|10265 5089!10265 5089|9962 5089!9962 5089|9659 5089!9659 5089|9355 5089!9355 5089|9645 5270!9645 5270|9342 5270!9342 5270|9633 5451!9633 5451|9935 5451!9935 5451|9645 5270!9645 5270|9949 5270!9949 5270|9659
- 5089!9659 5089|9369 4908!9369 4908|9672 4908!10569 5089|10859 5270!10859 5270|10555 5270!10555 5270|10252 5270!10252 5270|10542 5451!10542 5451|10845 5451!10845 5451|10555 5270!10555 5270|10265 5089!10265 5089|10569 5089!10569 5089|10279
- 4908!10279 4908|10582 4908!10582 4908|10292 4727!10292 4727|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9395 4546|9092 4546!9092 4546|8789 4546!8789 4546|9079 4727!9079 4727|9382 4727!9382 4727|9092 4546!9395 4546|9685 4727!9685
- 4727|9382 4727!9382 4727|9672 4908!9672 4908|9962 5089!9962 5089|10252 5270!9079 4727|8775 4727!8775 4727|9065 4908!9065 4908|9369 4908!9369 4908|9079 4727!8789 4546|8485 4546!8485 4546|8775 4727!8775 4727|8472 4727!8472 4727|8762 4908
-!8762 4908|9065 4908!9065 4908|9355 5089!9355 5089|9052 5089!9052 5089|8762 4908!8472 4727|8182 4546!8182 4546|8485 4546!9342 5270|9052 5089!10859 5270|11162 5270!11162 5270|11465 5270!11465 5270|11755 5451!11755 5451|12059 5451!12059
- 5451|11769 5270!11769 5270|11465 5270!11465 5270|11175 5089!11175 5089|10872 5089!10872 5089|11162 5270!11162 5270|11452 5451!11452 5451|11755 5451!11769 5270|11479 5089!11479 5089|11175 5089!10595 4727|10899 4727!10899 4727|10609 4546
-!10609 4546|10305 4546!10305 4546|10595 4727!10595 4727|10885 4908!10885 4908|11189 4908!11189 4908|10899 4727!11175 5089|10885 4908!10885 4908|10582 4908!10292 4727|10002 4546!10002 4546|9699 4546!10279 4908|9989 4727!9989 4727|9685
- 4727!9685 4727|9975 4908!9975 4908|10279 4908!10305 4546|10002 4546!10542 5451|10239 5451!10239 5451|9935 5451!9949 5270|10239 5451!10252 5270|9949 5270!10872 5089|10569 5089!10845 5451|11149 5451!11149 5451|10859 5270!10595 4727|10292
- 4727!10582 4908|10872 5089!11149 5451|11452 5451!11479 5089|11189 4908"/>
+!11465 5270|11175 5089!11175 5089|10872 5089!10872 5089|11162 5270!11162 5270|11452 5451!11452 5451|11755 5451!11755 5451|11465 5270!11465 5270|11769 5270!11769 5270|11479 5089!11479 5089|11175 5089!11175 5089|10885 4908!10885 4908|10582
+ 4908!10582 4908|10292 4727!10292 4727|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9395 4546|9092 4546!9092 4546|8789 4546!8789 4546|9079 4727!9079 4727|9369 4908!9369 4908|9659 5089!9659 5089|9962 5089!9962 5089|9672 4908!9672
+ 4908|9382 4727!9382 4727|9079 4727!9079 4727|8775 4727!8775 4727|9065 4908!9065 4908|9369 4908!9395 4546|9685 4727!9685 4727|9382 4727!9369 4908|9672 4908!9382 4727|9092 4546!8789 4546|8485 4546!8485 4546|8775 4727!8775 4727|8472 4727
+!8472 4727|8762 4908!8762 4908|9065 4908!9065 4908|9355 5089!9355 5089|9052 5089!9052 5089|8762 4908!8485 4546|8182 4546!8182 4546|8472 4727!9659 5089|9355 5089!9355 5089|9645 5270!9645 5270|9342 5270!9342 5270|9633 5451!9633 5451|9935
+ 5451!9935 5451|9645 5270!9645 5270|9949 5270!9949 5270|9659 5089!9342 5270|9052 5089!11755 5451|12059 5451!12059 5451|11769 5270!10595 4727|10305 4546!10305 4546|10002 4546!10002 4546|10292 4727!10292 4727|10595 4727!10595 4727|10899
+ 4727!10899 4727|10609 4546!10609 4546|10305 4546!10595 4727|10885 4908!10885 4908|11189 4908!11189 4908|10899 4727!10582 4908|10279 4908!10279 4908|9989 4727!9989 4727|9685 4727!9685 4727|9975 4908!9975 4908|10279 4908!10279 4908|10569
+ 5089!10569 5089|10872 5089!10872 5089|10582 4908!9962 5089|10252 5270!10252 5270|9949 5270!9672 4908|9975 4908!9975 4908|10265 5089!10265 5089|9962 5089!11452 5451|11149 5451!11149 5451|10845 5451!10845 5451|10542 5451!10542 5451|10239
+ 5451!10239 5451|9935 5451!9949 5270|10239 5451!10569 5089|10859 5270!10859 5270|10555 5270!10555 5270|10252 5270!10252 5270|10542 5451!11162 5270|10859 5270!10859 5270|11149 5451!10845 5451|10555 5270!10555 5270|10265 5089!10265 5089
+|10569 5089!11162 5270|11465 5270!11479 5089|11189 4908!10002 4546|9699 4546"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -8066,15 +8138,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!11745 5438|11442 5438!11442 5438|11152 5257!11152 5257|11455 5257!11455 5257|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11469 5076!11469 5076|11179 4895!11179 4895|10889 4714!10889 4714|10599 4533!10599 4533|10295
- 4533!10295 4533|9992 4533!9992 4533|9689 4533!9689 4533|9385 4533!9385 4533|9675 4714!9675 4714|9372 4714!9372 4714|9069 4714!9069 4714|8765 4714!8765 4714|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8765 4714!8765 4714
-|9055 4895!9055 4895|9359 4895!9359 4895|9662 4895!9662 4895|9372 4714!9372 4714|9082 4533!9082 4533|9385 4533!8475 4533|8779 4533!8779 4533|9069 4714!9069 4714|9359 4895!9359 4895|9649 5076!9649 5076|9345 5076!9345 5076|9042 5076!9042
- 5076|8752 4895!8752 4895|9055 4895!9055 4895|9345 5076!8752 4895|8462 4714!9649 5076|9939 5257!9939 5257|9635 5257!9635 5257|9345 5076!9635 5257|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9635 5257!9332 5257|9042 5076
-!9082 4533|8779 4533!11759 5257|11455 5257!11469 5076|11165 5076!11165 5076|10875 4895!10875 4895|11179 4895!11165 5076|10862 5076!10862 5076|10572 4895!10572 4895|10875 4895!10875 4895|10585 4714!10585 4714|10295 4533!10889 4714|10585
- 4714!10585 4714|10282 4714!10282 4714|9992 4533!10862 5076|10559 5076!10559 5076|10269 4895!10269 4895|9965 4895!9965 4895|9675 4714!9675 4714|9979 4714!9979 4714|10282 4714!10282 4714|10572 4895!10572 4895|10269 4895!10269 4895|9979
- 4714!9979 4714|9689 4533!9939 5257|10242 5257!10242 5257|10545 5257!10545 5257|10849 5257!10849 5257|10559 5076!10559 5076|10255 5076!10255 5076|9952 5076!9952 5076|10242 5257!10242 5257|10532 5438!10532 5438|10229 5438!10229 5438|9939
- 5257!10229 5438|9925 5438!10545 5257|10835 5438!10835 5438|10532 5438!11152 5257|10849 5257!10849 5257|11139 5438!11139 5438|10835 5438!10862 5076|11152 5257!10545 5257|10255 5076!10255 5076|9965 4895!11455 5257|11165 5076!11442 5438
-|11139 5438!9649 5076|9952 5076!9952 5076|9662 4895!9662 4895|9965 4895"/>
+!9042 5076|8752 4895!8752 4895|9055 4895!9055 4895|8765 4714!8765 4714|9069 4714!9069 4714|8779 4533!8779 4533|9082 4533!9082 4533|9372 4714!9372 4714|9675 4714!9675 4714|9965 4895!9965 4895|10255 5076!10255 5076|10559 5076!10559 5076
+|10862 5076!10862 5076|11152 5257!11152 5257|11442 5438!11442 5438|11139 5438!11139 5438|10849 5257!10849 5257|10545 5257!10545 5257|10835 5438!10835 5438|10532 5438!10532 5438|10242 5257!10242 5257|9939 5257!9939 5257|10229 5438!10229
+ 5438|9925 5438!9925 5438|9635 5257!9635 5257|9332 5257!9332 5257|9042 5076!9042 5076|9345 5076!9345 5076|9055 4895!9055 4895|9359 4895!9359 4895|9662 4895!9662 4895|9372 4714!10862 5076|11165 5076!11165 5076|11455 5257!11455 5257|11745
+ 5438!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11469 5076!11469 5076|11179 4895!11179 4895|10889 4714!10889 4714|10599 4533!10599 4533|10295 4533!10295 4533|9992 4533!9992 4533|9689 4533!9689 4533|9385 4533!9385 4533|9675
+ 4714!9082 4533|9385 4533!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9649 5076!9649 5076|9345 5076!8765 4714|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8765 4714!8475 4533|8779 4533!8752 4895|8462 4714!9649 5076
+|9939 5257!9939 5257|9635 5257!9635 5257|9345 5076!9925 5438|9623 5438!9623 5438|9332 5257!11745 5438|11442 5438!11759 5257|11455 5257!11455 5257|11152 5257!11152 5257|10849 5257!10889 4714|10585 4714!10585 4714|10282 4714!10282 4714
+|9979 4714!9979 4714|10269 4895!10269 4895|10559 5076!10559 5076|10849 5257!11469 5076|11165 5076!11165 5076|10875 4895!10875 4895|11179 4895!9965 4895|10269 4895!10269 4895|10572 4895!10572 4895|10875 4895!10875 4895|10585 4714!10585
+ 4714|10295 4533!9992 4533|10282 4714!10282 4714|10572 4895!10572 4895|10862 5076!10255 5076|9952 5076!9952 5076|10242 5257!11139 5438|10835 5438!10545 5257|10255 5076!10242 5257|10545 5257!10532 5438|10229 5438!9649 5076|9952 5076!9952
+ 5076|9662 4895!9662 4895|9965 4895!9979 4714|9689 4533!9675 4714|9979 4714"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -9639,7 +9711,7 @@ onClipEvent(enterFrame){
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="购买物品界面" color="#EC5A72" parentLayerIndex="21" current="true" isSelected="true" autoNamed="false" visible="false">
+                    <DOMLayer name="购买物品界面" color="#EC5A72" parentLayerIndex="21" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="158" keyMode="9728">
                                    <elements/>
@@ -9902,19 +9974,6 @@ onClipEvent(load){
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 2748" name="理发店界面" centerPoint3DX="790.85" centerPoint3DY="247.2">
                                              <matrix>
                                                   <Matrix tx="675.85" ty="75.25"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (load) {
-	this._visible = 0;
-}]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2755" name="捐助者名单" centerPoint3DX="-414.85" centerPoint3DY="466.65">
-                                             <matrix>
-                                                  <Matrix tx="-839.45" ty="219.75"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point/>
@@ -11543,7 +11602,7 @@ onClipEvent (enterFrame) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="门口佣兵刷新器" color="#81CBFE" parentLayerIndex="64" autoNamed="false">
+                    <DOMLayer name="门口佣兵刷新器" color="#81CBFE" parentLayerIndex="64" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="187" keyMode="9728">
                                    <elements/>
@@ -11654,7 +11713,7 @@ onClipEvent (enterFrame) {
                               </DOMFrame>
                               <DOMFrame index="274" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2396" centerPoint3DX="235.6" centerPoint3DY="-25.8">
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2396" selected="true" centerPoint3DX="235.6" centerPoint3DY="-25.8">
                                              <matrix>
                                                   <Matrix tx="184.5" ty="-37"/>
                                              </matrix>

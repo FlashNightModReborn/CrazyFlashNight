@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1735479150" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1736349542" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="Symbol 1873">
       <layers>
-        <DOMLayer name="Script Layer" color="#BBD388" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BBD388">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -60,8 +60,7 @@
 	进入挑战 = false;
 	if(获取任务文档数据.challenge){
 		this.挑战难度 = 获取任务文档数据.challenge.difficulty;
-		挑战内容 = "挑战" + "\r" + "难度：" + _root.getDifficultyString(this.挑战难度);
-		if(获取任务文档数据.challenge.description) 挑战内容 += "\r" + "* " + 获取任务文档数据.challenge.description;
+		挑战内容 = _root.任务栏UI函数.打印任务挑战明细(任务数组[0]);
 		进入挑战按钮._visible = true;
 		取消按钮._visible = false;
 	}else{
@@ -339,7 +338,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本框" color="#60C7E6" autoNamed="false">
+        <DOMLayer name="文本框" color="#60C7E6" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -369,7 +368,7 @@ on (rollOut) {
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="270" height="68" isSelectable="false" variableName="挑战内容" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText fontRenderingMode="device" width="270" height="68.2" isSelectable="false" variableName="挑战内容" renderAsHTML="true" lineType="multiline">
                   <matrix>
                     <Matrix tx="180" ty="216"/>
                   </matrix>

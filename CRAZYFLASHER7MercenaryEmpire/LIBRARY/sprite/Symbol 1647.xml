@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1647" itemID="6597607e-000009bb" lastModified="1735478244" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1647" itemID="6597607e-000009bb" lastModified="1736348953" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="Symbol 1647" currentFrame="17">
+    <DOMTimeline name="Symbol 1647">
       <layers>
         <DOMLayer name="Labels Layer" color="#EF656C">
           <frames>
@@ -350,7 +350,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#A3EF86" current="true" isSelected="true">
+        <DOMLayer name="Layer 12" color="#A3EF86">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -587,13 +587,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#CDC8DC">
+        <DOMLayer name="Layer 19" color="#CDC8DC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="284.95" height="256.95" isSelectable="false" variableName="任务明细" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText fontRenderingMode="device" width="271" height="256.95" isSelectable="false" variableName="任务明细" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix tx="248" ty="57"/>
+                    <Matrix tx="255" ty="57"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
