@@ -34,11 +34,6 @@
             <QuantityMax>3</QuantityMax>
         </Reward>
         <Reward>
-            <Name>黑龙堂徽章</Name>
-            <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>5</QuantityMax>
-        </Reward>
-        <Reward>
             <Name>军用帆布</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>5</QuantityMax>
@@ -230,20 +225,28 @@
                     <Enemy id="0">
                         <Type>兵种47</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种64</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>6</Quantity>
                         <Level>35</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>黑龙堂徽章</名字>
+                                <概率>25</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种270</Type>

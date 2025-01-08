@@ -29,11 +29,6 @@
             <QuantityMax>3</QuantityMax>
         </Reward>
         <Reward>
-            <Name>翅虎堂徽章</Name>
-            <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>5</QuantityMax>
-        </Reward>
-        <Reward>
             <Name>复合式军用塑料</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>4</QuantityMax>
@@ -126,9 +121,17 @@
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种64</Type>
-                        <Interval>500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>6</Quantity>
                         <Level>32</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>翅虎堂徽章</名字>
+                                <概率>25</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
