@@ -863,7 +863,8 @@ _root.物品UI函数.显示情报信息 = function(name,value){
 	this.btn2._visible = true;
 	this.nametext.text = itemData.displayname;
 	this.valuetext.text = "收集进度：" + value + " / " + itemData.maxvalue;
-	this.infovaluetext.text = "已解明 " + this.已解明数量 + " / " + this.总信息数量 + " 条信息";
+	if(this.已解明数量 == this.总信息数量) this.infovaluetext.text = "已解明全部 " + this.已解明数量 + " 条信息"
+	else this.infovaluetext.text = "已解明 " + this.已解明数量 + " 条信息";
 	this.刷新情报信息();
 }
 
