@@ -18,9 +18,7 @@
         // 0) 确定比较函数
         var compare:Function = (compareFunction == null)
             ? function(a, b):Number { 
-                if (a < b) return -1;
-                if (a > b) return 1;
-                return 0; 
+                return a - b
               }
             : compareFunction;
 

@@ -269,7 +269,7 @@ class org.flashNight.naki.Sort.SortTest {
      * 进行性能测试
      */
     private function performPerformanceTests():Void {
-        var dataSizes:Array = [1000, 3000, 10000]; // 可根据需要调整数据规模
+        var dataSizes:Array = [100, 300, 1000, 3000, 10000]; // 可根据需要调整数据规模
         var distributions:Array = ["random", "sorted", "reverse", "duplicates", "allSame", "partiallySorted"]; // 新增 "partiallySorted"
         
         for (var i:Number = 0; i < dataSizes.length; i++) {
