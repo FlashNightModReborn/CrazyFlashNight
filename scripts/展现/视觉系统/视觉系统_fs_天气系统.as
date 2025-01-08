@@ -167,7 +167,7 @@ _root.天气系统.设置当前天气 = function()
     //_root.服务器.发布服务器消息(_root.常用工具函数.对象转JSON(夜视仪));
     if(光照等级 <= this.时间倍率启动等级 && !夜视仪.视觉情况)
     {
-        bus.publish("WeatherTimeRateUpdated");
+        bus.publish("WeatherTimeRateUpdated", 光照等级);
     }
     else
     {
