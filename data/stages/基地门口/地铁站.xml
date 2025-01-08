@@ -63,5 +63,10 @@
             <AcquisitionProbability>5</AcquisitionProbability>
             <QuantityMax>1</QuantityMax>
         </Reward>
+        <Reward>
+            <Name>资料</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
     </Rewards>
 </GameStage>
