@@ -30,9 +30,10 @@ class org.flashNight.neur.Event.EventDispatcher {
     //  实例成员
     // -----------------------
     
-    private var subscriptions:Array;   // 存储当前实例所有订阅信息 { eventName:String, callback:Function, isGlobal?:Boolean }
-    private var instanceID:String;     // 当前实例的唯一 ID，用于事件名称隔离
-    private var _isDestroyed:Boolean;  // 标志是否已销毁，避免重复销毁
+    private var subscriptions:Array;         // 存储当前实例所有订阅信息 { eventName:String, callback:Function, isGlobal?:Boolean }
+    private var uniqueEventNames:Object;     // 缓存 eventName 到 uniqueEventName 的映射
+    private var instanceID:String;           // 当前实例的唯一 ID，用于事件名称隔离
+    private var _isDestroyed:Boolean;        // 标志是否已销毁，避免重复销毁
 
     /**
      * 构造函数：创建一个新的 EventDispatcher 实例。
@@ -41,6 +42,7 @@ class org.flashNight.neur.Event.EventDispatcher {
      */
     public function EventDispatcher() {
         this.subscriptions = [];   
+        this.uniqueEventNames = {};         // 初始化唯一事件名称缓存
         this.instanceID = ":" + (EventDispatcher.instanceCounter++);
         this._isDestroyed = false;
     }
@@ -59,7 +61,12 @@ class org.flashNight.neur.Event.EventDispatcher {
             return;
         }
         
-        var uniqueEventName:String = eventName + this.instanceID;
+        // 检查是否已缓存 uniqueEventName
+        var uniqueEventName:String = this.uniqueEventNames[eventName];
+        if (uniqueEventName == undefined) {
+            uniqueEventName = eventName + this.instanceID;
+            this.uniqueEventNames[eventName] = uniqueEventName;
+        }
         
         EventDispatcher.bus.subscribe(uniqueEventName, callback, scope);
         
@@ -83,7 +90,12 @@ class org.flashNight.neur.Event.EventDispatcher {
             return;
         }
         
-        var uniqueEventName:String = eventName + this.instanceID;
+        // 检查是否已缓存 uniqueEventName
+        var uniqueEventName:String = this.uniqueEventNames[eventName];
+        if (uniqueEventName == undefined) {
+            uniqueEventName = eventName + this.instanceID;
+            this.uniqueEventNames[eventName] = uniqueEventName;
+        }
         
         EventDispatcher.bus.subscribeOnce(uniqueEventName, callback, scope);
         
@@ -107,7 +119,12 @@ class org.flashNight.neur.Event.EventDispatcher {
             return;
         }
         
-        var uniqueEventName:String = eventName + this.instanceID;
+        // 获取 cached uniqueEventName
+        var uniqueEventName:String = this.uniqueEventNames[eventName];
+        if (uniqueEventName == undefined) {
+            // 事件从未被订阅过，无需退订
+            return;
+        }
         
         // 通过静态 bus 取消订阅
         EventDispatcher.bus.unsubscribe(uniqueEventName, callback);
@@ -118,6 +135,17 @@ class org.flashNight.neur.Event.EventDispatcher {
             var sub:Object = this.subscriptions[i];
             if (sub.eventName == uniqueEventName && sub.callback == callback) {
                 this.subscriptions.splice(i, 1);
+                // 如果没有其他订阅使用该 uniqueEventName，移除缓存
+                var stillSubscribed:Boolean = false;
+                for (var j:Number = 0; j < this.subscriptions.length; j++) {
+                    if (this.subscriptions[j].eventName == uniqueEventName) {
+                        stillSubscribed = true;
+                        break;
+                    }
+                }
+                if (!stillSubscribed) {
+                    delete this.uniqueEventNames[eventName];
+                }
                 return;
             }
         }
@@ -136,7 +164,12 @@ class org.flashNight.neur.Event.EventDispatcher {
             return;
         }
         
-        var uniqueEventName:String = eventName + this.instanceID;
+        // 获取 cached uniqueEventName
+        var uniqueEventName:String = this.uniqueEventNames[eventName];
+        if (uniqueEventName == undefined) {
+            // 如果事件从未被订阅过，本地事件可能没人监听，但仍需发布
+            uniqueEventName = eventName + this.instanceID;
+        }
         
         // 构建参数数组 (从索引1开始)
         var args:Array = [];
@@ -145,6 +178,7 @@ class org.flashNight.neur.Event.EventDispatcher {
             args[i-1] = arguments[i];
         }
         
+        // 使用 apply 传递参数
         EventDispatcher.bus.publish.apply(EventDispatcher.bus, [uniqueEventName].concat(args));
     }
     
@@ -233,6 +267,7 @@ class org.flashNight.neur.Event.EventDispatcher {
         // 如果没有任何订阅，直接返回
         if (len == 0) {
             this.subscriptions = null;
+            this.uniqueEventNames = null;
             return;
         }
         
@@ -243,10 +278,25 @@ class org.flashNight.neur.Event.EventDispatcher {
                 EventDispatcher.bus.unsubscribe(sub.eventName, sub.callback);
             } else {
                 EventDispatcher.bus.unsubscribe(sub.eventName, sub.callback);
+                // 从 uniqueEventNames 缓存中移除
+                // 需要找到原 eventName by removing instanceID
+                var originalEventName:String = sub.eventName.substring(0, sub.eventName.indexOf(this.instanceID));
+                // Check if any other subscriptions use this eventName
+                var stillSubscribed:Boolean = false;
+                for (var j:Number = 0; j < len; j++) {
+                    if (this.subscriptions[j].eventName == sub.eventName && this.subscriptions[j].callback != sub.callback) {
+                        stillSubscribed = true;
+                        break;
+                    }
+                }
+                if (!stillSubscribed) {
+                    delete this.uniqueEventNames[originalEventName];
+                }
             }
         }
         
-        // 清空订阅列表
+        // 清空订阅列表和缓存
         this.subscriptions = null;
+        this.uniqueEventNames = null;
     }
 }
