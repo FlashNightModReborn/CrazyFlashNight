@@ -14,6 +14,7 @@ import org.flashNight.gesh.arguments.*;
  * 4. **可控销毁**：destroy 方法仅移除本实例订阅的事件，保证资源的合理释放。
  * 5. **业务友好**：使用简单的 subscribe、unsubscribe、publish、subscribeOnce 接口满足基本事件需求。
  * 6. **全局广播支持**：提供 subscribeGlobal、unsubscribeGlobal、publishGlobal 方法，实现跨实例事件广播。
+ * 7. **单一订阅支持**：新增 subscribeSingle 方法，确保每个事件仅有一个订阅者。
  */
 class org.flashNight.neur.Event.EventDispatcher {
     // -----------------------
@@ -245,6 +246,52 @@ class org.flashNight.neur.Event.EventDispatcher {
     }
     
     /**
+     * 单一订阅方法，确保每个事件只有一个订阅者。
+     * 如果事件已被订阅，则取消之前的订阅并添加新的订阅。
+     * 
+     * @param eventName 要订阅的事件名称
+     * @param callback 回调函数
+     * @param scope 回调函数执行时的作用域 (this)
+     */
+    public function subscribeSingle(eventName:String, callback:Function, scope:Object):Void {
+        if (this._isDestroyed) {
+            trace("Warning: subscribeSingle called on a destroyed EventDispatcher.");
+            return;
+        }
+        
+        // 检查是否已有该事件的订阅
+        var uniqueEventName:String = this.uniqueEventNames[eventName];
+        if (uniqueEventName != undefined) {
+            // 找到现有的订阅并取消
+            var existingCallback:Function = null;
+            for (var i:Number = 0; i < this.subscriptions.length; i++) {
+                var sub:Object = this.subscriptions[i];
+                if (sub.eventName == uniqueEventName && !sub.isGlobal) {
+                    existingCallback = sub.callback;
+                    // 取消订阅
+                    EventDispatcher.bus.unsubscribe(uniqueEventName, existingCallback);
+                    // 移除订阅记录
+                    this.subscriptions.splice(i, 1);
+                    break;
+                }
+            }
+        } else {
+            // 如果没有缓存的 uniqueEventName，则生成一个
+            uniqueEventName = eventName + this.instanceID;
+            this.uniqueEventNames[eventName] = uniqueEventName;
+        }
+        
+        // 添加新的订阅
+        EventDispatcher.bus.subscribe(uniqueEventName, callback, scope);
+        
+        // 记录新的订阅
+        this.subscriptions.push({
+            eventName: uniqueEventName,
+            callback: callback
+        });
+    }
+    
+    /**
      * 销毁当前 EventDispatcher 实例，取消所有由此实例订阅的事件。
      * 此操作仅影响本实例创建的订阅，不会影响全局 EventBus 或其他实例的订阅。
      */
@@ -275,7 +322,7 @@ class org.flashNight.neur.Event.EventDispatcher {
                 var originalEventName:String = sub.eventName.substring(0, sub.eventName.indexOf(this.instanceID));
                 // Check if any other subscriptions use this eventName
                 var stillSubscribed:Boolean = false;
-                for (var j:Number = 0; j < len; j++) {
+                for (var j:Number = 0; j < this.subscriptions.length; j++) {
                     if (this.subscriptions[j].eventName == sub.eventName && this.subscriptions[j].callback != sub.callback) {
                         stillSubscribed = true;
                         break;

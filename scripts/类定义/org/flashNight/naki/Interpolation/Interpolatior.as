@@ -13,10 +13,7 @@
      * @return 返回插值结果，将 value 从源范围映射到目标范围
      */
     public static function linear(value:Number, srcLow:Number, srcHigh:Number, dstLow:Number, dstHigh:Number):Number {
-        // 如果源范围的最小值和最大值相等，避免除零错误，直接返回目标最小值
-        if (srcLow == srcHigh) return dstLow;
-        // 线性插值公式：通过线性比例映射源范围的值到目标范围
-        return (value - srcLow) / (srcHigh - srcLow) * (dstHigh - dstLow) + dstLow;
+        return srcLow == srcHigh ? dstLow : (value - srcLow) / (srcHigh - srcLow) * (dstHigh - dstLow) + dstLow;
     }
 
     /**
