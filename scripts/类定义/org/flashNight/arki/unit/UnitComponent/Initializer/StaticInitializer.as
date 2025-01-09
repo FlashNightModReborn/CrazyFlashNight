@@ -25,6 +25,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         if (isNaN(target.命中率)) target.命中率 = 10;
         if (isNaN(target.躲闪率)) target.躲闪率 = 999;
         if (isNaN(target.等级)) target.等级 = 1;
+        if (isNaN(target.lastHitTime)) target.lastHitTime = _root.帧计时器.当前帧数;
     }
 
     public static function initializeGameWorldUnit():Void 

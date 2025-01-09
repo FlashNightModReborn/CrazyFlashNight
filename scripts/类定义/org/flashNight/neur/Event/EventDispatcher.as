@@ -170,16 +170,11 @@ class org.flashNight.neur.Event.EventDispatcher {
             // 如果事件从未被订阅过，本地事件可能没人监听，但仍需发布
             uniqueEventName = eventName + this.instanceID;
         }
-        
-        // 构建参数数组 (从索引1开始)
-        var args:Array = [];
-        var argLen:Number = arguments.length; // 缓存 length
-        for (var i:Number = 1; i < argLen; i++) {
-            args[i-1] = arguments[i];
-        }
+
+        var bus:EventBus = EventDispatcher.bus;
         
         // 使用 apply 传递参数
-        EventDispatcher.bus.publish.apply(EventDispatcher.bus, [uniqueEventName].concat(args));
+        bus.publish.apply(bus, ArgumentsUtil.combineArgs([uniqueEventName], arguments, 1));
     }
     
     /**
@@ -243,14 +238,10 @@ class org.flashNight.neur.Event.EventDispatcher {
             trace("Warning: publishGlobal called on a destroyed EventDispatcher.");
             return;
         }
+        var bus:EventBus = EventDispatcher.bus;
         
-        var args:Array = [];
-        var argLen:Number = arguments.length;
-        for (var i:Number = 1; i < argLen; i++) {
-            args[i-1] = arguments[i];
-        }
-        
-        EventDispatcher.bus.publish.apply(EventDispatcher.bus, [eventName].concat(args));
+        // 使用 apply 传递参数
+        bus.publish.apply(bus, ArgumentsUtil.combineArgs([eventName], arguments, 1));
     }
     
     /**
@@ -278,6 +269,7 @@ class org.flashNight.neur.Event.EventDispatcher {
                 EventDispatcher.bus.unsubscribe(sub.eventName, sub.callback);
             } else {
                 EventDispatcher.bus.unsubscribe(sub.eventName, sub.callback);
+                
                 // 从 uniqueEventNames 缓存中移除
                 // 需要找到原 eventName by removing instanceID
                 var originalEventName:String = sub.eventName.substring(0, sub.eventName.indexOf(this.instanceID));
