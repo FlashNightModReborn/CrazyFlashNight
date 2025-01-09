@@ -184,8 +184,6 @@ _root.刷新人物装扮 = function(目标)
 {
 	var 目标人物 = _root.gameworld[目标];
 
-	目标人物.aabbCollider = new AABBCollider();
-	StaticInitializer.initializeUnit(目标人物);
 	var 是主角:Boolean = false;
 	var 头部装备:String;
 	var 上装装备:String;
@@ -986,7 +984,7 @@ _root.刷新人物装扮 = function(目标)
 	目标人物.gotoAndPlay("刷新装扮");
 
 
-
+	StaticInitializer.initializeUnit(目标人物);
 	//_root.发布调试消息(目标人物.名字 + " hp:" + 目标人物.hp满血值 + "/" + 目标人物.hp + " mp:" + 目标人物.mp满血值 + "/" + 目标人物.mp);
 };
 
