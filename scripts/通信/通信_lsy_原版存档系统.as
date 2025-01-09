@@ -14,7 +14,7 @@ _root.初始化物品栏 = function(){
 _root.初始化收集品栏 = function(){
     return {
         材料:new DictCollection(null),
-        情报:new DictCollection(null)
+        情报:new InformationCollection(null)
     }
 }
 
@@ -413,7 +413,7 @@ _root.读取存盘 = function()
     };
     _root.收集品栏 = {
         材料:new DictCollection(_root.mydata.collection.材料),
-        情报:new DictCollection(_root.mydata.collection.情报)
+        情报:new InformationCollection(_root.mydata.collection.情报)
     };
 
     _root.主线任务进度 = Math.floor(Number(任务储存数据));
