@@ -6,20 +6,17 @@ import org.flashNight.arki.component.Collider.*;
 import org.flashNight.gesh.arguments.*;
 import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.gesh.func.*;
+import org.flashNight.arki.unit.UnitComponent.Updater.*;
+import org.flashNight.arki.component.StatHandler.*;
 
-class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer implements IInitializer
-{
+class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer implements IInitializer {
     public static var factory:IColliderFactory;
 
     public function initialize(target:MovieClip):Void {
         throw new Error("工具类待实现");
     }
 
-    public static function initializeUnit(target:MovieClip):Void 
-    {
-        if (!target.aabbCollider) target.aabbCollider = StaticInitializer.factory.createFromUnitArea(target);
-        if (!target.dispatcher) target.dispatcher = new LifecycleEventDispatcher(target);
-
+    private static function initializeParameters(target:MovieClip):Void {
         if (isNaN(target.重量)) target.重量 = 60;
         if (isNaN(target.韧性系数)) target.韧性系数 = 1;
         if (isNaN(target.命中率)) target.命中率 = 10;
@@ -28,24 +25,30 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
 
         if (isNaN(target.remainingImpactForce)) target.remainingImpactForce = 0;
         if (isNaN(target.lastHitTime)) target.lastHitTime = _root.帧计时器.当前帧数;
-
-
-        target.dispatcher.subscribeSingle("hit", function(){
-            _root.冲击力刷新(this);
-            var bar:MovieClip = this.新版人物文字信息.头顶血槽;
-            bar._visible = true;
-            bar.gotoAndPlay(2);
-        }, target);
-
-
-        target.dispatcher.subscribeSingleGlobal("WeatherTimeRateUpdated", function(){
-            var ic:MovieClip = target.新版人物文字信息 || target.人物文字信息;
-            ic._alpha = _root.天气系统.人物信息透明度;
-        },target);
     }
 
-    public static function initializeGameWorldUnit():Void 
-    {
+    private static function initializeComponents(target:MovieClip):Void {
+        if (!target.aabbCollider) target.aabbCollider = StaticInitializer.factory.createFromUnitArea(target);
+        if (!target.dispatcher) target.dispatcher = new LifecycleEventDispatcher(target);
+    }
+
+    private static function subscribeEvents(target:MovieClip):Void {
+        var dispatcher:EventDispatcher = target.dispatcher;
+
+        dispatcher.subscribeSingle("hit", HitUpdater.getUpdater(), target);
+
+        var wtfunc:Function = WeatherUpdater.getUpdater();
+        dispatcher.subscribeSingleGlobal("WeatherTimeRateUpdated", wtfunc, target);
+        wtfunc.call(target);
+    }
+
+    public static function initializeUnit(target:MovieClip):Void {
+        initializeComponents(target);
+        initializeParameters(target);
+        subscribeEvents(target);
+    }
+
+    public static function initializeGameWorldUnit():Void {
         var gameworld:MovieClip = _root.gameworld;
         for (var each in gameworld) {
             var target = gameworld[each];
@@ -53,9 +56,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         }
     }
 
-    public static function onSceneChanged():Void 
-    {
-        if(!_root.gameworld) return;
+    public static function onSceneChanged():Void {
+        if (!_root.gameworld) return;
         StaticInitializer.factory = ColliderFactoryRegistry.getFactory(ColliderFactoryRegistry.AABBFactory);
         StaticInitializer.onSceneChanged = StaticInitializer.initializeGameWorldUnit;
         StaticInitializer.initializeGameWorldUnit();
