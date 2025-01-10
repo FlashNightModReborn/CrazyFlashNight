@@ -37,6 +37,8 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.testCallbackExceptionHandling();
         this.testMultipleDispatchers();
         this.testSubscribeOnceWithUnsubscribe();
+        this.testSubscribeSingle();            // 新增测试
+        this.testSubscribeSingleGlobal();     // 新增测试
         this.testMemoryLeakDetection();
         this.testPerformance();
         this.reportResults();
@@ -324,7 +326,7 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.dispatcher.publish(eventName);
 
         // 断言回调只被调用一次
-        this.assert(callCount === 1, "duplicateSubscriptions: Callback should be called twice due to duplicate subscriptions.");
+        this.assert(callCount === 1, "duplicateSubscriptions: Callback should be called once due to duplicate subscriptions.");
 
         // 清理
         this.dispatcher.unsubscribe(eventName, testCallback);
@@ -513,6 +515,90 @@ class org.flashNight.neur.Event.EventDispatcherTest {
         this.assert(callCount === 0, "subscribeOnceWithUnsubscribe: Callback should not be called after unsubscribe.");
 
         // 清理
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试单一订阅方法 subscribeSingle 的正确性。
+     */
+    private function testSubscribeSingle():Void {
+        trace("--- 测试 subscribeSingle 方法 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleSubscribeEvent";
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var testCallback1:Function = function() {
+            callCount1++;
+        };
+        var testCallback2:Function = function() {
+            callCount2++;
+        };
+        var scope:Object = this;
+
+        // 使用 subscribeSingle 订阅事件
+        this.dispatcher.subscribeSingle(eventName, testCallback1, scope);
+
+        // 发布事件，触发 testCallback1
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingle: First callback should be called once.");
+
+        // 使用 subscribeSingle 再次订阅同一事件，testCallback2 应替换 testCallback1
+        this.dispatcher.subscribeSingle(eventName, testCallback2, scope);
+
+        // 发布事件，触发 testCallback2
+        this.dispatcher.publish(eventName);
+        this.assert(callCount1 === 1, "subscribeSingle: First callback should not be called again.");
+        this.assert(callCount2 === 1, "subscribeSingle: Second callback should be called once.");
+
+        // 再次发布事件，testCallback2 再次被调用
+        this.dispatcher.publish(eventName);
+        this.assert(callCount2 === 2, "subscribeSingle: Second callback should be called twice.");
+
+        // 清理
+        this.dispatcher.unsubscribe(eventName, testCallback2);
+        this.cleanupDispatcher();
+    }
+
+    /**
+     * 测试全局单一订阅方法 subscribeSingleGlobal 的正确性。
+     */
+    private function testSubscribeSingleGlobal():Void {
+        trace("--- 测试 subscribeSingleGlobal 方法 ---");
+        this.initializeDispatcher();
+
+        var eventName:String = "singleSubscribeGlobalEvent";
+        var callCount1:Number = 0;
+        var callCount2:Number = 0;
+        var testCallback1:Function = function() {
+            callCount1++;
+        };
+        var testCallback2:Function = function() {
+            callCount2++;
+        };
+        var scope:Object = this;
+
+        // 使用 subscribeSingleGlobal 订阅全局事件
+        this.dispatcher.subscribeSingleGlobal(eventName, testCallback1, scope);
+
+        // 发布全局事件，触发 testCallback1
+        this.dispatcher.publishGlobal(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleGlobal: First global callback should be called once.");
+
+        // 使用 subscribeSingleGlobal 再次订阅同一全局事件，testCallback2 应替换 testCallback1
+        this.dispatcher.subscribeSingleGlobal(eventName, testCallback2, scope);
+
+        // 发布全局事件，触发 testCallback2
+        this.dispatcher.publishGlobal(eventName);
+        this.assert(callCount1 === 1, "subscribeSingleGlobal: First global callback should not be called again.");
+        this.assert(callCount2 === 1, "subscribeSingleGlobal: Second global callback should be called once.");
+
+        // 再次发布全局事件，testCallback2 再次被调用
+        this.dispatcher.publishGlobal(eventName);
+        this.assert(callCount2 === 2, "subscribeSingleGlobal: Second global callback should be called twice.");
+
+        // 清理
+        this.dispatcher.unsubscribeGlobal(eventName, testCallback2);
         this.cleanupDispatcher();
     }
 

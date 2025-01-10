@@ -14,7 +14,7 @@ import org.flashNight.gesh.arguments.*;
  * 4. **可控销毁**：destroy 方法仅移除本实例订阅的事件，保证资源的合理释放。
  * 5. **业务友好**：使用简单的 subscribe、unsubscribe、publish、subscribeOnce 接口满足基本事件需求。
  * 6. **全局广播支持**：提供 subscribeGlobal、unsubscribeGlobal、publishGlobal 方法，实现跨实例事件广播。
- * 7. **单一订阅支持**：新增 subscribeSingle 方法，确保每个事件仅有一个订阅者。
+ * 7. **单一订阅支持**：提供 subscribeSingle 和 subscribeSingleGlobal 方法，确保每个事件仅有一个订阅者。
  */
 class org.flashNight.neur.Event.EventDispatcher {
     // -----------------------
@@ -288,6 +288,45 @@ class org.flashNight.neur.Event.EventDispatcher {
         this.subscriptions.push({
             eventName: uniqueEventName,
             callback: callback
+        });
+    }
+    
+    /**
+     * 全局单一订阅方法，确保每个全局事件只有一个订阅者。
+     * 如果全局事件已被订阅，则取消之前的订阅并添加新的订阅。
+     * 
+     * @param eventName 要订阅的全局事件名称
+     * @param callback 回调函数
+     * @param scope 回调函数执行时的作用域 (this)
+     */
+    public function subscribeSingleGlobal(eventName:String, callback:Function, scope:Object):Void {
+        if (this._isDestroyed) {
+            trace("Warning: subscribeSingleGlobal called on a destroyed EventDispatcher.");
+            return;
+        }
+        
+        // 查找当前实例中是否已经有该全局事件的订阅
+        var existingCallback:Function = null;
+        for (var i:Number = 0; i < this.subscriptions.length; i++) {
+            var sub:Object = this.subscriptions[i];
+            if (sub.eventName == eventName && sub.isGlobal) {
+                existingCallback = sub.callback;
+                // 取消现有的全局订阅
+                EventDispatcher.bus.unsubscribe(eventName, existingCallback);
+                // 移除订阅记录
+                this.subscriptions.splice(i, 1);
+                break;
+            }
+        }
+        
+        // 添加新的全局订阅
+        EventDispatcher.bus.subscribe(eventName, callback, scope);
+        
+        // 记录新的全局订阅
+        this.subscriptions.push({
+            eventName: eventName,
+            callback: callback,
+            isGlobal: true
         });
     }
     
