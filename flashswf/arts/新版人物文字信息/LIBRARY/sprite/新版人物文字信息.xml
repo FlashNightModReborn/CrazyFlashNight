@@ -1,27 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1736471668" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1736479944" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="新版人物文字信息">
       <layers>
-        <DOMLayer name="Script Layer" color="#888BCD" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#888BCD" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[// 获取父级对象（自机）
 var self:Object = _parent;
 var _this:MovieClip = this;
-// 根据自机的状态设置名字颜色
-if (self.是否为敌人 == false) {
-    名字 = "<FONT COLOR='#00FF00'>" + self.名字 + "</FONT>";
-}
-else if (self.是否为敌人 == true) {
-    名字 = "<FONT COLOR='#CC0000'>" + self.名字 + "</FONT>";
-}
-else if (self._name == _root.控制目标) {
-    名字 = "<FONT COLOR='#FFFF00'>" + self.名字 + "</FONT>";
-}
-else {
-    名字 = "<FONT COLOR='#FFFFFF'>" + self.名字 + "</FONT>";
-}
 
 // 获取血槽的初始位置和长度
 var bloodBarX:Number = this.头顶血槽.血槽底._x;
@@ -157,7 +144,7 @@ this.onEnterFrame = function() {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="100" height="15.55" isSelectable="false" variableName="名字" renderAsHTML="true">
+                <DOMDynamicText fontRenderingMode="device" width="100" height="15.55" isSelectable="false" variableName="_parent.displayName" renderAsHTML="true">
                   <matrix>
                     <Matrix tx="-16" ty="-6.9"/>
                   </matrix>

@@ -11,41 +11,16 @@ import org.flashNight.arki.component.StatHandler.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer implements IInitializer {
     public static var factory:IColliderFactory;
-
+    
     public function initialize(target:MovieClip):Void {
         throw new Error("工具类待实现");
     }
 
-    private static function initializeParameters(target:MovieClip):Void {
-        if (isNaN(target.重量)) target.重量 = 60;
-        if (isNaN(target.韧性系数)) target.韧性系数 = 1;
-        if (isNaN(target.命中率)) target.命中率 = 10;
-        if (isNaN(target.躲闪率)) target.躲闪率 = 999;
-        if (isNaN(target.等级)) target.等级 = 1;
-
-        if (isNaN(target.remainingImpactForce)) target.remainingImpactForce = 0;
-        if (isNaN(target.lastHitTime)) target.lastHitTime = _root.帧计时器.当前帧数;
-    }
-
-    private static function initializeComponents(target:MovieClip):Void {
-        if (!target.aabbCollider) target.aabbCollider = StaticInitializer.factory.createFromUnitArea(target);
-        if (!target.dispatcher) target.dispatcher = new LifecycleEventDispatcher(target);
-    }
-
-    private static function subscribeEvents(target:MovieClip):Void {
-        var dispatcher:EventDispatcher = target.dispatcher;
-
-        dispatcher.subscribeSingle("hit", HitUpdater.getUpdater(), target);
-
-        var wtfunc:Function = WeatherUpdater.getUpdater();
-        dispatcher.subscribeSingleGlobal("WeatherTimeRateUpdated", wtfunc, target);
-        wtfunc.call(target);
-    }
-
     public static function initializeUnit(target:MovieClip):Void {
-        initializeComponents(target);
-        initializeParameters(target);
-        subscribeEvents(target);
+        ComponentInitializer.initialize(target);
+        ParameterInitializer.initialize(target);
+        EventInitializer.initialize(target);
+        DisplayNameInitializer.initialize(target);
     }
 
     public static function initializeGameWorldUnit():Void {
