@@ -28,6 +28,20 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
 
         if (isNaN(target.remainingImpactForce)) target.remainingImpactForce = 0;
         if (isNaN(target.lastHitTime)) target.lastHitTime = _root.帧计时器.当前帧数;
+
+
+        target.dispatcher.subscribeSingle("hit", function(){
+            _root.冲击力刷新(this);
+            var bar:MovieClip = this.新版人物文字信息.头顶血槽;
+            bar._visible = true;
+            bar.gotoAndPlay(2);
+        }, target);
+
+
+        target.dispatcher.subscribeSingleGlobal("WeatherTimeRateUpdated", function(){
+            var ic:MovieClip = target.新版人物文字信息 || target.人物文字信息;
+            ic._alpha = _root.天气系统.人物信息透明度;
+        },target);
     }
 
     public static function initializeGameWorldUnit():Void 
@@ -35,9 +49,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         var gameworld:MovieClip = _root.gameworld;
         for (var each in gameworld) {
             var target = gameworld[each];
-            if (target.hp > 0) {
-                StaticInitializer.initializeUnit(target);
-            }
+            if (target.hp > 0) StaticInitializer.initializeUnit(target);
         }
     }
 
