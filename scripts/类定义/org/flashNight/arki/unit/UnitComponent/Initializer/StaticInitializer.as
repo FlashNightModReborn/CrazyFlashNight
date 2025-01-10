@@ -11,7 +11,7 @@ import org.flashNight.arki.component.StatHandler.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer implements IInitializer {
     public static var factory:IColliderFactory;
-    
+
     public function initialize(target:MovieClip):Void {
         throw new Error("工具类待实现");
     }

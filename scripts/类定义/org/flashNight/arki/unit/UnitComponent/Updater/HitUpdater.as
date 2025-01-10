@@ -1,7 +1,7 @@
 ﻿import org.flashNight.arki.component.StatHandler.*;
 
 class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
-    
+
     public static function getUpdater():Function
     {
         return function():Void {

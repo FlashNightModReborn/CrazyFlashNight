@@ -2449,8 +2449,6 @@ _root.主角函数.死亡检测 = function()
 				this.removeMovieClip();
 			}
 		}
-
-		StaticDeinitializer.deInitializeUnit(this)
 	}
 }
 

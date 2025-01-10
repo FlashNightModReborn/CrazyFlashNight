@@ -18,7 +18,7 @@
         // 0) 确定比较函数
         var compare:Function = (compareFunction == null)
             ? function(a, b):Number { 
-                return a - b
+                return a - b;
               }
             : compareFunction;
 
@@ -55,8 +55,15 @@
             return arr;
         }
 
-        // 2) 设定最小 run 长度 MIN_RUN
-        var MIN_RUN:Number = 32;
+        // 2) 动态计算最小 run 长度 MIN_RUN
+        var MIN_RUN:Number;
+        var n:Number = length;
+        var r:Number = 0;
+        while (n >= 32) {
+            r |= n & 1;
+            n >>= 1;
+        }
+        MIN_RUN = n + r; // 动态计算 MIN_RUN
 
         // 3) 初始化模拟栈 + 临时数组
         var stackRuns:Array = new Array(2 * length);
@@ -286,32 +293,32 @@
                             sp -= 4;
                             // 内联 doMerge
                             if (runYStart < runXStart) {
-                                var tmpStart:Number = runXStart;
-                                var tmpEnd:Number = runXEnd;
+                                var tmpStart4:Number = runXStart;
+                                var tmpEnd4:Number = runXEnd;
                                 runXStart = runYStart;
                                 runXEnd = runYEnd;
-                                runYStart = tmpStart;
-                                runYEnd = tmpEnd;
+                                runYStart = tmpStart4;
+                                runYEnd = tmpEnd4;
                             }
-                            var sizeA:Number = runXEnd - runXStart + 1;
-                            var sizeB:Number = runYEnd - runYStart + 1;
-                            for (var i:Number = 0; i < sizeA; i++) {
-                                temp[i] = arr[runXStart + i];
+                            var sizeA4:Number = runXEnd - runXStart + 1;
+                            var sizeB4:Number = runYEnd - runYStart + 1;
+                            for (var n:Number = 0; n < sizeA4; n++) {
+                                temp[n] = arr[runXStart + n];
                             }
-                            var idxTemp:Number = 0;
-                            var idxArr:Number = runXStart;
-                            var idxBPtr:Number = runYStart;
-                            var endA:Number = sizeA;
-                            var endB:Number = runYEnd + 1;
-                            while (idxTemp < endA && idxBPtr < endB) {
-                                if (compare(temp[idxTemp], arr[idxBPtr]) <= 0) {
-                                    arr[idxArr++] = temp[idxTemp++];
+                            var idxTemp4:Number = 0;
+                            var idxArr4:Number = runXStart;
+                            var idxBPtr4:Number = runYStart;
+                            var endA4:Number = sizeA4;
+                            var endB4:Number = runYEnd + 1;
+                            while (idxTemp4 < endA4 && idxBPtr4 < endB4) {
+                                if (compare(temp[idxTemp4], arr[idxBPtr4]) <= 0) {
+                                    arr[idxArr4++] = temp[idxTemp4++];
                                 } else {
-                                    arr[idxArr++] = arr[idxBPtr++];
+                                    arr[idxArr4++] = arr[idxBPtr4++];
                                 }
                             }
-                            while (idxTemp < endA) {
-                                arr[idxArr++] = temp[idxTemp++];
+                            while (idxTemp4 < endA4) {
+                                arr[idxArr4++] = temp[idxTemp4++];
                             }
                             stackRuns[sp++] = runXStart;
                             stackRuns[sp++] = runYEnd;
@@ -320,32 +327,32 @@
                             sp -= 4;
                             // 内联 doMerge
                             if (runZStart < runYStart) {
-                                var tmpStart2:Number = runYStart;
-                                var tmpEnd2:Number = runYEnd;
+                                var tmpStart5:Number = runYStart;
+                                var tmpEnd5:Number = runYEnd;
                                 runYStart = runZStart;
                                 runYEnd = runZEnd;
-                                runZStart = tmpStart2;
-                                runZEnd = tmpEnd2;
+                                runZStart = tmpStart5;
+                                runZEnd = tmpEnd5;
                             }
-                            var sizeA2:Number = runYEnd - runYStart + 1;
-                            var sizeB2:Number = runZEnd - runZStart + 1;
-                            for (var j:Number = 0; j < sizeA2; j++) {
-                                temp[j] = arr[runYStart + j];
+                            var sizeA5:Number = runYEnd - runYStart + 1;
+                            var sizeB5:Number = runZEnd - runZStart + 1;
+                            for (var p:Number = 0; p < sizeA5; p++) {
+                                temp[p] = arr[runYStart + p];
                             }
-                            var idxTemp2:Number = 0;
-                            var idxArr2:Number = runYStart;
-                            var idxBPtr2:Number = runZStart;
-                            var endA2:Number = sizeA2;
-                            var endB2:Number = runZEnd + 1;
-                            while (idxTemp2 < endA2 && idxBPtr2 < endB2) {
-                                if (compare(temp[idxTemp2], arr[idxBPtr2]) <= 0) {
-                                    arr[idxArr2++] = temp[idxTemp2++];
+                            var idxTemp5:Number = 0;
+                            var idxArr5:Number = runYStart;
+                            var idxBPtr5:Number = runZStart;
+                            var endA5:Number = sizeA5;
+                            var endB5:Number = runZEnd + 1;
+                            while (idxTemp5 < endA5 && idxBPtr5 < endB5) {
+                                if (compare(temp[idxTemp5], arr[idxBPtr5]) <= 0) {
+                                    arr[idxArr5++] = temp[idxTemp5++];
                                 } else {
-                                    arr[idxArr2++] = arr[idxBPtr2++];
+                                    arr[idxArr5++] = arr[idxBPtr5++];
                                 }
                             }
-                            while (idxTemp2 < endA2) {
-                                arr[idxArr2++] = temp[idxTemp2++];
+                            while (idxTemp5 < endA5) {
+                                arr[idxArr5++] = temp[idxTemp5++];
                             }
                             stackRuns[sp++] = runYStart;
                             stackRuns[sp++] = runZEnd;
@@ -356,48 +363,48 @@
 
                 // 如果只有两个 run，检查 Y ≤ Z
                 if (sp >= 4) {
-                    var runYStart2:Number = stackRuns[sp - 4];
-                    var runYEnd2:Number = stackRuns[sp - 3];
-                    var runZStart2:Number = stackRuns[sp - 2];
-                    var runZEnd2:Number = stackRuns[sp - 1];
+                    var runYStart6:Number = stackRuns[sp - 4];
+                    var runYEnd6:Number = stackRuns[sp - 3];
+                    var runZStart6:Number = stackRuns[sp - 2];
+                    var runZEnd6:Number = stackRuns[sp - 1];
 
-                    var sizeY2:Number = runYEnd2 - runYStart2 + 1;
-                    var sizeZ2:Number = runZEnd2 - runZStart2 + 1;
+                    var sizeY6:Number = runYEnd6 - runYStart6 + 1;
+                    var sizeZ6:Number = runZEnd6 - runZStart6 + 1;
 
-                    if (sizeY2 <= sizeZ2) {
+                    if (sizeY6 <= sizeZ6) {
                         // 合并 runY 和 runZ
                         sp -= 4;
                         // 内联 doMerge
-                        if (runZStart2 < runYStart2) {
-                            var tmpStart3:Number = runYStart2;
-                            var tmpEnd3:Number = runYEnd2;
-                            runYStart2 = runZStart2;
-                            runYEnd2 = runZEnd2;
-                            runZStart2 = tmpStart3;
-                            runZEnd2 = tmpEnd3;
+                        if (runZStart6 < runYStart6) {
+                            var tmpStart6:Number = runYStart6;
+                            var tmpEnd6:Number = runYEnd6;
+                            runYStart6 = runZStart6;
+                            runYEnd6 = runZEnd6;
+                            runZStart6 = tmpStart6;
+                            runZEnd6 = tmpEnd6;
                         }
-                        var sizeA3:Number = runYEnd2 - runYStart2 + 1;
-                        var sizeB3:Number = runZEnd2 - runZStart2 + 1;
-                        for (var m:Number = 0; m < sizeA3; m++) {
-                            temp[m] = arr[runYStart2 + m];
+                        var sizeA6:Number = runYEnd6 - runYStart6 + 1;
+                        var sizeB6:Number = runZEnd6 - runZStart6 + 1;
+                        for (var q:Number = 0; q < sizeA6; q++) {
+                            temp[q] = arr[runYStart6 + q];
                         }
-                        var idxTemp3:Number = 0;
-                        var idxArr3:Number = runYStart2;
-                        var idxBPtr3:Number = runZStart2;
-                        var endA3:Number = sizeA3;
-                        var endB3:Number = runZEnd2 + 1;
-                        while (idxTemp3 < endA3 && idxBPtr3 < endB3) {
-                            if (compare(temp[idxTemp3], arr[idxBPtr3]) <= 0) {
-                                arr[idxArr3++] = temp[idxTemp3++];
+                        var idxTemp6:Number = 0;
+                        var idxArr6:Number = runYStart6;
+                        var idxBPtr6:Number = runZStart6;
+                        var endA6:Number = sizeA6;
+                        var endB6:Number = runZEnd6 + 1;
+                        while (idxTemp6 < endA6 && idxBPtr6 < endB6) {
+                            if (compare(temp[idxTemp6], arr[idxBPtr6]) <= 0) {
+                                arr[idxArr6++] = temp[idxTemp6++];
                             } else {
-                                arr[idxArr3++] = arr[idxBPtr3++];
+                                arr[idxArr6++] = arr[idxBPtr6++];
                             }
                         }
-                        while (idxTemp3 < endA3) {
-                            arr[idxArr3++] = temp[idxTemp3++];
+                        while (idxTemp6 < endA6) {
+                            arr[idxArr6++] = temp[idxTemp6++];
                         }
-                        stackRuns[sp++] = runYStart2;
-                        stackRuns[sp++] = runZEnd2;
+                        stackRuns[sp++] = runYStart6;
+                        stackRuns[sp++] = runZEnd6;
                         continue;
                     }
                 }
@@ -414,32 +421,32 @@
                 sp -= 4;
                 // 内联 doMerge
                 if (run2Start < run1Start) {
-                    var tmpStart4:Number = run1Start;
-                    var tmpEnd4:Number = run1End;
+                    var tmpStart7:Number = run1Start;
+                    var tmpEnd7:Number = run1End;
                     run1Start = run2Start;
                     run1End = run2End;
-                    run2Start = tmpStart4;
-                    run2End = tmpEnd4;
+                    run2Start = tmpStart7;
+                    run2End = tmpEnd7;
                 }
-                var sizeA4:Number = run1End - run1Start + 1;
-                var sizeB4:Number = run2End - run2Start + 1;
-                for (var n:Number = 0; n < sizeA4; n++) {
-                    temp[n] = arr[run1Start + n];
+                var sizeA7:Number = run1End - run1Start + 1;
+                var sizeB7:Number = run2End - run2Start + 1;
+                for (var n2:Number = 0; n2 < sizeA7; n2++) {
+                    temp[n2] = arr[run1Start + n2];
                 }
-                var idxTemp4:Number = 0;
-                var idxArr4:Number = run1Start;
-                var idxBPtr4:Number = run2Start;
-                var endA4:Number = sizeA4;
-                var endB4:Number = run2End + 1;
-                while (idxTemp4 < endA4 && idxBPtr4 < endB4) {
-                    if (compare(temp[idxTemp4], arr[idxBPtr4]) <= 0) {
-                        arr[idxArr4++] = temp[idxTemp4++];
+                var idxTemp7:Number = 0;
+                var idxArr7:Number = run1Start;
+                var idxBPtr7:Number = run2Start;
+                var endA7:Number = sizeA7;
+                var endB7:Number = run2End + 1;
+                while (idxTemp7 < endA7 && idxBPtr7 < endB7) {
+                    if (compare(temp[idxTemp7], arr[idxBPtr7]) <= 0) {
+                        arr[idxArr7++] = temp[idxTemp7++];
                     } else {
-                        arr[idxArr4++] = arr[idxBPtr4++];
+                        arr[idxArr7++] = arr[idxBPtr7++];
                     }
                 }
-                while (idxTemp4 < endA4) {
-                    arr[idxArr4++] = temp[idxTemp4++];
+                while (idxTemp7 < endA7) {
+                    arr[idxArr7++] = temp[idxTemp7++];
                 }
                 stackRuns[sp++] = run1Start;
                 stackRuns[sp++] = run2End;

@@ -10,6 +10,11 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
 
     public static function deInitializeUnit(target:MovieClip):Void 
     {
-        target.aabbCollider.getFactory().releaseCollider(target.aabbCollider);
+        if(!target._deInitialized)
+        {
+            target.aabbCollider.getFactory().releaseCollider(target.aabbCollider);
+
+            target._deInitialized = true;
+        } 
     }
 }
