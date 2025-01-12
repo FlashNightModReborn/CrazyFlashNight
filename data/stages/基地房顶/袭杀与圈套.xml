@@ -28,20 +28,25 @@
             <AcquisitionProbability>10</AcquisitionProbability>
             <QuantityMax>10</QuantityMax>
         </Reward>
-        <Reward id="3">
+        <Reward id="4">
             <Name>硫磺</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>3</QuantityMax>
         </Reward>
-        <Reward id="3">
+        <Reward id="5">
             <Name>碱液</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>3</QuantityMax>
         </Reward>
-        <Reward id="3">
+        <Reward id="6">
             <Name>硼砂</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>3</QuantityMax>
+        </Reward>
+        <Reward id="7">
+            <Name>军阀前线基地通关证明</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
         </Reward>
     </Rewards>
     <SubStage id="0">
