@@ -434,6 +434,8 @@ _root.物品UI函数.显示情报信息 = function(name,value){
 	var itemData = org.flashNight.arki.item.ItemUtil.getItemData(name);
 	this.当前情报物品图标.itemIcon.init(name, 1);
 	this.情报信息表 = [];
+	this.EncryptReplace = _root.图鉴信息.情报信息[name].EncryptReplace;
+	this.EncryptCut = _root.图鉴信息.情报信息[name].EncryptCut;
 	var info = _root.图鉴信息.情报信息[name].Information;
 	for(var i = 0; i < info.length; i++){
 		if(info[i].Value <= value){
@@ -448,20 +450,19 @@ _root.物品UI函数.显示情报信息 = function(name,value){
 	this.btn2._visible = true;
 	this.nametext.text = itemData.displayname;
 	this.valuetext.text = "收集进度：" + value + " / " + itemData.maxvalue;
-	if(this.已发现数量 == this.总信息数量) this.infovaluetext.text = "已发现全部 " + this.已发现数量 + " 条信息"
-	else this.infovaluetext.text = "已发现 " + this.已发现数量 + " 条信息";
+	if(this.已发现数量 == this.总信息数量) this.infovaluetext.text = "已发现全部 " + this.已发现数量 + " 页信息"
+	else this.infovaluetext.text = "已发现 " + this.已发现数量 + " 页信息";
 	this.刷新情报信息();
 }
 
 _root.物品UI函数.刷新情报信息 = function(){
 	this.pagetext.text = String(this.当前信息序号 + 1) + " / " + this.已发现数量;
-	var txt;
+	var txt = this.情报信息表[this.当前信息序号].Text;
 	var 加密等级 = this.情报信息表[this.当前信息序号].EncryptLevel;
 	if(加密等级 > 0){
-		txt = "该信息需要解密技能达到 " + 加密等级 + " 级才能解明"
-	}else{
-		txt = this.情报信息表[this.当前信息序号].Text;
-		txt = txt.split("\r\n").join("<BR>");//避免回车换两行
+		txt = _root.加密html剧情文本(txt, this.EncryptReplace, this.EncryptCut);
+		txt += "<BR><FONT COLOR=\'#FFCC00\'>完全解明该信息需要解密技能 " + 加密等级 + " 级</FONT><BR>";
 	}
+	txt = _root.处理html剧情文本(txt);
 	this.infotext.htmlText = txt;
 }

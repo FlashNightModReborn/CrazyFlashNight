@@ -9,7 +9,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <Actionscript>
-                                        <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.ItemDataLoader;
+                                        <script><![CDATA[/*import org.flashNight.gesh.xml.LoadXml.ItemDataLoader;
 import org.flashNight.gesh.object.ObjectUtil;
 
 // 获取 ItemDataLoader 实例
@@ -55,7 +55,12 @@ ItemDataLoader.loadItemData(
         trace("主程序：物品数据加载失败！");
     }
 );
-]]></script>
+*/
+replaceArr = ["123","12345","1234"];
+replaceArr = org.flashNight.naki.Sort.QuickSort.adaptiveSort(replaceArr, function(a, b) {
+	return a.length - b.length;
+});
+trace(replaceArr);]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
