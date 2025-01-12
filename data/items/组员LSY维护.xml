@@ -105,6 +105,19 @@
     </item>
     <item>
         <id>2909</id>
+        <name></name>
+        <displayname></displayname>
+        <icon></icon>
+        <type>收集品</type>
+        <use>情报</use>
+        <weight>0</weight>
+        <price>1000</price>
+        <maxvalue>1</maxvalue>
+        <description>牛仔通缉令情报物品占位</description>
+        <level>1</level>
+    </item>
+    <item>
+        <id>2910</id>
         <name>医疗记录第394页</name>
         <displayname>医疗记录第394页</displayname>
         <icon>医疗记录第394页</icon>
@@ -114,19 +127,6 @@
         <price>1000</price>
         <maxvalue>1</maxvalue>
         <description>魔女通缉令情报物品占位</description>
-        <level>1</level>
-    </item>
-    <item>
-        <id>2910</id>
-        <name>关于诺亚方舟#1</name>
-        <displayname>关于诺亚方舟#1</displayname>
-        <icon>关于诺亚方舟#1</icon>
-        <type>收集品</type>
-        <use>情报</use>
-        <weight>0</weight>
-        <price>1000</price>
-        <maxvalue>1</maxvalue>
-        <description>从牛仔的情报书中解析得到。该文章分析了“诺亚方舟”近期的行为与动机。</description>
         <level>1</level>
     </item>
     <item>
@@ -153,6 +153,19 @@
         <price>1000</price>
         <maxvalue>1</maxvalue>
         <description>从浮士德的情报书中解析得到。似乎是一份文件的后半部分，内含对通缉犯的观察记录，撰写者不明。</description>
+        <level>1</level>
+    </item>
+        <item>
+        <id>2913</id>
+        <name>关于诺亚方舟</name>
+        <displayname>关于诺亚方舟</displayname>
+        <icon>关于诺亚方舟</icon>
+        <type>收集品</type>
+        <use>情报</use>
+        <weight>0</weight>
+        <price>1000</price>
+        <maxvalue>1</maxvalue>
+        <description>从牛仔的情报书中解析得到。该文章分析了“诺亚方舟”近期的行为与动机。</description>
         <level>1</level>
     </item>
 </root>
