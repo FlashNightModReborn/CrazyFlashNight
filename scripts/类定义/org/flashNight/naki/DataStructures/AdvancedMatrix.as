@@ -17,8 +17,17 @@
     // numCols: 矩阵的列数
     // 该方法检查传入的数组长度是否与指定的矩阵尺寸匹配
     public function init(numRows:Number, numCols:Number):AdvancedMatrix {
+        // 检查输入数据的长度是否与指定的行数和列数匹配
         if (this.data.length != numRows * numCols) {
-            throw new Error("输入数据的大小与指定的矩阵尺寸不匹配。");
+            // 抛出错误时，输出更多调试信息
+            throw new Error(
+                "输入数据的大小与指定的矩阵尺寸不匹配。\n" +
+                "输入数据的长度: " + this.data.length + "\n" +
+                "指定的行数: " + numRows + "\n" +
+                "指定的列数: " + numCols + "\n" +
+                "期望的数据长度: " + (numRows * numCols) + "\n" +
+                "实际的数据: " + this.data.toString()
+            );
         }
         this.rows = numRows;
         this.cols = numCols;
