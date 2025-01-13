@@ -150,13 +150,19 @@
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种261</Type>
-                        <Interval>500</Interval>
-                        <Quantity>5</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>36</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种261</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>1</Quantity>
                         <Level>36</Level>
                         <Parameters>
                             <掉落物>
                                 <名字>黑铁会信物</名字>
-                                <概率>25</概率>
+                                <概率>100</概率>
                                 <最小数量>1</最小数量>
                                 <最大数量>1</最大数量>
                             </掉落物>

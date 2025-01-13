@@ -423,6 +423,7 @@ _root.物品UI函数.初始化情报信息界面 = function(){
 	this.valuetext.text = "";
 	this.infovaluetext.text = "";
 	this.pagetext.text = "";
+	this.hinttext.text = "点击右侧情报物品查看详细信息";
 	this.当前情报物品图标.itemIcon = new ItemIcon(this.当前情报物品图标,null,null);
 	this.当前情报物品图标.itemIcon.RollOver = null;
 	this.当前情报物品图标.itemIcon.RollOut = null;
@@ -456,12 +457,13 @@ _root.物品UI函数.显示情报信息 = function(name,value){
 }
 
 _root.物品UI函数.刷新情报信息 = function(){
+	this.hinttext.text = "";
 	this.pagetext.text = String(this.当前信息序号 + 1) + " / " + this.已发现数量;
 	var txt = this.情报信息表[this.当前信息序号].Text;
 	var 加密等级 = this.情报信息表[this.当前信息序号].EncryptLevel;
 	if(加密等级 > 0){
 		txt = _root.加密html剧情文本(txt, this.EncryptReplace, this.EncryptCut);
-		txt += "<BR><FONT COLOR=\'#FFCC00\'>完全解明该信息需要解密技能 " + 加密等级 + " 级</FONT><BR>";
+		this.hinttext.text = "信息未完全解明。需要解密技能达到 " + 加密等级 + " 级";
 	}
 	txt = _root.处理html剧情文本(txt);
 	this.infotext.htmlText = txt;
