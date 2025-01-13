@@ -31,8 +31,8 @@ _root.帧计时器.初始化任务栈 = function() {
     this.帧率 = 30; // 当前项目为30帧/s
     this.毫秒每帧 = this.帧率 / 1000; // 用于乘法优化性能
     this.每帧毫秒 = 1000 / this.帧率;
-    this.帧开始时间 = 0;
-    this.测量间隔帧数 = this.帧率;
+    this.frameStartTime = 0;
+    this.measurementIntervalFrames = this.帧率;
     
     // 使用 SlidingWindowBuffer 替代原有的帧率数据队列
     this.队列最大长度 = 24; // 队列最大长度
@@ -66,7 +66,7 @@ _root.帧计时器.初始化任务栈 = function() {
     this.kd = -30;
     this.integralMax = 3; // 设定积分限幅
     this.derivativeFilter = 0.2; // 平滑误差
-    this.目标帧率 = 26;
+    this.targetFPS = 26;
     this.PID = new PIDController(this.kp, this.ki, this.kd, this.integralMax, this.derivativeFilter);
 
     var pidFactory:PIDControllerFactory = PIDControllerFactory.getInstance();
@@ -226,22 +226,22 @@ _root.帧计时器.绘制帧率曲线 = function():Void {
 _root.帧计时器.性能评估优化 = function() {
 
     // --- 1. 判断是否到达测量间隔 ---
-    if (--this.测量间隔帧数 === 0) 
+    if (--this.measurementIntervalFrames === 0) 
     {
-        var 当前时间 = getTimer();  // 获取当前时间
+        var currentTime = getTimer();  // 获取当前时间
 
         // === 2. 计算本次测量的实际帧率 ===
-        // 测量间隔帧数 = this.帧率 * (1 + this.性能等级)
-        // 两次测量间隔越长，(当前时间 - this.帧开始时间) 就越大
+        // measurementIntervalFrames = this.帧率 * (1 + this.性能等级)
+        // 两次测量间隔越长，(当前时间 - this.frameStartTime) 就越大
         this.实际帧率 = Math.ceil(
-            this.帧率 * (1 + this.性能等级) * 10000 / (当前时间 - this.帧开始时间)
+            this.帧率 * (1 + this.性能等级) * 10000 / (currentTime - this.frameStartTime)
         ) / 10;
         
         // 可视化显示
         _root.玩家信息界面.性能帧率显示器.帧率数字.text = this.实际帧率;
 
         // === 3. 计算本次测量和上次测量间的时间差 (ms -> s) ===
-        var dt = (当前时间 - this.帧开始时间) / 1000;  // 单位：秒
+        var dt = (currentTime - this.frameStartTime) / 1000;  // 单位：秒
 
         // === 4. 动态调整滤波器的过程噪声 Q ===
         //   - dt 越大，Q 也适当变大；dt 越小，Q 变小
@@ -260,41 +260,41 @@ _root.帧计时器.性能评估优化 = function() {
         // _root.发布消息("滤波后FPS: " + denoisedFPS);
 
         // === 6. 使用平滑后的FPS进行 PID 控制 ===
-        var 目标帧率 = this.帧率 - this.性能等级 * 2;
+        var targetFPS = this.帧率 - this.性能等级 * 2;
         var pidOutput = this.PID.update(
-            this.目标帧率,
+            this.targetFPS,
             denoisedFPS,
             this.帧率 * (1 + this.性能等级)
         );
 
-        var 当前性能 = Math.round(pidOutput);
-        当前性能 = Math.max(0, Math.min(当前性能, 3));
+        var currentPerformanceLevel = Math.round(pidOutput);
+        currentPerformanceLevel = Math.max(0, Math.min(currentPerformanceLevel, 3));
 
         // === 7. 引入确认步骤，避免过于频繁调整 ===
-        if (this.性能等级 !== 当前性能) 
+        if (this.性能等级 !== currentPerformanceLevel) 
         {
-            if (this.等待确认) 
+            if (this.awaitConfirmation ) 
             {
-                this.执行性能调整(当前性能);
-                this.性能等级 = 当前性能;
-                this.等待确认 = false;
+                this.执行性能调整(currentPerformanceLevel);
+                this.性能等级 = currentPerformanceLevel;
+                this.awaitConfirmation  = false;
                 _root.发布消息(
                   "性能等级: [" + this.性能等级 + " : " + this.实际帧率 + " FPS] " + _root._quality
                 );
             } 
             else 
             {
-                this.等待确认 = true;
+                this.awaitConfirmation  = true;
             }
         } 
         else 
         {
-            this.等待确认 = false;
+            this.awaitConfirmation  = false;
         }
 
-        // === 8. 重置计时和测量间隔帧数 ===
-        this.帧开始时间 = 当前时间;
-        this.测量间隔帧数 = this.帧率 * (1 + this.性能等级);
+        // === 8. 重置计时和measurementIntervalFrames ===
+        this.frameStartTime = currentTime;
+        this.measurementIntervalFrames = this.帧率 * (1 + this.性能等级);
 
         // 更新数据、绘图
         this.更新帧率数据(this.实际帧率);

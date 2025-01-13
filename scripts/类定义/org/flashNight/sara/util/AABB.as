@@ -35,9 +35,9 @@ class org.flashNight.sara.util.AABB {
      * @return Morton 码
      */
     public function toMorton():Number {
-        // 计算中心点并直接取整
-        var x:Number = (left + right) >> 1;
-        var y:Number = (top + bottom) >> 1;
+        // 计算中心点并向下取整，使用无符号右移确保正确性
+        var x:Number = (left + right) >>> 1;
+        var y:Number = (top + bottom) >>> 1;
 
         // 计算 Morton 码
         x = (x | (x << 16)) & 0x0000FFFF;
@@ -54,6 +54,7 @@ class org.flashNight.sara.util.AABB {
 
         return x | (y << 1);
     }
+
 
     /**
      * 根据两个点表示的对角线创建 AABB
