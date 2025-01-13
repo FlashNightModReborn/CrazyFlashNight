@@ -128,13 +128,9 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
     var 游戏世界 = _root.gameworld;
     var 子弹总数 = Obj.联弹检测 ? 1 : Obj.霰弹值;
     var bulletInstance;
-    if(Obj.联弹检测) {
-        Obj.bulletAsset = Obj.子弹种类.split("-")[0];
-        Obj.联弹霰弹值 = Obj.霰弹值;
-    } else {
-        Obj.bulletAsset = Obj.子弹种类;
-        Obj.联弹霰弹值 = 1;
-    }
+
+    obj.联弹霰弹值 = obj.联弹检测 ? obj.霰弹值 : 1;
+
     for (var 子弹计数 = 0; 子弹计数 < 子弹总数; 子弹计数++) {
         bulletInstance = 创建子弹实例(Obj, shooter, 射击角度);
     }
@@ -162,7 +158,7 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度){
         _root.子弹生成计数 = (_root.子弹生成计数 + 1) % 100;
         var depth = 游戏世界.子弹区域.getNextHighestDepth();
         var b_name = Obj.发射者名 + Obj.子弹种类 + depth + 散射角度 + _root.子弹生成计数;
-        bulletInstance = 游戏世界.子弹区域.attachMovie(Obj.bulletAsset, b_name, depth, Obj);
+        bulletInstance = 游戏世界.子弹区域.attachMovie(Obj.baseAsset, b_name, depth, Obj);
     }
     bulletInstance.xmov = bulletInstance.子弹速度 * Math.cos(angle);
     bulletInstance.ymov = bulletInstance.子弹速度 * Math.sin(angle);
