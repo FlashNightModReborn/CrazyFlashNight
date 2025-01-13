@@ -84,7 +84,7 @@ class org.flashNight.neur.Controller.TestKalmanFilter {
         kf.update(measurement2);
 
         // 期望的状态估计
-        var expected_state:AdvancedMatrix = new AdvancedMatrix([0.7, 0.6]).init(2, 1);
+        var expected_state:AdvancedMatrix = new AdvancedMatrix([0.75, 0.67]).init(2, 1);
         assertMatrixAlmostEqual(kf.getStateEstimate(), expected_state, 0.01, "Full filtering process - state");
     }
 
@@ -126,8 +126,10 @@ class org.flashNight.neur.Controller.TestKalmanFilter {
 
     private function resetKalmanFilter():Void {
         kf.setStateEstimate(initialState.clone());
-        kf.setCovarianceEstimate(new AdvancedMatrix([0, 0, 0, 0]).init(2, 2));
+        // 将协方差初始化为单位矩阵，而不是 0 矩阵
+        kf.setCovarianceEstimate(new AdvancedMatrix([1, 0, 0, 1]).init(2, 2));
     }
+
 
     private function matricesEqual(a:AdvancedMatrix, b:AdvancedMatrix):Boolean {
         if (a.getRows() != b.getRows() || a.getCols() != b.getCols()) {
