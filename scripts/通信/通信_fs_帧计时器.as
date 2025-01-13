@@ -58,7 +58,7 @@ _root.帧计时器.初始化任务栈 = function() {
     
     this.是否死亡特效 = true;
 
-    this.kalmanFilter = new SimpleKalmanFilter1D(this.帧率, 0.1, 2);
+    this.kalmanFilter = new SimpleKalmanFilter1D(this.帧率, 0.5, 1);
     
     // PID控制器参数初始化
     this.kp = 0.2;
@@ -223,71 +223,85 @@ _root.帧计时器.绘制帧率曲线 = function():Void {
 };
 
 
-_root.帧计时器.性能评估优化 = function()
-{
+_root.帧计时器.性能评估优化 = function() {
+
+    // --- 1. 判断是否到达测量间隔 ---
     if (--this.测量间隔帧数 === 0) 
     {
         var 当前时间 = getTimer();  // 获取当前时间
-        this.实际帧率 = Math.ceil(this.帧率 * (1 + this.性能等级) * 10000 / (当前时间 - this.帧开始时间)) / 10;  // 计算实际帧率
-        _root.玩家信息界面.性能帧率显示器.帧率数字.text = this.实际帧率; // 显示实际帧率
-        //_root.服务器.发布服务器消息("当前实际帧率: " + this.实际帧率 + " FPS");
 
+        // === 2. 计算本次测量的实际帧率 ===
+        // 测量间隔帧数 = this.帧率 * (1 + this.性能等级)
+        // 两次测量间隔越长，(当前时间 - this.帧开始时间) 就越大
+        this.实际帧率 = Math.ceil(
+            this.帧率 * (1 + this.性能等级) * 10000 / (当前时间 - this.帧开始时间)
+        ) / 10;
         
-        //原pi控制器
-        /*
-        var 当前性能 = this.性能等级;
-        if (this.实际帧率 >= 24 + 当前性能 * 2.5) 
-        {
-            当前性能 = 0;
-        } 
-        else if (this.实际帧率 >= 18 + 当前性能 * 5) 
-        {
-            当前性能 = 1;
-        }
-        else if (this.实际帧率 >= 10 + 当前性能 * 5) 
-        {
-            当前性能 = 2;
-        }  
-        else 
-        {
-            当前性能 = 3;
-        }
-        */
-        // PID 控制器接管性能等级调整
+        // 可视化显示
+        _root.玩家信息界面.性能帧率显示器.帧率数字.text = this.实际帧率;
+
+        // === 3. 计算本次测量和上次测量间的时间差 (ms -> s) ===
+        var dt = (当前时间 - this.帧开始时间) / 1000;  // 单位：秒
+
+        // === 4. 动态调整滤波器的过程噪声 Q ===
+        //   - dt 越大，Q 也适当变大；dt 越小，Q 变小
+        //   - 当前还需要根据实验结果确定设定值
+        var baseQ:Number = 0.1;          // 原本的Q
+        var scaledQ:Number = baseQ * dt; // 跟时间间隔成正比
+        // 下限与上限可做限制，避免Q过大过小：
+        scaledQ = Math.max(0.01, Math.min(scaledQ, 2.0)); 
+
+        // 设置新的过程噪声
+        this.kalmanFilter.setProcessNoise(scaledQ);
+
+        // --- 5. 卡尔曼滤波器：先 predict() 再 update() ---
+        this.kalmanFilter.predict();                // 预测(使用动态Q)
+        var denoisedFPS:Number = this.kalmanFilter.update(this.实际帧率); // 更新
+        // _root.发布消息("滤波后FPS: " + denoisedFPS);
+
+        // === 6. 使用平滑后的FPS进行 PID 控制 ===
         var 目标帧率 = this.帧率 - this.性能等级 * 2;
-        var denoisedFPS:Number = this.kalmanFilter.update(this.实际帧率);
-        // _root.发布消息(denoisedFPS);
-        var pidOutput = this.PID.update(this.目标帧率, denoisedFPS, this.帧率 * (1 + this.性能等级)); // 调用PID控制器更新
+        var pidOutput = this.PID.update(
+            this.目标帧率,
+            denoisedFPS,
+            this.帧率 * (1 + this.性能等级)
+        );
 
-        var 当前性能 = Math.round(pidOutput); // PID输出的结果作为性能等级
-        //_root.服务器.发布服务器消息(目标帧率 + " 当前帧率: " + this.实际帧率 + " pidOutput: " + pidOutput + " 当前性能: " + 当前性能);
-        当前性能 = Math.max(0, Math.min(当前性能, 3)); // 限制性能等级在 0-3 之间
+        var 当前性能 = Math.round(pidOutput);
+        当前性能 = Math.max(0, Math.min(当前性能, 3));
 
-        // 引入一个确认步骤，避免过于频繁的性能调整
+        // === 7. 引入确认步骤，避免过于频繁调整 ===
         if (this.性能等级 !== 当前性能) 
         {
             if (this.等待确认) 
             {
-                this.执行性能调整(当前性能);// 如果已经在等待确认，执行调整
+                this.执行性能调整(当前性能);
                 this.性能等级 = 当前性能;
                 this.等待确认 = false;
-                _root.发布消息("性能等级: [" + this.性能等级  + " : " + this.实际帧率 + " FPS] " + _root._quality);
+                _root.发布消息(
+                  "性能等级: [" + this.性能等级 + " : " + this.实际帧率 + " FPS] " + _root._quality
+                );
             } 
             else 
             {
-                this.等待确认 = true;// 如果不在等待确认，开始确认
+                this.等待确认 = true;
             }
-        } else 
+        } 
+        else 
         {
-            this.等待确认 = false;// 如果性能等级没有变化或调整后稳定，重置确认标志
+            this.等待确认 = false;
         }
 
+        // === 8. 重置计时和测量间隔帧数 ===
         this.帧开始时间 = 当前时间;
         this.测量间隔帧数 = this.帧率 * (1 + this.性能等级);
+
+        // 更新数据、绘图
         this.更新帧率数据(this.实际帧率);
-        this.绘制帧率曲线();//游戏UI更新
+        this.绘制帧率曲线();
     }
 };
+
 
 _root.帧计时器.执行性能调整 = function(新性能等级) 
 {
