@@ -76,11 +76,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#11C1D4">
+        <DOMLayer name="Layer 2" color="#11C1D4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2073" centerPoint3DX="110.95" centerPoint3DY="369.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2073" selected="true" centerPoint3DX="110.95" centerPoint3DY="369.5">
                   <matrix>
                     <Matrix tx="-1" ty="353.5"/>
                   </matrix>
@@ -100,11 +100,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#08BFDA" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#08BFDA">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2067" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2067" symbolType="button">
                   <matrix>
                     <Matrix tx="218" ty="15.5"/>
                   </matrix>

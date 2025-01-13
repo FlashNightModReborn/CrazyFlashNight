@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2073" itemID="6597607e-00000a91" linkageExportForAS="true" linkageIdentifier="奖励物品-奖励物品显示块" lastModified="1735405798">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2073" itemID="6597607e-00000a91" linkageExportForAS="true" linkageIdentifier="奖励物品-奖励物品显示块" lastModified="1736738814">
   <timeline>
     <DOMTimeline name="Symbol 2073">
       <layers>
-        <DOMLayer name="Layer 1" color="#78FA63">
+        <DOMLayer name="Layer 1" color="#78FA63" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2072" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2072" selected="true" symbolType="button">
                   <matrix>
                     <Matrix tx="11.5" ty="10.5"/>
                   </matrix>
@@ -14,37 +14,35 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(rollOver){
-   if(物品名 == "金钱")
-   {
-      _root.注释(150,_root.获得翻译("金钱"));
-   }
-   if(物品名 == "经验值")
-   {
-      _root.注释(150,_root.获得翻译("经验值"));
-   }
-   if(物品名 == "K点")
-   {
-      _root.注释(150,_root.获得翻译("K点"));
-   }
-   tmp_sz = _root.根据物品名查找全部属性(物品名);
-   _root.物品图标注释(tmp_sz);
+                    <script><![CDATA[on (rollOver) {
+	/*if (物品名 == "金钱")
+	{
+		_root.注释(150,_root.获得翻译("金钱"));
+	}
+	if (物品名 == "经验值")
+	{
+		_root.注释(150,_root.获得翻译("经验值"));
+	}
+	if (物品名 == "K点")
+	{
+		_root.注释(150,_root.获得翻译("K点"));
+	}*/
+	_root.物品图标注释(物品名,1);
 }
-on(rollOut){
-   _root.注释结束();
-}
-]]></script>
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#0399EF" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#0399EF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用按钮" selected="true" centerPoint3DX="173.1" centerPoint3DY="12.75">
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="173.1" centerPoint3DY="12.75">
                   <matrix>
                     <Matrix tx="127.3" ty="1.55"/>
                   </matrix>
@@ -170,7 +168,7 @@ on (rollOut) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <LinearGradient>
@@ -183,7 +181,7 @@ on (rollOut) {
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!4425 563|-54 563!-54 563|-54 -77!-54 -77|4425 -77!4425 -77|4425 563"/>
+                    <Edge fillStyle1="1" edges="!-54 -77|4425 -77!4425 -77|4425 563!4425 563|-54 563!-54 563|-54 -77"/>
                   </edges>
                 </DOMShape>
               </elements>

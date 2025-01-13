@@ -151,14 +151,14 @@ _root.加载背景元素 = function(url, 实例名, x, y, 层级){
 
 
 _root.横版卷屏 = function(卷屏目标, 背景长, 背景高, 缓动系数){
+	//目前的逻辑是若地图尺寸小于屏幕尺寸则不调整坐标
+	var 舞台长 = Stage.width;
+	var 舞台高 = Stage.height - 64;
+	if (舞台长 >= 背景长 && 舞台高 >= 背景高) return;
 	var 游戏世界 = _root.gameworld;
 	var 卷屏对象 = 游戏世界[卷屏目标];
 	if (!卷屏对象._x) return;
-	//目前的逻辑是若地图尺寸小于屏幕尺寸则不调整坐标
-	if (舞台长 >= 背景长 && 舞台高 >= 背景高) return;
 	//
-	var 舞台长 = Stage.width;
-	var 舞台高 = Stage.height - 64;
 	var 卷屏x最小坐标值 = 舞台长 - 背景长;
 	var 卷屏y最小坐标值 = 舞台高 - 背景高;
 	var 卷屏x最大坐标值 = 0;
