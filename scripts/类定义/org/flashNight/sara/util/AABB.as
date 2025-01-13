@@ -30,6 +30,32 @@ class org.flashNight.sara.util.AABB {
     }
 
     /**
+     * 将 AABB 导出为 Morton 码
+     * 
+     * @return Morton 码
+     */
+    public function toMorton():Number {
+        // 计算中心点并直接取整
+        var x:Number = (left + right) >> 1;
+        var y:Number = (top + bottom) >> 1;
+
+        // 计算 Morton 码
+        x = (x | (x << 16)) & 0x0000FFFF;
+        x = (x | (x << 8)) & 0x00FF00FF;
+        x = (x | (x << 4)) & 0x0F0F0F0F;
+        x = (x | (x << 2)) & 0x33333333;
+        x = (x | (x << 1)) & 0x55555555;
+
+        y = (y | (y << 16)) & 0x0000FFFF;
+        y = (y | (y << 8)) & 0x00FF00FF;
+        y = (y | (y << 4)) & 0x0F0F0F0F;
+        y = (y | (y << 2)) & 0x33333333;
+        y = (y | (y << 1)) & 0x55555555;
+
+        return x | (y << 1);
+    }
+
+    /**
      * 根据两个点表示的对角线创建 AABB
      * 
      * @param p1 对角线起点（Vector 实例）
