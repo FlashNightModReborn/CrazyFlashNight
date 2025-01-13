@@ -57,6 +57,8 @@ _root.帧计时器.初始化任务栈 = function() {
     this.当前小时 = null;
     
     this.是否死亡特效 = true;
+
+    this.kalmanFilter = new SimpleKalmanFilter1D(this.帧率, 0.1, 2);
     
     // PID控制器参数初始化
     this.kp = 0.2;
@@ -253,7 +255,9 @@ _root.帧计时器.性能评估优化 = function()
         */
         // PID 控制器接管性能等级调整
         var 目标帧率 = this.帧率 - this.性能等级 * 2;
-        var pidOutput = this.PID.update(this.目标帧率, this.实际帧率, this.帧率 * (1 + this.性能等级)); // 调用PID控制器更新
+        var denoisedFPS:Number = this.kalmanFilter.update(this.实际帧率);
+        // _root.发布消息(denoisedFPS);
+        var pidOutput = this.PID.update(this.目标帧率, denoisedFPS, this.帧率 * (1 + this.性能等级)); // 调用PID控制器更新
 
         var 当前性能 = Math.round(pidOutput); // PID输出的结果作为性能等级
         //_root.服务器.发布服务器消息(目标帧率 + " 当前帧率: " + this.实际帧率 + " pidOutput: " + pidOutput + " 当前性能: " + 当前性能);
