@@ -241,17 +241,18 @@ _root.子弹伤害结算核心 = function(子弹, shooter, hitTarget, overlapRat
         var 魔法伤害属性字符 = 子弹.魔法伤害属性 ? 子弹.魔法伤害属性 : "能";
         计算结果.伤害字符 += '<font color="' + 计算结果.伤害数字颜色 + '" size="20"> ' + 魔法伤害属性字符 + '</font>';
         
-        var 敌人法抗 = 子弹.魔法伤害属性 
-                    ? (hitTarget.魔法抗性 && (hitTarget.魔法抗性[子弹.魔法伤害属性] 
-                      || hitTarget.魔法抗性[子弹.魔法伤害属性] === 0) 
-                      ? hitTarget.魔法抗性[子弹.魔法伤害属性]
-                      : (hitTarget.魔法抗性 && (hitTarget.魔法抗性["基础"] 
-                          || hitTarget.魔法抗性["基础"]===0) 
-                          ? hitTarget.魔法抗性["基础"]
-                          : 10 + hitTarget.等级 / 2))
-                    : (hitTarget.魔法抗性 && (hitTarget.魔法抗性["基础"] || hitTarget.魔法抗性["基础"]===0) 
-                      ? hitTarget.魔法抗性["基础"]
-                      : 10 + hitTarget.等级 / 2);
+        var 魔法属性 = 子弹.魔法伤害属性;
+        var 魔抗表 = hitTarget.魔法抗性;
+        var 敌人法抗 = 10 + hitTarget.等级 / 2;
+
+        if (魔抗表) {
+            if (魔法属性 && (魔抗表[魔法属性] != undefined)) {
+                敌人法抗 = 魔抗表[魔法属性];
+            } else if (魔抗表["基础"] != undefined) {
+                敌人法抗 = 魔抗表["基础"];
+            }
+        }
+
         
         敌人法抗 = isNaN(敌人法抗) ? 20 : Math.min(Math.max(敌人法抗, -1000), 100);
         hitTarget.损伤值 = Math.floor(子弹.破坏力 * (100 - 敌人法抗) / 100);
