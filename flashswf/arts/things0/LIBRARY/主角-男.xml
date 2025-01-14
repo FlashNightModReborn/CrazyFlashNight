@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1735804589" lastUniqueIdentifier="241">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1736865566" lastUniqueIdentifier="241">
   <timeline>
-    <DOMTimeline name="主角-男">
+    <DOMTimeline name="主角-男" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -227,7 +227,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物文字信息" color="#BDB2FA" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="人物文字信息" color="#BDB2FA" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="652" keyMode="9728">
               <elements>
@@ -721,7 +721,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="323" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" selected="true" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
                     <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
                   </matrix>
@@ -744,7 +744,7 @@ on(release){
             </DOMFrame>
             <DOMFrame index="408" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 74" name="控制块" selected="true" centerPoint3DX="120" centerPoint3DY="130.5">
                   <matrix>
                     <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
                   </matrix>
@@ -752,109 +752,9 @@ on(release){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   旧上行 = _parent.上行;
-   旧下行 = _parent.下行;
-   旧左行 = _parent.左行;
-   旧右行 = _parent.右行;
-   _parent.行走();
-   if(_root.暂停 == false)
-   {
-      if(_parent.操控编号 != -1)
-      {
-         if(_root.控制目标全自动 != true and _root.全鼠标控制 == false)
-         {
-            _parent.按键控制攻击模式();
-            if(Key.isDown(_parent.A键))
-            {
-               _parent.格斗架势 = true;
-               _parent.状态改变(_parent.攻击模式 + "攻击");
-            }
-            if(Key.isDown(_parent.B键))
-            {
-               _parent.跳();
-            }
-            if(Key.isDown(_parent.左键))
-            {
-               _parent.左行 = 1;
-            }
-            else
-            {
-               _parent.左行 = 0;
-            }
-            if(Key.isDown(_parent.右键))
-            {
-               _parent.右行 = 1;
-            }
-            else
-            {
-               _parent.右行 = 0;
-            }
-            if(Key.isDown(_parent.上键))
-            {
-               _parent.上行 = 1;
-            }
-            else
-            {
-               _parent.上行 = 0;
-            }
-            if(Key.isDown(_parent.下键))
-            {
-               _parent.下行 = 1;
-            }
-            else
-            {
-               _parent.下行 = 0;
-            }
-         }
-      }
-      if(_root.控制目标 == _parent._name and _root.全鼠标控制 == true and _root.控制目标全自动 != true)
-      {
-         if(_root.gameworld鼠标横向位置 < _parent._x)
-         {
-            _root.gameworld[_root.控制目标].左行 = 1;
-            _root.gameworld[_root.控制目标].右行 = 0;
-         }
-         else if(_root.gameworld鼠标横向位置 > _parent._x)
-         {
-            _root.gameworld[_root.控制目标].右行 = 1;
-            _root.gameworld[_root.控制目标].左行 = 0;
-         }
-         if(_root.gameworld鼠标纵向位置 < _parent._y)
-         {
-            _root.gameworld[_root.控制目标].上行 = 1;
-            _root.gameworld[_root.控制目标].下行 = 0;
-         }
-         else if(_root.gameworld鼠标纵向位置 > _parent._y)
-         {
-            _root.gameworld[_root.控制目标].下行 = 1;
-            _root.gameworld[_root.控制目标].上行 = 0;
-         }
-         if(Math.abs(_root.gameworld鼠标横向位置 - _parent._x) < 20)
-         {
-            _root.gameworld[_root.控制目标].右行 = 0;
-            _root.gameworld[_root.控制目标].左行 = 0;
-         }
-         if(Math.abs(_root.gameworld鼠标纵向位置 - _parent._y) < 20)
-         {
-            _root.gameworld[_root.控制目标].下行 = 0;
-            _root.gameworld[_root.控制目标].上行 = 0;
-         }
-      }
-   }
-   else if(_root.暂停 == true)
-   {
-      _root.gameworld[_root.控制目标].右行 = 0;
-      _root.gameworld[_root.控制目标].左行 = 0;
-      _root.gameworld[_root.控制目标].下行 = 0;
-      _root.gameworld[_root.控制目标].上行 = 0;
-   }
-   if(旧上行 != _parent.上行 || 旧下行 != _parent.下行 || 旧左行 != _parent.左行 || 旧右行 != _parent.右行)
-   {
-      _parent.联机2015发送角色数据();
-   }
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	this.onEnterFrame = _root.主角函数.手雷行走状态机;
+}]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -1084,7 +984,7 @@ on(release){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="动画层" color="#32BDEF" autoNamed="false">
+        <DOMLayer name="动画层" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -2314,7 +2214,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="437" duration="40" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/手雷攻击" name="man" centerPoint3DX="173" centerPoint3DY="243.85">
+                <DOMSymbolInstance libraryItemName="sprite/手雷攻击" name="man" selected="true" centerPoint3DX="173" centerPoint3DY="243.85">
                   <matrix>
                     <Matrix a="0.276992797851563" d="0.276992797851563" tx="3.5" ty="-62.3"/>
                   </matrix>
@@ -2371,7 +2271,7 @@ onClipEvent (enterFrame) {
 				{
 					_parent.手雷动作类型 = "低抛";
 				}
-				_root.发布消息("手雷动作类型切换为"+_parent.手雷动作类型);
+				_root.发布消息("手雷动作类型切换为" + _parent.手雷动作类型);
 				this.gotoAndPlay(_parent.手雷动作类型);
 			}
 			未切换按键 = false;

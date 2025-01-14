@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 151" itemID="6577b699-000009b9" lastModified="1727873930" lastUniqueIdentifier="120">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 151" itemID="6577b699-000009b9" lastModified="1736864655" lastUniqueIdentifier="120">
   <timeline>
-    <DOMTimeline name="Symbol 151" currentFrame="43">
+    <DOMTimeline name="Symbol 151" currentFrame="42">
       <layers>
         <DOMLayer name="Labels Layer" color="#EF706D">
           <frames>
@@ -27,7 +27,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#A28BA8">
+        <DOMLayer name="Script Layer" color="#A28BA8" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -91,9 +91,9 @@
             </DOMFrame>
             <DOMFrame index="41" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent._name == _root.控制目标){
-	var 手雷数量 = _root.获得强化等级(_parent.手雷属性数组[14][11]);
-	手雷数量 = 手雷数量 ? 手雷数量 : 0;
+                <script><![CDATA[if (_parent._name == _root.控制目标)
+{
+	var 手雷数量 = _root.物品栏.装备栏.getValue("手雷");
 	_root.玩家信息界面.玩家必要信息界面.弹夹数 = 手雷数量;
 }]]></script>
               </Actionscript>
@@ -5606,7 +5606,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#D6DFB3" current="true" isSelected="true">
+        <DOMLayer name="Sound Layer 0" color="#D6DFB3">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>

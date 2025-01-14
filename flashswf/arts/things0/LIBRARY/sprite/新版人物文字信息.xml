@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="新版人物文字信息" linkageURL="flashswf/arts/新版人物文字信息.swf" lastModified="1735804589" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="新版人物文字信息" linkageURL="flashswf/arts/新版人物文字信息.swf" lastModified="1736864914" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="新版人物文字信息">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[自机 = _parent;
+                <script><![CDATA[/*自机 = _parent;
 
 if (自机.是否为敌人 == false)
 {
@@ -57,7 +57,7 @@ this.onEnterFrame = function()
 
 	//霸体状态下改变韧性条底部颜色
 	this.头顶血槽.刚体遮罩._visible = (自机.刚体 || 自机.man.刚体标签) ? true : false;
-};]]></script>
+};*/]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

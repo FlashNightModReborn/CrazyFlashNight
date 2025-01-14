@@ -195,6 +195,7 @@ _root.刷新人物装扮 = function(目标)
 	var 手枪:String;
 	var 手枪2:String;
 	var 刀:String;
+	var 手雷:String;
 	var 头部强化等级:Number = 0;
 	var 上装强化等级:Number = 0;
 	var 手部强化等级:Number = 0;
@@ -230,6 +231,7 @@ _root.刷新人物装扮 = function(目标)
 		手枪 = 装备栏.getNameString("手枪");
 		手枪2 = 装备栏.getNameString("手枪2");
 		刀 = 装备栏.getNameString("刀");
+		手雷 = 装备栏.getNameString("手雷");
 
 
 		头部强化等级 = 装备栏.getLevel("头部装备");

@@ -53,8 +53,6 @@ class org.flashNight.arki.item.ItemUtil{
             _root.发布消息("等级低于装备限制，无法装备！");
             return false;
         }
-        var name = icon.name;
-        var level = icon.value.level;
         var result = ItemUtil.moveItemToInventory(icon,equipmentIcon);
         if(!result) return false;
         //
