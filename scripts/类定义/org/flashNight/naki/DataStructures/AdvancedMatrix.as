@@ -1,11 +1,8 @@
-﻿
-
-/**
+﻿/**
  * AdvancedMatrix 类
  * 提供各种高级矩阵操作，包括加法、减法、乘法、转置、逆矩阵、卷积、仿射变换等。
  */
 class org.flashNight.naki.DataStructures.AdvancedMatrix {
-
 
     private var data:Array; // 用于存储矩阵数据的一维数组
     private var rows:Number; // 矩阵的行数
@@ -13,7 +10,7 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     /**
      * 构造函数
-     * @param inputData 一维数组
+     * @param inputData 一维数组，用于初始化矩阵的数据。
      */
     public function AdvancedMatrix(inputData:Array) {
         this.data = inputData.concat(); // 创建数组的副本，防止外部修改
@@ -26,6 +23,7 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
      * @param numRows 行数
      * @param numCols 列数
      * @return 当前 AdvancedMatrix 实例（支持链式调用）
+     * @throws Error 如果输入数据长度与指定矩阵尺寸不匹配。
      */
     public function init(numRows:Number, numCols:Number):AdvancedMatrix {
         if (this.data.length != numRows * numCols) {
@@ -38,6 +36,8 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     /**
      * 通过传入新数组重置矩阵数据
+     * @param inputData 一维数组，用于重新初始化矩阵的数据。
+     * @return 当前 AdvancedMatrix 实例（支持链式调用）
      */
     public function reset(inputData:Array):AdvancedMatrix {
         this.data = inputData.concat(); // 创建新的数组副本
@@ -48,7 +48,9 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     /**
      * 从多维数组初始化矩阵
-     * @param multiArray 二维数组, 外层为行, 内层为列
+     * @param multiArray 二维数组，外层为行，内层为列。
+     * @return 当前 AdvancedMatrix 实例（支持链式调用）
+     * @throws Error 如果每一行的列数不一致。
      */
     public function initFromMultiDimensionalArray(multiArray:Array):AdvancedMatrix {
         var newData:Array = [];
@@ -72,6 +74,10 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     /**
      * 获取矩阵中特定位置的元素
+     * @param row 行索引（从0开始）
+     * @param col 列索引（从0开始）
+     * @return 指定位置的元素值
+     * @throws Error 如果行或列索引超出范围。
      */
     public function getElement(row:Number, col:Number):Number {
         if (row < 0 || row >= this.rows) {
@@ -85,6 +91,10 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     /**
      * 设置矩阵中特定位置的元素
+     * @param row 行索引（从0开始）
+     * @param col 列索引（从0开始）
+     * @param value 要设置的值
+     * @throws Error 如果行或列索引超出范围。
      */
     public function setElement(row:Number, col:Number, value:Number):Void {
         if (row < 0 || row >= this.rows) {
@@ -108,7 +118,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     // -------------------- 原地操作方法 --------------------
 
-    /** 原地矩阵加法 */
+    /**
+     * 原地矩阵加法
+     * @param matrix 另一个要相加的矩阵
+     * @throws Error 如果矩阵尺寸不匹配。
+     */
     public function addInPlace(matrix:AdvancedMatrix):Void {
         if (this.rows != matrix.getRows() || this.cols != matrix.getCols()) {
             throw new Error("addInPlace 错误：矩阵尺寸不匹配，无法相加。");
@@ -118,7 +132,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         }
     }
 
-    /** 原地矩阵减法 */
+    /**
+     * 原地矩阵减法
+     * @param matrix 另一个要相减的矩阵
+     * @throws Error 如果矩阵尺寸不匹配。
+     */
     public function subtractInPlace(matrix:AdvancedMatrix):Void {
         if (this.rows != matrix.getRows() || this.cols != matrix.getCols()) {
             throw new Error("subtractInPlace 错误：矩阵尺寸不匹配，无法相减。");
@@ -128,14 +146,21 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         }
     }
 
-    /** 原地矩阵数乘 */
+    /**
+     * 原地矩阵数乘
+     * @param scalar 乘数
+     */
     public function scalarMultiplyInPlace(scalar:Number):Void {
         for (var i:Number = 0; i < this.data.length; i++) {
             this.data[i] *= scalar;
         }
     }
 
-    /** 原地矩阵元素级乘法（Hadamard 乘法） */
+    /**
+     * 原地矩阵元素级乘法（Hadamard 乘法）
+     * @param matrix 另一个要逐元素相乘的矩阵
+     * @throws Error 如果矩阵尺寸不匹配。
+     */
     public function hadamardMultiplyInPlace(matrix:AdvancedMatrix):Void {
         if (this.rows != matrix.getRows() || this.cols != matrix.getCols()) {
             throw new Error("hadamardMultiplyInPlace 错误：矩阵尺寸不匹配，无法逐元素相乘。");
@@ -145,7 +170,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         }
     }
 
-    /** 将另一个矩阵的值赋给当前矩阵 */
+    /**
+     * 将另一个矩阵的值赋给当前矩阵
+     * @param source 来源矩阵
+     * @throws Error 如果矩阵尺寸不匹配。
+     */
     public function assign(source:AdvancedMatrix):Void {
         if (this.rows != source.getRows() || this.cols != source.getCols()) {
             throw new Error("assign 错误：矩阵尺寸不匹配。");
@@ -157,7 +186,13 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     // -------------------- 非原地矩阵运算 --------------------
 
-    /** 矩阵加法 */
+    /**
+     * 矩阵加法
+     * @param matrix 另一个要相加的矩阵
+     * @param result 可选的结果矩阵
+     * @return 相加后的矩阵
+     * @throws Error 如果矩阵尺寸不匹配。
+     */
     public function add(matrix:AdvancedMatrix, result:AdvancedMatrix):AdvancedMatrix {
         var hasResult:Boolean = (arguments.length >= 2) && (result != undefined);
         if (this.rows != matrix.getRows() || this.cols != matrix.getCols()) {
@@ -178,7 +213,13 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** 矩阵减法 */
+    /**
+     * 矩阵减法
+     * @param matrix 另一个要相减的矩阵
+     * @param result 可选的结果矩阵
+     * @return 相减后的矩阵
+     * @throws Error 如果矩阵尺寸不匹配。
+     */
     public function subtract(matrix:AdvancedMatrix, result:AdvancedMatrix):AdvancedMatrix {
         var hasResult:Boolean = (arguments.length >= 2) && (result != undefined);
         if (this.rows != matrix.getRows() || this.cols != matrix.getCols()) {
@@ -199,7 +240,13 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** 矩阵数乘 */
+    /**
+     * 矩阵数乘
+     * @param scalar 乘数
+     * @param result 可选的结果矩阵
+     * @return 数乘后的矩阵
+     * @throws Error 如果结果矩阵尺寸不匹配。
+     */
     public function scalarMultiply(scalar:Number, result:AdvancedMatrix):AdvancedMatrix {
         var hasResult:Boolean = (arguments.length >= 2) && (result != undefined);
         if (hasResult) {
@@ -217,7 +264,13 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** Hadamard 乘法（逐元素乘法） */
+    /**
+     * Hadamard 乘法（逐元素乘法）
+     * @param matrix 另一个要逐元素相乘的矩阵
+     * @param result 可选的结果矩阵
+     * @return Hadamard 乘法后的矩阵
+     * @throws Error 如果矩阵尺寸不匹配。
+     */
     public function hadamardMultiply(matrix:AdvancedMatrix, result:AdvancedMatrix):AdvancedMatrix {
         var hasResult:Boolean = (arguments.length >= 2) && (result != undefined);
         if (this.rows != matrix.getRows() || this.cols != matrix.getCols()) {
@@ -238,7 +291,13 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** 矩阵乘法 (自动判断是否使用 Strassen) */
+    /**
+     * 矩阵乘法（自动判断是否使用 Strassen 算法）
+     * @param matrix 要相乘的另一个矩阵
+     * @param result 可选的结果矩阵
+     * @return 矩阵乘法后的结果
+     * @throws Error 如果矩阵尺寸不匹配。
+     */
     public function multiply(matrix:AdvancedMatrix, result:AdvancedMatrix):AdvancedMatrix {
         if (this.cols != matrix.getRows()) {
             throw new Error("multiply 错误：第一个矩阵的列数需等于第二个矩阵的行数。");
@@ -289,7 +348,12 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         }
     }
 
-    /** 标准直接矩阵乘法 */
+    /**
+     * 标准直接矩阵乘法
+     * @param matrix 要相乘的矩阵
+     * @param result 可选的结果矩阵
+     * @return 矩阵乘法后的结果
+     */
     private function multiplyDirect(matrix:AdvancedMatrix, result:AdvancedMatrix):AdvancedMatrix {
         var r:Number;
         var c:Number;
@@ -323,7 +387,12 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** Strassen 乘法 (包装函数) */
+    /**
+     * Strassen 乘法 (包装函数)
+     * @param matrix 要相乘的矩阵
+     * @param result 可选的结果矩阵
+     * @return Strassen 乘法后的结果矩阵
+     */
     private function strassenMultiply(matrix:AdvancedMatrix, result:AdvancedMatrix):AdvancedMatrix {
         var n:Number = this.rows;
         if (n <= 64) {
@@ -331,7 +400,7 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         }
 
         var newSize:Number = Math.ceil(n / 2) * 2;
-        // 分割
+        // 分割矩阵
         var A11:AdvancedMatrix = this.getSubMatrix(0, 0, Math.floor(newSize / 2), Math.floor(newSize / 2), null);
         var A12:AdvancedMatrix = this.getSubMatrix(0, Math.floor(newSize / 2), Math.floor(newSize / 2), Math.floor(newSize / 2), null);
         var A21:AdvancedMatrix = this.getSubMatrix(Math.floor(newSize / 2), 0, Math.floor(newSize / 2), Math.floor(newSize / 2), null);
@@ -342,7 +411,7 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         var B21:AdvancedMatrix = matrix.getSubMatrix(Math.floor(newSize / 2), 0, Math.floor(newSize / 2), Math.floor(newSize / 2), null);
         var B22:AdvancedMatrix = matrix.getSubMatrix(Math.floor(newSize / 2), Math.floor(newSize / 2), Math.floor(newSize / 2), Math.floor(newSize / 2), null);
 
-        // M1..M7
+        // 计算 M1 到 M7
         var M1:AdvancedMatrix = (A11.add(A22, null)).strassenMultiply(B11.add(B22, null), null);
         var M2:AdvancedMatrix = (A21.add(A22, null)).strassenMultiply(B11, null);
         var M3:AdvancedMatrix = A11.strassenMultiply(B12.subtract(B22, null), null);
@@ -351,6 +420,7 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         var M6:AdvancedMatrix = (A21.subtract(A11, null)).strassenMultiply(B11.add(B12, null), null);
         var M7:AdvancedMatrix = (A12.subtract(A22, null)).strassenMultiply(B21.add(B22, null), null);
 
+        // 计算 C11, C12, C21, C22
         var C11:AdvancedMatrix = M1.add(M4, null).subtract(M5, null).add(M7, null);
         var C12:AdvancedMatrix = M3.add(M5, null);
         var C21:AdvancedMatrix = M2.add(M4, null);
@@ -364,9 +434,17 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         }
     }
 
-    /** 合并子矩阵 */
+    /**
+     * 合并子矩阵
+     * @param C12 子矩阵 C12
+     * @param C21 子矩阵 C21
+     * @param C22 子矩阵 C22
+     * @param result 可选的结果矩阵
+     * @return 合并后的矩阵
+     * @throws Error 如果结果矩阵尺寸不匹配。
+     */
     private function combineSubMatrices(C12:AdvancedMatrix, C21:AdvancedMatrix, C22:AdvancedMatrix, result:AdvancedMatrix):AdvancedMatrix {
-        var C11:AdvancedMatrix = this; // 当前对象就是C11
+        var C11:AdvancedMatrix = this; // 当前对象就是 C11
         var newRows:Number = C11.getRows() + C21.getRows();
         var newCols:Number = C11.getCols() + C12.getCols();
 
@@ -398,12 +476,20 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** 判断是否是 2 的幂 */
+    /**
+     * 判断一个数是否是 2 的幂
+     * @param num 要判断的数字
+     * @return 如果是 2 的幂，则返回 true，否则返回 false。
+     */
     private function isPowerOfTwo(num:Number):Boolean {
         return (num & (num - 1)) == 0;
     }
 
-    /** 计算下一个 2 的幂 */
+    /**
+     * 计算下一个 2 的幂
+     * @param n 输入的数字
+     * @return 大于等于 n 的最小 2 的幂。
+     */
     private function nextPowerOfTwo(n:Number):Number {
         var power:Number = 1;
         while (power < n) {
@@ -414,7 +500,12 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     // -------------------- 其他重要方法 --------------------
 
-    /** 矩阵转置 */
+    /**
+     * 矩阵转置
+     * @param result 可选的结果矩阵
+     * @return 转置后的矩阵
+     * @throws Error 如果结果矩阵尺寸不匹配。
+     */
     public function transpose(result:AdvancedMatrix):AdvancedMatrix {
         var hasResult:Boolean = (arguments.length >= 1) && (result != undefined);
         if (hasResult) {
@@ -434,7 +525,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** LU 分解 (用于行列式和逆矩阵) */
+    /**
+     * LU 分解 (用于行列式和逆矩阵)
+     * @return 包含 L、U、P 矩阵及行交换次数的对象
+     * @throws Error 如果矩阵不是方阵或矩阵奇异。
+     */
     private function luDecomposition():Object {
         if (this.rows != this.cols) {
             throw new Error("luDecomposition 错误：仅适用于方阵。");
@@ -513,7 +608,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
                 rowSwapCount: rowSwapCount};
     }
 
-    /** 行列式 */
+    /**
+     * 计算行列式
+     * @return 矩阵的行列式值
+     * @throws Error 如果矩阵不是方阵。
+     */
     public function determinant():Number {
         if (this.rows != this.cols) {
             throw new Error("determinant 错误：仅适用于方阵。");
@@ -536,7 +635,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return detVal;
     }
 
-    /** 矩阵求逆 */
+    /**
+     * 计算矩阵的逆矩阵
+     * @return 矩阵的逆矩阵
+     * @throws Error 如果矩阵不是方阵或矩阵奇异。
+     */
     public function inverse():AdvancedMatrix {
         if (this.rows != this.cols) {
             throw new Error("inverse 错误：仅适用于方阵。");
@@ -550,7 +653,7 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         var invData:Array = new Array(n * n);
 
         for (var col:Number = 0; col < n; col++) {
-            // 构建 e 向量, 其中 e[P[i]] = 1 表示在 P 后的位置
+            // 构建 e 向量，其中 e[P[i]] = 1 表示在 P 后的位置
             var e:Array = [];
             for (var i:Number = 0; i < n; i++) {
                 if (P[i] == col) {
@@ -591,6 +694,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     /**
      * 卷积操作
+     * @param kernel 卷积核矩阵（尺寸必须为奇数）
+     * @param padding 填充的像素数
+     * @param stride 步幅
+     * @return 卷积后的矩阵
+     * @throws Error 如果卷积核的行数或列数为偶数。
      */
     public function convolve(kernel:AdvancedMatrix, padding:Number, stride:Number):AdvancedMatrix {
         if (kernel.getRows() % 2 == 0 || kernel.getCols() % 2 == 0) {
@@ -624,7 +732,12 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return new AdvancedMatrix(outputData).init(outputRows, outputCols);
     }
 
-    /** 为卷积填充矩阵 */
+    /**
+     * 为卷积填充矩阵
+     * @param padRows 填充的行数
+     * @param padCols 填充的列数
+     * @return 填充后的矩阵
+     */
     private function padMatrixForConvolution(padRows:Number, padCols:Number):AdvancedMatrix {
         var newRows:Number = this.rows + 2 * padRows;
         var newCols:Number = this.cols + 2 * padCols;
@@ -645,6 +758,10 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
     /**
      * 应用仿射变换
      * 注意：内部会先对 transformationMatrix 求 inverse，然后再乘以目标像素坐标
+     * @param transformationMatrix 3x3 的仿射变换矩阵
+     * @param result 可选的结果矩阵
+     * @return 仿射变换后的矩阵
+     * @throws Error 如果变换矩阵不是 3x3，或结果矩阵尺寸不匹配。
      */
     public function applyTransformation(transformationMatrix:AdvancedMatrix, result:AdvancedMatrix):AdvancedMatrix {
         if (transformationMatrix.getRows() != 3 || transformationMatrix.getCols() != 3) {
@@ -657,7 +774,7 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
         for (var i:Number = 0; i < outputRows; i++) {
             for (var j:Number = 0; j < outputCols; j++) {
-                // 目标坐标
+                // 目标坐标 (x', y', 1)
                 var destCoord:AdvancedMatrix = new AdvancedMatrix([j, i, 1]).init(3, 1);
                 // srcCoord = inverseTransform * destCoord
                 var srcCoord:AdvancedMatrix = inverseTransform.multiply(destCoord, null);
@@ -691,41 +808,60 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
     // -------------------- 静态方法: 生成常用仿射矩阵 --------------------
 
     /**
-     * 生成旋转矩阵（angle>0 => 最终效果顺时针旋转）
+     * 生成旋转矩阵（角度为逆时针方向）
+     * @param angle 旋转角度，单位为度。正值表示逆时针旋转。
+     * @return 3x3 的旋转矩阵
      */
     public static function rotationMatrix(angle:Number):AdvancedMatrix {
         var rad:Number = angle * Math.PI / 180;
         var cosA:Number = Math.cos(rad);
         var sinA:Number = Math.sin(rad);
 
-        // 如果希望 angle>0 是顺时针，则此处应把原本 -sinA 改为 +sinA
-        // 并把 sinA 行那一行改为 -sinA
-        // 这样在 applyTransformation 内部再做 inverse()，就会得到与测试期望一致的效果
-        var data:Array = [cosA, sinA, 0,
-            -sinA, cosA, 0,
-            0, 0, 1];
+        var data:Array = [
+            cosA, -sinA, 0,
+            sinA,  cosA, 0,
+            0,     0,    1
+        ];
         return new AdvancedMatrix(data).init(3, 3);
     }
 
-    /** 生成缩放矩阵 */
+    /**
+     * 生成缩放矩阵
+     * @param sx x 轴的缩放因子
+     * @param sy y 轴的缩放因子
+     * @return 3x3 的缩放矩阵
+     */
     public static function scalingMatrix(sx:Number, sy:Number):AdvancedMatrix {
-        var data:Array = [sx, 0, 0,
-            0, sy, 0,
-            0, 0, 1];
+        var data:Array = [
+            sx, 0,  0,
+            0,  sy, 0,
+            0,  0,  1
+        ];
         return new AdvancedMatrix(data).init(3, 3);
     }
 
-    /** 生成平移矩阵 */
+    /**
+     * 生成平移矩阵
+     * @param tx x 轴的平移量
+     * @param ty y 轴的平移量
+     * @return 3x3 的平移矩阵
+     */
     public static function translationMatrix(tx:Number, ty:Number):AdvancedMatrix {
-        var data:Array = [1, 0, tx,
+        var data:Array = [
+            1, 0, tx,
             0, 1, ty,
-            0, 0, 1];
+            0, 0, 1
+        ];
         return new AdvancedMatrix(data).init(3, 3);
     }
 
     // -------------------- 其他实用方法 --------------------
 
-    /** 矩阵归一化 [0,1] */
+    /**
+     * 矩阵归一化到 [0,1] 范围
+     * @return 归一化后的矩阵
+     * @throws Error 如果矩阵中所有元素相同，无法归一化。
+     */
     public function normalize():AdvancedMatrix {
         var maxVal:Number = getMax(this.data);
         var minVal:Number = getMin(this.data);
@@ -740,7 +876,12 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return new AdvancedMatrix(result).init(this.rows, this.cols);
     }
 
-    /** 行归一化（每行和=1） */
+    /**
+     * 行归一化（每行的元素和为1）
+     * @param result 可选的结果矩阵
+     * @return 行归一化后的矩阵
+     * @throws Error 如果结果矩阵尺寸不匹配或某行元素和为0。
+     */
     public function normalizeRows(result:AdvancedMatrix):AdvancedMatrix {
         var hasResult:Boolean = (arguments.length >= 1) && (result != undefined);
         if (hasResult) {
@@ -766,7 +907,13 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** 判断是否收敛 */
+    /**
+     * 判断当前矩阵是否收敛
+     * @param previousState 上一次的矩阵状态
+     * @param threshold 收敛阈值
+     * @return 如果所有元素的变化小于阈值，则返回 true，否则返回 false。
+     * @throws Error 如果矩阵尺寸不匹配。
+     */
     public function hasConverged(previousState:AdvancedMatrix, threshold:Number):Boolean {
         if (this.rows != previousState.rows || this.cols != previousState.cols) {
             throw new Error("hasConverged 错误：矩阵尺寸不匹配。");
@@ -780,7 +927,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return true;
     }
 
-    /** 用特定值填充矩阵(原地) */
+    /**
+     * 用特定值填充矩阵（原地操作）
+     * @param value 要填充的值
+     * @return 填充后的矩阵
+     */
     public function fill(value:Number):AdvancedMatrix {
         for (var i:Number = 0; i < this.data.length; i++) {
             this.data[i] = value;
@@ -788,7 +939,12 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return this;
     }
 
-    /** 用随机数填充矩阵(原地) */
+    /**
+     * 用随机数填充矩阵（原地操作）
+     * @param min 随机数的最小值
+     * @param max 随机数的最大值
+     * @return 填充后的矩阵
+     */
     public function randomize(min:Number, max:Number):AdvancedMatrix {
         for (var i:Number = 0; i < this.data.length; i++) {
             this.data[i] = Math.random() * (max - min) + min;
@@ -796,7 +952,14 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return this;
     }
 
-    /** 去除填充(主要用于 Strassen 或者其他补零后的情况) */
+    /**
+     * 去除填充（主要用于 Strassen 或其他补零后的情况）
+     * @param originalRows 原始的行数
+     * @param originalCols 原始的列数
+     * @param result 可选的结果矩阵
+     * @return 去除填充后的矩阵
+     * @throws Error 如果结果矩阵尺寸不匹配。
+     */
     private function unpadMatrix(originalRows:Number, originalCols:Number, result:AdvancedMatrix):AdvancedMatrix {
         if (result == undefined) {
             result = new AdvancedMatrix(new Array(originalRows * originalCols));
@@ -814,7 +977,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** 扩展(填充)到指定大小(方阵)，用于 Strassen */
+    /**
+     * 扩展（填充）到指定大小（方阵），用于 Strassen 算法
+     * @param newSize 要扩展到的大小
+     * @return 填充后的矩阵
+     */
     private function padMatrix(newSize:Number):AdvancedMatrix {
         var paddedData:Array = [];
         for (var i:Number = 0; i < newSize; i++) {
@@ -829,7 +996,16 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return new AdvancedMatrix(paddedData).init(newSize, newSize);
     }
 
-    /** 提取子矩阵 */
+    /**
+     * 提取子矩阵
+     * @param startRow 起始行索引（从0开始）
+     * @param startCol 起始列索引（从0开始）
+     * @param numRows 子矩阵的行数
+     * @param numCols 子矩阵的列数
+     * @param result 可选的结果矩阵
+     * @return 提取的子矩阵
+     * @throws Error 如果结果矩阵尺寸不匹配。
+     */
     public function getSubMatrix(startRow:Number, startCol:Number, numRows:Number, numCols:Number, result:AdvancedMatrix):AdvancedMatrix {
         var hasResult:Boolean = (arguments.length >= 5) && (result != undefined);
         if (hasResult) {
@@ -858,17 +1034,27 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** 克隆到一维数组 */
+    /**
+     * 克隆矩阵到一维数组
+     * @return 矩阵数据的一维数组副本
+     */
     public function toArray():Array {
         return this.data.concat();
     }
 
-    /** 克隆矩阵 */
+    /**
+     * 克隆矩阵
+     * @return 当前矩阵的克隆副本
+     */
     public function clone():AdvancedMatrix {
         return new AdvancedMatrix(this.data).init(this.rows, this.cols);
     }
 
-    /** 计算方阵的迹(trace) */
+    /**
+     * 计算方阵的迹（trace）
+     * @return 矩阵的迹
+     * @throws Error 如果矩阵不是方阵。
+     */
     public function trace():Number {
         if (this.rows != this.cols) {
             throw new Error("trace 错误：仅适用于方阵。");
@@ -880,7 +1066,10 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return sum;
     }
 
-    /** 重写 toString */
+    /**
+     * 重写 toString 方法，返回矩阵的字符串表示
+     * @return 矩阵的字符串表示
+     */
     public function toString():String {
         var s:String = "";
         for (var r:Number = 0; r < this.rows; r++) {
@@ -892,12 +1081,18 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return s;
     }
 
-    /** 打印矩阵（AS2下用 trace） */
+    /**
+     * 打印矩阵（在 AS2 下使用 trace）
+     */
     public function printMatrix():Void {
         trace(this.toString());
     }
 
-    /** 获取数组最大值 */
+    /**
+     * 获取数组中的最大值
+     * @param arr 要查找的数组
+     * @return 数组中的最大值
+     */
     private function getMax(arr:Array):Number {
         var mx:Number = arr[0];
         for (var i:Number = 1; i < arr.length; i++) {
@@ -908,7 +1103,11 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return mx;
     }
 
-    /** 获取数组最小值 */
+    /**
+     * 获取数组中的最小值
+     * @param arr 要查找的数组
+     * @return 数组中的最小值
+     */
     private function getMin(arr:Array):Number {
         var mn:Number = arr[0];
         for (var i:Number = 1; i < arr.length; i++) {
@@ -921,7 +1120,13 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
 
     // -------------------- 常用的静态方法(损失函数等) --------------------
 
-    /** 应用激活函数: sigmoid、tanh、relu */
+    /**
+     * 应用激活函数：sigmoid、tanh、relu
+     * @param functionName 激活函数名称（忽略大小写）："sigmoid"、"tanh"、"relu"
+     * @param result 可选的结果矩阵
+     * @return 应用激活函数后的矩阵
+     * @throws Error 如果激活函数名称不支持，或结果矩阵尺寸不匹配。
+     */
     public function applyActivation(functionName:String, result:AdvancedMatrix):AdvancedMatrix {
         var hasResult:Boolean = (arguments.length >= 2) && (result != undefined);
         if (hasResult) {
@@ -951,13 +1156,24 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
+    /**
+     * 计算 tanh 函数
+     * @param x 输入值
+     * @return tanh(x) 的值
+     */
     private static function tanh(x:Number):Number {
         var ePos:Number = Math.exp(x);
         var eNeg:Number = Math.exp(-x);
         return (ePos - eNeg) / (ePos + eNeg);
     }
 
-    /** 均方误差 (MSE) */
+    /**
+     * 计算均方误差 (MSE)
+     * @param output 预测输出矩阵
+     * @param target 目标输出矩阵
+     * @return 均方误差值
+     * @throws Error 如果输出和目标矩阵尺寸不匹配。
+     */
     public static function meanSquaredError(output:AdvancedMatrix, target:AdvancedMatrix):Number {
         if (output.getRows() != target.getRows() || output.getCols() != target.getCols()) {
             throw new Error("meanSquaredError 错误：输出和目标尺寸不匹配。");
@@ -970,7 +1186,14 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return sum / output.data.length;
     }
 
-    /** MSE 的导数 => d/dOutput */
+    /**
+     * 计算均方误差 (MSE) 的导数
+     * @param output 预测输出矩阵
+     * @param target 目标输出矩阵
+     * @param result 可选的结果矩阵
+     * @return MSE 的导数矩阵
+     * @throws Error 如果输出和目标矩阵尺寸不匹配，或结果矩阵尺寸不匹配。
+     */
     public static function meanSquaredErrorDerivative(output:AdvancedMatrix, target:AdvancedMatrix, result:AdvancedMatrix):AdvancedMatrix {
         if (output.getRows() != target.getRows() || output.getCols() != target.getCols()) {
             throw new Error("meanSquaredErrorDerivative 错误：输出和目标尺寸不匹配。");
@@ -990,7 +1213,14 @@ class org.flashNight.naki.DataStructures.AdvancedMatrix {
         return result;
     }
 
-    /** 用梯度下降更新权重矩阵 */
+    /**
+     * 用梯度下降更新权重矩阵
+     * @param gradient 梯度矩阵
+     * @param learningRate 学习率
+     * @param result 可选的结果矩阵
+     * @return 更新后的权重矩阵
+     * @throws Error 如果权重矩阵和梯度矩阵尺寸不匹配，或结果矩阵尺寸不匹配。
+     */
     public function updateWeights(gradient:AdvancedMatrix, learningRate:Number, result:AdvancedMatrix):AdvancedMatrix {
         if (this.rows != gradient.getRows() || this.cols != gradient.getCols()) {
             throw new Error("updateWeights 错误：权重矩阵和梯度矩阵尺寸不匹配。");

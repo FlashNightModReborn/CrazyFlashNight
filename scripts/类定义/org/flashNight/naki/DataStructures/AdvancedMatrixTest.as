@@ -350,35 +350,87 @@ class org.flashNight.naki.DataStructures.AdvancedMatrixTest {
     private function testTransformations():Void {
         trace("测试仿射变换...");
 
-        var image:AdvancedMatrix = new AdvancedMatrix([1, 2, 3, 4]).init(2, 2);
+        var image:AdvancedMatrix = new AdvancedMatrix([
+            1, 2, 3, 4,
+            5, 6, 7, 8,
+            9,10,11,12,
+            13,14,15,16
+        ]).init(4, 4);
 
-        // 旋转90°, 期望顺时针 => 最终得到 [3,1;4,2]
-        var rotation:AdvancedMatrix = AdvancedMatrix.rotationMatrix(90);
-        var rotatedImage:AdvancedMatrix = image.applyTransformation(rotation, null);
-        // 检查
-        assert(Math.abs(rotatedImage.getElement(0, 0) - 3) < 1e-6, "旋转[0,0]应为3");
-        assert(Math.abs(rotatedImage.getElement(0, 1) - 1) < 1e-6, "旋转[0,1]应为1");
-        assert(Math.abs(rotatedImage.getElement(1, 0) - 4) < 1e-6, "旋转[1,0]应为4");
-        assert(Math.abs(rotatedImage.getElement(1, 1) - 2) < 1e-6, "旋转[1,1]应为2");
+        // 定义平移矩阵，将中心移动到原点
+        var T_forward:AdvancedMatrix = AdvancedMatrix.translationMatrix(-1.5, -1.5);
+
+        // 定义旋转矩阵（逆时针90度）
+        var R:AdvancedMatrix = AdvancedMatrix.rotationMatrix(90);
+
+        // 定义平移矩阵，将中心从原点移回
+        var T_back:AdvancedMatrix = AdvancedMatrix.translationMatrix(1.5, 1.5);
+
+        // 组合变换矩阵：T_back * R * T_forward
+        var temp:AdvancedMatrix = R.multiply(T_forward, null);
+        var composite:AdvancedMatrix = T_back.multiply(temp, null);
+
+        // 应用组合变换（旋转）
+        var rotatedImage:AdvancedMatrix = image.applyTransformation(composite, null);
+
+        trace(rotatedImage);
+        // 检查旋转结果
+        assert(Math.abs(rotatedImage.getElement(0, 0) - 13) < 1e-6, "旋转[0,0]应为13");
+        assert(Math.abs(rotatedImage.getElement(0, 1) - 9) < 1e-6, "旋转[0,1]应为9");
+        assert(Math.abs(rotatedImage.getElement(0, 2) - 5) < 1e-6, "旋转[0,2]应为5");
+        assert(Math.abs(rotatedImage.getElement(0, 3) - 1) < 1e-6, "旋转[0,3]应为1");
+        assert(Math.abs(rotatedImage.getElement(1, 0) - 14) < 1e-6, "旋转[1,0]应为14");
+        assert(Math.abs(rotatedImage.getElement(1, 1) -10) < 1e-6, "旋转[1,1]应为10");
+        assert(Math.abs(rotatedImage.getElement(1, 2) - 6) < 1e-6, "旋转[1,2]应为6");
+        assert(Math.abs(rotatedImage.getElement(1, 3) - 2) < 1e-6, "旋转[1,3]应为2");
+        assert(Math.abs(rotatedImage.getElement(2, 0) - 15) < 1e-6, "旋转[2,0]应为15");
+        assert(Math.abs(rotatedImage.getElement(2, 1) -11) < 1e-6, "旋转[2,1]应为11");
+        assert(Math.abs(rotatedImage.getElement(2, 2) -7) < 1e-6, "旋转[2,2]应为7");
+        assert(Math.abs(rotatedImage.getElement(2, 3) -3) < 1e-6, "旋转[2,3]应为3");
+        assert(Math.abs(rotatedImage.getElement(3, 0) -16) < 1e-6, "旋转[3,0]应为16");
+        assert(Math.abs(rotatedImage.getElement(3, 1) -12) < 1e-6, "旋转[3,1]应为12");
+        assert(Math.abs(rotatedImage.getElement(3, 2) -8) < 1e-6, "旋转[3,2]应为8");
+        assert(Math.abs(rotatedImage.getElement(3, 3) -4) < 1e-6, "旋转[3,3]应为4");
 
         // 缩放 2x => 简化测试，假设采样可导致部分像素=0
         var scaling:AdvancedMatrix = AdvancedMatrix.scalingMatrix(2, 2);
-        var scaledImage:AdvancedMatrix = image.applyTransformation(scaling, null);
-        // 仅测试是否维度没变 & 部分值
-        assert(scaledImage.getRows() == 2, "缩放后行数应为2");
-        assert(scaledImage.getCols() == 2, "缩放后列数应为2");
+        var scaledImage:AdvancedMatrix = rotatedImage.applyTransformation(scaling, null);
 
-        // 平移 (1,1)
-        var translation:AdvancedMatrix = AdvancedMatrix.translationMatrix(1, 1);
-        var translatedImage:AdvancedMatrix = image.applyTransformation(translation, null);
+        trace(scaledImage);
+        // 仅测试是否维度没变 & 部分值
+        assert(scaledImage.getRows() == 4, "缩放后行数应为4");
+        assert(scaledImage.getCols() == 4, "缩放后列数应为4");
+        assert(Math.abs(scaledImage.getElement(0, 0) - 13) < 1e-6, "缩放后[0,0]应为13");
+        assert(Math.abs(scaledImage.getElement(1, 1) -10) < 1e-6, "缩放后[1,1]应为10");
+
+        // 平移 (-1,1) 向左移动1，向下移动1
+        // 为实现视觉上的 (-1,1) 平移，传入其逆矩阵 (1,-1)
+        var translation:AdvancedMatrix = AdvancedMatrix.translationMatrix(1, -1);
+        var translatedImage:AdvancedMatrix = scaledImage.applyTransformation(translation, null);
+
+        trace(translatedImage);
         // 仅测试部分元素
         assert(Math.abs(translatedImage.getElement(0, 0)) < 1e-6, "平移[0,0]应为0");
-        assert(Math.abs(translatedImage.getElement(0, 1)) < 1e-6, "平移[0,1]应为0");
-        assert(Math.abs(translatedImage.getElement(1, 0) - 2) < 1e-6, "平移[1,0]应为2");
-        assert(Math.abs(translatedImage.getElement(1, 1) - 4) < 1e-6, "平移[1,1]应为4");
+        assert(Math.abs(translatedImage.getElement(0, 1) -14) < 1e-6, "平移[0,1]应为14"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(0, 2) -10) < 1e-6, "平移[0,2]应为10"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(0, 3) -10) < 1e-6, "平移[0,3]应为10"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(1, 0)) <1e-6, "平移[1,0]应为0");
+        assert(Math.abs(translatedImage.getElement(1, 1) -14) <1e-6, "平移[1,1]应为14"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(1, 2) -10) <1e-6, "平移[1,2]应为10"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(1, 3) -10) <1e-6, "平移[1,3]应为10"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(2, 0)) <1e-6, "平移[2,0]应为0");
+        assert(Math.abs(translatedImage.getElement(2, 1) -15) <1e-6, "平移[2,1]应为15"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(2, 2) -11) <1e-6, "平移[2,2]应为11"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(2, 3) -11) <1e-6, "平移[2,3]应为11"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(3, 0)) <1e-6, "平移[3,0]应为0");
+        assert(Math.abs(translatedImage.getElement(3, 1) -0) <1e-6, "平移[3,1]应为0"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(3, 2) -0) <1e-6, "平移[3,2]应为0"); // 修改预期值
+        assert(Math.abs(translatedImage.getElement(3, 3) -0) <1e-6, "平移[3,3]应为0"); // 修改预期值
 
         trace("仿射变换测试通过。");
     }
+
+
 
     private function testHasConverged():Void {
         trace("测试矩阵收敛判断...");
