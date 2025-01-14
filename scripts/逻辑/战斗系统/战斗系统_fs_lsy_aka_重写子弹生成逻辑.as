@@ -183,194 +183,296 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度){
     return bulletInstance;
 }
 
-// 伤害结算函数
-_root.子弹伤害结算 = function(子弹, shooter, hitTarget, overlapRatio, 消耗霰弹值, 躲闪状态, overlapCenter)
+// --------------------子弹伤害结算核心--------------------
+// 专注于伤害与效果计算，并将计算结果打包返回
+_root.子弹伤害结算核心 = function(子弹, shooter, hitTarget, overlapRatio, 消耗霰弹值, 躲闪状态)
 {
-    // 以下代码为原先伤害计算部分的逻辑，仅将所有 this 替换为 子弹，并使用传入的参数
-    // 保持代码逻辑与原有一致
-    // --------------------伤害结算开始--------------------
-    if(hitTarget.无敌 || hitTarget.man.无敌标签 || hitTarget.NPC){
-        if(子弹.击中时触发函数){
-            子弹.击中时触发函数();
-        }
-    } else if (hitTarget.hp != 0) {
-        var 伤害字符 = "";
-        var 伤害数字颜色 = 子弹.子弹敌我属性值 ? "#FFCC00" : "#FF0000";
+    // 返回结果对象，将所有与最终显示相关的数据收集起来
+    var 计算结果 = {
+        总伤害数字列表: [],      // 用于存放每次段伤害值，用于后续分段显示
+        伤害数字颜色: null,     // 记录颜色
+        伤害数字大小: 28,       // 记录字号
+        伤害字符: "",           // 记录附加字符（魔法、毒、斩等）
+        最终子弹霰弹值: 子弹.霰弹值, // 保留子弹霰弹值
+        躲闪状态字符: "",       // 记录“MISS”或其他特殊字符
+        实际消耗霰弹值: 1,      // 实际消耗霰弹值
+        显示次数: 1             // 多段伤害显示次数
+    };
 
-        hitTarget.防御力 = isNaN(hitTarget.防御力) ? 1 : Math.min(hitTarget.防御力, 99000);
-        if(子弹.击中时触发函数){
-            子弹.击中时触发函数();
-        }
+    // 如果目标无敌或是NPC，则不做任何计算
+    if (hitTarget.无敌 || hitTarget.man.无敌标签 || hitTarget.NPC) {
+        return 计算结果; 
+    }
 
-        子弹.破坏力 = Number(子弹.子弹威力) + (isNaN(shooter.伤害加成) ? 0 : shooter.伤害加成);
-        var 伤害波动数字 = 子弹.破坏力 * ((!_root.调试模式 || 子弹.霰弹值 > 1) ? (0.85 + _root.basic_random() * 0.3) : 1);
-        var 百分比伤 = isNaN(子弹.百分比伤害) ? 0 : hitTarget.hp * 子弹.百分比伤害 / 100;
-        子弹.破坏力 = 伤害波动数字 + 子弹.固伤 + 百分比伤;
+    // 如果目标HP为0，也无需计算
+    if (hitTarget.hp == 0) {
+        return 计算结果;
+    }
 
-        if(子弹.暴击){
-            子弹.破坏力 = 子弹.破坏力 * 子弹.暴击(子弹);
-        }
+    // 对目标防御力进行处理
+    hitTarget.防御力 = isNaN(hitTarget.防御力) ? 1 : Math.min(hitTarget.防御力, 99000);
+    
+    // 子弹破坏力初步计算
+    子弹.破坏力 = Number(子弹.子弹威力) + (isNaN(shooter.伤害加成) ? 0 : shooter.伤害加成);
 
-        if(子弹.伤害类型 === "真伤"){
-            伤害数字颜色 = 子弹.子弹敌我属性值 ? "#4A0099" : "#660033";
-            伤害字符 += '<font color="'+伤害数字颜色+'" size="20"> 真</font>';
-            hitTarget.损伤值 = 子弹.破坏力;
-        } else if(子弹.伤害类型 === "魔法"){
-            伤害数字颜色 = 子弹.子弹敌我属性值 ? "#0099FF" : "#AC99FF";
-            var 魔法伤害属性字符 = 子弹.魔法伤害属性 ? 子弹.魔法伤害属性 : "能";
-            伤害字符 += '<font color="' + 伤害数字颜色 + '" size="20"> ' + 魔法伤害属性字符 + '</font>';
-            var 敌人法抗 = 子弹.魔法伤害属性 ? (hitTarget.魔法抗性 && (hitTarget.魔法抗性[子弹.魔法伤害属性] || hitTarget.魔法抗性[子弹.魔法伤害属性]===0) ? hitTarget.魔法抗性[子弹.魔法伤害属性]: (hitTarget.魔法抗性 && (hitTarget.魔法抗性["基础"] ||hitTarget.魔法抗性["基础"]===0) ? hitTarget.魔法抗性["基础"]: 10 +hitTarget.等级 / 2 )  ):(hitTarget.魔法抗性 && (hitTarget.魔法抗性["基础"] || hitTarget.魔法抗性["基础"]===0) ? hitTarget.魔法抗性["基础"]: 10 +hitTarget.等级 / 2 );
-            敌人法抗 = isNaN(敌人法抗) ? 20:Math.min(Math.max(敌人法抗,-1000),100);
-            hitTarget.损伤值 = Math.floor(子弹.破坏力 *(100 - 敌人法抗) / 100);
-        } else {
-            hitTarget.损伤值 = 子弹.破坏力 * _root.防御减伤比(hitTarget.防御力);
-        }
+    // 随机波动
+    var 伤害波动数字 = 子弹.破坏力 * ((!_root.调试模式 || 子弹.霰弹值 > 1) ? (0.85 + _root.basic_random() * 0.3) : 1);
+    var 百分比伤 = isNaN(子弹.百分比伤害) ? 0 : hitTarget.hp * 子弹.百分比伤害 / 100;
+
+    // 累加固伤与百分比伤害
+    子弹.破坏力 = 伤害波动数字 + 子弹.固伤 + 百分比伤;
+
+    // 暴击
+    if (子弹.暴击) {
+        子弹.破坏力 = 子弹.破坏力 * 子弹.暴击(子弹);
+    }
+
+    // 计算伤害数字颜色（默认）
+    var 默认伤害数字颜色 = 子弹.子弹敌我属性值 ? "#FFCC00" : "#FF0000";
+    计算结果.伤害数字颜色 = 默认伤害数字颜色;
+
+    // 三种主要伤害类型：真伤、魔法、物理
+    if (子弹.伤害类型 === "真伤") {
+        计算结果.伤害数字颜色 = 子弹.子弹敌我属性值 ? "#4A0099" : "#660033";
+        计算结果.伤害字符 += '<font color="' + 计算结果.伤害数字颜色 + '" size="20"> 真</font>';
+        hitTarget.损伤值 = 子弹.破坏力;
+    } else if (子弹.伤害类型 === "魔法") {
+        计算结果.伤害数字颜色 = 子弹.子弹敌我属性值 ? "#0099FF" : "#AC99FF";
+        var 魔法伤害属性字符 = 子弹.魔法伤害属性 ? 子弹.魔法伤害属性 : "能";
+        计算结果.伤害字符 += '<font color="' + 计算结果.伤害数字颜色 + '" size="20"> ' + 魔法伤害属性字符 + '</font>';
         
-        var 淬毒量 = 0;       
-        var 击溃量 = 0;
-        var 子弹霰弹值 = 子弹.霰弹值;
-        if (子弹.nanoToxic > 0)
-        {
-            淬毒量 = 子弹.nanoToxic;
-            if(子弹.普通检测){
-                淬毒量 *= 1;
-            }else{
-                淬毒量 *= 0.3;
-            }
-            子弹.附加层伤害计算 += 淬毒量;
-        }
+        var 敌人法抗 = 子弹.魔法伤害属性 
+                    ? (hitTarget.魔法抗性 && (hitTarget.魔法抗性[子弹.魔法伤害属性] 
+                      || hitTarget.魔法抗性[子弹.魔法伤害属性] === 0) 
+                      ? hitTarget.魔法抗性[子弹.魔法伤害属性]
+                      : (hitTarget.魔法抗性 && (hitTarget.魔法抗性["基础"] 
+                          || hitTarget.魔法抗性["基础"]===0) 
+                          ? hitTarget.魔法抗性["基础"]
+                          : 10 + hitTarget.等级 / 2))
+                    : (hitTarget.魔法抗性 && (hitTarget.魔法抗性["基础"] || hitTarget.魔法抗性["基础"]===0) 
+                      ? hitTarget.魔法抗性["基础"]
+                      : 10 + hitTarget.等级 / 2);
+        
+        敌人法抗 = isNaN(敌人法抗) ? 20 : Math.min(Math.max(敌人法抗, -1000), 100);
+        hitTarget.损伤值 = Math.floor(子弹.破坏力 * (100 - 敌人法抗) / 100);
+    } else {
+        hitTarget.损伤值 = 子弹.破坏力 * _root.防御减伤比(hitTarget.防御力);
+    }
 
-        if (子弹.击溃 > 0 && hitTarget.hp满血值 > 0)
-        {
-            击溃量 = Math.floor(hitTarget.hp满血值 * 子弹.击溃 / 100);
-            子弹.附加层伤害计算 += 击溃量;
-        }
+    var 伤害数字 = hitTarget.损伤值;
+    var 伤害数字大小 = 计算结果.伤害数字大小;
 
-        var 伤害数字 = hitTarget.损伤值;
-        var 伤害数字大小 = 28;
-        var 显示数字;
-
-        var 躲闪状态字符 = "";
-        // 躲闪状态逻辑保持不变
-        switch (躲闪状态)
-        {
-            case "跳弹" :
-                伤害数字 = _root.跳弹伤害计算(伤害数字, hitTarget.防御力);
+    // ---- 多种特殊状态：跳弹、过穿、躲闪、格挡 等 ----
+    switch (躲闪状态) {
+        case "跳弹":
+            伤害数字 = _root.跳弹伤害计算(伤害数字, hitTarget.防御力);
+            hitTarget.损伤值 = 伤害数字;
+            伤害数字大小 *= 0.3 + 0.7 * 伤害数字 / 子弹.破坏力;
+            计算结果.伤害数字颜色 = 子弹.子弹敌我属性值 ? "#7F6A00" : "#7F0000";
+            break;
+        case "过穿":
+            伤害数字 = _root.过穿伤害计算(伤害数字, hitTarget.防御力);
+            hitTarget.损伤值 = 伤害数字;
+            伤害数字大小 *= 0.3 + 0.7 * 伤害数字 / 子弹.破坏力;
+            计算结果.伤害数字颜色 = 子弹.子弹敌我属性值 ? "#FFE770" : "#FF7F7F";
+            break;
+        case "躲闪":
+        case "直感":
+            伤害数字 = NaN;
+            hitTarget.损伤值 = 0;
+            伤害数字大小 *= 0.5;
+            break;
+        case "格挡":
+            伤害数字 = hitTarget.受击反制(伤害数字, 子弹);
+            if (伤害数字) {
                 hitTarget.损伤值 = 伤害数字;
-                伤害数字大小 *= 0.3 + 0.7 * 伤害数字 / 子弹.破坏力;
-                伤害数字颜色 = 子弹.子弹敌我属性值 ? "#7F6A00" : "#7F0000";
-                break;
-            case "过穿" :
-                伤害数字 = _root.过穿伤害计算(伤害数字, hitTarget.防御力);
-                hitTarget.损伤值 = 伤害数字;
-                伤害数字大小 *= 0.3 + 0.7 * 伤害数字 / 子弹.破坏力;
-                伤害数字颜色 = 子弹.子弹敌我属性值 ? "#FFE770" : "#FF7F7F";
-                break;
-            case "躲闪" :
-            case "直感" :
+                伤害数字大小 *= 0.3 + 0.7 * hitTarget.损伤值 / 子弹.破坏力;
+            } else if (伤害数字 === 0) {
+                hitTarget.损伤值 = 0;
+                伤害数字大小 *= 1.2;
+            } else {
                 伤害数字 = NaN;
                 hitTarget.损伤值 = 0;
                 伤害数字大小 *= 0.5;
-                break;
-            case "格挡" :
-                伤害数字 = hitTarget.受击反制(伤害数字,子弹);
-                if(伤害数字){
-                    hitTarget.损伤值 = 伤害数字;
-                    伤害数字大小 *= 0.3 + 0.7 * hitTarget.损伤值 / 子弹.破坏力;
-                }else if(伤害数字 === 0){
-                    hitTarget.损伤值 = 0;
-                    伤害数字大小 *= 1.2;
-                }else{
-                    伤害数字 = NaN;
-                    hitTarget.损伤值 = 0;
-                    伤害数字大小 *= 0.5;
-                }
-                break;
-            default :
-                伤害数字 = Math.max(Math.floor(伤害数字), 1);
-                hitTarget.损伤值 = 伤害数字;
-                _root.受击变红(120,hitTarget);
-        }
-
-        var 实际消耗霰弹值 = Math.min(子弹.霰弹值,Math.ceil(Math.min(子弹.最小霰弹值 + overlapRatio * ((子弹.霰弹值-子弹.最小霰弹值) + 1) * 1.2,hitTarget.hp / hitTarget.损伤值)));
-        if (子弹.联弹检测 && !子弹.穿刺检测) {
-            子弹.霰弹值 -= 实际消耗霰弹值;
-        }
-
-        hitTarget.损伤值 *= 实际消耗霰弹值;
-        伤害数字 *= 实际消耗霰弹值;
-
-        if (淬毒量 > 0 && 伤害数字)
-        {
-            hitTarget.损伤值 += 淬毒量;
-            伤害数字 = hitTarget.损伤值;
-            伤害字符 += '<font color="#66dd00" size="20"> 毒</font>';
-            if(子弹.nanoToxicDecay && 子弹.近战检测 && shooter.淬毒 > 10){
-                shooter.淬毒 -= 子弹.nanoToxicDecay;
             }
-            if (hitTarget.毒返 > 0)
-            {
-                var 毒返淬毒值 = 淬毒量 * hitTarget.毒返;
-                if(hitTarget.毒返函数){
-                    hitTarget.毒返函数(淬毒量, 毒返淬毒值);
-                }
-                hitTarget.淬毒 = 毒返淬毒值;
-            }
-        }
-
-        if (子弹.吸血 > 0 && hitTarget.损伤值 > 1)
-        {
-            var 吸血量 = Math.floor(Math.max(Math.min(hitTarget.损伤值 * 子弹.吸血 /100, hitTarget.hp), 0));
-            shooter.hp += Math.min(吸血量,shooter.hp满血值 * 1.5 - shooter.hp);
-            伤害字符 = '<font color="#bb00aa" size="15"> 汲:'+ Math.floor(吸血量 / 实际消耗霰弹值).toString() +"</font>" + 伤害字符;
-        }
-
-        if (子弹.击溃 > 0 && hitTarget.损伤值 > 1)
-        {
-            击溃量 = 击溃量 && !isNaN(击溃量) ? 击溃量 : 1;
-            if(hitTarget.hp满血值 > 0){
-                hitTarget.hp满血值 -= 击溃量;
-                hitTarget.损伤值 += 击溃量;
-            }
-            伤害字符 += '<font color="#FF3333" size="20"> 溃</font>';
-            伤害数字 = Math.floor(hitTarget.损伤值);
-        }
-
-        if(子弹.斩杀){
-            if(hitTarget.hp < hitTarget.hp满血值 * 子弹.斩杀 / 100){
-                hitTarget.损伤值 += hitTarget.hp;
-                hitTarget.hp = 0;
-                伤害字符 = 子弹.子弹敌我属性值 ? '<font color="#4A0099" size="20"> 斩</font>' : '<font color="#660033" size="20"> 斩</font>';
-            }
-            伤害数字 = Math.floor(hitTarget.损伤值);
-        }
-
-        if (实际消耗霰弹值 > 1)
-        {
-            for (var 联弹索引 = 0; 联弹索引 < 实际消耗霰弹值 - 1; ++联弹索引)
-            {
-                var 波动伤害 = (伤害数字 / (实际消耗霰弹值 - 联弹索引)) * (100 + _root.随机偏移(50 / 实际消耗霰弹值)) / 100;
-                伤害数字 -= 波动伤害;
-                显示数字 = '<font color="' + 伤害数字颜色 + '" size="' + 伤害数字大小 + '">' + 躲闪状态字符 + (isNaN(波动伤害) ? "MISS" : Math.floor(波动伤害)) + "</font>";
-                _root.打击数字特效("", 显示数字 + 伤害字符,hitTarget._x,hitTarget._y);
-            }
-        }
-
-        显示数字 = '<font color="' + 伤害数字颜色 + '" size="' + 伤害数字大小 + '">' + 躲闪状态字符 + (isNaN(伤害数字) ? "MISS" : Math.floor(伤害数字)) +  "</font>";
-        _root.打击数字特效("",显示数字 + 伤害字符,hitTarget._x,hitTarget._y);
-        hitTarget.hp = isNaN(hitTarget.损伤值) ? hitTarget.hp : Math.floor(hitTarget.hp - hitTarget.损伤值);
+            break;
+        default:
+            伤害数字 = Math.max(Math.floor(伤害数字), 1);
+            hitTarget.损伤值 = 伤害数字;
+            _root.受击变红(120, hitTarget);
     }
 
+    // ---- 计算实际消耗霰弹值 ----
+    var 实际消耗霰弹值 = Math.min(
+        子弹.霰弹值,
+        Math.ceil(
+            Math.min(
+                子弹.最小霰弹值 + overlapRatio * ((子弹.霰弹值 - 子弹.最小霰弹值) + 1) * 1.2,
+                hitTarget.hp / (hitTarget.损伤值 > 0 ? hitTarget.损伤值 : 1)
+            )
+        )
+    );
+    计算结果.实际消耗霰弹值 = 实际消耗霰弹值;
+
+    if (子弹.联弹检测 && !子弹.穿刺检测) {
+        子弹.霰弹值 -= 实际消耗霰弹值;
+        计算结果.最终子弹霰弹值 = 子弹.霰弹值;
+    }
+
+    hitTarget.损伤值 *= 实际消耗霰弹值;
+    伤害数字 *= 实际消耗霰弹值;
+
+    // ---- 淬毒 / 毒返 ----
+    var 淬毒量 = 0;
+    if (子弹.nanoToxic > 0) {
+        淬毒量 = 子弹.nanoToxic;
+        if (子弹.普通检测) {
+            淬毒量 *= 1;
+        } else {
+            淬毒量 *= 0.3;
+        }
+        子弹.附加层伤害计算 += 淬毒量;
+    }
+    if (淬毒量 > 0 && 伤害数字) {
+        hitTarget.损伤值 += 淬毒量;
+        伤害数字 = hitTarget.损伤值;
+        计算结果.伤害字符 += '<font color="#66dd00" size="20"> 毒</font>';
+        if (子弹.nanoToxicDecay && 子弹.近战检测 && shooter.淬毒 > 10) {
+            shooter.淬毒 -= 子弹.nanoToxicDecay;
+        }
+        if (hitTarget.毒返 > 0) {
+            var 毒返淬毒值 = 淬毒量 * hitTarget.毒返;
+            if(hitTarget.毒返函数) {
+                hitTarget.毒返函数(淬毒量, 毒返淬毒值);
+            }
+            hitTarget.淬毒 = 毒返淬毒值;
+        }
+    }
+
+    // ---- 吸血 ----
+    if (子弹.吸血 > 0 && hitTarget.损伤值 > 1) {
+        var 吸血量 = Math.floor(Math.max(Math.min(hitTarget.损伤值 * 子弹.吸血 / 100, hitTarget.hp), 0));
+        shooter.hp += Math.min(吸血量, shooter.hp满血值 * 1.5 - shooter.hp);
+        计算结果.伤害字符 = '<font color="#bb00aa" size="15"> 汲:' + Math.floor(吸血量 / 实际消耗霰弹值).toString() + "</font>" + 计算结果.伤害字符;
+    }
+
+    // ---- 击溃 ----
+    var 击溃量 = 0;
+    if (子弹.击溃 > 0 && hitTarget.损伤值 > 1) {
+        击溃量 = Math.floor(hitTarget.hp满血值 * 子弹.击溃 / 100);
+        子弹.附加层伤害计算 += 击溃量;
+        if (hitTarget.hp满血值 > 0) {
+            hitTarget.hp满血值 -= 击溃量;
+            hitTarget.损伤值 += 击溃量;
+        }
+        计算结果.伤害字符 += '<font color="#FF3333" size="20"> 溃</font>';
+        伤害数字 = Math.floor(hitTarget.损伤值);
+    }
+
+    // ---- 斩杀 ----
+    if (子弹.斩杀) {
+        if (hitTarget.hp < hitTarget.hp满血值 * 子弹.斩杀 / 100) {
+            hitTarget.损伤值 += hitTarget.hp; 
+            hitTarget.hp = 0;
+            计算结果.伤害字符 = 子弹.子弹敌我属性值 
+                                ? '<font color="#4A0099" size="20"> 斩</font>'
+                                : '<font color="#660033" size="20"> 斩</font>';
+        }
+        伤害数字 = Math.floor(hitTarget.损伤值);
+    }
+
+    // ---- 分段显示所需准备 ----
+    计算结果.显示次数 = 实际消耗霰弹值;
+    // 将初始伤害数字存下来，用于后续分段
+    var 剩余伤害 = 伤害数字;
+    
+    // 这里并不调用显示函数，而是将所有分段伤害放到 计算结果.总伤害数字列表
+    // 在后面“显示函数”里统一处理
+    if (实际消耗霰弹值 > 1) {
+        for (var i = 0; i < 实际消耗霰弹值 - 1; ++i) {
+            var 波动伤害 = (剩余伤害 / (实际消耗霰弹值 - i)) * (100 + _root.随机偏移(50 / 实际消耗霰弹值)) / 100;
+            波动伤害 = isNaN(波动伤害) ? 0 : 波动伤害; 
+            计算结果.总伤害数字列表.push(Math.floor(波动伤害));
+            剩余伤害 -= 波动伤害;
+        }
+    }
+    // 剩下最后一次伤害
+    计算结果.总伤害数字列表.push(isNaN(剩余伤害) ? 0 : Math.floor(剩余伤害));
+
+    // 更新最终的伤害数字大小和颜色
+    计算结果.伤害数字大小 = 伤害数字大小;
+    
+    // 记录目标受到的总伤害
+    // 如果是 NaN 则说明 MISS
+    hitTarget.hp = isNaN(hitTarget.损伤值) ? hitTarget.hp : Math.floor(hitTarget.hp - hitTarget.损伤值);
     hitTarget.hp = (hitTarget.hp < 0 || isNaN(hitTarget.hp)) ? 0 : hitTarget.hp;
 
-    if (hitTarget._name === _root.控制目标)
-    {
+    // 返回给显示函数
+    return 计算结果;
+};
+
+// --------------------子弹伤害显示--------------------
+// 专注于显示数字特效与构建伤害字符串
+_root.子弹伤害显示 = function(hitTarget, 计算结果, 躲闪状态)
+{
+    // 分段伤害数字列表
+    var 分段伤害列表 = 计算结果.总伤害数字列表;
+    var 伤害数字颜色 = 计算结果.伤害数字颜色;
+    var 伤害数字大小 = 计算结果.伤害数字大小;
+    var 伤害字符 = 计算结果.伤害字符;
+    
+    // 根据躲闪状态判断是否显示 MISS
+    var 躲闪状态字符 = "";
+    // 在主逻辑中，当伤害为 NaN 时也会显示 MISS，这里统一处理
+    // 但因为分段伤害在核心已经 split 完毕，这里只负责推入
+    // 万一所有伤害都为 0 或 NaN，可根据具体需求自定义
+    // 这里先跟原逻辑保持一致，保留 “MISS” 当某段伤害为 0
+    // 后续需要考虑在这里做更细腻的判断。
+    // 包括且不限于，对联弹造成的伤害，使用滚动式刷新的数字，以节约特效数量
+
+    // 分段显示
+    for (var i = 0; i < 分段伤害列表.length; i++) {
+        var 本段伤害 = 分段伤害列表[i];
+        var 显示数字;
+        if (本段伤害 <= 0) {
+            显示数字 = '<font color="' + 伤害数字颜色 + '" size="' + 伤害数字大小 + '">MISS</font>';
+        } else {
+            显示数字 = '<font color="' + 伤害数字颜色 + '" size="' + 伤害数字大小 + '">' 
+                      + 躲闪状态字符 
+                      + Math.floor(本段伤害) 
+                      + "</font>";
+        }
+        _root.打击数字特效("", 显示数字 + 伤害字符, hitTarget._x, hitTarget._y);
+    }
+};
+
+// --------------------子弹伤害结算（主函数）--------------------
+// 继续保留原本的入口，但在里面调用 核心计算函数 和 显示函数。
+_root.子弹伤害结算 = function(子弹, shooter, hitTarget, overlapRatio, 消耗霰弹值, 躲闪状态, overlapCenter)
+{
+    // 调用 核心伤害计算函数
+    var 计算结果 = _root.子弹伤害结算核心(
+        子弹, 
+        shooter, 
+        hitTarget, 
+        overlapRatio, 
+        消耗霰弹值, 
+        躲闪状态
+    );
+
+    // 调用 显示函数
+    _root.子弹伤害显示(
+        hitTarget, 
+        计算结果, 
+        躲闪状态
+    );
+
+    // 判断是否为当前玩家，需要刷新血条显示
+    if (hitTarget._name === _root.控制目标) {
         _root.玩家信息界面.刷新hp显示();
     }
-
-    //伤害结算完毕
-    // --------------------伤害结算结束--------------------
 };
+
 
 // 子弹生命周期函数
 _root.子弹生命周期 = function()
@@ -472,6 +574,9 @@ _root.子弹生命周期 = function()
 
             // 调用伤害结算函数
             var 消耗霰弹值 = 1; // 在伤害计算中实际会重新计算
+
+            if(子弹.击中时触发函数) 子弹.击中时触发函数();
+
             _root.子弹伤害结算(this, shooter, hitTarget, overlapRatio, 消耗霰弹值, 躲闪状态, overlapCenter);
 
             //伤害结算结束后，继续原逻辑
