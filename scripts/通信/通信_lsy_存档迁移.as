@@ -78,7 +78,7 @@
 
 
 _root.检查并迁移存档数据 = function(data){
-    data.version = "2.5";
+    //检查并迁移物品栏数据
     if(data[2] && !data.inventory){
         _root.物品栏数据迁移(data);
     }

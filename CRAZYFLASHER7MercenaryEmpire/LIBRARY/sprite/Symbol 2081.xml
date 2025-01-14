@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2081" itemID="6597607e-00000a94" linkageExportForAS="true" linkageIdentifier="任务奖励物品显示块" lastModified="1735405633">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2081" itemID="6597607e-00000a94" linkageExportForAS="true" linkageIdentifier="任务奖励物品显示块" lastModified="1736879247">
   <timeline>
     <DOMTimeline name="Symbol 2081">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2080" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2080" selected="true" symbolType="button">
                   <matrix>
                     <Matrix tx="11.5" ty="10.5"/>
                   </matrix>
@@ -15,22 +15,21 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (rollOver) {
-	if (物品名 != "金钱" and 物品名 != "经验值" and 物品名 != "K点")
+	if (物品名 == "金币")
 	{
-		tmp_sz = _root.根据物品名查找全部属性(物品名);
-		_root.物品图标注释(tmp_sz);
+		_root.注释(150,_root.获得翻译("金币"));
 	}
-	if (物品名 == "金钱")
-	{
-		_root.注释(150,_root.获得翻译("金钱"));
-	}
-	if (物品名 == "经验值")
+	else if (物品名 == "经验值")
 	{
 		_root.注释(150,_root.获得翻译("经验值"));
 	}
-	if (物品名 == "K点")
+	else if (物品名 == "K点")
 	{
 		_root.注释(150,_root.获得翻译("K点"));
+	}
+	else
+	{
+		_root.物品图标注释(物品名,1);
 	}
 }
 on (rollOut) {

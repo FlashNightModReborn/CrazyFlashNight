@@ -119,7 +119,8 @@ _root.taskAvailable = function(index){
 }
 
 _root.FinishTask = function(index){
-	var taskData = _root.getTaskData(tasks_to_do[index].id);
+	var taskID = tasks_to_do[index].id;
+	var taskData = _root.getTaskData(taskID);
 	var rewards = taskData.rewards;
 	//检测挑战是否完成
 	if(taskData.challenge.rewards.length > 0 && tasks_to_do[index].requirements.challenge.finished == true){
@@ -154,29 +155,52 @@ _root.FinishTask = function(index){
 		}
 	}
 	_root.SetDialogue(_root.getTaskText(taskData.finish_conversation));
-	UpdateTaskProgress(tasks_to_do[index].id);
+	//移除已完成的任务
+	UpdateTaskProgress(taskID);
 	tasks_to_do.splice(index,1);
+	//
 	var _loc7_ = -1;
-	var _loc8_ = 0;
-	while (_loc8_ < task_in_chains_by_sequence[taskData.chain[0]].length)
+	var i = 0;
+	while (i < task_in_chains_by_sequence[taskData.chain[0]].length)
 	{
-		if (task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][_loc8_])] == taskData.id)
+		if (task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][i])] == taskData.id)
 		{
-			_loc7_ = _loc8_;
+			_loc7_ = i;
 			break;
 		}
-		_loc8_ += 1;
+		i += 1;
 	}
-	var _loc9_ = task_in_chains_by_sequence[taskData.chain[0]][_loc8_ + 1] != undefined && _loc7_ != -1;
-	var _loc10_ = taskAvailable(task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][_loc8_ + 1])]);
+	var _loc9_ = task_in_chains_by_sequence[taskData.chain[0]][i + 1] != undefined && _loc7_ != -1;
+	var _loc10_ = taskAvailable(task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][i + 1])]);
 	if (_loc9_ && _loc10_)
 	{
-		_root.GetTask(task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][_loc8_ + 1])]);
+		_root.GetTask(task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][i + 1])]);
 	}
 	return true;
 }
 
 _root.FinishStage = function(name, difficulty){
+	for (var i in tasks_to_do){
+		var task = tasks_to_do[i];
+		var stageArr = task.requirements.stages;
+		var len = stageArr.length;
+		if(task.requirements.challenge && len == 1 && stageArr[0].name == name){
+			if(task.requirements.challenge.difficulty == difficulty){
+				task.requirements.challenge.finished = true;
+				task.requirements.stages = [];
+			}else if(stageArr[0].difficulty == difficulty){
+				task.requirements.stages = [];
+			}
+		}else{
+			for (var j = len-1 ; j > -1; j--){
+				if (stageArr[j].name == name && stageArr[j].difficulty == difficulty){
+					task.requirements.stages.splice(j,1);
+				}
+			}
+		}
+	}
+	UpdateTaskProgress();
+	//检测更低难度的任务完成
 	switch (difficulty){
 		case "地狱" :
 			FinishStage(name,"修罗");
@@ -190,24 +214,6 @@ _root.FinishStage = function(name, difficulty){
 		case "简单" :
 			break;
 	}
-	for (var i in tasks_to_do){
-		var task = tasks_to_do[i];
-		var stageArr = task.requirements.stages;
-		var j = 0;
-		var len = stageArr.length;
-		if(task.requirements.challenge && len == 1){
-			if(stageArr[0].name == name && task.requirements.challenge.difficulty == difficulty)
-			task.requirements.challenge.finished = true;
-			task.requirements.stages = [];
-		}else{
-			for (var j = len-1 ; j > -1; j--){
-				if (stageArr[j].name == name && stageArr[j].difficulty == difficulty){
-					task.requirements.stages.splice(j,1);
-				}
-			}
-		}
-	}
-	UpdateTaskProgress();
 }
 
 _root.AddTask = function(id){
