@@ -11,7 +11,7 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
     private var y:Number; //物品图标起始y坐标
     private var valuetext:TextField; //数量文本
     private var leveltext:TextField; //强化度文本
-    private var fullLevelFrame:MovieClip; //满级框
+    // private var fullLevelFrame:MovieClip; //满级框
 
     public var item;
     public var itemData:Object;
@@ -24,7 +24,7 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
         this.y = icon._y;
         this.valuetext = icon.valuetext;
         this.leveltext = icon.leveltext;
-        this.fullLevelFrame = icon.满级框;
+        // this.fullLevelFrame = icon.满级框;
         init(__name, _item);
     }
 
@@ -37,6 +37,7 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
             this.itemData = null;
             valuetext._visible = false;
             leveltext._visible = false;
+            icon.满级框._visible = false;
         }else{
             this.itemData = ItemUtil.getItemData(this.name);
             this.icon.gotoAndStop("默认图标");
@@ -60,14 +61,14 @@ class org.flashNight.arki.item.itemIcon.ItemIcon{
         else this.value = item.value;
         valuetext._visible = false;
         leveltext._visible = false;
-        fullLevelFrame._visible = false;
+        icon.满级框._visible = false;
         if(value > 1){
             valuetext._visible = true;
             valuetext.text = String(value);
         }else if(value.level > 1){
             leveltext._visible = true;
             leveltext.text = String(value.level);
-            if(value.level == 13) fullLevelFrame._visible = true;
+            if(value.level == 13) icon.满级框._visible = true;
         }
     }
 
