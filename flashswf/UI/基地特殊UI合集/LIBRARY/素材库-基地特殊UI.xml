@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-基地特殊UI" itemID="67876f87-00001cfc" linkageExportForAS="true" linkageIdentifier="素材库-基地特殊UI" lastModified="1736929360" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材库-基地特殊UI" itemID="67876f87-00001cfc" linkageExportForAS="true" linkageIdentifier="素材库-基地特殊UI" lastModified="1736953166" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="素材库-基地特殊UI">
       <layers>
@@ -35,22 +35,6 @@
                     <Point x="131.05" y="-70.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="物品改装界面" centerPoint3DX="207" centerPoint3DY="352.95">
-                  <matrix>
-                    <Matrix tx="-45" ty="140"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="250.05" y="212.5"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="睡觉界面" centerPoint3DX="251.05" centerPoint3DY="-330">
-                  <matrix>
-                    <Matrix tx="251.8" ty="-502.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-0.75" y="170.15"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="整容整形界面" centerPoint3DX="634.45" centerPoint3DY="80">
                   <matrix>
                     <Matrix tx="516.5" ty="-118"/>
@@ -62,16 +46,7 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="通缉令界面" centerPoint3DX="172.9" centerPoint3DY="98.3">
-                  <matrix>
-                    <Matrix tx="-54.05" ty="-71.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="130.5" y="99.9"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

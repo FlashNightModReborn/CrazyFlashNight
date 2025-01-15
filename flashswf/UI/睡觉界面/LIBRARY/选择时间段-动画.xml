@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选择时间段-动画" itemID="6650c0bf-00002a83" lastModified="1716568684" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="选择时间段-动画" currentFrame="9">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="选择你想醒来的时间段" centerPoint3DX="173.15" centerPoint3DY="36">
+                  <matrix>
+                    <Matrix tx="-1.55" ty="10.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="174.7" y="25.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" distance="2"/>
+                    <GlowFilter color="#000000"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="选择你想醒来的时间段" selected="true" centerPoint3DX="173.15" centerPoint3DY="14.9">
+                  <matrix>
+                    <Matrix tx="-1.55" ty="-10.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="174.7" y="25.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" distance="2"/>
+                    <GlowFilter color="#000000"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

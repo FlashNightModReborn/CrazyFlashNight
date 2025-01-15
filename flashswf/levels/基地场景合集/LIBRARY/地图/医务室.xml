@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1736931935" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1736955664" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="医务室">
       <layers>
-        <DOMLayer name="Script Layer" color="#F9E759" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#F9E759">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -122,11 +122,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#54E3D4">
+        <DOMLayer name="Layer 8" color="#54E3D4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2952" centerPoint3DX="622" centerPoint3DY="172.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2952" selected="true" centerPoint3DX="622" centerPoint3DY="172.45">
                   <matrix>
                     <Matrix tx="576.2" ty="161.25"/>
                   </matrix>
@@ -134,26 +134,18 @@ onClipEvent(load){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(release){
-   if(_root.整容整形界面._visible == false)
-   {
-      _root.整容整形界面._visible = true;
-   }
-   else
-   {
-      _root.整容整形界面._visible = false;
-   }
+                    <script><![CDATA[on (release) {
+	_root.从库中加载外部UI("整容整形界面");
 }
-on(rollOver){
-   _root.注释(100,_root.获得翻译("整形手术"));
+on (rollOver) {
+	_root.注释(100,_root.获得翻译("整形手术"));
 }
-on(rollOut){
-   _root.注释结束();
+on (rollOut) {
+	_root.注释结束();
 }
-onClipEvent(load){
-   显示文字 = _root.获得翻译("整形手术");
-}
-]]></script>
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("整形手术");
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

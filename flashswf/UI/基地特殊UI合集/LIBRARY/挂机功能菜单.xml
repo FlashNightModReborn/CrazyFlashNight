@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="挂机功能菜单" itemID="67876ec7-00001c6a" linkageExportForAS="true" linkageIdentifier="挂机功能菜单" lastModified="1736929067" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="挂机功能菜单" itemID="67876ec7-00001c6a" linkageExportForAS="true" linkageIdentifier="挂机功能菜单" lastModified="1736954189" lastUniqueIdentifier="16">
   <timeline>
     <DOMTimeline name="挂机功能菜单">
       <layers>
@@ -267,11 +267,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#32CDE2">
+        <DOMLayer name="Layer 8" color="#32CDE2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2475" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2475" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="7.69558715820313" d="0.666000366210938" tx="2.75" ty="-6.8"/>
                   </matrix>
@@ -753,7 +753,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 14" color="#E131E9" current="true" isSelected="true">
+        <DOMLayer name="Layer 14" color="#E131E9">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -1520,9 +1520,9 @@ on(rollOut){
                     <Edge fillStyle1="1" edges="!2443 513|2425 513"/>
                     <Edge fillStyle1="3" edges="!2425 513|-1909 513!-1909 513|-1909 -3235!-1909 -3235|2425 -3235"/>
                     <Edge fillStyle1="1" edges="!2425 -3235|2443 -3235"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!2443 -3235|2443 513"/>
-                    <Edge fillStyle0="1" fillStyle1="3" edges="!2425 -3235|2425 513"/>
                     <Edge fillStyle0="4" fillStyle1="2" edges="!2488 -3235|2488 513"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!2425 -3235|2425 513"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!2443 -3235|2443 513"/>
                   </edges>
                 </DOMShape>
               </elements>

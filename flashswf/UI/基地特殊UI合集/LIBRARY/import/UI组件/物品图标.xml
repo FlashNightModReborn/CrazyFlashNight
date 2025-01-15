@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/UI组件/物品图标" itemID="659d38e8-0000310c" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="物品图标" linkageURL="flashswf/UI/物品与技能相关界面.swf" lastModified="1735117398" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/UI组件/物品图标" itemID="659d38e8-0000310c" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="物品图标" linkageURL="flashswf/UI/物品与技能相关界面.swf" lastModified="1736953327" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="物品图标">
       <layers>
@@ -53,22 +53,7 @@
         <DOMLayer name="Layer 9" color="#C08F7D" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/物品栏/物品满级框" name="满级框" centerPoint3DX="13.3" centerPoint3DY="13.3">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   this._visible = 0;
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <GlowFilter blurX="8" blurY="8" color="#FFFF00"/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

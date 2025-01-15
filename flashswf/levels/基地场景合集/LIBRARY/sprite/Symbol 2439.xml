@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2439" itemID="6597607e-00000b5c" lastModified="1714995892">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2439" itemID="6597607e-00000b5c" lastModified="1736954127">
   <timeline>
     <DOMTimeline name="Symbol 2439">
       <layers>
@@ -97,11 +97,12 @@ _root.全部翻译(this);
 	if (_root.挂机中 == false)
 	{
 		_root.获取木人桩训练项();
-		_root.挂机功能菜单.挂机项目 = this._name;
-		_root.挂机功能菜单._visible = 1;
-		_root.挂机功能菜单._x = _root._xmouse;
-		_root.挂机功能菜单._y = _root._ymouse;
-		_root.挂机功能菜单.获得训练项目文本();
+		var 挂机功能菜单 = _root.从库中加载外部UI("挂机功能菜单");
+		挂机功能菜单.挂机项目 = this._name;
+		挂机功能菜单._visible = 1;
+		挂机功能菜单._x = _root._xmouse;
+		挂机功能菜单._y = _root._ymouse;
+		挂机功能菜单.获得训练项目文本();
 	}
 }
 on (rollOver) {

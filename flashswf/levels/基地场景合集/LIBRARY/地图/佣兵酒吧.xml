@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="佣兵酒吧">
       <layers>
-        <DOMLayer name="Script Layer" color="#57AEE6" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#57AEE6">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -173,11 +173,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="9保" color="#CF7398" autoNamed="false">
+        <DOMLayer name="9保" color="#CF7398" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2813" centerPoint3DX="816.6" centerPoint3DY="392.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2813" selected="true" centerPoint3DX="816.6" centerPoint3DY="392.7">
                   <matrix>
                     <Matrix tx="705.5" ty="273.3"/>
                   </matrix>

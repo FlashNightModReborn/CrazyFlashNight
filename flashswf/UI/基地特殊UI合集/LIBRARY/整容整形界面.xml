@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="整容整形界面" itemID="67876f5e-00001cbe" linkageExportForAS="true" linkageIdentifier="整容整形界面" lastModified="1736929118">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="整容整形界面" itemID="67876f5e-00001cbe" linkageExportForAS="true" linkageIdentifier="整容整形界面" lastModified="1736955475">
   <timeline>
     <DOMTimeline name="整容整形界面">
       <layers>
@@ -6,43 +6,49 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 整形()
+                <script><![CDATA[if (this._x == 0 && this._y == 0)
 {
-   _root.角色名 = 临时名字;
-   _root.身高 = 身高;
-   _root.性别 = 性别;
-   _root.脸型 = 性别 + "变装-基本脸型";
+	this._x = 850;
+	this._y = 80;
+}
+
+
+function 整形()
+{
+	_root.角色名 = 临时名字;
+	_root.身高 = 身高;
+	_root.性别 = 性别;
+	_root.脸型 = 性别 + "变装-基本脸型";
 }
 function checkName(s)
 {
-   return true;
+	return true;
 }
 function 虚拟币支付(amount, 商品编号)
 {
-   if(_root.虚拟币 >= amount)
-   {
-      _root.虚拟币 -= amount;
-      _root.发布消息(_root.获得翻译("支付成功！"));
-      _root.播放音效("收银机.mp3");
-      整形();
-      gotoAndStop(3);
-      mytext.text = _root.获得翻译("整形成功，重新登录或出门后换一下装备即可刷新性别。");
-      _root.获取虚拟币值();
-      _root.自动存盘();
-   }
-   else
-   {
-      _root.发布消息(_root.获得翻译("K点不足！"));
-      mytext.text = _root.获得翻译("K点不足！");
-   }
+	if (_root.虚拟币 >= amount)
+	{
+		_root.虚拟币 -= amount;
+		_root.发布消息(_root.获得翻译("支付成功！"));
+		_root.播放音效("收银机.mp3");
+		整形();
+		gotoAndStop(3);
+		mytext.text = _root.获得翻译("整形成功，重新登录或出门后换一下装备即可刷新性别。");
+		_root.获取虚拟币值();
+		_root.自动存盘();
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("K点不足！"));
+		mytext.text = _root.获得翻译("K点不足！");
+	}
 }
 身高 = _root.身高;
 名字输入 = _root.角色名;
 性别 = _root.性别;
 价格 = 5;
 stop();
-_root.全部翻译(this);
-]]></script>
+_root.全部翻译(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

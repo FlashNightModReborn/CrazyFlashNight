@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="健身房">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -196,11 +196,11 @@ _root.场景刷可雇用玩家(_root.场景佣兵出现机率);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#03E6EB">
+        <DOMLayer name="Layer 9" color="#03E6EB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2429" name="挂机-深蹲" centerPoint3DX="585.1" centerPoint3DY="498.75">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2429" name="挂机-深蹲" selected="true" centerPoint3DX="585.1" centerPoint3DY="498.75">
                   <matrix>
                     <Matrix tx="483" ty="438.1"/>
                   </matrix>

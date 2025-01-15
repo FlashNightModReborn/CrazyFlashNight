@@ -1,0 +1,155 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <symbols>
+          <Include href="金色太阳.xml" loadImmediate="false" itemID="66508beb-00000122" lastModified="1716554732"/>
+          <Include href="清晨选项.xml" loadImmediate="false" itemID="66509487-00000219" lastModified="1716568188"/>
+          <Include href="清晨选项动画.xml" loadImmediate="false" itemID="6650c0dc-00002ae2" lastModified="1716607799"/>
+          <Include href="沙漏-夜.xml" loadImmediate="false" itemID="6650bcc7-00001829" lastModified="1716567806"/>
+          <Include href="沙漏-昼.xml" loadImmediate="false" itemID="6650bbab-00001807" lastModified="1716567087"/>
+          <Include href="睡觉界面-关闭.xml" itemIcon="0" loadImmediate="false" itemID="66509a6c-00000c9b" lastModified="1736952868"/>
+          <Include href="选择你想醒来的时间段.xml" loadImmediate="false" itemID="6650ac65-000016a4" lastModified="1716566716"/>
+          <Include href="选择时间段-动画.xml" loadImmediate="false" itemID="6650c0bf-00002a83" lastModified="1716568684"/>
+          <Include href="夜晚选项.xml" loadImmediate="false" itemID="66509493-0000021f" lastModified="1716567261"/>
+          <Include href="夜晚选项动画.xml" loadImmediate="false" itemID="6650c0fb-00002b43" lastModified="1716573420"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="as" color="#4FFF4F" current="true" isSelected="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[this._x = 250;
+this._y = 80;]]></script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="选择时间段" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="选择时间段-动画" name="选择时间" centerPoint3DX="249.85" centerPoint3DY="9.2">
+                                             <matrix>
+                                                  <Matrix tx="76.35" ty="-7.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="173.5" y="16.65"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="清晨" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="清晨选项动画" name="清晨选项" centerPoint3DX="127.25" centerPoint3DY="194.15">
+                                             <matrix>
+                                                  <Matrix tx="25" ty="48.1"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="102.25" y="146.05"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on (release) {
+	_root.天气系统.当前时间 = 6;
+	_root.发布消息("一觉醒来……当前时间：清晨6点");
+	_root.最上层加载外部动画("flashswf/movies/黑色渐隐过场.swf");
+	_parent._visible = false;
+}
+on (rollOver) {
+	this._xscale = this._yscale = 108; // 将影片剪辑的水平和垂直缩放设置为108%
+	this._x -= 10; // 将元件的水平位置向左偏移
+	this._y -= 10; // 将元件的水平位置向上偏移
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	this._xscale = this._yscale = 100;// 将影片剪辑的水平和垂直缩放设置为100%
+	this._x += 10; // 将元件的水平位置向右偏移
+	this._y += 10; // 将元件的水平位置向下偏移
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="夜晚" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="夜晚选项动画" name="夜晚选项" centerPoint3DX="370.2" centerPoint3DY="194.2">
+                                             <matrix>
+                                                  <Matrix tx="267.9" ty="48.1"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="102.3" y="146.1"/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on (release) {
+	_root.天气系统.当前时间 = 19;
+	_root.发布消息("一觉醒来……当前时间：夜晚7点");
+	_root.最上层加载外部动画("flashswf/movies/黑色渐隐过场.swf");
+	_parent._visible = false;
+}
+on (rollOver) {
+	this._xscale = this._yscale = 108; // 将影片剪辑的水平和垂直缩放设置为108%
+	this._x -= 10; // 将元件的水平位置向左偏移
+	this._y -= 10; // 将元件的水平位置向上偏移
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	this._xscale = this._yscale = 100;// 将影片剪辑的水平和垂直缩放设置为100%
+	this._x += 10; // 将元件的水平位置向右偏移
+	this._y += 10; // 将元件的水平位置向下偏移
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="关闭" color="#4FFF4F" outline="true" useOutlineView="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="睡觉界面-关闭" symbolType="button">
+                                             <matrix>
+                                                  <Matrix tx="249.5" ty="373.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[on (release) {
+	this._visible = 0;
+	gotoAndStop(1);
+}]]></script>
+                                             </Actionscript>
+                                             <filters>
+                                                  <DropShadowFilter blurX="0" blurY="0" distance="2"/>
+                                                  <GlowFilter color="#000000"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="70230" publishTime="1736952863"/>
+          <PublishItem publishSize="70229" publishTime="1736952832"/>
+     </publishHistory>
+</DOMDocument>

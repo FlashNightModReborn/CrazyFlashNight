@@ -1,29 +1,23 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2429" itemID="6597607e-00000b55" lastModified="1714995961">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2429" itemID="6597607e-00000b55" lastModified="1736954112">
   <timeline>
-    <DOMTimeline name="Symbol 2429">
+    <DOMTimeline name="Symbol 2429" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#BCCDDA">
           <frames>
-            <DOMFrame index="0" name="准备挂机" labelType="name" keyMode="9728">
+            <DOMFrame index="0" duration="8" name="准备挂机" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="7" keyMode="9728">
+            <DOMFrame index="8" duration="7" name="描边" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="8" name="描边" labelType="name" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="9" duration="6" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="15" name="开始挂机" labelType="name" keyMode="9728">
+            <DOMFrame index="15" duration="16" name="开始挂机" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#89DE49">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[function 开始挂机()
 {
@@ -42,10 +36,7 @@ _root.全部翻译(this);
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="14" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="15" keyMode="9728">
+            <DOMFrame index="15" duration="16" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.挂机中 = true;
 ]]></script>
@@ -93,25 +84,25 @@ _root.全部翻译(this);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(release){
-   if(_root.挂机中 == false)
-   {
-	  _root.获取深蹲杠铃训练项();
-      _root.挂机功能菜单.挂机项目 = this._name;
-      _root.挂机功能菜单._visible = 1;
-      _root.挂机功能菜单._x = _root._xmouse;
-      _root.挂机功能菜单._y = _root._ymouse;
-	  _root.挂机功能菜单.获得训练项目文本();
-   }
+                    <script><![CDATA[on (release) {
+	if (_root.挂机中 == false)
+	{
+		_root.获取深蹲杠铃训练项();
+		var 挂机功能菜单 = _root.从库中加载外部UI("挂机功能菜单");
+		挂机功能菜单.挂机项目 = this._name;
+		挂机功能菜单._visible = 1;
+		挂机功能菜单._x = _root._xmouse;
+		挂机功能菜单._y = _root._ymouse;
+		挂机功能菜单.获得训练项目文本();
+	}
 }
-on(rollOver){
-   gotoAndStop("描边");
+on (rollOver) {
+	gotoAndStop("描边");
 }
-on(rollOut){
-   gotoAndStop("准备挂机");
-   play();
-}
-]]></script>
+on (rollOut) {
+	gotoAndStop("准备挂机");
+	play();
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

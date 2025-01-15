@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -762,11 +762,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="理发师" color="#65F134" parentLayerIndex="16" autoNamed="false">
+        <DOMLayer name="理发师" color="#65F134" parentLayerIndex="16" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/理发师/理发师-NPC" centerPoint3DX="350.95" centerPoint3DY="312.9">
+                <DOMSymbolInstance libraryItemName="sprite/理发师/理发师-NPC" selected="true" centerPoint3DX="350.95" centerPoint3DY="312.9">
                   <matrix>
                     <Matrix tx="289.4" ty="215.25"/>
                   </matrix>

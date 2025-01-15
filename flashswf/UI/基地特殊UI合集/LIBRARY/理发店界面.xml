@@ -1,56 +1,60 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="理发店界面" itemID="67876ebc-00001c69" linkageExportForAS="true" linkageIdentifier="理发店界面" lastModified="1736929065" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="理发店界面" itemID="67876ebc-00001c69" linkageExportForAS="true" linkageIdentifier="理发店界面" lastModified="1736955491" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="理发店界面">
       <layers>
-        <DOMLayer name="Script Layer" color="#DBFB99">
+        <DOMLayer name="Script Layer" color="#DBFB99" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 刷新信息()
+                <script><![CDATA[if (this._x == 0 && this._y == 0)
 {
-   发型库编号 = 选择项.hairCode;
-   理发价格 = price.text = _root.发型价格[选择项.hairCode];
+	this._x = 100;
+	this._y = 80;
+}
+function 刷新信息()
+{
+	发型库编号 = 选择项.hairCode;
+	理发价格 = price.text = _root.发型价格[选择项.hairCode];
 }
 function 虚拟币支付(amount, 商品编号)
 {
-   if(_root.虚拟币 >= amount)
-   {
-      _root.理发店界面._visible = 0;
-      _root.发布消息(_root.获得翻译("支付成功！"));
-      _root.播放音效("收银机.mp3");
-      _root.改变发型(_root.gameworld[_root.控制目标],发型库编号);
-      _root.获取虚拟币值();
-   }
-   else
-   {
-      _root.发布消息(_root.获得翻译("K点不足！"));
-   }
+	if (_root.虚拟币 >= amount)
+	{
+		_root.理发店界面._visible = 0;
+		_root.发布消息(_root.获得翻译("支付成功！"));
+		_root.播放音效("收银机.mp3");
+		_root.改变发型(_root.gameworld[_root.控制目标],发型库编号);
+		_root.获取虚拟币值();
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("K点不足！"));
+	}
 }
 已选择发型 = false;
 loop = 0;
-while(loop < _root.发型库.length)
+while (loop < _root.发型库.length)
 {
-   this.hairContent.attachMovie("发型TAB","tab" + loop.toString(),this.hairContent.getNextHighestDepth(),{hairCode:loop});
-   this.hairContent["tab" + loop.toString()]._y = loop * 20;
-   loop++;
+	this.hairContent.attachMovie("发型TAB","tab" + loop.toString(),this.hairContent.getNextHighestDepth(),{hairCode:loop});
+	this.hairContent["tab" + loop.toString()]._y = loop * 20;
+	loop++;
 }
 hairContent.setMask(mask);
 选择项 = undefined;
 loop = 0;
-while(loop < _root.发型库.length)
+while (loop < _root.发型库.length)
 {
-   if(_root.发型库[loop] == _root.发型)
-   {
-      选择项 = hairContent["tab" + loop.toString()];
-      选择项.bg._alpha = 100;
-      刷新信息();
-      break;
-   }
-   loop++;
+	if (_root.发型库[loop] == _root.发型)
+	{
+		选择项 = hairContent["tab" + loop.toString()];
+		选择项.bg._alpha = 100;
+		刷新信息();
+		break;
+	}
+	loop++;
 }
 stop();
-_root.全部翻译(this);
-]]></script>
+_root.全部翻译(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -63,7 +67,7 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="滚动按钮" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="滚动按钮" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -201,7 +205,7 @@ onClipEvent(enterFrame){
           </frames>
         </DOMLayer>
         <DOMLayer name="折叠" color="#FF4FFF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="取消" color="#B4AB36" parentLayerIndex="5" locked="true" autoNamed="false">
+        <DOMLayer name="取消" color="#B4AB36" parentLayerIndex="5" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -260,7 +264,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="确认" color="#77BAA0" parentLayerIndex="5" locked="true" autoNamed="false">
+        <DOMLayer name="确认" color="#77BAA0" parentLayerIndex="5" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

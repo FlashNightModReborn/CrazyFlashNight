@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2434" itemID="6597607e-00000b59" lastModified="1714996011">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2434" itemID="6597607e-00000b59" lastModified="1736954137">
   <timeline>
-    <DOMTimeline name="Symbol 2434">
+    <DOMTimeline name="Symbol 2434" currentFrame="15">
       <layers>
         <DOMLayer name="Labels Layer" color="#CE6DC2">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#EF80C0">
+        <DOMLayer name="Script Layer" color="#EF80C0" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -81,7 +81,7 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#D1E843" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#D1E843">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
@@ -93,25 +93,25 @@ _root.全部翻译(this);
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(release){
-   if(_root.挂机中 == false)
-   {
-      _root.获取哑铃训练项();
-	  _root.挂机功能菜单.挂机项目 = this._name;
-      _root.挂机功能菜单._visible = 1;
-      _root.挂机功能菜单._x = _root._xmouse;
-      _root.挂机功能菜单._y = _root._ymouse;
-	  _root.挂机功能菜单.获得训练项目文本();
-   }
+                    <script><![CDATA[on (release) {
+	if (_root.挂机中 == false)
+	{
+		_root.获取哑铃训练项();
+		var 挂机功能菜单 = _root.从库中加载外部UI("挂机功能菜单");
+		挂机功能菜单.挂机项目 = this._name;
+		挂机功能菜单._visible = 1;
+		挂机功能菜单._x = _root._xmouse;
+		挂机功能菜单._y = _root._ymouse;
+		挂机功能菜单.获得训练项目文本();
+	}
 }
-on(rollOver){
-   gotoAndStop("描边");
+on (rollOver) {
+	gotoAndStop("描边");
 }
-on(rollOut){
-   gotoAndStop("准备挂机");
-   play();
-}
-]]></script>
+on (rollOut) {
+	gotoAndStop("准备挂机");
+	play();
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
