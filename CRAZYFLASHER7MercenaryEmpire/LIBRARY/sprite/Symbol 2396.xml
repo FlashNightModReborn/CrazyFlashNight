@@ -1,26 +1,30 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2396" itemID="6597607e-00000b40" lastModified="1736351464">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2396" itemID="6597607e-00000b40" lastModified="1736932478">
   <timeline>
     <DOMTimeline name="Symbol 2396" currentFrame="29">
       <layers>
         <DOMLayer name="Script Layer" color="#CCCFA8" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728">
+            <DOMFrame index="1" duration="28" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(isNaN(几率)){
+	stop();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="50" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[i = 0;
-for (var each in _root.gameworld)
-{
-	if (_root.gameworld[eval("each")].性别 != undefined)
-	{
+for (var each in _root.gameworld){
+	if (_root.gameworld[each].性别 != undefined){
 		i++;
 	}
 }
-if (i < 10)
-{
-	if (random(几率) == 0)
-	{
+if (i < 10){
+	if (random(几率) == 0){
 		_root.门口刷可雇用玩家();
 	}
 }]]></script>
@@ -63,7 +67,7 @@ if (i < 10)
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape isFloating="true">
+                <DOMShape>
                   <fills>
                     <FillStyle index="1">
                       <SolidColor color="#999999"/>

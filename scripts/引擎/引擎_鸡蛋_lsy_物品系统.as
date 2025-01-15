@@ -96,11 +96,17 @@ _root.仓库栏总数 = 1240;
 // _root.仓库显示页数 = 仓库页数;
 
 
-//新函数
-_root.singleSubmit = function(name,value):Boolean{
-	return org.flashNight.arki.item.ItemUtil.singleSubmit(name,value);
+//对新物品提交与获取函数的引用
+_root.itemContain = function(itemArray):Object{
+	return org.flashNight.arki.item.ItemUtil.contain(itemArray);
+}
+_root.itemSubmit = function(itemArray):Boolean{
+	return org.flashNight.arki.item.ItemUtil.submit(itemArray);
 }
 
 _root.singleAcquire = function(name,value):Boolean{
 	return org.flashNight.arki.item.ItemUtil.singleAcquire(name,value);
+}
+_root.singleSubmit = function(name,value):Boolean{
+	return org.flashNight.arki.item.ItemUtil.singleSubmit(name,value);
 }

@@ -277,6 +277,12 @@ _root.跳转地图 = function(跳转帧){
 			return;
 		}
 	}
+	for (var i = 0; i < _root.基地地图列表.length; i++){
+		if (_root.关卡标志 == _root.基地地图列表[i]){
+			_root.gotoAndPlay("基地地图");
+			return;
+		}
+	}
 	for (var i = 0; i < _root.外部地图列表.length; i++){
 		if (_root.关卡标志 == _root.外部地图列表[i]){
 			_root.gotoAndPlay("外部地图");

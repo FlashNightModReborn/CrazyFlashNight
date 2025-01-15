@@ -1,0 +1,330 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+     <folders>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
+          <DOMFolderItem name="image" itemID="65976161-00000eac"/>
+          <DOMFolderItem name="import" itemID="65977cdc-00001d38"/>
+          <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13" isExpanded="true"/>
+          <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
+          <DOMFolderItem name="sound" itemID="6787601b-000016d5"/>
+          <DOMFolderItem name="sprite" itemID="6787601b-000016d7"/>
+          <DOMFolderItem name="sprite/物品栏" itemID="659d3927-00003122"/>
+          <DOMFolderItem name="sprite/悬浮UI" itemID="659bbbc2-000014cc"/>
+          <DOMFolderItem name="UI重构" itemID="67876084-0000176f"/>
+          <DOMFolderItem name="UI重构/睡眠相关" itemID="67876084-00001770"/>
+          <DOMFolderItem name="UI重构/通缉令UI" itemID="663afec8-00000c0c"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单" itemID="66390b9f-00001310"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/LEE" itemID="66390bbf-00001315"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/浮士德兄弟" itemID="66391349-00009904"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/魔女" itemID="6639122e-000063bc"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/牛仔" itemID="663910d7-00002e49"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/尾上世莉架" itemID="663a48d1-00000ee7"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/武士铁血" itemID="663912b8-00007e3f"/>
+          <DOMFolderItem name="UI重构/通缉令UI/通缉单/硬化僵尸" itemID="66391164-000048ba"/>
+     </folders>
+     <media>
+          <DOMBitmapItem name="UI重构/通缉令UI/通缉单/LEE/bitmap1.jpg" itemID="6637df65-00003cce" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/UI重构/通缉令UI/通缉单/LEE/bitmap1.jpg" sourceLastImported="1714937701" quality="50" href="UI重构/通缉令UI/通缉单/LEE/bitmap1.jpg" bitmapDataHRef="M 3 1736925333.dat" frameRight="3240" frameBottom="2420" isJPEG="true"/>
+          <DOMBitmapItem name="UI重构/通缉令UI/通缉单/尾上世莉架/bitmap1.png" itemID="6637dfeb-00003cff" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/UI重构/通缉令UI/通缉单/尾上世莉架/bitmap1.png" sourceLastImported="1714937835" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="UI重构/通缉令UI/通缉单/尾上世莉架/bitmap1.png" bitmapDataHRef="M 5 1736925333.dat" frameRight="3240" frameBottom="2420"/>
+          <DOMBitmapItem name="image/bitmap2321.png" itemID="6597607b-00000479" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/image/bitmap2321.png" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2321.png" bitmapDataHRef="M 7 1736925333.dat" frameRight="2760" frameBottom="500"/>
+          <DOMBitmapItem name="UI重构/通缉令UI/通缉单/魔女/bitmap8.jpg" itemID="6637df9b-00003ce0" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/UI重构/通缉令UI/通缉单/魔女/bitmap8.jpg" sourceLastImported="1714937755" quality="50" href="UI重构/通缉令UI/通缉单/魔女/bitmap8.jpg" bitmapDataHRef="M 4 1736925333.dat" frameRight="5520" frameBottom="4980" isJPEG="true"/>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1736925211.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1736925211.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMBitmapItem name="UI重构/通缉令UI/通缉单/尾上世莉架/位图 4" itemID="663a47b4-00000ed6" sourceExternalFilepath="../CRAZYFLASHER7MercenaryEmpire/LIBRARY/UI重构/通缉令UI/通缉单/尾上世莉架/位图 4" sourceLastImported="1715095476" originalCompressionType="lossless" quality="50" href="UI重构/通缉令UI/通缉单/尾上世莉架/位图 4" bitmapDataHRef="M 6 1736925333.dat" frameRight="8000" frameBottom="8000"/>
+     </media>
+     <symbols>
+          <Include href="button/Symbol 536.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007c1" lastModified="1704196122"/>
+          <Include href="button/Symbol 538.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007c3" lastModified="1704196122"/>
+          <Include href="button/Symbol 727.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007ea" lastModified="1704196122"/>
+          <Include href="button/Symbol 728.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007eb" lastModified="1714929527"/>
+          <Include href="button/Symbol 729.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007ec" lastModified="1704196122"/>
+          <Include href="button/Symbol 926.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-0000080f" lastModified="1704196122"/>
+          <Include href="button/Symbol 928.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000810" lastModified="1704196122"/>
+          <Include href="button/Symbol 945.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-0000081a" lastModified="1704196122"/>
+          <Include href="button/Symbol 1743.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009e6" lastModified="1704196122"/>
+          <Include href="button/Symbol 1755.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009ef" lastModified="1704196122"/>
+          <Include href="button/Symbol 1756.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000009f0" lastModified="1704196122"/>
+          <Include href="button/Symbol 2030.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000a83" lastModified="1704196122"/>
+          <Include href="button/Symbol 2469.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b63" lastModified="1704196122"/>
+          <Include href="button/Symbol 2470.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b64" lastModified="1704196122"/>
+          <Include href="button/Symbol 2471.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b65" lastModified="1704196122"/>
+          <Include href="button/Symbol 2472.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b67" lastModified="1704196122"/>
+          <Include href="button/Symbol 2473.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b68" lastModified="1704196122"/>
+          <Include href="button/Symbol 2474.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b6a" lastModified="1704196122"/>
+          <Include href="button/Symbol 2475.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b6b" lastModified="1704196122"/>
+          <Include href="button/Symbol 2476.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b6d" lastModified="1704196122"/>
+          <Include href="button/Symbol 2477.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b6e" lastModified="1704196122"/>
+          <Include href="button/Symbol 2478.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b70" lastModified="1704196122"/>
+          <Include href="button/Symbol 2479.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b71" lastModified="1704196122"/>
+          <Include href="button/Symbol 2480.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b73" lastModified="1704196122"/>
+          <Include href="button/Symbol 2481.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000b74" lastModified="1704196122"/>
+          <Include href="button/Symbol 2556.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000bd4" lastModified="1704196122"/>
+          <Include href="button/Symbol 2732.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000cf3" lastModified="1704196122"/>
+          <Include href="button/Symbol 2735.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000cfb" lastModified="1704196122"/>
+          <Include href="button/Symbol 2737.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000cff" lastModified="1704196122"/>
+          <Include href="button/Symbol 2812.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000d8e" lastModified="1704196122"/>
+          <Include href="button/Symbol 2966.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000dc6" lastModified="1704196122"/>
+          <Include href="button/Symbol 2967.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-00000dc7" lastModified="1704196122"/>
+          <Include href="button/理发店滚动条.xml" loadImmediate="false" itemID="6679a92e-000009e3" lastModified="1719252580"/>
+          <Include href="import/UI组件/物品图标.xml" itemID="659d38e8-0000310c" lastModified="1735117398"/>
+          <Include href="shape/Symbol 284.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000078f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 294.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000793" lastModified="1704196122"/>
+          <Include href="shape/Symbol 297.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000794" lastModified="1704196122"/>
+          <Include href="shape/Symbol 308.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000797" lastModified="1704196122"/>
+          <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
+          <Include href="shape/Symbol 482.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 534.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007bf" lastModified="1704196122"/>
+          <Include href="shape/Symbol 535.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007c0" lastModified="1704196122"/>
+          <Include href="shape/Symbol 537.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007c2" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1050.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000842" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1051.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000843" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1052.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000844" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1562.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096d" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1563.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096e" lastModified="1714921269"/>
+          <Include href="shape/Symbol 1564.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000096f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1565.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000970" lastModified="1714921546"/>
+          <Include href="shape/Symbol 1566.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000971" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1567.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000972" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1568.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000973" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1569.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000974" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1570.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000975" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1571.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000976" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1572.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000977" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1573.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000978" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1574.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000979" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1575.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097a" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1576.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1577.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-0000097c" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1738.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009e5" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1744.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009e7" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1752.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ec" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1753.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ed" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1754.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ee" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2202.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000ac3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2322.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b0f" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2323.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000b10" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2554.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bd1" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2555.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bd3" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2734.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cf8" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2736.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000cfd" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2759.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d2e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2769.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d48" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2770.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d4b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2771.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d4e" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2774.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d56" lastModified="1717919196"/>
+          <Include href="shape/Symbol 2775.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d58" lastModified="1717919177"/>
+          <Include href="shape/Symbol 2780.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d61" lastModified="1717919137"/>
+          <Include href="shape/Symbol 2781.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d63" lastModified="1717919142"/>
+          <Include href="shape/Symbol 2782.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d65" lastModified="1717919132"/>
+          <Include href="shape/Symbol 2783.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d67" lastModified="1717919151"/>
+          <Include href="shape/Symbol 2784.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d69" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2785.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6a" lastModified="1717919229"/>
+          <Include href="shape/Symbol 2786.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d6c" lastModified="1717919212"/>
+          <Include href="shape/Symbol 2809.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000d8b" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2961.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dc5" lastModified="1704196122"/>
+          <Include href="shape/通用背景.xml" itemIcon="1" loadImmediate="false" itemID="659d3fae-00003178" lastModified="1710752365"/>
+          <Include href="sprite/Symbol 29.xml" loadImmediate="false" itemID="6597607e-0000070d" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 31.xml" itemID="6597607e-0000070e" lastModified="1719246843"/>
+          <Include href="sprite/Symbol 292.xml" loadImmediate="false" itemID="6597607e-00000792" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 298.xml" loadImmediate="false" itemID="6597607e-00000795" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 480.xml" loadImmediate="false" itemID="6597607e-000007a7" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 726.xml" loadImmediate="false" itemID="6597607e-000007e9" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1024.xml" loadImmediate="false" itemID="6597607e-0000083b" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1044.xml" loadImmediate="false" itemID="6597607e-00000840" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 1046.xml" loadImmediate="false" itemID="6597607e-00000841" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2204.xml" loadImmediate="false" itemID="6597607e-00000ac4" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2207.xml" loadImmediate="false" itemID="6597607e-00000ac6" lastModified="1715094838"/>
+          <Include href="sprite/Symbol 2209.xml" loadImmediate="false" itemID="6597607e-00000ac7" lastModified="1715094776"/>
+          <Include href="sprite/Symbol 2216.xml" loadImmediate="false" itemID="6597607e-00000aca" lastModified="1715102635"/>
+          <Include href="sprite/Symbol 2363.xml" loadImmediate="false" itemID="6597607e-00000b21" lastModified="1720343543"/>
+          <Include href="sprite/Symbol 2551.xml" loadImmediate="false" itemID="6597607e-00000bce" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2560.xml" itemID="6597607e-00000bd7" lastModified="1735392943"/>
+          <Include href="sprite/Symbol 2565.xml" itemID="6597607e-00000bdc" lastModified="1735392891"/>
+          <Include href="sprite/Symbol 2743.xml" loadImmediate="false" itemID="6597607e-00000d0b" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2746.xml" loadImmediate="false" itemID="6597607e-00000d10" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2777.xml" loadImmediate="false" itemID="6597607e-00000d5b" lastModified="1717919201"/>
+          <Include href="sprite/Symbol 2808.xml" loadImmediate="false" itemID="6597607e-00000d8a" lastModified="1714920884"/>
+          <Include href="sprite/Symbol 2810.xml" loadImmediate="false" itemID="6597607e-00000d8c" lastModified="1714923806"/>
+          <Include href="sprite/Symbol 2811.xml" loadImmediate="false" itemID="6597607e-00000d8d" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2824.xml" loadImmediate="false" itemID="6597607e-00000d94" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2957.xml" loadImmediate="false" itemID="6597607e-00000dc4" lastModified="1704196122"/>
+          <Include href="sprite/点酒界面酒保.xml" loadImmediate="false" itemID="6637abba-00001c92" lastModified="1714926492"/>
+          <Include href="sprite/确认按钮.xml" loadImmediate="false" itemID="659d4707-000039c7" lastModified="1736923630"/>
+          <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
+          <Include href="sprite/通用背景mc.xml" loadImmediate="false" itemID="659d46f5-000039c6" lastModified="1704806133"/>
+          <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
+          <Include href="sprite/图标壳.xml" loadImmediate="false" itemID="659d384c-0000310a" lastModified="1704802380"/>
+          <Include href="sprite/物品栏/物品满级框.xml" loadImmediate="false" itemID="659d3902-0000310e" lastModified="1704802562"/>
+          <Include href="sprite/物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
+          <Include href="sprite/悬浮UI/Symbol 880.xml" loadImmediate="false" itemID="6597607e-00000806" lastModified="1704196122"/>
+          <Include href="UI重构/睡眠相关/金色太阳.xml" loadImmediate="false" itemID="66508beb-00000122" lastModified="1716554732"/>
+          <Include href="UI重构/睡眠相关/清晨选项.xml" loadImmediate="false" itemID="66509487-00000219" lastModified="1716568188"/>
+          <Include href="UI重构/睡眠相关/清晨选项动画.xml" loadImmediate="false" itemID="6650c0dc-00002ae2" lastModified="1716607799"/>
+          <Include href="UI重构/睡眠相关/沙漏-夜.xml" loadImmediate="false" itemID="6650bcc7-00001829" lastModified="1716567806"/>
+          <Include href="UI重构/睡眠相关/沙漏-昼.xml" loadImmediate="false" itemID="6650bbab-00001807" lastModified="1716567087"/>
+          <Include href="UI重构/睡眠相关/睡觉界面-关闭.xml" itemIcon="0" loadImmediate="false" itemID="66509a6c-00000c9b" lastModified="1716566760"/>
+          <Include href="UI重构/睡眠相关/选择你想醒来的时间段.xml" loadImmediate="false" itemID="6650ac65-000016a4" lastModified="1716566716"/>
+          <Include href="UI重构/睡眠相关/选择时间段-动画.xml" loadImmediate="false" itemID="6650c0bf-00002a83" lastModified="1716568684"/>
+          <Include href="UI重构/睡眠相关/夜晚选项.xml" loadImmediate="false" itemID="66509493-0000021f" lastModified="1716567261"/>
+          <Include href="UI重构/睡眠相关/夜晚选项动画.xml" loadImmediate="false" itemID="6650c0fb-00002b43" lastModified="1716573420"/>
+          <Include href="UI重构/通缉令UI/92副本酒杯.xml" loadImmediate="false" itemID="663a3fc5-00000e4e" lastModified="1715093445"/>
+          <Include href="UI重构/通缉令UI/点酒-鸡尾酒.xml" loadImmediate="false" itemID="660d3341-00001dc4" lastModified="1714926727"/>
+          <Include href="UI重构/通缉令UI/点酒-啤酒.xml" loadImmediate="false" itemID="660d3328-00001dbc" lastModified="1714926702"/>
+          <Include href="UI重构/通缉令UI/酒吧UI专用鸡尾酒.xml" loadImmediate="false" itemID="660d3245-00001daa" lastModified="1712140869"/>
+          <Include href="UI重构/通缉令UI/酒吧UI专用鸡尾酒-空.xml" loadImmediate="false" itemID="660d330c-00001db8" lastModified="1712142251"/>
+          <Include href="UI重构/通缉令UI/酒吧UI专用啤酒.xml" loadImmediate="false" itemID="660d3238-00001da5" lastModified="1712140856"/>
+          <Include href="UI重构/通缉令UI/酒吧UI专用啤酒-空.xml" loadImmediate="false" itemID="660d32f3-00001db2" lastModified="1712141043"/>
+          <Include href="UI重构/通缉令UI/酒杯-盛.xml" loadImmediate="false" itemID="663a58ce-00000149" lastModified="1715100760"/>
+          <Include href="UI重构/通缉令UI/秋月.xml" itemIcon="1" loadImmediate="false" itemID="65f71d38-000016c2" lastModified="1715101979"/>
+          <Include href="UI重构/通缉令UI/数字1.xml" loadImmediate="false" itemID="6637db85-00003c77" lastModified="1714937536"/>
+          <Include href="UI重构/通缉令UI/数字2.xml" loadImmediate="false" itemID="6637db74-00003c73" lastModified="1714937551"/>
+          <Include href="UI重构/通缉令UI/数字3.xml" loadImmediate="false" itemID="6637db59-00003c23" lastModified="1714936760"/>
+          <Include href="UI重构/通缉令UI/通缉单/LEE/通缉单-LEE.xml" loadImmediate="false" itemID="66390c28-00001392" lastModified="1715014862"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 493.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ab8" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 496.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000abb" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 501.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac0" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 502.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac1" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 503.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac2" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 506.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac5" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 509.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ac8" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 514.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000acd" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 515.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ace" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/Symbol 517.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000ad0" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/通缉单-浮士德兄弟.xml" loadImmediate="false" itemID="6639135c-00009911" lastModified="1715016728"/>
+          <Include href="UI重构/通缉令UI/通缉单/浮士德兄弟/通缉单模板.xml" loadImmediate="false" itemID="663913db-00009955" lastModified="1715009605"/>
+          <Include href="UI重构/通缉令UI/通缉单/魔女/通缉单-魔女.xml" loadImmediate="false" itemID="6639124c-000063d0" lastModified="1715016300"/>
+          <Include href="UI重构/通缉令UI/通缉单/魔女/通缉单模板.xml" loadImmediate="false" itemID="66391232-000063c1" lastModified="1715143848"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003ce8" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 11.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003ceb" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 14.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003cee" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 15.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003cef" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="6637dfb6-00003cf3" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/Symbol 433.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000a93" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/通缉单-牛仔.xml" loadImmediate="false" itemID="66391106-00002e61" lastModified="1715015973"/>
+          <Include href="UI重构/通缉令UI/通缉单/牛仔/通缉单模板.xml" loadImmediate="false" itemID="663910f1-00002e54" lastModified="1715013966"/>
+          <Include href="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单-士力架.xml" loadImmediate="false" itemID="663a48b5-00000ee2" lastModified="1715095950"/>
+          <Include href="UI重构/通缉令UI/通缉单/尾上世莉架/通缉单模板.xml" loadImmediate="false" itemID="663a4918-00000eee" lastModified="1715095668"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 3.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094a" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094b" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 5.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094c" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 6.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094d" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000094f" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 9.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000950" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000951" lastModified="1715008245"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 18.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000959" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095a" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 20.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095b" lastModified="1715008224"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 21.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095c" lastModified="1715008217"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 22.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095d" lastModified="1715008231"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 23.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095e" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 24.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-0000095f" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 28.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000963" lastModified="1701332846"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/Symbol 29.xml" itemIcon="1" loadImmediate="false" itemID="6577f221-00000964" lastModified="1715008239"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/通缉单-武士铁血.xml" loadImmediate="false" itemID="663912cc-00007e60" lastModified="1715016448"/>
+          <Include href="UI重构/通缉令UI/通缉单/武士铁血/通缉单模板.xml" loadImmediate="false" itemID="663912b9-00007e53" lastModified="1715008317"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/Symbol 17.xml" itemIcon="1" loadImmediate="false" itemID="6637e053-00003d15" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/Symbol 18.xml" itemIcon="1" loadImmediate="false" itemID="6637e053-00003d16" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/Symbol 19.xml" itemIcon="1" loadImmediate="false" itemID="6637e053-00003d17" lastModified="1699960315"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/通缉单-硬化僵尸.xml" loadImmediate="false" itemID="66391179-00004920" lastModified="1715017466"/>
+          <Include href="UI重构/通缉令UI/通缉单/硬化僵尸/通缉单模板.xml" loadImmediate="false" itemID="6639117d-00004927" lastModified="1715011511"/>
+          <Include href="UI重构/通缉令UI/通缉单模板.xml" loadImmediate="false" itemID="6638eab2-00000663" lastModified="1715010861"/>
+          <Include href="UI重构/通缉令UI/通缉令-关闭.xml" itemIcon="0" loadImmediate="false" itemID="6637c0d4-00001e61" lastModified="1715084654"/>
+          <Include href="UI重构/通缉令UI/通缉令-上一页.xml" loadImmediate="false" itemID="6637d421-00003259" lastModified="1715083351"/>
+          <Include href="UI重构/通缉令UI/通缉令-下一页.xml" loadImmediate="false" itemID="6637ce36-0000295b" lastModified="1715083345"/>
+          <Include href="UI重构/通缉令UI/通缉令标题栏.xml" loadImmediate="false" itemID="6637b566-00002601" lastModified="1714928812"/>
+          <Include href="UI重构/通缉令UI/月光酒.xml" loadImmediate="false" itemID="663a61f4-00000167" lastModified="1715102196"/>
+          <Include href="挂机功能菜单.xml" itemID="67876ec7-00001c6a" lastModified="1736929067"/>
+          <Include href="合成系统检视框.xml" itemID="6622136b-00002024" lastModified="1736929236"/>
+          <Include href="理发店界面.xml" itemID="67876ebc-00001c69" lastModified="1736929065"/>
+          <Include href="睡觉界面.xml" itemID="6638701a-000016ac" lastModified="1736929076"/>
+          <Include href="素材库-基地特殊UI.xml" itemID="67876f87-00001cfc" lastModified="1736929360"/>
+          <Include href="通缉令界面.xml" itemID="6652ec81-00002860" lastModified="1736929060"/>
+          <Include href="物品改装界面.xml" itemID="67876ee2-00001c93" lastModified="1736929070"/>
+          <Include href="整容整形界面.xml" itemID="67876f5e-00001cbe" lastModified="1736929118"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="理发店界面" name="理发店界面" centerPoint3DX="129.25" centerPoint3DY="199.95">
+                                             <matrix>
+                                                  <Matrix tx="14.25" ty="28"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="挂机功能菜单" name="挂机功能菜单" centerPoint3DX="640.2" centerPoint3DY="268.45">
+                                             <matrix>
+                                                  <Matrix tx="413.2" ty="174.75"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent(load){
+   _root.挂机功能菜单.挂机项目 = "挂机-深蹲";
+}
+]]></script>
+                                             </Actionscript>
+                                             <filters>
+                                                  <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
+                                                  <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="物品改装界面" name="物品改装界面" centerPoint3DX="412.45" centerPoint3DY="429">
+                                             <matrix>
+                                                  <Matrix tx="280.45" ty="215.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                        <DOMSymbolInstance libraryItemName="整容整形界面" centerPoint3DX="-143.5" centerPoint3DY="198.45">
+                                             <matrix>
+                                                  <Matrix tx="-261.45" ty="0.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="117.95" y="197.4"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                              <DOMFrame index="1" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="睡觉界面" name="睡觉界面" centerPoint3DX="464.2" centerPoint3DY="147.05">
+                                             <matrix>
+                                                  <Matrix tx="276.2" ty="27.6"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="188" y="119.3"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                              <DOMFrame index="2" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="通缉令界面" name="WANTED界面" selected="true" centerPoint3DX="357.7" centerPoint3DY="225.8">
+                                             <matrix>
+                                                  <Matrix tx="129.25" ty="59.85"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <persistentData>
+          <PD n="TestMovieChecked" v="FlashPro"/>
+     </persistentData>
+     <PrinterSettings/>
+     <publishHistory>
+          <PublishItem publishSize="522041" publishTime="1736929224"/>
+     </publishHistory>
+</DOMDocument>

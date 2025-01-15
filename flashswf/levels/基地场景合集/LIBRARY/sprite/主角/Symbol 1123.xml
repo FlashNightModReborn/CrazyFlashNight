@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1123" itemID="6597607e-00000874" lastModified="1704196122" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="Symbol 1123">
+      <layers>
+        <DOMLayer name="Layer 1" color="#B61CC7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/主角/Symbol 1122" name="枪" centerPoint3DX="55.25" centerPoint3DY="26.65">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.基本款._visible = 0;
+   if(_parent._parent._parent.手枪2_装扮 != undefined)
+   {
+      this.attachMovie(_parent._parent._parent.手枪2_装扮,"装扮",this.getNextHighestDepth());
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

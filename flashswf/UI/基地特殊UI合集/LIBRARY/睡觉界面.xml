@@ -1,0 +1,139 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="睡觉界面" itemID="6638701a-000016ac" linkageExportForAS="true" linkageIdentifier="睡觉界面" lastModified="1736929076" lastUniqueIdentifier="13">
+  <timeline>
+    <DOMTimeline name="睡觉界面">
+      <layers>
+        <DOMLayer name="图层 7" color="#4F80FF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="选择时间段" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/睡眠相关/选择时间段-动画" name="选择时间" centerPoint3DX="0.35" centerPoint3DY="-21.8">
+                  <matrix>
+                    <Matrix tx="-173.15" ty="-38.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="173.5" y="16.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="清晨" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/睡眠相关/清晨选项动画" name="清晨选项" centerPoint3DX="-122.25" centerPoint3DY="163.15">
+                  <matrix>
+                    <Matrix tx="-224.5" ty="17.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102.25" y="146.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.天气系统.当前时间 = 6;
+	_root.发布消息("一觉醒来……当前时间：清晨6点");
+	_root.最上层加载外部动画("flashswf/movies/黑色渐隐过场.swf");
+	_root.睡觉界面._visible = false;
+}
+on (rollOver) {
+	this._xscale = this._yscale = 108; // 将影片剪辑的水平和垂直缩放设置为108%
+	this._x -= 10; // 将元件的水平位置向左偏移
+	this._y -= 10; // 将元件的水平位置向上偏移
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	this._xscale = this._yscale = 100;// 将影片剪辑的水平和垂直缩放设置为100%
+	this._x += 10; // 将元件的水平位置向右偏移
+	this._y += 10; // 将元件的水平位置向下偏移
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="夜晚" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/睡眠相关/夜晚选项动画" name="夜晚选项" centerPoint3DX="120.7" centerPoint3DY="163.2">
+                  <matrix>
+                    <Matrix tx="18.4" ty="17.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="102.3" y="146.1"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.天气系统.当前时间 = 19;
+	_root.发布消息("一觉醒来……当前时间：夜晚7点");
+	_root.最上层加载外部动画("flashswf/movies/黑色渐隐过场.swf");
+	_root.睡觉界面._visible = false;
+}
+on (rollOver) {
+	this._xscale = this._yscale = 108; // 将影片剪辑的水平和垂直缩放设置为108%
+	this._x -= 10; // 将元件的水平位置向左偏移
+	this._y -= 10; // 将元件的水平位置向上偏移
+	当前层级 = this.getDepth();// 保存当前元件的层级值
+	this.swapDepths(_root.getNextHighestDepth()); // 将当前影片剪辑置于最顶层
+}
+on (rollOut) {
+	this._xscale = this._yscale = 100;// 将影片剪辑的水平和垂直缩放设置为100%
+	this._x += 10; // 将元件的水平位置向右偏移
+	this._y += 10; // 将元件的水平位置向下偏移
+	this.swapDepths(当前层级); // 将影片剪辑的深度恢复到原始层级值
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="关闭" color="#4FFF4F" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/睡眠相关/睡觉界面-关闭" symbolType="button" isVisible="false">
+                  <matrix>
+                    <Matrix ty="342.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(release){
+   this._visible = 0;
+   gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <DropShadowFilter blurX="0" blurY="0" distance="2"/>
+                    <GlowFilter color="#000000"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

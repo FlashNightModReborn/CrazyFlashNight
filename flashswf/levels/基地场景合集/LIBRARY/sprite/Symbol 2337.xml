@@ -1,0 +1,91 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2337" itemID="6597607e-00000b18" lastModified="1704196122" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="Symbol 2337">
+      <layers>
+        <DOMLayer name="Layer 1" color="#0DE5DE">
+          <frames>
+            <DOMFrame index="0" duration="95" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2336" centerPoint3DX="26" centerPoint3DY="26">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#C5CB8C">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2334" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.632843017578125" d="0.632843017578125" tx="-0.45" ty="-0.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2334" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.595703125" b="0.211654663085938" c="-0.211654663085938" d="0.595703125" tx="-1.1" ty="-0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" duration="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 2334" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.363082885742188" b="0.516326904296875" c="-0.516326904296875" d="0.363082885742188" tx="-2.05" ty="-1.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#F182FC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="95" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!421 -24[421 156 294 284!294 284[166 411 -14 411!-14 411[-195 411 -322 284!-322 284[-450 156 -450 -24!-450 -24[-450 -205 -322 -333!-322 -333[-195 -461 -14 -461!-14 -461[166 -461 294 -333!294 -333[421 -205 421 -24"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
