@@ -1,45 +1,40 @@
-﻿import org.flashNight.arki.component.Damage.*;
+﻿// File: org/flashNight/arki/component/Damage/DamageManager.as
+
+import org.flashNight.arki.component.Damage.IDamageHandle;
+import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.DamageManager {
-    
-    private var handleList:Array;  // IDamageHandle[]
+
+    private var _handles:Array;          // IDamageHandle 列表
+    public var overlapRatio:Number;      // 用于多段 / 霰弹计算
+    public var dodgeState:String;        // 躲闪状态
+    // 你也可以在这里加更多需要在各个 Handle 中共享的变量
 
     public function DamageManager() {
-        this.handleList = [];
-        // 在这里写死执行顺序
-        initDefaultHandles();
-    }
-
-    private function initDefaultHandles():Void {
-        // 按原先脚本先后顺序，将关键逻辑拆分插入
-        this.handleList.push(new HandleDefense());     // 防御、伤害类型
-        this.handleList.push(new HandleDodgeBlock()); // 躲闪、格挡
-        this.handleList.push(new HandleScatter());    // 霰弹
-        this.handleList.push(new HandleNanoToxic());     // 中毒、击溃、吸血、斩杀
-        this.handleList.push(new HandleFinalize());   // 分段伤害、扣血
+        this._handles = [];
+        this.overlapRatio = 1;
+        this.dodgeState = "";
     }
 
     /**
-     * 执行伤害流程
-     */
-    public function applyDamage(context:DamageContext):Void {
-        for (var i:Number = 0; i < this.handleList.length; i++) {
-            var handle:IDamageHandle = IDamageHandle(this.handleList[i]);
-            handle.execute(context);
-        }
-    }
-    
-    /**
-     * 如果你想在某些特殊子弹或特殊逻辑中，自定义顺序或额外 Handle 
-     * 可以在此处操作 handleList
+     * 添加一个处理器到列表
      */
     public function addHandle(handle:IDamageHandle):Void {
-        this.handleList.push(handle);
+        this._handles.push(handle);
     }
 
-    public function insertHandleAt(handle:IDamageHandle, index:Number):Void {
-        this.handleList.splice(index, 0, handle);
+    /**
+     * 执行所有处理器
+     * @param bullet   子弹
+     * @param shooter  发射者
+     * @param target   被击中目标
+     * @param result   DamageResult
+     */
+    public function execute(bullet:Object, shooter:Object, target:Object, result:DamageResult):Void {
+        // 顺序调用 handle
+        for (var i:Number = 0; i < this._handles.length; i++) {
+            var handle:IDamageHandle = IDamageHandle(this._handles[i]);
+            handle.handleBulletDamage(bullet, shooter, target, this, result);
+        }
     }
-
-    // ...更多自定义方法...
 }

@@ -1,21 +1,21 @@
-﻿import org.flashNight.arki.component.Damage.*;
+﻿// File: org/flashNight/arki/component/Damage/DodgeStateDamageHandle.as
 
-class org.flashNight.arki.component.Damage.HandleDodgeBlock extends BaseDamageHandle implements IDamageHandle {
+import org.flashNight.arki.component.Damage.BaseDamageHandle;
+import org.flashNight.arki.component.Damage.DamageResult;
 
-    public function HandleDodgeBlock() {
+class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDamageHandle {
+
+    public function DodgeStateDamageHandle() {
         super();
     }
 
-    public override function execute(context:DamageContext):Void {
-        var bullet:Object = context.bullet;
-        var target:Object = context.hitTarget;
-        var dodge:String = context.dodgeState;
-        var result:DamageResult = context.damageResult;
-
+    public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
+        // 事先获取 target.损伤值
         var damageNumber:Number = target.损伤值;
         var damageSize:Number = result.damageSize;
-
-        switch (dodge) {
+        var dodgeState:String = manager["dodgeState"]; // 也可由 manager 传或 bullet 参数传
+        
+        switch (dodgeState) {
             case "跳弹":
                 damageNumber = _root.跳弹伤害计算(damageNumber, target.防御力);
                 target.损伤值 = damageNumber;
@@ -41,7 +41,7 @@ class org.flashNight.arki.component.Damage.HandleDodgeBlock extends BaseDamageHa
                 damageNumber = target.受击反制(damageNumber, bullet);
                 if (damageNumber) {
                     target.损伤值 = damageNumber;
-                    damageSize *= 0.3 + 0.7 * damageNumber / bullet.破坏力;
+                    damageSize *= 0.3 + 0.7 * target.损伤值 / bullet.破坏力;
                 } else if (damageNumber === 0) {
                     target.损伤值 = 0;
                     damageSize *= 1.2;
@@ -53,7 +53,7 @@ class org.flashNight.arki.component.Damage.HandleDodgeBlock extends BaseDamageHa
                 }
                 break;
             default:
-                // 正常伤害
+                // 默认状态：最少伤害为1
                 damageNumber = Math.max(Math.floor(damageNumber), 1);
                 target.损伤值 = damageNumber;
                 _root.受击变红(120, target);
