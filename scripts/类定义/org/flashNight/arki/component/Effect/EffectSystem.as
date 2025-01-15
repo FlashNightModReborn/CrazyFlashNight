@@ -1,307 +1,264 @@
-﻿/**
- * 效果系统
- * 负责管理游戏中的视觉效果，包括对象池、效果创建、回收及一些简单的生命周期控制。
- * 
- * 说明：
- * 1. 借鉴了 “弹壳系统” 使用对象池的思路，避免频繁创建/销毁 MovieClip。
- * 2. 参考了 _root.效果系统 中的相关逻辑，并进行了类的封装。
- * 3. 需要在游戏初始化时先调用 initialize 方法，确保效果池就绪。
- */
+﻿import org.flashNight.sara.util.ObjectPool;
+import org.flashNight.naki.DataStructures.Dictionary;
+import org.flashNight.neur.Event.Delegate;
 
-import org.flashNight.sara.util.*;
-import org.flashNight.naki.RandomNumberEngine.*;
+class org.flashNight.arki.component.Effect.EffectSystem
+{
+    // 是否初始化过
+    private static var _initialized:Boolean = false;
 
-class org.flashNight.arki.component.Effect.EffectSystem {
+    // 当前可见特效数量 & 上限
+    private static var _currentEffectCount:Number = 0;
+    private static var _maxEffectCount:Number = 80; 
 
-    // —————————————— 静态变量区 ——————————————
-    /**
-     * 效果映射表：外部可通过加载或手动设置
-     * 结构示例：
-     * {
-     *   "fire": { 原型: null },
-     *   "smoke": { 原型: null }
-     * }
-     */
-    private static var effectMap:Object = {};  
+    // 当前画面效果数量 & 上限
+    private static var _currentScreenEffectCount:Number = 0;
+    private static var _maxScreenEffectCount:Number = 20;
 
-    /** 记录各类效果对应的对象池表，key 为效果名，value 为 ObjectPool 实例 */
-    private static var effectPools:Object = {};
-
-    /** 当前效果数量、上限（对应 _root.当前效果总数、_root.效果上限） */
-    private static var currentEffectCount:Number = 0;
-    private static var maxEffectCount:Number = 50; 
-
-    /** 当前画面效果数量、上限（对应 _root.当前画面效果总数、_root.画面效果上限） */
-    private static var currentScreenEffectCount:Number = 0;
-    private static var maxScreenEffectCount:Number = 20;
-    
-    /** 画面效果存在时间（毫秒），对应 _root.画面效果存在时间 */
-    private static var screenEffectDuration:Number = 1000;
-
-    /** 是否已初始化 */
-    private static var initialized:Boolean = false;
-
-
-    // —————————————— 公有接口 ——————————————
+    // 画面效果存活时间
+    private static var _screenEffectLifetime:Number = 1000;
 
     /**
-     * 初始化效果系统（通常在游戏启动时调用）
+     * ==============================
+     *  1) 对外公开方法：重新初始化
+     * ==============================
+     * 与原脚本的 _root.效果系统.初始化效果池() 类似。
+     * 当场景 / gameworld 重建后，需要调用此方法，
+     * 以在新的 gameworld 中重新挂载可用的特效池。
      */
-    public static function initialize():Void {
-        if (initialized) return;  // 避免重复初始化
-        
-        var 游戏世界:MovieClip = _root.gameworld;
-        if (!游戏世界) return; // 需确保 _root.gameworld 存在
+    public static function reinitializeEffectSystem():Void
+    {
+        // 重置特效计数
+        _currentEffectCount = 0;
+        _currentScreenEffectCount = 0;
+        _initialized = false;
 
-        // 初始化效果池结构
-        游戏世界.可用效果池 = {};
-        effectPools = {};
-        effectMap = {};
-        currentEffectCount = 0;
-
-        // 将 “可用效果池” 设置为不可枚举
-        _global.ASSetPropFlags(游戏世界, ["可用效果池"], 1, true);
-
-        // 标记完成初始化
-        initialized = true;
-    }
-
-    /**
-     * 设置/获取 效果映射表
-     * 一旦设置，系统就会基于此数据来创建不同类型的效果
-     */
-    public static function setEffectMap(map:Object):Void {
-        effectMap = map;
-    }
-    public static function getEffectMap():Object {
-        return effectMap;
-    }
-
-    /**
-     * 设置/获取 效果上限
-     */
-    public static function setMaxEffectCountLimit(limit:Number):Void {
-        maxEffectCount = limit;
-    }
-    public static function getMaxEffectCountLimit():Number {
-        return maxEffectCount;
-    }
-
-    /**
-     * 设置/获取 画面效果上限
-     */
-    public static function setMaxScreenEffectCountLimit(limit:Number):Void {
-        maxScreenEffectCount = limit;
-    }
-    public static function getMaxScreenEffectCountLimit():Number {
-        return maxScreenEffectCount;
-    }
-
-    /**
-     * 设置/获取 画面效果存在时间
-     */
-    public static function setScreenEffectDuration(duration:Number):Void {
-        screenEffectDuration = duration;
-    }
-    public static function getScreenEffectDuration():Number {
-        return screenEffectDuration;
-    }
-
-    /**
-     * 发射/创建游戏内效果
-     * 对应原先的 _root.效果()
-     * @param effectType  效果种类
-     * @param x           坐标 x
-     * @param y           坐标 y
-     * @param direction   xscale 用于反转、缩放等
-     * @param forced      是否必然触发
-     */
-    public static function launchEffect(effectType:String, x:Number, y:Number, direction:Number, forced:Boolean):MovieClip {
-        if (!initialized) { 
-            initialize();
-        }
-        if (!effectType) return null;
-
-        // 这里对应：_root.是否视觉元素
-        // 如果 _root.是否视觉元素 == false，则不创建任何效果
-        if (!_root.是否视觉元素 && !forced) {
-            return null;
-        }
-
-        // 判断数量是否超过上限，或通过某种概率判断
-        if (currentEffectCount >= maxEffectCount && !_root.成功率(maxEffectCount/5) && !forced) {
-            return null;
-        }
-
-        var 游戏世界:MovieClip = _root.gameworld;
-        if (!游戏世界.可用效果池) {
-            // 如果尚未初始化或重新载入 _root.gameworld
-            initialize();
-        }
-
-        // 1. 在可用效果池中尝试取对象
-        var effectPool:Array = 游戏世界.可用效果池[effectType];
-        if (!effectPool) {
-            effectPool = 游戏世界.可用效果池[effectType] = [];
-        }
-        
-        var newEffect:MovieClip;
-        if (effectPool.length > 0) {
-            // 如果池子里有空闲对象，直接复用
-            newEffect = effectPool.pop();
-            newEffect._x = x;
-            newEffect._y = y;
-            newEffect._visible = true;
-            newEffect.gotoAndPlay(1);
-        } else {
-            // 如果池子里没有，则创建新的
-            newEffect = createEffect(effectType, x, y);
-        }
-
-        if (newEffect) {
-            newEffect._x = x;
-            newEffect._y = y;
-            newEffect._xscale = direction;
-            ++currentEffectCount;
-        }
-
-        return newEffect;
-    }
-
-    /**
-     * 发射/创建画面效果（UI 层或特殊层）
-     * 对应原先的 _root.画面效果()
-     */
-    public static function launchScreenEffect(effectType:String, x:Number, y:Number, direction:Number, forced:Boolean):Void {
-        if (!initialized) { 
-            initialize();
-        }
-        // 同理先判断是否可创建
-        if (!_root.是否视觉元素 && !forced) {
-            return;
-        }
-        if (currentScreenEffectCount >= maxScreenEffectCount && !_root.成功率(maxScreenEffectCount/5) && !forced) {
+        // 如果新的 gameworld 尚未创建好，则先不做后续操作
+        if (!_root.gameworld) {
             return;
         }
 
+        // 在新的 gameworld 上挂载 "availableEffectPools" 字段，用于储存对象池映射
+        // 避免之前场景卸载造成的对象池遗留
+        _root.gameworld.availableEffectPools = {};
+        _global.ASSetPropFlags(_root.gameworld, ["availableEffectPools"], 1, true);
+
+        // 设置为初始化完成
+        _initialized = true;
+    }
+
+    /**
+     * ======================================
+     *  2) 对外公开方法：发射普通特效
+     * ======================================
+     * 对应原脚本: _root.效果(效果种类, x, y, 方向, 必然触发)
+     */
+    public static function effect(effectType:String, x:Number, y:Number, direction:Number, forceTrigger:Boolean):MovieClip
+    {
+        // A. 如果没指定特效类型，直接返回
+        if (!effectType) {
+            return null;
+        }
+
+        // B. 检查是否视觉元素 + 上限或几率限制，或强制触发
+        var canPlay:Boolean = false;
+        if (_root.是否视觉元素) {
+            // 如果当前特效数未达上限，或者满足成功率，亦或 forceTrigger
+            if (_currentEffectCount <= _maxEffectCount || _root.成功率(_maxEffectCount / 5) || forceTrigger) {
+                canPlay = true;
+            }
+        }
+        // 如果根本不满足条件
+        if (!canPlay) {
+            return null;
+        }
+
+        // C. 如果还没初始化、或 gameworld 不存在，就先试图初始化
+        if (!_initialized) {
+            reinitializeEffectSystem();
+        }
+        if (!_root.gameworld) {
+            return null;
+        }
+
+        // D. 确保在 gameworld 上有 availableEffectPools
+        if (!_root.gameworld.availableEffectPools) {
+            _root.gameworld.availableEffectPools = {};
+            _global.ASSetPropFlags(_root.gameworld, ["availableEffectPools"], 1, true);
+        }
+
+        // E. 若尚无该特效类型的池，则创建
+        if (!_root.gameworld.availableEffectPools[effectType]) {
+            _root.gameworld.availableEffectPools[effectType] = createEffectPool(effectType);
+        }
+
+        // F. 从对象池里取一个特效
+        var pool:ObjectPool = _root.gameworld.availableEffectPools[effectType];
+        var eff:MovieClip = MovieClip(pool.getObject(x, y, direction));
+
+        if (eff) {
+            _currentEffectCount++;
+        }
+        return eff;
+    }
+
+    /**
+     * ========================================
+     *  3) 对外公开方法：发射画面效果(屏幕特效)
+     * ========================================
+     * 对应原脚本: _root.画面效果(效果种类, x, y, 方向, 必然触发)
+     * 仍然是 attach 到 _root，并在计时器中销毁，不进对象池。
+     */
+    public static function screenEffect(effectType:String, x:Number, y:Number, direction:Number, forceTrigger:Boolean):MovieClip
+    {
+        // A. 判断是否视觉元素 + 上限或几率限制 / forceTrigger
+        var canPlay:Boolean = false;
+        if (_root.是否视觉元素) {
+            if (_currentScreenEffectCount <= _maxScreenEffectCount 
+                || _root.成功率(_maxScreenEffectCount / 5)
+                || forceTrigger) {
+                canPlay = true;
+            }
+        }
+        if (!canPlay) {
+            return null;
+        }
+
+        // B. attach 到 _root
         var depth:Number = _root.getNextHighestDepth();
-        var effectName:String = "screenEffect_" + depth;
-        _root.attachMovie(effectType, effectName, depth);
-        var screenEffect:MovieClip = _root[effectName];
-        screenEffect._x = x;
-        screenEffect._y = y;
-        screenEffect._xscale = direction;
-
-        // 增加计数
-        currentScreenEffectCount++;
-
-        // 创建一个定时器，过一段时间后让画面效果数减1
-        var timerID:Number = _root.帧计时器.添加单次任务(function() {
-            // 销毁 or 回收
-            currentScreenEffectCount--;
-            // 如果有需要，这里可考虑将 screenEffect.removeMovieClip() 也一并处理
-        }, screenEffectDuration);
-    }
-
-
-    // —————————————— 私有方法区 ——————————————
-
-    /**
-     * 创建一个新的效果 MovieClip（用于对象池不够用的情况下）
-     */
-    private static function createEffect(effectType:String, x:Number, y:Number):MovieClip {
-        var prototypeEffect:MovieClip = getOrCreatePrototypeEffect(effectType);
-        if (!prototypeEffect) return null;
-
-        var 游戏世界:MovieClip = _root.gameworld;
-        var 世界效果:MovieClip = 游戏世界.效果;
-        var newDepth:Number = 世界效果.getNextHighestDepth();
-        // 复制原型
-        var newEffect:MovieClip = prototypeEffect.duplicateMovieClip(effectType + "_" + newDepth, newDepth);
-        newEffect._x = x;
-        newEffect._y = y;
-        newEffect._visible = true;
-
-        // 初始化默认行为
-        initializeEffectBehavior(newEffect, effectType);
-        return newEffect;
-    }
-
-    /**
-     * 获取或创建一个原型 MovieClip（懒加载）
-     */
-    private static function getOrCreatePrototypeEffect(effectType:String):MovieClip {
-        // 如果 effectMap 中没有该效果类型，先创建一条空记录
-        if (!effectMap[effectType]) {
-            effectMap[effectType] = {原型: null};
-        }
-
-        // 如果已经创建过原型，直接返回
-        if (effectMap[effectType].原型) {
-            return effectMap[effectType].原型;
-        }
-
-        var 游戏世界:MovieClip = _root.gameworld;
-        var 世界效果:MovieClip = 游戏世界.效果;
-        if (!世界效果) {
+        var name:String = "screenEff_" + depth;
+        _root.attachMovie(effectType, name, depth);
+        var eff:MovieClip = _root[name];
+        if (!eff) {
             return null;
         }
 
-        // attachMovie -> 加载实际库中的资源
-        var prototypeEffect:MovieClip = 世界效果.attachMovie(effectType, "prototype_" + effectType, 世界效果.getNextHighestDepth());
-        if (prototypeEffect) {
-            prototypeEffect._visible = false; // 原型不可见
-            effectMap[effectType].原型 = prototypeEffect;
-        }
-        return prototypeEffect;
+        // C. 设置坐标和方向
+        eff._x = x;
+        eff._y = y;
+        eff._xscale = direction;
+
+        // D. 数量 +1
+        _currentScreenEffectCount++;
+
+        // E. 用帧计时器延迟销毁(或减少计数)
+        var timerID:Number = _root.帧计时器.添加单次任务(function() {
+            // 此时画面效果已到期
+            _currentScreenEffectCount--;
+            // 你可以选择 eff.removeMovieClip() 或是 eff._visible=false 等
+            // 这里示例仅减少计数
+            // eff.removeMovieClip();
+        }, _screenEffectLifetime);
+
+        return eff;
     }
 
+    /* ----------------------------------------------------------------------------------
+       以下为【对象池】相关的内部逻辑，用于替换原脚本中的“原型+duplicateMovieClip”做法
+       ---------------------------------------------------------------------------------- */
+
     /**
-     * 初始化单个效果的默认行为
-     * 这里参考了原先对 removeMovieClip 的改写，以及动画回收的逻辑
+     * 创建特效对象池
+     * @param effectType  库链接名 (类似 "Dust" / "Fire" )
      */
-    private static function initializeEffectBehavior(effectMC:MovieClip, effectType:String):Void {
-        // 记录效果类型，回收时用
-        effectMC.效果种类 = effectType;
+    private static function createEffectPool(effectType:String):ObjectPool
+    {
+        // 1) createFunc: 真正创建新的 MovieClip 对象
+        //    注意：ObjectPool 调用时会将 parentClip, prototypeInitArgs 传进来
+        var createFunc:Function = function(parentClip:MovieClip, effType:String):MovieClip
+        {
+            // 在 parentClip(即 _root.gameworld.效果) 上 attachMovie
+            var depth:Number = parentClip.getNextHighestDepth();
+            var mcName:String = effType + "_pooled_" + depth;
 
-        // 备份原有的 removeMovieClip
-        effectMC.old_removeMovieClip = effectMC.removeMovieClip;
+            var effMC:MovieClip = parentClip.attachMovie(effType, mcName, depth);
+            if (effMC) {
+                effMC._visible = false; 
+                effMC.effectType = effType; // 记下类型
+            }
+            return effMC;
+        };
 
-        effectMC.removeMovieClip = function(forceDestroy:Boolean) {
-            // 对应 _root.帧计时器.是否死亡特效，如果没有此变量，你可以自行定义
-            if (!_root.帧计时器.是否死亡特效 || forceDestroy) {
-                this.old_removeMovieClip();
-            } else {
-                // 回收
-                var gameWorld:MovieClip = _root.gameworld;
-                var pool:Array = gameWorld.可用效果池[this.效果种类];
-                if (!pool) {
-                    pool = gameWorld.可用效果池[this.效果种类] = [];
+        // 2) resetFunc: 当从池中取出时，要如何重置
+        //    这里接收 pool.getObject(...) 的可变参数列表
+        //    假设 getObject(x, y, direction) => resetFunc(this, x, y, direction)
+        var resetFunc:Function = function(x:Number, y:Number, direction:Number):Void
+        {
+            // 重置为初始状态
+            this._x = x;
+            this._y = y;
+            this._xscale = direction;
+            this._visible = true;
+            this.gotoAndPlay(1);
+
+            // 模拟原脚本：覆盖 removeMovieClip => 回收到池
+            var oldRemove:Function = this.removeMovieClip;
+            var self:MovieClip = this;
+            this.removeMovieClip = function(forceDestroy:Boolean):Void
+            {
+                // 若真正需要销毁(或全局“死亡特效”标志)
+                if (forceDestroy || _root.帧计时器.是否死亡特效) {
+                    oldRemove.call(self);
+                } else {
+                    // 否则回收到对象池
+                    if (_root.gameworld && _root.gameworld.availableEffectPools) {
+                        var pool:ObjectPool = _root.gameworld.availableEffectPools[self.effectType];
+                        if (pool) {
+                            pool.releaseObject(self);
+                        }
+                    }
+                    // 特效计数递减
+                    if (_currentEffectCount > 0) {
+                        _currentEffectCount--;
+                    }
                 }
-                // 清理本身引用
-                delete this.onEnterFrame;
-                this.stop();
-                this._visible = false;
-                pool.push(this);  // 回收进对象池
+            };
+        };
 
-                // 计数 -1
-                EffectSystem.decrementEffectCount();
+        // 3) releaseFunc: 当对象被回收到池时，要如何处理
+        var releaseFunc:Function = function():Void
+        {
+            // 隐藏 & 停止
+            this._visible = false;
+            this.stop();
+
+            // 还原 removeMovieClip
+            if (this.removeMovieClip != undefined 
+                && this.removeMovieClip.__proto__ != MovieClip.prototype.removeMovieClip)
+            {
+                delete this.removeMovieClip;
             }
         };
 
-        // 监测卸载
-        effectMC.onUnload = function() {
-            this.removeMovieClip(true);
-        };
+        // 4) 构建并返回对象池
+        var parentClip:MovieClip = _root.gameworld.效果;  // 原脚本: 特效都在 gameworld.效果 层上
+        var pool:ObjectPool = new ObjectPool(
+            createFunc,      // 创建函数
+            resetFunc,       // 重置函数
+            releaseFunc,     // 回收函数
+            parentClip,      // 父级影片剪辑 (gameworld.效果)
+            30,              // 最大容量，可根据需要
+            0,               // preloadSize=0
+            true,            // isLazyLoaded
+            true,            // isPrototypeEnabled
+            [effectType]     // prototypeInitArgs => 传给 createFunc 的第二个参数
+        );
+        return pool;
     }
 
-    /**
-     * 计数 -1
-     * 用于回收时减少当前效果数量
-     */
-    private static function decrementEffectCount():Void {
-        if (currentEffectCount > 0) {
-            currentEffectCount--;
-        }
+    /* ---------------------------------------------------------------------------
+       以下若干接口方法，可用来动态修改特效上限/画面效果上限/持续时间
+       --------------------------------------------------------------------------- */
+
+    public static function setMaxEffectCount(value:Number):Void {
+        _maxEffectCount = value;
+    }
+
+    public static function setMaxScreenEffectCount(value:Number):Void {
+        _maxScreenEffectCount = value;
+    }
+
+    public static function setScreenEffectLifetime(value:Number):Void {
+        _screenEffectLifetime = value;
     }
 }
