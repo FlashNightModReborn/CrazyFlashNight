@@ -198,6 +198,13 @@ _root.横版卷屏 = function(卷屏目标, 背景长, 背景高, 缓动系数){
 			}
 		}
 	}
+	//
+	if(_root.地平线高度) {
+		_root.天空盒._y = _root.gameworld._y + _root.地平线高度;
+		if(_root.天空盒.后景移动速度列表[0] > 0){
+			_root.天空盒.后景列表[0]._x = _root.gameworld._x / _root.天空盒.后景移动速度列表[0];
+		}
+	}
 }
 
 _root.缩放画面 = function(放大倍数){

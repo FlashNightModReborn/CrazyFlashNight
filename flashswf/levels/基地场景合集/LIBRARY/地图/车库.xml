@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1736931988" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1736961068" lastUniqueIdentifier="17">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -14,7 +14,9 @@ _root.Ymin = 280;
 背景长 = 1250;
 背景高 = 700;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
-_root.显示同伴血槽();]]></script>
+_root.显示同伴血槽();
+
+_root.关卡地图帧值 = "基地车库";]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

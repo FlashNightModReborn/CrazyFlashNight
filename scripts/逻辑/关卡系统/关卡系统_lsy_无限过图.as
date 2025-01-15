@@ -1,7 +1,6 @@
 ﻿//迁移了所有生存模式与无限过图的函数，以及4个难度关卡按钮里的函数
 
-_root.开启生存模式 = function(模式) 
-{
+_root.开启生存模式 = function(模式) {
     _root.当前为战斗地图 = true;
     //_root.d_波次._visible = _root.调试模式;
     //_root.d_剩余敌人数._visible = _root.调试模式;
@@ -236,6 +235,7 @@ _root.开启生存模式 = function(模式)
     
 	//加载场景
 	_root.加载场景背景(基本配置.Background);
+	_root.加载后景(环境信息);
 
     // 开始刷怪
     if (!基本配置.RogueMode) _root.生存模式OBJ.模式部署.总波数 = _root.生存模式OBJ.模式部署.length;
@@ -243,18 +243,14 @@ _root.开启生存模式 = function(模式)
 };
 
 
-_root.生存模式关闭 = function()
-{
+_root.生存模式关闭 = function(){
 	_root.当前为战斗地图 = false;
 	_root.d_剩余敌人数._visible = false;
 	_root.帧计时器.移除任务(_root.生存模式OBJ.波次时钟);
 	var 时钟 = _root.生存模式OBJ.时钟;
-	if (时钟 != undefined || 时钟.length > 0)
-	{
-		for (var i = 0; i < 时钟.length; i++)
-		{
-			for (var j = 0; j < 时钟[i].length; j++)
-			{
+	if (时钟 != undefined || 时钟.length > 0){
+		for (var i = 0; i < 时钟.length; i++){
+			for (var j = 0; j < 时钟[i].length; j++){
 				_root.帧计时器.移除任务(时钟[i][j]);
 			}
 		}
@@ -447,8 +443,7 @@ _root.rogue模式进攻 = function()
 	_root.生存模式OBJ.波次时钟 = _root.帧计时器.添加循环任务(_root.生存模式计时, 1000);
 };
 
-_root.生存模式计时 = function()
-{
+_root.生存模式计时 = function(){
 	_root.生存模式OBJ.当前时间++;
 	if(_root.生存模式OBJ.总时间 > 0){
 		var total_sec = _root.生存模式OBJ.总时间 - _root.生存模式OBJ.当前时间;
@@ -474,8 +469,7 @@ _root.生存模式计时 = function()
 			_root.无限过图模式过关();
 		}
 		var 本轮对话 = _root.副本对话[_root.无限过图模式关卡计数][_root.生存模式OBJ.波次];
-		if (本轮对话.length > 0)
-		{
+		if (本轮对话.length > 0){
 			_root.暂停 = true;
 			_root.SetDialogue(本轮对话);
 		}
@@ -483,8 +477,7 @@ _root.生存模式计时 = function()
 	
 };
 
-_root.无限过图模式过关 = function()
-{
+_root.无限过图模式过关 = function(){
 	_root.gameworld.关卡结束 = true;
 	_root.帧计时器.移除任务(_root.生存模式OBJ.波次时钟);
 	_root.d_波次._visible = false;
@@ -492,26 +485,21 @@ _root.无限过图模式过关 = function()
 
 	//加载结束动画
 	var 基本配置 = _root.无限过图基本配置[_root.无限过图模式关卡计数];
-	if (基本配置.Animation.Load == 0)
-	{
+	if (基本配置.Animation.Load == 0){
 		_root.最上层加载外部动画(基本配置.Animation.Path);
-		if (基本配置.Animation.Pause == 1)
-		{
+		if (基本配置.Animation.Pause == 1){
 			_root.暂停 = true;
 		}
 	}
 
-	if (_root.无限过图模式关卡计数 >= _root.无限过图总关卡.length - 1)
-	{
+	if (_root.无限过图模式关卡计数 >= _root.无限过图总关卡.length - 1){
 		_root.关卡结束界面.mytext = "关卡结束！";
 		_root.关卡结束界面._visible = 1;
 		_root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
 		_root.FinishStage(_root.当前关卡名,_root.当前关卡难度);
 		//设置返回地图帧值
 		if(基本配置.EndFrame) _root.关卡地图帧值 = 基本配置.EndFrame;
-	}
-	else
-	{
+	}else{
 		// _root.最上层发布文字提示(_root.获得翻译("GOGOGO！剩余战场数：") + (_root.无限过图总关卡.length - _root.无限过图模式关卡计数 - 1) + "！"); //已经不需要这种东西了
 		_root.gameworld.允许通行 = true;
 		_root.效果("小过关提示动画",_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y,100);

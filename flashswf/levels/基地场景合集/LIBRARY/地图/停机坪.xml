@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1736931968" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1736961052" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
@@ -15,7 +15,9 @@ _root.Ymin = 200;
 背景高 = 600;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
 _root.显示同伴血槽();
-_root.场景刷可雇用玩家(_root.场景佣兵出现机率);]]></script>
+_root.场景刷可雇用玩家(_root.场景佣兵出现机率);
+
+_root.关卡地图帧值 = "基地房顶";]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/淡出动画" itemID="663d9237-0000167b" lastModified="1735664415" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/淡出动画" itemID="663d9237-0000167b" lastModified="1736959306" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="淡出动画" currentFrame="13">
+    <DOMTimeline name="淡出动画" currentFrame="10">
       <layers>
         <DOMLayer name="Labels Layer" color="#71CDB3" locked="true">
           <frames>
@@ -100,6 +100,7 @@ _root.关卡结束界面._visible = false;
 _root.新手引导界面.关闭指引();
 
 _root.卸载外部UI();
+_root.卸载后景();
 ]]></script>
               </Actionscript>
               <elements/>

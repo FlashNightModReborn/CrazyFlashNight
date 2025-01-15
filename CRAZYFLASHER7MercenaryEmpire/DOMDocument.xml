@@ -12,7 +12,7 @@
           <DOMFolderItem name="import/外部地图" itemID="65d313c5-00000b63"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6597612c-00000e9d"/>
-          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
           <DOMFolderItem name="sprite/标题画面" itemID="659bbce9-00001519"/>
           <DOMFolderItem name="sprite/加载UI" itemID="659bbb5f-000014bc"/>
           <DOMFolderItem name="sprite/物品栏" itemID="659d3927-00003122"/>
@@ -734,7 +734,7 @@
           <Include href="shape/Symbol 2121.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000aa6" lastModified="1716486282"/>
           <Include href="shape/Symbol 2554.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bd1" lastModified="1704196122"/>
           <Include href="shape/Symbol 2555.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000bd3" lastModified="1704196122"/>
-          <Include href="shape/Symbol 2973.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dc9" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2973.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000dc9" lastModified="1736959914"/>
           <Include href="shape/Symbol 3384.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e57" lastModified="1704196122"/>
           <Include href="shape/Symbol 3393.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e5a" lastModified="1704196122"/>
           <Include href="shape/Symbol 3429.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000e6a" lastModified="1704196122"/>
@@ -815,7 +815,7 @@
           <Include href="sprite/Symbol 2551.xml" loadImmediate="false" itemID="6597607e-00000bce" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2560.xml" itemID="6597607e-00000bd7" lastModified="1735392943"/>
           <Include href="sprite/Symbol 2565.xml" itemID="6597607e-00000bdc" lastModified="1735392891"/>
-          <Include href="sprite/Symbol 2974.xml" loadImmediate="false" itemID="6597607e-00000dca" lastModified="1704196122"/>
+          <Include href="sprite/Symbol 2974.xml" loadImmediate="false" itemID="6597607e-00000dca" lastModified="1736959946"/>
           <Include href="sprite/Symbol 3381.xml" loadImmediate="false" itemID="6597607e-00000e56" lastModified="1704196122"/>
           <Include href="sprite/Symbol 3385.xml" loadImmediate="false" itemID="6597607e-00000e58" lastModified="1704196122"/>
           <Include href="sprite/Symbol 3390.xml" loadImmediate="false" itemID="6597607e-00000e59" lastModified="1704196122"/>
@@ -847,7 +847,7 @@
           <Include href="sprite/标题画面/封面背景.xml" loadImmediate="false" itemID="663221d4-00001c86" lastModified="1714561492"/>
           <Include href="sprite/标题画面/封面背景 1024&amp;#042576.xml" loadImmediate="false" itemID="663221de-00001ca5" lastModified="1714561853"/>
           <Include href="sprite/单个敌人加载器2.xml" itemID="659bb998-000014a7" lastModified="1731344763"/>
-          <Include href="sprite/淡出动画.xml" loadImmediate="false" itemID="663d9237-0000167b" lastModified="1735664415"/>
+          <Include href="sprite/淡出动画.xml" loadImmediate="false" itemID="663d9237-0000167b" lastModified="1736959306"/>
           <Include href="sprite/后勤战备箱按钮.xml" loadImmediate="false" itemID="66521d9d-00000bd7" lastModified="1718802578"/>
           <Include href="sprite/技能图标.xml" itemID="66433dc8-0000156b" lastModified="1726335519"/>
           <Include href="sprite/加载UI/Symbol 271.xml" itemID="6597607e-00000788" lastModified="1704196122"/>
@@ -927,12 +927,13 @@
           <Include href="底部UI/底部UI组.xml" loadImmediate="false" itemID="6636575b-0000211d" lastModified="1728102640"/>
           <Include href="底部UI/平板电脑.xml" loadImmediate="false" itemID="6700c0f0-00000a9f" lastModified="1728102640"/>
           <Include href="底部UI/原版4图标备份.xml" loadImmediate="false" itemID="664df9ac-00004b87" lastModified="1716386220"/>
+          <Include href="天空盒.xml" loadImmediate="false" itemID="6787e1ac-0000055e" lastModified="1736960730"/>
           <Include href="通用UI层.xml" loadImmediate="false" itemID="6787cf06-00000b9c" lastModified="1736954556"/>
           <Include href="通用透明组件.xml" loadImmediate="false" itemID="659d4755-000039c9" lastModified="1704806229"/>
           <Include href="外部导入UI界面.xml" loadImmediate="false" itemID="67162590-0000093d" lastModified="1736954576"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="188" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -3371,7 +3372,7 @@ stop();
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="淡出动画" color="#D0D4FC" autoNamed="false" visible="false">
+                    <DOMLayer name="淡出动画" color="#D0D4FC" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="52" keyMode="9728">
                                    <elements/>
@@ -6360,15 +6361,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9949 5270|10239 5451!10239 5451|10542 5451!10542 5451|10252 5270!10252 5270|9949 5270!9949 5270|9659 5089!9659 5089|9355 5089!9355 5089|9065 4908!9065 4908|9369 4908!9369 4908|9659 5089!9659 5089|9962 5089!9962 5089|9672 4908!9672 4908
-|9382 4727!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9672 4908!9672 4908|9975 4908!9975 4908|9685 4727!9685 4727|9382 4727!9382 4727|9092 4546!9092 4546|8789 4546!8789 4546|9079 4727!9685 4727|9395 4546!9395 4546|9699 4546!9699
- 4546|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|11189 4908!11189 4908|10899 4727!9092 4546|9395 4546!8485 4546|8182 4546!8182 4546|8472 4727!8472
- 4727|8762 4908!8762 4908|9065 4908!9065 4908|8775 4727!8775 4727|8485 4546!8472 4727|8775 4727!8775 4727|9079 4727!8789 4546|8485 4546!10239 5451|9935 5451!9935 5451|9633 5451!9633 5451|9342 5270!9342 5270|9645 5270!9645 5270|9355 5089
-!9355 5089|9052 5089!9052 5089|9342 5270!9052 5089|8762 4908!11769 5270|11465 5270!11465 5270|11755 5451!11755 5451|12059 5451!12059 5451|11769 5270!11769 5270|11479 5089!11479 5089|11175 5089!11175 5089|11465 5270!11465 5270|11162 5270
-!11162 5270|11452 5451!11452 5451|11755 5451!9699 4546|9989 4727!9989 4727|10279 4908!10279 4908|10582 4908!10582 4908|10872 5089!10872 5089|11175 5089!11175 5089|10885 4908!10885 4908|10582 4908!10582 4908|10292 4727!10292 4727|9989
- 4727!9989 4727|9685 4727!10252 5270|9962 5089!9962 5089|10265 5089!10265 5089|10569 5089!10569 5089|10279 4908!10279 4908|9975 4908!9975 4908|10265 5089!10265 5089|10555 5270!10555 5270|10845 5451!10845 5451|11149 5451!11149 5451|10859
- 5270!10859 5270|10555 5270!10555 5270|10252 5270!10292 4727|10002 4546!10569 5089|10859 5270!10859 5270|11162 5270!11162 5270|10872 5089!10872 5089|10569 5089!10542 5451|10845 5451!10305 4546|10595 4727!10595 4727|10292 4727!11479 5089
-|11189 4908!11149 5451|11452 5451!9935 5451|9645 5270!9645 5270|9949 5270"/>
+!8762 4908|8472 4727!8472 4727|8182 4546!8182 4546|8485 4546!8485 4546|8789 4546!8789 4546|9079 4727!9079 4727|9369 4908!9369 4908|9659 5089!9659 5089|9355 5089!9355 5089|9052 5089!9052 5089|8762 4908!8762 4908|9065 4908!9065 4908|9369
+ 4908!9369 4908|9672 4908!9672 4908|9382 4727!9382 4727|9092 4546!9092 4546|9395 4546!9395 4546|9699 4546!9699 4546|9989 4727!9989 4727|9685 4727!9685 4727|9395 4546!9685 4727|9382 4727!9382 4727|9079 4727!9079 4727|8775 4727!8775 4727
+|8472 4727!8775 4727|8485 4546!9052 5089|9342 5270!9342 5270|9645 5270!9645 5270|9949 5270!9949 5270|9659 5089!9659 5089|9962 5089!9962 5089|10265 5089!10265 5089|10555 5270!10555 5270|10252 5270!10252 5270|9962 5089!9962 5089|9672 4908
+!9672 4908|9975 4908!9975 4908|10265 5089!10265 5089|10569 5089!10569 5089|10872 5089!10872 5089|11162 5270!11162 5270|10859 5270!10859 5270|10569 5089!10569 5089|10279 4908!10279 4908|10582 4908!10582 4908|10292 4727!10292 4727|10595
+ 4727!10595 4727|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|10885 4908!10885 4908|10595 4727!10595 4727|10899 4727!10252 5270|9949 5270!9949 5270|10239 5451!10239 5451|9935 5451!9935 5451|9645
+ 5270!9645 5270|9355 5089!9355 5089|9065 4908!9065 4908|8775 4727!9935 5451|9633 5451!9633 5451|9342 5270!9092 4546|8789 4546!10239 5451|10542 5451!10542 5451|10845 5451!10845 5451|11149 5451!11149 5451|11452 5451!11452 5451|11755 5451
+!11755 5451|12059 5451!12059 5451|11769 5270!11769 5270|11465 5270!11465 5270|11162 5270!11769 5270|11479 5089!11479 5089|11189 4908!10872 5089|11175 5089!11175 5089|11465 5270!11465 5270|11755 5451!10885 4908|10582 4908!10582 4908|10872
+ 5089!10292 4727|10002 4546!10002 4546|10305 4546!10292 4727|9989 4727!9989 4727|10279 4908!10279 4908|9975 4908!9975 4908|9685 4727!10859 5270|10555 5270!10555 5270|10845 5451!11149 5451|10859 5270!11479 5089|11175 5089!11175 5089|10885
+ 4908!10542 5451|10252 5270!11162 5270|11452 5451!9699 4546|10002 4546"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -6816,15 +6817,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9385 4533|9675 4714!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9662 4895|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9675 4714!9069 4714|8765
- 4714!8765 4714|9055 4895!9055 4895|9359 4895!9069 4714|8779 4533!8779 4533|8475 4533!8475 4533|8765 4714!8765 4714|8462 4714!8462 4714|8752 4895!8752 4895|9055 4895!8462 4714|8172 4533!8172 4533|8475 4533!9635 5257|9345 5076!9345 5076
-|9042 5076!9042 5076|9332 5257!9332 5257|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076!9649 5076|9345 5076!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469
- 5076!11469 5076|11759 5257!11759 5257|12049 5438!12049 5438|11745 5438!11745 5438|11442 5438!11442 5438|11139 5438!11139 5438|10835 5438!10835 5438|10532 5438!10532 5438|10229 5438!10229 5438|9925 5438!9925 5438|9623 5438!9623 5438|9332
- 5257!9359 4895|9649 5076!9649 5076|9952 5076!9952 5076|9662 4895!9345 5076|9055 4895!8779 4533|9082 4533!9042 5076|8752 4895!11759 5257|11455 5257!11455 5257|11745 5438!10889 4714|10585 4714!10585 4714|10875 4895!10875 4895|11179 4895
-!10585 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895!9979 4714|10282 4714!10282 4714|9992 4533!9675 4714|9965 4895!9965 4895|10269 4895!10269 4895|9979 4714!10532 5438|10242 5257!10242 5257|9939 5257!9939 5257|10229 5438
-!9952 5076|10242 5257!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|9952 5076!10862 5076|10572 4895!10572 4895|10269 4895!10269 4895|10559 5076!10559 5076|10862 5076!10559 5076|10849 5257!10849 5257|11152 5257!11152 5257|10862
- 5076!10835 5438|10545 5257!10545 5257|10849 5257!10849 5257|11139 5438!10862 5076|11165 5076!11165 5076|10875 4895!10585 4714|10295 4533!9965 4895|10255 5076!10255 5076|10559 5076!11469 5076|11165 5076!11165 5076|11455 5257!11455 5257
-|11152 5257!11152 5257|11442 5438!9662 4895|9965 4895!9635 5257|9925 5438"/>
+!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9385 4533|9675 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9662 4895|9372 4714!9385 4533|9082 4533!9082 4533|9372 4714!9372 4714|9675 4714!9069 4714|8765
+ 4714!8765 4714|9055 4895!9055 4895|9359 4895!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|12049 5438!12049 5438|11745
+ 5438!11745 5438|11442 5438!11442 5438|11139 5438!11139 5438|10835 5438!10835 5438|10532 5438!10532 5438|10229 5438!10229 5438|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9042 5076!9042 5076|8752 4895!8752 4895|8462 4714
+!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8779 4533!8779 4533|9082 4533!8765 4714|8462 4714!8475 4533|8765 4714!9345 5076|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076!9649 5076|9345 5076!9332 5257|9635 5257!9345 5076|9042
+ 5076!9345 5076|9055 4895!9055 4895|8752 4895!9359 4895|9649 5076!9649 5076|9952 5076!9952 5076|9662 4895!9069 4714|8779 4533!11759 5257|11455 5257!11455 5257|11745 5438!10875 4895|10585 4714!10585 4714|10282 4714!10282 4714|10572 4895
+!10572 4895|10875 4895!10875 4895|11179 4895!10889 4714|10585 4714!9675 4714|9965 4895!9965 4895|10269 4895!10269 4895|9979 4714!9979 4714|10282 4714!10282 4714|9992 4533!9952 5076|10242 5257!10242 5257|10545 5257!10545 5257|10255 5076
+!10255 5076|9952 5076!10532 5438|10242 5257!10242 5257|9939 5257!9939 5257|10229 5438!10862 5076|10572 4895!10572 4895|10269 4895!10269 4895|10559 5076!10559 5076|10862 5076!10559 5076|10849 5257!10849 5257|11152 5257!11152 5257|10862
+ 5076!10835 5438|10545 5257!10545 5257|10849 5257!10862 5076|11165 5076!11165 5076|10875 4895!10849 5257|11139 5438!9965 4895|10255 5076!10255 5076|10559 5076!10585 4714|10295 4533!11455 5257|11152 5257!11152 5257|11442 5438!11469 5076
+|11165 5076!11165 5076|11455 5257!9635 5257|9925 5438!9662 4895|9965 4895"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -7913,7 +7914,7 @@ onClipEvent(enterFrame){
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="游戏帮助" color="#BAAA1E" parentLayerIndex="21" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" visible="false">
+                    <DOMLayer name="游戏帮助" color="#BAAA1E" parentLayerIndex="21" outline="true" useOutlineView="true" autoNamed="false" visible="false">
                          <frames>
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
@@ -9830,206 +9831,17 @@ onClipEvent (enterFrame) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="背景" color="#7370F9" autoNamed="false">
+                    <DOMLayer name="背景" color="#7370F9" current="true" isSelected="true" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="191" keyMode="9728">
+                              <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="191" keyMode="9728">
+                              <DOMFrame index="178" duration="191" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2974" name="天空盒" centerPoint3DX="900" centerPoint3DY="48.7">
-                                             <matrix>
-                                                  <Matrix d="1.587646484375" tx="0.05" ty="-44.8"/>
-                                             </matrix>
+                                        <DOMSymbolInstance libraryItemName="天空盒" name="天空盒" selected="true" centerPoint3DX="26.65" centerPoint3DY="5.45">
                                              <transformationPoint>
-                                                  <Point/>
+                                                  <Point x="26.65" y="5.45"/>
                                              </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (enterFrame) {
-	this._x = _root.gameworld._x / 2;
-	this._y = _root.gameworld._y;
-}]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="192" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2974" name="天空盒" centerPoint3DX="900" centerPoint3DY="96">
-                                             <matrix>
-                                                  <Matrix d="0.831192016601563" tx="0.05" ty="2.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (enterFrame) {
-	this._x = _root.gameworld._x / 2;
-	this._y = _root.gameworld._y;
-}]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="193" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2974" name="天空盒" centerPoint3DX="900" centerPoint3DY="96">
-                                             <matrix>
-                                                  <Matrix d="0.831192016601563" tx="0.05" ty="2.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (enterFrame) {
-	this._x = _root.gameworld._x / 2;
-	this._y = _root.gameworld._y;
-}]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="194" duration="11" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="205" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2974" name="天空盒" centerPoint3DX="900" centerPoint3DY="97.1">
-                                             <matrix>
-                                                  <Matrix d="0.948974609375" tx="0.05" ty="3.6"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(enterFrame){
-   this._x = _root.gameworld._x / 2;
-   this._y = _root.gameworld._y;
-}
-]]></script>
-                                             </Actionscript>
-                                             <filters>
-                                                  <AdjustColorFilter brightness="-100" contrast="1" saturation="-80" hue="180"/>
-                                             </filters>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="206" duration="2" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="208" duration="12" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 298" centerPoint3DX="101.4" centerPoint3DY="159.55">
-                                             <matrix>
-                                                  <Matrix a="4.457763671875" d="1.78276062011719" tx="-16.6" ty="-6.4"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <filters>
-                                                  <DropShadowFilter angle="44.9992520943067" distance="3" strength="0.5"/>
-                                                  <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
-                                             </filters>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="220" duration="52" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="272" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2974" name="天空盒" centerPoint3DX="900" centerPoint3DY="97.1">
-                                             <matrix>
-                                                  <Matrix d="0.948974609375" tx="0.05" ty="3.6"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(enterFrame){
-   this._x = _root.gameworld._x / 2;
-   this._y = _root.gameworld._y;
-}
-]]></script>
-                                             </Actionscript>
-                                             <filters>
-                                                  <AdjustColorFilter brightness="-100" contrast="1" saturation="-80" hue="180"/>
-                                             </filters>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="273" duration="11" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="284" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2974" name="天空盒" centerPoint3DX="900" centerPoint3DY="97.1">
-                                             <matrix>
-                                                  <Matrix d="0.948974609375" tx="0.05" ty="3.6"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(enterFrame){
-   this._x = _root.gameworld._x / 2;
-   this._y = _root.gameworld._y;
-}
-]]></script>
-                                             </Actionscript>
-                                             <filters>
-                                                  <AdjustColorFilter brightness="-100" contrast="1" saturation="-80" hue="180"/>
-                                             </filters>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="285" duration="7" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="292" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2974" name="天空盒" centerPoint3DX="900" centerPoint3DY="97.1">
-                                             <matrix>
-                                                  <Matrix d="0.948974609375" tx="0.05" ty="3.6"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(enterFrame){
-   this._x = _root.gameworld._x / 2;
-   this._y = _root.gameworld._y;
-}
-]]></script>
-                                             </Actionscript>
-                                             <filters>
-                                                  <AdjustColorFilter brightness="-100" contrast="1" saturation="-80" hue="180"/>
-                                             </filters>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="293" duration="45" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="338" duration="31" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2974" name="天空盒" centerPoint3DX="904" centerPoint3DY="100.8">
-                                             <matrix>
-                                                  <Matrix d="1.50704956054688" tx="4.05" ty="7.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(enterFrame){
-   this._x = _root.gameworld._x / 2;
-   this._y = _root.gameworld._y;
-}
-]]></script>
-                                             </Actionscript>
-                                             <filters>
-                                                  <AdjustColorFilter brightness="-100" contrast="1" saturation="-60" hue="42"/>
-                                             </filters>
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
@@ -10484,6 +10296,9 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1147638" publishTime="1736960659"/>
+          <PublishItem publishSize="1147638" publishTime="1736960481"/>
+          <PublishItem publishSize="1127474" publishTime="1736959343"/>
           <PublishItem publishSize="1148912" publishTime="1736954510"/>
           <PublishItem publishSize="1148945" publishTime="1736954307"/>
           <PublishItem publishSize="1148868" publishTime="1736953480"/>
@@ -10501,8 +10316,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="3087056" publishTime="1735727444"/>
           <PublishItem publishSize="3079167" publishTime="1735481215"/>
           <PublishItem publishSize="3079032" publishTime="1735480929"/>
-          <PublishItem publishSize="3078999" publishTime="1735480590"/>
-          <PublishItem publishSize="3079000" publishTime="1735480515"/>
-          <PublishItem publishSize="3078718" publishTime="1735480329"/>
      </publishHistory>
 </DOMDocument>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/溶洞" itemID="668aa0c1-000051a2" linkageExportForAS="true" linkageIdentifier="基地场景-地下2层" lastModified="1736931855">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/溶洞" itemID="668aa0c1-000051a2" linkageExportForAS="true" linkageIdentifier="基地场景-地下2层" lastModified="1736961036">
   <timeline>
     <DOMTimeline name="溶洞">
       <layers>
@@ -14,7 +14,9 @@ _root.Ymin = 330;
 背景长 = 1025;
 背景高 = 500;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
-_root.显示同伴血槽();]]></script>
+_root.显示同伴血槽();
+
+_root.关卡地图帧值 = "地下2层";]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

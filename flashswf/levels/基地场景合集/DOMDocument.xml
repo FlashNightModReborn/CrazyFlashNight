@@ -26,7 +26,7 @@
           <DOMFolderItem name="UI重构/商店相关" itemID="6689822f-000044fa"/>
           <DOMFolderItem name="UI重构/书架系统" itemID="66519f17-00003cc9"/>
           <DOMFolderItem name="UI重构/文天彩蛋UI所用素材" itemID="660ce453-00000ed0"/>
-          <DOMFolderItem name="地图" itemID="668a9fac-00004fc9"/>
+          <DOMFolderItem name="地图" itemID="668a9fac-00004fc9" isExpanded="true"/>
           <DOMFolderItem name="房间摆件" itemID="66328e0c-00001565"/>
           <DOMFolderItem name="房间摆件/乐器" itemID="66328ec2-0000158b"/>
           <DOMFolderItem name="房间摆件/乐器/话筒" itemID="66329217-000015cd"/>
@@ -816,15 +816,15 @@
           <Include href="UI重构/书架系统/书架.xml" loadImmediate="false" itemID="66519f17-00003cc7" lastModified="1716631965"/>
           <Include href="UI重构/文天彩蛋UI所用素材/文天.xml" loadImmediate="false" itemID="65c1c8c7-00000c83" lastModified="1707198663"/>
           <Include href="UI重构/文天彩蛋UI所用素材/元件 1.xml" loadImmediate="false" itemID="65c1c94d-00000c97" lastModified="1720345000"/>
-          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1736931988"/>
+          <Include href="地图/车库.xml" itemID="668aa123-00005253" lastModified="1736961068"/>
           <Include href="地图/基地1层.xml" itemID="668a9fdf-00005040" lastModified="1736930835"/>
           <Include href="地图/基地地下1层.xml" itemID="668aa054-00005128" lastModified="1736931808"/>
-          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1736932027"/>
+          <Include href="地图/基地门口.xml" itemID="668aa11b-00005252" lastModified="1736961078"/>
           <Include href="地图/健身房.xml" itemID="668aa068-0000512a" lastModified="1736931829"/>
-          <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1736931855"/>
-          <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1736931968"/>
+          <Include href="地图/溶洞.xml" itemID="668aa0c1-000051a2" lastModified="1736961036"/>
+          <Include href="地图/停机坪.xml" itemID="668aa0dc-000051de" lastModified="1736961052"/>
           <Include href="地图/武器库.xml" itemID="668aa006-0000507c" lastModified="1736931873"/>
-          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1736954420"/>
+          <Include href="地图/宿舍房间.xml" itemID="668a9fda-0000503f" lastModified="1736961017"/>
           <Include href="地图/医务室.xml" itemID="668aa0bc-000051a1" lastModified="1736955664"/>
           <Include href="地图/佣兵酒吧.xml" itemID="668aa09a-00005167" lastModified="1736931916"/>
           <Include href="房间摆件/摆件茶壶.xml" loadImmediate="false" itemID="663347f0-000017f6" lastModified="1714636784"/>
@@ -863,7 +863,7 @@
           <Include href="房间摆件/睡觉-高级床.xml" itemIcon="0" loadImmediate="false" itemID="66503816-000010db" lastModified="1716535982"/>
           <Include href="房间摆件/睡觉-普通床.xml" itemIcon="0" loadImmediate="false" itemID="66503821-000010e7" lastModified="1716536184"/>
           <Include href="健身房沙袋.xml" loadImmediate="false" itemID="65a79007-00000b58" lastModified="1722347259"/>
-          <Include href="素材库-基地场景.xml" itemID="67877067-00002014" lastModified="1736932019"/>
+          <Include href="素材库-基地场景.xml" itemID="67877067-00002014" lastModified="1736961060"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">

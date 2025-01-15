@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地门口" itemID="668aa11b-00005252" linkageExportForAS="true" linkageIdentifier="基地场景-基地门口" lastModified="1736932027" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地门口" itemID="668aa11b-00005252" linkageExportForAS="true" linkageIdentifier="基地场景-基地门口" lastModified="1736961078" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="基地门口">
       <layers>
@@ -15,7 +15,9 @@ _root.Ymin = 308;
 背景高 = 613;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
 _root.显示同伴血槽();
-_root.场景刷可雇用玩家(_root.场景佣兵出现机率);]]></script>
+_root.场景刷可雇用玩家(_root.场景佣兵出现机率);
+
+_root.关卡地图帧值 = "基地门口";]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
