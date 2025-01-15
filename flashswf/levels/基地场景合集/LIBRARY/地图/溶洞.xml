@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/溶洞" itemID="668aa0c1-000051a2" linkageExportForAS="true" linkageIdentifier="基地场景-地下2层" lastModified="1736961036">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/溶洞" itemID="668aa0c1-000051a2" linkageExportForAS="true" linkageIdentifier="基地场景-地下2层" lastModified="1736962803">
   <timeline>
     <DOMTimeline name="溶洞">
       <layers>
@@ -7,16 +7,11 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.Xmax = 1025;
-_root.Xmin = 640;
-_root.Ymax = 400;
-_root.Ymin = 330;
-背景长 = 1025;
-背景高 = 500;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
 _root.显示同伴血槽();
 
-_root.关卡地图帧值 = "地下2层";]]></script>
+_root.关卡地图帧值 = "地下2层";
+_root.配置基地场景环境信息();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -184,7 +179,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#B87BF7" locked="true">
+        <DOMLayer name="Layer 10" color="#B87BF7">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -195,12 +190,6 @@ onClipEvent(load){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _root.贴背景图();
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>

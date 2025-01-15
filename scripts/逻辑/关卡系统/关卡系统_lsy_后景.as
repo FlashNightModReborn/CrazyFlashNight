@@ -1,11 +1,16 @@
 ﻿_root.加载后景 = function(环境信息){
-	// if(环境信息.空间情况)
-	_root.地平线高度 = 环境信息.地平线高度;
+	if(环境信息.空间情况 == "室内"){
+		_root.启用后景 = false;
+		_root.天空盒.默认天空._visible = false;
+		return;
+	}
+	_root.启用后景 = true;
+	_root.天空盒.默认天空._visible = true;
+	_root.天空盒.地平线高度 = 环境信息.地平线高度;
 	if(!环境信息.后景){
 		_root.卸载后景();
 		return;
 	}
-	_root.天空盒.默认天空._visible = true;
 	if(!_root.天空盒.后景列表) {
 		_root.天空盒.后景列表 = [];
 		_root.天空盒.后景移动速度列表 = [];
@@ -20,7 +25,6 @@
 }
 
 _root.卸载后景 = function(){
-	_root.地平线高度 = null;
 	for(var i=0; i<_root.天空盒.后景列表.length; i++){
 		_root.天空盒.后景列表[i].removeMovieClip();
 	}

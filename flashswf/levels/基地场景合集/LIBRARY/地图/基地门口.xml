@@ -1,23 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地门口" itemID="668aa11b-00005252" linkageExportForAS="true" linkageIdentifier="基地场景-基地门口" lastModified="1736961078" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地门口" itemID="668aa11b-00005252" linkageExportForAS="true" linkageIdentifier="基地场景-基地门口" lastModified="1736963156" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="基地门口">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.Xmax = 960;
-_root.Xmin = 50;
-_root.Ymax = 613;
-_root.Ymin = 308;
-背景长 = 960;
-背景高 = 613;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
 _root.显示同伴血槽();
 _root.场景刷可雇用玩家(_root.场景佣兵出现机率);
 
-_root.关卡地图帧值 = "基地门口";]]></script>
+_root.关卡地图帧值 = "基地门口";
+_root.配置基地场景环境信息();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -216,7 +211,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#DE39D3" locked="true">
+        <DOMLayer name="Layer 12" color="#DE39D3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -227,12 +222,6 @@ onClipEvent(load){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _root.贴背景图();
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>

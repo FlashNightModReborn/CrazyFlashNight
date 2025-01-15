@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1736931808" lastUniqueIdentifier="24">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1736962615" lastUniqueIdentifier="24">
   <timeline>
     <DOMTimeline name="基地地下1层">
       <layers>
@@ -7,16 +7,11 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.Xmax = 1812;
-_root.Xmin = 50;
-_root.Ymax = 547;
-_root.Ymin = 260;
-背景长 = 1812;
-背景高 = 547;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
 _root.显示同伴血槽();
 
-_root.场景刷可雇用玩家(0);]]></script>
+_root.场景刷可雇用玩家(0);
+_root.配置基地场景环境信息();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -560,7 +555,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 23" color="#BA12CB" locked="true">
+        <DOMLayer name="Layer 23" color="#BA12CB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -571,12 +566,6 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _root.贴背景图();
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>

@@ -1,21 +1,17 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1736955664" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1736962981" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="医务室">
       <layers>
-        <DOMLayer name="Script Layer" color="#F9E759">
+        <DOMLayer name="Script Layer" color="#F9E759" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.Xmax = 850;
-_root.Xmin = 300;
-_root.Ymax = 547;
-_root.Ymin = 310;
-背景长 = 1100;
-背景高 = 547;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
 _root.显示同伴血槽();
-_root.场景刷可雇用玩家(_root.场景佣兵出现机率);]]></script>
+_root.场景刷可雇用玩家(_root.场景佣兵出现机率);
+
+_root.配置基地场景环境信息();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -122,11 +118,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#54E3D4" current="true" isSelected="true">
+        <DOMLayer name="Layer 8" color="#54E3D4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2952" selected="true" centerPoint3DX="622" centerPoint3DY="172.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2952" centerPoint3DX="622" centerPoint3DY="172.45">
                   <matrix>
                     <Matrix tx="576.2" ty="161.25"/>
                   </matrix>
@@ -292,12 +288,6 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _root.贴背景图();
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>

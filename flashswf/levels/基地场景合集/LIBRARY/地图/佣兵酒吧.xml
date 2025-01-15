@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1736931916" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1736962939" lastUniqueIdentifier="10">
   <timeline>
     <DOMTimeline name="佣兵酒吧">
       <layers>
@@ -7,14 +7,10 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.Xmax = 1400;
-_root.Xmin = 350;
-_root.Ymax = 547;
-_root.Ymin = 300;
-背景长 = 1450;
-背景高 = 547;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
-_root.场景刷可雇用玩家(_root.场景佣兵出现机率);]]></script>
+_root.场景刷可雇用玩家(_root.场景佣兵出现机率);
+
+_root.配置基地场景环境信息();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -173,11 +169,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="9保" color="#CF7398" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="9保" color="#CF7398" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2813" selected="true" centerPoint3DX="816.6" centerPoint3DY="392.7">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2813" centerPoint3DX="816.6" centerPoint3DY="392.7">
                   <matrix>
                     <Matrix tx="705.5" ty="273.3"/>
                   </matrix>
@@ -287,7 +283,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="场景" color="#73C0B1" autoNamed="false">
+        <DOMLayer name="场景" color="#73C0B1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -298,12 +294,6 @@ on(rollOut){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _root.贴背景图();
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

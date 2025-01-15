@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1736930835" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1736962899" lastUniqueIdentifier="21">
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
@@ -7,18 +7,10 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.Xmax = 1812;
-_root.Xmin = 50;
-_root.Ymax = 547;
-_root.Ymin = 241;
-背景长 = 1812;
-背景高 = 547;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
 _root.场景刷可雇用玩家(_root.场景佣兵出现机率);
-this.onEnterFrame = function()
-{
-	_root.横版卷屏(_root.控制目标,背景长,背景高,10);
-};]]></script>
+
+_root.配置基地场景环境信息();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -762,11 +754,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="理发师" color="#65F134" parentLayerIndex="16" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="理发师" color="#65F134" parentLayerIndex="16" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/理发师/理发师-NPC" selected="true" centerPoint3DX="350.95" centerPoint3DY="312.9">
+                <DOMSymbolInstance libraryItemName="sprite/理发师/理发师-NPC" centerPoint3DX="350.95" centerPoint3DY="312.9">
                   <matrix>
                     <Matrix tx="289.4" ty="215.25"/>
                   </matrix>
@@ -891,7 +883,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#AB9E98" locked="true" autoNamed="false">
+        <DOMLayer name="背景" color="#AB9E98" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -902,12 +894,6 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _root.贴背景图();
-}
-]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

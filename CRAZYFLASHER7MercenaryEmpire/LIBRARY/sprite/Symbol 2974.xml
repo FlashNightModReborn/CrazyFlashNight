@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2974" itemID="6597607e-00000dca" lastModified="1736959946">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2974" itemID="6597607e-00000dca" lastModified="1736964206">
   <timeline>
     <DOMTimeline name="Symbol 2974">
       <layers>
@@ -6,29 +6,16 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMShape>
-                  <fills>
-                    <FillStyle index="1">
-                      <BitmapFill bitmapPath="image/bitmap2972.jpg" bitmapIsClipped="true">
-                        <matrix>
-                          <Matrix a="20.0003051757813" d="20" ty="-187"/>
-                        </matrix>
-                      </BitmapFill>
-                    </FillStyle>
-                    <FillStyle index="2">
-                      <BitmapFill bitmapPath="image/bitmap2972.jpg" bitmapIsClipped="true">
-                        <matrix>
-                          <Matrix a="-20.0003051757813" d="20" tx="1199.95" ty="-187"/>
-                        </matrix>
-                      </BitmapFill>
-                    </FillStyle>
-                  </fills>
-                  <edges>
-                    <Edge fillStyle0="2" edges="!11999 0|23999 0!23999 0|23999 -3740!23999 -3740|11999 -3740"/>
-                    <Edge fillStyle0="2" fillStyle1="1" edges="!11999 -3740|11999 0"/>
-                    <Edge fillStyle1="1" edges="!11999 0|0 0!0 0|0 -3740!0 -3740|11999 -3740"/>
-                  </edges>
-                </DOMShape>
+                <DOMBitmapInstance libraryItemName="image/bitmap2972.jpg">
+                  <matrix>
+                    <Matrix ty="-187"/>
+                  </matrix>
+                </DOMBitmapInstance>
+                <DOMBitmapInstance libraryItemName="image/bitmap2972.jpg">
+                  <matrix>
+                    <Matrix a="-1" tx="1200" ty="-187"/>
+                  </matrix>
+                </DOMBitmapInstance>
               </elements>
             </DOMFrame>
           </frames>

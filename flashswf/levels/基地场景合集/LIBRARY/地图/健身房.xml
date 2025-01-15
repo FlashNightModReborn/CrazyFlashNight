@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1736931829" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1736962750" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="健身房">
       <layers>
@@ -7,15 +7,11 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.Xmax = 1350;
-_root.Xmin = 5;
-_root.Ymax = 545;
-_root.Ymin = 229;
-背景长 = 1350;
-背景高 = 545;
 _root.横版卷屏(_root.控制目标,背景长,背景高,1);
 _root.显示同伴血槽();
-_root.场景刷可雇用玩家(_root.场景佣兵出现机率);]]></script>
+_root.场景刷可雇用玩家(_root.场景佣兵出现机率);
+
+_root.配置基地场景环境信息();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -196,11 +192,11 @@ _root.场景刷可雇用玩家(_root.场景佣兵出现机率);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 9" color="#03E6EB" current="true" isSelected="true">
+        <DOMLayer name="Layer 9" color="#03E6EB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2429" name="挂机-深蹲" selected="true" centerPoint3DX="585.1" centerPoint3DY="498.75">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2429" name="挂机-深蹲" centerPoint3DX="585.1" centerPoint3DY="498.75">
                   <matrix>
                     <Matrix tx="483" ty="438.1"/>
                   </matrix>
@@ -330,7 +326,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#EF85C4">
+        <DOMLayer name="Layer 17" color="#EF85C4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -341,12 +337,6 @@ onClipEvent(load){
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _root.贴背景图();
-}
-]]></script>
-                  </Actionscript>
                   <filters>
                     <AdjustColorFilter/>
                   </filters>

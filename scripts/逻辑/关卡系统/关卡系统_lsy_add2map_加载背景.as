@@ -95,7 +95,7 @@ _root.贴背景图 = function(){
 		}
 	}
 
-	if(天气系统.空间情况 !== "室外") _root.天空盒.removeMovieClip();
+	// if(天气系统.空间情况 !== "室外") _root.天空盒.removeMovieClip();
 
 	游戏世界.已更新天气 = false;
 
@@ -112,6 +112,28 @@ _root.贴背景图 = function(){
 
 	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域"], 1, true);
 };
+
+_root.配置基地场景环境信息 = function(){
+	var 环境信息 = _root.天气系统.环境设置[_root.关卡标志];
+	if(环境信息){
+		_root.Xmax = 环境信息.Xmax;
+		_root.Xmin = 环境信息.Xmin;
+		_root.Ymax = 环境信息.Ymax;
+		_root.Ymin = 环境信息.Ymin;
+		_root.gameworld.背景长 = 环境信息.背景长;
+		_root.gameworld.背景高 = 环境信息.背景高;
+		//
+		_root.天气系统.配置环境(环境信息);
+		_root.加载后景(环境信息);
+	}else{
+		天气系统.空间情况 = "室外";
+		天气系统.视觉情况 = "光照";
+		天气系统.最大光照 = 9;
+		天气系统.最小光照 = 0;
+	}
+	_root.gameworld.背景.已更新环境配置 = true;
+	_root.贴背景图();
+}
 
 _root.加载场景背景 = function (动画名){
 	var 游戏世界 = _root.gameworld;
@@ -199,8 +221,8 @@ _root.横版卷屏 = function(卷屏目标, 背景长, 背景高, 缓动系数){
 		}
 	}
 	//
-	if(_root.地平线高度) {
-		_root.天空盒._y = _root.gameworld._y + _root.地平线高度;
+	if(_root.启用后景) {
+		_root.天空盒._y = _root.gameworld._y + _root.天空盒.地平线高度;
 		if(_root.天空盒.后景移动速度列表[0] > 0){
 			_root.天空盒.后景列表[0]._x = _root.gameworld._x / _root.天空盒.后景移动速度列表[0];
 		}
