@@ -382,50 +382,20 @@ _root.子弹伤害结算核心 = function(子弹, shooter, hitTarget, overlapRat
     return damageResult;
 };
 
-// --------------------子弹伤害显示--------------------
-// 专注于显示数字特效与构建伤害字符串
-// --------------------子弹伤害显示--------------------
-_root.子弹伤害显示 = function(hitTarget, damageResult:org.flashNight.arki.component.Damage.DamageResult, dodgeStatus:String) {
-    var damageList:Array = damageResult.totalDamageList;
-    var damageColor:String = damageResult.damageColor;
-    var damageSize:Number = damageResult.damageSize;
-    var damageEffects:String = damageResult.damageEffects;
-    var dodgeStatusChar:String = damageResult.dodgeStatus;
-    
-    for (var i:Number = 0; i < damageList.length; i++) {
-        var currentDamage:Number = damageList[i];
-        var displayNumber:String;
-        if (currentDamage <= 0) {
-            displayNumber = '<font color="' + damageColor + '" size="' + damageSize + '">MISS</font>';
-        } else {
-            displayNumber = '<font color="' + damageColor + '" size="' + damageSize + '">' 
-                          + dodgeStatusChar 
-                          + Math.floor(currentDamage) 
-                          + "</font>";
-        }
-        damageResult.displayFunction("", displayNumber + damageEffects, hitTarget._x, hitTarget._y);
-    }
-};
-
 
 // --------------------子弹伤害结算（主函数）--------------------
 // 继续保留原本的入口，但在里面调用 核心计算函数 和 显示函数。
 // --------------------子弹伤害结算（主函数）--------------------
 _root.子弹伤害结算 = function(子弹, shooter, hitTarget, overlapRatio, 消耗霰弹值, 躲闪状态, overlapCenter) {
-    var damageResult:DamageResult = _root.子弹伤害结算核心(
+    _root.子弹伤害结算核心(
         子弹, 
         shooter, 
         hitTarget, 
         overlapRatio, 
         消耗霰弹值, 
         躲闪状态
-    );
-    
-    _root.子弹伤害显示(
-        hitTarget, 
-        damageResult, 
-        躲闪状态
-    );
+    ).triggerDisplay(hitTarget._x, hitTarget._y);
+
     
     if (hitTarget._name === _root.控制目标) {
         _root.玩家信息界面.刷新hp显示();
