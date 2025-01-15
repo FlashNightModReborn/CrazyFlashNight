@@ -11,6 +11,7 @@ import org.flashNight.gesh.arguments.*;
 import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.gesh.xml.LoadXml.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+import org.flashNight.arki.component.Effect.*;
 
 _root.帧计时器 = {};
 ColliderFactoryRegistry.init();
@@ -275,6 +276,7 @@ _root.帧计时器.性能评估优化 = function() {
         {
             if (this.awaitConfirmation ) 
             {
+                // this.eventBus.publish("PerformanceAdjustmentTriggered", currentPerformanceLevel);
                 this.执行性能调整(currentPerformanceLevel);
                 this.性能等级 = currentPerformanceLevel;
                 this.awaitConfirmation  = false;
@@ -308,8 +310,8 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
     switch (新性能等级) 
     {
         case 0:
-            _root.效果上限 = 20;
-            _root.画面效果上限 = 20;
+            EffectSystem.maxEffectCount = 20;
+            EffectSystem.maxScreenEffectCount = 20;
             _root.面积系数 = 300000;
             _root.同屏打击数字特效上限 = 25;
             this.是否死亡特效 = true;
@@ -321,8 +323,8 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.UI系统.经济面板动效 = true;
             break;
         case 1:
-            _root.效果上限 = 15;
-            _root.画面效果上限 = 15;
+            EffectSystem.maxEffectCount = 15;
+            EffectSystem.maxScreenEffectCount = 15;
             _root.面积系数 = 450000; 
             _root.同屏打击数字特效上限 = 18;
             this.是否死亡特效 = true;
@@ -334,8 +336,8 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.UI系统.经济面板动效 = true;
             break;
         case 2:
-            _root.效果上限 = 10;
-            _root.画面效果上限 = 10;
+            EffectSystem.maxEffectCount = 10;
+            EffectSystem.maxScreenEffectCount = 10;
             _root.面积系数 = 600000; //刷佣兵数量砍半
             _root.同屏打击数字特效上限 = 12;
             this.是否死亡特效 = false;
@@ -347,8 +349,8 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.UI系统.经济面板动效 = false;
             break;
         default:
-            _root.效果上限 = 0;  // 禁用效果
-            _root.画面效果上限 = 5;  // 最低上限
+            EffectSystem.maxEffectCount = 0;  // 禁用效果
+            EffectSystem.maxScreenEffectCount = 5;  // 最低上限
             _root.面积系数 = 3000000;  //刷佣兵为原先十分之一
             _root.同屏打击数字特效上限 = 10;
             this.是否死亡特效 = false;
