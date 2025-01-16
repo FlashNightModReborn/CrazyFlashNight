@@ -37,9 +37,17 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         handles.push(CrumbleDamageHandle.instance); // 击溃处理器
         handles.push(ExecuteDamageHandle.instance); // 斩杀处理器
 
+        // 检查处理器数量是否超过32个
+        if (handles.length > 32) {
+            throw "DamageManagerFactory 支持的处理器数量最多为 32 个。";
+        }
+
         return new DamageManagerFactory(handles, 64);
     }
 
+    /**
+     * 初始化默认的基础工厂。
+     */
     public static function init():Void {
         Basic = createBasic();
     }
@@ -52,8 +60,14 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
      */
     public static function registerFactory(name:String, handles:Array, cacheCapacity:Number):Void {
         if (_namedFactories[name] != undefined) {
-            throw new Error("工厂名称 '" + name + "' 已存在，无法重复注册。");
+            throw "工厂名称 '" + name + "' 已存在，无法重复注册。";
         }
+
+        // 检查处理器数量是否超过32个
+        if (handles.length > 32) {
+            throw "DamageManagerFactory 支持的处理器数量最多为 32 个。";
+        }
+
         var factory:DamageManagerFactory = new DamageManagerFactory(handles, cacheCapacity);
         _namedFactories[name] = factory;
     }
@@ -66,9 +80,29 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     public static function getFactory(name:String):DamageManagerFactory {
         var factory:DamageManagerFactory = _namedFactories[name];
         if (factory == undefined) {
-            throw new Error("工厂 '" + name + "' 未注册，请先调用 registerFactory 注册。");
+            throw "工厂 '" + name + "' 未注册，请先调用 registerFactory 注册。";
         }
         return factory;
+    }
+
+    /**
+     * 移除已注册的具名工厂
+     * @param name 工厂名称
+     */
+    public static function removeFactory(name:String):Void {
+        if (_namedFactories[name] == undefined) {
+            throw "工厂 '" + name + "' 不存在，无法移除。";
+        }
+        delete _namedFactories[name];
+    }
+
+    /**
+     * 清空所有已注册的具名工厂
+     */
+    public static function clearAllFactories():Void {
+        for (var name:String in _namedFactories) {
+            delete _namedFactories[name];
+        }
     }
 
     // ========== 实例区域（工厂实例逻辑） ==========
@@ -86,8 +120,14 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
      */
     public function DamageManagerFactory(handles:Array, cacheCapacity:Number) {
         if (handles == null || handles.length == 0) {
-            throw new Error("创建 DamageManagerFactory 时，处理器数组不能为空。");
+            throw "创建 DamageManagerFactory 时，处理器数组不能为空。";
         }
+
+        // 检查处理器数量是否超过32个
+        if (handles.length > 32) {
+            throw "DamageManagerFactory 支持的处理器数量最多为 32 个。";
+        }
+
         _handles = handles.concat(); // 拷贝一份，避免外部修改
 
         // 构建缓存 evaluator（按位掩码创建 DamageManager）
@@ -95,6 +135,11 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var evaluator:Function = function(bitmask:Number):DamageManager {
             return self.createManagerByBitmask(bitmask);
         };
+
+        // 验证 cacheCapacity 合法性
+        if (cacheCapacity <= 0) {
+            throw "缓存容量必须大于 0。";
+        }
 
         _managerCache = new ARCEnhancedLazyCache(evaluator, cacheCapacity);
     }
@@ -106,7 +151,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
      */
     public function getDamageManager(bullet:Object):DamageManager {
         if (bullet == null) {
-            throw new Error("bullet 不能为空。");
+            throw "bullet 不能为空。";
         }
         var bitmask:Number = computeBitmask(bullet);
         return DamageManager(_managerCache.get(bitmask));
@@ -120,9 +165,20 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
      */
     public function resetFactory(newHandles:Array, newEvaluator:Function, clearCache:Boolean):Void {
         if (newHandles != null) {
+            if (newHandles.length > 32) {
+                throw "DamageManagerFactory 支持的处理器数量最多为 32 个。";
+            }
             _handles = newHandles.concat();
         }
-        _managerCache.reset(newEvaluator, clearCache);
+
+        if (newEvaluator != null) {
+            if (typeof(newEvaluator) != "function") {
+                throw "newEvaluator 必须是一个函数。";
+            }
+            _managerCache.reset(newEvaluator, clearCache);
+        } else if (clearCache) {
+            _managerCache.reset(null, true);
+        }
     }
 
     // ========== 私有方法 ==========
@@ -136,16 +192,21 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     private function computeBitmask(bullet:Object):Number {
         var bitmask:Number = 0;
         var i:Number = 0;
-        var len:Number = _handles.length; // 缓存长度
+        var handles:Array = _handles;          // 缓存引用
+        var len:Number = handles.length;       // 缓存长度
+        var handler:Object;                    
+    
         while (i < len) {
-            if (_handles[i].canHandle(bullet)) {
-                bitmask |= (1 << i); // 设置第 i 位
+            handler = handles[i];
+            if (handler.canHandle(bullet)) {
+                bitmask |= (1 << i);
             }
             i++;
         }
-
+    
         return bitmask;
     }
+
 
     /**
      * 根据位掩码构建 DamageManager（按需加载）
@@ -154,16 +215,19 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
      * @return DamageManager 实例
      */
     private function createManagerByBitmask(bitmask:Number):DamageManager {
+        var handles:Array = [];
+        var handlers:Array = _handles;         // 缓存引用
         var i:Number = 0;
-        var len:Number = _handles.length; // 缓存长度
-        var handles:Array = new Array(len);
-        while (i < len) {
-            if (((bitmask >> i) & 1) == 1) {
-                handles.push(_handles[i]);
+
+        while (bitmask != 0) {
+            if (bitmask & 1) {                   // 检查最低位是否为1
+                handles.push(handlers[i]);       // 添加对应处理器
             }
+            bitmask >>= 1;                       // 右移一位处理下一个bit
             i++;
         }
 
         return new DamageManager(handles);
     }
+
 }

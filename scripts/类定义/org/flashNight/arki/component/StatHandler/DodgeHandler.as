@@ -57,7 +57,7 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
      */
     public static function calculateDodgeState(targetMC:MovieClip, dodgeResult:Boolean, bulletMC:MovieClip):String
     {
-        var calcDamage:Number = targetMC.损伤值 + bulletMC.附加层伤害计算;
+        var calcDamage:Number = targetMC.损伤值 + bulletMC.additionalEffectDamage;
         calcDamage = (isNaN(calcDamage) ? 0 : calcDamage);
 
         // 懒闪避相关逻辑

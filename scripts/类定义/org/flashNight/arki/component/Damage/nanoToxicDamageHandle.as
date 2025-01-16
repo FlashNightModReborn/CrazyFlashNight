@@ -24,7 +24,7 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
         } else {
             nanoToxicAmount *= 0.3;
         }
-        bullet.附加层伤害计算 += nanoToxicAmount;
+        bullet.additionalEffectDamage += nanoToxicAmount;
 
         if (!isNaN(damageNumber) && damageNumber > 0) {
             target.损伤值 += nanoToxicAmount;

@@ -315,7 +315,7 @@ _root.子弹伤害结算核心 = function(子弹, shooter, hitTarget, overlapRat
         } else {
             poisonAmount *= 0.3;
         }
-        子弹.附加层伤害计算 += poisonAmount;
+        子弹.additionalEffectDamage += poisonAmount;
     }
     if (poisonAmount > 0 && !isNaN(damageNumber) && damageNumber > 0) {
         hitTarget.损伤值 += poisonAmount;
@@ -342,7 +342,7 @@ _root.子弹伤害结算核心 = function(子弹, shooter, hitTarget, overlapRat
     var crumbleAmount:Number = 0;
     if (子弹.击溃 > 0 && hitTarget.损伤值 > 1) {
         crumbleAmount = Math.floor(hitTarget.hp满血值 * 子弹.击溃 / 100);
-        子弹.附加层伤害计算 += crumbleAmount;
+        子弹.additionalEffectDamage += crumbleAmount;
         if (hitTarget.hp满血值 > 0) {
             hitTarget.hp满血值 -= crumbleAmount;
             hitTarget.损伤值 += crumbleAmount;
