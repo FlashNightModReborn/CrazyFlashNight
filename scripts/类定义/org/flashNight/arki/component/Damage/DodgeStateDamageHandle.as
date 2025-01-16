@@ -1,7 +1,5 @@
-﻿// File: org/flashNight/arki/component/Damage/DodgeStateDamageHandle.as
-
-import org.flashNight.arki.component.Damage.BaseDamageHandle;
-import org.flashNight.arki.component.Damage.DamageResult;
+﻿
+import org.flashNight.arki.component.Damage.*;
 
 class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
@@ -67,7 +65,7 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
         result.damageSize = damageSize;
     }
 
-    public function toString():Void
+    public function toString():String
     {
         return "DodgeStateDamageHandle";
     }

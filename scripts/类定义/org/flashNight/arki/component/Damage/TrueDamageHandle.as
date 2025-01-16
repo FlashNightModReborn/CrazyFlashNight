@@ -1,7 +1,6 @@
-﻿// File: org/flashNight/arki/component/Damage/TrueDamageHandle.as
+﻿
+import org.flashNight.arki.component.Damage.*;
 
-import org.flashNight.arki.component.Damage.BaseDamageHandle;
-import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.TrueDamageHandle extends BaseDamageHandle implements IDamageHandle {
     public static var instance:TrueDamageHandle = new TrueDamageHandle();
@@ -22,7 +21,7 @@ class org.flashNight.arki.component.Damage.TrueDamageHandle extends BaseDamageHa
         target.损伤值 = bullet.破坏力;
     }
 
-    public function toString():Void
+    public function toString():String
     {
         return "TrueDamageHandle";
     }

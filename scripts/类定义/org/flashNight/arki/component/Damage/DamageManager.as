@@ -1,7 +1,6 @@
-﻿// File: org/flashNight/arki/component/Damage/DamageManager.as
+﻿
+import org.flashNight.arki.component.Damage.*;
 
-import org.flashNight.arki.component.Damage.IDamageHandle;
-import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.DamageManager {
 

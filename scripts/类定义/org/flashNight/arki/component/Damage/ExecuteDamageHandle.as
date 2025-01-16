@@ -1,7 +1,5 @@
-﻿// File: org/flashNight/arki/component/Damage/ExecuteDamageHandle.as
-
-import org.flashNight.arki.component.Damage.BaseDamageHandle;
-import org.flashNight.arki.component.Damage.DamageResult;
+﻿
+import org.flashNight.arki.component.Damage.*;
 
 class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
@@ -27,7 +25,7 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
         }
     }
 
-    public function toString():Void
+    public function toString():String
     {
         return "ExecuteDamageHandle";
     }

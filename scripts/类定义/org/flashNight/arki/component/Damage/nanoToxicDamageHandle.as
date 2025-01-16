@@ -1,7 +1,6 @@
-﻿// File: org/flashNight/arki/component/Damage/PoisonDamageHandle.as
+﻿
+import org.flashNight.arki.component.Damage.*;
 
-import org.flashNight.arki.component.Damage.BaseDamageHandle;
-import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDamageHandle implements IDamageHandle {
     public static var instance:NanoToxicDamageHandle = new NanoToxicDamageHandle();
@@ -48,7 +47,7 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
         }
     }
 
-    public function toString():Void
+    public function toString():String
     {
         return "NanoToxicDamageHandle";
     }

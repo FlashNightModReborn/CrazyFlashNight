@@ -1,7 +1,6 @@
 ﻿// File: org/flashNight/arki/component/Damage/CrumbleDamageHandle.as
 
-import org.flashNight.arki.component.Damage.BaseDamageHandle;
-import org.flashNight.arki.component.Damage.DamageResult;
+import org.flashNight.arki.component.Damage.*;
 
 class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamageHandle implements IDamageHandle {
     public static var instance:CrumbleDamageHandle = new CrumbleDamageHandle();
@@ -28,7 +27,7 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
     }
 
     
-    public function toString():Void
+    public function toString():String
     {
         return "CrumbleDamageHandle";
     }

@@ -1,8 +1,6 @@
 ﻿// File: org/flashNight/arki/component/Damage/BaseDamageHandle.as
 
-import org.flashNight.arki.component.Damage.IDamageHandle;
-import org.flashNight.arki.component.Damage.DamageResult;
-
+import org.flashNight.arki.component.Damage.*;
 class org.flashNight.arki.component.Damage.BaseDamageHandle implements IDamageHandle {
 
     public function BaseDamageHandle() {
@@ -19,7 +17,7 @@ class org.flashNight.arki.component.Damage.BaseDamageHandle implements IDamageHa
         // do nothing by default
     }
 
-    public function toString():Void
+    public function toString():String
     {
         return "BaseDamageHandle";
     }

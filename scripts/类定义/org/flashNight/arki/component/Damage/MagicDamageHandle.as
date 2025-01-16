@@ -1,7 +1,6 @@
-﻿// File: org/flashNight/arki/component/Damage/MagicDamageHandle.as
+﻿
+import org.flashNight.arki.component.Damage.*;
 
-import org.flashNight.arki.component.Damage.BaseDamageHandle;
-import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.MagicDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
@@ -35,7 +34,7 @@ class org.flashNight.arki.component.Damage.MagicDamageHandle extends BaseDamageH
         target.损伤值 = Math.floor(bullet.破坏力 * (100 - enemyMagicResist) / 100);
     }
 
-    public function toString():Void
+    public function toString():String
     {
         return "MagicDamageHandle";
     }
