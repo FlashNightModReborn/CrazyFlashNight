@@ -1,6 +1,7 @@
 ﻿// File: org/flashNight/arki/component/Damage/BasicDamageHandle.as
 
 import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.StatHandler.*;
 
 class org.flashNight.arki.component.Damage.BasicDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
@@ -16,7 +17,7 @@ class org.flashNight.arki.component.Damage.BasicDamageHandle extends BaseDamageH
     }
 
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        target.损伤值 = bullet.破坏力 * _root.防御减伤比(target.防御力);
+        target.损伤值 = bullet.破坏力 * DamageResistanceHandler.defenseDamageRatio(target.防御力);
     }
 
     

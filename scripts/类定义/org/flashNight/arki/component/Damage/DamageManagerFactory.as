@@ -3,7 +3,7 @@ import org.flashNight.gesh.func.*;
 
 /**
  * DamageManagerFactory
- * 
+ *
  * 伤害管理器工厂类：
  * - 支持动态构建 DamageManager，并根据子弹属性选择合适的伤害处理器。
  * - 通过位掩码 + ARCEnhancedLazyCache 实现惰性创建和高效缓存。
@@ -15,9 +15,8 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
 
     /** 存储具名工厂的映射表（name -> factory） */
     private static var _namedFactories:Object = {};
-
     /** 默认的基础工厂，预置了常用的伤害处理器 */
-    public static var Basic:DamageManagerFactory = createBasic();
+    public static var Basic:DamageManagerFactory;
 
     /**
      * 创建一个默认的基础伤害工厂，内置常用处理器。
@@ -27,18 +26,22 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var handles:Array = new Array();
 
         // 按顺序注册常用的伤害处理器
-        handles.push(CritDamageHandle.instance);          // 暴击处理器
-        handles.push(TrueDamageHandle.instance);          // 真伤处理器
-        handles.push(MagicDamageHandle.instance);         // 魔法伤害处理器
-        handles.push(BasicDamageHandle.instance);         // 基础伤害处理器
-        handles.push(DodgeStateDamageHandle.instance);    // 躲闪状态处理器
-        handles.push(MultiShotDamageHandle.instance);     // 联弹处理器
-        handles.push(NanoToxicDamageHandle.instance);     // 毒素处理器
-        handles.push(LifeStealDamageHandle.instance);     // 吸血处理器
-        handles.push(CrumbleDamageHandle.instance);       // 击溃处理器
-        handles.push(ExecuteDamageHandle.instance);       // 斩杀处理器
+        handles.push(CritDamageHandle.instance); // 暴击处理器
+        handles.push(TrueDamageHandle.instance); // 真伤处理器
+        handles.push(MagicDamageHandle.instance); // 魔法伤害处理器
+        handles.push(BasicDamageHandle.instance); // 基础伤害处理器
+        handles.push(DodgeStateDamageHandle.instance); // 躲闪状态处理器
+        handles.push(MultiShotDamageHandle.instance); // 联弹处理器
+        handles.push(NanoToxicDamageHandle.instance); // 毒素处理器
+        handles.push(LifeStealDamageHandle.instance); // 吸血处理器
+        handles.push(CrumbleDamageHandle.instance); // 击溃处理器
+        handles.push(ExecuteDamageHandle.instance); // 斩杀处理器
 
         return new DamageManagerFactory(handles, 64);
+    }
+
+    public static function init():Void {
+        Basic = createBasic();
     }
 
     /**
@@ -133,12 +136,11 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     private function computeBitmask(bullet:Object):Number {
         var bitmask:Number = 0;
         var i:Number = 0;
-        var len:Number = _handles.length;  // 缓存长度
-
+        var len:Number = _handles.length; // 缓存长度
         while (i < len) {
             var handle:IDamageHandle = IDamageHandle(_handles[i]);
             if (handle.canHandle(bullet)) {
-                bitmask |= (1 << i);  // 设置第 i 位
+                bitmask |= (1 << i); // 设置第 i 位
             }
             i++;
         }
@@ -155,7 +157,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     private function createManagerByBitmask(bitmask:Number):DamageManager {
         var manager:DamageManager = new DamageManager();
         var i:Number = 0;
-        var len:Number = _handles.length;  // 缓存长度
+        var len:Number = _handles.length; // 缓存长度
 
         while (i < len) {
             if (((bitmask >> i) & 1) == 1) {

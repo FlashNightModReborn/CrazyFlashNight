@@ -59,4 +59,18 @@ class org.flashNight.arki.component.Damage.DamageManager {
             handle.handleBulletDamage(bullet, shooter, target, this, result);
         }
     }
+
+    public function toString():String
+    {
+        var str:String;
+
+        str += "DamageManager: \n";
+
+        for(var i:Number = 0; i < _allHandles.length; ++i)
+        {
+            str += "  Handle: " + _allHandles[i].toString() + "\n";
+        }
+
+        return str;
+    }
 }
