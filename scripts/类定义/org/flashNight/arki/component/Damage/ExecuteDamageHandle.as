@@ -6,7 +6,7 @@ import org.flashNight.arki.component.Damage.DamageResult;
 class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
     public static var instance:ExecuteDamageHandle = new ExecuteDamageHandle();
-    
+
     public function ExecuteDamageHandle() {
         super();
     }
@@ -25,5 +25,10 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
                 result.addDamageEffect('<font color="' + executeColor + '" size="20"> 斩</font>');
             }
         }
+    }
+
+    public function toString():Void
+    {
+        return "ExecuteDamageHandle";
     }
 }

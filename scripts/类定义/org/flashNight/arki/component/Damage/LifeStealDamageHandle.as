@@ -6,7 +6,7 @@ import org.flashNight.arki.component.Damage.DamageResult;
 class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDamageHandle implements IDamageHandle {
     
     public static var instance:LifeStealDamageHandle = new LifeStealDamageHandle();
-    
+
     public function LifeStealDamageHandle() {
         super();
     }
@@ -30,5 +30,10 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
                 '<font color="#bb00aa" size="15"> 汲:' + Math.floor(lifeStealAmount / actualScatterUsed).toString() + "</font>"
             );
         }
+    }
+    
+    public function toString():Void
+    {
+        return "LifeStealDamageHandle";
     }
 }

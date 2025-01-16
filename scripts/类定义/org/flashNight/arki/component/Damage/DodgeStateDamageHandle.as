@@ -6,7 +6,7 @@ import org.flashNight.arki.component.Damage.DamageResult;
 class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
     public static var instance:DodgeStateDamageHandle = new DodgeStateDamageHandle();
-    
+
     public function DodgeStateDamageHandle() {
         super();
     }
@@ -65,5 +65,10 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
         }
 
         result.damageSize = damageSize;
+    }
+
+    public function toString():Void
+    {
+        return "DodgeStateDamageHandle";
     }
 }

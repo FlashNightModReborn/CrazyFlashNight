@@ -18,4 +18,9 @@ class org.flashNight.arki.component.Damage.BaseDamageHandle implements IDamageHa
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
         // do nothing by default
     }
+
+    public function toString():Void
+    {
+        return "BaseDamageHandle";
+    }
 }

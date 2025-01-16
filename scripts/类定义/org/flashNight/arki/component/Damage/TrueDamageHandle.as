@@ -5,7 +5,7 @@ import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.TrueDamageHandle extends BaseDamageHandle implements IDamageHandle {
     public static var instance:TrueDamageHandle = new TrueDamageHandle();
-    
+
     public function TrueDamageHandle() {
         super();
     }
@@ -20,5 +20,10 @@ class org.flashNight.arki.component.Damage.TrueDamageHandle extends BaseDamageHa
         result.setDamageColor(trueDamageColor);
         result.addDamageEffect('<font color="' + trueDamageColor + '" size="20"> 真</font>');
         target.损伤值 = bullet.破坏力;
+    }
+
+    public function toString():Void
+    {
+        return "TrueDamageHandle";
     }
 }

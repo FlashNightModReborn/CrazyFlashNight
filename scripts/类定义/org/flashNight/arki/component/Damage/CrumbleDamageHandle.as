@@ -5,7 +5,7 @@ import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamageHandle implements IDamageHandle {
     public static var instance:CrumbleDamageHandle = new CrumbleDamageHandle();
-    
+
     public function CrumbleDamageHandle() {
         super();
     }
@@ -25,5 +25,11 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
             }
             result.addDamageEffect('<font color="#FF3333" size="20"> 溃</font>');
         }
+    }
+
+    
+    public function toString():Void
+    {
+        return "CrumbleDamageHandle";
     }
 }

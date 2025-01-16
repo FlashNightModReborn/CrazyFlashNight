@@ -5,7 +5,7 @@ import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDamageHandle implements IDamageHandle {
     public static var instance:MultiShotDamageHandle = new MultiShotDamageHandle();
-    
+
     public function MultiShotDamageHandle() {
         super();
     }
@@ -33,5 +33,10 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
 
         // 乘以实际消耗霰弹值
         target.损伤值 *= actualScatterUsed;
+    }
+
+    public function toString():Void
+    {
+        return "MultiShotDamageHandle";
     }
 }

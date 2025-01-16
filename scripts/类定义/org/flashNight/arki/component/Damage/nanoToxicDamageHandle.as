@@ -3,10 +3,10 @@
 import org.flashNight.arki.component.Damage.BaseDamageHandle;
 import org.flashNight.arki.component.Damage.DamageResult;
 
-class org.flashNight.arki.component.Damage.nanoToxicDamageHandle extends BaseDamageHandle implements IDamageHandle {
-    public static var instance:nanoToxicDamageHandle = new nanoToxicDamageHandle();
-    
-    public function nanoToxicDamageHandle() {
+class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDamageHandle implements IDamageHandle {
+    public static var instance:NanoToxicDamageHandle = new NanoToxicDamageHandle();
+
+    public function NanoToxicDamageHandle() {
         super();
     }
 
@@ -46,5 +46,10 @@ class org.flashNight.arki.component.Damage.nanoToxicDamageHandle extends BaseDam
                 target.淬毒 = nanoToxicReturnAmount;
             }
         }
+    }
+
+    public function toString():Void
+    {
+        return "NanoToxicDamageHandle";
     }
 }

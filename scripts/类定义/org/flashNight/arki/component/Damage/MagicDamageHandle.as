@@ -34,4 +34,9 @@ class org.flashNight.arki.component.Damage.MagicDamageHandle extends BaseDamageH
         enemyMagicResist = isNaN(enemyMagicResist) ? 20 : Math.min(Math.max(enemyMagicResist, -1000), 100);
         target.损伤值 = Math.floor(bullet.破坏力 * (100 - enemyMagicResist) / 100);
     }
+
+    public function toString():Void
+    {
+        return "MagicDamageHandle";
+    }
 }
