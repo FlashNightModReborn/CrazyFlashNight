@@ -3,10 +3,17 @@
 import org.flashNight.arki.component.Damage.BaseDamageHandle;
 import org.flashNight.arki.component.Damage.DamageResult;
 
-class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDamageHandle {
-
+class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDamageHandle implements IDamageHandle {
+    
+    public static var instance:LifeStealDamageHandle = new LifeStealDamageHandle();
+    
     public function LifeStealDamageHandle() {
         super();
+    }
+
+    // 判断子弹是否具有吸血属性
+    public function canHandle(bullet:Object):Boolean {
+        return (bullet.吸血 > 0);
     }
 
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {

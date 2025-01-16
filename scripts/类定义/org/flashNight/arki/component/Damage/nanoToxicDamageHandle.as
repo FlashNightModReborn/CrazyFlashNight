@@ -3,29 +3,35 @@
 import org.flashNight.arki.component.Damage.BaseDamageHandle;
 import org.flashNight.arki.component.Damage.DamageResult;
 
-class org.flashNight.arki.component.Damage.nanoToxicDamageHandle extends BaseDamageHandle {
-
+class org.flashNight.arki.component.Damage.nanoToxicDamageHandle extends BaseDamageHandle implements IDamageHandle {
+    public static var instance:nanoToxicDamageHandle = new nanoToxicDamageHandle();
+    
     public function nanoToxicDamageHandle() {
         super();
     }
 
+    // 判断子弹是否具有毒属性
+    public function canHandle(bullet:Object):Boolean {
+        return (bullet.nanoToxic > 0);
+    }
+
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
         var damageNumber:Number = target.损伤值;
-        var poisonAmount:Number = 0;
+        var nanoToxicAmount:Number = 0;
 
         if (bullet.nanoToxic > 0) {
-            poisonAmount = bullet.nanoToxic;
+            nanoToxicAmount = bullet.nanoToxic;
             // 普通检测？
             if (bullet.普通检测) {
-                poisonAmount *= 1;
+                nanoToxicAmount *= 1;
             } else {
-                poisonAmount *= 0.3;
+                nanoToxicAmount *= 0.3;
             }
-            bullet.附加层伤害计算 += poisonAmount;
+            bullet.附加层伤害计算 += nanoToxicAmount;
         }
 
-        if (poisonAmount > 0 && !isNaN(damageNumber) && damageNumber > 0) {
-            target.损伤值 += poisonAmount;
+        if (nanoToxicAmount > 0 && !isNaN(damageNumber) && damageNumber > 0) {
+            target.损伤值 += nanoToxicAmount;
             damageNumber = target.损伤值;
             result.addDamageEffect('<font color="#66dd00" size="20"> 毒</font>');
 
@@ -33,11 +39,11 @@ class org.flashNight.arki.component.Damage.nanoToxicDamageHandle extends BaseDam
                 shooter.淬毒 -= bullet.nanoToxicDecay;
             }
             if (target.毒返 > 0) {
-                var poisonReturnAmount:Number = poisonAmount * target.毒返;
+                var nanoToxicReturnAmount:Number = nanoToxicAmount * target.毒返;
                 if (target.毒返函数) {
-                    target.毒返函数(poisonAmount, poisonReturnAmount);
+                    target.毒返函数(nanoToxicAmount, nanoToxicReturnAmount);
                 }
-                target.淬毒 = poisonReturnAmount;
+                target.淬毒 = nanoToxicReturnAmount;
             }
         }
     }

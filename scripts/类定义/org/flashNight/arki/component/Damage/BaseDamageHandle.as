@@ -1,4 +1,7 @@
-﻿import org.flashNight.arki.component.Damage.*;
+﻿// File: org/flashNight/arki/component/Damage/BaseDamageHandle.as
+
+import org.flashNight.arki.component.Damage.IDamageHandle;
+import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.BaseDamageHandle implements IDamageHandle {
 
@@ -6,7 +9,12 @@ class org.flashNight.arki.component.Damage.BaseDamageHandle implements IDamageHa
         // 构造函数
     }
 
-    // 默认空实现，如需则在子类中覆盖
+    // 默认实现：不处理任何子弹
+    public function canHandle(bullet:Object):Boolean {
+        return false;
+    }
+
+    // 默认空实现，子类需重写
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
         // do nothing by default
     }

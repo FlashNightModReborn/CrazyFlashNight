@@ -5,19 +5,42 @@ import org.flashNight.arki.component.Damage.DamageResult;
 
 class org.flashNight.arki.component.Damage.DamageManager {
 
-    private var _handles:Array;          // IDamageHandle 列表
-    public var overlapRatio:Number;      // 用于多段 / 霰弹计算
-    public var dodgeState:String;        // 躲闪状态
-    // 你也可以在这里加更多需要在各个 Handle 中共享的变量
+    private var _allHandles:Array;    // 所有可用的处理器
+    private var _handles:Array;       // 当前适用的处理器
+    public var overlapRatio:Number;   // 用于多段 / 霰弹计算
+    public var dodgeState:String;     // 躲闪状态
 
     public function DamageManager() {
+        this._allHandles = [];
         this._handles = [];
         this.overlapRatio = 1;
         this.dodgeState = "";
     }
 
     /**
-     * 添加一个处理器到列表
+     * 注册所有可能的处理器
+     * 通常在初始化时调用
+     */
+    public function registerHandle(handle:IDamageHandle):Void {
+        this._allHandles.push(handle);
+    }
+
+    /**
+     * 根据子弹属性，选择性地添加处理器到 _handles
+     * @param bullet 子弹对象
+     */
+    public function initializeHandles(bullet:Object):Void {
+        this._handles = [];
+        for (var i:Number = 0; i < this._allHandles.length; i++) {
+            var handle:IDamageHandle = IDamageHandle(this._allHandles[i]);
+            if (handle.canHandle(bullet)) {
+                this._handles.push(handle);
+            }
+        }
+    }
+
+    /**
+     * 添加一个处理器到列表（兼容旧方法）
      */
     public function addHandle(handle:IDamageHandle):Void {
         this._handles.push(handle);

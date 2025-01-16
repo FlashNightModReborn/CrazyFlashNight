@@ -3,18 +3,24 @@
 import org.flashNight.arki.component.Damage.BaseDamageHandle;
 import org.flashNight.arki.component.Damage.DamageResult;
 
-class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDamageHandle {
+class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
+    public static var instance:DodgeStateDamageHandle = new DodgeStateDamageHandle();
+    
     public function DodgeStateDamageHandle() {
         super();
     }
 
+    // 判断是否有躲闪状态需要处理
+    public function canHandle(bullet:Object):Boolean {
+        return (true); // 始终处理躲闪状态
+    }
+
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        // 事先获取 target.损伤值
         var damageNumber:Number = target.损伤值;
         var damageSize:Number = result.damageSize;
-        var dodgeState:String = manager["dodgeState"]; // 也可由 manager 传或 bullet 参数传
-        
+        var dodgeState:String = manager.dodgeState;
+
         switch (dodgeState) {
             case "跳弹":
                 damageNumber = _root.跳弹伤害计算(damageNumber, target.防御力);
@@ -53,7 +59,6 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
                 }
                 break;
             default:
-                // 默认状态：最少伤害为1
                 damageNumber = Math.max(Math.floor(damageNumber), 1);
                 target.损伤值 = damageNumber;
                 _root.受击变红(120, target);

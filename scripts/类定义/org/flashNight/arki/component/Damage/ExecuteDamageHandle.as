@@ -3,10 +3,17 @@
 import org.flashNight.arki.component.Damage.BaseDamageHandle;
 import org.flashNight.arki.component.Damage.DamageResult;
 
-class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamageHandle {
+class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
+    public static var instance:ExecuteDamageHandle = new ExecuteDamageHandle();
+    
     public function ExecuteDamageHandle() {
         super();
+    }
+
+    // 判断子弹是否具有斩杀属性
+    public function canHandle(bullet:Object):Boolean {
+        return (bullet.斩杀 != null);
     }
 
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
