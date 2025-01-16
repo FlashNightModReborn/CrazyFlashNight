@@ -16,7 +16,7 @@ class org.flashNight.arki.component.Damage.CritDamageHandle extends BaseDamageHa
     }
 
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        bullet.破坏力 = bullet.破坏力 * bullet.暴击(bullet);
+        bullet.破坏力 *= bullet.暴击(bullet);
     }
 
     

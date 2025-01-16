@@ -16,7 +16,7 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
 
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
         if (bullet.击溃 > 0 && target.损伤值 > 1) {
-            var crumbleAmount:Number = Math.floor(target.hp满血值 * bullet.击溃 / 100);
+            var crumbleAmount:Number = (target.hp满血值 * bullet.击溃 / 100) >> 0;
             bullet.附加层伤害计算 += crumbleAmount;
             if (target.hp满血值 > 0) {
                 target.hp满血值 -= crumbleAmount;

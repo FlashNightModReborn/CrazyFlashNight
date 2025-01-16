@@ -16,20 +16,17 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
 
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
         var damageNumber:Number = target.损伤值;
-        var nanoToxicAmount:Number = 0;
+        var nanoToxicAmount:Number = bullet.nanoToxic;
 
-        if (bullet.nanoToxic > 0) {
-            nanoToxicAmount = bullet.nanoToxic;
-            // 普通检测？
-            if (bullet.普通检测) {
-                nanoToxicAmount *= 1;
-            } else {
-                nanoToxicAmount *= 0.3;
-            }
-            bullet.附加层伤害计算 += nanoToxicAmount;
+        // 普通检测？
+        if (bullet.普通检测) {
+            nanoToxicAmount *= 1;
+        } else {
+            nanoToxicAmount *= 0.3;
         }
+        bullet.附加层伤害计算 += nanoToxicAmount;
 
-        if (nanoToxicAmount > 0 && !isNaN(damageNumber) && damageNumber > 0) {
+        if (!isNaN(damageNumber) && damageNumber > 0) {
             target.损伤值 += nanoToxicAmount;
             damageNumber = target.损伤值;
             result.addDamageEffect('<font color="#66dd00" size="20"> 毒</font>');

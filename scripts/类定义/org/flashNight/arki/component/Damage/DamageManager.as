@@ -1,48 +1,27 @@
-﻿
-import org.flashNight.arki.component.Damage.*;
+﻿import org.flashNight.arki.component.Damage.*;
 
-
+/**
+ * 精简版 DamageManager
+ * - 只包含必要的处理器，由 DamageManagerFactory 注入。
+ * - 专注于执行伤害处理逻辑，避免冗余存储。
+ */
 class org.flashNight.arki.component.Damage.DamageManager {
 
-    private var _allHandles:Array;    // 所有可用的处理器
-    private var _handles:Array;       // 当前适用的处理器
-    public var overlapRatio:Number;   // 用于多段 / 霰弹计算
+    private var _handles:Array;       // 适用的处理器，由工厂注入
+    private var _handleCount:Number;  // 处理器数量
+
+    public var overlapRatio:Number;   // 多段 / 霰弹计算
     public var dodgeState:String;     // 躲闪状态
 
-    public function DamageManager() {
-        this._allHandles = [];
-        this._handles = [];
+    /**
+     * 构造函数
+     * @param handles 适用的伤害处理器列表（已筛选）
+     */
+    public function DamageManager(handles:Array) {
+        this._handles = handles;          // 直接接受工厂筛选好的处理器
+        this._handleCount = handles.length;
         this.overlapRatio = 1;
         this.dodgeState = "";
-    }
-
-    /**
-     * 注册所有可能的处理器
-     * 通常在初始化时调用
-     */
-    public function registerHandle(handle:IDamageHandle):Void {
-        this._allHandles.push(handle);
-    }
-
-    /**
-     * 根据子弹属性，选择性地添加处理器到 _handles
-     * @param bullet 子弹对象
-     */
-    public function initializeHandles(bullet:Object):Void {
-        this._handles = [];
-        for (var i:Number = 0; i < this._allHandles.length; i++) {
-            var handle:IDamageHandle = IDamageHandle(this._allHandles[i]);
-            if (handle.canHandle(bullet)) {
-                this._handles.push(handle);
-            }
-        }
-    }
-
-    /**
-     * 添加一个处理器到列表（兼容旧方法）
-     */
-    public function addHandle(handle:IDamageHandle):Void {
-        this._handles.push(handle);
     }
 
     /**
@@ -53,24 +32,19 @@ class org.flashNight.arki.component.Damage.DamageManager {
      * @param result   DamageResult
      */
     public function execute(bullet:Object, shooter:Object, target:Object, result:DamageResult):Void {
-        // 顺序调用 handle
-        for (var i:Number = 0; i < this._handles.length; i++) {
-            var handle:IDamageHandle = IDamageHandle(this._handles[i]);
-            handle.handleBulletDamage(bullet, shooter, target, this, result);
+        for (var i:Number = 0; i < _handleCount; i++) {
+            _handles[i].handleBulletDamage(bullet, shooter, target, this, result);
         }
     }
 
-    public function toString():String
-    {
-        var str:String;
-
-        str += "DamageManager: \n";
-
-        for(var i:Number = 0; i < _allHandles.length; ++i)
-        {
-            str += "  Handle: " + _allHandles[i].toString() + "\n";
+    /**
+     * 输出 DamageManager 状态信息
+     */
+    public function toString():String {
+        var str:String = "DamageManager:\n";
+        for (var i:Number = 0; i < _handleCount; ++i) {
+            str += "  Handle: " + _handles[i].toString() + "\n";
         }
-
         return str;
     }
 }

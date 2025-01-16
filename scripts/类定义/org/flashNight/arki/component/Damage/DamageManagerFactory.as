@@ -138,8 +138,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var i:Number = 0;
         var len:Number = _handles.length; // 缓存长度
         while (i < len) {
-            var handle:IDamageHandle = IDamageHandle(_handles[i]);
-            if (handle.canHandle(bullet)) {
+            if (_handles[i].canHandle(bullet)) {
                 bitmask |= (1 << i); // 设置第 i 位
             }
             i++;
@@ -155,17 +154,16 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
      * @return DamageManager 实例
      */
     private function createManagerByBitmask(bitmask:Number):DamageManager {
-        var manager:DamageManager = new DamageManager();
         var i:Number = 0;
         var len:Number = _handles.length; // 缓存长度
-
+        var handles:Array = new Array(len);
         while (i < len) {
             if (((bitmask >> i) & 1) == 1) {
-                manager.addHandle(_handles[i]);
+                handles.push(_handles[i]);
             }
             i++;
         }
 
-        return manager;
+        return new DamageManager(handles);
     }
 }

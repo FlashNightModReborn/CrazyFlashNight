@@ -16,7 +16,7 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
     }
 
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        if (bullet.吸血 > 0 && target.损伤值 > 1) {
+        if (target.损伤值 > 1) {
             var actualScatterUsed:Number = result.actualScatterUsed;
             var lifeStealAmount:Number = Math.floor(
                 Math.max(
