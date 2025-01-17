@@ -35,14 +35,14 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var handles:Array = new Array();
 
         // 按顺序注册常用的伤害处理器
-        handles.push(CritDamageHandle.instance); // 暴击处理器
-        handles.push(UniversalDamageHandle.instance); // 通用处理器
-        handles.push(DodgeStateDamageHandle.instance); // 躲闪状态处理器
-        handles.push(MultiShotDamageHandle.instance); // 联弹处理器
-        handles.push(NanoToxicDamageHandle.instance); // 毒素处理器
-        handles.push(LifeStealDamageHandle.instance); // 吸血处理器
-        handles.push(CrumbleDamageHandle.instance); // 击溃处理器
-        handles.push(ExecuteDamageHandle.instance); // 斩杀处理器
+        handles.push(CritDamageHandle.getInstance()); // 暴击处理器
+        handles.push(UniversalDamageHandle.getInstance()); // 通用处理器
+        handles.push(DodgeStateDamageHandle.getInstance()); // 躲闪状态处理器
+        handles.push(MultiShotDamageHandle.getInstance()); // 联弹处理器
+        handles.push(NanoToxicDamageHandle.getInstance()); // 毒素处理器
+        handles.push(LifeStealDamageHandle.getInstance()); // 吸血处理器
+        handles.push(CrumbleDamageHandle.getInstance()); // 击溃处理器
+        handles.push(ExecuteDamageHandle.getInstance()); // 斩杀处理器
 
         // 检查处理器数量是否超过32个
         if (handles.length > 32) {
@@ -127,6 +127,12 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     /** 用于缓存 DamageManager 的 LazyCache */
     private var _managerCache:ARCEnhancedLazyCache;
 
+    /** 预计算的 skipCheck 位掩码 */
+    private var _skipCheckBitmask:Number;
+
+    /** 仅包含需要进行 canHandle 检查的处理器的索引 */
+    private var _conditionalHandlerIndices:Array;
+
     /**
      * 构造函数。
      * 初始化 DamageManagerFactory 实例。
@@ -147,114 +153,24 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
 
         _handles = handles.concat(); // 拷贝一份，避免外部修改
 
+        // 预计算 skipCheck 位掩码和需要条件检查的处理器索引
+        _skipCheckBitmask = 0;
+        _conditionalHandlerIndices = [];
+        for (var i:Number = 0; i < _handles.length; i++) {
+            var handler:BaseDamageHandle = _handles[i];
+            if (handler.skipCheck) {
+                _skipCheckBitmask |= (1 << i);
+            } else {
+                _conditionalHandlerIndices.push(i);
+            }
+        }
+
         // 根据处理器数量创建不同的 evaluator 以优化性能
         var evaluator:Function;
         var h = this._handles;
         var handlerCount:Number = _handles.length;
 
-        if (handlerCount <= 8) {
-            // 适用于最多8个处理器的 evaluator
-            evaluator = function(bitmask:Number):DamageManager {
-                var handles:Array = [];
-                var bm:Number = bitmask;
-
-                do {
-                    var index:Number = 0;
-                    var temp:Number = bm & -bm;  // 提取最低位的 1
-
-                    // 快速位移法计算最低位 1 的索引，最多8位
-                    
-                    if (temp >= 16) { 
-                        temp >>= 4; 
-                        index += 4;  
-                    }
-                    if (temp >= 4) { 
-                        temp >>= 2; 
-                        index += 2;  
-                    }
-                    if (temp >= 2) { 
-                        index += 1; 
-                    }
-
-                    // 将对应的处理器加入 handles 数组
-                    handles[handles.length] = h[index];
-                } while ((bm &= (bm - 1)) != 0);
-
-                return new DamageManager(handles);
-            };
-        }
-        else if (handlerCount <= 16) {
-            // 适用于最多16个处理器的 evaluator
-            evaluator = function(bitmask:Number):DamageManager {
-                var handles:Array = [];
-                var bm:Number = bitmask;
-
-                do {
-                    var index:Number = 0;
-                    var temp:Number = bm & -bm;  // 提取最低位的 1
-
-                    // 快速位移法计算最低位 1 的索引，最多16位
-                    if (temp >= 256) { 
-                        temp >>= 8; 
-                        index += 8;  
-                    }
-                    if (temp >= 16) { 
-                        temp >>= 4; 
-                        index += 4;  
-                    }
-                    if (temp >= 4) { 
-                        temp >>= 2; 
-                        index += 2;  
-                    }
-                    if (temp >= 2) { 
-                        index += 1; 
-                    }
-
-                    // 将对应的处理器加入 handles 数组
-                    handles[handles.length] = h[index];
-                } while ((bm &= (bm - 1)) != 0);
-
-                return new DamageManager(handles);
-            };
-        }
-        else {
-            // 适用于最多32个处理器的 evaluator
-            evaluator = function(bitmask:Number):DamageManager {
-                var handles:Array = [];
-                var bm:Number = bitmask;
-
-                do {
-                    var index:Number = 0;
-                    var temp:Number = bm & -bm;  // 提取最低位的 1
-
-                    // 快速位移法计算最低位 1 的索引，最多32位
-                    if (temp >= 65536) { 
-                        temp >>= 16; 
-                        index += 16; 
-                    }
-                    if (temp >= 256) { 
-                        temp >>= 8;  
-                        index += 8;  
-                    }
-                    if (temp >= 16) { 
-                        temp >>= 4;  
-                        index += 4;  
-                    }
-                    if (temp >= 4) { 
-                        temp >>= 2;  
-                        index += 2;  
-                    }
-                    if (temp >= 2) { 
-                        index += 1; 
-                    }
-
-                    // 将对应的处理器加入 handles 数组
-                    handles[handles.length] = h[index];
-                } while ((bm &= (bm - 1)) != 0);
-
-                return new DamageManager(handles);
-            };
-        }
+        evaluator = createEvaluator(handlerCount, h);
 
         // 验证 cacheCapacity 合法性
         if (cacheCapacity <= 0) {
@@ -265,6 +181,79 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     }
 
     /**
+     * 创建 evaluator 函数，根据处理器数量进行优化。
+     *
+     * @param handlerCount 处理器数量
+     * @param h            处理器数组
+     * @return 优化后的 evaluator 函数
+     */
+    private function createEvaluator(handlerCount:Number, h:Array):Function {
+        if (handlerCount <= 8) {
+            // 适用于最多8个处理器的 evaluator
+            return function(bitmask:Number):DamageManager {
+                var handles:Array = [];
+                var bm:Number = bitmask;
+
+                do {
+                    var index:Number = 0;
+                    var temp:Number = bm & -bm;  // 提取最低位的 1
+
+                    // 快速位移法计算最低位 1 的索引，最多8位
+                    if ((temp >= 16) && (temp >>= 4)) index += 4;
+                    if ((temp >= 4) && (temp >>= 2)) index += 2;
+                    // 合并判断和赋值
+                    handles[handles.length] = h[index + (temp >= 2)];
+                } while ((bm &= (bm - 1)) != 0);
+
+                return new DamageManager(handles);
+            };
+        }
+        else if (handlerCount <= 16) {
+            // 适用于最多16个处理器的 evaluator
+            return function(bitmask:Number):DamageManager {
+                var handles:Array = [];
+                var bm:Number = bitmask;
+
+                do {
+                    var index:Number = 0;
+                    var temp:Number = bm & -bm;  // 提取最低位的 1
+
+                    // 快速位移法计算最低位 1 的索引，最多16位
+                    if ((temp >= 256) && (temp >>= 8)) index += 8;
+                    if ((temp >= 16) && (temp >>= 4)) index += 4;
+                    if ((temp >= 4) && (temp >>= 2)) index += 2;
+                    // 合并判断和赋值
+                    handles[handles.length] = h[index + (temp >= 2)];
+                } while ((bm &= (bm - 1)) != 0);
+
+                return new DamageManager(handles);
+            };
+        }
+        else {
+            // 适用于最多32个处理器的 evaluator
+            return function(bitmask:Number):DamageManager {
+                var handles:Array = [];
+                var bm:Number = bitmask;
+
+                do {
+                    var index:Number = 0;
+                    var temp:Number = bm & -bm;  // 提取最低位的 1
+
+                    // 快速位移法计算最低位 1 的索引，最多32位
+                    if ((temp >= 65536) && (temp >>= 16)) index += 16;
+                    if ((temp >= 256) && (temp >>= 8)) index += 8;
+                    if ((temp >= 16) && (temp >>= 4)) index += 4;
+                    if ((temp >= 4) && (temp >>= 2)) index += 2;
+                    // 合并判断和赋值
+                    handles[handles.length] = h[index + (temp >= 2)];
+                } while ((bm &= (bm - 1)) != 0);
+
+                return new DamageManager(handles);
+            };
+        }
+    }
+
+    /**
      * 获取 DamageManager（自动缓存）。
      * 根据子弹属性选择合适的处理器，并返回对应的 DamageManager 实例。
      *
@@ -272,24 +261,26 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
      * @return DamageManager 实例
      */
     public function getDamageManager(bullet:Object):DamageManager {
-        var bitmask:Number = 0;
+        var bitmask:Number = _skipCheckBitmask; // 初始化为预计算的 skipCheck 位掩码
+        var handles:Array = _handles; // 缓存 handles 数组
+
+        // 仅遍历需要进行 canHandle 检查的处理器
+        var conditionalIndices:Array = _conditionalHandlerIndices;
+        var len:Number = conditionalIndices.length;
+
         var i:Number = 0;
-        var handles:Array = _handles;  // 缓存引用
-        var len:Number = handles.length;
-
-        var h:BaseDamageHandle;
         do {
-            h = handles[i];
+            var index:Number = conditionalIndices[i];
 
-            if (h.skipCheck) {
-                bitmask |= (1 << i);
-            } else if (h.canHandle(bullet)) {
-                bitmask |= (1 << i);
+            // 优化判断，直接位运算赋值
+            if (handles[index].canHandle(bullet)) {
+                bitmask |= (1 << index);
             }
-        } while (++i < len);  // 将 i++ 放入条件中，减少一次指令
+        } while (++i < len);
 
         return DamageManager(_managerCache.get(bitmask));
     }
+
 
     /**
      * 重置工厂（支持更新处理器和缓存）。
@@ -305,6 +296,25 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
                 throw "DamageManagerFactory 支持的处理器数量最多为 32 个。";
             }
             _handles = newHandles.concat();
+
+            // 重新计算 skipCheck 位掩码和条件处理器索引
+            _skipCheckBitmask = 0;
+            _conditionalHandlerIndices = [];
+            for (var i:Number = 0; i < _handles.length; i++) {
+                var handler:BaseDamageHandle = _handles[i];
+                if (handler.skipCheck) {
+                    _skipCheckBitmask |= (1 << i);
+                } else {
+                    _conditionalHandlerIndices.push(i);
+                }
+            }
+
+            // 根据新的处理器数量创建新的 evaluator 并重置缓存
+            var handlerCount:Number = _handles.length;
+            var h:Array = _handles;
+            var newEvaluatorFunc:Function = createEvaluator(handlerCount, h);
+            _managerCache.reset(newEvaluatorFunc, clearCache);
+            return;
         }
 
         if (newEvaluator != null) {

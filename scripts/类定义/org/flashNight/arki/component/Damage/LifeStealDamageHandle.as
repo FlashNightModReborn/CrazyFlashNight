@@ -23,6 +23,25 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
         super();
     }
 
+    /**
+     * 获取 LifeStealDamageHandle 的单例实例。
+     * 
+     * - 若实例不存在，则创建一个新的 LifeStealDamageHandle 实例并返回。
+     * - 若实例已存在，则直接返回已创建的实例。
+     * - 此方法通过闭包优化后续调用，避免多次判断，提升性能。
+     * 
+     * @return LifeStealDamageHandle 单例实例
+     */
+    public static function getInstance():LifeStealDamageHandle {
+        if (instance == null) {
+            instance = new LifeStealDamageHandle();
+            getInstance = function():LifeStealDamageHandle {
+                return instance;
+            };
+        }
+        return instance;
+    }
+
     // ========== 公共方法 ==========
 
     /**

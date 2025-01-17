@@ -22,6 +22,25 @@ class org.flashNight.arki.component.Damage.ExecuteDamageHandle extends BaseDamag
         super();
     }
 
+    /**
+     * 获取 ExecuteDamageHandle 的单例实例。
+     * 
+     * - 若实例不存在，则创建一个新的 ExecuteDamageHandle 实例并返回。
+     * - 若实例已存在，则直接返回已创建的实例。
+     * - 此方法通过闭包优化后续调用，避免多次判断，提升性能。
+     * 
+     * @return ExecuteDamageHandle 单例实例
+     */
+    public static function getInstance():ExecuteDamageHandle {
+        if (instance == null) {
+            instance = new ExecuteDamageHandle();
+            getInstance = function():ExecuteDamageHandle {
+                return instance;
+            };
+        }
+        return instance;
+    }
+
     // ========== 公共方法 ==========
 
     /**

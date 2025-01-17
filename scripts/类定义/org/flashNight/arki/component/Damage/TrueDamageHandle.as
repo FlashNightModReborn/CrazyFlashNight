@@ -9,6 +9,25 @@ class org.flashNight.arki.component.Damage.TrueDamageHandle extends BaseDamageHa
         super();
     }
 
+    /**
+     * 获取 TrueDamageHandle 的单例实例。
+     * 
+     * - 若实例不存在，则创建一个新的 TrueDamageHandle 实例并返回。
+     * - 若实例已存在，则直接返回已创建的实例。
+     * - 此方法通过闭包优化后续调用，避免多次判断，提升性能。
+     * 
+     * @return TrueDamageHandle 单例实例
+     */
+    public static function getInstance():TrueDamageHandle {
+        if (instance == null) {
+            instance = new TrueDamageHandle();
+            getInstance = function():TrueDamageHandle {
+                return instance;
+            };
+        }
+        return instance;
+    }
+
     // 判断子弹是否为真伤类型
     public function canHandle(bullet:Object):Boolean {
         return (bullet.伤害类型 === "真伤");

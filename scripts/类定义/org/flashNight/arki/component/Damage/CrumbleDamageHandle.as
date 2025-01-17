@@ -21,6 +21,25 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
     }
 
     /**
+     * 获取 CrumbleDamageHandle 的单例实例。
+     * 
+     * - 若实例不存在，则创建一个新的 CrumbleDamageHandle 实例并返回。
+     * - 若实例已存在，则直接返回已创建的实例。
+     * - 此方法通过闭包优化后续调用，避免多次判断，提升性能。
+     * 
+     * @return CrumbleDamageHandle 单例实例
+     */
+    public static function getInstance():CrumbleDamageHandle {
+        if (instance == null) {
+            instance = new CrumbleDamageHandle();
+            getInstance = function():CrumbleDamageHandle {
+                return instance;
+            };
+        }
+        return instance;
+    }
+
+    /**
      * 判断子弹是否具有击溃属性。
      * 如果子弹的击溃属性值大于 0，则返回 true。
      *

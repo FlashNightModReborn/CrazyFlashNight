@@ -20,6 +20,25 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
     }
 
     /**
+     * 获取 DodgeStateDamageHandle 的单例实例。
+     * 
+     * - 若实例不存在，则创建一个新的 DodgeStateDamageHandle 实例并返回。
+     * - 若实例已存在，则直接返回已创建的实例。
+     * - 此方法通过闭包优化后续调用，避免多次判断，提升性能。
+     * 
+     * @return DodgeStateDamageHandle 单例实例
+     */
+    public static function getInstance():DodgeStateDamageHandle {
+        if (instance == null) {
+            instance = new DodgeStateDamageHandle();
+            getInstance = function():DodgeStateDamageHandle {
+                return instance;
+            };
+        }
+        return instance;
+    }
+
+    /**
      * 判断是否有躲闪状态需要处理。
      * @param bullet 子弹对象
      * @return Boolean 始终返回 true，表示始终处理躲闪状态

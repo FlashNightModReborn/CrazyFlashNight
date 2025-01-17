@@ -23,6 +23,25 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
         super();
     }
 
+    /**
+     * 获取 NanoToxicDamageHandle 的单例实例。
+     * 
+     * - 若实例不存在，则创建一个新的 NanoToxicDamageHandle 实例并返回。
+     * - 若实例已存在，则直接返回已创建的实例。
+     * - 此方法通过闭包优化后续调用，避免多次判断，提升性能。
+     * 
+     * @return NanoToxicDamageHandle 单例实例
+     */
+    public static function getInstance():NanoToxicDamageHandle {
+        if (instance == null) {
+            instance = new NanoToxicDamageHandle();
+            getInstance = function():NanoToxicDamageHandle {
+                return instance;
+            };
+        }
+        return instance;
+    }
+
     // ========== 公共方法 ==========
 
     /**
