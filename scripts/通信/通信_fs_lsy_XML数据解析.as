@@ -785,6 +785,7 @@ _root.加载并配置环境设置 = function(xml文件地址:String):Void
 				//后景信息
 				地平线高度: 200,
 				后景: null,
+				禁用天空: false,
 				//天气信息
                 天气情况: "正常",//后续或许可以随机天气，或者指定下雨沙尘暴
                 空间情况: "室外",//决定是否启用天空盒
@@ -835,6 +836,7 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	//后景信息
 	环境信息.地平线高度 = !isNaN(当前配置.Horizon) ? 当前配置.Horizon : 默认配置.地平线高度;
 	环境信息.后景 = 当前配置.Skybox ? _root.配置数据为数组(当前配置.Skybox) : null;
+	环境信息.禁用天空 = 当前配置.DisableSky == true ? true : false;
 	//天气信息
 	环境信息.天气情况 = 当前配置.WeatherCondition != undefined ? 当前配置.WeatherCondition : 默认配置.天气情况;
 	环境信息.空间情况 = 当前配置.SpaceCondition != undefined ? 当前配置.SpaceCondition : 默认配置.空间情况;
