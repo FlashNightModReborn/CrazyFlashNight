@@ -15,7 +15,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     private static var _namedFactories:Object = {};
 
     /** 默认的基础工厂，预置了常用的伤害处理器 */
-    public static var Basic:DamageManagerFactory;
+    public static var Basic:DamageManagerFactory = createBasic();
 
     /**
      * 创建一个默认的基础伤害工厂，内置常用处理器。
@@ -325,5 +325,33 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         } else if (clearCache) {
             _managerCache.reset(null, true);
         }
+    }
+
+    /**
+     * 返回 DamageManagerFactory 的字符串表示形式，便于调试和日志记录。
+     * 输出内容包括处理器列表、缓存容量、skipCheck 位掩码等信息。
+     *
+     * @return 描述 DamageManagerFactory 的字符串
+     */
+    public function toString():String {
+        var result:String = "[DamageManagerFactory]\n";
+
+        // 输出处理器列表
+        result += "Handles:\n";
+        for (var i:Number = 0; i < _handles.length; i++) {
+            var handler:BaseDamageHandle = _handles[i];
+            result += "  [" + i + "] " + handler.toString() + " (skipCheck: " + handler.skipCheck + ")\n";
+        }
+
+        // 输出缓存容量
+        result += "Cache Capacity: " + _managerCache.getCapacity() + "\n";
+
+        // 输出 skipCheck 位掩码
+        result += "SkipCheck Bitmask: " + _skipCheckBitmask.toString(2) + "\n";
+
+        // 输出需要条件检查的处理器索引
+        result += "Conditional Handler Indices: " + _conditionalHandlerIndices.join(", ") + "\n";
+
+        return result;
     }
 }

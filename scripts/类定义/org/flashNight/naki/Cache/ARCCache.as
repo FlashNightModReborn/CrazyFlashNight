@@ -764,4 +764,13 @@ class org.flashNight.naki.Cache.ARCCache {
     public function getB2():Array {
         return this._getListContents(this.B2);
     }
+
+    /**
+     * 调试用：获取 最大容量上限
+     * 
+     * @return maxCapacity 最大容量上限
+     */
+    public function getCapacity():Number {
+        return this.maxCapacity;
+    }
 }

@@ -9,6 +9,8 @@ import org.flashNight.arki.bullet.BulletComponent.Attributes.*
 import org.flashNight.arki.bullet.BulletComponent.Init.*;
 import org.flashNight.naki.Sort.*;
 import org.flashNight.arki.component.Damage.*;
+
+DamageManagerFactory.init();
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
 
@@ -180,6 +182,7 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度){
 	// 将 shouldDestroy 方法绑定到bulletInstance
 	bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
 
+    bulletInstance.damageManager = DamageManagerFactory.Basic.getDamageManager(bulletInstance);
 
     return bulletInstance;
 }
@@ -190,7 +193,12 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度){
 _root.子弹伤害结算核心 = function(子弹, shooter, hitTarget, overlapRatio, 消耗霰弹值, 躲闪状态) {
     var damageResult:DamageResult = DamageResult.IMPACT;
     damageResult.reset();
-    
+
+    var manager:DamageManager = 子弹.damageManager;
+    manager.overlapRatio = overlapRatio;
+    manager.dodgeState = 躲闪状态;
+    // _root.发布消息(manager)
+
     if (hitTarget.无敌 || hitTarget.man.无敌标签 || hitTarget.NPC) {
         return damageResult; 
     }
@@ -206,6 +214,8 @@ _root.子弹伤害结算核心 = function(子弹, shooter, hitTarget, overlapRat
     var percentageDamage:Number = isNaN(子弹.百分比伤害) ? 0 : hitTarget.hp * 子弹.百分比伤害 / 100;
     子弹.破坏力 = damageVariance + 子弹.固伤 + percentageDamage;
     
+    //manager.execute(子弹, shooter, hitTarget, damageResult);
+
     if (子弹.暴击) {
         子弹.破坏力 = 子弹.破坏力 * 子弹.暴击(子弹);
     }
@@ -361,7 +371,9 @@ _root.子弹伤害结算核心 = function(子弹, shooter, hitTarget, overlapRat
         damageNumber = Math.floor(hitTarget.损伤值);
     }
     
-    damageResult.displayCount = actualScatterUsed;
+
+    // damageResult.displayCount = damage.actualScatterUsed;
+    damageResult.displayCount = actualScatterUsed; 
     var remainingDamage:Number = damageNumber;
     
     if (actualScatterUsed > 1) {
