@@ -334,12 +334,13 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         };
 
         var tempDamageResult:DamageResult = new DamageResult();
+        var factory:DamageManagerFactory = DamageManagerFactory.Basic;
 
         for (var i:Number = 0; i < iterations; i++) {
 
             tempDamageResult.reset();
 
-            var tempManager:DamageManager = DamageManagerFactory.Basic.getDamageManager(tempBullet);
+            var tempManager:DamageManager = factory.getDamageManager(tempBullet);
             tempManager.overlapRatio = 1;
             tempManager.dodgeState = "";
 

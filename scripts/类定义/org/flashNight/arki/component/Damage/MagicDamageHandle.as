@@ -20,19 +20,32 @@ class org.flashNight.arki.component.Damage.MagicDamageHandle extends BaseDamageH
         var magicDamageAttr:String = bullet.魔法伤害属性 ? bullet.魔法伤害属性 : "能";
         result.addDamageEffect('<font color="' + magicDamageColor + '" size="20"> ' + magicDamageAttr + '</font>');
 
-        var enemyMagicResist:Number = bullet.魔法伤害属性 
-            ? (target.魔法抗性 && (target.魔法抗性[bullet.魔法伤害属性] || target.魔法抗性[bullet.魔法伤害属性] === 0) 
-                ? target.魔法抗性[bullet.魔法伤害属性]
-                : (target.魔法抗性 && (target.魔法抗性["基础"] || target.魔法抗性["基础"] === 0) 
-                    ? target.魔法抗性["基础"]
-                    : 10 + target.等级 / 2))
-            : (target.魔法抗性 && (target.魔法抗性["基础"] || target.魔法抗性["基础"] === 0) 
-                ? target.魔法抗性["基础"]
-                : 10 + target.等级 / 2);
+        var enemyMagicResist:Number;
 
-        enemyMagicResist = isNaN(enemyMagicResist) ? 20 : Math.min(Math.max(enemyMagicResist, -1000), 100);
-        target.损伤值 = Math.floor(bullet.破坏力 * (100 - enemyMagicResist) / 100);
+        if (bullet.魔法伤害属性) {
+            if (target.魔法抗性 && (target.魔法抗性[bullet.魔法伤害属性] || target.魔法抗性[bullet.魔法伤害属性] === 0)) {
+                enemyMagicResist = target.魔法抗性[bullet.魔法伤害属性];
+            } else if (target.魔法抗性 && (target.魔法抗性["基础"] || target.魔法抗性["基础"] === 0)) {
+                enemyMagicResist = target.魔法抗性["基础"];
+            } else {
+                enemyMagicResist = 10 + target.等级 / 2;
+            }
+        } else {
+            if (target.魔法抗性 && (target.魔法抗性["基础"] || target.魔法抗性["基础"] === 0)) {
+                enemyMagicResist = target.魔法抗性["基础"];
+            } else {
+                enemyMagicResist = 10 + target.等级 / 2;
+            }
+        }
+
+        // 手动展开 isNaN 检查和 min/max 逻辑
+        enemyMagicResist = (enemyMagicResist != enemyMagicResist) ? 20 : (enemyMagicResist < -1000 ? -1000 : (enemyMagicResist > 100 ? 100 : enemyMagicResist));
+
+        // 手动展开 Math.floor
+        var rawDamage:Number = bullet.破坏力 * (100 - enemyMagicResist) / 100;
+        target.损伤值 = (rawDamage >= 0) ? (rawDamage | 0) : ((rawDamage == (rawDamage | 0)) ? rawDamage : ((rawDamage - 1) | 0));
     }
+
 
     public function toString():String
     {

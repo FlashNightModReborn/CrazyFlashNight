@@ -17,7 +17,6 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     private static var _namedFactories:Object = {};
     /** 默认的基础工厂，预置了常用的伤害处理器 */
     public static var Basic:DamageManagerFactory;
-
     /**
      * 创建一个默认的基础伤害工厂，内置常用处理器。
      * @return DamageManagerFactory 实例
@@ -131,9 +130,17 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         _handles = handles.concat(); // 拷贝一份，避免外部修改
 
         // 构建缓存 evaluator（按位掩码创建 DamageManager）
-        var self:DamageManagerFactory = this;
+        var h = this._handles;
         var evaluator:Function = function(bitmask:Number):DamageManager {
-            return self.createManagerByBitmask(bitmask);
+            var handles:Array = [];
+            var bm:Number = bitmask;
+
+            do {
+                handles[handles.length] = h[Math.log(bm & -bm) * 1.4426950408889634];
+            } while ((bm &= (bm - 1)) != 0);
+
+
+            return new DamageManager(handles);
         };
 
         // 验证 cacheCapacity 合法性
@@ -150,12 +157,22 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
      * @return DamageManager 实例
      */
     public function getDamageManager(bullet:Object):DamageManager {
-        if (bullet == null) {
-            throw "bullet 不能为空。";
+        var bitmask:Number = 0;
+        var i:Number = 0;
+        var handles:Array = _handles;  // 缓存引用
+        var len:Number = handles.length;
+
+        if (len > 0) {  // 确保处理器不为空
+            do {
+                if (handles[i].canHandle(bullet)) {
+                    bitmask |= (1 << i);
+                }
+            } while (++i < len);  // 将 i++ 放入条件中，减少一次指令
         }
-        var bitmask:Number = computeBitmask(bullet);
+
         return DamageManager(_managerCache.get(bitmask));
     }
+
 
     /**
      * 重置工厂（支持更新处理器和缓存）
@@ -180,54 +197,4 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
             _managerCache.reset(null, true);
         }
     }
-
-    // ========== 私有方法 ==========
-
-    /**
-     * 计算位掩码（根据 bullet 属性决定激活的处理器）
-     * 使用 while 循环避免多次访问 _handles.length 并提升性能。
-     * @param bullet 子弹对象
-     * @return 位掩码（每一位表示是否激活对应处理器）
-     */
-    private function computeBitmask(bullet:Object):Number {
-        var bitmask:Number = 0;
-        var i:Number = 0;
-        var handles:Array = _handles;          // 缓存引用
-        var len:Number = handles.length;       // 缓存长度
-        var handler:Object;                    
-    
-        while (i < len) {
-            handler = handles[i];
-            if (handler.canHandle(bullet)) {
-                bitmask |= (1 << i);
-            }
-            i++;
-        }
-    
-        return bitmask;
-    }
-
-
-    /**
-     * 根据位掩码构建 DamageManager（按需加载）
-     * 使用 while 循环避免多次访问 _handles.length 并提升性能。
-     * @param bitmask 位掩码
-     * @return DamageManager 实例
-     */
-    private function createManagerByBitmask(bitmask:Number):DamageManager {
-        var handles:Array = [];
-        var handlers:Array = _handles;         // 缓存引用
-        var i:Number = 0;
-
-        while (bitmask != 0) {
-            if (bitmask & 1) {                   // 检查最低位是否为1
-                handles.push(handlers[i]);       // 添加对应处理器
-            }
-            bitmask >>= 1;                       // 右移一位处理下一个bit
-            i++;
-        }
-
-        return new DamageManager(handles);
-    }
-
 }

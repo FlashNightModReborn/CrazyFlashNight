@@ -32,8 +32,10 @@ class org.flashNight.arki.component.Damage.DamageManager {
      * @param result   DamageResult
      */
     public function execute(bullet:Object, shooter:Object, target:Object, result:DamageResult):Void {
-        for (var i:Number = 0; i < _handleCount; i++) {
-            _handles[i].handleBulletDamage(bullet, shooter, target, this, result);
+        var index:Number = 0;
+        while(index < _handleCount)
+        {
+            _handles[index++].handleBulletDamage(bullet, shooter, target, this, result);
         }
     }
 

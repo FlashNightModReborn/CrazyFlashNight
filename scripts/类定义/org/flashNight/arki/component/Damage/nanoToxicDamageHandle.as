@@ -26,7 +26,7 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
         }
         bullet.additionalEffectDamage += nanoToxicAmount;
 
-        if (!isNaN(damageNumber) && damageNumber > 0) {
+        if (damageNumber > 0) {
             target.损伤值 += nanoToxicAmount;
             damageNumber = target.损伤值;
             result.addDamageEffect('<font color="#66dd00" size="20"> 毒</font>');

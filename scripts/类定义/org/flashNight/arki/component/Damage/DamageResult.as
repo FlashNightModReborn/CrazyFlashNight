@@ -11,6 +11,8 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public var displayCount:Number;
     public var displayFunction:Function;
 
+    private static var DEFAULT_DISPLAY_FUNCTION:Function = _root.打击数字特效;
+
     public static var IMPACT:DamageResult = new DamageResult();
     
     public function DamageResult() {
@@ -20,25 +22,36 @@ class org.flashNight.arki.component.Damage.DamageResult {
     /**
      * 重置 DamageResult 的所有属性
      */
-    public function reset():Void
-    {
-        this.totalDamageList = [];
+
+
+    public function reset():Void {
+        // 复用数组，避免频繁创建新对象
+        this.totalDamageList.length = 0;
+        
         this.damageColor = null;
-        this.damageSize = 28;
         this.damageEffects = "";
-        this.finalScatterValue = 0;
         this.dodgeStatus = "";
-        this.actualScatterUsed = 1;
-        this.displayCount = 1;
-        this.displayFunction = _root.打击数字特效;
+
+        // 避免不必要的重复赋值
+        if (this.damageSize != 28) this.damageSize = 28;
+        if (this.finalScatterValue != 0) this.finalScatterValue = 0;
+        if (this.actualScatterUsed != 1) this.actualScatterUsed = 1;
+        if (this.displayCount != 1) this.displayCount = 1;
+
+        // 避免重复查询 _root.打击数字特效
+        if (this.displayFunction !== DEFAULT_DISPLAY_FUNCTION) {
+            this.displayFunction = DEFAULT_DISPLAY_FUNCTION;
+        }
     }
+
     
     /**
      * 添加一个伤害值到列表
      * @param damage Number 伤害值
      */
     public function addDamageValue(damage:Number):Void {
-        this.totalDamageList.push(damage);
+        var list:Array = this.totalDamageList;
+        list[list.length] = damage;
     }
     
     /**
@@ -63,17 +76,20 @@ class org.flashNight.arki.component.Damage.DamageResult {
      * @param targetY Number 目标的 Y 坐标
      */
     public function triggerDisplay(targetX:Number, targetY:Number):Void {
-        for (var i:Number = 0; i < this.totalDamageList.length; i++) {
+        var list:Array = this.totalDamageList;
+        var len:Number = list.length
+        var func:Function = this.displayFunction;
+        for (var i:Number = 0; i < len; i++) {
             var displayNumber:String;
-            if (this.totalDamageList[i] <= 0) {
+            if (list[i] <= 0) {
                 displayNumber = '<font color="' + this.damageColor + '" size="' + this.damageSize + '">MISS</font>';
             } else {
                 displayNumber = '<font color="' + this.damageColor + '" size="' + this.damageSize + '">' 
                               + this.dodgeStatus 
-                              + Math.floor(this.totalDamageList[i]) 
+                              + Math.floor(list[i]) 
                               + "</font>";
             }
-            this.displayFunction("", displayNumber + this.damageEffects, targetX, targetY);
+            func("", displayNumber + this.damageEffects, targetX, targetY);
         }
     }
     
