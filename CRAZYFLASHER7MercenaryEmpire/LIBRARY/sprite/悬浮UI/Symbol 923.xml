@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 923" itemID="6597607e-0000080e" lastModified="1735727389">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 923" itemID="6597607e-0000080e" lastModified="1737126520">
   <timeline>
     <DOMTimeline name="Symbol 923">
       <layers>
@@ -27,7 +27,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#CEF873">
+        <DOMLayer name="Script Layer" color="#CEF873" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -57,9 +57,11 @@
 				if(_root.同伴数据[_loc3_][19].装备强化度){
 					当前强化度 = _root.同伴数据[_loc3_][19].装备强化度[_root.佣兵装备位映射数组[_loc4_]];
 				}
-				if (_root.同伴数据[_loc3_][_loc4_] != "" and _root.同伴数据[_loc3_][_loc4_] != undefined)
+				var 当前物品名 = _root.同伴数据[_loc3_][_loc4_];
+				if (当前物品名 != "" and 当前物品名 != undefined)
 				{
-					this["佣兵信息显示框" + _loc3_].attachMovie("图标-" + _root.getItemData(_root.同伴数据[_loc3_][_loc4_]).icon,"物品图标" + _loc4_,this["佣兵信息显示框" + _loc3_].getNextHighestDepth(),{_x:(_loc4_ - 6) * 28 + 15.5, _y:44, 物品名:_root.同伴数据[_loc3_][_loc4_], 数量:1, 强化度:当前强化度, 图标:"图标-" + _root.getItemData(_root.同伴数据[_loc3_][_loc4_]).icon});
+					var itemData = _root.getItemData(当前物品名);
+					this["佣兵信息显示框" + _loc3_].attachMovie("图标-" + itemData.icon,"物品图标" + _loc4_,this["佣兵信息显示框" + _loc3_].getNextHighestDepth(),{_x:(_loc4_ - 6) * 28 + 15.5, _y:44, 物品名:当前物品名, 数量:1, 强化度:当前强化度, 图标:"图标-" + itemData.icon});
 					this["佣兵信息显示框" + _loc3_]["物品图标" + _loc4_].onRollOver = function()
 					{
 						_root.物品图标注释(this.物品名,{level:this.强化度});
@@ -142,8 +144,7 @@ function 排列可雇用佣兵图标(页数值)
 					this["佣兵列表信息显示框" + _loc4_]["物品图标" + _loc5_].onRollOver = function()
 					{
 						var temp_name = this.物品名 == "角斗高手项链" ? "战斗专家军牌" : this.物品名 ==  "角斗王者项链" ? "战斗狂人军牌" : this.物品名;
-						this.tmp_sz = _root.根据物品名查找全部属性(temp_name);
-						_root.物品图标注释(this.tmp_sz,this.强化度);
+						_root.物品图标注释(this.物品名,{level:this.强化度});
 					};
 					this["佣兵列表信息显示框" + _loc4_]["物品图标" + _loc5_].onRollOut = function()
 					{
@@ -1232,7 +1233,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 21" color="#9F9BA4" current="true" isSelected="true">
+        <DOMLayer name="Layer 21" color="#9F9BA4">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
