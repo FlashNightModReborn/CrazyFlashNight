@@ -147,18 +147,114 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
 
         _handles = handles.concat(); // 拷贝一份，避免外部修改
 
-        // 构建缓存 evaluator（按位掩码创建 DamageManager）
+        // 根据处理器数量创建不同的 evaluator 以优化性能
+        var evaluator:Function;
         var h = this._handles;
-        var evaluator:Function = function(bitmask:Number):DamageManager {
-            var handles:Array = [];
-            var bm:Number = bitmask;
+        var handlerCount:Number = _handles.length;
 
-            do {
-                handles[handles.length] = h[Math.log(bm & -bm) * 1.4426950408889634];
-            } while ((bm &= (bm - 1)) != 0);
+        if (handlerCount <= 8) {
+            // 适用于最多8个处理器的 evaluator
+            evaluator = function(bitmask:Number):DamageManager {
+                var handles:Array = [];
+                var bm:Number = bitmask;
 
-            return new DamageManager(handles);
-        };
+                do {
+                    var index:Number = 0;
+                    var temp:Number = bm & -bm;  // 提取最低位的 1
+
+                    // 快速位移法计算最低位 1 的索引，最多8位
+                    
+                    if (temp >= 16) { 
+                        temp >>= 4; 
+                        index += 4;  
+                    }
+                    if (temp >= 4) { 
+                        temp >>= 2; 
+                        index += 2;  
+                    }
+                    if (temp >= 2) { 
+                        index += 1; 
+                    }
+
+                    // 将对应的处理器加入 handles 数组
+                    handles[handles.length] = h[index];
+                } while ((bm &= (bm - 1)) != 0);
+
+                return new DamageManager(handles);
+            };
+        }
+        else if (handlerCount <= 16) {
+            // 适用于最多16个处理器的 evaluator
+            evaluator = function(bitmask:Number):DamageManager {
+                var handles:Array = [];
+                var bm:Number = bitmask;
+
+                do {
+                    var index:Number = 0;
+                    var temp:Number = bm & -bm;  // 提取最低位的 1
+
+                    // 快速位移法计算最低位 1 的索引，最多16位
+                    if (temp >= 256) { 
+                        temp >>= 8; 
+                        index += 8;  
+                    }
+                    if (temp >= 16) { 
+                        temp >>= 4; 
+                        index += 4;  
+                    }
+                    if (temp >= 4) { 
+                        temp >>= 2; 
+                        index += 2;  
+                    }
+                    if (temp >= 2) { 
+                        index += 1; 
+                    }
+
+                    // 将对应的处理器加入 handles 数组
+                    handles[handles.length] = h[index];
+                } while ((bm &= (bm - 1)) != 0);
+
+                return new DamageManager(handles);
+            };
+        }
+        else {
+            // 适用于最多32个处理器的 evaluator
+            evaluator = function(bitmask:Number):DamageManager {
+                var handles:Array = [];
+                var bm:Number = bitmask;
+
+                do {
+                    var index:Number = 0;
+                    var temp:Number = bm & -bm;  // 提取最低位的 1
+
+                    // 快速位移法计算最低位 1 的索引，最多32位
+                    if (temp >= 65536) { 
+                        temp >>= 16; 
+                        index += 16; 
+                    }
+                    if (temp >= 256) { 
+                        temp >>= 8;  
+                        index += 8;  
+                    }
+                    if (temp >= 16) { 
+                        temp >>= 4;  
+                        index += 4;  
+                    }
+                    if (temp >= 4) { 
+                        temp >>= 2;  
+                        index += 2;  
+                    }
+                    if (temp >= 2) { 
+                        index += 1; 
+                    }
+
+                    // 将对应的处理器加入 handles 数组
+                    handles[handles.length] = h[index];
+                } while ((bm &= (bm - 1)) != 0);
+
+                return new DamageManager(handles);
+            };
+        }
 
         // 验证 cacheCapacity 合法性
         if (cacheCapacity <= 0) {
