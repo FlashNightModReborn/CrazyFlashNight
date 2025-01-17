@@ -2,9 +2,7 @@
 import org.flashNight.gesh.func.*;
 
 /**
- * DamageManagerFactory
- *
- * 伤害管理器工厂类：
+ * DamageManagerFactory 是伤害管理器的工厂类。
  * - 支持动态构建 DamageManager，并根据子弹属性选择合适的伤害处理器。
  * - 通过位掩码 + ARCEnhancedLazyCache 实现惰性创建和高效缓存。
  * - 既支持实例化工厂，也支持静态全局工厂，灵活适配不同场景。
@@ -15,10 +13,22 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
 
     /** 存储具名工厂的映射表（name -> factory） */
     private static var _namedFactories:Object = {};
+
     /** 默认的基础工厂，预置了常用的伤害处理器 */
     public static var Basic:DamageManagerFactory;
+
     /**
      * 创建一个默认的基础伤害工厂，内置常用处理器。
+     * 该工厂包含以下处理器：
+     * - CritDamageHandle：暴击处理器
+     * - UniversalDamageHandle：通用处理器
+     * - DodgeStateDamageHandle：躲闪状态处理器
+     * - MultiShotDamageHandle：联弹处理器
+     * - NanoToxicDamageHandle：毒素处理器
+     * - LifeStealDamageHandle：吸血处理器
+     * - CrumbleDamageHandle：击溃处理器
+     * - ExecuteDamageHandle：斩杀处理器
+     *
      * @return DamageManagerFactory 实例
      */
     public static function createBasic():DamageManagerFactory {
@@ -26,9 +36,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
 
         // 按顺序注册常用的伤害处理器
         handles.push(CritDamageHandle.instance); // 暴击处理器
-        handles.push(TrueDamageHandle.instance); // 真伤处理器
-        handles.push(MagicDamageHandle.instance); // 魔法伤害处理器
-        handles.push(BasicDamageHandle.instance); // 基础伤害处理器
+        handles.push(UniversalDamageHandle.instance); // 通用处理器
         handles.push(DodgeStateDamageHandle.instance); // 躲闪状态处理器
         handles.push(MultiShotDamageHandle.instance); // 联弹处理器
         handles.push(NanoToxicDamageHandle.instance); // 毒素处理器
@@ -46,16 +54,19 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
 
     /**
      * 初始化默认的基础工厂。
+     * 调用此方法后，可以通过 DamageManagerFactory.Basic 访问默认工厂。
      */
     public static function init():Void {
         Basic = createBasic();
     }
 
     /**
-     * 注册一个具名工厂到全局映射中
+     * 注册一个具名工厂到全局映射中。
+     *
      * @param name          工厂名称（唯一标识）
      * @param handles       处理器数组
      * @param cacheCapacity 缓存容量
+     * @throws 如果工厂名称已存在或处理器数量超过32个，则抛出异常
      */
     public static function registerFactory(name:String, handles:Array, cacheCapacity:Number):Void {
         if (_namedFactories[name] != undefined) {
@@ -72,9 +83,11 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     }
 
     /**
-     * 获取已注册的具名工厂
+     * 获取已注册的具名工厂。
+     *
      * @param name 工厂名称
      * @return 对应的 DamageManagerFactory 实例
+     * @throws 如果工厂未注册，则抛出异常
      */
     public static function getFactory(name:String):DamageManagerFactory {
         var factory:DamageManagerFactory = _namedFactories[name];
@@ -85,8 +98,10 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     }
 
     /**
-     * 移除已注册的具名工厂
+     * 移除已注册的具名工厂。
+     *
      * @param name 工厂名称
+     * @throws 如果工厂不存在，则抛出异常
      */
     public static function removeFactory(name:String):Void {
         if (_namedFactories[name] == undefined) {
@@ -96,7 +111,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     }
 
     /**
-     * 清空所有已注册的具名工厂
+     * 清空所有已注册的具名工厂。
      */
     public static function clearAllFactories():Void {
         for (var name:String in _namedFactories) {
@@ -113,9 +128,12 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     private var _managerCache:ARCEnhancedLazyCache;
 
     /**
-     * 构造函数
+     * 构造函数。
+     * 初始化 DamageManagerFactory 实例。
+     *
      * @param handles       处理器数组（顺序影响执行顺序）
      * @param cacheCapacity 缓存容量
+     * @throws 如果处理器数组为空或数量超过32个，则抛出异常
      */
     public function DamageManagerFactory(handles:Array, cacheCapacity:Number) {
         if (handles == null || handles.length == 0) {
@@ -139,7 +157,6 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
                 handles[handles.length] = h[Math.log(bm & -bm) * 1.4426950408889634];
             } while ((bm &= (bm - 1)) != 0);
 
-
             return new DamageManager(handles);
         };
 
@@ -152,7 +169,9 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     }
 
     /**
-     * 获取 DamageManager（自动缓存）
+     * 获取 DamageManager（自动缓存）。
+     * 根据子弹属性选择合适的处理器，并返回对应的 DamageManager 实例。
+     *
      * @param bullet 子弹对象
      * @return DamageManager 实例
      */
@@ -162,23 +181,27 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var handles:Array = _handles;  // 缓存引用
         var len:Number = handles.length;
 
-        if (len > 0) {  // 确保处理器不为空
-            do {
-                if (handles[i].canHandle(bullet)) {
-                    bitmask |= (1 << i);
-                }
-            } while (++i < len);  // 将 i++ 放入条件中，减少一次指令
-        }
+        var h:BaseDamageHandle;
+        do {
+            h = handles[i];
+
+            if (h.skipCheck) {
+                bitmask |= (1 << i);
+            } else if (h.canHandle(bullet)) {
+                bitmask |= (1 << i);
+            }
+        } while (++i < len);  // 将 i++ 放入条件中，减少一次指令
 
         return DamageManager(_managerCache.get(bitmask));
     }
 
-
     /**
-     * 重置工厂（支持更新处理器和缓存）
+     * 重置工厂（支持更新处理器和缓存）。
+     *
      * @param newHandles   新的处理器数组（可选）
      * @param newEvaluator 新的评估器逻辑（可选）
      * @param clearCache   是否清空缓存（默认 true）
+     * @throws 如果处理器数量超过32个或 newEvaluator 不是函数，则抛出异常
      */
     public function resetFactory(newHandles:Array, newEvaluator:Function, clearCache:Boolean):Void {
         if (newHandles != null) {

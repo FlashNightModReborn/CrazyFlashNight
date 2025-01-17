@@ -1,20 +1,41 @@
-﻿
-import org.flashNight.arki.component.Damage.*;
+﻿import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.StatHandler.*;
 
+/**
+ * DodgeStateDamageHandle 类用于处理子弹伤害的躲闪状态。
+ * 该类继承自 BaseDamageHandle 并实现了 IDamageHandle 接口。
+ * 通过内联展开 Math.min、Math.max 和 Math.floor 等函数调用，提升性能。
+ */
 class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
+    // 单例实例
     public static var instance:DodgeStateDamageHandle = new DodgeStateDamageHandle();
 
+    /**
+     * 构造函数。
+     * 初始化时设置 skipCheck 为 true，表示始终处理躲闪状态。
+     */
     public function DodgeStateDamageHandle() {
-        super();
+        this.skipCheck = true;
     }
 
-    // 判断是否有躲闪状态需要处理
+    /**
+     * 判断是否有躲闪状态需要处理。
+     * @param bullet 子弹对象
+     * @return Boolean 始终返回 true，表示始终处理躲闪状态
+     */
     public function canHandle(bullet:Object):Boolean {
-        return (true); // 始终处理躲闪状态
+        return true;
     }
 
+    /**
+     * 处理子弹伤害。
+     * @param bullet 子弹对象
+     * @param shooter 射击者对象
+     * @param target 目标对象
+     * @param manager 管理器对象
+     * @param result 伤害结果对象
+     */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
         var damageNumber:Number = target.损伤值;
         var damageSize:Number = result.damageSize;
@@ -58,7 +79,8 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
                 }
                 break;
             default:
-                damageNumber = Math.max(Math.floor(damageNumber), 1);
+                // 内联展开 Math.max 和 Math.floor
+                damageNumber = (damageNumber > 0) ? (damageNumber | 0) : 1; // 相当于 Math.max(Math.floor(damageNumber), 1)
                 target.损伤值 = damageNumber;
                 _root.受击变红(120, target);
         }
@@ -66,8 +88,11 @@ class org.flashNight.arki.component.Damage.DodgeStateDamageHandle extends BaseDa
         result.damageSize = damageSize;
     }
 
-    public function toString():String
-    {
+    /**
+     * 返回类的字符串表示。
+     * @return String 类的名称
+     */
+    public function toString():String {
         return "DodgeStateDamageHandle";
     }
 }
