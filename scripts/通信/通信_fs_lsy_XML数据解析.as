@@ -352,8 +352,7 @@ _root.解析单次对话 = function(对话列表:Array){
 	return 输出对话;
 }
 
-_root.配置无限过图关卡 = function(对象, 配置数据)
-{
+_root.配置无限过图关卡 = function(对象, 配置数据){
 	_root.配置基础关卡信息(对象,配置数据);
 	var 关卡信息配置 = _root.配置数据为数组(配置数据.SubStage);
 
@@ -366,21 +365,17 @@ _root.配置无限过图关卡 = function(对象, 配置数据)
 	对象.rogue敌人集合表 = _root.解析rogue敌人集合(配置数据.Unions);
 };
 
-_root.配置外交地图关卡信息 = function(对象, 配置数据)
-{
+_root.配置外交地图关卡信息 = function(对象, 配置数据){
 	_root.配置基础关卡信息(对象,配置数据);
-	var 关卡信息配置 = _root.配置数据为数组(配置数据.SubStage);
 	对象.root场景进入位置名 = 配置数据.StageInfo.Address;
 	对象.淡出动画淡出跳转帧 = 配置数据.StageInfo.RootFadeTransitionFrame;
-	对象.onPress = function()
-	{
-	_root.场景进入位置名 = 对象.root场景进入位置名;
-	_root.淡出动画.淡出跳转帧(对象.淡出动画淡出跳转帧);
+	对象.onPress = function(){
+		_root.场景进入位置名 = 对象.root场景进入位置名;
+		_root.淡出动画.淡出跳转帧(对象.淡出动画淡出跳转帧);
 	};
 };
 
-_root.配置基础关卡信息 = function(对象, 配置数据)
-{
+_root.配置基础关卡信息 = function(对象, 配置数据){
 	var 奖励品配置 = _root.配置数据为数组(配置数据.Rewards.Reward);
 	对象.关卡可获得奖励品 = _root.解析并设置奖励品配置(奖励品配置);
 	对象.当前关卡名 = 配置数据.StageInfo.Name;

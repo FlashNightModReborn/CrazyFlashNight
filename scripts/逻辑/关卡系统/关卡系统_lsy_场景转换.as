@@ -292,8 +292,7 @@ _root.跳转地图 = function(跳转帧){
 	_root.gotoAndPlay(跳转帧);
 }
 
-_root.加载共享场景 = function(加载场景名)
-{
+_root.加载共享场景 = function(加载场景名){
 	var 游戏世界 = _root.attachMovie(加载场景名,"gameworld",_root.getNextHighestDepth());
 	游戏世界.swapDepths(_root.gameworld层级定位器);
 	// _root.淡出动画.gotoAndPlay("加载完毕");

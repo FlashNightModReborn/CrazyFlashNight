@@ -81,7 +81,7 @@ _root.贴背景图 = function(){
 	var 背景层 = 游戏世界.背景;
 	var 天气系统 = _root.天气系统;
 
-	if(!背景层.已更新环境配置){
+	if(背景层 != null && !背景层.已更新环境配置){
 		if(_root.天空盒){
 			天气系统.空间情况 = "室外";
 			天气系统.视觉情况 = "光照";
@@ -98,8 +98,9 @@ _root.贴背景图 = function(){
 	// if(天气系统.空间情况 !== "室外") _root.天空盒.removeMovieClip();
 
 	游戏世界.已更新天气 = false;
+	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域"], 1, true);
 
-	if (背景层._width < 1300) return;
+	if (背景层._width <= 1300) return;
 
 	背景层._visible = true;
 	var pos = new Object({x:0, y:0});
@@ -109,8 +110,6 @@ _root.贴背景图 = function(){
 	游戏世界.deadbody.layers[0].draw(背景层,matrix,new flash.geom.ColorTransform(),"normal",undefined,true);
 	背景层._visible = false;
 	背景层.外部动画加载壳mc.unloadMovie(); //尝试直接卸载原背景
-
-	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域"], 1, true);
 };
 
 _root.配置基地场景环境信息 = function(){
