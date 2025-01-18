@@ -235,7 +235,15 @@
         <Ymax>1000</Ymax>
         <Width>2270</Width>
         <Height>1000</Height>
-        <Horizon>140</Horizon>
+        <Horizon>20</Horizon>
+        <Skybox>
+            <url>大学楼栋.swf</url>
+            <SpeedRate>4</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>大学远山天空.swf</url>
+            <SpeedRate>8</SpeedRate>
+        </Skybox>
     </Environment>
     <Environment>
         <BackgroundURL>地图-小马地图</BackgroundURL>
