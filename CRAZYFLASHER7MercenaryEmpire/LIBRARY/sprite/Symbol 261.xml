@@ -111,7 +111,7 @@ stop();
                     <DOMTextRun>
                       <characters>2023不联网单机版</characters>
                       <textAttrs>
-                        <DOMTextAttrs rotation="true" leftMargin="116" lineSpacing="0" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                        <DOMTextAttrs rotation="true" leftMargin="116" lineSpacing="0" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CC9900"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -194,7 +194,7 @@ stop();
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!2440 2410|-2360 2410!-2360 2410|-2360 -2610!-2360 -2610|2440 -2610!2440 -2610|2440 2410"/>
+                    <Edge fillStyle1="1" edges="!2440 -2610|2440 2410!2440 2410|-2360 2410!-2360 2410|-2360 -2610!-2360 -2610|2440 -2610"/>
                   </edges>
                 </DOMShape>
               </elements>

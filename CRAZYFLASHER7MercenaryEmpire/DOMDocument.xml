@@ -12,8 +12,8 @@
           <DOMFolderItem name="import/外部地图" itemID="65d313c5-00000b63" isExpanded="true"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6597612c-00000e9d"/>
-          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
-          <DOMFolderItem name="sprite/标题画面" itemID="659bbce9-00001519"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
+          <DOMFolderItem name="sprite/标题画面" itemID="659bbce9-00001519" isExpanded="true"/>
           <DOMFolderItem name="sprite/加载UI" itemID="659bbb5f-000014bc"/>
           <DOMFolderItem name="sprite/物品栏" itemID="659d3927-00003122"/>
           <DOMFolderItem name="sprite/新地图" itemID="659bbd75-0000152d"/>
@@ -933,7 +933,7 @@
           <Include href="外部导入UI界面.xml" loadImmediate="false" itemID="67162590-0000093d" lastModified="1736954576"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="205" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="366" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;10&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -1045,22 +1045,7 @@
                               <DOMFrame index="338" duration="15" name="wuxianguotu_1" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="353" duration="17" name="wuxianguotu_2" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="370" duration="12" name="bigmovie1" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="382" duration="11" name="bigmovie2" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="393" duration="10" name="bigmovie3" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="403" duration="9" name="bigmovie4" labelType="name" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="412" duration="13" name="时空机器" labelType="name" keyMode="9728">
+                              <DOMFrame index="353" duration="17" name="wuxianguotu_2" labelType="comment" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -1088,7 +1073,7 @@
                               <DOMFrame index="112" duration="47" name="重新游戏确认" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" name="多玩家物品键侦听" labelType="name" keyMode="9728">
+                              <DOMFrame index="159" duration="211" name="多玩家物品键侦听" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -1107,7 +1092,7 @@
                               <DOMFrame index="78" duration="36" name="鼠标控制移动" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="114" duration="311" name="关于作者" labelType="name" keyMode="9728">
+                              <DOMFrame index="114" duration="256" name="关于作者" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -1123,7 +1108,7 @@
                               <DOMFrame index="65" duration="11" name="多人操控系统" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="76" duration="349" name="多人UI" labelType="name" keyMode="9728">
+                              <DOMFrame index="76" duration="294" name="多人UI" labelType="name" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -3258,109 +3243,14 @@ _root.无限过图模式 = true;
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="368" duration="11" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="379" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[stop();
-]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="380" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="381" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[防止播放跳关();
-]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="382" duration="8" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="390" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[stop();
-]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="391" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="392" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[防止播放跳关();
-]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="393" duration="7" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="400" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[stop();
-]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="401" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[防止播放跳关();
-]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="402" duration="8" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="410" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[stop();
-]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="411" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[防止播放跳关();
-]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="412" duration="10" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="422" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[stop();
-]]></script>
-                                   </Actionscript>
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="423" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="424" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[_root.关卡结束界面.mytext = "关卡结束！";
-_root.关卡结束界面._visible = 1;
-_root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
-_root.FinishStage(_root.当前关卡名,"简单");
-stop();
-]]></script>
-                                   </Actionscript>
+                              <DOMFrame index="368" duration="2" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="上层遮罩" color="#EBC19E" autoNamed="false" visible="false">
                          <frames>
-                              <DOMFrame index="0" duration="425" keyMode="9728">
+                              <DOMFrame index="0" duration="370" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="shape/Symbol 320" selected="true" symbolType="graphic" loop="loop">
                                              <transformationPoint>
@@ -3376,7 +3266,7 @@ stop();
                               <DOMFrame index="0" duration="52" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="52" duration="373" keyMode="9728">
+                              <DOMFrame index="52" duration="318" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/淡出动画" name="淡出动画" centerPoint3DX="400" centerPoint3DY="240">
                                              <transformationPoint>
@@ -3417,7 +3307,7 @@ stop();
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="34" duration="391" keyMode="9728">
+                              <DOMFrame index="34" duration="336" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -3547,7 +3437,7 @@ stop();
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="52" duration="373" keyMode="9728">
+                              <DOMFrame index="52" duration="318" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -3764,7 +3654,7 @@ stop();
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="111" duration="314" keyMode="9728">
+                              <DOMFrame index="111" duration="259" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -3783,7 +3673,7 @@ stop();
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="113" duration="312" keyMode="9728">
+                              <DOMFrame index="113" duration="257" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -3859,7 +3749,7 @@ stop();
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="113" duration="312" keyMode="9728">
+                              <DOMFrame index="113" duration="257" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -3917,7 +3807,7 @@ stop();
                                                   <DOMTextRun>
                                                        <characters>2023不联网单机版</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CC9900"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                              </textRuns>
@@ -4721,7 +4611,7 @@ on (rollOut) {
                                                   <DOMTextRun>
                                                        <characters>2023不联网单机版</characters>
                                                        <textAttrs>
-                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="微软雅黑_11pt_st" fillColor="#CC9900"/>
+                                                            <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#CC9900"/>
                                                        </textAttrs>
                                                   </DOMTextRun>
                                              </textRuns>
@@ -6360,15 +6250,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9382 4727|9092 4546!9092 4546|9395 4546!9395 4546|9699 4546!9699 4546|9989 4727!9989 4727|9685 4727!9685 4727|9382 4727!9382 4727|9079 4727!9079 4727|8775 4727!8775 4727|9065 4908!9065 4908|9369 4908!9369 4908|9672 4908!9672 4908|9962
- 5089!9962 5089|9659 5089!9659 5089|9369 4908!9369 4908|9079 4727!9989 4727|10279 4908!10279 4908|9975 4908!9975 4908|9672 4908!9672 4908|9382 4727!10265 5089|10569 5089!10569 5089|10859 5270!10859 5270|10555 5270!10555 5270|10265 5089
-!10265 5089|9975 4908!9975 4908|9685 4727!9685 4727|9395 4546!9092 4546|8789 4546!8789 4546|8485 4546!8485 4546|8775 4727!8775 4727|8472 4727!8472 4727|8762 4908!8762 4908|9052 5089!9052 5089|9342 5270!9342 5270|9645 5270!9645 5270|9949
- 5270!9949 5270|9659 5089!8472 4727|8182 4546!8182 4546|8485 4546!9645 5270|9355 5089!9355 5089|9065 4908!9065 4908|8762 4908!9342 5270|9633 5451!9633 5451|9935 5451!9935 5451|10239 5451!10239 5451|10542 5451!10542 5451|10845 5451!10845
- 5451|11149 5451!11149 5451|11452 5451!11452 5451|11755 5451!11755 5451|12059 5451!12059 5451|11769 5270!11769 5270|11465 5270!11465 5270|11162 5270!11162 5270|11452 5451!9355 5089|9659 5089!9052 5089|9355 5089!8789 4546|9079 4727!11769
- 5270|11479 5089!11479 5089|11189 4908!11189 4908|10899 4727!10899 4727|10595 4727!10595 4727|10292 4727!10292 4727|10002 4546!10002 4546|10305 4546!10305 4546|10595 4727!10595 4727|10885 4908!10885 4908|11189 4908!11162 5270|10872 5089
-!10872 5089|11175 5089!11175 5089|11465 5270!11465 5270|11755 5451!10872 5089|10569 5089!10569 5089|10279 4908!10279 4908|10582 4908!10582 4908|10885 4908!10885 4908|11175 5089!10305 4546|10609 4546!10609 4546|10899 4727!9989 4727|10292
- 4727!10292 4727|10582 4908!10265 5089|9962 5089!9962 5089|10252 5270!10252 5270|9949 5270!9949 5270|10239 5451!11162 5270|10859 5270!10859 5270|11149 5451!10845 5451|10555 5270!10555 5270|10252 5270!10872 5089|10582 4908!10252 5270|10542
- 5451!11479 5089|11175 5089!9699 4546|10002 4546!9935 5451|9645 5270"/>
+!9989 4727|9699 4546!9699 4546|9395 4546!9395 4546|9092 4546!9092 4546|9382 4727!9382 4727|9672 4908!9672 4908|9975 4908!9975 4908|10279 4908!10279 4908|9989 4727!9989 4727|9685 4727!9685 4727|9395 4546!9975 4908|9685 4727!9685 4727|9382
+ 4727!9699 4546|10002 4546!10002 4546|10305 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|10595 4727!10595 4727|10885 4908!10885 4908|11175 5089!11175 5089|11465 5270!11465 5270|11162 5270!11162 5270|10859 5270!10859 5270
+|10555 5270!10555 5270|10252 5270!10252 5270|9949 5270!9949 5270|9659 5089!9659 5089|9369 4908!9369 4908|9672 4908!9382 4727|9079 4727!9079 4727|8789 4546!8789 4546|8485 4546!8485 4546|8182 4546!8182 4546|8472 4727!8472 4727|8762 4908
+!8762 4908|9065 4908!9065 4908|9355 5089!9355 5089|9645 5270!9645 5270|9949 5270!9949 5270|10239 5451!10239 5451|10542 5451!10542 5451|10252 5270!9065 4908|9369 4908!9369 4908|9079 4727!9079 4727|8775 4727!8775 4727|8472 4727!8485 4546
+|8775 4727!8775 4727|9065 4908!8762 4908|9052 5089!9052 5089|9355 5089!9355 5089|9659 5089!9052 5089|9342 5270!9342 5270|9633 5451!9633 5451|9935 5451!9935 5451|9645 5270!9342 5270|9645 5270!9092 4546|8789 4546!10899 4727|11189 4908!11189
+ 4908|11479 5089!11479 5089|11769 5270!11769 5270|11465 5270!11465 5270|11755 5451!11755 5451|12059 5451!12059 5451|11769 5270!11175 5089|10872 5089!10872 5089|11162 5270!11162 5270|11452 5451!11452 5451|11755 5451!10305 4546|10595 4727
+!10595 4727|10292 4727!10292 4727|10582 4908!10582 4908|10885 4908!10885 4908|11189 4908!9989 4727|10292 4727!10292 4727|10002 4546!9672 4908|9962 5089!9962 5089|10252 5270!10859 5270|10569 5089!10569 5089|10265 5089!10265 5089|9962 5089
+!9962 5089|9659 5089!9935 5451|10239 5451!10279 4908|10582 4908!10582 4908|10872 5089!10872 5089|10569 5089!10542 5451|10845 5451!10845 5451|10555 5270!10555 5270|10265 5089!10845 5451|11149 5451!11149 5451|10859 5270!10569 5089|10279
+ 4908!10265 5089|9975 4908!11479 5089|11175 5089!11149 5451|11452 5451"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -6816,15 +6706,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9372 4714|9662 4895!9662 4895|9965 4895!9965 4895|9675 4714!9675 4714|9372 4714!9359 4895|9649 5076!9649 5076|9952 5076!9952 5076|9662 4895!9662 4895|9359 4895!9675 4714|9385 4533!9385 4533|9082 4533!9082 4533|9372 4714!9675 4714|9979
- 4714!9979 4714|9689 4533!9689 4533|9385 4533!9082 4533|8779 4533!8779 4533|9069 4714!9069 4714|9372 4714!9359 4895|9069 4714!9069 4714|8765 4714!8765 4714|9055 4895!9055 4895|9359 4895!8475 4533|8172 4533!8172 4533|8462 4714!8462 4714
-|8765 4714!8765 4714|8475 4533!8475 4533|8779 4533!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|12049 5438!12049 5438
-|11745 5438!11745 5438|11442 5438!11442 5438|11139 5438!11139 5438|10835 5438!10835 5438|10532 5438!10532 5438|10229 5438!10229 5438|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9042 5076!9042 5076|8752 4895!8752 4895|8462
- 4714!9345 5076|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076!9649 5076|9345 5076!9345 5076|9042 5076!9332 5257|9635 5257!9345 5076|9055 4895!9055 4895|8752 4895!11759 5257|11455 5257!11455 5257|11745 5438!10875 4895|10585 4714!10585
- 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895!10875 4895|11179 4895!10889 4714|10585 4714!10282 4714|9979 4714!9979 4714|10269 4895!10269 4895|10572 4895!9992 4533|10282 4714!9965 4895|10269 4895!10242 5257|10545 5257!10545
- 5257|10255 5076!10255 5076|9952 5076!9952 5076|10242 5257!10532 5438|10242 5257!10242 5257|9939 5257!9939 5257|10229 5438!10269 4895|10559 5076!10559 5076|10862 5076!10862 5076|10572 4895!10835 5438|10545 5257!10545 5257|10849 5257!10849
- 5257|10559 5076!10559 5076|10255 5076!11442 5438|11152 5257!11152 5257|10849 5257!10849 5257|11139 5438!10862 5076|11152 5257!11152 5257|11455 5257!11455 5257|11165 5076!11165 5076|10862 5076!10875 4895|11165 5076!11165 5076|11469 5076
-!10585 4714|10295 4533!10255 5076|9965 4895!9635 5257|9925 5438"/>
+!9939 5257|10229 5438!10229 5438|9925 5438!9925 5438|9635 5257!9635 5257|9332 5257!9332 5257|9042 5076!9042 5076|9345 5076!9345 5076|9649 5076!9649 5076|9939 5257!9939 5257|9635 5257!9635 5257|9345 5076!9345 5076|9055 4895!9055 4895|9359
+ 4895!9359 4895|9069 4714!9069 4714|9372 4714!9372 4714|9082 4533!9082 4533|9385 4533!9385 4533|9675 4714!9675 4714|9372 4714!9372 4714|9662 4895!9662 4895|9359 4895!9359 4895|9649 5076!10229 5438|10532 5438!10532 5438|10835 5438!10835
+ 5438|11139 5438!11139 5438|11442 5438!11442 5438|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11469 5076!11469 5076|11179 4895!11179 4895|10889 4714!10889 4714|10599 4533!10599 4533|10295 4533!10295 4533|9992 4533
+!9992 4533|9689 4533!9689 4533|9385 4533!8462 4714|8765 4714!8765 4714|9055 4895!9055 4895|8752 4895!8752 4895|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8779 4533!8779 4533|9069 4714!9069 4714|8765 4714!8765 4714|8475
+ 4533!9925 5438|9623 5438!9623 5438|9332 5257!9042 5076|8752 4895!9082 4533|8779 4533!11442 5438|11152 5257!11152 5257|11455 5257!11455 5257|11745 5438!11759 5257|11455 5257!11455 5257|11165 5076!11165 5076|11469 5076!10889 4714|10585
+ 4714!10585 4714|10282 4714!10282 4714|9992 4533!11165 5076|10875 4895!10875 4895|11179 4895!10835 5438|10545 5257!10545 5257|10255 5076!10255 5076|9965 4895!9965 4895|10269 4895!10269 4895|10572 4895!10572 4895|10875 4895!10875 4895
+|10585 4714!10585 4714|10295 4533!9965 4895|9675 4714!9675 4714|9979 4714!9979 4714|10269 4895!10269 4895|10559 5076!10559 5076|10255 5076!10255 5076|9952 5076!9952 5076|9662 4895!9662 4895|9965 4895!10282 4714|9979 4714!9979 4714|9689
+ 4533!10545 5257|10242 5257!10242 5257|9939 5257!9649 5076|9952 5076!9952 5076|10242 5257!11165 5076|10862 5076!10862 5076|11152 5257!11152 5257|10849 5257!10849 5257|10559 5076!10559 5076|10862 5076!10545 5257|10849 5257!10849 5257|11139
+ 5438!10862 5076|10572 4895!10532 5438|10242 5257!10282 4714|10572 4895"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -7288,7 +7178,7 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="155" duration="270" keyMode="9728">
+                              <DOMFrame index="155" duration="215" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -7342,15 +7232,15 @@ on (rollOut) {
                                              <edges>
                                                   <Edge fillStyle0="2" edges="
 !17466 11519.5|17440 11520!17440 11520|20104 11520!20104 11520[20480 11520 20480 11241!20480 11241|20480 278!20480 278[20480 0 20104 0!20104 0|17571 0"/>
-                                                  <Edge fillStyle0="2" fillStyle1="1" edges="
-!17571 0|17571 11519!17571 11519|17466 11519.5"/>
-                                                  <Edge fillStyle1="1" edges="
-!17466 11519.5|376 11520!376 11520[0 11520 0 11241!0 11241|0 278!0 278[0 0 376 0!376 0|17571 0"/>
+                                                  <Edge fillStyle0="1" edges="
+!17571 0|376 0!376 0[0 0 0 278!0 278|0 11241!0 11241[0 11520 376 11520!376 11520|17466 11519.5"/>
+                                                  <Edge fillStyle0="1" fillStyle1="2" edges="
+!17466 11519.5|17571 11519!17571 11519|17571 0"/>
                                              </edges>
                                         </DOMShape>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="158" duration="267" keyMode="9728">
+                              <DOMFrame index="158" duration="212" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -7425,316 +7315,14 @@ on (rollOut) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="255" duration="124" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="379" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="跳过按钮" centerPoint3DX="-193.4" centerPoint3DY="347.5">
-                                             <matrix>
-                                                  <Matrix tx="-239.2" ty="336.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[on(release){
-   _parent.大动画壳.外部动画加载壳mc.gotoAndStop(_parent.大动画壳.外部动画加载壳mc._totalframes);
-}
-onClipEvent(load){
-   显示文字 = "跳过动画";
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3443" name="大动画壳" centerPoint3DX="403.95" centerPoint3DY="265.2">
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   function 加载外部动画(动画名)
-   {
-      this.attachMovie("外部动画加载壳mc","外部动画加载壳mc",_root.getNextHighestDepth());
-      loadMovie(动画名,this.外部动画加载壳mc);
-   }
-   加载外部动画("flashswf/movies/bigmovie1.swf");
-   跳过按钮.swapDepths(1000);
-   _root.音乐播放界面.s.stop();
-   执行一次 = false;
-}
-onClipEvent(enterFrame){
-   if(执行一次 == false)
-   {
-      if(外部动画加载壳mc._currentframe > 100 and 外部动画加载壳mc._currentframe >= 外部动画加载壳mc._totalframes)
-      {
-         外部动画加载壳mc.unloadMovie();
-         _root.关卡结束界面.mytext = _root.获得翻译("关卡结束！");
-         _root.关卡结束界面._visible = 1;
-         _root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
-         _root.FinishStage(_root.当前关卡名,"简单");
-         this.gotoAndStop(2);
-         执行一次 = true;
-      }
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="380" duration="10" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="390" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3443" centerPoint3DX="403.95" centerPoint3DY="265.2">
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   function 加载外部动画(动画名)
-   {
-      this.attachMovie("外部动画加载壳mc","外部动画加载壳mc",_root.getNextHighestDepth());
-      loadMovie(动画名,this.外部动画加载壳mc);
-   }
-   加载外部动画("flashswf/movies/bigmovie2.swf");
-   _root.音乐播放界面.s.stop();
-   执行一次 = false;
-}
-onClipEvent(enterFrame){
-   if(执行一次 == false)
-   {
-      if(外部动画加载壳mc._currentframe > 100 and 外部动画加载壳mc._currentframe >= 外部动画加载壳mc._totalframes)
-      {
-         外部动画加载壳mc.unloadMovie();
-         _root.关卡结束界面.mytext = _root.获得翻译("关卡结束！");
-         _root.关卡结束界面._visible = 1;
-         _root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
-         _root.FinishStage(_root.当前关卡名,"简单");
-         执行一次 = true;
-         this.gotoAndStop(2);
-      }
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="391" duration="9" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="400" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3443" centerPoint3DX="403.95" centerPoint3DY="265.2">
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   function 加载外部动画(动画名)
-   {
-      this.attachMovie("外部动画加载壳mc","外部动画加载壳mc",_root.getNextHighestDepth());
-      loadMovie(动画名,this.外部动画加载壳mc);
-   }
-   加载外部动画("flashswf/movies/bigmovie3.swf");
-   _root.音乐播放界面.s.stop();
-   执行一次 = false;
-}
-onClipEvent(enterFrame){
-   if(执行一次 == false)
-   {
-      if(外部动画加载壳mc._currentframe > 100 and 外部动画加载壳mc._currentframe >= 外部动画加载壳mc._totalframes)
-      {
-         外部动画加载壳mc.unloadMovie();
-         _root.关卡结束界面.mytext = _root.获得翻译("关卡结束！");
-         _root.关卡结束界面._visible = 1;
-         _root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
-         _root.FinishStage(_root.当前关卡名,"简单");
-         执行一次 = true;
-         this.gotoAndStop(2);
-      }
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="401" duration="9" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="410" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3443" centerPoint3DX="403.95" centerPoint3DY="265.2">
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   function 加载外部动画(动画名)
-   {
-      this.attachMovie("外部动画加载壳mc","外部动画加载壳mc",_root.getNextHighestDepth());
-      loadMovie(动画名,this.外部动画加载壳mc);
-   }
-   加载外部动画("flashswf/movies/bigmovie4.swf");
-   _root.音乐播放界面.s.stop();
-   执行一次 = false;
-}
-onClipEvent(enterFrame){
-   if(执行一次 == false)
-   {
-      if(外部动画加载壳mc._currentframe > 100 and 外部动画加载壳mc._currentframe >= 外部动画加载壳mc._totalframes)
-      {
-         外部动画加载壳mc.unloadMovie();
-         _root.关卡结束界面.mytext = _root.获得翻译("关卡结束！");
-         _root.关卡结束界面._visible = 1;
-         _root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
-         _root.FinishStage(_root.当前关卡名,"简单");
-         执行一次 = true;
-         this.gotoAndStop(2);
-      }
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="411" duration="11" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="422" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3443" centerPoint3DX="403.95" centerPoint3DY="265.2">
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   function 加载外部动画(动画名)
-   {
-      this.attachMovie("外部动画加载壳mc","外部动画加载壳mc",_root.getNextHighestDepth());
-      loadMovie(动画名,this.外部动画加载壳mc);
-   }
-   加载外部动画("flashswf/movies/movieone.swf");
-   _root.音乐播放界面.s.stop();
-   执行一次 = false;
-}
-onClipEvent(enterFrame){
-   if(执行一次 == false)
-   {
-      if(外部动画加载壳mc._currentframe > 100 and 外部动画加载壳mc._currentframe >= 外部动画加载壳mc._totalframes)
-      {
-         外部动画加载壳mc.unloadMovie();
-         _root.关卡结束界面.mytext = _root.获得翻译("关卡结束！");
-         _root.关卡结束界面._visible = 1;
-         _root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
-         _root.FinishStage(_root.当前关卡名,"简单");
-         执行一次 = true;
-         this.gotoAndStop(2);
-      }
-   }
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="423" duration="2" keyMode="9728">
+                              <DOMFrame index="255" duration="115" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
                     <DOMLayer name="大动画字幕" color="#BA55D6" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="373" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="373" duration="8" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3439" name="大动画多语言字幕器" centerPoint3DX="398.45" centerPoint3DY="425.45">
-                                             <matrix>
-                                                  <Matrix tx="12" ty="389.95"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   当前段落名 = "摇滚公园";
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="381" duration="6" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="387" duration="5" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3439" name="大动画多语言字幕器" centerPoint3DX="398.45" centerPoint3DY="425.45">
-                                             <matrix>
-                                                  <Matrix tx="12" ty="389.95"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   当前段落名 = "军阀";
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="392" duration="4" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="396" duration="5" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3439" name="大动画多语言字幕器" centerPoint3DX="398.45" centerPoint3DY="425.45">
-                                             <matrix>
-                                                  <Matrix tx="12" ty="389.95"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   当前段落名 = "黑铁会";
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="401" duration="5" keyMode="9728">
-                                   <elements/>
-                              </DOMFrame>
-                              <DOMFrame index="406" duration="5" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 3439" name="大动画多语言字幕器" centerPoint3DX="398.45" centerPoint3DY="425.45">
-                                             <matrix>
-                                                  <Matrix tx="12" ty="389.95"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   当前段落名 = "末日联盟";
-}
-]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="411" duration="14" keyMode="9728">
+                              <DOMFrame index="0" duration="370" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -7744,7 +7332,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="111" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="111" duration="314" keyMode="9728">
+                              <DOMFrame index="111" duration="259" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/外部动画加载壳mc" name="外部动画加载壳mc" centerPoint3DX="6.1" centerPoint3DY="8">
                                              <transformationPoint>
@@ -7760,7 +7348,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2020" name="修改详细菜单" centerPoint3DX="66.5" centerPoint3DY="-44.05">
                                              <matrix>
@@ -7787,7 +7375,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2017" name="查看详细菜单" centerPoint3DX="162.45" centerPoint3DY="-42.4">
                                              <matrix>
@@ -7818,7 +7406,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1770" name="NPC功能菜单" centerPoint3DX="308.45" centerPoint3DY="-62.4">
                                              <matrix>
@@ -7850,7 +7438,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="弹出公告UI/弹出公告界面" name="弹出公告界面" centerPoint3DX="1214" centerPoint3DY="122.5">
                                              <matrix>
@@ -7869,7 +7457,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="158" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="158" duration="267" keyMode="9728">
+                              <DOMFrame index="158" duration="212" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/透明控件" name="商城主mc层级定位器" centerPoint3DX="120.85" centerPoint3DY="46.45">
                                              <matrix>
@@ -7896,7 +7484,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 2119" name="新手引导界面" selected="true" centerPoint3DX="357.65" centerPoint3DY="175.05">
                                              <transformationPoint>
@@ -7918,7 +7506,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="通用透明组件" name="单机版帮助界面" centerPoint3DX="395.45" centerPoint3DY="237.9">
                                              <matrix>
@@ -7942,7 +7530,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="100" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="100" duration="325" keyMode="9728">
+                              <DOMFrame index="100" duration="270" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 960" name="音乐播放界面" centerPoint3DX="904.5" centerPoint3DY="215.9">
                                              <matrix>
@@ -7978,7 +7566,7 @@ onClipEvent(enterFrame){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="208" duration="217" keyMode="9728">
+                              <DOMFrame index="208" duration="162" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -7988,7 +7576,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 35561" name="传送界面" selected="true" centerPoint3DX="503.4" centerPoint3DY="220.95">
                                              <matrix>
@@ -8016,7 +7604,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/修改工具界面" name="修改工具界面" centerPoint3DX="504.95" centerPoint3DY="242.05">
                                              <matrix>
@@ -8044,7 +7632,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 2082" name="任务奖励提示界面" centerPoint3DX="518" centerPoint3DY="203.75">
                                              <matrix>
@@ -8069,7 +7657,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 2074" name="奖励物品界面" centerPoint3DX="523.35" centerPoint3DY="167.65">
                                              <matrix>
@@ -8094,7 +7682,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2065" name="安全退出界面" centerPoint3DX="504.3" centerPoint3DY="175.95">
                                              <matrix>
@@ -8119,7 +7707,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/消息窗" name="消息窗" centerPoint3DX="148.85" centerPoint3DY="111.1">
                                              <matrix>
@@ -8144,7 +7732,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2055" name="复活币系统界面" centerPoint3DX="174.7" centerPoint3DY="257.6">
                                              <matrix>
@@ -8169,7 +7757,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2035" name="佣兵确认面板" centerPoint3DX="512.5" centerPoint3DY="281.4">
                                              <matrix>
@@ -8193,7 +7781,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/新版物品栏界面" name="物品栏界面" centerPoint3DX="790" centerPoint3DY="265.95">
                                              <matrix>
@@ -8230,7 +7818,7 @@ onClipEvent(enterFrame){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="208" duration="217" keyMode="9728">
+                              <DOMFrame index="208" duration="162" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -8257,7 +7845,7 @@ onClipEvent(enterFrame){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="208" duration="217" keyMode="9728">
+                              <DOMFrame index="208" duration="162" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -8267,7 +7855,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/新版仓库界面" name="仓库界面" centerPoint3DX="227.15" centerPoint3DY="170.6">
                                              <matrix>
@@ -8286,7 +7874,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1893" name="任务读取失败提示" centerPoint3DX="513.8" centerPoint3DY="232.95">
                                              <matrix>
@@ -8311,7 +7899,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/图片容器" name="图片容器" centerPoint3DX="896" centerPoint3DY="392.5">
                                              <matrix>
@@ -8330,7 +7918,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/对话框界面" name="对话框界面" centerPoint3DX="591.4" centerPoint3DY="777.95">
                                              <matrix>
@@ -8358,7 +7946,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1873" name="委托任务界面" centerPoint3DX="328.45" centerPoint3DY="285.95">
                                              <matrix>
@@ -8377,7 +7965,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1861" name="关卡结束界面" centerPoint3DX="512.3" centerPoint3DY="62.95">
                                              <matrix>
@@ -8402,7 +7990,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1779" name="学习技能界面" centerPoint3DX="468" centerPoint3DY="285.95">
                                              <matrix>
@@ -8424,7 +8012,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/新版商店界面" name="购买物品界面" centerPoint3DX="454" centerPoint3DY="265.95">
                                              <matrix>
@@ -8443,7 +8031,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1727" name="系统设置界面" centerPoint3DX="674.6" centerPoint3DY="256.95">
                                              <matrix>
@@ -8471,7 +8059,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1647" name="任务栏界面" centerPoint3DX="282.8" centerPoint3DY="227.25">
                                              <matrix>
@@ -8522,7 +8110,7 @@ onClipEvent(enterFrame){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="208" duration="217" keyMode="9728">
+                              <DOMFrame index="208" duration="162" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -8550,7 +8138,7 @@ onClipEvent(enterFrame){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="208" duration="217" keyMode="9728">
+                              <DOMFrame index="208" duration="162" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -8578,7 +8166,7 @@ onClipEvent(enterFrame){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="208" duration="217" keyMode="9728">
+                              <DOMFrame index="208" duration="162" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -8588,7 +8176,7 @@ onClipEvent(enterFrame){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="通用UI层" name="通用UI层" centerPoint3DX="284" centerPoint3DY="131.65">
                                              <transformationPoint>
@@ -8935,7 +8523,7 @@ on(rollOut){
                                         </DOMDynamicText>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="349" duration="76" keyMode="9728">
+                              <DOMFrame index="349" duration="21" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -8946,7 +8534,7 @@ on(rollOut){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2026" name="存盘动画" centerPoint3DX="1001.15" centerPoint3DY="528.35">
                                              <matrix>
@@ -8971,7 +8559,7 @@ on(rollOut){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2012" name="任务完成提示" centerPoint3DX="1017.5" centerPoint3DY="511.9">
                                              <matrix>
@@ -8993,7 +8581,7 @@ on(rollOut){
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/UI组件/玩家信息界面" name="玩家信息界面" centerPoint3DX="511.8" centerPoint3DY="559.7">
                                              <matrix>
@@ -9025,7 +8613,7 @@ on(rollOut){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="208" duration="217" keyMode="9728">
+                              <DOMFrame index="208" duration="162" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -9047,7 +8635,7 @@ on(rollOut){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="208" duration="217" keyMode="9728">
+                              <DOMFrame index="208" duration="162" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -9057,7 +8645,7 @@ on(rollOut){
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/后勤战备箱按钮" name="后勤战备箱按钮" centerPoint3DX="773.1" centerPoint3DY="31.1">
                                              <matrix>
@@ -9159,7 +8747,7 @@ onClipEvent (load) {
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="247" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/暂停按钮" name="暂停按钮" centerPoint3DX="895.05" centerPoint3DY="31.3">
                                              <matrix>
@@ -9275,7 +8863,7 @@ on (rollOut) {
                               <DOMFrame index="0" duration="159" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="159" duration="266" keyMode="9728">
+                              <DOMFrame index="159" duration="211" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/通用按钮" name="奖励10分钟" centerPoint3DX="970.05" centerPoint3DY="174.95">
                                              <matrix>
@@ -9476,7 +9064,7 @@ onClipEvent (enterFrame) {
                               <DOMFrame index="190" duration="75" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="265" duration="160" keyMode="9728">
+                              <DOMFrame index="265" duration="105" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 3399" name="解决莫名其妙主角消失的BUG-MC" centerPoint3DX="76" centerPoint3DY="648.85">
                                              <matrix>
@@ -9512,12 +9100,12 @@ onClipEvent (enterFrame) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="190" duration="235" keyMode="9728">
+                              <DOMFrame index="190" duration="180" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="gameworld控件" color="#62CB8E" autoNamed="false">
+                    <DOMLayer name="gameworld控件" color="#62CB8E" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="272" keyMode="9728">
                                    <elements/>
@@ -9634,7 +9222,7 @@ onClipEvent (unload) {
                               </DOMFrame>
                               <DOMFrame index="366" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/透明控件" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                                        <DOMSymbolInstance libraryItemName="sprite/透明控件" selected="true" centerPoint3DX="12.5" centerPoint3DY="12.5">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -9667,12 +9255,12 @@ onClipEvent(unload){
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="367" duration="58" keyMode="9728">
+                              <DOMFrame index="367" duration="3" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="gameworld" color="#F43B90" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="gameworld" color="#F43B90" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="189" keyMode="9728">
                                    <elements/>
@@ -9699,7 +9287,7 @@ onClipEvent (enterFrame) {
                               </DOMFrame>
                               <DOMFrame index="205" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/透明控件" name="gameworld层级定位器" selected="true" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                                        <DOMSymbolInstance libraryItemName="sprite/透明控件" name="gameworld层级定位器" centerPoint3DX="12.5" centerPoint3DY="12.5">
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
@@ -9813,7 +9401,7 @@ onClipEvent (enterFrame) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="367" duration="58" keyMode="9728">
+                              <DOMFrame index="367" duration="3" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -9823,7 +9411,7 @@ onClipEvent (enterFrame) {
                               <DOMFrame index="0" duration="178" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="178" duration="191" keyMode="9728">
+                              <DOMFrame index="178" duration="192" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="天空盒" name="天空盒" centerPoint3DX="26.65" centerPoint3DY="5.45">
                                              <transformationPoint>
@@ -9831,9 +9419,6 @@ onClipEvent (enterFrame) {
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
-                              </DOMFrame>
-                              <DOMFrame index="369" duration="56" keyMode="9728">
-                                   <elements/>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
