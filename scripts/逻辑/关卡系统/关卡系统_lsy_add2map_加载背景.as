@@ -135,6 +135,8 @@ _root.配置基地场景环境信息 = function(){
 	_root.贴背景图();
 }
 
+_root.配置场景环境信息 = _root.配置基地场景环境信息;//想了想基地和外部地图好像可以用一套函数
+
 _root.加载场景背景 = function (动画名){
 	var 游戏世界 = _root.gameworld;
 	var 背景层 = 游戏世界.背景;
