@@ -2045,6 +2045,50 @@
             <y1>540</y1>
         </RightSpawnLine>
     </Environment>
+    <!-- 电子战-->
+    <Environment>
+        <BackgroundURL>电子战_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>200</Xmin>
+        <Xmax>1900</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>680</Ymax>
+        <Width>2000</Width>
+        <Height>900</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+    </Environment>
+    <Environment>
+        <BackgroundURL>防御地带电子战.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>280</Xmin>
+        <Xmax>1850</Xmax>
+        <Ymin>450</Ymin>
+        <Ymax>770</Ymax>
+        <Width>1850</Width>
+        <Height>770</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <Horizon>0</Horizon>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+        <Skybox>
+            <url>防御地带电子战远景1.swf</url>
+            <SpeedRate>2</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>防御地带电子战远景2.swf</url>
+            <SpeedRate>3</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>防御地带电子战远景3.swf</url>
+            <SpeedRate>4</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>防御地带电子战远景4.swf</url>
+            <SpeedRate>5</SpeedRate>
+        </Skybox>
+    </Environment>
     <!-- 彩蛋副本-->
     <Environment>
         <BackgroundURL>圣诞副本地图.swf</BackgroundURL>
@@ -2079,18 +2123,6 @@
         <Ymax>700</Ymax>
         <Width>1800</Width>
         <Height>700</Height>
-        <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>7</MinIllumination>
-    </Environment>
-    <Environment>
-        <BackgroundURL>电子战_BG.swf</BackgroundURL>
-        <Alignment>false</Alignment>
-        <Xmin>200</Xmin>
-        <Xmax>1900</Xmax>
-        <Ymin>300</Ymin>
-        <Ymax>680</Ymax>
-        <Width>2000</Width>
-        <Height>900</Height>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
