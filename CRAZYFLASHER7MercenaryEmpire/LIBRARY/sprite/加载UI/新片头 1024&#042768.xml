@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/加载UI/新片头 1024*768" itemID="6632249c-00003eb1" linkageExportForAS="true" linkageIdentifier="新片头1024768" lastModified="1725634181" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/加载UI/新片头 1024*768" itemID="6632249c-00003eb1" linkageExportForAS="true" linkageIdentifier="新片头1024768" lastModified="1737210985" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="新片头 1024*768" currentFrame="1">
+    <DOMTimeline name="新片头 1024*768">
       <layers>
         <DOMLayer name="Script Layer" color="#A8B5E9" current="true" isSelected="true">
           <frames>
@@ -344,7 +344,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#48A1FC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#FFFF00" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -364,16 +364,7 @@ on (rollOut) {
               </elements>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 318" centerPoint3DX="404.05" centerPoint3DY="242.2">
-                  <matrix>
-                    <Matrix tx="1.1" ty="-2.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>

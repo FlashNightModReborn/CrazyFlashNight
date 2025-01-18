@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/淡出动画" itemID="663d9237-0000167b" lastModified="1736959306" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/淡出动画" itemID="663d9237-0000167b" lastModified="1737195636" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="淡出动画" currentFrame="10">
+    <DOMTimeline name="淡出动画" currentFrame="6">
       <layers>
         <DOMLayer name="Labels Layer" color="#71CDB3" locked="true">
           <frames>
@@ -93,14 +93,15 @@ play();
                 <script><![CDATA[//清除游戏世界相关组件
 _root.gameworld层级定位器.removeMovieClip();
 _root.层级管理器.检查层级范围();
+_root.卸载外部UI();
+_root.卸载后景();
 
+//关闭UI
 _root.购买物品界面.关闭();
 _root.仓库界面.关闭();
 _root.关卡结束界面._visible = false;
 _root.新手引导界面.关闭指引();
-
-_root.卸载外部UI();
-_root.卸载后景();
+_root.复活币系统界面.gotoAndStop("消失");
 ]]></script>
               </Actionscript>
               <elements/>
@@ -122,8 +123,6 @@ _root.跳转地图(跳转帧);]]></script>
             <DOMFrame index="16" duration="19" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.自动存盘();
-_root.理发店界面._visible = false;
-_root.复活币系统界面.gotoAndStop("消失");
 ]]></script>
               </Actionscript>
               <elements/>
