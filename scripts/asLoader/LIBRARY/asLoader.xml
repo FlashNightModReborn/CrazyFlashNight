@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1736959243">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1737226004">
   <timeline>
     <DOMTimeline name="asLoader" currentFrame="45">
       <layers>
@@ -450,7 +450,8 @@ this.removeMovieClip();]]></script>
 #include "../逻辑/关卡系统/关卡系统_lsy_非人形佣兵刷新系统.as"
 #include "../逻辑/关卡系统/关卡系统_lsy_无限过图.as"
 #include "../逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as"
-#include "../逻辑/关卡系统/关卡系统_lsy_后景.as"]]></script>
+#include "../逻辑/关卡系统/关卡系统_lsy_后景.as"
+#include "../逻辑/关卡系统/关卡系统_lsy_限制系统.as"]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

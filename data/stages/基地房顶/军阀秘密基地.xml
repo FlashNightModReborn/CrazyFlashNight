@@ -6,6 +6,7 @@
         <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
         <UnlockCondition>42</UnlockCondition>
         <Description>将军死后，牛仔突然出现并收拢了军阀残部。在此建立了一个秘密基地</Description>
+        <Limitation>DisableCompanion</Limitation>
     </StageInfo>
     <Rewards>
         <Reward id="1">
@@ -118,7 +119,7 @@
                         <Type>兵种264</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>35</Level>
+                        <Level>20</Level>
                         <x>150</x>
                         <y>380</y>
                     </Enemy>
@@ -126,7 +127,7 @@
                         <Type>兵种264</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>35</Level>
+                        <Level>20</Level>
                         <x>200</x>
                         <y>420</y>
                     </Enemy>
@@ -134,7 +135,7 @@
                         <Type>兵种267</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>35</Level>
+                        <Level>20</Level>
                         <x>420</x>
                         <y>400</y>
                     </Enemy>
@@ -168,7 +169,7 @@
                         <Type>兵种264</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
-                        <Level>35</Level>
+                        <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
@@ -225,19 +226,21 @@
                         <Type>兵种267</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>35</Level>
+                        <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种264</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>35</Level>
+                        <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种265</Type>
-                        <Interval>5000</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>

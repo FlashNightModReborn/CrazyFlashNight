@@ -97,12 +97,12 @@ _root.加载我方人物 = function(地点X, 地点Y){
 	_root.加载游戏世界人物(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{_x:地点X, _y:地点Y, 是否为敌人:false, 身高:_root.身高, 名字:_root.角色名, 等级:_root.等级, 性别:_root.性别, 用户ID:_root.accId, 是否允许掉装备:false});
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
-	_root.添加其他玩家();
+	// _root.添加其他玩家();
 	_root.加载佣兵(地点X,地点Y);
 	_root.加载宠物(地点X,地点Y);
 }
-_root.加载主角和战宠 = function(地点X, 地点Y)
-{
+
+_root.加载主角和战宠 = function(地点X, 地点Y){
 	if (_root.特殊操作单位){
 		var 当前操作单位 = _root.特殊操作单位;
 	}else{
@@ -112,18 +112,16 @@ _root.加载主角和战宠 = function(地点X, 地点Y)
 	_root.加载游戏世界人物(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{_x:地点X, _y:地点Y, 是否为敌人:false, 身高:_root.身高, 名字:_root.角色名, 等级:_root.等级, 性别:_root.性别, 用户ID:_root.accId, 是否允许掉装备:false});
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
-	_root.添加其他玩家();
+	// _root.添加其他玩家();
 	_root.加载宠物(地点X,地点Y);
 }
 
 _root.加载佣兵 = function(地点X, 地点Y){
+	if(_root.限制系统.DisableCompanion) return;
 	_root.帧计时器.添加单次任务(function() {
-		
-		for(var i = 0; i < _root.佣兵个数限制; i++)
-		{
+		for(var i = 0; i < _root.佣兵个数限制; i++){
 			var 同伴信息 = _root.同伴数据[i];
-			if (_root.佣兵是否出战信息[i] == 1 && 同伴信息[1] != undefined && 同伴信息[1] != "undefined")
-			{
+			if (_root.佣兵是否出战信息[i] == 1 && 同伴信息[1] != undefined && 同伴信息[1] != "undefined"){
 				/*if (同伴信息[17] == "男") 同伴信息[17] = "主角-男";
 				if (同伴信息[17] == "女") 同伴信息[17] = "主角-女";
 				*/
@@ -194,6 +192,8 @@ _root.返回基地 = function(){
 	}else{
 		_root.淡出动画.淡出跳转帧("医务室");
 	}
+	//清空限制词条
+	_root.限制系统.clearEntries();
 }
 
 

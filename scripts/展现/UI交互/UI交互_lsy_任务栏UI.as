@@ -11,6 +11,15 @@ _root.任务栏UI函数.打印物品列表 = function(itemList):String{
 	return str;
 }
 
+_root.任务栏UI函数.打印限制词条明细 = function(entryArray):String{
+	var str = "";
+	for (var i = 0; i < entryArray.length; i++){
+		str += "- " + _root.限制系统.getDiscription(entryArray[i]);
+		str += "\n";
+	}
+	return str;
+}
+
 _root.任务栏UI函数.打印任务明细 = function(id):String{
 	var taskData = _root.getTaskData(id);
 	var str = _root.getTaskText(taskData.title) + "\n";
@@ -48,8 +57,10 @@ _root.任务栏UI函数.打印任务明细 = function(id):String{
 _root.任务栏UI函数.打印任务挑战明细 = function(id){
 	var challenge = _root.getTaskData(id).challenge;
 	str = "挑战模式【难度：" + _root.getDifficultyString(challenge.difficulty) + "】\n";
+	if(challenge.limitations) str += _root.任务栏UI函数.打印限制词条明细(challenge.limitations);
 	if(challenge.description) str += "* " + challenge.description + "\n";
 	str += "额外奖励："
 	str +=_root.任务栏UI函数.打印物品列表(challenge.rewards);
 	return str;
 }
+

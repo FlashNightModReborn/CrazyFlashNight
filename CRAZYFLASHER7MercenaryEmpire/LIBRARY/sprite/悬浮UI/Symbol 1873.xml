@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1736349542" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1737226617" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="Symbol 1873">
       <layers>
@@ -60,6 +60,7 @@
 	进入挑战 = false;
 	if(获取任务文档数据.challenge){
 		this.挑战难度 = 获取任务文档数据.challenge.difficulty;
+		this.挑战限制词条 = 获取任务文档数据.challenge.limitations ? 获取任务文档数据.challenge.limitations : null;
 		挑战内容 = _root.任务栏UI函数.打印任务挑战明细(任务数组[0]);
 		进入挑战按钮._visible = true;
 		取消按钮._visible = false;
@@ -357,7 +358,7 @@ on (rollOut) {
                 </DOMDynamicText>
                 <DOMDynamicText fontRenderingMode="device" width="270" height="169.5" isSelectable="false" variableName="任务明细" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix tx="180" ty="38.5"/>
+                    <Matrix tx="180" ty="34"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -368,9 +369,9 @@ on (rollOut) {
                     </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText fontRenderingMode="device" width="270" height="68.2" isSelectable="false" variableName="挑战内容" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText fontRenderingMode="device" width="270" height="73.5" isSelectable="false" variableName="挑战内容" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix tx="180" ty="216"/>
+                    <Matrix tx="180" ty="212"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/淡出动画" itemID="663d9237-0000167b" lastModified="1737195636" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/淡出动画" itemID="663d9237-0000167b" lastModified="1737223414" lastUniqueIdentifier="4">
   <timeline>
     <DOMTimeline name="淡出动画" currentFrame="6">
       <layers>
@@ -69,11 +69,6 @@ gotoAndStop("空");
 		i++;
 	}
 }*/
-
-if (_root.地图界面._x == undefined)
-{
-	_root.宠物减体力();
-}
 
 //尝试解决淡出动画卡住的bug
 play();

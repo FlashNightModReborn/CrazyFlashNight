@@ -1,20 +1,14 @@
 ﻿// 当 XML 加载完成时触发的函数
 _root.关卡数据缓存 = [];
 
-_root.配置数据为数组 = function(输入)
-{
+_root.配置数据为数组 = function(输入){
     // 检查输入是否已经是数组
-    if (输入 instanceof Array)
-    {
+    if (输入 instanceof Array){
         return 输入;
-    }
-    else if (输入 != undefined && 输入 != null)
-    {
+    }else if (输入 != undefined && 输入 != null){
         // 如果输入不是数组但不为空，则将其作为数组的单个元素返回
         return [输入];
-    }
-    else
-    {
+    }else{
         // 对于未定义或空的输入，返回空数组
         return [];
     }
@@ -385,6 +379,7 @@ _root.配置基础关卡信息 = function(对象, 配置数据){
 	对象.材料详细 = 配置数据.StageInfo.MaterialDetail;
 	对象.起点帧 = 配置数据.StageInfo.StartFrame ? 配置数据.StageInfo.StartFrame : null;
 	对象.终点帧 = 配置数据.StageInfo.EndFrame ? 配置数据.StageInfo.EndFrame : null;
+	对象.限制词条 = 配置数据.StageInfo.Limitation ? _root.配置数据为数组(配置数据.StageInfo.Limitation) : null;
 };
 
 _root.自动输出关卡数据 = function(关卡数据地址)
