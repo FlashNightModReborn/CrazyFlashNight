@@ -76,8 +76,8 @@
         var maxTail:Number = this.maxQueueTail;
 
         // 利用条件表达式的数值特性，将布尔值转化为 0 或 1，优化递增逻辑
-        minHead += Number(localMinQueue[minHead] == headPos);
-        maxHead += Number(localMaxQueue[maxHead] == headPos);
+        minHead = minHead + (localMinQueue[minHead] == headPos);
+        maxHead = maxHead + (localMaxQueue[maxHead] == headPos);
 
         // 更新缓冲区数据并调整 head 位置，使用三元运算符减少条件判断
         localData[headPos] = value;
@@ -88,16 +88,12 @@
         this.sum = localSum;
         this.average = Math.round((localSum / localSize) * 100) / 100;
 
-        // 缓存新值索引，用于队列操作
-        var prevPos:Number = (headPos > 0) ? headPos - 1 : localSize - 1;
-
         // 更新 minQueue 和 maxQueue，移除无用的索引以保持单调性
         while (minTail > minHead && localData[localMinQueue[minTail - 1]] >= value) minTail--;
         while (maxTail > maxHead && localData[localMaxQueue[maxTail - 1]] <= value) maxTail--;
 
         // 插入新值索引到队列尾部
-        localMinQueue[minTail++] = prevPos;
-        localMaxQueue[maxTail++] = prevPos;
+        localMinQueue[minTail++] = localMaxQueue[maxTail++] = (headPos > 0) ? headPos - 1 : localSize - 1;
 
         // 更新当前最小值和最大值
         this.min = localData[localMinQueue[this.minQueueHead = minHead]];
