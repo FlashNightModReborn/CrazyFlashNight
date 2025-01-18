@@ -2006,6 +2006,52 @@
             <Point>1570,260</Point>
         </Collision>
     </Environment>
+    <!-- 诺亚防御地带-->
+    <Environment>
+        <BackgroundURL>防御地带高地.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1550</Xmax>
+        <Ymin>360</Ymin>
+        <Ymax>500</Ymax>
+        <Width>1550</Width>
+        <Height>500</Height>
+        <Horizon>0</Horizon>
+        <Skybox>
+            <url>防御地带远景.swf</url>
+            <SpeedRate>8</SpeedRate>
+        </Skybox>
+    </Environment>
+    <Environment>
+        <BackgroundURL>防御地带电子战.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>280</Xmin>
+        <Xmax>1850</Xmax>
+        <Ymin>450</Ymin>
+        <Ymax>770</Ymax>
+        <Width>1850</Width>
+        <Height>770</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <Horizon>0</Horizon>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+        <Skybox>
+            <url>防御地带电子战远景1.swf</url>
+            <SpeedRate>2</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>防御地带电子战远景2.swf</url>
+            <SpeedRate>3</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>防御地带电子战远景3.swf</url>
+            <SpeedRate>4</SpeedRate>
+        </Skybox>
+        <Skybox>
+            <url>防御地带电子战远景4.swf</url>
+            <SpeedRate>5</SpeedRate>
+        </Skybox>
+    </Environment>
     <!-- 试炼场深处-->
     <Environment>
         <BackgroundURL>试炼场深处钻头入口_BG.swf</BackgroundURL>
@@ -2058,36 +2104,6 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
-    </Environment>
-    <Environment>
-        <BackgroundURL>防御地带电子战.swf</BackgroundURL>
-        <Alignment>true</Alignment>
-        <Xmin>280</Xmin>
-        <Xmax>1850</Xmax>
-        <Ymin>450</Ymin>
-        <Ymax>770</Ymax>
-        <Width>1850</Width>
-        <Height>770</Height>
-        <SpaceCondition>室内</SpaceCondition>
-        <Horizon>0</Horizon>
-        <MaxIllumination>7</MaxIllumination>
-        <MinIllumination>7</MinIllumination>
-        <Skybox>
-            <url>防御地带电子战远景1.swf</url>
-            <SpeedRate>2</SpeedRate>
-        </Skybox>
-        <Skybox>
-            <url>防御地带电子战远景2.swf</url>
-            <SpeedRate>3</SpeedRate>
-        </Skybox>
-        <Skybox>
-            <url>防御地带电子战远景3.swf</url>
-            <SpeedRate>4</SpeedRate>
-        </Skybox>
-        <Skybox>
-            <url>防御地带电子战远景4.swf</url>
-            <SpeedRate>5</SpeedRate>
-        </Skybox>
     </Environment>
     <!-- 彩蛋副本-->
     <Environment>
