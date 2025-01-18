@@ -94,7 +94,8 @@ class org.flashNight.arki.component.Damage.DamageResult {
      * @param {Number} damage - 要添加的伤害值。
      */
     public function addDamageValue(damage:Number):Void {
-        this.totalDamageList.push(damage);
+        var list = this.totalDamageList;
+        list[list.length] = damage;
     }
     
     /**
@@ -119,17 +120,46 @@ class org.flashNight.arki.component.Damage.DamageResult {
      * @param {Number} targetY - 伤害显示的Y坐标。
      */
     public function triggerDisplay(targetX:Number, targetY:Number):Void {
-        for (var i:Number = 0; i < this.totalDamageList.length; i++) {
-            var displayNumber:String;
-            if (this.totalDamageList[i] <= 0) {
-                displayNumber = '<font color="' + this.damageColor + '" size="' + this.damageSize + '">MISS</font>';
-            } else {
-                displayNumber = '<font color="' + this.damageColor + '" size="' + this.damageSize + '">' 
-                              + this.dodgeStatus 
-                              + Math.floor(this.totalDamageList[i]) 
-                              + "</font>";
-            }
-            this.displayFunction("", displayNumber + this.damageEffects, targetX, targetY);
+        var list:Array = this.totalDamageList;
+        var len:Number = list.length;
+
+        if (len === 0) {
+            return; // 如果没有伤害值，直接返回
         }
+
+        // 缓存常用属性到局部变量
+        var dmgColor:String = this.damageColor || "#FFFFFF"; // 提供默认颜色
+        var dmgSize:Number = this.damageSize;
+        var dmgEffects:String = this.damageEffects;
+        var dodgeStatus:String = this.dodgeStatus;
+        var displayFn:Function = this.displayFunction;
+
+        // 预构建不变的字符串部分
+        var fontStart:String = '<font color="' + dmgColor + '" size="' + dmgSize + '">';
+        var fontEnd:String = '</font>';
+
+        var i:Number = 0;
+        do {
+            var damage:Number = list[i];
+            var displayNumber:String;
+
+            if (damage <= 0) {
+                displayNumber = fontStart + 'MISS' + fontEnd;
+            } else {
+                // 使用位运算优化 Math.floor
+                var flooredDamage:Number = damage | 0; // 或者使用 damage >> 0
+                displayNumber = fontStart + dodgeStatus + flooredDamage + fontEnd;
+            }
+
+            // 拼接伤害效果
+            var finalDisplay:String = displayNumber + dmgEffects;
+
+            // 调用显示函数
+            displayFn("", finalDisplay, targetX, targetY);
+
+            i++;
+        } while (i < len);
     }
+
+
 }

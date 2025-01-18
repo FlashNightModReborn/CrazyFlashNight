@@ -2,36 +2,26 @@
 import org.flashNight.arki.component.StatHandler.*;
 
 /**
- * UniversalDamageHandle 类是用于处理通用伤害的处理器。
- * - 支持多种伤害类型，包括真实伤害、魔法伤害和基础伤害。
- * - 根据伤害类型计算最终伤害，并设置伤害颜色和效果。
- * - 通过位运算和条件运算符优化性能。
+ * UniversalDamageHandle 类用于处理通用伤害以及躲闪状态的处理器。
+ * - 优化合并了原来的 DodgeStateDamageHandle 逻辑。
+ * - 通过减少冗余、合并分支、内联位运算等方式进行性能提升。
+ * - 内联颜色常量以消除变量分配和解引用开销。
  */
 class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDamageHandle implements IDamageHandle {
 
     // ========== 单例实例 ==========
-
-    /** 单例实例 */
     public static var instance:UniversalDamageHandle = new UniversalDamageHandle();
-
-    // ========== 构造函数 ==========
 
     /**
      * 构造函数。
-     * 初始化时设置 skipCheck 为 true，表示始终处理伤害。
+     * 初始化时设置 skipCheck 为 true，表示始终处理伤害和躲闪状态。
      */
     public function UniversalDamageHandle() {
         this.skipCheck = true;
     }
 
     /**
-     * 获取 UniversalDamageHandle 的单例实例。
-     * 
-     * - 若实例不存在，则创建一个新的 UniversalDamageHandle 实例并返回。
-     * - 若实例已存在，则直接返回已创建的实例。
-     * - 此方法通过闭包优化后续调用，避免多次判断，提升性能。
-     * 
-     * @return UniversalDamageHandle 单例实例
+     * 获取 UniversalDamageHandle 的单例实例 (闭包优化)。
      */
     public static function getInstance():UniversalDamageHandle {
         if (instance == null) {
@@ -43,89 +33,165 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
         return instance;
     }
 
-    // ========== 公共方法 ==========
-
     /**
-     * 判断是否能够处理指定的子弹。
-     * - 始终返回 true，表示该类可以处理所有子弹。
-     *
-     * @param bullet 子弹对象
-     * @return Boolean 始终返回 true
+     * 始终返回 true，表示可处理所有子弹。
      */
     public function canHandle(bullet:Object):Boolean {
         return true;
     }
 
     /**
-     * 处理通用伤害。
-     * - 根据子弹的伤害类型，计算最终伤害并设置伤害颜色和效果。
-     * - 支持真实伤害、魔法伤害和基础伤害。
+     * 处理子弹伤害（含通用伤害 + 躲闪状态）。
      *
      * @param bullet  子弹对象
      * @param shooter 射击者对象
      * @param target  目标对象
-     * @param manager 管理器对象
-     * @param result  伤害结果对象
+     * @param manager 管理器对象 (其中包含 dodgeState)
+     * @param result  伤害结果对象 (其中包含 damageSize 等)
      */
     public function handleBulletDamage(bullet:Object, shooter:Object, target:Object, manager:Object, result:DamageResult):Void {
-        var damageType:String = bullet.伤害类型;  // 本地化伤害类型
-        var bulletPower:Number = bullet.破坏力;  // 本地化破坏力
-        var damageColor:String;
-        var damageEffect:String;
+
+        // -----------【通用伤害阶段】-----------
+        var bulletPower:Number = bullet.破坏力;
+        var damageType:String = bullet.伤害类型;
+        var isFriendly:Boolean = bullet.子弹敌我属性值;  // 若为真，说明是友方子弹？
+
+        // 定义整合后的最终输出值
         var finalDamage:Number;
+        var finalDamageSize:Number = result.damageSize;  // 初始大小
+        var finalColor:String;     // 最终颜色
+        var finalEffect:String;    // 最终伤害文本特效（如 "真" "能" "物"）
 
-        // 根据伤害类型分支处理
+        // 先做通用伤害逻辑
         switch (damageType) {
-            case "真伤":  // 真实伤害，直接造成伤害
-                damageColor = bullet.子弹敌我属性值 ? "#4A0099" : "#660033";
-                damageEffect = '<font color="' + damageColor + '" size="20"> 真</font>';
-                finalDamage = bulletPower;
+
+            case "真伤":
+                finalColor  = isFriendly ? "#4A0099" : "#660033";  // 直接内联颜色
+                finalEffect = '<font color="' + finalColor + '" size="20"> 真</font>';
+                finalDamage = bulletPower; // 真伤直接=破坏力
                 break;
 
-            case "魔法":  // 魔法伤害，计算魔法抗性
-                var bulletMagicAttr:String = bullet.魔法伤害属性;
-                var targetResist:Object = target.魔法抗性;
-                var targetLevel:Number = target.等级;
+            case "魔法":
+                var bulletMagicAttr:String = bullet.魔法伤害属性; 
+                var targetResist:Object    = target.魔法抗性;
+                var targetLevel:Number     = target.等级;
 
-                damageColor = bullet.子弹敌我属性值 ? "#0099FF" : "#AC99FF";
-                damageEffect = '<font color="' + damageColor + '" size="20"> ' + (bulletMagicAttr ? bulletMagicAttr : "能") + '</font>';
+                finalColor  = isFriendly ? "#0099FF" : "#AC99FF";  // 直接内联颜色
+                finalEffect = '<font color="' + finalColor + '" size="20"> ' 
+                              + (bulletMagicAttr ? bulletMagicAttr : "能") + '</font>';
 
-                // 计算魔法抗性
-                var enemyMagicResist:Number = (bulletMagicAttr && targetResist && (targetResist[bulletMagicAttr] || targetResist[bulletMagicAttr] === 0))
-                    ? targetResist[bulletMagicAttr]
-                    : (targetResist && (targetResist["基础"] || targetResist["基础"] === 0))
-                        ? targetResist["基础"]
-                        : 10 + (targetLevel >> 1);  // 位运算优化除法
+                // 计算魔抗
+                var enemyMagicResist:Number =
+                    (bulletMagicAttr && targetResist && (targetResist[bulletMagicAttr] || targetResist[bulletMagicAttr] === 0))
+                        ? targetResist[bulletMagicAttr]
+                        : (targetResist && (targetResist["基础"] || targetResist["基础"] === 0))
+                            ? targetResist["基础"]
+                            : 10 + (targetLevel >> 1); // 右移优化
 
-                // isNaN检查与范围限制
-                enemyMagicResist = (enemyMagicResist != enemyMagicResist) 
-                    ? 20 
-                    : (enemyMagicResist < -1000 ? -1000 : (enemyMagicResist > 100 ? 100 : enemyMagicResist));
+                // isNaN 检查 & 范围限制
+                if (enemyMagicResist != enemyMagicResist) { 
+                    // 等价 isNaN()
+                    enemyMagicResist = 20;
+                } else if (enemyMagicResist < -1000) {
+                    enemyMagicResist = -1000;
+                } else if (enemyMagicResist > 100) {
+                    enemyMagicResist = 100;
+                }
 
-                finalDamage = bulletPower * (100 - enemyMagicResist) * 0.01;
-                finalDamage = (finalDamage >= 0) ? (finalDamage | 0) : ((finalDamage == (finalDamage | 0)) ? finalDamage : ((finalDamage - 1) | 0));
+                var magicDamage:Number = bulletPower * (100 - enemyMagicResist) * 0.01;
+                // 若>=0则用 (|0) 截断，若<0 则向下取整
+                finalDamage = (magicDamage >= 0)
+                                ? (magicDamage | 0)
+                                : ((magicDamage == (magicDamage | 0)) ? magicDamage : ((magicDamage - 1) | 0));
                 break;
 
-            default:  // 基础伤害，计算防御减伤
-                damageColor = bullet.子弹敌我属性值 ? "#FF9900" : "#FF6666";
-                damageEffect = '<font color="' + damageColor + '" size="20"> 物</font>';
+            default: // 基础物理伤害
+                finalColor  = isFriendly ? "#FF9900" : "#FF6666";  // 直接内联颜色
+                finalEffect = '<font color="' + finalColor + '" size="20"> 物</font>';
                 finalDamage = bulletPower * DamageResistanceHandler.defenseDamageRatio(target.防御力);
                 break;
         }
 
-        // 设置伤害颜色和效果
-        result.setDamageColor(damageColor);
-        result.addDamageEffect(damageEffect);
+        // 添加通用伤害效果
+        result.addDamageEffect(finalEffect);
 
-        // 应用伤害
-        target.损伤值 = finalDamage;
+        // -----------【躲闪处理阶段】-----------
+        // 注意：最终伤害要在此基础上根据躲闪来修正
+        var dodgeState:String = manager.dodgeState;
+        if (dodgeState) { // 如果有躲闪状态，进行处理
+            switch (dodgeState) {
+
+                case "跳弹":
+                    finalDamage = DamageResistanceHandler.bounceDamageCalculation(finalDamage, target.防御力);
+                    finalColor  = isFriendly ? "#7F6A00" : "#7F0000";  // 直接内联颜色
+
+                    // 根据新伤害比率动态缩放伤害大小
+                    finalDamageSize *= 0.3 + 0.7 * finalDamage / bulletPower;
+                    break;
+
+                case "过穿":
+                    finalDamage = DamageResistanceHandler.penetrationDamageCalculation(finalDamage, target.防御力);
+                    finalColor  = isFriendly ? "#FFE770" : "#FF7F7F";  // 直接内联颜色
+
+                    // 根据新伤害比率动态缩放伤害大小
+                    finalDamageSize *= 0.3 + 0.7 * finalDamage / bulletPower;
+                    break;
+
+                case "躲闪":
+                case "直感":
+                    finalDamage = 0;       // 直接赋值为 0
+                    finalDamageSize *= 0.5;
+                    result.dodgeStatus = "MISS";
+                    break;
+
+                case "格挡":
+                    var blockValue:Number = target.受击反制(finalDamage, bullet);
+                    if (blockValue > 0) {
+                        // 普通格挡，造成一些反制伤害
+                        finalDamage = blockValue;
+                        finalDamageSize *= 0.3 + 0.7 * blockValue / bulletPower;
+                    } else if (blockValue === 0) {
+                        // 完全被格挡掉，没伤害
+                        finalDamage = 0;
+                        finalDamageSize *= 1.2;
+                    } else {
+                        // blockValue<0 或者 NaN，视为 MISS
+                        finalDamage = 0;
+                        finalDamageSize *= 0.5;
+                        result.dodgeStatus = "MISS";
+                    }
+                    break;
+
+                default:
+                    // 无匹配时，相当于无躲闪；但仍需对伤害进行最小值处理
+                    // 如果 finalDamage <= 0，则至少保证为 1
+                    if (finalDamage <= 0) {
+                        finalDamage = 1;
+                    } else {
+                        finalDamage = finalDamage | 0; // 向下取整
+                    }
+                    // 原逻辑：_root.受击变红(120, target);
+                    _root.受击变红(120, target);
+            }
+        } else {
+            // 若没有任何躲闪状态，也需要对伤害进行最小值处理
+            if (finalDamage <= 0) {
+                finalDamage = 1;
+            } else {
+                finalDamage = finalDamage | 0;
+            }
+        }
+
+        // -----------【统一写回】-----------
+        target.损伤值 = finalDamage;        // 最终伤害
+        result.damageSize = finalDamageSize; // 更新伤害大小
+        result.setDamageColor(finalColor);    // 最终生效颜色(可能被躲闪阶段覆盖)
+
+        // 备注：在原代码中，“通用伤害”部分会立即 setDamageColor，
+        //       但之后在躲闪分支又可能调用 setDamageColor 从而覆盖。
+        //       为减少函数调用开销，这里在最后只调用一次 setDamageColor。
     }
 
-    /**
-     * 返回类的字符串表示。
-     *
-     * @return String 类的名称
-     */
     public function toString():String {
         return "UniversalDamageHandle";
     }

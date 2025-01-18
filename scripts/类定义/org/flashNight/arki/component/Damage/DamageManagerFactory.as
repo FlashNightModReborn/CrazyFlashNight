@@ -37,7 +37,6 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         // 按顺序注册常用的伤害处理器
         handles.push(CritDamageHandle.getInstance()); // 暴击处理器
         handles.push(UniversalDamageHandle.getInstance()); // 通用处理器
-        handles.push(DodgeStateDamageHandle.getInstance()); // 躲闪状态处理器
         handles.push(MultiShotDamageHandle.getInstance()); // 联弹处理器
         handles.push(NanoToxicDamageHandle.getInstance()); // 毒素处理器
         handles.push(LifeStealDamageHandle.getInstance()); // 吸血处理器
