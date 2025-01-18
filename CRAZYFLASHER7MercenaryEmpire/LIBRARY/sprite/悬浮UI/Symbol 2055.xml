@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2055" itemID="6597607e-00000a89" lastModified="1735410316">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2055" itemID="6597607e-00000a89" lastModified="1737228135">
   <timeline>
-    <DOMTimeline name="Symbol 2055" currentFrame="11">
+    <DOMTimeline name="Symbol 2055" currentFrame="13">
       <layers>
         <DOMLayer name="Labels Layer" color="#ADC239">
           <frames>
@@ -87,15 +87,8 @@ _root.全部翻译(_root.关卡结束界面);
             </DOMFrame>
             <DOMFrame index="60" duration="20" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this._visible = 0;
-if (_root.gameworld[_root.控制目标].是否允许发送联机数据 == true)
-{
-	_root.gameworld[_root.控制目标].hp = _root.gameworld[_root.控制目标].hp满血值;
-	_root.gameworld[_root.控制目标].mp = _root.gameworld[_root.控制目标].mp满血值;
-	_root.gameworld[_root.控制目标].动画完毕();
-	_root.玩家信息界面.刷新hp显示();
-	_root.玩家信息界面.刷新mp显示();
-}]]></script>
+                <script><![CDATA[this._visible = false;
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -138,28 +131,35 @@ if (_root.gameworld[_root.控制目标].是否允许发送联机数据 == true)
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   stop();
-   _root.全部翻译(this);
+                    <script><![CDATA[onClipEvent (load) {
+	stop();
+	_root.全部翻译(this);
 }
-on(release){
-   gotoAndStop(1);
-   if(org.flashNight.arki.item.ItemUtil.singleSubmit("复活币",1)){
-	   _parent.使用复活币();
-   }else{
-	   _root.发布消息(_root.获得翻译("没有复活币！"));
-   }
+on (release) {
+	gotoAndStop(1);
+	if(_root.限制系统.DisableResurrection){
+		_root.发布消息("无法使用复活币！");
+		_parent.gotoAndStop("消失");
+		return;
+	}
+	if (org.flashNight.arki.item.ItemUtil.singleSubmit("复活币", 1))
+	{
+		_parent.使用复活币();
+	}
+	else
+	{
+		_root.发布消息(_root.获得翻译("没有复活币！"));
+	}
 }
-on(press){
-   gotoAndStop(3);
+on (press) {
+	gotoAndStop(3);
 }
-on(rollOver){
-   gotoAndStop(2);
+on (rollOver) {
+	gotoAndStop(2);
 }
-on(rollOut){
-   gotoAndStop(1);
-}
-]]></script>
+on (rollOut) {
+	gotoAndStop(1);
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

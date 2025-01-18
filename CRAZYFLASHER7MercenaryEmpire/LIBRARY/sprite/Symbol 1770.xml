@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1770" itemID="6597607e-000009f7" lastModified="1735317057">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1770" itemID="6597607e-000009f7" lastModified="1737229108">
   <timeline>
     <DOMTimeline name="Symbol 1770">
       <layers>
@@ -73,11 +73,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#80D240">
+        <DOMLayer name="Layer 3" color="#80D240" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 1768" name="bt3" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 1768" name="bt3" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="3.24359130859375" d="0.666000366210938" tx="41.3" ty="42.7"/>
                   </matrix>
@@ -95,10 +95,10 @@ _root.全部翻译(this);
 		_root.委托任务界面.NPC任务_任务_等级限制 = _root.gameworld[当前NPC].NPC任务_任务_等级限制;
 		_root.委托任务界面.NPC任务_任务_K点 = _root.gameworld[当前NPC].NPC任务_任务_K点;
 		_root.委托任务界面.NPC任务_任务_起始帧 = _root.gameworld[当前NPC].NPC任务_任务_起始帧;
-		_root.委托任务界面.显示任务明细(_root.委托任务界面.NPC任务_任务);
 		_root.SetDialogue(data.get_conversation);
 		_root.委托任务界面.商品编号 = _root.gameworld[当前NPC].商品编号;
 		_root.委托任务界面.配置关卡属性(_root.gameworld[当前NPC].NPC任务_任务_关卡路径);
+		_root.委托任务界面.显示任务明细(_root.委托任务界面.NPC任务_任务);
 		_root.委托任务界面._visible = true;
 	}
 	else
@@ -117,11 +117,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#F8CED8" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#F8CED8">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 1767" name="bt2" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 1767" name="bt2" symbolType="button">
                   <matrix>
                     <Matrix a="3.24359130859375" d="0.666000366210938" tx="41.3" ty="25.7"/>
                   </matrix>

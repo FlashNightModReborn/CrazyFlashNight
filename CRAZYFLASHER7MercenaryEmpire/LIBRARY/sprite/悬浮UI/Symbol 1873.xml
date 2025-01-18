@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1737226617" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1737229151" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="Symbol 1873">
       <layers>
-        <DOMLayer name="Script Layer" color="#BBD388">
+        <DOMLayer name="Script Layer" color="#BBD388" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -56,6 +56,9 @@
 	推荐等级 = 获取任务文档数据.recommended_level ?  "   "  + _root.获得翻译("推荐等级：") + 获取任务文档数据.recommended_level : "";
 	
 	任务明细 = 任务数组[0] + "\r" + _root.获得翻译("难度限制：") + _root.getDifficultyString(关卡难度) + "\r " + _root.获得翻译("完成条件：") + 收集品条件 + 通关条件 + 提交任务 + 奖励物品 + "\r " + _root.获得翻译或不显示(任务数组[5]);
+	if(this.限制词条.length > 0){
+		任务明细 +="<FONT COLOR=\'#FFCC00\'>" + _root.任务栏UI函数.打印限制词条明细(this.限制词条) + "</FONT>";
+	}
 	接收条件 = _root.获得翻译("委托领取条件") + "\r" + _root.获得翻译("任务_契约金：") + NPC任务_任务_契约金 + "   " +  _root.获得翻译("情报费（K点）：") + NPC任务_任务_K点 + "\r" + _root.获得翻译("任务等级限制：") + NPC任务_任务_等级限制 + 推荐等级 + "\r";
 	进入挑战 = false;
 	if(获取任务文档数据.challenge){
@@ -339,7 +342,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本框" color="#60C7E6" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文本框" color="#60C7E6" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1736865566" lastUniqueIdentifier="241">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="主角-男" itemID="665305af-00000da4" linkageExportForAS="true" linkageIdentifier="主角-男" lastModified="1737228503" lastUniqueIdentifier="241">
   <timeline>
-    <DOMTimeline name="主角-男" currentFrame="1">
+    <DOMTimeline name="主角-男" currentFrame="92">
       <layers>
         <DOMLayer name="Labels Layer" color="#E755B4">
           <frames>
@@ -1328,7 +1328,7 @@ onClipEvent (load) {
 		//_parent.起始Y = _parent._y;
 		_parent.起始Y = _parent.Z轴坐标;
 	}
-	if (_parent._name == _root.控制目标 && (!_root.当前关卡名 || _root.当前关卡名.indexOf("Lv16") == -1))
+	if (_parent._name == _root.控制目标 && !_root.限制系统.DisableKnockdownProtection)
 	{
 		_parent.无敌 = true;
 		_parent.防止无限飞 = true;
@@ -1408,7 +1408,7 @@ onClipEvent (load) {
 	_parent._y = _parent.Z轴坐标;
 	_parent.倒地 = true;
 	_parent.格斗架势 = true;
-	if (_parent._name == _root.控制目标 && (!_root.当前关卡名 or _root.当前关卡名.indexOf("Lv16") == -1))
+	if (_parent._name == _root.控制目标 && !_root.限制系统.DisableKnockdownProtection)
 	{
 		_parent.无敌 = true;
 		_parent.防止无限飞 = true;
