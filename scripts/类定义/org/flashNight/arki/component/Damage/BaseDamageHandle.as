@@ -14,6 +14,7 @@ class org.flashNight.arki.component.Damage.BaseDamageHandle implements IDamageHa
      * 如果为 true，则始终处理伤害；如果为 false，则根据 canHandle 方法的返回值决定是否处理。
      */
     public var skipCheck:Boolean = false;
+    public static var instance:BaseDamageHandle = new BaseDamageHandle();
 
     /**
      * 构造函数。
@@ -21,6 +22,25 @@ class org.flashNight.arki.component.Damage.BaseDamageHandle implements IDamageHa
      */
     public function BaseDamageHandle() {
         this.skipCheck = false;
+    }
+
+    /**
+     * 获取 BaseDamageHandle 的单例实例。
+     * 
+     * - 若实例不存在，则创建一个新的 BaseDamageHandle 实例并返回。
+     * - 若实例已存在，则直接返回已创建的实例。
+     * - 此方法通过闭包优化后续调用，避免多次判断，提升性能。
+     * 
+     * @return BaseDamageHandle 单例实例
+     */
+    public static function getInstance():BaseDamageHandle {
+        if (instance == null) {
+            instance = new BaseDamageHandle();
+            getInstance = function():BaseDamageHandle {
+                return instance;
+            };
+        }
+        return instance;
     }
 
     /**

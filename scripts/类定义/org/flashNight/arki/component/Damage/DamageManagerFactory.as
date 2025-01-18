@@ -15,7 +15,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     private static var _namedFactories:Object = {};
 
     /** 默认的基础工厂，预置了常用的伤害处理器 */
-    public static var Basic:DamageManagerFactory = createBasic();
+    public static var Basic:DamageManagerFactory;
 
     /**
      * 创建一个默认的基础伤害工厂，内置常用处理器。
@@ -48,7 +48,11 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
             throw "DamageManagerFactory 支持的处理器数量最多为 32 个。";
         }
 
-        return new DamageManagerFactory(handles, 64);
+        var factory:DamageManagerFactory = new DamageManagerFactory(handles, 64)
+
+        registerExistingFactory("Basic", factory);
+
+        return factory;
     }
 
     /**
@@ -80,6 +84,26 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         var factory:DamageManagerFactory = new DamageManagerFactory(handles, cacheCapacity);
         _namedFactories[name] = factory;
     }
+
+    /**
+     * 注册一个已构建好的 DamageManagerFactory 实例到全局映射中。
+     *
+     * @param name    工厂名称（唯一标识）
+     * @param factory 已实例化的 DamageManagerFactory 对象
+     * @throws 如果工厂名称已存在或 factory 不是 DamageManagerFactory 实例，则抛出异常
+     */
+    public static function registerExistingFactory(name:String, factory:DamageManagerFactory):Void {
+        if (_namedFactories[name] != undefined) {
+            throw "工厂名称 '" + name + "' 已存在，无法重复注册。";
+        }
+
+        if (factory == null || !(factory instanceof DamageManagerFactory)) {
+            throw "提供的 factory 不是有效的 DamageManagerFactory 实例。";
+        }
+
+        _namedFactories[name] = factory;
+    }
+
 
     /**
      * 获取已注册的具名工厂。
@@ -235,16 +259,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
                 var bm:Number = bitmask;
 
                 do {
-                    var index:Number = 0;
-                    var temp:Number = bm & -bm;  // 提取最低位的 1
-
-                    // 快速位移法计算最低位 1 的索引，最多32位
-                    if ((temp >= 65536) && (temp >>= 16)) index += 16;
-                    if ((temp >= 256) && (temp >>= 8)) index += 8;
-                    if ((temp >= 16) && (temp >>= 4)) index += 4;
-                    if ((temp >= 4) && (temp >>= 2)) index += 2;
-                    // 合并判断和赋值
-                    handles[handles.length] = h[index + (temp >= 2)];
+                    handles[handles.length] = h[Math.log(bm & -bm) * 1.4426950408889634];
                 } while ((bm &= (bm - 1)) != 0);
 
                 return new DamageManager(handles);

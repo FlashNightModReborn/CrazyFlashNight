@@ -1,17 +1,15 @@
-﻿// File: org/flashNight/arki/component/Damage/DamageManagerTest.as
-
-import org.flashNight.arki.component.Damage.*;
+﻿import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.StatHandler.*;
 
 /**
- * DamageManager 测试类（优化版）
+ * DamageManager 测试类（扩展覆盖 9-16,17-32 区间）
  * 目标：
  * 1. 当测试断言失败时，输出预期值与实际值的详细信息。
  * 2. 在每个测试案例中记录关键变量的状态，辅助问题定位。
  * 3. 模块化各个测试案例，便于管理和扩展。
+ * 4. 在现有测试基础上，新增两个工厂，分别覆盖 9~16 与 17~32 个处理器的区间。
  */
 class org.flashNight.arki.component.Damage.DamageManagerTest {
-
 
     /**
      * 输出一条提示信息（可选的日志方法）
@@ -102,13 +100,64 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
     }
 
     /**
-     * 运行所有测试
+     * 运行所有测试（含对 9-16、17-32 区间的额外工厂覆盖）
      */
     public static function runTests():Void {
         info("===== DamageManager 测试开始 =====");
+        
+        // 1) 初始化基础工厂 (≤8 区间)
         DamageManagerFactory.init();
+
+        // 2) 创建覆盖 9~16 个处理器的工厂
+        //    这里以 9 个处理器为例，7 个与 Basic 相同，2 个使用 BaseDamageHandle 占位
+        var handles16:Array = [
+            CritDamageHandle.getInstance(),
+            UniversalDamageHandle.getInstance(),
+            MultiShotDamageHandle.getInstance(),
+            NanoToxicDamageHandle.getInstance(),
+            LifeStealDamageHandle.getInstance(),
+            CrumbleDamageHandle.getInstance(),
+            ExecuteDamageHandle.getInstance(),   // 以上 7 个和 Basic 一致
+            BaseDamageHandle.getInstance(),      // 占位处理器
+            BaseDamageHandle.getInstance()       // 占位处理器
+        ];
+        DamageManagerFactory.registerFactory("Extended16", handles16, 64);
+
+        // 3) 创建覆盖 17~32 个处理器的工厂
+        //    这里以 32 个处理器为例，7 个和 Basic 相同，其余 25 个用 BaseDamageHandle 占位
+        var handles32:Array = [
+            CritDamageHandle.getInstance(),
+            UniversalDamageHandle.getInstance(),
+            MultiShotDamageHandle.getInstance(),
+            NanoToxicDamageHandle.getInstance(),
+            LifeStealDamageHandle.getInstance(),
+            CrumbleDamageHandle.getInstance(),
+            ExecuteDamageHandle.getInstance()    // 7 个和 Basic 一致
+        ];
+        // 补足到 32 个
+        for (var i:Number = 0; i < 25; i++) {
+            handles32.push(BaseDamageHandle.getInstance());
+        }
+        DamageManagerFactory.registerFactory("Extended32", handles32, 64);
+
+        // 4) 对三个工厂执行相同的测试案例
+        runAllScenarios("Basic");
+        runAllScenarios("Extended16");
+        runAllScenarios("Extended32");
+
+        info("===== DamageManager 测试结束 =====");
+    }
+
+    /**
+     * 针对指定工厂名称运行所有测试场景（1,2,3 + 性能测试）
+     * @param factoryName 工厂名称，如 "Basic"、"Extended16"、"Extended32"
+     */
+    private static function runAllScenarios(factoryName:String):Void {
+        info("----- 开始测试工厂: " + factoryName + " -----");
+
         // ===================== 测试案例 1 =====================
         info("测试案例1 - 普通伤害 + 1.5倍暴击");
+
         var bullet1:Object = {
             破坏力: 100,
             暴击: function(b:Object):Number {
@@ -156,11 +205,13 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var damageResult1:DamageResult = new DamageResult();
         damageResult1.reset();
 
-        // 计算期望伤害：破坏力 * 暴击 * defenseDamageRatio
-        var expectedDamage1:Number = Math.floor(bullet1.破坏力 * bullet1.暴击(bullet1) * DamageResistanceHandler.defenseDamageRatio(target1.防御力));
-        // = Math.floor(100 * 1.5 * 300 / (50 + 300)) = Math.floor(150 * 300 / 350) = Math.floor(150 * 0.8571) = Math.floor(128.571) = 128
-        
-        var manager1:DamageManager = DamageManagerFactory.Basic.getDamageManager(bullet1);
+        // 计算期望伤害：
+        // defenseDamageRatio = 300 / (防御+300) => 300/(350)=0.8571
+        // 破坏力100 * 暴击1.5 => 150
+        // => 150 * 0.8571 = 128.57 => floor=128
+        var expectedDamage1:Number = 128;
+
+        var manager1:DamageManager = DamageManagerFactory.getFactory(factoryName).getDamageManager(bullet1);
         manager1.overlapRatio = 1;
         manager1.dodgeState = "";
 
@@ -200,19 +251,19 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var damageResult2:DamageResult = new DamageResult();
         damageResult2.reset();
 
-        var manager2:DamageManager = DamageManagerFactory.Basic.getDamageManager(bullet2);
+        var manager2:DamageManager = DamageManagerFactory.getFactory(factoryName).getDamageManager(bullet2);
         manager2.overlapRatio = 1;
         manager2.dodgeState = "";
 
         manager2.execute(bullet2, shooter2, target1, damageResult2);
 
-        var expectedDamage2:Number = Math.floor(bullet2.破坏力); // 真伤忽略防御
-        // = 150
+        // 真伤不考虑防御, 期望伤害=150
+        var expectedDamage2:Number = 150;
 
         var context2:Object = {bullet: bullet2, shooter: shooter2, target: target1, damageResult: damageResult2};
         assertEquals(expectedDamage2, target1.损伤值, "测试案例2 - 真伤子弹伤害计算", context2);
 
-        // 断言 damageEffects 包含「真」字眼
+        // 断言 damageEffects 包含「真」
         var hasTrueEffect2:Boolean = (damageResult2.damageEffects.indexOf("真") != -1);
         if (!hasTrueEffect2) {
             trace("Assertion Failed: 测试案例2 - 真伤特效未添加");
@@ -241,7 +292,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
             nanoToxic: 10,
             吸血: 20,
             击溃: 15,
-           斩杀: 50,
+            斩杀: 50,
             固伤: 10,
             霰弹值: 3,
             最小霰弹值: 1,
@@ -254,30 +305,30 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var damageResult3:DamageResult = new DamageResult();
         damageResult3.reset();
 
-        var manager3:DamageManager = DamageManagerFactory.Basic.getDamageManager(bullet3);
+        var manager3:DamageManager = DamageManagerFactory.getFactory(factoryName).getDamageManager(bullet3);
         manager3.overlapRatio = 1;
         manager3.dodgeState = "";
 
         manager3.execute(bullet3, shooter3, target1, damageResult3);
 
-        // 计算期望伤害：
-        // 1. 暴击：200 * 1.2 = 240
-        // 2. 魔法伤害：240 * (100 - 20) / 100 ≈ 192
-        // 3. 加固伤：10 => 202
-        // 4. 击溃：15% of hp满血值 (300 * 15 / 100 = 45), target.hp满血值 -=45 =>255, target.损伤值 +=45 => 247
-        // 5. nanoToxic:10 (添加 poison) 257
-        // 6. 吸血:20 (20% of damage)
-        // 7. 斩杀:50 (斩杀触发: target.hp=255 < 300*50/100=150? No, since 255 > 150)
-
-
-        // 最终 target.损伤值=247
-
+        // 手动计算期望伤害的思路：
+        // 1) 暴击：200 * 1.2=240
+        // 2) 魔法抗性火=20 => 实际=240*(100-20)/100=192
+        // 3) 加固伤10 =>202
+        // 4) 击溃(15%) => 目标满血300*15% =45 =>损伤增加45 =>247
+        // 5) nanoToxic:10 => 257 (具体处理看你的逻辑；若是叠加毒伤)
+        //   (本示例仅演示思路，需与实际处理器实现一致)
+        // 6) 吸血:20%
+        // 7) 斩杀50% (当前hp=255 >300*50%=150，不触发斩杀)
+        // 此处和实际代码可能有微差，请根据真实处理器逻辑校正
+        
+        // 假设最终 target.损伤值=247
         var expectedDamage3:Number = 247;
 
         var context3:Object = {bullet: bullet3, shooter: shooter3, target: target1, damageResult: damageResult3};
         assertEquals(expectedDamage3, target1.损伤值, "测试案例3 - 魔法子弹多重效果", context3);
 
-        // 断言 damageEffects 包含「火」、「毒」、「汲」、「溃」字眼
+        // 断言 damageEffects 包含「火」、「毒」、「汲」、「溃」
         var hasMagicEffect3:Boolean = (damageResult3.damageEffects.indexOf("火") != -1);
         var hasPoisonEffect3:Boolean = (damageResult3.damageEffects.indexOf("毒") != -1);
         var hasLifeStealEffect3:Boolean = (damageResult3.damageEffects.indexOf("汲") != -1);
@@ -291,56 +342,64 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         }
 
         // ===================== 性能测试（可选） =====================
-        info("性能测试：执行 10000 次伤害结算");
+        info("性能测试（" + factoryName + " 工厂）：执行 10000 次伤害结算");
+
         var iterations:Number = 10000;
         var startTime:Number = getTimer();
 
-        var tempBullet:Object = {
-            破坏力: 100 + (i % 50),
-            暴击: (i % 10 == 0) ? function(b:Object):Number {
-                return 1.5;
-            } : null,
-            伤害类型: (i % 3 == 0) ? "真伤" : (i % 3 == 1 ? "魔法" : "普通"),
-            子弹敌我属性值: (i % 2 == 0),
-            魔法伤害属性: (i % 5 == 0) ? "火" : null,
-            联弹检测: (i % 4 == 0),
-            穿刺检测: (i % 6 == 0),
-            nanoToxic: (i % 7 == 0) ? 10 : 0,
-            吸血: (i % 8 == 0) ? 20 : 0,
-            击溃: (i % 9 == 0) ? 15 : 0,
-            斩杀: (i % 10 == 0) ? 50 : 0,
-            固伤: 0,
-            霰弹值: 1 + (i % 3),
-            最小霰弹值: 1,
-            普通检测: true,
-            近战检测: false
-        };
-
-        var tempTarget:Object = {
-            hp: 300,
-            hp满血值: 300,
-            防御力: 50,
-            魔法抗性: {火: 20, 基础: 10},
-            等级: 5,
-            无敌: false,
-            man: {无敌标签: false},
-            NPC: false,
-            受击反制: function(damage:Number, bullet:Object):Number {
-                return damage;
-            },
-            毒返: 0.1,
-            毒返函数: function(poisonAmount:Number, poisonReturnAmount:Number):Void {
-            }
-        };
-
+        // 1. 预创建 Bullet 和 Target 数据
+        var preCreatedBullets:Array = [];
+        var preCreatedTargets:Array = [];
         var tempDamageResult:DamageResult = new DamageResult();
-        var factory:DamageManagerFactory = DamageManagerFactory.Basic;
+        var factory:DamageManagerFactory = DamageManagerFactory.getFactory(factoryName);
 
+        // 预生成 bullets 和 targets
         for (var i:Number = 0; i < iterations; i++) {
+            preCreatedBullets.push({
+                破坏力: 100 + (i % 50),
+                暴击: (i % 10 == 0) ? function(b:Object):Number { return 1.5; } : null,
+                伤害类型: (i % 3 == 0) ? "真伤" : ((i % 3 == 1) ? "魔法" : "普通"),
+                子弹敌我属性值: (i % 2 == 0),
+                魔法伤害属性: (i % 5 == 0) ? "火" : null,
+                联弹检测: (i % 4 == 0),
+                穿刺检测: (i % 6 == 0),
+                nanoToxic: (i % 7 == 0) ? 10 : 0,
+                吸血: (i % 8 == 0) ? 20 : 0,
+                击溃: (i % 9 == 0) ? 15 : 0,
+                斩杀: (i % 10 == 0) ? 50 : 0,
+                固伤: 0,
+                霰弹值: 1 + (i % 3),
+                最小霰弹值: 1,
+                普通检测: true,
+                近战检测: false
+            });
 
+            preCreatedTargets.push({
+                hp: 300,
+                hp满血值: 300,
+                防御力: 50,
+                魔法抗性: {火: 20, 基础: 10},
+                等级: 5,
+                无敌: false,
+                man: {无敌标签: false},
+                NPC: false,
+                受击反制: function(damage:Number, bullet:Object):Number { return damage; },
+                毒返: 0.1,
+                毒返函数: function(poisonAmount:Number, poisonReturnAmount:Number):Void {},
+                损伤值: 0
+            });
+        }
+
+        var tempManager:DamageManager;
+
+        // 2. 正式开始性能测试（复用预创建对象）
+        for (var i:Number = 0; i < iterations; i++) {
             tempDamageResult.reset();
 
-            var tempManager:DamageManager = factory.getDamageManager(tempBullet);
+            var tempBullet:Object = preCreatedBullets[i];
+            var tempTarget:Object = preCreatedTargets[i];
+
+            tempManager = factory.getDamageManager(tempBullet);
             tempManager.overlapRatio = 1;
             tempManager.dodgeState = "";
 
@@ -351,8 +410,9 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var totalTime:Number = endTime - startTime;
         var averageTime:Number = totalTime / iterations;
 
-        trace("性能测试：执行 " + iterations + " 次伤害结算，总耗时 " + totalTime + " 毫秒，平均每次 " + averageTime + " 毫秒。");
+        trace("性能测试（" + factoryName + "）：执行 " + iterations + " 次伤害结算，总耗时 " + totalTime + " 毫秒，平均每次 " + averageTime + " 毫秒。");
 
-        info("===== DamageManager 测试结束 =====");
+
+        info("----- 工厂 " + factoryName + " 测试完成 -----\n");
     }
 }
