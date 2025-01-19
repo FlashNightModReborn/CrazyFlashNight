@@ -294,7 +294,10 @@ _root.敌人函数.掉落物判定 = function(){
 }
 
 _root.敌人函数.掉落物品 = function(item){
-	if(item.名字 && _root.成功率(item.概率) && item.最小数量 && item.最大数量){
+	if(item.名字 && _root.成功率(item.概率)){
+		if(isNaN(item.最小数量) || isNaN(item.最大数量)){
+			item.最小数量 = item.最大数量 = 1;
+		}
 		if(isNaN(item.总数)) item.总数 = item.最大数量;
 		var 数量 = item.最小数量 + random(item.最大数量 - item.最小数量 + 1);
 		if(item.总数 < 数量) 数量 = item.总数;
@@ -304,8 +307,7 @@ _root.敌人函数.掉落物品 = function(item){
 }
 
 
-_root.初始化敌人模板 = function()
-{
+_root.初始化敌人模板 = function(){
 	//以下14个是原版敌人的必要函数
 	this.根据等级初始数值 = this.根据等级初始数值 ? this.根据等级初始数值 : _root.敌人函数.根据等级初始数值;
 	this.行走 = this.行走 ? this.行走 : _root.敌人函数.行走;
