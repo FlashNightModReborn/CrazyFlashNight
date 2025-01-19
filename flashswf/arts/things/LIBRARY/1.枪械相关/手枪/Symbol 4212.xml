@@ -1,0 +1,91 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/手枪/Symbol 4212" itemID="668e7c1e-00001059" linkageExportForAS="true" linkageIdentifier="枪-手枪-钛合金P90" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 4212">
+      <layers>
+        <DOMLayer name="Layer 1" color="#AADD09">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="178.65" centerPoint3DY="-17.65">
+                  <matrix>
+                    <Matrix tx="166.15" ty="-30.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#06DBE1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4211" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5977783203125" d="0.5977783203125" tx="78.8" ty="-45.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#C096F2" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4210" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.5977783203125" d="0.5977783203125" tx="-15.2" ty="-24.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#E9E659">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3722" blendMode="add" centerPoint3DX="449.05" centerPoint3DY="-38.6">
+                  <matrix>
+                    <Matrix a="0.95098876953125" d="0.95098876953125" tx="80.1" ty="-44.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.攻击模式 == "手枪" or _parent._parent._parent._parent._parent.攻击模式 == "手枪2" or _parent._parent._parent._parent._parent.攻击模式 == "双枪")
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5" redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="-255" blueOffset="255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/精油贴纸" itemID="66ebb87c-000001b6" lastModified="1726724220">
+  <timeline>
+    <DOMTimeline name="精油贴纸">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.040283203125" tx="33.05" ty="-508.15"/>
+                        </matrix>
+                        <GradientEntry color="#554531" ratio="0"/>
+                        <GradientEntry color="#FDF2C9" ratio="0.580392156862745"/>
+                        <GradientEntry color="#FDF2C9" ratio="0.729411764705882"/>
+                        <GradientEntry color="#BA9267" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!0 1527S1[574 1599 1112 1527!1112 1527|1112 0!1112 0[574 32 0 0!0 0|0 1527"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

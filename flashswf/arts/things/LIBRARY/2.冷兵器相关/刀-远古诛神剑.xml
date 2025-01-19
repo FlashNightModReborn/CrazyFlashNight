@@ -1,0 +1,110 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.冷兵器相关/刀-远古诛神剑" itemID="66c0aee9-00004e95" linkageExportForAS="true" linkageIdentifier="刀-远古诛神剑" lastModified="1723903950">
+  <timeline>
+    <DOMTimeline name="刀-远古诛神剑">
+      <layers>
+        <DOMLayer name="Layer 1" color="#C2AD63" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置3" selected="true" centerPoint3DX="-37.9" centerPoint3DY="348.6">
+                  <matrix>
+                    <Matrix a="3.03390502929688" d="6.58200073242188" tx="-50.4" ty="336.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(random(15) == 0)
+      {
+         var myPoint = {x:this._x,y:this._y};
+         _parent.localToGlobal(myPoint);
+         _root.gameworld.globalToLocal(myPoint);
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "魔法特效1";
+         子弹威力 = 1000;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 60;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FCD826" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置2" centerPoint3DX="-45.7" centerPoint3DY="199.55">
+                  <matrix>
+                    <Matrix a="3.38626098632813" d="5.9610595703125" tx="-58.2" ty="187.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#CFE910" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置1" centerPoint3DX="-68.7" centerPoint3DY="-18.35">
+                  <matrix>
+                    <Matrix a="4.89080810546875" d="8.70977783203125" tx="-81.2" ty="-30.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C63BAE" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3002" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redOffset="150" blueOffset="40" greenOffset="120"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

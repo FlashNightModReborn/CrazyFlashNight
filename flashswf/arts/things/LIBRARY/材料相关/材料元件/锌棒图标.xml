@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/锌棒图标" itemID="66e974c8-000000bb" lastModified="1726577214">
+  <timeline>
+    <DOMTimeline name="锌棒图标">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/锌棒">
+                  <matrix>
+                    <Matrix a="0.510528564453125" d="0.6090087890625" tx="11.2" ty="21.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="182.65" y="82.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/锌图标符号">
+                  <matrix>
+                    <Matrix a="1.1949462890625" d="0.84521484375" tx="94.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.2" y="49.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

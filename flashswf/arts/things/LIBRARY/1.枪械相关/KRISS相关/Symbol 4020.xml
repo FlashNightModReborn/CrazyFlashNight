@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/KRISS相关/Symbol 4020" itemID="668e7c1e-00000ffb" linkageExportForAS="true" linkageIdentifier="枪-长枪-KRISS突击版" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 4020">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BEBEB7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="306.65" centerPoint3DY="-2.65">
+                  <matrix>
+                    <Matrix tx="294.15" ty="-15.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#CBA64A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4019" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.869247436523438" d="0.869247436523438" tx="85.35" ty="9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#3982DC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4016" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.869247436523438" d="0.869247436523438" tx="72.2" ty="-5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

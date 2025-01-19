@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/精油图标" itemID="66ebb964-000001dc" lastModified="1726724476">
+  <timeline>
+    <DOMTimeline name="精油图标">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/精油">
+                  <matrix>
+                    <Matrix a="0.726165771484375" b="-0.561767578125" c="0.52685546875" d="0.681060791015625" ty="31.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.8" y="102.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/精油符号图标">
+                  <matrix>
+                    <Matrix tx="70.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.85" y="35.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,117 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/单独锌棒" itemID="66e97450-000000a2" lastModified="1726575696">
+  <timeline>
+    <DOMTimeline name="单独锌棒">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0060272216796875" b="0.0322265625" c="-0.0653076171875" d="0.0122528076171875" tx="177.75" ty="50.15"/>
+                        </matrix>
+                        <GradientEntry color="#888C86" ratio="0"/>
+                        <GradientEntry color="#D3D6D4" ratio="0.313725490196078"/>
+                        <GradientEntry color="#CECECD" ratio="0.537254901960784"/>
+                        <GradientEntry color="#6A6E69" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0185394287109375" b="0.0185394287109375" c="-0.0095062255859375" d="0.0095062255859375" tx="25.15" ty="62.6"/>
+                        </matrix>
+                        <GradientEntry color="#747570" ratio="0"/>
+                        <GradientEntry color="#858683" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!443 848S6|5811 0!5811 0[6176 22 6292 525!6292 525[6350 846 6090 1070!6090 1070|631 2180"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!631 2180S7|609 2183"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!443 848S3[#1BB.F2 848 445 848!445 848[629 848 759 1032!759 1032[890 1216 920 1503!920 1503[950 1790 794 2024!794 2024[716 2139 631 2180"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!631 2180S6[544 2220 449 2183!449 2183[261 2109 131 1924!131 1924[0 1738 0 1477!0 1477[0 1216 130 1032!130 1032[256 855 431 849!431 849|434 849!434 849[435 849 436 849!436 849|443 848"/>
+                    <Edge cubics="!0 1477(;0,1303 44,1155 130,1032q0 1477Q0 1216q130 1032);"/>
+                    <Edge cubics="!445 848(;568,848 673,909 759,1032q445 848Q629 848q759 1032);"/>
+                    <Edge cubics="!130 1032(;214,914 314,853 431,849q130 1032Q256 855q431 849);"/>
+                    <Edge cubics="!759 1032(;846,1155 900,1312 920,1503q759 1032Q890 1216q920 1503);"/>
+                    <Edge cubics="!794 2024(;742,2101 687,2153 631,2180q794 2024Q716 2139q631 2180);"/>
+                    <Edge cubics="!631 2180(;572,2206 512,2208 449,2183q631 2180Q544 2220q449 2183);"/>
+                    <Edge cubics="!449 2183(;324,2134 218,2047 131,1924q449 2183Q261 2109q131 1924);"/>
+                    <Edge cubics="!920 1503(;940,1694 898,1868 794,2024q920 1503Q950 1790q794 2024);"/>
+                    <Edge cubics="!131 1924(;44,1800 0,1651 0,1477q131 1924Q0 1738q0 1477);"/>
+                    <Edge cubics="!609 2183(;609,2183 631,2180 631,2180q609 2183 631 2180);"/>
+                    <Edge cubics="!631 2180(;631,2180 6090,1070 6090,1070q631 2180 6090 1070);"/>
+                    <Edge cubics="!6090 1070(;6263,921 6331,739 6292,525q6090 1070Q6350 846q6292 525);"/>
+                    <Edge cubics="!6292 525(;6215,190 6054,15 5811,0q6292 525Q6176 22q5811 0);"/>
+                    <Edge cubics="!434 849(;435,849 435,849 436,849q434 849Q435 849q436 849);"/>
+                    <Edge cubics="!431 849(;431,849 434,849 434,849q431 849 434 849);"/>
+                    <Edge cubics="!443 848(;444,848 444,848 445,848q443 848Q444 848q445 848);"/>
+                    <Edge cubics="!436 849(;436,849 443,848 443,848q436 849 443 848);"/>
+                    <Edge cubics="!443 848(;443,848 5811,0 5811,0q443 848 5811 0);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/划痕1" selected="true">
+                  <matrix>
+                    <Matrix a="1.6031494140625" b="-0.15557861328125" c="0.055328369140625" d="0.570236206054688" tx="16.75" ty="67.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="88" y="28.9"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/划痕1" selected="true">
+                  <matrix>
+                    <Matrix a="-1.28910827636719" b="0.188583374023438" c="-0.0330352783203125" d="-0.225921630859375" tx="261.95" ty="22.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="87.9" y="28.65"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/划痕2" selected="true">
+                  <matrix>
+                    <Matrix a="0.234893798828125" b="-0.06292724609375" c="0.0247650146484375" d="0.0924530029296875" tx="5.65" ty="86.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="81.55" y="46.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3203125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/划痕2" selected="true">
+                  <matrix>
+                    <Matrix a="-0.200668334960938" b="0.0499114990234375" c="-0.013946533203125" d="-0.05615234375" tx="44.3" ty="92.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="81.05" y="45.35"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3203125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

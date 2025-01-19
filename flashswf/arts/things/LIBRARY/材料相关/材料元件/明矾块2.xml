@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/明矾块2" itemID="66ea5b77-00000074" lastModified="1726634915">
+  <timeline>
+    <DOMTimeline name="明矾块2">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1716 499|1575 8!1575 8[1159 -29 931 100!931 100[722 360 324 493!324 493[-43 681 6 1008!6 1008[72 1146 67 1284!67 1284|214 1468!214 1468[542 1365 656 1431!656 1431[1512 1394 1545 1431!1545 1431|1716 1210!1716 1210|1716 499"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/明矾块透明&amp;#032">
+                  <matrix>
+                    <Matrix a="-0.21856689453125" b="0.27667236328125" c="-0.27667236328125" d="-0.21856689453125" tx="85.8" ty="47.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="54.8" y="82.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.62890625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/明矾点">
+                  <matrix>
+                    <Matrix a="-0.16680908203125" b="-0.62255859375" c="0.889678955078125" d="-0.238372802734375" tx="26.35" ty="71.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.05" y="33.4"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.37109375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

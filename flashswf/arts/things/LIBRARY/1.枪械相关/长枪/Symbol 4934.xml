@@ -1,0 +1,71 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/Symbol 4934" itemID="668e7c1e-000011cc" linkageExportForAS="true" linkageIdentifier="枪-长枪-生命收割者" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 4934">
+      <layers>
+        <DOMLayer name="Layer 1" color="#CC9092">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="288.15" centerPoint3DY="80.7">
+                  <matrix>
+                    <Matrix a="0.564666748046875" d="0.564666748046875" tx="275.65" ty="68.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9440DB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4933" centerPoint3DX="311.15" centerPoint3DY="72.35">
+                  <matrix>
+                    <Matrix a="0.577987670898438" d="0.577987670898438" tx="-22" ty="-58.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.长枪射击ing == true)
+   {
+      this._visible = 1;
+      play();
+   }
+   else
+   {
+      this._visible = 0;
+      stop();
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#497EF4" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4929" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.577987670898438" d="0.577987670898438" tx="-18.8" ty="-58.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

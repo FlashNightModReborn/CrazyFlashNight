@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/黄铜块" itemID="66ea8458-000000ee" lastModified="1726645337">
+  <timeline>
+    <DOMTimeline name="黄铜块">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0271453857421875" b="0.0124053955078125" c="-0.415435791015625" d="0.908248901367188" tx="392.45" ty="-341.75"/>
+                        </matrix>
+                        <GradientEntry color="#D8C67C" ratio="0"/>
+                        <GradientEntry color="#BDA660" ratio="0.580392156862745"/>
+                        <GradientEntry color="#A58B4C" ratio="0.984313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.1075439453125" d="0.1075439453125" tx="176.7" ty="114.05"/>
+                        </matrix>
+                        <GradientEntry color="#D8C67C" ratio="0"/>
+                        <GradientEntry color="#C1AA62" ratio="0.580392156862745"/>
+                        <GradientEntry color="#AF9451" ratio="0.984313725490196"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!116 1138S5|0 1396!0 1396|3455 3597!3455 3597|3687 3422"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!3687 3422S5|4318 2077!4318 2077|1021 0!1021 0|116 1138"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!116 1138S7|3687 3422"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

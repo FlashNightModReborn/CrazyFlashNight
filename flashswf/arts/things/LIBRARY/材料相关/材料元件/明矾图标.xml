@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/明矾图标" itemID="66ea5bf2-00000088" lastModified="1726634994">
+  <timeline>
+    <DOMTimeline name="明矾图标">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/明矾块1" selected="true">
+                  <matrix>
+                    <Matrix a="0.736785888671875" d="0.736785888671875" tx="11.5" ty="23.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="85.05" y="81.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.80859375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/明矾块2" selected="true">
+                  <matrix>
+                    <Matrix a="0.736785888671875" d="0.736785888671875" ty="96.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.9" y="36.7"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.7890625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/明矾符号图标" selected="true">
+                  <matrix>
+                    <Matrix tx="63.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="47.9" y="30.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

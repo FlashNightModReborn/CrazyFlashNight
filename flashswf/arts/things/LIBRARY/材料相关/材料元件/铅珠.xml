@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/铅珠" itemID="66ebc47e-0000008f" lastModified="1726727294">
+  <timeline>
+    <DOMTimeline name="铅珠">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0051422119140625" b="0.0192718505859375" c="-0.022705078125" d="0.006072998046875" tx="17.05" ty="11.55"/>
+                        </matrix>
+                        <GradientEntry color="#DDF1FF" ratio="0"/>
+                        <GradientEntry color="#788591" ratio="0.650980392156863"/>
+                        <GradientEntry color="#465157" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.01409912109375" c="0.011871337890625" d="0" tx="17.8" ty="24.95"/>
+                        </matrix>
+                        <GradientEntry color="#D0D1C7" ratio="0"/>
+                        <GradientEntry color="#737A84" ratio="0.576470588235294"/>
+                        <GradientEntry color="#465157" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!112 607S2[107 602 102 597!102 597[0 495 0 350!0 350[0 205 102 102!102 102[205 0 350 0!350 0[495 0 597 102!597 102[700 205 700 350!700 350[700 495 597 597"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!597 597S3[355 184 112 607"/>
+                    <Edge fillStyle0="2" edges="!112 607S1[212 700 350 700!350 700[495 700 597 597"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

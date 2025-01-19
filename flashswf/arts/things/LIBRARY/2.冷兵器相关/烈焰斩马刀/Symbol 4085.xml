@@ -1,0 +1,224 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2.冷兵器相关/烈焰斩马刀/Symbol 4085" itemID="668e7c1e-00001019" linkageExportForAS="true" linkageIdentifier="刀-烈焰斩马刀" lastModified="1723904073">
+  <timeline>
+    <DOMTimeline name="Symbol 4085">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BBEF72" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置3" centerPoint3DX="-21.5" centerPoint3DY="409">
+                  <matrix>
+                    <Matrix a="3.63543701171875" d="4.4219970703125" tx="-66.95" ty="310.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="25"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   冷却时间结束 = true;
+   冷却时间间隔 = 1.2;
+   耗蓝比例 = 2;
+   自机 = _root.获得父节点(this,5);
+   当前时间 = getTimer();
+   if(isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000)
+   {
+      缓存时间 = 自机.上次释放时间;
+      自机.上次释放时间 = 当前时间;
+   }
+   else
+   {
+      冷却时间结束 = false;
+   }
+   if(_root.兵器攻击检测(自机) and 冷却时间结束)
+   {
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器一段中":
+         case "兵器冲击":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(0);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var myPoint = {x:this._x,y:this._y};
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "熔炎裂渊";
+            子弹威力 = 耗蓝量 * 12;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器四段中":
+         case "兵器冲击":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(0);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var range = 10;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "烈炎斜升";
+            子弹威力 = 耗蓝量 * 12;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器五段中":
+         case "兵器冲击":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(0);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            自机.mp -= 耗蓝量;
+            var range = 10;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "终极打击";
+            子弹威力 = 耗蓝量 * 12;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#1DF3A1" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置2" centerPoint3DX="-42.5" centerPoint3DY="181.4">
+                  <matrix>
+                    <Matrix a="3.32200622558594" d="5.6820068359375" tx="-55" ty="168.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#B9F9C3" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="刀口位置1" centerPoint3DX="-68.55" centerPoint3DY="15.45">
+                  <matrix>
+                    <Matrix a="5.44320678710938" d="6.60125732421875" tx="-81.05" ty="2.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C4FD9B" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4084" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

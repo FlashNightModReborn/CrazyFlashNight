@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/精油滴管主体" itemID="66ebb76d-000001aa" lastModified="1726724039">
+  <timeline>
+    <DOMTimeline name="精油滴管主体">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0218963623046875" tx="24.6" ty="-2.45"/>
+                        </matrix>
+                        <GradientEntry color="#505050" ratio="0"/>
+                        <GradientEntry color="#898989" ratio="0.513725490196078"/>
+                        <GradientEntry color="#212121" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0108642578125" tx="28.35" ty="7.4"/>
+                        </matrix>
+                        <GradientEntry color="#898989" ratio="0"/>
+                        <GradientEntry color="#212121" ratio="0.498039215686275"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!119 651[174 583 169 295!169 295[166 144 213 70!213 70[255 3 338 0!338 0|377 0!377 0[460 3 502 70!502 70[549 144 546 295!546 295[541 581 595 650"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!595 650[364 637 119 651"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!119 651[79 653 39 656!39 656|0 1154!0 1154|256 1154"/>
+                    <Edge strokeStyle="1" edges="!256 1154|256 2226!256 2226|464 2226!464 2226|464 1154"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!464 1154|716 1154!716 1154|684 656!684 656[640 652 595 650!256 1154|464 1154"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

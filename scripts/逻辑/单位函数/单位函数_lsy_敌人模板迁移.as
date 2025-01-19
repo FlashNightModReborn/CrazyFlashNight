@@ -288,7 +288,8 @@ _root.敌人函数.掉落物品 = function(item){
 		var 数量 = item.最小数量 + random(item.最大数量 - item.最小数量 + 1);
 		if(item.总数 < 数量) 数量 = item.总数;
 		item.总数 -= 数量;
-		_root.创建可拾取物(item.名字,数量,this._x,this._y,true);
+		var yoffset = random(21) - 10;
+		_root.创建可拾取物(item.名字,数量,this._x, this._y + yoffset, true);
 	}
 }
 

@@ -1,0 +1,65 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/黄铜" itemID="66ea84cf-000000ff" lastModified="1726645455">
+  <timeline>
+    <DOMTimeline name="黄铜">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/黄铜块" selected="true">
+                  <transformationPoint>
+                    <Point x="107.95" y="89.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/黄铜划痕" selected="true">
+                  <matrix>
+                    <Matrix a="0.614120483398438" b="0.394622802734375" c="-0.195281982421875" d="0.303924560546875" tx="48.55" ty="5.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120.2" y="17.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.26953125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/黄铜划痕" selected="true">
+                  <matrix>
+                    <Matrix a="-0.614120483398438" b="-0.394622802734375" c="0.195281982421875" d="-0.303924560546875" tx="179.35" ty="155.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120.2" y="17.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.26953125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/黄铜划痕" selected="true">
+                  <matrix>
+                    <Matrix a="0.614120483398438" b="0.394622802734375" c="-0.659347534179688" d="1.02616882324219" tx="48.55" ty="13.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120.25" y="17.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.26953125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/黄铜划痕" selected="true">
+                  <matrix>
+                    <Matrix a="-0.614120483398438" b="-0.394622802734375" c="0.15521240234375" d="-0.2415771484375" tx="147.35" ty="163.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120.25" y="17.6"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.26953125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

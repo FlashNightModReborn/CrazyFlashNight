@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="0.防具相关/诛神套装/Symbol 2970" itemID="668e7c1e-00000d4b" linkageExportForAS="true" linkageIdentifier="女变装-诛神腿甲小腿" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 2970">
+      <layers>
+        <DOMLayer name="Layer 1" color="#49A1BC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 2954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.157958984375" b="-0.225845336914063" c="0.225845336914063" d="1.157958984375" tx="4.5" ty="2.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#3CFE71" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 163" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

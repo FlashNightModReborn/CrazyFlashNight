@@ -1,0 +1,61 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/枪-长枪-AUG" itemID="66b47d67-000017a2" linkageExportForAS="true" linkageIdentifier="枪-长枪-AUG" lastModified="1723104615">
+  <timeline>
+    <DOMTimeline name="枪-长枪-AUG">
+      <layers>
+        <DOMLayer name="Layer 1" color="#D0C225" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="193.5" centerPoint3DY="-22.05">
+                  <matrix>
+                    <Matrix tx="181" ty="-34.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#F1724A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3844" selected="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.308609008789063" d="0.308609008789063" tx="-116.35" ty="-14.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.308609008789063" d="0.308609008789063" tx="-123.45" ty="-36.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.308609008789063" d="0.308609008789063" tx="-66.75" ty="-10.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

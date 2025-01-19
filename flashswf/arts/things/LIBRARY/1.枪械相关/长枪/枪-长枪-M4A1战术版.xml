@@ -1,0 +1,75 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.枪械相关/长枪/枪-长枪-M4A1战术版" itemID="66b46759-000011e5" linkageExportForAS="true" linkageIdentifier="枪-长枪-M4A1战术版" lastModified="1723098969">
+  <timeline>
+    <DOMTimeline name="枪-长枪-M4A1战术版">
+      <layers>
+        <DOMLayer name="Layer 1" color="#85FFB0">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="枪口位置" centerPoint3DX="362.65" centerPoint3DY="-29.65">
+                  <matrix>
+                    <Matrix tx="350.15" ty="-42.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DB6FF6">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3722" blendMode="add" centerPoint3DX="557.3" centerPoint3DY="-24.9">
+                  <matrix>
+                    <Matrix tx="188.35" ty="-30.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.攻击模式 == "长枪")
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E4DDAE" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3742" centerPoint3DX="469.65" centerPoint3DY="101.15">
+                  <matrix>
+                    <Matrix a="-0.66217041015625" d="0.66217041015625" tx="116.95" ty="-11.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

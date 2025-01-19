@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="0.防具相关/远古诛神/Symbol 2979" itemID="668e7c1e-00000d53" linkageExportForAS="true" linkageIdentifier="男变装-远古诛神胸甲右下臂" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 2979">
+      <layers>
+        <DOMLayer name="Layer 1" color="#9A29C7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 2939" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1380615234375" b="0.055908203125" c="-0.055908203125" d="1.1380615234375" tx="-32.45" ty="-2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaOffset="-255" redOffset="150" blueOffset="40" greenOffset="120"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#CCAFA7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 4720" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.11369323730469" b="0.058349609375" c="-0.058349609375" d="1.11369323730469" tx="-33" ty="-3.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

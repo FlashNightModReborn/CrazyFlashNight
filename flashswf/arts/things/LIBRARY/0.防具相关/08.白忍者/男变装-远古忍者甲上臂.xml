@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="0.防具相关/08.白忍者/男变装-远古忍者甲上臂" itemID="66900d27-00000ee5" linkageExportForAS="true" linkageIdentifier="男变装-远古忍者甲上臂" lastModified="1722162196">
+  <timeline>
+    <DOMTimeline name="男变装-远古忍者甲上臂">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#B732E0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 3399" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.07345581054688" b="0.0750579833984375" c="0.0697479248046875" d="0.997543334960938" tx="-2.15" ty="1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

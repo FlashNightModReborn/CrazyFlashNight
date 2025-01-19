@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="技能相关/Symbol 4646" itemID="668e7c1e-00001152" linkageExportForAS="true" linkageIdentifier="图标-组合拳" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 4646">
+      <layers>
+        <DOMLayer name="Layer 1" color="#3BEAD3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="3.位图相关/bitmap4644.png" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-12.5" ty="-12.5"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-250 -250|250 -250!250 -250|250 250!250 250|-250 250!-250 250|-250 -250"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

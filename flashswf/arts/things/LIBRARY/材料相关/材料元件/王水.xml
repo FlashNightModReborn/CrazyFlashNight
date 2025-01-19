@@ -1,0 +1,65 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料相关/材料元件/王水" itemID="66eab159-00000140" lastModified="1726656857">
+  <timeline>
+    <DOMTimeline name="王水">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/王水玻璃">
+                  <matrix>
+                    <Matrix ty="77.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.2" y="107.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/王水液体1">
+                  <matrix>
+                    <Matrix ty="149.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.2" y="71.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/王水液体2">
+                  <matrix>
+                    <Matrix ty="136.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.2" y="78.7"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.62109375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/王水瓶塞">
+                  <matrix>
+                    <Matrix tx="27.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.5" y="38.95"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.921875"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="材料相关/材料元件/王水瓶线">
+                  <transformationPoint>
+                    <Point x="70.2" y="146.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

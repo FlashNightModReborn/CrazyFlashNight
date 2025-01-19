@@ -1,0 +1,31 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="无AS链接/Symbol 78" itemID="668e7c1e-000005f4" lastModified="1720533000">
+  <timeline>
+    <DOMTimeline name="Symbol 78">
+      <layers>
+        <DOMLayer name="Layer 1" color="#33B0A8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 77" name="枪" centerPoint3DX="61.1" centerPoint3DY="31.8">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.基本款._visible = 0;
+   if(_parent._parent._parent.手枪2_装扮 != undefined)
+   {
+      this.attachMovie(_parent._parent._parent.手枪2_装扮,"装扮",this.getNextHighestDepth());
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
