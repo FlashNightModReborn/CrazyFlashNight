@@ -157,31 +157,29 @@ _root.加载敌方人物 = function(地点X, 地点Y){
 		var 敌人 = _root.加载游戏世界人物("主角-男","敌人同伴" + i,_root.gameworld.getNextHighestDepth(),{_x:地点X + random(10), _y:地点Y + random(10), 是否为敌人:true, 身高:敌人信息[3], 名字:敌人信息[1], 等级:敌人信息[0], 脸型:敌人信息[4], 发型:敌人信息[5], 头部装备:敌人信息[6], 上装装备:敌人信息[7], 手部装备:敌人信息[8], 下装装备:敌人信息[9], 脚部装备:敌人信息[10], 颈部装备:敌人信息[11], 长枪:敌人信息[12], 手枪:敌人信息[13], 手枪2:敌人信息[14], 刀:敌人信息[15], 手雷:敌人信息[16], 性别:敌人信息[17]});
 		//配置角斗场敌人的掉落物
 		敌人.掉落物 = [];
-		//斩马刀必定掉落
+		//斩马刀必定掉落，佩戴对应项链的敌人有概率掉落对应的武器和防具
 		if(敌人.刀 === "斩马刀") {
 			敌人.掉落物.push({名字:"斩马刀", 概率:100});
-			return;
-		}
-		//佩戴对应项链的敌人有概率掉落对应的武器和防具
-		if (敌人.颈部装备 === "角斗高手项链" || 敌人.颈部装备 === "角斗王者项链"){
+		}else if (敌人.颈部装备 === "角斗高手项链" || 敌人.颈部装备 === "角斗王者项链"){
 			var jjcDropItem = ["次品蓝晶", "巨兽", "冰魄斩", "合金", "烈焰", "异形", "巴雷特", "方舟武士"];
-			for(var j=0; j<jjcDropItem.length; i++){
-				if(敌人.长枪.indexOf(jjcDropItem[i]) > -1) {
+			for(var j=0; j<jjcDropItem.length; j++){
+				if(敌人.长枪.indexOf(jjcDropItem[j]) > -1) {
 					敌人.掉落物.push({名字:敌人.长枪, 概率:25});
 					break;
 				}
 			}
-			for(var j=0; j<jjcDropItem.length; i++){
-				if(敌人.刀.indexOf(jjcDropItem[i]) > -1) {
+			for(var j=0; j<jjcDropItem.length; j++){
+				if(敌人.刀.indexOf(jjcDropItem[j]) > -1) {
 					敌人.掉落物.push({名字:敌人.刀, 概率:25});
 					break;
 				}
 			}
-			if(敌人.掉落物.length > 1) return;
-			var 防具列表 = ["头部装备","上装装备","下装装备","手部装备","脚部装备"];
-			var ratio = random(7);
-			if(ratio < 5 && 敌人[防具列表[ratio]].indexOf(jjcDropItem[i]) > -1){
-				敌人.掉落物.push({名字:敌人[防具列表[ratio]], 概率:100});
+			var 防具列表 = ["头部装备","上装装备","下装装备","手部装备","脚部装备",null.null];
+			var 对应防具 = 防具列表[random(7)];
+			if(对应防具 != null){
+				for(var j=0; j<jjcDropItem.length; j++){
+					if(敌人[对应防具].indexOf(jjcDropItem[j]) > -1) 敌人.掉落物.push({名字:敌人[对应防具], 概率:100});
+				}
 			}
 		}
 	}
