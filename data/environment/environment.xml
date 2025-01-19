@@ -2017,6 +2017,8 @@
         <Width>1550</Width>
         <Height>500</Height>
         <Horizon>0</Horizon>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
         <Skybox>
             <url>防御地带远景.swf</url>
             <SpeedRate>8</SpeedRate>
@@ -2032,6 +2034,8 @@
         <Width>1550</Width>
         <Height>600</Height>
         <Horizon>0</Horizon>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
     </Environment>
     <Environment>
         <BackgroundURL>防御地带战壕.swf</BackgroundURL>
@@ -2043,6 +2047,8 @@
         <Width>1000</Width>
         <Height>510</Height>
         <Horizon>0</Horizon>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
         <Door>
             <Index>1</Index>
             <Direction>上</Direction>
