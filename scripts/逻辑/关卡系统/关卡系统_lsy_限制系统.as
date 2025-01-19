@@ -4,6 +4,8 @@ _root.限制系统 = 限制系统;
 限制系统.entries = new Object();
 限制系统.discriptions = new Object();
 
+//设置限制词条 同时设置以词条名为键的property，方便直接访问词条是否开启
+//如设置DisableCompanion后，可以直接访问_root.限制系统.DisableCompanion
 限制系统.addEntry = function(entryName, discription){
 	this.addProperty(entryName,function(){
 		return this.getEntry(entryName);
@@ -15,12 +17,14 @@ _root.限制系统 = 限制系统;
 	return this.entries[entryName] === true;
 }
 
-限制系统.setEntries = function(entryArray){
+//开启限制词条
+限制系统.openEntries = function(entryArray){
 	for(var i=0; i < entryArray.length; i++){
 		this.entries[entryArray[i]] = true;
 	}
 }
 
+//清空所有限制词条
 限制系统.clearEntries = function(){
 	this.entries = new Object();
 }
