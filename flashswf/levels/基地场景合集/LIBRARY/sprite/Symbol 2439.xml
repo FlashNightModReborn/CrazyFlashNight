@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2439" itemID="6597607e-00000b5c" lastModified="1736954127">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2439" itemID="6597607e-00000b5c" lastModified="1737283936">
   <timeline>
     <DOMTimeline name="Symbol 2439">
       <layers>
@@ -21,24 +21,23 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#D37AFB">
+        <DOMLayer name="Script Layer" color="#D37AFB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[function 开始挂机()
 {
-   _root.gameworld[_root.控制目标]._x = this._x;
-   _root.gameworld[_root.控制目标].Z轴坐标 = this._y;
-   _root.gameworld[_root.控制目标]._y = this._y;
-   _root.gameworld[_root.控制目标].挂机项目名 = 挂机项目名;
-   _root.gameworld[_root.控制目标].状态改变("挂机");
-   _root.gameworld[_root.控制目标].man.gotoAndPlay(挂机项目名);
-   _root.gameworld[_root.控制目标].方向改变(人物方向);
-   gotoAndStop("开始挂机");
+	_root.gameworld[_root.控制目标]._x = this._x;
+	_root.gameworld[_root.控制目标].Z轴坐标 = this._y;
+	_root.gameworld[_root.控制目标]._y = this._y;
+	_root.gameworld[_root.控制目标].挂机项目名 = 挂机项目名;
+	_root.gameworld[_root.控制目标].状态改变("挂机");
+	_root.gameworld[_root.控制目标].man.gotoAndPlay(挂机项目名);
+	_root.gameworld[_root.控制目标].方向改变(人物方向);
+	gotoAndStop("开始挂机");
 }
 stop();
-_root.全部翻译(this);
-]]></script>
+_root.全部翻译(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -81,11 +80,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#A1F031" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#A1F031">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2437" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2437" symbolType="button">
                   <matrix>
                     <Matrix a="2.24844360351563" d="5.54519653320313" tx="-51.45" ty="-70"/>
                   </matrix>

@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2447" itemID="6597607e-00000b5f" lastModified="1714894879">
   <timeline>
-    <DOMTimeline name="Symbol 2447">
+    <DOMTimeline name="Symbol 2447" currentFrame="114">
       <layers>
         <DOMLayer name="Labels Layer" color="#1C92F9">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#E69C9B">
+        <DOMLayer name="Script Layer" color="#E69C9B" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="107" keyMode="9728">
               <elements/>
@@ -152,7 +152,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="时" color="#EBC2AF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="时" color="#EBC2AF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="107" keyMode="9728">
               <elements>

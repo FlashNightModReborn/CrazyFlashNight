@@ -79,7 +79,7 @@
           <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
           <Include href="sprite/通用背景mc.xml" loadImmediate="false" itemID="659d46f5-000039c6" lastModified="1704806133"/>
           <Include href="sprite/悬浮UI/Symbol 880.xml" loadImmediate="false" itemID="6597607e-00000806" lastModified="1704196122"/>
-          <Include href="挂机功能菜单.xml" itemID="67876ec7-00001c6a" lastModified="1736954189"/>
+          <Include href="挂机功能菜单.xml" itemID="67876ec7-00001c6a" lastModified="1737284892"/>
           <Include href="理发店界面.xml" itemID="67876ebc-00001c69" lastModified="1736955491"/>
           <Include href="素材库-基地特殊UI.xml" itemID="67876f87-00001cfc" lastModified="1736953166"/>
           <Include href="整容整形界面.xml" itemID="67876f5e-00001cbe" lastModified="1736955475"/>
@@ -99,19 +99,13 @@
                                                   <Point/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="挂机功能菜单" name="挂机功能菜单" centerPoint3DX="640.2" centerPoint3DY="268.45">
+                                        <DOMSymbolInstance libraryItemName="挂机功能菜单" name="挂机功能菜单" selected="true" centerPoint3DX="640.2" centerPoint3DY="268.45">
                                              <matrix>
                                                   <Matrix tx="413.2" ty="174.75"/>
                                              </matrix>
                                              <transformationPoint>
                                                   <Point/>
                                              </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent(load){
-   _root.挂机功能菜单.挂机项目 = "挂机-深蹲";
-}
-]]></script>
-                                             </Actionscript>
                                              <filters>
                                                   <DropShadowFilter angle="44.9992520943067" strength="0.5"/>
                                                   <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
@@ -137,6 +131,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="10618" publishTime="1737284103"/>
           <PublishItem publishSize="10600" publishTime="1736954204"/>
           <PublishItem publishSize="10600" publishTime="1736953426"/>
           <PublishItem publishSize="522041" publishTime="1736929224"/>

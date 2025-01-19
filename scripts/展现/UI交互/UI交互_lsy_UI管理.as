@@ -11,12 +11,13 @@
 }
 
 _root.从库中加载外部UI = function(identifier){
-    if(_root.通用UI层[identifier] != null){
-        _root.通用UI层[identifier]._visible = true;
-        return;
+    var UI = _root.通用UI层[identifier];
+    if(UI != null){
+        UI._visible = true;
+        return UI;
     }
     if(!_root.通用UI层.外部UI列表) _root.通用UI层.外部UI列表 = [];
-    var UI = _root.通用UI层.attachMovie(identifier,identifier,_root.通用UI层.getNextHighestDepth());
+    UI = _root.通用UI层.attachMovie(identifier,identifier,_root.通用UI层.getNextHighestDepth());
     _root.通用UI层.外部UI列表.push(UI);
     return UI;
 

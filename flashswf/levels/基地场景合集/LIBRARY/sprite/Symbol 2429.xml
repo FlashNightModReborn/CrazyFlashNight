@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2429" itemID="6597607e-00000b55" lastModified="1736954112">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2429" itemID="6597607e-00000b55" lastModified="1737284313">
   <timeline>
-    <DOMTimeline name="Symbol 2429" currentFrame="1">
+    <DOMTimeline name="Symbol 2429" currentFrame="10">
       <layers>
         <DOMLayer name="Labels Layer" color="#BCCDDA">
           <frames>
@@ -15,24 +15,23 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#89DE49">
+        <DOMLayer name="Script Layer" color="#89DE49" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[function 开始挂机()
 {
-   _root.gameworld[_root.控制目标]._x = this._x;
-   _root.gameworld[_root.控制目标].Z轴坐标 = this._y;
-   _root.gameworld[_root.控制目标]._y = this._y;
-   _root.gameworld[_root.控制目标].挂机项目名 = 挂机项目名;
-   _root.gameworld[_root.控制目标].状态改变("挂机");
-   _root.gameworld[_root.控制目标].man.gotoAndPlay(挂机项目名);
-   _root.gameworld[_root.控制目标].方向改变(人物方向);
-   gotoAndStop("开始挂机");
+	_root.gameworld[_root.控制目标]._x = this._x;
+	_root.gameworld[_root.控制目标].Z轴坐标 = this._y;
+	_root.gameworld[_root.控制目标]._y = this._y;
+	_root.gameworld[_root.控制目标].挂机项目名 = 挂机项目名;
+	_root.gameworld[_root.控制目标].状态改变("挂机");
+	_root.gameworld[_root.控制目标].man.gotoAndPlay(挂机项目名);
+	_root.gameworld[_root.控制目标].方向改变(人物方向);
+	gotoAndStop("开始挂机");
 }
 stop();
-_root.全部翻译(this);
-]]></script>
+_root.全部翻译(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -72,11 +71,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#EC8D0E" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#EC8D0E">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2427" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2427" symbolType="button">
                   <matrix>
                     <Matrix a="7.99835205078125" d="2.83744812011719" tx="3.9" ty="-28"/>
                   </matrix>

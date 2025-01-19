@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="挂机功能菜单" itemID="67876ec7-00001c6a" linkageExportForAS="true" linkageIdentifier="挂机功能菜单" lastModified="1736954189" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="挂机功能菜单" itemID="67876ec7-00001c6a" linkageExportForAS="true" linkageIdentifier="挂机功能菜单" lastModified="1737284892" lastUniqueIdentifier="16">
   <timeline>
     <DOMTimeline name="挂机功能菜单">
       <layers>
@@ -51,7 +51,7 @@ this.text13.text = "50000K点训练1秒获得5000技能点";*/]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#19B7EB">
+        <DOMLayer name="Layer 2" color="#19B7EB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -67,7 +67,7 @@ this.text13.text = "50000K点训练1秒获得5000技能点";*/]]></script>
 	var 训练参数 = _root.健身房训练类型[12];
 	if (训练参数 && 训练参数.属性名 == "技能点")
 	{
-		_parent.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
 	}
 	this._visible = 0;
 }
@@ -103,7 +103,7 @@ on (rollOut) {
 	var 训练参数 = _root.健身房训练类型[11];
 	if (训练参数 && 训练参数.属性名 == "技能点")
 	{
-		_parent.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
 	}
 	this._visible = 0;
 }
@@ -139,7 +139,7 @@ on (rollOut) {
 	var 训练参数 = _root.健身房训练类型[10];
 	if (训练参数 && 训练参数.属性名 == "技能点")
 	{
-		_parent.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
 	}
 	this._visible = 0;
 }
@@ -175,7 +175,7 @@ on (rollOut) {
 	var 训练参数 = _root.健身房训练类型[9];
 	if (训练参数 && 训练参数.属性名 == "技能点")
 	{
-		_parent.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
 	}
 	this._visible = 0;
 }
@@ -211,7 +211,7 @@ on (rollOut) {
 	var 训练参数 = _root.健身房训练类型[8];
 	if (训练参数 && 训练参数.属性名 == "技能点")
 	{
-		_parent.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
 	}
 	this._visible = 0;
 }
@@ -247,7 +247,7 @@ on (rollOut) {
 	var 训练参数 = _root.健身房训练类型[7];
 	if (训练参数 && 训练参数.属性名 == "技能点")
 	{
-		_parent.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
+		_root.gameworld.挂机计时器.虚拟币支付2(训练参数.消耗,"O20111009000000013",训练参数.时长,训练参数.加成,挂机项目);
 	}
 	this._visible = 0;
 }
@@ -267,11 +267,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#32CDE2" current="true" isSelected="true">
+        <DOMLayer name="Layer 8" color="#32CDE2">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2475" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2475" symbolType="button">
                   <matrix>
                     <Matrix a="7.69558715820313" d="0.666000366210938" tx="2.75" ty="-6.8"/>
                   </matrix>
@@ -288,13 +288,13 @@ on (rollOut) {
 	{
 		if (训练参数.货币名 == "金钱")
 		{
-			_parent.gameworld.挂机计时器.挂机项目 = 挂机项目;
-			_parent.gameworld[挂机项目].开始挂机();
-			_parent.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
 		}
 		else if (训练参数.货币名 == "K点")
 		{
-			_parent.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
 		}
 		this._visible = 0;
 		setTimeout(function ()
@@ -369,13 +369,13 @@ on (rollOut) {
 	{
 		if (训练参数.货币名 == "金钱")
 		{
-			_parent.gameworld.挂机计时器.挂机项目 = 挂机项目;
-			_parent.gameworld[挂机项目].开始挂机();
-			_parent.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
 		}
 		else if (训练参数.货币名 == "K点")
 		{
-			_parent.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
 		}
 		this._visible = 0;
 		setTimeout(function ()
@@ -450,13 +450,13 @@ on (rollOut) {
 	{
 		if (训练参数.货币名 == "金钱")
 		{
-			_parent.gameworld.挂机计时器.挂机项目 = 挂机项目;
-			_parent.gameworld[挂机项目].开始挂机();
-			_parent.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
 		}
 		else if (训练参数.货币名 == "K点")
 		{
-			_parent.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
 		}
 		this._visible = 0;
 		setTimeout(function ()
@@ -531,13 +531,13 @@ on (rollOut) {
 	{
 		if (训练参数.货币名 == "金钱")
 		{
-			_parent.gameworld.挂机计时器.挂机项目 = 挂机项目;
-			_parent.gameworld[挂机项目].开始挂机();
-			_parent.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
 		}
 		else if (训练参数.货币名 == "K点")
 		{
-			_parent.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
 		}
 		this._visible = 0;
 		setTimeout(function ()
@@ -612,13 +612,13 @@ on (rollOut) {
 	{
 		if (训练参数.货币名 == "金钱")
 		{
-			_parent.gameworld.挂机计时器.挂机项目 = 挂机项目;
-			_parent.gameworld[挂机项目].开始挂机();
-			_parent.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
 		}
 		else if (训练参数.货币名 == "K点")
 		{
-			_parent.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
 		}
 		this._visible = 0;
 		setTimeout(function ()
@@ -686,44 +686,45 @@ on (rollOut) {
                   <Actionscript>
                     <script><![CDATA[on (press) {
 	var 训练参数 = _root.健身房训练类型[1];
-	if(!训练参数.属性名){
+	if (!训练参数.属性名)
+	{
 		_root.注释结束();
 	}
 	else if (_root[训练参数.货币名] >= 训练参数.消耗)
 	{
 		if (训练参数.货币名 == "金钱")
 		{
-			_parent.gameworld.挂机计时器.挂机项目 = 挂机项目;
-			_parent.gameworld[挂机项目].开始挂机();
-			_parent.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
 		}
 		else if (训练参数.货币名 == "K点")
 		{
-			_parent.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
 		}
 		this._visible = 0;
 		setTimeout(function ()
 		{
-			if (_root[训练参数.属性名] <= 训练参数.上限)
-			{
-				_root[训练参数.属性名] += 训练参数.加成;
-				if (_root[训练参数.属性名] > 训练参数.上限)
-				{
-					_root[训练参数.属性名] = 训练参数.上限;
-				}
-				if (训练参数.货币名 == "金钱")
-				{
-					_root[训练参数.货币名] -= 训练参数.消耗;
-					_root.播放音效("收银机.mp3");
-				}
-				_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
-				_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
-			}
-			else
-			{
-				_root.经验值 += 50000;
-				_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
-			}
+		if (_root[训练参数.属性名] <= 训练参数.上限)
+		{
+		_root[训练参数.属性名] += 训练参数.加成;
+		if (_root[训练参数.属性名] > 训练参数.上限)
+		{
+		_root[训练参数.属性名] = 训练参数.上限;
+		}
+		if (训练参数.货币名 == "金钱")
+		{
+		_root[训练参数.货币名] -= 训练参数.消耗;
+		_root.播放音效("收银机.mp3");
+		}
+		_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
+		_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
+		}
+		else
+		{
+		_root.经验值 += 50000;
+		_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
+		}
 		},训练参数.时长);
 	}
 	else
@@ -733,8 +734,9 @@ on (rollOut) {
 }
 on (rollOver) {
 	var 训练参数 = _root.健身房训练类型[1];
-	if(训练参数.属性名){
-		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" +训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
+	if (训练参数.属性名)
+	{
+		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长 / 1000) + "，" + 训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
 	}
 }
 on (rollOut) {
@@ -767,44 +769,45 @@ on (rollOut) {
                   <Actionscript>
                     <script><![CDATA[on (press) {
 	var 训练参数 = _root.健身房训练类型[0];
-	if(!训练参数.属性名){
+	if (!训练参数.属性名)
+	{
 		_root.注释结束();
 	}
 	else if (_root[训练参数.货币名] >= 训练参数.消耗)
 	{
 		if (训练参数.货币名 == "金钱")
 		{
-			_parent.gameworld.挂机计时器.挂机项目 = 挂机项目;
-			_parent.gameworld[挂机项目].开始挂机();
-			_parent.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
+			_root.gameworld.挂机计时器.挂机项目 = 挂机项目;
+			_root.gameworld[挂机项目].开始挂机();
+			_root.gameworld.挂机计时器.计时初始化(训练参数.时长,10000);
 		}
 		else if (训练参数.货币名 == "K点")
 		{
-			_parent.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
+			_root.gameworld.挂机计时器.虚拟币支付(训练参数.消耗,"O20111009000000007",训练参数.时长,10000,挂机项目);
 		}
 		this._visible = 0;
 		setTimeout(function ()
 		{
-			if (_root[训练参数.属性名] <= 训练参数.上限)
-			{
-				_root[训练参数.属性名] += 训练参数.加成;
-				if (_root[训练参数.属性名] > 训练参数.上限)
-				{
-					_root[训练参数.属性名] = 训练参数.上限;
-				}
-				if (训练参数.货币名 == "金钱")
-				{
-					_root[训练参数.货币名] -= 训练参数.消耗;
-					_root.播放音效("收银机.mp3");
-				}
-				_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
-				_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
-			}
-			else
-			{
-				_root.经验值 += 50000;
-				_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
-			}
+		if (_root[训练参数.属性名] <= 训练参数.上限)
+		{
+		_root[训练参数.属性名] += 训练参数.加成;
+		if (_root[训练参数.属性名] > 训练参数.上限)
+		{
+		_root[训练参数.属性名] = 训练参数.上限;
+		}
+		if (训练参数.货币名 == "金钱")
+		{
+		_root[训练参数.货币名] -= 训练参数.消耗;
+		_root.播放音效("收银机.mp3");
+		}
+		_root.发布消息("当前的" + 训练参数.加成名 + "健身加成为" + _root[训练参数.属性名]);
+		_root.发布消息(训练参数.加成名 + "加成到达" + 训练参数.上限 + "上限时，锻炼成果将转为经验值");
+		}
+		else
+		{
+		_root.经验值 += 50000;
+		_root.发布消息("通过锻炼获得的" + 训练参数.加成名 + "加成达到上限，锻炼成果转为50000点经验值");
+		}
 		},训练参数.时长);
 	}
 	else
@@ -814,8 +817,9 @@ on (rollOut) {
 }
 on (rollOver) {
 	var 训练参数 = _root.健身房训练类型[0];
-	if(训练参数.属性名){
-		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长/1000) + "，" +训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
+	if (训练参数.属性名)
+	{
+		_root.注释(100,_root.获得翻译(训练参数.加成名 + "永久提升：") + 训练参数.加成 + "，" + _root.获得翻译("需要秒数：") + Math.floor(训练参数.时长 / 1000) + "，" + 训练参数.货币名 + _root.获得翻译("价格：") + 训练参数.消耗);
 	}
 }
 on (rollOut) {
@@ -1111,7 +1115,7 @@ on (rollOut) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="217.25" height="15.85" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="217.25" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="125.75" ty="-136.9"/>
                   </matrix>
@@ -1123,7 +1127,7 @@ on (rollOut) {
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
-                </DOMDynamicText>
+                </DOMStaticText>
               </elements>
             </DOMFrame>
           </frames>
@@ -1132,7 +1136,7 @@ on (rollOut) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="202.3" height="15.85" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="202.3" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix a="1.0322265625" tx="-89.65" ty="-136.9"/>
                   </matrix>
@@ -1144,7 +1148,7 @@ on (rollOut) {
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
-                </DOMDynamicText>
+                </DOMStaticText>
               </elements>
             </DOMFrame>
           </frames>
@@ -1153,7 +1157,7 @@ on (rollOut) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="323.6" height="15.85" isSelectable="false">
+                <DOMStaticText fontRenderingMode="device" width="323.6" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="-70.8" ty="-156.65"/>
                   </matrix>
@@ -1165,7 +1169,7 @@ on (rollOut) {
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
-                </DOMDynamicText>
+                </DOMStaticText>
               </elements>
             </DOMFrame>
           </frames>
@@ -1520,9 +1524,9 @@ on(rollOut){
                     <Edge fillStyle1="1" edges="!2443 513|2425 513"/>
                     <Edge fillStyle1="3" edges="!2425 513|-1909 513!-1909 513|-1909 -3235!-1909 -3235|2425 -3235"/>
                     <Edge fillStyle1="1" edges="!2425 -3235|2443 -3235"/>
-                    <Edge fillStyle0="4" fillStyle1="2" edges="!2488 -3235|2488 513"/>
-                    <Edge fillStyle0="1" fillStyle1="3" edges="!2425 -3235|2425 513"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="!2443 -3235|2443 513"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!2425 -3235|2425 513"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!2488 -3235|2488 513"/>
                   </edges>
                 </DOMShape>
               </elements>
