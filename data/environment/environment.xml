@@ -2023,6 +2023,25 @@
         </Skybox>
     </Environment>
     <Environment>
+        <BackgroundURL>防御地带战壕.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1000</Xmax>
+        <Ymin>420</Ymin>
+        <Ymax>510</Ymax>
+        <Width>1000</Width>
+        <Height>510</Height>
+        <Horizon>0</Horizon>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>800</x0>
+            <y0>420</y0>
+            <x1>900</x1>
+            <y1>435</y1>
+        </Door>
+    </Environment>
+    <Environment>
         <BackgroundURL>防御地带电子战.swf</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>280</Xmin>
