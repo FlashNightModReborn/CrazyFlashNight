@@ -41,8 +41,22 @@
     </Rewards>
     <SubStage id="0">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfydd_1_BG.swf</Background>
+            <Background>flashswf/backgrounds/防御地带高地.swf</Background>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>Boy</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>boy#厌恶</Char>
+                <Text>我和主力部队会去攻击防线正面，你往那边走到军阀工兵挖掘的战壕里，根据那边的指示进行下一步行动。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>了解！</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -50,23 +64,28 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>6</Quantity>
+                        <Type>兵种97</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <x>300</x>
+                        <y>460</y>
                     </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>6</Quantity>
+                    <Enemy id="1">
+                        <Type>兵种99</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <x>1000</x>
+                        <y>390</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种159</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>200</x>
+                        <y>400</y>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -74,7 +93,7 @@
     </SubStage>
     <SubStage id="1">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfydd_2_BG.swf</Background>
+            <Background>flashswf/backgrounds/防御地带野外.swf</Background>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -83,8 +102,20 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
+                        <Type>兵种180</Type>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种181</Type>
+                        <Interval>900</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种182</Type>
+                        <Interval>900</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
                     </Enemy>
@@ -96,8 +127,33 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
+                        <Type>兵种180</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种178</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种372</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种373</Type>
+                        <Interval>1200</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
                     </Enemy>
