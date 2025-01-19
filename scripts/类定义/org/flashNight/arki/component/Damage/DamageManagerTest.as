@@ -110,6 +110,8 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
 
         // 2) 创建覆盖 9~16 个处理器的工厂
         //    这里以 9 个处理器为例，7 个与 Basic 相同，2 个使用 BaseDamageHandle 占位
+
+        var dummyHandle = new BaseDamageHandle(true);
         var handles16:Array = [
             CritDamageHandle.getInstance(),
             UniversalDamageHandle.getInstance(),
@@ -118,8 +120,8 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
             LifeStealDamageHandle.getInstance(),
             CrumbleDamageHandle.getInstance(),
             ExecuteDamageHandle.getInstance(),   // 以上 7 个和 Basic 一致
-            BaseDamageHandle.getInstance(),      // 占位处理器
-            BaseDamageHandle.getInstance()       // 占位处理器
+            dummyHandle,      // 占位处理器
+            dummyHandle       // 占位处理器
         ];
         DamageManagerFactory.registerFactory("Extended16", handles16, 64);
 
@@ -136,7 +138,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         ];
         // 补足到 32 个
         for (var i:Number = 0; i < 25; i++) {
-            handles32.push(BaseDamageHandle.getInstance());
+            handles32.push(dummyHandle);
         }
         DamageManagerFactory.registerFactory("Extended32", handles32, 64);
 
@@ -345,7 +347,6 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         info("性能测试（" + factoryName + " 工厂）：执行 10000 次伤害结算");
 
         var iterations:Number = 10000;
-        var startTime:Number = getTimer();
 
         // 1. 预创建 Bullet 和 Target 数据
         var preCreatedBullets:Array = [];
@@ -391,6 +392,8 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         }
 
         var tempManager:DamageManager;
+
+        var startTime:Number = getTimer();
 
         // 2. 正式开始性能测试（复用预创建对象）
         for (var i:Number = 0; i < iterations; i++) {

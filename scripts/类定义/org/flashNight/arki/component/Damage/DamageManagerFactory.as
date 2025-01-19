@@ -231,27 +231,6 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
                 return new DamageManager(handles);
             };
         }
-        else if (handlerCount <= 16) {
-            // 适用于最多16个处理器的 evaluator
-            return function(bitmask:Number):DamageManager {
-                var handles:Array = [];
-                var bm:Number = bitmask;
-
-                do {
-                    var index:Number = 0;
-                    var temp:Number = bm & -bm;  // 提取最低位的 1
-
-                    // 快速位移法计算最低位 1 的索引，最多16位
-                    if ((temp >= 256) && (temp >>= 8)) index += 8;
-                    if ((temp >= 16) && (temp >>= 4)) index += 4;
-                    if ((temp >= 4) && (temp >>= 2)) index += 2;
-                    // 合并判断和赋值
-                    handles[handles.length] = h[index + (temp >= 2)];
-                } while ((bm &= (bm - 1)) != 0);
-
-                return new DamageManager(handles);
-            };
-        }
         else {
             // 适用于最多32个处理器的 evaluator
             return function(bitmask:Number):DamageManager {

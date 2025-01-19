@@ -18,10 +18,11 @@ class org.flashNight.arki.component.Damage.BaseDamageHandle implements IDamageHa
 
     /**
      * 构造函数。
-     * 初始化时设置 skipCheck 为 false，表示默认不跳过伤害处理的检查。
+     * @param skipCheck 一个布尔值，指示是否跳过伤害处理的检查。如果没有传入参数，则默认为 true。
      */
-    public function BaseDamageHandle() {
-        this.skipCheck = false;
+    public function BaseDamageHandle(skipCheck:Boolean /*默认值为 true*/) {
+        // 如果没有传入参数，则 skipCheck 默认为 true
+        this.skipCheck = (skipCheck == undefined) ? false : skipCheck;
     }
 
     /**
