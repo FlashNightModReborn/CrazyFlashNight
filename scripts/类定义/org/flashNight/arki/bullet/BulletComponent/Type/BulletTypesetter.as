@@ -91,8 +91,8 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
                               | (isEnergy        ? FLAG_ENERGY        : 0)
                               | (isRefined       ? FLAG_REFINED       : 0));
 
-            // 提取基础素材名（取子弹种类中 "-" 分隔符前的部分）
-            var baseAsset:String = bulletType.split("-")[0];
+            // 对联弹提取基础素材名（取子弹种类中 "-" 分隔符前的部分）
+            var baseAsset:String = isChain ? bulletType.split("-")[0] : bulletType;
 
             // 将结果缓存
             typeCache[bulletType] = { flags: flags, baseAsset: baseAsset };
