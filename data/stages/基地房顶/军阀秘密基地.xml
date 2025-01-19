@@ -9,21 +9,6 @@
         <Limitation>DisableCompanion</Limitation>
     </StageInfo>
     <Rewards>
-        <Reward id="1">
-            <Name>军阀兵头衣服</Name>
-            <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>1</QuantityMax>
-        </Reward>
-        <Reward id="2">
-            <Name>军阀带腰包裤子</Name>
-            <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>1</QuantityMax>
-        </Reward>
-        <Reward id="3">
-            <Name>军阀红色贝雷帽</Name>
-            <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>1</QuantityMax>
-        </Reward>
         <Reward id="4">
             <Name>普通hp粉尘</Name>
             <AcquisitionProbability>10</AcquisitionProbability>
@@ -166,11 +151,25 @@
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种264</Type>
+                        <Type>兵种37</Type>
                         <Interval>1000</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <掉落物>
+                                <名字>军阀红色贝雷帽</名字>
+                                <概率>100</概率>
+                            </掉落物>
+                            <掉落物>
+                                <名字>军阀兵头衣服</名字>
+                                <概率>100</概率>
+                            </掉落物>
+                            <掉落物>
+                                <名字>军阀带腰包裤子</名字>
+                                <概率>100</概率>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

@@ -151,32 +151,26 @@ _root.敌人函数.被击移动 = function(移动方向, 速度, 摩擦力)
 _root.敌人函数.强制移动 = _root.主角函数.强制移动;
 
 
-_root.敌人函数.方向改变 = function(新方向)
-{
+_root.敌人函数.方向改变 = function(新方向){
 	if(锁定方向) return;
-	if (新方向 === "右")
-	{
+	if (新方向 === "右"){
 		方向 = "右";
 		this._xscale = myxscale;
 		新版人物文字信息._xscale = 100;
-	}
-	else if (新方向 === "左")
-	{
+	}else if (新方向 === "左"){
 		方向 = "左";
 		this._xscale = -myxscale;
 		新版人物文字信息._xscale = -100;
 	}
 };
 
-_root.敌人函数.状态改变 = function(新状态名)
-{
+_root.敌人函数.状态改变 = function(新状态名){
 	旧状态 = 状态;//记录上一个状态名
 	状态 = 新状态名;
 	this.gotoAndStop(新状态名);
 };
 
-_root.敌人函数.动画完毕 = function()
-{
+_root.敌人函数.动画完毕 = function(){
 	if(hp <= 0){
 		//防止没有倒地动画的敌人在击倒动画被扣至0血导致不死
 		状态改变("血腥死");
@@ -185,8 +179,7 @@ _root.敌人函数.动画完毕 = function()
 	}
 };
 
-_root.敌人函数.硬直 = function(目标, 时间) 
-{
+_root.敌人函数.硬直 = function(目标, 时间) {
     目标.stop();
 
     _root.帧计时器.添加或更新任务(目标, "硬直", function() {
@@ -195,8 +188,7 @@ _root.敌人函数.硬直 = function(目标, 时间)
 };
 
 
-_root.敌人函数.移动钝感硬直 = function(时间) 
-{
+_root.敌人函数.移动钝感硬直 = function(时间) {
     var 自机:Object = this;  // 在外部保存对当前对象的引用
 
     this.硬直中 = true;  
@@ -205,10 +197,8 @@ _root.敌人函数.移动钝感硬直 = function(时间)
     }, 时间);
 };
 
-_root.敌人函数.随机掉钱 = function()
-{
-	if (!this.不掉钱 && random(_root.打怪掉钱机率) === 0)
-	{
+_root.敌人函数.随机掉钱 = function(){
+	if (!this.不掉钱 && random(_root.打怪掉钱机率) === 0){
 		var 金币时间倍率 = _root.天气系统.金币时间倍率;
 		//_root.发布消息("金币时间倍率" + 金币时间倍率);
 		var 昼夜爆金币 = this.hp满血值 * 金币时间倍率 / 5;
@@ -217,8 +207,7 @@ _root.敌人函数.随机掉钱 = function()
 	}
 };
 
-_root.敌人函数.计算经验值 = function()
-{
+_root.敌人函数.计算经验值 = function(){
 	this.随机掉钱();
 	this.掉落物判定();
 
@@ -230,8 +219,7 @@ _root.敌人函数.计算经验值 = function()
 	this.已加经验值 = true;
 };
 
-_root.敌人函数.攻击呐喊 = function()
-{
+_root.敌人函数.攻击呐喊 = function(){
 	if (性别 === "女"){
 		_root.播放音效(女_攻击呐喊_库[random(女_攻击呐喊_库.length)]);
 	}else{
@@ -239,8 +227,7 @@ _root.敌人函数.攻击呐喊 = function()
 	}
 };
 
-_root.敌人函数.中招呐喊 = function()
-{
+_root.敌人函数.中招呐喊 = function(){
 	if (性别 === "女"){
 		_root.播放音效(女_中招呐喊_库[random(女_中招呐喊_库.length)]);
 	}else{
@@ -248,8 +235,7 @@ _root.敌人函数.中招呐喊 = function()
 	}
 };
 
-_root.敌人函数.击倒呐喊 = function()
-{
+_root.敌人函数.击倒呐喊 = function(){
 	if (性别 === "女"){
 		_root.播放音效(女_击倒呐喊_库[random(女_击倒呐喊_库.length)]);
 	}else{
