@@ -48,7 +48,7 @@
                 <Name>Boy</Name>
                 <Title>BPK战队-队长</Title>
                 <Char>boy#厌恶</Char>
-                <Text>我和主力部队会去攻击防线正面，你往那边走到军阀工兵挖掘的战壕里，根据那边的指示进行下一步行动。</Text>
+                <Text>我和主力部队会去攻击防线正面，你往前走到军阀工兵挖掘的战壕里，根据那边的指示进行下一步行动。我们无线电联系。</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>$PC</Name>
@@ -163,8 +163,22 @@
     </SubStage>
     <SubStage id="2">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfydd_3_BG.swf</Background>
+            <Background>flashswf/backgrounds/防御地带野外.swf</Background>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这么走下去不是办法，敌人太多了，怎么办？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Boy</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>无头像</Char>
+                <Text>坚持一下，待会有人接应你。</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -172,9 +186,27 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>6</Quantity>
+                        <Type>兵种70</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种74</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种372</Type>
+                        <Interval>2400</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种373</Type>
+                        <Interval>2400</Interval>
+                        <Quantity>3</Quantity>
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -183,12 +215,37 @@
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>Boy</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>无头像</Char>
+                <Text>跟他们前往战壕，准备进入防御地带内部。我们这边伤亡不小，牵制时间有限。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Boy</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>无头像</Char>
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>明白！</Text>
+            </SubDialogue>
+        </Dialogue>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种70</Type>
-                        <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Type>兵种97</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种99</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -196,8 +253,16 @@
     </SubStage>
     <SubStage id="3">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfydd_4_BG.swf</Background>
+            <Background>flashswf/backgrounds/防御地带战壕.swf</Background>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>黑铁死士</Name>
+                <Title>黑铁会派遣军</Title>
+                <Char>黑铁会盗贼</Char>
+                <Text>敌军果然试图伏击，击溃他们！</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -205,27 +270,87 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>6</Quantity>
+                        <Type>兵种90</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <x>300</x>
+                        <y>450</y>
                     </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                    <Enemy id="1">
+                        <Type>兵种101</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <x>350</x>
+                        <y>490</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种102</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>420</x>
+                        <y>500</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种97</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>490</x>
+                        <y>430</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种99</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>720</x>
+                        <y>470</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种372</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>700</x>
+                        <y>490</y>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种373</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>420</x>
+                        <y>450</y>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种74</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>880</x>
+                        <y>430</y>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
         </Wave>
+        <SubDialogue id="0">
+                <Name>Boy</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>无头像</Char>
+                <Text>前面就是地下入口了，我们不确定里面有什么，小心点。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Boy</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>无头像</Char>
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>都到这了肯定不能退缩了！</Text>
+            </SubDialogue>
     </SubStage>
     <SubStage id="4">
         <BasicInformation>
