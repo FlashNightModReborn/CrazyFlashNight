@@ -224,90 +224,14 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
 
     var crit:CritDamageHandle = CritDamageHandle.instance;
     if(crit.canHandle(bullet)) crit.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-    /*
+
     
     var uni:UniversalDamageHandle = UniversalDamageHandle.instance;
     uni.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
     
-    */
-    var defaultDamageColor:String = bullet.子弹敌我属性值 ? "#FFCC00" : "#FF0000";
-    damageResult.setDamageColor(defaultDamageColor);
-    
-    if (bullet.伤害类型 === "真伤") {
-        var trueDamageColor:String = bullet.子弹敌我属性值 ? "#4A0099" : "#660033";
-        damageResult.setDamageColor(trueDamageColor);
-        damageResult.addDamageEffect('<font color="' + trueDamageColor + '" size="20"> 真</font>');
-        hitTarget.损伤值 = bullet.破坏力;
-    } else if (bullet.伤害类型 === "魔法") {
-        var magicDamageColor:String = bullet.子弹敌我属性值 ? "#0099FF" : "#AC99FF";
-        damageResult.setDamageColor(magicDamageColor);
-        var magicDamageAttr:String = bullet.魔法伤害属性 ? bullet.魔法伤害属性 : "能";
-        damageResult.addDamageEffect('<font color="' + magicDamageColor + '" size="20"> ' + magicDamageAttr + '</font>');
-        
-        var enemyMagicResist:Number = bullet.魔法伤害属性 
-            ? (hitTarget.魔法抗性 && (hitTarget.魔法抗性[bullet.魔法伤害属性] || hitTarget.魔法抗性[bullet.魔法伤害属性] === 0) 
-                ? hitTarget.魔法抗性[bullet.魔法伤害属性]
-                : (hitTarget.魔法抗性 && (hitTarget.魔法抗性["基础"] || hitTarget.魔法抗性["基础"] === 0) 
-                    ? hitTarget.魔法抗性["基础"]
-                    : 10 + hitTarget.等级 / 2))
-            : (hitTarget.魔法抗性 && (hitTarget.魔法抗性["基础"] || hitTarget.魔法抗性["基础"] === 0) 
-                ? hitTarget.魔法抗性["基础"]
-                : 10 + hitTarget.等级 / 2);
-        
-        enemyMagicResist = isNaN(enemyMagicResist) ? 20 : Math.min(Math.max(enemyMagicResist, -1000), 100);
-        hitTarget.损伤值 = Math.floor(bullet.破坏力 * (100 - enemyMagicResist) / 100);
-    } else {
-        hitTarget.损伤值 = bullet.破坏力 * _root.防御减伤比(hitTarget.防御力);
-    }
-    
+
     var damageNumber:Number = hitTarget.损伤值;
     var damageSize:Number = damageResult.damageSize;
-    
-    switch (dodgeState) {
-        case "跳弹":
-            damageNumber = _root.跳弹伤害计算(damageNumber, hitTarget.防御力);
-            hitTarget.损伤值 = damageNumber;
-            damageSize *= 0.3 + 0.7 * damageNumber / bullet.破坏力;
-            var jumpDamageColor:String = bullet.子弹敌我属性值 ? "#7F6A00" : "#7F0000";
-            damageResult.setDamageColor(jumpDamageColor);
-            break;
-        case "过穿":
-            damageNumber = _root.过穿伤害计算(damageNumber, hitTarget.防御力);
-            hitTarget.损伤值 = damageNumber;
-            damageSize *= 0.3 + 0.7 * damageNumber / bullet.破坏力;
-            var pierceDamageColor:String = bullet.子弹敌我属性值 ? "#FFE770" : "#FF7F7F";
-            damageResult.setDamageColor(pierceDamageColor);
-            break;
-        case "躲闪":
-        case "直感":
-            damageNumber = NaN;
-            hitTarget.损伤值 = 0;
-            damageSize *= 0.5;
-            damageResult.dodgeStatus = "MISS";
-            break;
-        case "格挡":
-            damageNumber = hitTarget.受击反制(damageNumber, bullet);
-            if (damageNumber) {
-                hitTarget.损伤值 = damageNumber;
-                damageSize *= 0.3 + 0.7 * hitTarget.损伤值 / bullet.破坏力;
-            } else if (damageNumber === 0) {
-                hitTarget.损伤值 = 0;
-                damageSize *= 1.2;
-            } else {
-                damageNumber = NaN;
-                hitTarget.损伤值 = 0;
-                damageSize *= 0.5;
-                damageResult.dodgeStatus = "MISS";
-            }
-            break;
-        default:
-            damageNumber = Math.max(Math.floor(damageNumber), 1);
-            hitTarget.损伤值 = damageNumber;
-            _root.受击变红(120, hitTarget);
-    }
-    
-    damageResult.damageSize = damageSize;
-
 
     var actualScatterUsed:Number = Math.min(
         bullet.霰弹值,
@@ -401,7 +325,7 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
     hitTarget.hp = isNaN(hitTarget.损伤值) ? hitTarget.hp : Math.floor(hitTarget.hp - hitTarget.损伤值);
     hitTarget.hp = (hitTarget.hp < 0 || isNaN(hitTarget.hp)) ? 0 : hitTarget.hp;
 
-    _root.服务器.发布服务器消息(damageResult);
+    // _root.服务器.发布服务器消息(damageResult);
     
     return damageResult;
 };
