@@ -224,14 +224,12 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
 
     var crit:CritDamageHandle = CritDamageHandle.instance;
     if(crit.canHandle(bullet)) crit.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-
     /*
     
     var uni:UniversalDamageHandle = UniversalDamageHandle.instance;
     uni.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
     
     */
-
     var defaultDamageColor:String = bullet.子弹敌我属性值 ? "#FFCC00" : "#FF0000";
     damageResult.setDamageColor(defaultDamageColor);
     
@@ -309,7 +307,8 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
     }
     
     damageResult.damageSize = damageSize;
-    
+
+
     var actualScatterUsed:Number = Math.min(
         bullet.霰弹值,
         Math.ceil(
@@ -401,6 +400,8 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
     
     hitTarget.hp = isNaN(hitTarget.损伤值) ? hitTarget.hp : Math.floor(hitTarget.hp - hitTarget.损伤值);
     hitTarget.hp = (hitTarget.hp < 0 || isNaN(hitTarget.hp)) ? 0 : hitTarget.hp;
+
+    _root.服务器.发布服务器消息(damageResult);
     
     return damageResult;
 };
