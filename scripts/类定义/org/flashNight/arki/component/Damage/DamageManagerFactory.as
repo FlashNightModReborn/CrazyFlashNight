@@ -184,6 +184,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         }
 
         var evaluator:Function = createEvaluator(_handles);
+        this.getDamageManager = this["getDamageManager" + handles.length];
 
         if (cacheCapacity <= 0) {
             throw "缓存容量必须大于 0。";
@@ -231,6 +232,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
     /**
      * 获取 DamageManager（自动缓存）。
      * 根据子弹属性选择合适的处理器，并返回对应的 DamageManager 实例。
+     * 占位使用，实际使用会替换成特化版
      *
      * @param bullet 子弹对象，包含影响伤害处理的属性
      * @return 对应的 DamageManager 实例
@@ -251,6 +253,1385 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
 
         return DamageManager(_managerCache.get(bitmask));
     }
+
+    public function getDamageManager1(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager2(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager3(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager4(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager5(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager6(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager7(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager8(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager9(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager10(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager11(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager12(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager13(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager14(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager15(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager16(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager17(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager18(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager19(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager20(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager21(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager22(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager23(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager24(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[23];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager25(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[23];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[24];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager26(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[23];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[24];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[25];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager27(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[23];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[24];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[25];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[26];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager28(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[23];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[24];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[25];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[26];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[27];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager29(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[23];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[24];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[25];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[26];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[27];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[28];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager30(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[23];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[24];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[25];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[26];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[27];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[28];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[29];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager31(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[23];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[24];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[25];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[26];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[27];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[28];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[29];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[30];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+    public function getDamageManager32(bullet:Object):DamageManager {
+        var bitmask:Number = this._skipCheckBitmask;
+        var handles:Array = this._handles;
+        var conditionalIndices:Array = this._conditionalHandlerIndices;
+        var index:Number;
+
+        index = conditionalIndices[0];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[1];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[2];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[3];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[4];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[5];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[6];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[7];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[8];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[9];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[10];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[11];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[12];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[13];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[14];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[15];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[16];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[17];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[18];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[19];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[20];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[21];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[22];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[23];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[24];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[25];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[26];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[27];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[28];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[29];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[30];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+        index = conditionalIndices[31];
+        if (handles[index].canHandle(bullet)) bitmask |= (1 << index);
+
+        return DamageManager(this._managerCache.get(bitmask));
+    }
+
+
+
 
     /**
      * 重置工厂（支持更新处理器和缓存）。
