@@ -52,7 +52,7 @@ class org.flashNight.arki.component.Damage.LifeStealDamageHandle extends BaseDam
      * @return Boolean 如果子弹具有吸血属性则返回 true，否则返回 false
      */
     public function canHandle(bullet:Object):Boolean {
-        return (bullet.吸血 > 0);
+        return !(bullet.吸血 <= 0);
     }
 
     /**

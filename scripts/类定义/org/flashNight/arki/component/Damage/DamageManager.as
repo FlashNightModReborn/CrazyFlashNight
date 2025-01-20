@@ -40,6 +40,30 @@ class org.flashNight.arki.component.Damage.DamageManager {
     }
 
     /**
+     * 重置函数。
+     * 初始化 DamageManager 实例。
+     *
+     * @param handles 适用的伤害处理器列表（已由工厂筛选）
+     */
+    public function reset():Void
+    {
+        this.overlapRatio = 1;            // 默认重叠比例为 1
+        this.dodgeState = "";             // 默认躲闪状态为空
+    }
+
+    /**
+     * 更新函数。
+     * 更新当前状态，为后续的execute做准备。
+     *
+     * @param handles 适用的伤害处理器列表（已由工厂筛选）
+     */
+    public function update(overlapRatio:Number, dodgeState:String):Void
+    {
+        this.overlapRatio = overlapRatio;
+        this.dodgeState = dodgeState;
+    }
+
+    /**
      * 执行所有伤害处理器。
      * 遍历处理器列表，依次调用每个处理器的 handleBulletDamage 方法。
      * 该方法仅用于示例，创建伤害管理器后，会被动态替换成特化策略方法以消除循环开销

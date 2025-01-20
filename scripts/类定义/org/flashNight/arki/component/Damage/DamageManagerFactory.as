@@ -174,7 +174,10 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
 
         _skipCheckBitmask = 0;
         _conditionalHandlerIndices = [];
-        for (var i:Number = 0; i < _handles.length; i++) {
+
+        var len:Number = _handles.length;
+
+        for (var i:Number = 0; i < len; i++) {
             var handler:BaseDamageHandle = _handles[i];
             if (handler.skipCheck) {
                 _skipCheckBitmask |= (1 << i);
@@ -184,7 +187,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
         }
 
         var evaluator:Function = createEvaluator(_handles);
-        this.getDamageManager = this["getDamageManager" + handles.length];
+        this.getDamageManager = this["getDamageManager" + len];
 
         if (cacheCapacity <= 0) {
             throw "缓存容量必须大于 0。";

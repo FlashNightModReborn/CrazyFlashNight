@@ -161,5 +161,22 @@ class org.flashNight.arki.component.Damage.DamageResult {
         } while (i < len);
     }
 
-
+    /**
+     * 返回一个字符串，表示当前 DamageResult 对象的状态。
+     * @return {String} 包含所有伤害相关信息的字符串。
+     */
+    public function toString():String {
+        var result:String = "DamageResult {\n";
+        result += "  totalDamageList: " + this.totalDamageList.toString() + ",\n";
+        result += "  damageColor: " + this.damageColor + ",\n";
+        result += "  damageSize: " + this.damageSize + ",\n";
+        result += "  damageEffects: " + this.damageEffects + ",\n";
+        result += "  finalScatterValue: " + this.finalScatterValue + ",\n";
+        result += "  dodgeStatus: " + this.dodgeStatus + ",\n";
+        result += "  actualScatterUsed: " + this.actualScatterUsed + ",\n";
+        result += "  displayCount: " + this.displayCount + ",\n";
+        result += "  displayFunction: " + (this.displayFunction != null ? "[Function]" : "null") + "\n";
+        result += "}";
+        return result;
+    }
 }

@@ -56,6 +56,8 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
         var damageType:String = bullet.伤害类型;
         var isFriendly:Boolean = bullet.子弹敌我属性值;  // 若为真，说明是友方子弹？
 
+
+        //_root.发布消息("power: " + bulletPower + " type: " + damageType + " isFriendly: " + isFriendly);
         // 定义整合后的最终输出值
         var finalDamage:Number;
         var finalDamageSize:Number = result.damageSize;  // 初始大小
@@ -69,6 +71,8 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
                 finalColor  = isFriendly ? "#4A0099" : "#660033";  // 直接内联颜色
                 finalEffect = '<font color="' + finalColor + '" size="20"> 真</font>';
                 finalDamage = bulletPower; // 真伤直接=破坏力
+
+                //_root.发布消息("真伤" + " finalDamage: " + finalDamage + " finalColor: " + finalColor + " finalEffect: " + finalEffect);
                 break;
 
             case "魔法":
@@ -103,14 +107,19 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
                 finalDamage = (magicDamage >= 0)
                                 ? (magicDamage | 0)
                                 : ((magicDamage == (magicDamage | 0)) ? magicDamage : ((magicDamage - 1) | 0));
+                
+                //_root.发布消息("Resist: " + enemyMagicResist + " finalDamage: " + finalDamage + " finalColor: " + finalColor + " finalEffect: " + finalEffect);
                 break;
 
             default: // 基础物理伤害
-                finalColor  = isFriendly ? "#FF9900" : "#FF6666";  // 直接内联颜色
-                finalEffect = '<font color="' + finalColor + '" size="20"> 物</font>';
+                finalColor  = isFriendly ? "#FFCC00" : "#FF0000";  // 直接内联颜色
+                finalEffect = '<font color="' + finalColor + '" size="20"> </font>';
                 finalDamage = bulletPower * DamageResistanceHandler.defenseDamageRatio(target.防御力);
+                //_root.发布消息("defense: " + target.防御力 + " finalDamage: " + finalDamage + " finalColor: " + finalColor + " finalEffect: " + finalEffect);
                 break;
         }
+
+        //_root.发布消息("firstDamage: " + finalDamage + " firstColor: " + finalColor + " firstEffect: " + finalEffect);
 
         // 添加通用伤害效果
         result.addDamageEffect(finalEffect);
@@ -181,6 +190,9 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
                 finalDamage = finalDamage | 0;
             }
         }
+
+        _root.服务器.发布服务器消息("通用计算完成 " + result.toString());
+        //_root.发布消息("finalDamage: " + finalDamage + " finalColor: " + finalColor + " finalEffect: " + finalEffect);
 
         // -----------【统一写回】-----------
         target.损伤值 = finalDamage;        // 最终伤害
