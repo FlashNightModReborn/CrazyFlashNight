@@ -355,7 +355,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var factory:DamageManagerFactory = DamageManagerFactory.getFactory(factoryName);
 
         // 预生成 bullets 和 targets
-        for (var i:Number = 0; i < iterations; i++) {
+        for (var i:Number = 0; i < iterations / 100; i++) {
             preCreatedBullets.push({
                 破坏力: 100 + (i % 50),
                 暴击: (i % 10 == 0) ? function(b:Object):Number { return 1.5; } : null,
@@ -396,17 +396,21 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var startTime:Number = getTimer();
 
         // 2. 正式开始性能测试（复用预创建对象）
-        for (var i:Number = 0; i < iterations; i++) {
-            tempDamageResult.reset();
+        for (var i:Number = 0; i < iterations / 100; i++) 
+        {
+            for(var j:Number = 0; j < 100; j++)
+            {
+                tempDamageResult.reset();
 
-            var tempBullet:Object = preCreatedBullets[i];
-            var tempTarget:Object = preCreatedTargets[i];
+                var tempBullet:Object = preCreatedBullets[i];
+                var tempTarget:Object = preCreatedTargets[i];
 
-            tempManager = factory.getDamageManager(tempBullet);
-            tempManager.overlapRatio = 1;
-            tempManager.dodgeState = "";
+                tempManager = factory.getDamageManager(tempBullet);
+                tempManager.overlapRatio = 1;
+                tempManager.dodgeState = "";
 
-            tempManager.execute(tempBullet, shooter1, tempTarget, tempDamageResult);
+                tempManager.execute(tempBullet, shooter1, tempTarget, tempDamageResult);
+            }
         }
 
         var endTime:Number = getTimer();
