@@ -2093,6 +2093,25 @@
         </Door>
     </Environment>
     <Environment>
+        <BackgroundURL>防御地带内部3.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1500</Xmax>
+        <Ymin>210</Ymin>
+        <Ymax>600</Ymax>
+        <Width>1500</Width>
+        <Height>600</Height>
+        <Horizon>0</Horizon>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+        <Collision>
+            <Point>610,194</Point>
+            <Point>660,300</Point>
+            <Point>1500,300</Point>
+            <Point>1500,194</Point>
+        </Collision>
+    </Environment>
+    <Environment>
         <BackgroundURL>防御地带电子战.swf</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>280</Xmin>
