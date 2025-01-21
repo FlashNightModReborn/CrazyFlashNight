@@ -173,7 +173,7 @@
                 <Text>这么走下去不是办法，敌人太多了，怎么办？</Text>
             </SubDialogue>
             <SubDialogue id="1">
-                <Name>Boy</Name>
+                <Name>Boy(无线电)</Name>
                 <Title>BPK战队-队长</Title>
                 <Char>无头像</Char>
                 <Text>坚持一下，待会有人接应你。</Text>
@@ -217,15 +217,12 @@
                 </WaveInformation>
         <Dialogue>
             <SubDialogue id="0">
-                <Name>Boy</Name>
+                <Name>Boy(无线电)</Name>
                 <Title>BPK战队-队长</Title>
                 <Char>无头像</Char>
                 <Text>跟他们前往战壕，准备进入防御地带内部。我们这边伤亡不小，牵制时间有限。</Text>
             </SubDialogue>
             <SubDialogue id="1">
-                <Name>Boy</Name>
-                <Title>BPK战队-队长</Title>
-                <Char>无头像</Char>
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
@@ -334,28 +331,49 @@
                         <y>430</y>
                     </Enemy>
                 </EnemyGroup>
-            </SubWave>
-        </Wave>
-        <SubDialogue id="0">
-                <Name>Boy</Name>
+              <Dialogue>  
+           <SubDialogue id="0">
+                <Name>Boy(无线电)</Name>
                 <Title>BPK战队-队长</Title>
                 <Char>无头像</Char>
-                <Text>前面就是地下入口了，我们不确定里面有什么，小心点。</Text>
+                <Text>前面就是地下入口了，你乘应急电梯下去。我们不确定里面有什么，小心点。</Text>
             </SubDialogue>
             <SubDialogue id="1">
-                <Name>Boy</Name>
-                <Title>BPK战队-队长</Title>
-                <Char>无头像</Char>
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
                 <Text>都到这了肯定不能退缩了！</Text>
             </SubDialogue>
+                </Dialogue>
+            </SubWave>
+        </Wave>
     </SubStage>
     <SubStage id="4">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfydd_3_BG.swf</Background>
+            <Background>flashswf/backgrounds/防御地带内部1.swf</Background>
+            <PlayerX>420</PlayerX>
+            <PlayerY>230</PlayerY>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>我从电梯间出来了，然后去哪？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Boy(无线电)</Name>
+                <Title>BPK战队-队长</Title>
+                <Char>无头像</Char>
+                <Text>军阀那边要求通信，先听他们的。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>往右边走，遇见大门就进入，Surveyor很快就到。</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -363,21 +381,47 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种71</Type>
+                        <Type>兵种97</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <x>410</x>
+                        <y>235</y>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种72</Type>
+                        <Type>兵种99</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <x>425</x>
+                        <y>240</y>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种70</Type>
+                        <Type>兵种101</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>430</x>
+                        <y>244</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种102</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>420</x>
+                        <y>250</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种71</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种72</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -388,21 +432,27 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种70</Type>
+                        <Interval>600</Interval>
+                        <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种74</Type>
+                        <Interval>600</Interval>
+                        <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种70</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -411,7 +461,7 @@
     </SubStage>
     <SubStage id="5">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfydd_2_BG.swf</Background>
+            <Background>flashswf/backgrounds/防御地带内部2.swf</Background>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -420,24 +470,44 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种70</Type>
+                        <Interval>600</Interval>
+                        <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种74</Type>
+                        <Interval>600</Interval>
+                        <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
+                <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这家伙是？！</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>有强敌吗？还请尽快解决，我们正面部队已经有几支溃败了。</Text>
+            </SubDialogue>
+        </Dialogue>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
@@ -445,21 +515,42 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种373</Type>
+                        <Interval>400</Interval>
+                        <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种72</Type>
+                        <Type>兵种347</Type>
                         <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
                     </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                </EnemyGroup>
+                <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>友军终于到了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>surveyor</Name>
+                <Title>火力支援学说专家</Title>
+                <Char>surveyor</Char>
+                <Text>诺亚这些人真是疯癫，把各种人拿来改造···我们赶紧进去吧。</Text>
+            </SubDialogue>
+        </Dialogue>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种360</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
