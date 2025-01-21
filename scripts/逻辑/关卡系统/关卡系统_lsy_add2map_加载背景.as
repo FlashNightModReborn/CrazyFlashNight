@@ -173,70 +173,78 @@ _root.加载背景元素 = function(url, 实例名, x, y, 层级){
 }
 
 
-_root.横版卷屏 = function(卷屏目标, 背景长, 背景高, 缓动系数){
-	//目前的逻辑是若地图尺寸小于屏幕尺寸则不调整坐标
-	var 舞台长 = Stage.width;
-	var 舞台高 = Stage.height - 64;
-	if (舞台长 >= 背景长 && 舞台高 >= 背景高) return;
-	var 游戏世界 = _root.gameworld;
-	var 卷屏对象 = 游戏世界[卷屏目标];
-	if (!卷屏对象._x) return;
-	//
-	var 卷屏x最小坐标值 = 舞台长 - 背景长;
-	var 卷屏y最小坐标值 = 舞台高 - 背景高;
-	var 卷屏x最大坐标值 = 0;
-	var 卷屏y最大坐标值 = 0;
-	var 左横向卷屏中心坐标 = 舞台长 * 0.5 + 100;
-	var 右横向卷屏中心坐标 = 舞台长 * 0.5 - 100;
-	var 纵向卷屏中心坐标 = 舞台高 - 100; 
-	//
-	var pt = {x:0, y:0};
-	卷屏对象.localToGlobal(pt);
-	if (卷屏对象._xscale > 0){
-		var aa = (右横向卷屏中心坐标 - pt.x) / 缓动系数;
-		var bb = (纵向卷屏中心坐标 - pt.y) / 缓动系数;
-	}else{
-		var aa = (左横向卷屏中心坐标 - pt.x) / 缓动系数;
-		var bb = (纵向卷屏中心坐标 - pt.y) / 缓动系数;
-	}
-	if (Math.abs(aa) > 1 || Math.abs(bb) > 1){
-		var xxx = 游戏世界._x + aa;
-		var yyy = 游戏世界._y + bb;
-		if (舞台长 < 背景长){
-			if (xxx > 卷屏x最小坐标值 && xxx < 卷屏x最大坐标值){
-				游戏世界._x = xxx;
-			}else if (xxx < 卷屏x最小坐标值){
-				游戏世界._x = 卷屏x最小坐标值;
-			}else if (xxx > 卷屏x最大坐标值){
-				游戏世界._x = 卷屏x最大坐标值;
-			}
-		}
-		if (舞台高 < 背景高){
-			if (yyy > 卷屏y最小坐标值 && yyy < 卷屏y最大坐标值){
-				游戏世界._y = yyy;
-			}else if (yyy < 卷屏y最小坐标值){
-				游戏世界._y = 卷屏y最小坐标值;
-			}else if (yyy > 卷屏y最大坐标值){
-				游戏世界._y = 卷屏y最大坐标值;
-			}
-		}
-	}
-	//
-	if(_root.启用后景) {
-		var infoObj:Object;
-		var list:Array = _root.天空盒.后景移动速度列表;
-		var len:Number = list.length;
-		var x:Number = _root.gameworld._x;
-		_root.天空盒._y = _root.gameworld._y + _root.天空盒.地平线高度;
-		for(var i = 0; i < len; i++)
-		{
-			infoObj = list[i];
-			if(_root.帧计时器.当前帧数 % infoObj.delay === 0){
-				infoObj.mc._x = x / infoObj.speedrate;
-			}
-		}
-	}
-}
+_root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor) {
+
+	var frameTimer = _root.帧计时器;
+	var frame:Number = frameTimer.当前帧数;
+
+	if(frame % frameTimer.scrollDelay !== 0) return;
+
+    var stageWidth = Stage.width;
+    var stageHeight = Stage.height - 64;
+    if (stageWidth >= bgWidth && stageHeight >= bgHeight) return;
+
+    var gameWorld = _root.gameworld;
+    var scrollObj = gameWorld[scrollTarget];
+    if (!scrollObj._x) return;
+
+    // 卷屏边界计算
+    var minScrollX = stageWidth - bgWidth;
+    var minScrollY = stageHeight - bgHeight;
+    var maxScrollX = 0;
+    var maxScrollY = 0;
+    
+    // 卷屏中心点常量（AS2用变量模拟）
+    var LEFT_SCROLL_CENTER = stageWidth * 0.5 + 100;
+    var RIGHT_SCROLL_CENTER = stageWidth * 0.5 - 100;
+    var VERTICAL_SCROLL_CENTER = stageHeight - 100;
+
+    // 坐标转换
+    var pt = { x: 0, y: 0 };
+    scrollObj.localToGlobal(pt);
+    
+    // 根据方向计算偏移量
+    var isRightDirection = scrollObj._xscale > 0;
+    var targetX = isRightDirection ? RIGHT_SCROLL_CENTER : LEFT_SCROLL_CENTER;
+    var deltaX = (targetX - pt.x) / easeFactor;
+    var deltaY = (VERTICAL_SCROLL_CENTER - pt.y) / easeFactor;
+
+    if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
+        var newX = gameWorld._x + deltaX;
+        var newY = gameWorld._y + deltaY;
+
+        // X轴边界处理
+        if (stageWidth < bgWidth) {
+            newX = Math.max(minScrollX, Math.min(newX, maxScrollX));
+        }
+        
+        // Y轴边界处理
+        if (stageHeight < bgHeight) {
+            newY = Math.max(minScrollY, Math.min(newY, maxScrollY));
+        }
+
+        // 应用新坐标
+        gameWorld._x = (stageWidth < bgWidth) ? newX : gameWorld._x;
+        gameWorld._y = (stageHeight < bgHeight) ? newY : gameWorld._y;
+    }
+
+    // 后景处理
+    if (_root.启用后景) {
+        var bgLayer = _root.天空盒;
+        bgLayer._y = gameWorld._y + bgLayer.地平线高度;
+        
+        var backgroundList = bgLayer.后景移动速度列表;
+        var currentFrame = _root.帧计时器.当前帧数;
+        var worldX = gameWorld._x;
+
+        for (var i = 0; i < backgroundList.length; i++) {
+            var bgInfo = backgroundList[i];
+            if (currentFrame % bgInfo.delay === 0) {
+                bgInfo.mc._x = worldX / bgInfo.speedrate;
+            }
+        }
+    }
+};
 
 _root.缩放画面 = function(放大倍数){
 	var 游戏世界 = _root.gameworld;
