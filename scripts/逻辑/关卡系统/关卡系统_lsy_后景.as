@@ -7,6 +7,7 @@
 	}
 	_root.启用后景 = true;
 	_root.天空盒.地平线高度 = 环境信息.地平线高度;
+
 	if(!环境信息.后景){
 		_root.卸载后景();
 		return;
@@ -17,6 +18,7 @@
 	}
 	//对后景进行排序
 	var maxSpeedRate = 32;
+	var infoObj:Object;
 	for(var i = 0; i<环境信息.后景.length; i++){
 		var url = "flashswf/skybox/" + 环境信息.后景[i].url;
 		var speedrate = 环境信息.后景[i].SpeedRate;
@@ -25,7 +27,16 @@
 		var 后景mc = _root.天空盒.createEmptyMovieClip("后景"+i, depth);
 		后景mc.loadMovie(url);
 		_root.天空盒.后景列表.push(后景mc);
-		_root.天空盒.后景移动速度列表.push(speedrate);
+
+		if(speedrate > 0)
+		{
+			infoObj = {};
+			infoObj.speedrate = speedrate;
+			infoObj.mc = 后景mc;
+			infoObj.delay = Math.round(Math.log(speedrate - 1) / Math.LN2);
+			_root.天空盒.后景移动速度列表.push(infoObj);
+		}
+		
 	}
 	
 	_root.天空盒._y = _root.gameworld._y + 环境信息.地平线高度;

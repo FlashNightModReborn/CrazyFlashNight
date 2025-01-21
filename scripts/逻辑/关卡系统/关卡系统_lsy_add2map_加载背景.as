@@ -223,10 +223,17 @@ _root.横版卷屏 = function(卷屏目标, 背景长, 背景高, 缓动系数){
 	}
 	//
 	if(_root.启用后景) {
+		var infoObj:Object;
+		var list:Array = _root.天空盒.后景移动速度列表;
+		var len:Number = list.length;
+		var x:Number = _root.gameworld._x;
 		_root.天空盒._y = _root.gameworld._y + _root.天空盒.地平线高度;
-		for(var i = 0; i < _root.天空盒.后景移动速度列表.length; i++)
-		if(_root.天空盒.后景移动速度列表[i] > 0){
-			_root.天空盒.后景列表[i]._x = _root.gameworld._x / _root.天空盒.后景移动速度列表[i];
+		for(var i = 0; i < len; i++)
+		{
+			infoObj = list[i];
+			if(_root.帧计时器.当前帧数 % infoObj.delay === 0){
+				infoObj.mc._x = x / infoObj.speedrate;
+			}
 		}
 	}
 }

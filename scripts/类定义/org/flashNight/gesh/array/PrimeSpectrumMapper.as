@@ -6,50 +6,102 @@
     private var _maxPrime:Number;
     
     public function PrimeSpectrumMapper(primeList:Array) {
-        if (primeList == null) primeList = DEFAULT_PRIMES;
+        trace("===== Constructor =====");
+        if (primeList == null) {
+            trace("Using DEFAULT_PRIMES");
+            primeList = DEFAULT_PRIMES;
+        } else {
+            trace("Using custom prime list");
+        }
+        
         this._primeList = primeList.concat().sort(Array.NUMERIC);
         this._minPrime = this._primeList[0];
         this._maxPrime = this._primeList[this._primeList.length - 1];
+        
+        trace("Initialized Prime List: " + this._primeList);
+        trace("MinPrime: " + this._minPrime + " MaxPrime: " + this._maxPrime);
+        trace("=======================");
     }
     
     public function mapToPrimeSpectrum(sourceArr:Array, scaleMode:String):Array {
+        trace("\n===== mapToPrimeSpectrum =====");
+        trace("Input Array: " + sourceArr);
+        trace("Scale Mode: " + scaleMode);
+        
         if (sourceArr.length == 0) return [];
         
         var analyzed:Object = _analyzeSource(sourceArr);
         scaleMode = scaleMode.toLowerCase();
         var result:Array = [];
         
+        trace("Analyzed Source - Min: " + analyzed.min + " Max: " + analyzed.max + " Range: " + analyzed.range);
+        
+        // Pre-generate primes for fit mode
+        if (scaleMode == "fit") {
+            var requiredPrimes:Number = sourceArr.length;
+            if (this._primeList.length < requiredPrimes) {
+                _generatePrimesByCount(requiredPrimes);
+            }
+        }
+        
         for (var i:Number = 0; i < sourceArr.length; i++) {
+            trace("\n--- Processing Element " + i + " ---");
             var val:Number = sourceArr[i];
+            trace("Raw Value: " + val);
             var prime:Number;
             
             switch(scaleMode) {
                 case "clip":
+                    trace("[Clip Mode] Direct nearest prime search");
                     prime = _getNearestPrime(val);
                     break;
                     
                 case "expand":
-                    analyzed = _analyzeSource(sourceArr);
-                    if (analyzed.max > this._maxPrime) _generatePrimesUpTo(analyzed.max);
-                    var targetMin:Number = this._minPrime;
-                    var targetMax:Number = this._maxPrime;
-                    var expandScale:Number = (targetMax - targetMin) / (analyzed.range || 1);
-                    var scaledVal:Number = targetMin + (val - analyzed.min) * expandScale;
-                    prime = _getNearestPrime(scaledVal);
+                    trace("[Expand Mode] Dynamic prime generation");
+                    if (val > this._maxPrime) {
+                        trace("Need to generate primes up to: " + val);
+                        _generatePrimesUpTo(val);
+                    }
+                    prime = _getNearestPrime(val);
                     break;
                     
                 case "fit":
                 default:
-                    var targetMin:Number = this._minPrime;
-                    var targetMax:Number = this._maxPrime;
-                    var fitScale:Number = (targetMax - targetMin) / (analyzed.range || 1);
-                    var scaledVal:Number = targetMin + (val - analyzed.min) * fitScale;
-                    prime = _getNearestPrime(scaledVal);
+                    trace("[Fit Mode] Scaling based on prime values");
+                    var fitPrimes:Array = this._primeList.slice(0, sourceArr.length);
+                    var fitMinVal:Number = analyzed.min;
+                    var fitMaxVal:Number = analyzed.max;
+                    var primeMin:Number = fitPrimes[0];
+                    var primeMax:Number = fitPrimes[fitPrimes.length - 1];
+                    
+                    // 线性映射到质数范围
+                    var scaledVal:Number = (val - fitMinVal) / (fitMaxVal - fitMinVal) * (primeMax - primeMin) + primeMin;
+                    prime = _getNearestPrime(scaledVal, fitPrimes);
+                    trace("Scaled Value: " + scaledVal);
                     break;
             }
+            
+            trace("Selected Prime: " + prime);
             result.push(prime);
         }
+        
+        trace("Final Result: " + result);
+        trace("=======================");
         return result;
+    }
+    
+    private function _generatePrimesByCount(count:Number):Void {
+        trace("\n--- Generating " + count + " primes ---");
+        while (this._primeList.length < count) {
+            var nextPrime:Number = _getNextPrime(this._maxPrime);
+            this._primeList.push(nextPrime);
+            this._maxPrime = nextPrime;
+            trace("Generated New Prime: " + nextPrime);
+        }
+        this._primeList.sort(Array.NUMERIC);
+        this._minPrime = this._primeList[0];
+        this._maxPrime = this._primeList[this._primeList.length - 1];
+        trace("Updated Prime List: " + this._primeList);
     }
     
     private function _analyzeSource(arr:Array):Object {
@@ -62,12 +114,22 @@
     }
     
     private function _generatePrimesUpTo(target:Number):Void {
+        trace("\n--- Generating Primes Up To " + target + " ---");
+        trace("Current MaxPrime: " + this._maxPrime);
+        
         while (this._maxPrime < target) {
             var nextPrime:Number = _getNextPrime(this._maxPrime);
+            trace("Generated New Prime: " + nextPrime);
             this._primeList.push(nextPrime);
             this._maxPrime = nextPrime;
         }
+        
         this._primeList.sort(Array.NUMERIC);
+        this._minPrime = this._primeList[0];
+        this._maxPrime = this._primeList[this._primeList.length - 1];
+        
+        trace("Updated Prime List: " + this._primeList);
+        trace("New MinPrime: " + this._minPrime + " New MaxPrime: " + this._maxPrime);
     }
     
     private function _getNextPrime(lastPrime:Number):Number {
@@ -84,33 +146,25 @@
         return true;
     }
     
-    private function _getNearestPrime(val:Number):Number {
-        if (val <= this._minPrime) return this._minPrime;
-        if (val >= this._maxPrime) return this._maxPrime;
+    private function _getNearestPrime(val:Number, specificList:Array):Number {
+        var primeList:Array = specificList || this._primeList;
+        var minPrime:Number = primeList[0];
+        var maxPrime:Number = primeList[primeList.length - 1];
         
-        // 精确匹配检查
-        for (var i:Number = 0; i < this._primeList.length; i++) {
-            if (this._primeList[i] == val) return val;
-        }
+        trace("\n--- Finding Nearest Prime for " + val + " ---");
+        trace("Prime List: " + primeList);
         
-        // 二分查找修正
-        var low:Number = 0, high:Number = this._primeList.length - 1;
-        var nearest:Number = this._primeList[high];
-        while (low <= high) {
-            var mid:Number = (low + high) >> 1;
-            var current:Number = this._primeList[mid];
-            if (current == val) return current;
-            
-            var currentDist:Number = Math.abs(current - val);
-            var nearestDist:Number = Math.abs(nearest - val);
-            if (currentDist < nearestDist || (currentDist == nearestDist && current < nearest)) {
-                nearest = current;
-            }
-            
-            if (current < val) {
-                low = mid + 1;
-            } else {
-                high = mid - 1;
+        if (val <= minPrime) return minPrime;
+        if (val >= maxPrime) return maxPrime;
+        
+        // Linear search for exact nearest
+        var nearest:Number = minPrime;
+        var minDist:Number = Infinity;
+        for (var i:Number = 0; i < primeList.length; i++) {
+            var dist:Number = Math.abs(primeList[i] - val);
+            if (dist < minDist || (dist == minDist && primeList[i] < nearest)) {
+                nearest = primeList[i];
+                minDist = dist;
             }
         }
         return nearest;
