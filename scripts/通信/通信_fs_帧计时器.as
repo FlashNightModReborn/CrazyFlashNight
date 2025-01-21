@@ -322,6 +322,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.显示列表.继续播放(_root.显示列表.预设任务ID);
             _root.UI系统.经济面板动效 = true;
             this.scrollDelay = 1;
+            this.offsetTolerance = 10;
             break;
         case 1:
             EffectSystem.maxEffectCount = 15;
@@ -336,6 +337,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.显示列表.继续播放(_root.显示列表.预设任务ID);
             _root.UI系统.经济面板动效 = true;
             this.scrollDelay = 1;
+            this.offsetTolerance = 30;
             break;
         case 2:
             EffectSystem.maxEffectCount = 10;
@@ -350,6 +352,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.显示列表.暂停播放(_root.显示列表.预设任务ID);
             _root.UI系统.经济面板动效 = false;
             this.scrollDelay = 1;
+            this.offsetTolerance = 50;
             break;
         default:
             EffectSystem.maxEffectCount = 0;  // 禁用效果
@@ -364,6 +367,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.显示列表.暂停播放(_root.显示列表.预设任务ID);
             _root.UI系统.经济面板动效 = false;
             this.scrollDelay = 2;
+            this.offsetTolerance = 80;
     }
 };
 
