@@ -250,7 +250,7 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
                 } while ((bitmask &= (bitmask - 1)) != 0); // 清除最低有效位，继续循环
                 return new DamageManager(handles);
             };
-        } else if(hlen < 32) {
+        } else if (hlen < 32) {
             return function(bitmask:Number):DamageManager {
                 var handles:Array = [];
                 var len:Number = 0;
@@ -261,39 +261,27 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
                 return new DamageManager(handles);
             };
         }
-        else {
+        else if (hlen == 32) { // 注意这里使用 '==' 而不是 '=' 来进行比较
             return function(bitmask:Number):DamageManager {
                 var handles:Array = [];
                 var len:Number = 0;
-                var index:Number;
-
-                // 当前实现依旧有问题，需要重新考虑对32位整掩码计算的溢出，不过考虑到后续几乎不可能用到，先占位
-
-                do {
-                    // 如果 bitmask >= 2^32，直接按高位与低位分段计算
-                    if (bitmask >= 4294967296) {
-                        // 高位部分
-                        var high:Number = Math.floor(bitmask / 4294967296); // 取高 32 位
-                        var low:Number = bitmask % 4294967296;              // 低 32 位
-                        var highTemp:Number = high & -high;                // 高位最低有效位
-                        var lowTemp:Number = low & -low;                   // 低位最低有效位
-
-                        // 高位索引优先
-                        if (highTemp) {
-                            index = (Math.log(highTemp) * 1.4426950408889634 + 0.5) | 0;
-                            handles[len++] = h[index + 32]; // 高位索引 + 偏移 32
-                        } else {
-                            index = (Math.log(lowTemp) * 1.4426950408889634 + 0.5) | 0;
-                            handles[len++] = h[index];
-                        }
-                    } else {
-                        // 低位部分
-                        index = (Math.log(bitmask & -bitmask) * 1.4426950408889634 + 0.5) | 0;
+                var index:Number = 0;
+                
+                // 遍历每一位，从最低位（0）到第31位
+                while (bitmask != 0 && index < 32) {
+                    if ((bitmask & 1) != 0) {
                         handles[len++] = h[index];
                     }
-                } while ((bitmask &= (bitmask - 1)) != 0); // 清除最低有效位
+                    bitmask = bitmask >>> 1; // 无符号右移，避免符号位扩展
+                    index++;
+                }
+                
                 return new DamageManager(handles);
             };
+        }
+        else
+        {
+            throw new Error("超过32位支持");
         }
     }
 
