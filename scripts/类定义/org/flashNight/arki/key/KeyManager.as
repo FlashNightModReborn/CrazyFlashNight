@@ -1,49 +1,52 @@
-﻿/**
+﻿import org.flashNight.neur.Event.EventBus;
+
+/**
  * KeyManager 类用于管理键盘键码与键名的映射关系，并提供键值设定的刷新和查询功能。
- * 该类为静态类，所有方法和属性均为静态，无需实例化即可使用。
- * 
+ * 现在新增对 EventBus 的集成，以实现基于事件的按键按下、释放侦听。
+ *
  * @class org.flashNight.arki.key.KeyManager
- * @author 作者名
- * @version 1.0
- * @date 创建日期
+ * @author fs
+ * @version 2.0 (在原有1.0基础上，增加EventBus机制)
  */
 class org.flashNight.arki.key.KeyManager {
-    /**
-     * 静态属性：存储键码与键名的映射关系。
-     * 键为键码（Number），值为键名（String）。
-     * @private
-     * @static
-     * @type Object
-     */
-    private static var keyMap:Object = KeyManager.init();
-
-    /**
-     * 静态属性：缓存键值设定，用于快速查询键名对应的键值。
-     * 键为键名（String），值为键值（Number）。
-     * @private
-     * @static
-     * @type Object
-     */
+    /** @private */
+    private static var keyMap:Object = KeyManager.init(); // 静态初始化映射表
+    /** @private */
     private static var keySettingsCache:Object;
 
+    // === 新增字段 ===
+    /** 
+     * 存储要监听的按键(只对这些按键做轮询检测)。
+     * key: 键码, value: true/false(是否需要监听)
+     */
+    private static var watchedKeys:Object = {};
+    
+    /** 
+     * 存储按键当前状态(上一次检测时是否处于按下)。
+     * key: 键码, value: Boolean (true=按下, false=未按下)
+     */
+    private static var keyStates:Object = {};
+
+    // 事件总线实例(懒得每次getInstance()，直接缓存)
+    private static var eventBus:EventBus = EventBus.getInstance();
+
     /**
-     * 构造函数。初始化 KeyManager 时输出调试信息。
-     * @constructor
+     * 构造函数(无实际意义，静态类)。
      */
     public function KeyManager() {
-        trace("KeyManager initialized.");
+        trace("KeyManager instance created. (Usually should not be instantiated)");
     }
 
     /**
-     * 静态方法：初始化键码与键名的映射表。
-     * 该方法应在使用 KeyManager 其他功能前调用。
+     * 初始化键码与键名的映射表，并且设置MovieClip进行按键检测。
+     * 在使用 KeyManager 的其他功能前应确保调用一次。
+     *
      * @static
-     * @return Object
+     * @return Object 返回内部的keyMap对象
      */
     public static function init():Object {
-        keyMap = new Object();
-
-        // 初始化键码与键名的映射
+        // 1. 构建键码->键名映射 (保持原有功能)
+        keyMap = {};
         keyMap[8] = "Backspace";
         keyMap[9] = "Tab";
         keyMap[12] = "Clear";
@@ -140,35 +143,67 @@ class org.flashNight.arki.key.KeyManager {
         keyMap[221] = "]}";
         keyMap[222] = "‘”";
 
+        // 2. 与 EventBus 整合：在根上创建一个用于轮询按键状态的Clip
+        if (_root.keyPollMC == undefined) {
+            _root.createEmptyMovieClip("keyPollMC", _root.getNextHighestDepth());
+        }
+        // 3. 在 onEnterFrame 中轮询
+        _root.keyPollMC.onEnterFrame = function() {
+            KeyManager.pollKeys();
+        };
+
+        trace("[KeyManager] init completed and keyPollMC onEnterFrame set.");
+
         return keyMap;
     }
 
     /**
-     * 静态方法：根据键码获取对应的键名。
-     * @static
-     * @param {Number} keycode - 键码。
-     * @return {String} 键名，如果键码不存在则返回空字符串。
+     * 每帧轮询按键状态，只针对 watchedKeys 中的按键。
+     * 如果检测到按下/释放切换，则通过 eventBus 发布事件：
+     *  - "KeyDown_键名"
+     *  - "KeyUp_键名"
+     */
+    private static function pollKeys():Void {
+        for (var keycodeStr:String in watchedKeys) {
+            var keycode:Number = Number(keycodeStr);
+            var isNowDown:Boolean = Key.isDown(keycode);
+            var wasDown:Boolean = (keyStates[keycode] == true);
+
+            if (isNowDown != wasDown) {
+                // 状态变化
+                keyStates[keycode] = isNowDown; // 更新记录
+
+                // 发布事件
+                var keyName:String = getKeyName(keycode); // 原有方法
+                if (isNowDown) {
+                    // 按下事件
+                    eventBus.publish("KeyDown_" + keyName);
+                } else {
+                    // 释放事件
+                    eventBus.publish("KeyUp_" + keyName);
+                }
+            }
+        }
+    }
+
+    /**
+     * 返回键码对应的键名。
+     * @param {Number} keycode
+     * @return {String}
      */
     public static function getKeyName(keycode:Number):String {
         return keyMap[keycode] || "";
     }
 
     /**
-     * 静态方法：添加或更新键码与键名的映射。
-     * @static
-     * @param {Number} keycode - 键码。
-     * @param {String} keyname - 键名。
-     * @return Void
+     * 添加或更新键码与键名的映射（保留原功能）。
      */
     public static function addKeyMapping(keycode:Number, keyname:String):Void {
         keyMap[keycode] = keyname;
     }
 
     /**
-     * 静态方法：移除键码与键名的映射。
-     * @static
-     * @param {Number} keycode - 键码。
-     * @return Void
+     * 移除键码与键名的映射（保留原功能）。
      */
     public static function removeKeyMapping(keycode:Number):Void {
         if (keyMap[keycode] != undefined) {
@@ -177,19 +212,14 @@ class org.flashNight.arki.key.KeyManager {
     }
 
     /**
-     * 静态方法：检查键码是否存在映射。
-     * @static
-     * @param {Number} keycode - 键码。
-     * @return {Boolean} 如果键码存在映射则返回 true，否则返回 false。
+     * 检查键码是否存在映射（保留原功能）。
      */
     public static function hasKeyName(keycode:Number):Boolean {
         return keyMap[keycode] != undefined;
     }
 
     /**
-     * 静态方法：获取所有键码。
-     * @static
-     * @return {Array} 包含所有键码的数组。
+     * 获取所有键码（保留原功能）。
      */
     public static function getAllKeycodes():Array {
         var keycodes:Array = [];
@@ -200,9 +230,7 @@ class org.flashNight.arki.key.KeyManager {
     }
 
     /**
-     * 静态方法：获取所有键名。
-     * @static
-     * @return {Array} 包含所有键名的数组。
+     * 获取所有键名（保留原功能）。
      */
     public static function getAllKeynames():Array {
         var keynames:Array = [];
@@ -213,17 +241,15 @@ class org.flashNight.arki.key.KeyManager {
     }
 
     /**
-     * 静态方法：刷新键值设定。
-     * 如果键值设定长度小于 30，会自动添加默认按键。
-     * 同时会更新缓存字典和操控目标按键设定表。
-     * @static
-     * @param {Array} keySettings - 键值设定数组。
+     * 刷新键值设定，如果键值设定长度小于30会自动添加默认按键。
+     * 同时更新缓存字典、可用的按键设置，以及需要监听的按键列表 `watchedKeys`。
+     *
+     * @param {Array} keySettings - 键值设定数组。元素格式类似 [可显示名称, 唯一标识, keycode]
      * @param {Function} translationFunction - 翻译函数，用于翻译键名。
-     * @param {Array} controlSettings - 操控目标按键设定表。
-     * @return Void
+     * @param {Array} controlSettings - 操控目标按键设定表。例：controlSettings[0] = _root.上键 ...
      */
     public static function refreshKeySettings(keySettings:Array, translationFunction:Function, controlSettings:Array):Void {
-        // 如果键值设定长度小于30，添加默认按键
+        // 1. 如果键值设定长度小于30，添加默认按键（保留原逻辑）
         if (keySettings.length < 30) {
             var newKeys:Array = [
                 [translationFunction("互动键"), "互动键", 69],
@@ -233,40 +259,51 @@ class org.flashNight.arki.key.KeyManager {
                 [translationFunction("奔跑键"), "奔跑键", 16]
             ];
             keySettings = keySettings.concat(newKeys);
-            // 更新全局变量，可能需要设置回 _root.键值设定
-            _root.键值设定 = keySettings;
+            _root.键值设定 = keySettings; // 更新全局
         }
 
-        // 初始化缓存字典
+        // 2. 初始化缓存字典
         if (!KeyManager.keySettingsCache) {
-            KeyManager.keySettingsCache = new Object();
+            KeyManager.keySettingsCache = {};
         } else {
-            // 清空缓存字典
-            for (var key in KeyManager.keySettingsCache) {
-                delete KeyManager.keySettingsCache[key];
+            for (var k in KeyManager.keySettingsCache) {
+                delete KeyManager.keySettingsCache[k];
             }
         }
 
-        // 构建缓存字典
+        // 3. 构建缓存字典并更新 _root
         for (var i:Number = 0; i < keySettings.length; i++) {
-            var keyName:String = keySettings[i][1];
-            var keyValue:Number = keySettings[i][2];
-            _root[keyName] = keyValue; // 设置键值
-            KeyManager.keySettingsCache[keyName] = keyValue; // 存入缓存
+            var keyName:String = keySettings[i][1];  // "互动键" 等
+            var keyValue:Number = keySettings[i][2]; // 69 等
+            _root[keyName] = keyValue;
+            KeyManager.keySettingsCache[keyName] = keyValue;
         }
 
-        // 更新操控目标按键设定表
+        // 4. 更新操控目标按键设定表（保留原逻辑）
         controlSettings[0] = _root.上键;
         controlSettings[1] = _root.下键;
         controlSettings[2] = _root.左键;
         controlSettings[3] = _root.右键;
+
+        // ========== 新增：重新注册要监听的按键 ==========
+        // 5. 清空并重新构建 watchedKeys
+        for (var kc:String in watchedKeys) {
+            delete watchedKeys[kc];
+        }
+
+        for (i = 0; i < keySettings.length; i++) {
+            var code:Number = keySettings[i][2];
+            // 若想让所有列在 keySettings 的按键都被监听，则直接 set true
+            // 如果只想监听部分按键，可加筛选逻辑(比如: 只监听“互动键”和“武器技能键”)。
+            watchedKeys[code] = true;
+
+            // 顺带初始化 keyStates，避免旧状态干扰
+            keyStates[code] = false; 
+        }
     }
 
     /**
-     * 静态方法：根据键名获取对应的键值。
-     * @static
-     * @param {String} keyName - 键名。
-     * @return {Number} 键值，如果键名不存在则返回 undefined。
+     * 根据键名获取对应的键值（保留原功能）。
      */
     public static function getKeySetting(keyName:String):Number {
         return KeyManager.keySettingsCache[keyName];
