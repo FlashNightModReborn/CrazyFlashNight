@@ -825,7 +825,11 @@ _root.帧计时器.定位任务 = function(任务ID)
     return this.任务哈希表[任务ID] || this.zeroFrameTasks[任务ID] || null;
 };
 
-
+/*
+EventBus.getInstance().subscribe("KeyDown_互动键", function() {
+    _root.发布消息("互动键被按下了！");
+}, _root);
+*/
 _root.帧计时器.延迟执行任务 = function(任务ID, 延迟时间) 
 {  
     var 任务 = this.任务哈希表[任务ID] || this.zeroFrameTasks[任务ID];
