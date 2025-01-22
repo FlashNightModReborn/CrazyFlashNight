@@ -186,6 +186,11 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
             }
         }
 
+        // ==== 新增检查：确保至少有一个处理器无需条件检查 ====
+        if (_skipCheckBitmask == 0) {
+            throw "至少需要一个处理器标记为 skipCheck = true。";
+        }
+
         var evaluator:Function = createEvaluator(_handles);
         this.getDamageManager = this["getDamageManager" + len];
 
@@ -202,31 +207,91 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
      * Evaluator 函数用于根据位掩码生成对应的 DamageManager 实例。
      * 该方法根据处理器的数量（<=8 或 <=32）选择不同的实现方式，以提高性能。
      *
-     * @param h 处理器数组
+     * ### 数理原理解析
+     * 1. **位掩码到处理器的映射逻辑**:
+     *    - 位掩码 `bitmask` 的每个置位（set bit）对应一个处理器。
+     *    - 通过遍历所有置位（从最低有效位到最高），提取对应处理器索引。
+     *
+     * 2. **分支优化策略**:
+     *    - **当处理器数量 ≤8 时**：使用位掩码分段和条件位移优化索引计算。
+     *      - `temp = bitmask & -bitmask`：提取最低有效位（LSB）的值（如 `0b1000` → 8）。
+     *      - 通过比较 LSB 的值分段处理（高位段 ≥16 和低位段 <16）：
+     *        - **高位段**（16/32/64）: 映射到数组后4个位置，通过位移压缩索引范围。
+     *          - `(temp >= 64) && (temp >>=6)`：若 ≥64 则右移6位（等价于除以64），否则保持原值。
+     *          - 计算结果为 `4 + 2 * (是否≥64) + (是否≥32)`，将 64→4, 32→5, 16→6, 8→7。
+     *        - **低位段**（1/2/4/8）: 映射到数组前4个位置。
+     *          - 类似逻辑：`2 * (是否≥4) + (是否≥2)`，将 4→2, 2→3, 1→0（由 `temp >=2` 为 false）。
+     *    - **当处理器数量 >8 时**：使用对数计算位索引。
+     *      - `Math.log(bitmask & -bitmask) * 1.4426950408889634`：
+     *        - `bitmask & -bitmask` 提取最低有效位值（如 8 → 0b1000）。
+     *        - `Math.log(x)` 计算自然对数，乘以 `1/ln(2)`（≈1.442695）转换为以2为底的对数。
+     *        - 结果等价于 `log2(x)`，直接得到位的索引（如 8 → log2(8)=3 → 索引3）。
+     *
+     * ### 输入掩码强制要求
+     * - **掩码必须非0**：由于 `do...while` 循环至少执行一次，若 `bitmask=0`：
+     *   - 首次循环 `temp = 0`，索引计算会越界或访问 `h[NaN]`，导致运行时错误。
+     * - 调用方需确保传入的 `bitmask` 至少有一个置位（即非0）。
+     *
+     * @param h 处理器数组（索引对应位掩码位置）
      * @return 优化后的 evaluator 函数
      */
     private function createEvaluator(h:Array):Function {
-        if (h.length <= 8) {
+        var hlen:Number = h.length;
+        if (hlen <= 8) {
             return function(bitmask:Number):DamageManager {
                 var handles:Array = [];
                 var temp:Number;
                 var len:Number = 0;
                 do {
-                    if ((temp = (bitmask & -bitmask)) >= 16) {
-                        handles[len++] = h[4 + 2 * ((temp >= 64) && (temp >>= 6)) + (temp >= 32)];
-                    } else {
-                        handles[len++] = h[2 * ((temp >= 4) && (temp >>= 2)) + (temp >= 2)];
-                    }
-                } while ((bitmask &= (bitmask - 1)) != 0);
+                    handles[len++] = h[4 * Boolean(((temp = bitmask & -bitmask ) >= 16) && (temp >>= 4)) +
+                                       2 * Boolean((temp >= 4) && (temp >>= 2)) + 
+                                       (temp >= 2)];
+
+                } while ((bitmask &= (bitmask - 1)) != 0); // 清除最低有效位，继续循环
                 return new DamageManager(handles);
             };
-        } else {
+        } else if(hlen < 32) {
             return function(bitmask:Number):DamageManager {
                 var handles:Array = [];
                 var len:Number = 0;
                 do {
-                    handles[len++] = h[Math.log(bitmask & -bitmask) * 1.4426950408889634];
-                } while ((bitmask &= (bitmask - 1)) != 0);
+                    // 通过 log2(LSB) 计算位索引（如 8 → log2(8)=3 → 索引3）
+                    handles[len++] = h[(Math.log(bitmask & -bitmask) * 1.4426950408889634 + 0.5) | 0];
+                } while ((bitmask &= (bitmask - 1)) != 0); // 清除最低有效位，继续循环
+                return new DamageManager(handles);
+            };
+        }
+        else {
+            return function(bitmask:Number):DamageManager {
+                var handles:Array = [];
+                var len:Number = 0;
+                var index:Number;
+
+                // 当前实现依旧有问题，需要重新考虑对32位整掩码计算的溢出，不过考虑到后续几乎不可能用到，先占位
+
+                do {
+                    // 如果 bitmask >= 2^32，直接按高位与低位分段计算
+                    if (bitmask >= 4294967296) {
+                        // 高位部分
+                        var high:Number = Math.floor(bitmask / 4294967296); // 取高 32 位
+                        var low:Number = bitmask % 4294967296;              // 低 32 位
+                        var highTemp:Number = high & -high;                // 高位最低有效位
+                        var lowTemp:Number = low & -low;                   // 低位最低有效位
+
+                        // 高位索引优先
+                        if (highTemp) {
+                            index = (Math.log(highTemp) * 1.4426950408889634 + 0.5) | 0;
+                            handles[len++] = h[index + 32]; // 高位索引 + 偏移 32
+                        } else {
+                            index = (Math.log(lowTemp) * 1.4426950408889634 + 0.5) | 0;
+                            handles[len++] = h[index];
+                        }
+                    } else {
+                        // 低位部分
+                        index = (Math.log(bitmask & -bitmask) * 1.4426950408889634 + 0.5) | 0;
+                        handles[len++] = h[index];
+                    }
+                } while ((bitmask &= (bitmask - 1)) != 0); // 清除最低有效位
                 return new DamageManager(handles);
             };
         }
