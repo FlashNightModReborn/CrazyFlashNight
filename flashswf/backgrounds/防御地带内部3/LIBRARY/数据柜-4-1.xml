@@ -1,0 +1,87 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="数据柜-4-1" itemID="66c8083b-00000b68" lastModified="1724385367">
+  <timeline>
+    <DOMTimeline name="数据柜-4-1">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="03.摆件/黑色长方块-1">
+                  <transformationPoint>
+                    <Point x="102.55" y="226"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix tx="-607.9" ty="-31.4"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="0.0311279296875" c="-0.0384521484375" d="0" tx="728.95" ty="125.2"/>
+                        </matrix>
+                        <GradientEntry color="#004C99" ratio="0.207843137254902"/>
+                        <GradientEntry color="#000066" ratio="0.984313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!13214 1874|15944 1874!15944 1874|15944 3134!15944 3134|13214 3134!13214 3134|13214 1874"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="120.85" y="434.3"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0" b="0.0991058349609375" c="-0.0384521484375" d="0" tx="121.05" ty="334"/>
+                        </matrix>
+                        <GradientEntry color="#004C99" ratio="0.207843137254902"/>
+                        <GradientEntry color="#000066" ratio="0.984313725490196"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!3786 2970|3786 8686!3786 8686|1056 8686!1056 8686|1056 2970!1056 2970|3786 2970"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

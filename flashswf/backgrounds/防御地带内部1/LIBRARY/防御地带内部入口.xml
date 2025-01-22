@@ -1,0 +1,148 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防御地带内部入口" itemID="678f66e0-00000a33" lastModified="1737454021" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="防御地带内部入口">
+      <layers>
+        <DOMLayer name="as" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.onEnterFrame = function()
+{
+		play();
+		delete this.onEnterFrame;
+};
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#9933CC" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.096527099609375" d="0.08984375" tx="79.05" ty="73.6"/>
+                            </matrix>
+                            <GradientEntry color="#FFFFFF" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#66FFFF" alpha="0.498039215686275" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!3163 0S6|3163 2944!3163 2944|0 2944!0 2944|0 0!0 0|3163 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="防御地带内部入口门右" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防御地带内部入口门右" centerPoint3DX="209.25" centerPoint3DY="73.6">
+                  <matrix>
+                    <Matrix tx="159.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.25" y="73.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防御地带内部入口门右" centerPoint3DX="108.75" centerPoint3DY="73.6">
+                  <matrix>
+                    <Matrix tx="59.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.25" y="73.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#9933CC" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <LinearGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.096527099609375" d="0.08984375" tx="79.05" ty="73.6"/>
+                            </matrix>
+                            <GradientEntry color="#FFFFFF" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#66FFFF" alpha="0.498039215686275" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!3163 0S6|3163 2944!3163 2944|0 2944!0 2944|0 0!0 0|3163 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="防御地带内部入口门左" color="#FF4FFF" parentLayerIndex="3" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防御地带内部入口门左" centerPoint3DX="-52.8" centerPoint3DY="73.6">
+                  <matrix>
+                    <Matrix tx="-102.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="49.25" y="73.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防御地带内部入口门左" centerPoint3DX="49.25" centerPoint3DY="73.6">
+                  <transformationPoint>
+                    <Point x="49.25" y="73.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

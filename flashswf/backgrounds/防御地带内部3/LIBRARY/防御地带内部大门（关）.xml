@@ -1,0 +1,121 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防御地带内部大门（关）" itemID="678f741b-00000d82" lastModified="1737454681" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="防御地带内部大门（关）">
+      <layers>
+        <DOMLayer name="as" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.onEnterFrame = function()
+{
+		play();
+		delete this.onEnterFrame;
+};
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#9933CC" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!2219 -15|462 -15!462 -15|-19 482!-19 482|-19 2328!-19 2328|462 2821!462 2821|2238 2821!2238 2821|2238 2820!2238 2820|3994 2820!3994 2820|4475 2323!4475 2323|4475 478!4475 478|3994 -20!3994 -20|2221 -20!2221 -20|2219 -15"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防御地带内部大门右" centerPoint3DX="293.8" centerPoint3DY="70.8">
+                  <matrix>
+                    <Matrix tx="229.3" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="64.5" y="70.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防御地带内部大门右" centerPoint3DX="159.25" centerPoint3DY="70.8">
+                  <matrix>
+                    <Matrix tx="94.75" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="64.5" y="70.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="遮罩" color="#9933CC" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!2219 -15|462 -15!462 -15|-19 482!-19 482|-19 2328!-19 2328|462 2821!462 2821|2238 2821!2238 2821|2238 2820!2238 2820|3994 2820!3994 2820|4475 2323!4475 2323|4475 478!4475 478|3994 -20!3994 -20|2221 -20!2221 -20|2219 -15"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" parentLayerIndex="3" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防御地带内部大门左" centerPoint3DX="-79.1" centerPoint3DY="70.7">
+                  <matrix>
+                    <Matrix tx="-135.05" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.95" y="70.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防御地带内部大门左" centerPoint3DX="55.95" centerPoint3DY="70.7">
+                  <matrix>
+                    <Matrix ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.95" y="70.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
