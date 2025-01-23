@@ -1,5 +1,6 @@
 ﻿import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.object.*;
+import org.flashNight.aven.Coordinator.*;
 
 /*
  * =============================================================================
@@ -125,7 +126,7 @@ class org.flashNight.arki.key.KeyManager {
      *   记录每个键的当前按下状态（true=按下, false=抬起）。
      *
      * 在此处，将其默认设置为只监听“互动键”(示例键码：69)，
-     * 你也可以根据实际需求调整。
+     * 也可以根据实际需求调整。
      */
     private static var watchedKeys:Object = initWatchedKeys();
     private static var watchedKeyNames:Object = initWatchedKeyNames();
@@ -135,7 +136,6 @@ class org.flashNight.arki.key.KeyManager {
     {
         var obj:Object = new Object();
         obj[69] = true;
-
         return obj;
     }
 
@@ -143,7 +143,6 @@ class org.flashNight.arki.key.KeyManager {
     {
         var obj:Object = new Object();
         obj[69] = "互动键";
-
         return obj;
     }
 
@@ -151,7 +150,6 @@ class org.flashNight.arki.key.KeyManager {
     {
         var obj:Object = new Object();
         obj[69] = false;
-
         return obj;
     }
 
@@ -851,5 +849,147 @@ class org.flashNight.arki.key.KeyManager {
                 keyStates[code] = false;
             }
         }
+    }
+
+
+    // =========================================================================
+    // 以下为 **新增** 的生命周期版方法 (示例名以 "L" 结尾) 
+    // 利用 EventCoordinator.addUnloadCallback 在指定的 MovieClip 卸载时，
+    // 自动执行取消订阅，避免不必要的事件残留。
+    // -------------------------------------------------------------------------
+
+    /**
+     * 当 "keyName" 键被按下时触发回调（带生命周期管理）。
+     * @param keyName  键名
+     * @param callback 回调函数
+     * @param scope    回调作用域
+     * @param host     要托管生命周期的 MovieClip
+     */
+    public static function onKeyDownL(keyName:String, callback:Function, scope:Object, host:MovieClip):Void {
+        onKeyDown(keyName, callback, scope);
+        var eventName:String = "KeyDown_" + keyName;
+        var unsubFunc:Function = function() {
+            KeyManager.offKeyDown(keyName, callback);
+        };
+
+        host = host || scope || _root;
+        // 当 host 被卸载时，自动执行 unsubFunc
+        EventCoordinator.addUnloadCallback(host, unsubFunc);
+    }
+
+    public static function onceKeyDownL(keyName:String, callback:Function, scope:Object, host:MovieClip):Void {
+        onceKeyDown(keyName, callback, scope);
+        var eventName:String = "KeyDown_" + keyName;
+        var unsubFunc:Function = function() {
+            KeyManager.offKeyDown(keyName, callback);
+        };
+
+        host = host || scope || _root;
+        EventCoordinator.addUnloadCallback(host, unsubFunc);
+    }
+
+    public static function onKeyUpL(keyName:String, callback:Function, scope:Object, host:MovieClip):Void {
+        onKeyUp(keyName, callback, scope);
+        var eventName:String = "KeyUp_" + keyName;
+        var unsubFunc:Function = function() {
+            KeyManager.offKeyUp(keyName, callback);
+        };
+
+        host = host || scope || _root;
+        EventCoordinator.addUnloadCallback(host, unsubFunc);
+    }
+
+    public static function onceKeyUpL(keyName:String, callback:Function, scope:Object, host:MovieClip):Void {
+        onceKeyUp(keyName, callback, scope);
+        var eventName:String = "KeyUp_" + keyName;
+        var unsubFunc:Function = function() {
+            KeyManager.offKeyUp(keyName, callback);
+        };
+        
+        host = host || scope || _root;
+        EventCoordinator.addUnloadCallback(host, unsubFunc);
+    }
+
+    /**
+     * 当连续按住 "keyName" 达到 "thresholdFrames" 帧后触发回调（带生命周期）。
+     */
+    public static function onLongPressL(
+        keyName:String, 
+        thresholdFrames:Number, 
+        callback:Function, 
+        scope:Object, 
+        host:MovieClip
+    ):Void {
+        onLongPress(keyName, thresholdFrames, callback, scope);
+        var unsubFunc:Function = function() {
+            KeyManager.offLongPress(keyName, callback);
+        };
+        
+        host = host || scope || _root;
+        EventCoordinator.addUnloadCallback(host, unsubFunc);
+    }
+
+    /**
+     * 带生命周期的组合键订阅。
+     * @param combinationName 组合键事件名(如 "Ctrl+C")
+     * @param keyNames        参与组合的键名数组(如 ["Control","C"])
+     * @param callback        回调
+     * @param scope           回调作用域
+     * @param continuous      是否每帧都触发
+     * @param host            托管生命周期的MC
+     */
+    public static function onCombinationL(
+        combinationName:String,
+        keyNames:Array,
+        callback:Function,
+        scope:Object,
+        continuous:Boolean,
+        host:MovieClip
+    ):Void {
+        onCombination(combinationName, keyNames, callback, scope, continuous);
+        var unsubFunc:Function = function() {
+            KeyManager.offCombination(combinationName, callback);
+        };
+        
+        host = host || scope || _root;
+        EventCoordinator.addUnloadCallback(host, unsubFunc);
+    }
+
+    /**
+     * 带生命周期的双击事件订阅。
+     */
+    public static function onDoubleTapL(
+        keyName:String, 
+        intervalFrames:Number, 
+        callback:Function, 
+        scope:Object, 
+        host:MovieClip
+    ):Void {
+        onDoubleTap(keyName, intervalFrames, callback, scope);
+        var unsubFunc:Function = function() {
+            KeyManager.offDoubleTap(keyName, callback);
+        };
+        
+        host = host || scope || _root;
+        EventCoordinator.addUnloadCallback(host, unsubFunc);
+    }
+
+    /**
+     * 带生命周期的重复触发事件订阅。
+     */
+    public static function onRepeatL(
+        keyName:String, 
+        intervalFrames:Number, 
+        callback:Function, 
+        scope:Object, 
+        host:MovieClip
+    ):Void {
+        onRepeat(keyName, intervalFrames, callback, scope);
+        var unsubFunc:Function = function() {
+            KeyManager.offRepeat(keyName, callback);
+        };
+        
+        host = host || scope || _root;
+        EventCoordinator.addUnloadCallback(host, unsubFunc);
     }
 }
