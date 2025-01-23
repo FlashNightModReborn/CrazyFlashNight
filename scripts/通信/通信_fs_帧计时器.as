@@ -12,6 +12,7 @@ import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.gesh.xml.LoadXml.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.component.Effect.*;
+import org.flashNight.arki.key.*;
 
 _root.帧计时器 = {};
 ColliderFactoryRegistry.init();
@@ -825,14 +826,19 @@ _root.帧计时器.定位任务 = function(任务ID)
     return this.任务哈希表[任务ID] || this.zeroFrameTasks[任务ID] || null;
 };
 
-/*
-EventBus.getInstance().subscribe("KeyDown_互动键", function() {
-    _root.发布消息("互动键按下了！");
-}, _root);
-EventBus.getInstance().subscribe("KeyUp_互动键", function() {
-    _root.发布消息("互动键松开了！");
-}, _root);
-*/
+
+
+
+
+KeyManager.onKeyDown("互动键", function() {
+    _root.帧计时器.eventBus.publish("interactionKeyDown");
+});
+
+KeyManager.onKeyUp("互动键", function() {
+    _root.帧计时器.eventBus.publish("interactionKeyUp");
+});
+
+
 
 _root.帧计时器.延迟执行任务 = function(任务ID, 延迟时间) 
 {  

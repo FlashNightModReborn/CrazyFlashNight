@@ -8,6 +8,7 @@ import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.bullet.BulletComponent.Attributes.*
 import org.flashNight.arki.bullet.BulletComponent.Init.*;
 import org.flashNight.naki.Sort.*;
+import org.flashNight.gesh.object.*;
 import org.flashNight.arki.component.Damage.*;
 
 DamageManagerFactory.init();
@@ -65,6 +66,7 @@ _root.子弹区域shoot = function(声音, 霰弹值, 子弹散射度, 发射效
 
 _root.子弹区域shoot传递 = function(Obj){
     //暂停判定
+
     if (_root.暂停 || isNaN(Obj.子弹威力)) return;
 
     var 游戏世界 = _root.gameworld;
@@ -93,6 +95,8 @@ _root.子弹区域shoot传递 = function(Obj){
 
     // 创建子弹
     var bulletInstance = 创建子弹(Obj, shooter, 射击角度);
+
+    // _root.服务器.发布服务器消息(ObjectUtil.toString(bulletInstance));
 
     return bulletInstance;
 };
@@ -155,6 +159,8 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
         bulletInstance.damageManager = DamageManagerFactory.Basic.getDamageManager(bulletInstance);
         // _root.发布消息(bulletInstance.damageManager);
     }
+
+    
     return bulletInstance;
 }
 
@@ -175,11 +181,13 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度){
     var bulletInstance;
     if(Obj.透明检测){
         bulletInstance = _root.对象浅拷贝(Obj);
+        _root.服务器.发布服务器消息("创建透明子弹: " + Obj.子弹种类 + " , " + Obj.子弹威力)
     } else {
         _root.子弹生成计数 = (_root.子弹生成计数 + 1) % 100;
         var depth = 游戏世界.子弹区域.getNextHighestDepth();
         var b_name = Obj.发射者名 + Obj.子弹种类 + depth + 散射角度 + _root.子弹生成计数;
         bulletInstance = 游戏世界.子弹区域.attachMovie(Obj.baseAsset, b_name, depth, Obj);
+            _root.服务器.发布服务器消息("创建子弹实例: " + b_name + " " + Obj.子弹种类 + " , " + Obj.子弹威力)
     }
     bulletInstance.xmov = bulletInstance.子弹速度 * Math.cos(angle);
     bulletInstance.ymov = bulletInstance.子弹速度 * Math.sin(angle);
@@ -618,142 +626,7 @@ _root.子弹生命周期 = function()
 
 
 
-_root.子弹区域shoot表演 = function(声音, 霰弹值, 子弹散射度, 发射效果, 子弹种类, 子弹威力, 子弹速度, Z轴攻击范围, 击中地图效果, 发射者, shootX, shootY, shootZ, 子弹敌我属性, 击倒率, 击中后子弹的效果)
-{
-	if (_root.暂停 == false)
-	{
-		if (_root.控制目标全自动 == false and _root.控制目标 == _root.gameworld[发射者]._name)
-		{
-			if (_root.gameworld[发射者]._xscale > 0)
-			{
-				if (Key.isDown(_root.下键))
-				{
-					射击角度 = 30;
-				}
-				else if (Key.isDown(_root.上键))
-				{
-					射击角度 = 330;
-				}
-				else
-				{
-					射击角度 = 0;
-				}
-			}
-			else if (Key.isDown(_root.下键))
-			{
-				射击角度 = 150;
-			}
-			else if (Key.isDown(_root.上键))
-			{
-				射击角度 = 210;
-			}
-			else
-			{
-				射击角度 = 180;
-			}
-		}
-		else if (_root.gameworld[发射者]._xscale > 0)
-		{
-			射击角度 = 0;
-		}
-		else
-		{
-			射击角度 = 180;
-		}
-		f_name = "f" + depth;
-		_root.gameworld.效果.attachMovie(发射效果,f_name,random(20));
-		_root.gameworld.效果[f_name]._xscale = _root.gameworld[发射者]._xscale;
-		_root.gameworld.效果[f_name]._x = shootX;
-		_root.gameworld.效果[f_name]._y = shootY;
-		_root.播放音效(声音);
-		i = 1;
-		while (i <= 霰弹值)
-		{
-			depth++;
-			if (depth > 100)
-			{
-				depth = 0;
-			}
-			if (random(2) == 0)
-			{
-				散射角度 = 射击角度 - random(子弹散射度);
-			}
-			else
-			{
-				散射角度 = 射击角度 + random(子弹散射度);
-			}
-			angle = 散射角度 * 3.14 / 180;
-			b_name = 发射者 + "zidan" + depth + 散射角度;
-			_root.gameworld.子弹区域.attachMovie(子弹种类,b_name,_root.gameworld.子弹区域.getNextHighestDepth(),{_rotation:散射角度, _x:shootX, _y:shootY});
-			_root.gameworld.子弹区域[b_name].发射者名 = 发射者;
-			_root.gameworld.子弹区域[b_name].子弹敌我属性值 = 子弹敌我属性;
-			_root.gameworld.子弹区域[b_name].子弹威力 = 子弹威力;
-			_root.gameworld.子弹区域[b_name].Z轴坐标 = shootZ;
-			_root.gameworld.子弹区域[b_name].xmov = 子弹速度 * Math.cos(angle);
-			_root.gameworld.子弹区域[b_name].ymov = 子弹速度 * Math.sin(angle);
-			_root.gameworld.子弹区域[b_name].onEnterFrame = function()
-			{
-				var _loc3_ = {x:0, y:0};
-				this.localToGlobal(_loc3_);
-				for (each in _root.gameworld)
-				{
-					if (_root.gameworld[each].是否允许发送联机数据 == true)
-					{
-						if (_root.gameworld[each].是否为敌人 == 子弹敌我属性 and _root.gameworld[each]._name != 发射者 and _root.gameworld[each].area.hitTest(this.area) == true and Math.abs(this.Z轴坐标 - _root.gameworld[each].Z轴坐标) < Z轴攻击范围)
-						{
-							_root.gameworld[each].攻击目标 = _root.gameworld[发射者]._name;
-							if (_root.gameworld[each]._name === _root.控制目标)
-							{
-								_root.玩家信息界面.刷新hp显示();
-							}
-							被击移动速度 = 10;
-							if (_root.血腥开关 == true)
-							{
-								if (_root.gameworld[each].击中效果 == "飙血")
-								{
-									临时效果名 = 效果("子弹碎片-飞血", this._x, _root.gameworld[each]._y, _root.gameworld[发射者]._xscale);
-									_root.gameworld.效果[临时效果名].出血来源 = each;
-								}
-								else if (_root.gameworld[each].击中效果 == "异形飙血")
-								{
-									临时效果名 = 效果("子弹碎片-异形飞血", this._x, _root.gameworld[each]._y, _root.gameworld[发射者]._xscale);
-									_root.gameworld.效果[临时效果名].出血来源 = each;
-								}
-							}
-							效果(_root.gameworld[each].击中效果,this._x,this._y,_root.gameworld[发射者]._xscale);
-							效果(击中后子弹的效果,this._x,this._y,_root.gameworld[发射者]._xscale);
-							if (子弹种类 != "近战子弹")
-							{
-								this.gotoAndPlay("消失");
-							}
-						}
-					}
-				}
-				if (this._y > this.Z轴坐标 and 子弹种类 != "近战子弹" )
-				{
-					效果(击中地图效果,this._x,this._y);
-					this.gotoAndPlay("消失");
-				}
-				if (_root.gameworld.地图.hitTest(_loc3_.x, _loc3_.y, true))
-				{
-					效果(击中地图效果,this._x,this._y);
-					子弹碎片depth = random(50);
-					子弹碎片b_name = "zidan子弹碎片" + 子弹碎片depth;
-					_root.gameworld.效果.attachMovie("子弹碎片",子弹碎片b_name,_root.gameworld.效果.getNextHighestDepth(),{_x:this._x, _y:this._y});
-					this.gotoAndPlay("消失");
-				}
-				this._x += this.xmov;
-				this._y += this.ymov;
-				if (Math.abs(this._x - _root.gameworld[发射者]._x) > 800 || Math.abs(this._y - _root.gameworld[发射者]._y) > 800)
-				{
-					this.removeMovieClip();
-				}
-			};
-			i++;
-		}
-	}
-};
-
+_root.子弹区域shoot表演 = _root.子弹区域shoot;
 
 
 // 初始化函数

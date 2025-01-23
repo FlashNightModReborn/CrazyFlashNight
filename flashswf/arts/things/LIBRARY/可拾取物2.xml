@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物2" itemID="66adb4fd-00000cac" linkageExportForAS="true" linkageIdentifier="可拾取物2" lastModified="1737301264" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物2" itemID="66adb4fd-00000cac" linkageExportForAS="true" linkageIdentifier="可拾取物2" lastModified="1737625317" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="可拾取物2">
+    <DOMTimeline name="可拾取物2" currentFrame="21">
       <layers>
         <DOMLayer name="Labels Layer" color="#B8E7BC">
           <frames>
@@ -157,7 +157,8 @@ stop();]]></script>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.removeMovieClip();
+                <script><![CDATA[
+this.removeMovieClip();
 stop();
 ]]></script>
               </Actionscript>
@@ -223,33 +224,14 @@ stop();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (enterFrame) {
-	var 条件满足 = false;
-	var 播放拾取动画 = false;
-	var 控制对象 = _root.gameworld[_root.控制目标];
-	if (this.hitTest(_root.鼠标) && 被点击)
-	{
-		条件满足 = true;
-	}
-	if (Math.abs(_parent.Z轴坐标 - 控制对象.Z轴坐标) < 50 && 控制对象.area.hitTest(this) && Key.isDown(_root.互动键))
-	{
-		条件满足 = true;
-		播放拾取动画 = true;
-	}
-	if (条件满足)
-	{
-		_parent.拾取(null,播放拾取动画);
-	}
-}
-onClipEvent (mouseDown) {
+                    <script><![CDATA[onClipEvent (mouseDown) {
 	if (this.hitTest(_root.鼠标))
 	{
-		被点击 = true;
+		_parent.拾取(null,播放拾取动画);
 		_root.鼠标.gotoAndStop("手型抓取");
 	}
 }
 onClipEvent (mouseUp) {
-	被点击 = false;
 	_root.鼠标.gotoAndStop("手型普通");
 }]]></script>
                   </Actionscript>
@@ -261,11 +243,11 @@ onClipEvent (mouseUp) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#AEAAE8">
+        <DOMLayer name="Layer 6" color="#AEAAE8" visible="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="物品图标" centerPoint3DX="12" centerPoint3DY="11">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="物品图标" selected="true" centerPoint3DX="12" centerPoint3DY="11">
                   <matrix>
                     <Matrix ty="-1"/>
                   </matrix>

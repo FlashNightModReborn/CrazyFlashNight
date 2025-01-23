@@ -44,7 +44,7 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
     public function destroy():Void {
         if (_destroyed) return; // 避免重复销毁
         _destroyed = true;
-        
+        // _root.发布消息("[LifecycleEventDispatcher] Destroyed successfully.");
         // 1. 先移除本类对 target onUnload 的监听
         //    避免残留回调（如果 target 不再使用了）
         EventCoordinator.removeEventListener(_target, "onUnload", _unloadHandlerID);
@@ -55,8 +55,8 @@ class org.flashNight.neur.Event.LifecycleEventDispatcher extends EventDispatcher
         // 3. 释放对 target 的引用，防止内存泄漏
         this._target = null;
         
-        // 4. 如有其他资源需要释放，也可在此执行
-        // ...
+        // 4. 调用父类的销毁逻辑
+        super.destroy();
         
         trace("[LifecycleEventDispatcher] Destroyed successfully.");
     }
