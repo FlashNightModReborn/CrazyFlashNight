@@ -1,4 +1,5 @@
 ﻿import org.flashNight.neur.Event.EventBus;
+import org.flashNight.gesh.object.*;
 
 /**
  * KeyManager 类用于管理键盘键码与键名的映射关系，并提供键值设定的刷新和查询功能。
@@ -20,6 +21,7 @@ class org.flashNight.arki.key.KeyManager {
      * key: 键码, value: true/false(是否需要监听)
      */
     private static var watchedKeys:Object = {};
+    private static var watchedKeyNames:Object = {};
     
     /** 
      * 存储按键当前状态(上一次检测时是否处于按下)。
@@ -175,13 +177,9 @@ class org.flashNight.arki.key.KeyManager {
 
                 // 发布事件
                 var keyName:String = getKeyName(keycode); // 原有方法
-                if (isNowDown) {
-                    // 按下事件
-                    eventBus.publish("KeyDown_" + keyName);
-                } else {
-                    // 释放事件
-                    eventBus.publish("KeyUp_" + keyName);
-                }
+                var eventName:String = (isNowDown ? "KeyDown_" : "KeyUp_") + watchedKeyNames[keycode];
+                // trace(eventName);
+                eventBus.publish(eventName);
             }
         }
     }
@@ -251,6 +249,7 @@ class org.flashNight.arki.key.KeyManager {
     public static function refreshKeySettings(keySettings:Array, translationFunction:Function, controlSettings:Array):Void {
         // 1. 如果键值设定长度小于30，添加默认按键（保留原逻辑）
         if (keySettings.length < 30) {
+            trace("[KeyManager] keySettings length less than 30, adding default keys.");
             var newKeys:Array = [
                 [translationFunction("互动键"), "互动键", 69],
                 [translationFunction("武器技能键"), "武器技能键", 70],
@@ -289,6 +288,7 @@ class org.flashNight.arki.key.KeyManager {
         // 5. 清空并重新构建 watchedKeys
         for (var kc:String in watchedKeys) {
             delete watchedKeys[kc];
+            delete watchedKeyNames[kc];
         }
 
         for (i = 0; i < keySettings.length; i++) {
@@ -296,10 +296,13 @@ class org.flashNight.arki.key.KeyManager {
             // 若想让所有列在 keySettings 的按键都被监听，则直接 set true
             // 如果只想监听部分按键，可加筛选逻辑(比如: 只监听“互动键”和“武器技能键”)。
             watchedKeys[code] = true;
-
+            watchedKeyNames[code] = keySettings[i][1];
+            trace(watchedKeyNames[code] + ":" + code)
             // 顺带初始化 keyStates，避免旧状态干扰
             keyStates[code] = false; 
         }
+
+
     }
 
     /**
