@@ -650,25 +650,25 @@
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>敌人越来越多了！</Text>
+                    </SubDialogue>
+                    <SubDialogue id="1">
+                        <Name>surveyor</Name>
+                        <Title>火力支援学说专家</Title>
+                        <Char>surveyor</Char>
+                        <Text>诺亚那边的就快结束了，不过接下来才是重头戏。</Text>
+                    </SubDialogue>
+                </Dialogue>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
-                <Dialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>敌人越来越多了！</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
-                <Name>surveyor</Name>
-                <Title>火力支援学说专家</Title>
-                <Char>surveyor</Char>
-                <Text>诺亚那边的就快结束了，不过接下来才是重头戏。</Text>
-            </SubDialogue>
-        </Dialogue>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种372</Type>
@@ -689,19 +689,19 @@
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>天网来了！</Text>
+                    </SubDialogue>
+                </Dialogue>
             </SubWave>
             <SubWave id="2">
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
-                <Dialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>天网来了！</Text>
-            </SubDialogue>
-        </Dialogue>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种363</Type>
@@ -716,25 +716,25 @@
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>这是天网的精英？</Text>
+                    </SubDialogue>
+                    <SubDialogue id="1">
+                        <Name>surveyor</Name>
+                        <Title>火力支援学说专家</Title>
+                        <Char>surveyor</Char>
+                        <Text>是EXUSIAI指挥官···我们上吧！</Text>
+                    </SubDialogue>
+                </Dialogue>
             </SubWave>
             <SubWave id="3">
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
-                <Dialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>这是天网的精英？</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
-                <Name>surveyor</Name>
-                <Title>火力支援学说专家</Title>
-                <Char>surveyor</Char>
-                <Text>是EXUSIAI指挥官···我们上吧！</Text>
-            </SubDialogue>
-        </Dialogue>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种363</Type>
@@ -756,19 +756,19 @@
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
-            <SubDialogue id="0">
-                <Name>Itinerant(无线电)</Name>
-                <Title>后勤部长</Title>
-                <Char>无头像</Char>
-                <Text>作战成功，引来的天网部队歼灭了诺亚部队，主力部队已撤退，请你们尽快逃出。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
-                <Name>surveyor</Name>
-                <Title>火力支援学说专家</Title>
-                <Char>surveyor</Char>
-                <Text>我们走。</Text>
-            </SubDialogue>
-        </Dialogue>
+                    <SubDialogue id="0">
+                        <Name>Itinerant(无线电)</Name>
+                        <Title>后勤部长</Title>
+                        <Char>无头像</Char>
+                        <Text>作战成功，引来的天网部队歼灭了诺亚部队，主力部队已撤退，请你们尽快逃出。</Text>
+                    </SubDialogue>
+                    <SubDialogue id="1">
+                        <Name>surveyor</Name>
+                        <Title>火力支援学说专家</Title>
+                        <Char>surveyor</Char>
+                        <Text>我们走。</Text>
+                    </SubDialogue>
+                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
