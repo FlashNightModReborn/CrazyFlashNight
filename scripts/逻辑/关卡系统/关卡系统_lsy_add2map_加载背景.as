@@ -113,18 +113,21 @@ _root.贴背景图 = function(){
 };
 
 _root.配置基地场景环境信息 = function(){
+	var 游戏世界 = _root.gameworld;
 	var 环境信息 = _root.天气系统.环境设置[_root.关卡标志];
 	if(环境信息){
+		//配置地图尺寸
 		_root.Xmax = 环境信息.Xmax;
 		_root.Xmin = 环境信息.Xmin;
 		_root.Ymax = 环境信息.Ymax;
 		_root.Ymin = 环境信息.Ymin;
-		_root.gameworld.背景长 = 环境信息.背景长;
-		_root.gameworld.背景高 = 环境信息.背景高;
-		//
+		游戏世界.背景长 = 环境信息.背景长;
+		游戏世界.背景高 = 环境信息.背景高;
+		//配置天气和后景
 		_root.天气系统.配置环境(环境信息);
 		_root.加载后景(环境信息);
 		//加载随机佣兵
+		游戏世界.面积系数 = isNaN(环境信息.佣兵刷新数据.AreaMultiplier) ? 1 : 环境信息.佣兵刷新数据.AreaMultiplier;
 		if(!isNaN(环境信息.佣兵刷新数据.Initial)){
 			_root.场景刷可雇用玩家(环境信息.佣兵刷新数据.Initial);
 		}
@@ -137,7 +140,18 @@ _root.配置基地场景环境信息 = function(){
 		天气系统.最大光照 = 9;
 		天气系统.最小光照 = 0;
 	}
-	_root.gameworld.背景.已更新环境配置 = true;
+	//寻找出生点
+	var 出生点列表 = [];
+	for (var 单位 in 游戏世界){
+		if (游戏世界[单位].是否从门加载主角 && 单位 != "出生地"){
+			出生点列表.push(游戏世界[单位]);
+		}
+	}
+	游戏世界.出生点列表 = 出生点列表;
+	_global.ASSetPropFlags(游戏世界, ["面积系数","出生点列表"], 1, true);
+
+	//完成并贴背景图
+	游戏世界.背景.已更新环境配置 = true;
 	_root.贴背景图();
 }
 
