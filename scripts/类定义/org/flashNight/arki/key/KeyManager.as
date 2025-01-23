@@ -1,88 +1,242 @@
 ﻿import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.object.*;
 
-/**
- * KeyManager 类用于管理键盘键码与键名的映射关系，并提供键值设定的刷新和查询功能。
- * 在原有基础上，集成 EventBus，实现基于事件的按键：
- *   - 按下/松开 (KeyDown/KeyUp)
- *   - 长按 (LongPress)
- *   - 组合键 (Combination)
- *   - 双击 (DoubleTap)
- *   - 重复 (Repeat)
- * 并提供按键状态查询接口 (isKeyDown)。
+/*
+ * =============================================================================
+ *  KeyManager
+ * -----------------------------------------------------------------------------
+ *  这是一个用于管理键盘事件的 AS2 类，支持多种键盘事件的监听和管理:
+ *    1. 按下 / 松开 (KeyDown / KeyUp)
+ *    2. 长按 (LongPress)
+ *    3. 组合键 (Combination)
+ *    4. 双击 (DoubleTap)
+ *    5. 重复触发 (Repeat)
  *
- * @class org.flashNight.arki.key.KeyManager
- * @author fs
- * @version 2.0
+ *  并提供以下功能:
+ *    - 自定义帧计数器，避免依赖 getTimer()
+ *    - 动态刷新键位设定 (refreshKeySettings)
+ *    - 查询按键是否按下 (isKeyDown)
+ *    - 新增接口 updateWatchedKeys(...) 用于动态重建需要监听的按键
+ *
+ *  该类使用 EventBus 作为事件总线，通过发布事件的方式通知外部监听器。
+ *  事件名示例:
+ *    KeyDown_互动键 / KeyUp_互动键
+ *    LongPress_互动键
+ *    Combination_Ctrl+C
+ *    DoubleTap_互动键
+ *    Repeat_互动键
+ *
+ *  其他说明:
+ *    - 所有时长/间隔以 "帧" 为单位 (frame-based timing)。
+ *    - 只有在调用对应的 onXxx(...) 方法时，相关功能才会启用，
+ *      以确保在没有订阅时不会产生额外的性能消耗。
+ *
+ * -----------------------------------------------------------------------------
+ *  使用示例:
+ *
+ *  1) 在项目开始时初始化 KeyManager:
+ *     KeyManager.init();
+ *
+ *  2) 刷新键位设置:
+ *     KeyManager.refreshKeySettings(
+ *       _root.键值设定, // 例如 [[显示名称, 唯一标识, 键码], ...]
+ *       myTranslationFunc, // 翻译函数 (可自行实现或传入空函数)
+ *       controlSettings    // 控制表 (如 [上键, 下键, 左键, 右键])
+ *     );
+ *
+ *  3) 修改监听的按键列表（可选）:
+ *     KeyManager.updateWatchedKeys(["互动键", "武器技能键"]); 
+ *       // 仅监听“互动键”和“武器技能键”两种
+ *
+ *  4) 监听键按下/松开事件:
+ *     KeyManager.onKeyDown("互动键", function() {
+ *       trace("按下 互动键");
+ *     }, this);
+ *
+ *     KeyManager.onKeyUp("互动键", function() {
+ *       trace("松开 互动键");
+ *     }, this);
+ *
+ *  5) 监听长按事件 (阈值=30帧):
+ *     KeyManager.onLongPress("互动键", 30, function() {
+ *       trace("长按 互动键 30帧");
+ *     }, this);
+ *
+ *  6) 监听组合键 Ctrl+C (一次触发，不连续):
+ *     KeyManager.onCombination(
+ *       "Ctrl+C",
+ *       ["Control", "C"],
+ *       function() { trace("触发组合键 Ctrl+C"); },
+ *       this,
+ *       false
+ *     );
+ *
+ *  7) 监听双击事件 (两次按下间隔 <= 15帧):
+ *     KeyManager.onDoubleTap("互动键", 15, function() {
+ *       trace("双击 互动键");
+ *     }, this);
+ *
+ *  8) 监听重复触发事件 (每10帧触发一次):
+ *     KeyManager.onRepeat("互动键", 10, function() {
+ *       trace("Repeat_互动键");
+ *     }, this);
+ *
+ *  9) 查询按键是否按下:
+ *     if (KeyManager.isKeyDown("互动键")) {
+ *       trace("互动键 正在被按住...");
+ *     }
+ *
+ *  10) 取消监听事件:
+ *     KeyManager.offKeyDown("互动键", myKeyDownFunc);
+ *     KeyManager.offLongPress("互动键", myLongPressFunc);
+ *     KeyManager.offCombination("Ctrl+C", myComboFunc);
+ *     // ... 其他事件的取消监听
+ *
+ * -----------------------------------------------------------------------------
+ *  后续计划:
+ *    - 将内部的帧计时器迁移到外部模块，以增强模块化和可维护性。
+ *
+ *  整体结构说明:
+ *    - 映射表 & 缓存  (keyMap / keySettingsCache): 存储键码与键名的映射关系。
+ *    - watchedKeys     (仅监听这些键，避免遍历全部键码，提升性能)。
+ *    - watchedKeyNames (记录每个键码对应的字符串标识，用于生成事件名)。
+ *    - keyStates       (记录每个键的当前按下状态 true/false)。
+ *    - frameCount      (帧计数器，每帧自增，用于基于帧的时间判断)。
+ *    - 长按 / 组合键 / 双击 / 重复 等功能对应的配置表。
+ *    - 提供对应的 on/off 方法，以及在主循环中检测这些功能的 pollKeys 方法。
+ *    - 新增 updateWatchedKeys(...) 用于动态修改监听的按键范围。
+ * =============================================================================
  */
 class org.flashNight.arki.key.KeyManager {
-    //============================
-    // 原有字段
-    //============================
-    /** @private */
-    private static var keyMap:Object = KeyManager.init(); // 静态初始化映射表
-    /** @private */
-    private static var keySettingsCache:Object;
 
-    /**
-     * 存储要监听的按键(只对这些按键做轮询检测)。
-     * key: 键码, value: Boolean (是否需要监听)
-     */
-    private static var watchedKeys:Object = {};
-    /**
-     * 存储每个键码对应的“唯一标识”(keyName)，在发布事件时需要用它拼接事件名
-     */
-    private static var watchedKeyNames:Object = {};
-    /**
-     * 存储按键当前状态(上一次检测时是否处于按下)。
-     * key: 键码, value: Boolean (true=按下, false=未按下)
-     */
-    private static var keyStates:Object = {};
+    //============================
+    // 基础字段定义
+    //============================
 
+    private static var keyMap:Object = KeyManager.init(); 
+    private static var keySettingsCache:Object; // 键位设定的缓存
+
+    /*
+     * watchedKeys:
+     *   用于记录需要轮询的键，避免遍历全部键码造成性能浪费。
+     * watchedKeyNames:
+     *   存储每个键码对应的字符串标识（如 "互动键"），用于拼接事件名。
+     * keyStates:
+     *   记录每个键的当前按下状态（true=按下, false=抬起）。
+     *
+     * 在此处，将其默认设置为只监听“互动键”(示例键码：69)，
+     * 你也可以根据实际需求调整。
+     */
+    private static var watchedKeys:Object = initWatchedKeys();
+    private static var watchedKeyNames:Object = initWatchedKeyNames();
+    private static var keyStates:Object = initKeyStates();
+
+    private static function initWatchedKeys():Object
+    {
+        var obj:Object = new Object();
+        obj[69] = true;
+
+        return obj;
+    }
+
+    private static function initWatchedKeyNames():Object
+    {
+        var obj:Object = new Object();
+        obj[69] = "互动键";
+
+        return obj;
+    }
+
+    private static function initKeyStates():Object
+    {
+        var obj:Object = new Object();
+        obj[69] = false;
+
+        return obj;
+    }
+
+    //============================
+    // 帧计数器
+    //============================
+
+    /*
+     * frameCount:
+     *   每帧由 onEnterFrame 自增，用于以帧为单位进行时间判断。
+     */
+    private static var frameCount:Number = 0;
+
+    //============================
     // 事件总线实例
+    //============================
+
     private static var eventBus:EventBus = EventBus.getInstance();
 
     //============================
-    // 新增字段：长按 / 组合键 / 双击 / 重复 / 状态
+    // 长按 / 组合键 / 双击 / 重复功能的配置表
     //============================
 
-    // --- LongPress ---
+    /*
+     * 下列四个功能只有在对应的 "onXxx" 方法被调用时才真正启用，
+     * 以 hasXxx 标志来控制是否在 pollKeys 中遍历相关逻辑。
+     */
+
     private static var hasLongPress:Boolean = false;
-    private static var longPressConfigs:Object = {}; 
-    // 形如: longPressConfigs[keyCode] = { threshold:Number, startTime:Number, triggered:Boolean }
+    /*
+     * longPressConfigs[keyCode] = {
+     *   threshold: Number,   // 达到多少帧算长按
+     *   startFrame: Number,  // 按下时的帧数
+     *   triggered: Boolean   // 防止重复长按触发
+     * }
+     */
+    private static var longPressConfigs:Object = {};
 
-    // --- Combination ---
     private static var hasCombination:Boolean = false;
-    private static var combinationConfigs:Array = []; 
-    // 形如: { combinationName:"Ctrl+C", keyCodes:[17,67], continuous:false, active:false }
+    /*
+     * combinationConfigs 中每项:
+     * {
+     *   combinationName: "Ctrl+C",  // 用于事件名: Combination_Ctrl+C
+     *   keyCodes: [17,67],         // 对应键码列表
+     *   continuous: Boolean,       // 是否每帧触发
+     *   active: Boolean            // 用于区分 "刚满足" 与 "已满足" 状态
+     * }
+     */
+    private static var combinationConfigs:Array = [];
 
-    // --- DoubleTap ---
     private static var hasDoubleTap:Boolean = false;
-    private static var doubleTapConfigs:Object = {}; 
-    // 形如: doubleTapConfigs[keyCode] = { interval:Number, lastTapTime:Number }
+    /*
+     * doubleTapConfigs[keyCode] = {
+     *   interval: Number,    // 两次按下间隔 <= interval（帧）
+     *   lastTapFrame: Number // 记录上次按下的帧数
+     * }
+     */
+    private static var doubleTapConfigs:Object = {};
 
-    // --- Repeat ---
     private static var hasRepeat:Boolean = false;
+    /*
+     * repeatConfigs[keyCode] = {
+     *   interval: Number,         // 按住时，每隔多少帧触发一次
+     *   lastTriggerFrame: Number  // 上一次触发的帧数
+     * }
+     */
     private static var repeatConfigs:Object = {};
-    // 形如: repeatConfigs[keyCode] = { interval:Number, lastTriggerTime:Number }
 
-
-    /**
-     * 构造函数(无实际意义，静态类)。
+    /*
+     * 构造函数 (静态类，无实际作用)
      */
     public function KeyManager() {
-        trace("KeyManager instance created. (Usually should not be instantiated)");
+        trace("KeyManager instance created. (通常不应实例化此类)");
     }
 
-    /**
-     * 初始化键码与键名的映射表，并且设置MovieClip进行按键检测。
-     * 在使用 KeyManager 的其他功能前应确保调用一次。
-     *
-     * @static
-     * @return Object 返回内部的keyMap对象
+    /*
+     * init():
+     *   1. 构建键码到键名的映射表。
+     *   2. 在 _root 上创建一个 keyPollMC，用于每帧轮询，并绑定 onEnterFrame 事件。
+     *   3. 通过 onEnterFrame，每帧调用 pollKeys() 方法，并自增 frameCount。
+     *      -> 若后续有更专业的帧计时器，可以移除此 MovieClip，手动调用 pollKeys()。
+     * 返回值:
+     *   键码到键名的映射表 keyMap。
      */
     public static function init():Object {
-        // 1. 构建键码->键名映射 (保持原有功能)
         keyMap = {};
         keyMap[8] = "Backspace";
         keyMap[9] = "Tab";
@@ -119,7 +273,7 @@ class org.flashNight.arki.key.KeyManager {
         keyMap[66] = "B";
         keyMap[67] = "C";
         keyMap[68] = "D";
-        keyMap[69] = "E";
+        keyMap[69] = "E"; 
         keyMap[70] = "F";
         keyMap[71] = "G";
         keyMap[72] = "H";
@@ -180,106 +334,94 @@ class org.flashNight.arki.key.KeyManager {
         keyMap[221] = "]}";
         keyMap[222] = "‘”";
 
-        // 2. 与 EventBus 整合：在 _root 上创建一个用于轮询按键状态的 Clip
+        // 创建 keyPollMC（用于帧计数和键轮询）
         if (_root.keyPollMC == undefined) {
             _root.createEmptyMovieClip("keyPollMC", _root.getNextHighestDepth());
         }
-        // 3. 在 onEnterFrame 中轮询
         _root.keyPollMC.onEnterFrame = function() {
+            KeyManager.frameCount++;
             KeyManager.pollKeys();
         };
 
-        trace("[KeyManager] init completed and keyPollMC onEnterFrame set.");
+        trace("[KeyManager] 初始化完成。使用基于帧的计时。keyPollMC 的 onEnterFrame 已设置。");
         return keyMap;
     }
 
-    /**
-     * 每帧轮询按键状态，只针对 watchedKeys 中的按键。
-     * 如果检测到按下/释放切换，则通过 eventBus 发布：
-     *   KeyDown_键名 / KeyUp_键名
-     * 额外还会根据是否订阅 LongPress / Combination / DoubleTap / Repeat 等进行检测。
+    /*
+     * pollKeys():
+     *   每帧由 onEnterFrame 调用，检测 watchedKeys 中的键状态，
+     *   并根据订阅的功能（长按 / 组合键 / 双击 / 重复）执行相应逻辑。
      */
     private static function pollKeys():Void {
-        var nowTime:Number = getTimer(); // 取当前时间(毫秒)，AS2可用getTimer()；若需帧计数，可自行实现
+        var nowFrame:Number = frameCount;
 
-        //==============================
-        // 1) 检测基础按下/松开
-        //==============================
+        // 检测 KeyDown / KeyUp 事件
         for (var keycodeStr:String in watchedKeys) {
             var keycode:Number = Number(keycodeStr);
             var isNowDown:Boolean = Key.isDown(keycode);
             var wasDown:Boolean = (keyStates[keycode] == true);
 
+            // 如果键状态发生变化（按下 -> 松开 或 松开 -> 按下）
             if (isNowDown != wasDown) {
-                // 状态变化
-                keyStates[keycode] = isNowDown; // 更新记录
+                keyStates[keycode] = isNowDown;
                 var keyName:String = watchedKeyNames[keycode];
                 var eventName:String = (isNowDown ? "KeyDown_" : "KeyUp_") + keyName;
                 eventBus.publish(eventName);
 
-                //=== 如果是按下 ===
+                // 如果是按下，可能影响双击 / 长按 / 重复等功能
                 if (isNowDown) {
-                    // DoubleTap
+                    // 处理 DoubleTap
                     if (hasDoubleTap && doubleTapConfigs[keycode]) {
                         var cfgD:Object = doubleTapConfigs[keycode];
-                        if (cfgD.lastTapTime > 0 && (nowTime - cfgD.lastTapTime) <= cfgD.interval) {
-                            // 触发双击
+                        if (cfgD.lastTapFrame >= 0 && (nowFrame - cfgD.lastTapFrame) <= cfgD.interval) {
                             eventBus.publish("DoubleTap_" + keyName);
-                            // 重置，避免多次叠加
-                            cfgD.lastTapTime = -1;
+                            cfgD.lastTapFrame = -1; // 重置
                         } else {
-                            cfgD.lastTapTime = nowTime;
+                            cfgD.lastTapFrame = nowFrame;
                         }
                     }
-                    // LongPress: 重置标记
+                    // 处理 LongPress
                     if (hasLongPress && longPressConfigs[keycode]) {
                         var cfgL:Object = longPressConfigs[keycode];
-                        cfgL.startTime = nowTime;
+                        cfgL.startFrame = nowFrame;
                         cfgL.triggered = false;
                     }
-                    // Repeat: 重置触发时间
+                    // 处理 Repeat
                     if (hasRepeat && repeatConfigs[keycode]) {
                         var cfgR:Object = repeatConfigs[keycode];
-                        cfgR.lastTriggerTime = nowTime;
-                        // 如果需要立即触发一次，可在此publish
-                        // eventBus.publish("Repeat_" + keyName);
+                        cfgR.lastTriggerFrame = nowFrame;
                     }
                 }
-                //=== 如果是松开 ===
+                // 如果是松开，可能需要重置长按
                 else {
-                    // LongPress: 释放后重置
                     if (hasLongPress && longPressConfigs[keycode]) {
                         var cfgL2:Object = longPressConfigs[keycode];
-                        cfgL2.startTime = -1;
+                        cfgL2.startFrame = -1;
                         cfgL2.triggered = false;
                     }
                 }
             }
         }
 
-        //==============================
-        // 2) 长按检测
-        //==============================
+        // 处理长按（LongPress）事件
         if (hasLongPress) {
             for (var lCodeStr:String in longPressConfigs) {
                 var lCode:Number = Number(lCodeStr);
-                if (keyStates[lCode]) { // 按住中
+                if (keyStates[lCode]) { // 若键仍处于按住状态
                     var lCfg:Object = longPressConfigs[lCode];
-                    if (!lCfg.triggered && lCfg.startTime >= 0) {
-                        var elapsed:Number = nowTime - lCfg.startTime;
-                        if (elapsed >= lCfg.threshold) {
+                    if (!lCfg.triggered && lCfg.startFrame >= 0) {
+                        var elapsedFrames:Number = nowFrame - lCfg.startFrame;
+                        if (elapsedFrames >= lCfg.threshold) {
                             var ln:String = watchedKeyNames[lCode];
                             eventBus.publish("LongPress_" + ln);
-                            lCfg.triggered = true; // 避免重复触发
+                            lCfg.triggered = true; // 防止多次触发
                         }
                     }
                 }
             }
         }
 
-        //==============================
-        // 3) 组合键检测
-        //==============================
+        // 处理组合键（Combination）事件
         if (hasCombination && combinationConfigs.length > 0) {
             for (var i:Number = 0; i < combinationConfigs.length; i++) {
                 var combo:Object = combinationConfigs[i];
@@ -292,70 +434,69 @@ class org.flashNight.arki.key.KeyManager {
                     }
                 }
                 if (allPressed) {
-                    // 若已经全部按下
                     if (combo.continuous) {
-                        // 每帧触发
                         eventBus.publish("Combination_" + combo.combinationName);
                     } else {
-                        // 只从不满足->满足时触发一次
                         if (!combo.active) {
                             combo.active = true;
                             eventBus.publish("Combination_" + combo.combinationName);
                         }
                     }
                 } else {
-                    // 不满足
                     combo.active = false;
                 }
             }
         }
 
-        //==============================
-        // 4) Repeat 检测
-        //==============================
+        // 处理重复触发（Repeat）事件
         if (hasRepeat) {
             for (var repKeyStr:String in repeatConfigs) {
                 var repCode:Number = Number(repKeyStr);
                 if (keyStates[repCode]) {
-                    // 正在按住
                     var repCfg:Object = repeatConfigs[repCode];
-                    var elapsedRep:Number = nowTime - repCfg.lastTriggerTime;
-                    if (elapsedRep >= repCfg.interval) {
-                        // 触发
+                    var elapsedR:Number = nowFrame - repCfg.lastTriggerFrame;
+                    if (elapsedR >= repCfg.interval) {
                         var rName:String = watchedKeyNames[repCode];
                         eventBus.publish("Repeat_" + rName);
-                        // 更新lastTriggerTime
-                        repCfg.lastTriggerTime = nowTime;
+                        repCfg.lastTriggerFrame = nowFrame;
                     }
                 }
             }
         }
-
-        // (其他需要的逻辑可继续在这里扩展) ...
     }
 
-    //============================
-    // 原有功能接口
-    //============================
+    /*
+     * 提供一系列对键位映射和刷新功能的接口
+     */
 
-    /**
-     * 返回键码对应的键名。
-     * @param {Number} keycode
-     * @return {String}
+    /*
+     * getKeyName(keycode):
+     *   根据键码获取对应的键名。
+     * 参数:
+     *   keycode:Number - 键盘按键的键码。
+     * 返回值:
+     *   对应的键名字符串，如果未找到则返回空字符串。
      */
     public static function getKeyName(keycode:Number):String {
         return keyMap[keycode] || "";
     }
 
-    /**
-     * 添加或更新键码与键名的映射。
+    /*
+     * addKeyMapping(keycode, keyname):
+     *   添加一个键码与键名的映射关系。
+     * 参数:
+     *   keycode:Number - 键盘按键的键码。
+     *   keyname:String - 对应的键名。
      */
     public static function addKeyMapping(keycode:Number, keyname:String):Void {
         keyMap[keycode] = keyname;
     }
 
-    /**
-     * 移除键码与键名的映射。
+    /*
+     * removeKeyMapping(keycode):
+     *   移除一个键码与键名的映射关系。
+     * 参数:
+     *   keycode:Number - 键盘按键的键码。
      */
     public static function removeKeyMapping(keycode:Number):Void {
         if (keyMap[keycode] != undefined) {
@@ -363,15 +504,23 @@ class org.flashNight.arki.key.KeyManager {
         }
     }
 
-    /**
-     * 检查键码是否存在映射。
+    /*
+     * hasKeyName(keycode):
+     *   检查是否存在指定键码的键名映射。
+     * 参数:
+     *   keycode:Number - 键盘按键的键码。
+     * 返回值:
+     *   Boolean - 如果存在则返回 true，否则返回 false。
      */
     public static function hasKeyName(keycode:Number):Boolean {
         return keyMap[keycode] != undefined;
     }
 
-    /**
-     * 获取所有键码。
+    /*
+     * getAllKeycodes():
+     *   获取所有映射的键码。
+     * 返回值:
+     *   Array - 包含所有键码的数组。
      */
     public static function getAllKeycodes():Array {
         var keycodes:Array = [];
@@ -381,8 +530,11 @@ class org.flashNight.arki.key.KeyManager {
         return keycodes;
     }
 
-    /**
-     * 获取所有键名。
+    /*
+     * getAllKeynames():
+     *   获取所有映射的键名。
+     * 返回值:
+     *   Array - 包含所有键名的数组。
      */
     public static function getAllKeynames():Array {
         var keynames:Array = [];
@@ -392,18 +544,24 @@ class org.flashNight.arki.key.KeyManager {
         return keynames;
     }
 
-    /**
-     * 刷新键值设定，如果键值设定长度小于30会自动添加默认按键。
-     * 同时更新缓存字典、可用的按键设置，以及需要监听的按键列表 watchedKeys。
+    /*
+     * refreshKeySettings():
+     *   刷新键位设定，包括添加默认键位、更新缓存和 watchedKeys。
+     * 参数:
+     *   keySettings:Array - 键位设定数组，例如 [[显示名称, 唯一标识, 键码], ...]。
+     *   translationFunction:Function - 翻译函数，用于翻译键名（可自行实现或传入空函数）。
+     *   controlSettings:Array - 控制表数组，如 [上键, 下键, 左键, 右键]。
      *
-     * @param {Array} keySettings - 键值设定数组。[可显示名称, 唯一标识, keycode]
-     * @param {Function} translationFunction - 翻译函数，用于翻译键名。
-     * @param {Array} controlSettings - 操控目标按键设定表。例：controlSettings[0] = _root.上键 ...
+     * 具体操作:
+     *    - 如果提供的键位数组长度小于 30，则自动添加一些默认键位（如 互动键、奔跑键等）。
+     *    - 更新全局变量 _root.键值设定。
+     *    - 构建本地的 keySettingsCache，并更新 _root 上的键值设定。
+     *    - 外部可通过 onKeyDown 等方法订阅事件。但本函数并不会自动对所有键进行监听，
+     *      如需指定监听范围，可再调用 updateWatchedKeys(...)。
      */
     public static function refreshKeySettings(keySettings:Array, translationFunction:Function, controlSettings:Array):Void {
-        // 1. 如果键值设定长度小于30，添加默认按键（保留原逻辑）
         if (keySettings.length < 30) {
-            trace("[KeyManager] keySettings length < 30, adding defaults.");
+            trace("[KeyManager] 键位设定长度小于 30，添加默认键位。");
             var newKeys:Array = [
                 [translationFunction("互动键"), "互动键", 69],
                 [translationFunction("武器技能键"), "武器技能键", 70],
@@ -412,10 +570,10 @@ class org.flashNight.arki.key.KeyManager {
                 [translationFunction("奔跑键"), "奔跑键", 16]
             ];
             keySettings = keySettings.concat(newKeys);
-            _root.键值设定 = keySettings; // 更新全局
+            _root.键值设定 = keySettings;
         }
 
-        // 2. 初始化缓存字典
+        // 初始化或清空 keySettingsCache
         if (!KeyManager.keySettingsCache) {
             KeyManager.keySettingsCache = {};
         } else {
@@ -424,49 +582,43 @@ class org.flashNight.arki.key.KeyManager {
             }
         }
 
-        // 3. 构建缓存字典并更新 _root
+        // 构建 keySettingsCache 并更新 _root 上的键值设定
         for (var i:Number = 0; i < keySettings.length; i++) {
-            var keyName:String = keySettings[i][1];  // "互动键" 等
-            var keyValue:Number = keySettings[i][2]; // 69 等
+            var keyName:String = keySettings[i][1];
+            var keyValue:Number = keySettings[i][2];
             _root[keyName] = keyValue;
             KeyManager.keySettingsCache[keyName] = keyValue;
         }
 
-        // 4. 更新操控目标按键设定表（保留原逻辑）
+        // 更新控制表（保留原有逻辑）
         controlSettings[0] = _root.上键;
         controlSettings[1] = _root.下键;
         controlSettings[2] = _root.左键;
         controlSettings[3] = _root.右键;
 
-        // 5. 清空并重新构建 watchedKeys
-        for (var kc:String in watchedKeys) {
-            delete watchedKeys[kc];
-            delete watchedKeyNames[kc];
-        }
-
-        // 6. 对新 settings 内的所有键进行监听 (可自定义筛选)
-        for (i = 0; i < keySettings.length; i++) {
-            var code:Number = keySettings[i][2];
-            watchedKeys[code] = true;
-            watchedKeyNames[code] = keySettings[i][1];
-            keyStates[code] = false;
-        }
+        // 注意：此处不再自动更新 watchedKeys / watchedKeyNames / keyStates，
+        // 如需监听全部或部分键，请通过 updateWatchedKeys(...) 手动指定。
     }
 
-    /**
-     * 根据键名获取对应的键值。
+    /*
+     * getKeySetting(keyName):
+     *   根据键名获取对应的键码。
+     * 参数:
+     *   keyName:String - 键名。
+     * 返回值:
+     *   Number - 对应的键码，如果未找到则返回 NaN。
      */
     public static function getKeySetting(keyName:String):Number {
         return KeyManager.keySettingsCache[keyName];
     }
 
-    //============================
-    // 按键状态查询
-    //============================
-    /**
-     * 判断给定键名是否按下
-     * @param keyName
-     * @return Boolean
+    /*
+     * isKeyDown(keyName):
+     *   用于外部随时查询指定键是否被按下。
+     * 参数:
+     *   keyName:String - 键名。
+     * 返回值:
+     *   Boolean - 如果键被按下则返回 true，否则返回 false。
      */
     public static function isKeyDown(keyName:String):Boolean {
         var code:Number = getKeySetting(keyName);
@@ -476,40 +628,62 @@ class org.flashNight.arki.key.KeyManager {
         return keyStates[code] === true;
     }
 
-    //============================
-    // 简化 KeyDown/KeyUp 订阅接口
-    //============================
+    /*
+     * =========================================================================
+     *  KeyDown / KeyUp 事件的订阅与取消方法
+     * =========================================================================
+     *  onKeyDown(keyName, callback, scope):
+     *    - 当 "keyName" 键被按下时触发回调函数。
+     *    - 事件名格式为 "KeyDown_互动键"。
+     *
+     *  offKeyDown(keyName, callback):
+     *    - 取消对 "KeyDown_互动键" 事件的订阅。
+     *
+     *  onceKeyDown(keyName, callback, scope):
+     *    - 类似 onKeyDown，但回调只执行一次后自动取消订阅。
+     *
+     *  onKeyUp / offKeyUp / onceKeyUp 方法同理，事件名格式为 "KeyUp_互动键"。
+     */
     public static function onKeyDown(keyName:String, callback:Function, scope:Object):Void {
         eventBus.subscribe("KeyDown_" + keyName, callback, scope);
-    }
-    public static function onKeyUp(keyName:String, callback:Function, scope:Object):Void {
-        eventBus.subscribe("KeyUp_" + keyName, callback, scope);
     }
     public static function offKeyDown(keyName:String, callback:Function):Void {
         eventBus.unsubscribe("KeyDown_" + keyName, callback);
     }
-    public static function offKeyUp(keyName:String, callback:Function):Void {
-        eventBus.unsubscribe("KeyUp_" + keyName, callback);
-    }
     public static function onceKeyDown(keyName:String, callback:Function, scope:Object):Void {
         eventBus.subscribeOnce("KeyDown_" + keyName, callback, scope);
+    }
+
+    public static function onKeyUp(keyName:String, callback:Function, scope:Object):Void {
+        eventBus.subscribe("KeyUp_" + keyName, callback, scope);
+    }
+    public static function offKeyUp(keyName:String, callback:Function):Void {
+        eventBus.unsubscribe("KeyUp_" + keyName, callback);
     }
     public static function onceKeyUp(keyName:String, callback:Function, scope:Object):Void {
         eventBus.subscribeOnce("KeyUp_" + keyName, callback, scope);
     }
 
-    //============================
-    // 长按 LongPress
-    //============================
-    public static function subscribeLongPress(keyName:String, threshold:Number, callback:Function, scope:Object):Void {
+    /*
+     * =========================================================================
+     *  长按（LongPress）事件的订阅与取消方法
+     * =========================================================================
+     *  onLongPress(keyName, thresholdFrames, callback, scope):
+     *    - 当连续按住 "keyName" 达到 "thresholdFrames" 帧后触发回调函数。
+     *    - 事件名格式为 "LongPress_互动键"。
+     *
+     *  offLongPress(keyName, callback):
+     *    - 取消对 "LongPress_互动键" 事件的订阅。
+     */
+    public static function onLongPress(keyName:String, thresholdFrames:Number, callback:Function, scope:Object):Void {
         eventBus.subscribe("LongPress_" + keyName, callback, scope);
         var code:Number = getKeySetting(keyName);
         if (!isNaN(code)) {
-            longPressConfigs[code] = { threshold: threshold, startTime: -1, triggered: false };
+            longPressConfigs[code] = { threshold: thresholdFrames, startFrame: -1, triggered: false };
             hasLongPress = true;
         }
     }
-    public static function unsubscribeLongPress(keyName:String, callback:Function):Void {
+    public static function offLongPress(keyName:String, callback:Function):Void {
         eventBus.unsubscribe("LongPress_" + keyName, callback);
         var code:Number = getKeySetting(keyName);
         if (!isNaN(code)) {
@@ -519,19 +693,28 @@ class org.flashNight.arki.key.KeyManager {
     }
     private static function checkLongPressEmpty():Void {
         for (var k:String in longPressConfigs) {
-            return; 
+            return;
         }
         hasLongPress = false;
     }
 
-    //============================
-    // 组合键 Combination
-    //============================
-    public static function subscribeCombination(
-        combinationName:String, 
-        keyNames:Array, 
-        callback:Function, 
-        scope:Object, 
+    /*
+     * =========================================================================
+     *  组合键（Combination）事件的订阅与取消方法
+     * =========================================================================
+     *  onCombination(combinationName, keyNames, callback, scope, continuous):
+     *    - 当 keyNames 中所有键同时按下时，触发回调函数。
+     *    - 事件名格式为 "Combination_Ctrl+C"。
+     *    - 如果 continuous=true，则在按住状态下每帧都触发；否则仅在从不满足到满足时触发一次。
+     *
+     *  offCombination(combinationName, callback):
+     *    - 取消对 "Combination_Ctrl+C" 事件的订阅。
+     */
+    public static function onCombination(
+        combinationName:String,
+        keyNames:Array,
+        callback:Function,
+        scope:Object,
         continuous:Boolean
     ):Void {
         if (continuous == undefined) continuous = false;
@@ -552,11 +735,11 @@ class org.flashNight.arki.key.KeyManager {
         });
         hasCombination = true;
     }
-    public static function unsubscribeCombination(combinationName:String, callback:Function):Void {
+    public static function offCombination(combinationName:String, callback:Function):Void {
         eventBus.unsubscribe("Combination_" + combinationName, callback);
-        for (var i:Number=combinationConfigs.length-1; i>=0; i--) {
+        for (var i:Number = combinationConfigs.length - 1; i >= 0; i--) {
             if (combinationConfigs[i].combinationName == combinationName) {
-                combinationConfigs.splice(i,1);
+                combinationConfigs.splice(i, 1);
             }
         }
         checkCombinationEmpty();
@@ -565,18 +748,27 @@ class org.flashNight.arki.key.KeyManager {
         hasCombination = (combinationConfigs.length > 0);
     }
 
-    //============================
-    // 双击 DoubleTap
-    //============================
-    public static function subscribeDoubleTap(keyName:String, interval:Number, callback:Function, scope:Object):Void {
+    /*
+     * =========================================================================
+     *  双击（DoubleTap）事件的订阅与取消方法
+     * =========================================================================
+     *  onDoubleTap(keyName, intervalFrames, callback, scope):
+     *    - 如果在 intervalFrames 帧内，连续按下两次 "keyName"，
+     *      则触发回调函数。
+     *    - 事件名格式为 "DoubleTap_互动键"。
+     *
+     *  offDoubleTap(keyName, callback):
+     *    - 取消对 "DoubleTap_互动键" 事件的订阅。
+     */
+    public static function onDoubleTap(keyName:String, intervalFrames:Number, callback:Function, scope:Object):Void {
         eventBus.subscribe("DoubleTap_" + keyName, callback, scope);
         var code:Number = getKeySetting(keyName);
         if (!isNaN(code)) {
-            doubleTapConfigs[code] = { interval: interval, lastTapTime: -1 };
+            doubleTapConfigs[code] = { interval: intervalFrames, lastTapFrame: -1 };
             hasDoubleTap = true;
         }
     }
-    public static function unsubscribeDoubleTap(keyName:String, callback:Function):Void {
+    public static function offDoubleTap(keyName:String, callback:Function):Void {
         eventBus.unsubscribe("DoubleTap_" + keyName, callback);
         var code:Number = getKeySetting(keyName);
         if (!isNaN(code)) {
@@ -591,18 +783,26 @@ class org.flashNight.arki.key.KeyManager {
         hasDoubleTap = false;
     }
 
-    //============================
-    // 重复 Repeat
-    //============================
-    public static function subscribeRepeat(keyName:String, interval:Number, callback:Function, scope:Object):Void {
+    /*
+     * =========================================================================
+     *  重复触发（Repeat）事件的订阅与取消方法
+     * =========================================================================
+     *  onRepeat(keyName, intervalFrames, callback, scope):
+     *    - 当按住 "keyName" 时，每隔 intervalFrames 帧触发一次回调函数。
+     *    - 事件名格式为 "Repeat_互动键"。
+     *
+     *  offRepeat(keyName, callback):
+     *    - 取消对 "Repeat_互动键" 事件的订阅。
+     */
+    public static function onRepeat(keyName:String, intervalFrames:Number, callback:Function, scope:Object):Void {
         eventBus.subscribe("Repeat_" + keyName, callback, scope);
         var code:Number = getKeySetting(keyName);
         if (!isNaN(code)) {
-            repeatConfigs[code] = { interval: interval, lastTriggerTime: -1 };
+            repeatConfigs[code] = { interval: intervalFrames, lastTriggerFrame: -1 };
             hasRepeat = true;
         }
     }
-    public static function unsubscribeRepeat(keyName:String, callback:Function):Void {
+    public static function offRepeat(keyName:String, callback:Function):Void {
         eventBus.unsubscribe("Repeat_" + keyName, callback);
         var code:Number = getKeySetting(keyName);
         if (!isNaN(code)) {
@@ -615,5 +815,41 @@ class org.flashNight.arki.key.KeyManager {
             return;
         }
         hasRepeat = false;
+    }
+
+    /*
+     * =========================================================================
+     *  新增接口: 动态修改需要监听的按键范围
+     * =========================================================================
+     *  updateWatchedKeys(newKeyNames:Array):
+     *    - 传入一个键名数组，仅监听这些键所对应的键码，其他按键将不再被轮询。
+     *    - 同时重置 watchedKeys、watchedKeyNames、keyStates 中旧有的内容。
+     *
+     * 示例:
+     *    KeyManager.updateWatchedKeys(["互动键", "武器技能键", "奔跑键"]);
+     *    // 仅监听上述3个键名对应的键码
+     */
+    public static function updateWatchedKeys(newKeyNames:Array):Void {
+        // 1. 清空当前的 watchedKeys, watchedKeyNames, keyStates
+        for (var codeStr:String in watchedKeys) {
+            delete watchedKeys[codeStr];
+        }
+        for (var codeStr2:String in watchedKeyNames) {
+            delete watchedKeyNames[codeStr2];
+        }
+        for (var codeStr3:String in keyStates) {
+            delete keyStates[codeStr3];
+        }
+
+        // 2. 根据 newKeyNames 重新填充
+        for (var i:Number = 0; i < newKeyNames.length; i++) {
+            var name:String = newKeyNames[i];
+            var code:Number = getKeySetting(name);
+            if (!isNaN(code)) {
+                watchedKeys[code] = true;
+                watchedKeyNames[code] = name;
+                keyStates[code] = false;
+            }
+        }
     }
 }
