@@ -1,17 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1737284303" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1737624808" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="健身房">
       <layers>
-        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.横版卷屏(_root.控制目标,背景长,背景高,1);
-_root.显示同伴血槽();
-_root.场景刷可雇用玩家(_root.场景佣兵出现机率);
-
-_root.配置基地场景环境信息();]]></script>
+_root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -123,11 +119,11 @@ _root.配置基地场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#F81EA4" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#F81EA4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2448" name="挂机计时器" selected="true" centerPoint3DX="375.35" centerPoint3DY="432.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2448" name="挂机计时器" centerPoint3DX="375.35" centerPoint3DY="432.45">
                   <matrix>
                     <Matrix tx="271.05" ty="387.45"/>
                   </matrix>

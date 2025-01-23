@@ -791,7 +791,9 @@ _root.加载并配置环境设置 = function(xml文件地址:String):Void
 				// 门朝向: "右", //弃用
 				地图碰撞箱: null,
 				左侧出生线: null,
-				右侧出生线: null
+				右侧出生线: null,
+				//佣兵刷新数据
+				佣兵刷新数据: null
             };
 			环境设置.Default = 默认配置;//把默认配置也存入环境设置
             for (var i:Number = 0; i < environmentNodes.length; i++)
@@ -852,6 +854,8 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	环境信息.地图碰撞箱 = 当前配置.Collision ? _root.配置数据为数组(当前配置.Collision) : null;
 	环境信息.左侧出生线 = 当前配置.LeftSpawnLine ? 当前配置.LeftSpawnLine : null;
 	环境信息.右侧出生线 = 当前配置.RightSpawnLine ? 当前配置.RightSpawnLine : null;
+	//佣兵刷新数据
+	环境信息.佣兵刷新数据 = 当前配置.MercenaryRefresh ? 当前配置.MercenaryRefresh : null;
 
 	return 环境信息;
 }

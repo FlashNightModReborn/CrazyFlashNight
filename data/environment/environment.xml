@@ -26,6 +26,10 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <MercenaryRefresh>
+            <Initial>1</Initial>
+            <Entrance>7</Entrance>
+        </MercenaryRefresh>
     </Environment>
     <Environment>
         <BackgroundURL>健身房</BackgroundURL>
@@ -39,6 +43,10 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <MercenaryRefresh>
+            <Initial>8</Initial>
+            <Entrance>10</Entrance>
+        </MercenaryRefresh>
     </Environment>
     <Environment>
         <BackgroundURL>地下2层</BackgroundURL>
@@ -52,6 +60,9 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>3</MinIllumination>
+        <MercenaryRefresh>
+            <Entrance>20</Entrance>
+        </MercenaryRefresh>
     </Environment>
     <Environment>
         <BackgroundURL>武器库</BackgroundURL>
@@ -65,6 +76,10 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <MercenaryRefresh>
+            <Initial>8</Initial>
+            <Entrance>15</Entrance>
+        </MercenaryRefresh>
     </Environment>
     <Environment>
         <BackgroundURL>基地1层</BackgroundURL>
@@ -78,6 +93,9 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <MercenaryRefresh>
+            <Entrance>10</Entrance>
+        </MercenaryRefresh>
     </Environment>
     <Environment>
         <BackgroundURL>佣兵酒吧</BackgroundURL>
@@ -91,6 +109,10 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <MercenaryRefresh>
+            <Initial>8</Initial>
+            <Entrance>3</Entrance>
+        </MercenaryRefresh>
     </Environment>
     <Environment>
         <BackgroundURL>医务室</BackgroundURL>
@@ -104,6 +126,10 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
+        <MercenaryRefresh>
+            <Initial>8</Initial>
+            <Entrance>10</Entrance>
+        </MercenaryRefresh>
     </Environment>
     <Environment>
         <BackgroundURL>基地房顶</BackgroundURL>
@@ -117,6 +143,10 @@
         <Horizon>240</Horizon>
         <MaxIllumination>9</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <MercenaryRefresh>
+            <Initial>8</Initial>
+            <Entrance>7</Entrance>
+        </MercenaryRefresh>
     </Environment>
     <Environment>
         <BackgroundURL>基地车库</BackgroundURL>
@@ -143,6 +173,10 @@
         <Horizon>140</Horizon>
         <MaxIllumination>9</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <MercenaryRefresh>
+            <Initial>8</Initial>
+            <Entrance>7</Entrance>
+        </MercenaryRefresh>
     </Environment>
     <!-- 外部地图-->
     <Environment>

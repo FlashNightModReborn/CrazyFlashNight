@@ -1,16 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1736962939" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1737625012" lastUniqueIdentifier="10">
   <timeline>
     <DOMTimeline name="佣兵酒吧">
       <layers>
-        <DOMLayer name="Script Layer" color="#57AEE6">
+        <DOMLayer name="Script Layer" color="#57AEE6" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.横版卷屏(_root.控制目标,背景长,背景高,1);
-_root.场景刷可雇用玩家(_root.场景佣兵出现机率);
-
-_root.配置基地场景环境信息();]]></script>
+_root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -283,7 +280,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="场景" color="#73C0B1" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="场景" color="#73C0B1" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
