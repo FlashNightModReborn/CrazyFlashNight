@@ -1,6 +1,8 @@
 ﻿import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.object.*;
 import org.flashNight.aven.Coordinator.*;
+import org.flashNight.neur.Timer.*;
+import org.flashNight.neur.Event.Delegate;
 
 /*
  * =============================================================================
@@ -162,6 +164,7 @@ class org.flashNight.arki.key.KeyManager {
      *   每帧由 onEnterFrame 自增，用于以帧为单位进行时间判断。
      */
     private static var frameCount:Number = 0;
+    private static var frameTimer:FrameTimer;
 
     //============================
     // 事件总线实例
@@ -340,6 +343,17 @@ class org.flashNight.arki.key.KeyManager {
             KeyManager.frameCount++;
             KeyManager.pollKeys();
         };
+
+        /*
+
+        KeyManager.frameTimer = FrameTimer.getInstance();
+        var func:Function = Delegate.create(KeyManager, function() {
+            KeyManager.frameCount++;
+            KeyManager.pollKeys();
+        });
+        FrameTimer.getInstance().addTask(func)
+
+        */
 
         trace("[KeyManager] 初始化完成。使用基于帧的计时。keyPollMC 的 onEnterFrame 已设置。");
         return keyMap;

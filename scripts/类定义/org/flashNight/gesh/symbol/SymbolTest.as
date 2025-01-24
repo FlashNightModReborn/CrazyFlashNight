@@ -1,6 +1,6 @@
 ﻿// 文件路径: org/flashNight/gesh/symbol/SymbolTest.as
 
-import org.flashNight.gesh.symbol.Symbol;
+import org.flashNight.gesh.symbol.*;
 
 class org.flashNight.gesh.symbol.SymbolTest {
     
@@ -26,6 +26,10 @@ class org.flashNight.gesh.symbol.SymbolTest {
         var sym1:Symbol = Symbol.create("test");
         var sym2:Symbol = Symbol.create("test");
         var sym3:Symbol = Symbol.create("anotherTest");
+
+        trace("sym1:" + sym1.getKey() + " " + sym1.getDescription());
+        trace("sym2:" + sym2.getKey() + " " + sym2.getDescription());
+        trace("sym3:" + sym3.getKey() + " " + sym3.getDescription());
         
         if (sym1 instanceof Symbol && sym2 instanceof Symbol && sym3 instanceof Symbol) {
             trace("  ✅ 创建 Symbol 实例成功。");
@@ -38,7 +42,10 @@ class org.flashNight.gesh.symbol.SymbolTest {
         trace("测试 2: 验证 Symbol 的唯一性");
         var sym1:Symbol = Symbol.create("unique");
         var sym2:Symbol = Symbol.create("unique");
-        
+
+        trace("sym1:" + sym1.getKey() + " " + sym1.getDescription());
+        trace("sym2:" + sym2.getKey() + " " + sym2.getDescription()); 
+
         if (!sym1.equals(sym2)) {
             trace("  ✅ 不同创建的 Symbol 实例具有唯一性。");
         } else {
@@ -51,6 +58,9 @@ class org.flashNight.gesh.symbol.SymbolTest {
         var key:String = "globalTestKey";
         var sym1:Symbol = Symbol.forKey(key, "globalSymbol");
         var sym2:Symbol = Symbol.forKey(key, "globalSymbol");
+
+        trace("sym1:" + sym1.getKey() + " " + sym1.getDescription());
+        trace("sym2:" + sym2.getKey() + " " + sym2.getDescription());
         
         if (sym1.equals(sym2)) {
             trace("  ✅ forKey 方法返回相同的 Symbol 实例。");
@@ -75,6 +85,8 @@ class org.flashNight.gesh.symbol.SymbolTest {
         trace("测试 4: 删除全局注册的 Symbol");
         var key:String = "deleteTestKey";
         Symbol.forKey(key, "toBeDeleted");
+        trace("sym1_old:" + sym1.getKey() + " " + sym1.getDescription());
+        
         var deleted:Boolean = Symbol.deleteSymbol(key);
         
         if (deleted) {
@@ -83,9 +95,14 @@ class org.flashNight.gesh.symbol.SymbolTest {
             trace("  ❌ Symbol 删除失败。");
         }
         
+    
         // 重新注册验证
         var sym1:Symbol = Symbol.forKey(key, "newSymbol");
         var sym2:Symbol = Symbol.forKey(key, "newSymbol");
+
+        trace("sym1:" + sym1.getKey() + " " + sym1.getDescription());
+        trace("sym2:" + sym2.getKey() + " " + sym2.getDescription());
+
         if (sym1.equals(sym2)) {
             trace("  ✅ 删除后重新注册返回相同的 Symbol 实例。");
         } else {
@@ -99,6 +116,10 @@ class org.flashNight.gesh.symbol.SymbolTest {
         var sym2:Symbol = Symbol.create("equalsTest");
         var sym3:Symbol = sym1;
         
+        trace("sym1:" + sym1.getKey() + " " + sym1.getDescription());
+        trace("sym2:" + sym2.getKey() + " " + sym2.getDescription());
+        trace("sym3:" + sym3.getKey() + " " + sym3.getDescription());
+
         if (!sym1.equals(sym2) && sym1.equals(sym3)) {
             trace("  ✅ equals 方法正确区分不同实例并识别相同实例。");
         } else {

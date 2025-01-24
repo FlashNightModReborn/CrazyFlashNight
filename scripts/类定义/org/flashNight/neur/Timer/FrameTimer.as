@@ -16,14 +16,14 @@ class org.flashNight.neur.Timer.FrameTimer {
      * 构造函数（私有化）
      */
     private function FrameTimer() {
-        this._tasks = [];
-        
+        this._tasks = new Array();
+        var insName:String = "__FRAME_TIMER_INSTANCE__";
         // 直接在_root创建控制影片剪辑
         this._clip = _root.createEmptyMovieClip(
-            Symbol.create("FrameTimer").getKey(), 
+            insName, 
             _root.getNextHighestDepth()
         );
-        // trace("创建FrameTimer控制影片剪辑：" + this._clip);
+        // trace("创建FrameTimer控制影片剪辑：" + this._clip + " " + insName);
         // 绑定ENTER_FRAME事件
         this._clip.onEnterFrame = Delegate.create(this, this.update);
     }
@@ -35,19 +35,16 @@ class org.flashNight.neur.Timer.FrameTimer {
     public static function getInstance():FrameTimer {
         if (!_instance) {
             _instance = new FrameTimer();
-
-            FrameTimer.getInstance = function():FrameTimer {
-                return FrameTimer._instance;
-            }
         }
         return _instance;
     }
     
     /**
      * 添加定时任务（极简版）
-     * @param handler 处理函数 (参数格式: function(frameCount:Number):Void)
+     * @param handler 处理函数 (参数格式: function():Void)
      */
     public function addTask(handler:Function):Void {
+        // trace("addTask");
         _tasks[_tasks.length] = handler;
     }
     
@@ -68,7 +65,7 @@ class org.flashNight.neur.Timer.FrameTimer {
      */
     public function update():Void {
         this.counter++;
-        
+        // trace("update: " + this.toString());
         // 直接遍历执行（最快执行速度）
         var tasks:Array = this._tasks;
         var len:Number = tasks.length;
@@ -85,5 +82,12 @@ class org.flashNight.neur.Timer.FrameTimer {
         this._clip.removeMovieClip();
         _instance = null;
         this._tasks = null;
+    }
+
+
+    public function toString():String
+    {
+        var str:String = "FrameTimer: counter=" + this.counter + ", tasks=" + this._tasks.length;
+        return str;
     }
 }
