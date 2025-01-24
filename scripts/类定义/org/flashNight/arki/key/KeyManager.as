@@ -355,7 +355,7 @@ class org.flashNight.arki.key.KeyManager {
 
         */
 
-        trace("[KeyManager] 初始化完成。使用基于帧的计时。keyPollMC 的 onEnterFrame 已设置。");
+        // trace("[KeyManager] 初始化完成。使用基于帧的计时。keyPollMC 的 onEnterFrame 已设置。");
         return keyMap;
     }
 
