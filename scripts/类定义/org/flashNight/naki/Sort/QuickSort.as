@@ -420,7 +420,332 @@ class org.flashNight.naki.Sort.QuickSort {
 
         return arr; // 返回排序后的数组
     }
+
+    /**
+     * 增强版快速排序，支持：
+     * 1. 小数组切换为插入排序
+     * 2. 随机化 pivot / 三数取中 pivot
+     * 3. 双轴快速排序
+     * 
+     * @param arr               要排序的数组
+     * @param compareFunction   自定义比较函数，不提供则使用默认数值比较
+     * @param useDualPivot      是否启用双轴快速排序，true则在大规模子数组上使用双轴分区
+     * @param pivotStrategy     pivot选择策略，可选值 "random" 或 "median3"
+     * @return                  排好序的数组（原地排序）
+     */
+    public static function enhancedQuickSort(
+        arr:Array,
+        compareFunction:Function,
+        useDualPivot:Boolean,
+        pivotStrategy:String
+    ):Array {
+        var length:Number = arr.length;
+        pivotStrategy = pivotStrategy || "random";
+        if (length <= 1) {
+            return arr;
+        }
+
+        // ----------------------
+        // 1. 定义插入排序阈值
+        //    子数组长度<=此阈值则切换到插入排序
+        // ----------------------
+        var INSERTION_THRESHOLD:Number = 10;
+
+        // ----------------------
+        // 2. 定义比较函数
+        // ----------------------
+        var compare:Function;
+        var defaultCompare:Boolean = false;
+        if (compareFunction != undefined) {
+            compare = compareFunction;
+        } else {
+            defaultCompare = true; // 默认数值比较
+            compare = function(a, b):Number {
+                return a - b; // a>b则返回正数，a<b则返回负数
+            };
+        }
+
+        // ----------------------
+        // 3. 准备迭代所需的栈
+        //    和原先 sort 函数类似
+        // ----------------------
+        var stack:Array = new Array(2 * length);
+        var sp:Number = 0; // stack pointer
+
+        // 初始边界
+        var left:Number = 0;
+        var right:Number = length - 1;
+
+        // 入栈
+        stack[sp++] = left;
+        stack[sp++] = right;
+
+        // ----------------------
+        // 4. 迭代处理
+        // ----------------------
+        while (sp > 0) {
+            right = Number(stack[--sp]);
+            left = Number(stack[--sp]);
+
+            // 子区间长度
+            var size:Number = right - left + 1;
+
+            // ----------- 4.1 小数组用插入排序 -----------
+            if (size <= INSERTION_THRESHOLD) {
+                insertionSort(arr, left, right, compare, defaultCompare);
+                continue;
+            }
+
+            // ----------- 4.2 大数组 -> 根据需求选择 单轴/双轴 -----------
+            if (useDualPivot) {
+                // ---------- (A) 双轴快速排序 ----------
+                // 在此示例中，选取最左元素和最右元素为 pivot1 和 pivot2
+                // 如果 pivot1 > pivot2，则交换
+                var pivot1 = arr[left];
+                var pivot2 = arr[right];
+                if (defaultCompare) {
+                    if (pivot1 > pivot2) {
+                        swap(arr, left, right);
+                        pivot1 = arr[left];
+                        pivot2 = arr[right];
+                    }
+                } else {
+                    if (compare(pivot1, pivot2) > 0) {
+                        swap(arr, left, right);
+                        pivot1 = arr[left];
+                        pivot2 = arr[right];
+                    }
+                }
+
+                // 双轴分区过程
+                var i:Number = left + 1;
+                var leftIndex:Number = left + 1;     // 小于 pivot1 的区域边界
+                var rightIndex:Number = right - 1;    // 大于 pivot2 的区域边界
+
+                while (i <= rightIndex) {
+                    var cmp1:Number;
+                    var cmp2:Number;
+                    if (defaultCompare) {
+                        cmp1 = arr[i] - pivot1;
+                        cmp2 = arr[i] - pivot2;
+                    } else {
+                        cmp1 = compare(arr[i], pivot1);
+                        cmp2 = compare(arr[i], pivot2);
+                    }
+
+                    if (cmp1 < 0) {
+                        swap(arr, i, leftIndex);
+                        leftIndex++;
+                        i++;
+                    } else if (cmp2 > 0) {
+                        swap(arr, i, rightIndex);
+                        rightIndex--;
+                    } else {
+                        i++;
+                    }
+                }
+
+                // 把 pivot1、pivot2 放回正确位置
+                leftIndex--;
+                rightIndex++;
+
+                swap(arr, left, leftIndex);
+                swap(arr, right, rightIndex);
+
+                // 现在 arr[left..leftIndex-1] < pivot1
+                //      arr[leftIndex] == pivot1
+                //      arr[leftIndex+1..rightIndex-1] 在 pivot1 和 pivot2 之间
+                //      arr[rightIndex] == pivot2
+                //      arr[rightIndex+1..right] > pivot2
+
+                // ----------- 入栈子区间（小的先入栈）-----------
+                // 子区间1: left..(leftIndex-1)
+                // 子区间2: (leftIndex+1)..(rightIndex-1)
+                // 子区间3: (rightIndex+1)..right
+                pushSubArray(stack, left, leftIndex-1, sp);
+                sp += 2;
+                pushSubArray(stack, leftIndex+1, rightIndex-1, sp);
+                sp += 2;
+                pushSubArray(stack, rightIndex+1, right, sp);
+                sp += 2;
+
+            } else {
+                // ---------- (B) 单轴快速排序 ----------
+                // 先根据 pivotStrategy 选pivotIndex
+                var pivotIndex:Number = selectPivotIndex(arr, left, right, pivotStrategy, compare, defaultCompare);
+                var pivotValue = arr[pivotIndex];
+                
+                // 将 pivot 放到 right 位置，统一做分区
+                swap(arr, pivotIndex, right);
+
+                // 分区
+                var storeIndex:Number = left;
+
+                if (defaultCompare) {
+                    for (var idx:Number = left; idx < right; idx++) {
+                        if (arr[idx] < pivotValue) {
+                            swap(arr, idx, storeIndex);
+                            storeIndex++;
+                        }
+                    }
+                } else {
+                    for (idx = left; idx < right; idx++) {
+                        if (compare(arr[idx], pivotValue) < 0) {
+                            swap(arr, idx, storeIndex);
+                            storeIndex++;
+                        }
+                    }
+                }
+
+                // 把 pivot 放回正确位置
+                swap(arr, storeIndex, right);
+
+                // ----------- 入栈子区间（小的先入栈）-----------
+                // 子区间1: left..(storeIndex-1)
+                // 子区间2: (storeIndex+1)..right
+                var leftSize:Number = storeIndex - 1 - left;
+                var rightSize:Number = right - (storeIndex + 1);
+
+                if (leftSize < rightSize) {
+                    // 先压左区间
+                    if (left < storeIndex - 1) {
+                        stack[sp++] = left;
+                        stack[sp++] = storeIndex - 1;
+                    }
+                    // 后压右区间
+                    if (storeIndex + 1 < right) {
+                        stack[sp++] = storeIndex + 1;
+                        stack[sp++] = right;
+                    }
+                } else {
+                    // 先压右区间
+                    if (storeIndex + 1 < right) {
+                        stack[sp++] = storeIndex + 1;
+                        stack[sp++] = right;
+                    }
+                    // 后压左区间
+                    if (left < storeIndex - 1) {
+                        stack[sp++] = left;
+                        stack[sp++] = storeIndex - 1;
+                    }
+                }
+            }
+        }
+
+        return arr;
+    }
+
+    /* ====================== 辅助函数们 ====================== */
+
+    /**
+     * 对小区间使用的插入排序
+     */
+    private static function insertionSort(arr:Array, left:Number, right:Number, compare:Function, defaultCompare:Boolean):Void {
+        for (var i:Number = left + 1; i <= right; i++) {
+            var key = arr[i];
+            var j:Number = i - 1;
+            if (defaultCompare) {
+                while (j >= left && arr[j] > key) {
+                    arr[j + 1] = arr[j];
+                    j--;
+                }
+            } else {
+                while (j >= left && compare(arr[j], key) > 0) {
+                    arr[j + 1] = arr[j];
+                    j--;
+                }
+            }
+            arr[j + 1] = key;
+        }
+    }
+
+    /**
+     * 根据 pivotStrategy 返回 pivotIndex
+     *   - "random"  : 从 [left, right] 区间随机挑选
+     *   - "median3" : 三数取中（left, mid, right）
+     */
+    private static function selectPivotIndex(
+        arr:Array,
+        left:Number,
+        right:Number,
+        pivotStrategy:String,
+        compare:Function,
+        defaultCompare:Boolean
+    ):Number {
+        if (pivotStrategy == "median3") {
+            return medianOfThree(arr, left, right, compare, defaultCompare);
+        } else {
+            // 默认使用随机 pivot
+            var pivotIndex:Number = Math.floor(Math.random() * (right - left + 1)) + left;
+            return pivotIndex;
+        }
+    }
+
+    /**
+     * 三数取中法，返回三者中值对应的下标
+     */
+    private static function medianOfThree(
+        arr:Array,
+        left:Number,
+        right:Number,
+        compare:Function,
+        defaultCompare:Boolean
+    ):Number {
+        var mid:Number = left + ((right - left) >> 1);
+
+        var a = arr[left];
+        var b = arr[mid];
+        var c = arr[right];
+
+        // 为了比较方便，先做一个函数把值转为可比较大小
+        function cmpVal(x, y):Number {
+            return defaultCompare ? (x - y) : compare(x, y);
+        }
+
+        // 比较 a, b, c，大体思路：
+        // 1. 先比较 a,b 交换成有序
+        // 2. 再比较 a,c 交换
+        // 3. 再比较 b,c 交换
+        // 最后 a 就是最小，c 就是最大，b 就是中值
+        if (cmpVal(a, b) > 0) {
+            swap(arr, left, mid); // 交换 a,b
+            a = arr[left];
+            b = arr[mid];
+        }
+        if (cmpVal(a, c) > 0) {
+            swap(arr, left, right); // 交换 a,c
+            a = arr[left];
+            c = arr[right];
+        }
+        if (cmpVal(b, c) > 0) {
+            swap(arr, mid, right); // 交换 b,c
+            b = arr[mid];
+            c = arr[right];
+        }
+        // 此时，b就是三数中值
+        return mid;
+    }
+
+    /**
+     * 入栈辅助函数：把子区间 [l, r] 压到 stack 的下一个可用位置
+     */
+    private static function pushSubArray(stack:Array, l:Number, r:Number, sp:Number):Void {
+        stack[sp] = l;
+        stack[sp + 1] = r;
+    }
+
+    /**
+     * 交换 arr[i], arr[j]
+     */
+    private static function swap(arr:Array, i:Number, j:Number):Void {
+        var temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
 }
+
+
 
 /*
 
