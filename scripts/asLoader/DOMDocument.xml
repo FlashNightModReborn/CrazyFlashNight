@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <symbols>
-          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1737226004"/>
+          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1737732193"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -56,11 +56,19 @@ ItemDataLoader.loadItemData(
     }
 );
 */
-replaceArr = ["123","12345","1234"];
-replaceArr = org.flashNight.naki.Sort.QuickSort.adaptiveSort(replaceArr, function(a, b) {
-	return a.length - b.length;
-});
-trace(replaceArr);]]></script>
+import org.flashNight.gesh.object.ObjectUtil;
+var loader2 = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader("flashswf/sounds/音效-人物/DOMDocument.xml");
+loader2.load(function(domdata:Object):Void {
+    var soundItems = domdata.media.DOMSoundItem;
+    for (var soundName:String in soundItems) {
+        var soundIdentifier = soundItems[soundName].linkageIdentifier;
+        if (soundIdentifier != null) {
+            trace(soundIdentifier);
+        }
+    }
+}, function():Void {
+    onError();
+});]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
@@ -75,25 +83,25 @@ trace(replaceArr);]]></script>
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="260810" publishTime="1736320000"/>
-          <PublishItem publishSize="258154" publishTime="1736270397"/>
-          <PublishItem publishSize="260373" publishTime="1736270242"/>
-          <PublishItem publishSize="260371" publishTime="1736269829"/>
-          <PublishItem publishSize="260371" publishTime="1736269818"/>
-          <PublishItem publishSize="258136" publishTime="1736269799"/>
-          <PublishItem publishSize="260341" publishTime="1736269758"/>
-          <PublishItem publishSize="260332" publishTime="1736269619"/>
-          <PublishItem publishSize="260342" publishTime="1736269537"/>
-          <PublishItem publishSize="260334" publishTime="1736268856"/>
-          <PublishItem publishSize="256631" publishTime="1736132363"/>
-          <PublishItem publishSize="256517" publishTime="1736129056"/>
-          <PublishItem publishSize="256520" publishTime="1736128928"/>
-          <PublishItem publishSize="256525" publishTime="1736128893"/>
-          <PublishItem publishSize="256438" publishTime="1736128710"/>
-          <PublishItem publishSize="256429" publishTime="1736128639"/>
-          <PublishItem publishSize="256406" publishTime="1736128466"/>
-          <PublishItem publishSize="256308" publishTime="1736128436"/>
-          <PublishItem publishSize="256321" publishTime="1736128397"/>
-          <PublishItem publishSize="255506" publishTime="1736128269"/>
+          <PublishItem publishSize="275306" publishTime="1737737288"/>
+          <PublishItem publishSize="275299" publishTime="1737737253"/>
+          <PublishItem publishSize="275274" publishTime="1737737005"/>
+          <PublishItem publishSize="275028" publishTime="1737736855"/>
+          <PublishItem publishSize="275021" publishTime="1737736829"/>
+          <PublishItem publishSize="275029" publishTime="1737736807"/>
+          <PublishItem publishSize="275268" publishTime="1737736744"/>
+          <PublishItem publishSize="275265" publishTime="1737736672"/>
+          <PublishItem publishSize="275271" publishTime="1737736612"/>
+          <PublishItem publishSize="275270" publishTime="1737736556"/>
+          <PublishItem publishSize="275279" publishTime="1737736462"/>
+          <PublishItem publishSize="275281" publishTime="1737736152"/>
+          <PublishItem publishSize="275268" publishTime="1737736105"/>
+          <PublishItem publishSize="275243" publishTime="1737736041"/>
+          <PublishItem publishSize="275235" publishTime="1737735956"/>
+          <PublishItem publishSize="275237" publishTime="1737735921"/>
+          <PublishItem publishSize="275233" publishTime="1737735632"/>
+          <PublishItem publishSize="275232" publishTime="1737735516"/>
+          <PublishItem publishSize="275246" publishTime="1737735483"/>
+          <PublishItem publishSize="275227" publishTime="1737735389"/>
      </publishHistory>
 </DOMDocument>

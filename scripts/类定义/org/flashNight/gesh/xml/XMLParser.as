@@ -105,8 +105,15 @@ class org.flashNight.gesh.xml.XMLParser
                 }
                 else
                 {
-                    // 子节点无值时处理为空字符串
-                    var nodeValue:Object = childNode.nodeValue == null ? "" : convertDataType(childNode.nodeValue);
+                    //检查是否存在attributes
+                    var hasAttr = false;
+                    var attrs = {};
+                    for(var attr:String in childNode.attributes){
+                        hasAttr = true;
+                        attrs[attr] = childNode.attributes[attr];
+                    }
+                    // 子节点无值时若存在attributes则解析attributes，不存在则处理为空字符串
+                    var nodeValue:Object = hasAttr ? attrs : (childNode.nodeValue == null ? "" : convertDataType(childNode.nodeValue));
                     if (result[nodeName] !== undefined)
                     {
                         if (!(result[nodeName] instanceof Array))
