@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1735788926" lastUniqueIdentifier="154">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1737703672" lastUniqueIdentifier="154">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
-        <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#D4FDCB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -221,7 +221,7 @@ LayerManager.prototype.activateLayer = function(layer, activeRoom) {
         this.deactivateCurrentLayer();
     }
     this.currentActiveLayer = layer;
-    var depthOffset = 100;
+    var depthOffset = 1000;
     layer.activate(this.tweenManager, depthOffset, activeRoom);
     this.removeRollOverEvents();
     this.attachRollOutEvents(layer);
@@ -1201,14 +1201,14 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="6" autoNamed="false" visible="false">
+        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="6" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" selected="true" centerPoint3DX="484.75" centerPoint3DY="159.15">
+                <DOMSymbolInstance libraryItemName="屋顶整体" name="基地屋顶" centerPoint3DX="484.75" centerPoint3DY="159.15">
                   <matrix>
                     <Matrix a="0.200958251953125" d="0.200958251953125" tx="223.6" ty="95.25"/>
                   </matrix>
@@ -1239,14 +1239,14 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="基地一层" color="#FF4F4F" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="基地车库npc" color="#4F80FF" parentLayerIndex="9" autoNamed="false" visible="false">
+        <DOMLayer name="基地车库npc" color="#4F80FF" parentLayerIndex="9" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Pig_闪光提示" centerPoint3DX="191.3" centerPoint3DY="225.25">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Pig_闪光提示" centerPoint3DX="191.3" centerPoint3DY="225.25" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="155.4" ty="189.7"/>
                   </matrix>
@@ -1254,7 +1254,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="King_闪光提示" centerPoint3DX="285.35" centerPoint3DY="225.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="King_闪光提示" centerPoint3DX="285.35" centerPoint3DY="225.45" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="249.2" ty="189.7"/>
                   </matrix>
@@ -1262,7 +1262,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Boy_闪光提示" centerPoint3DX="232.75" centerPoint3DY="253.3">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Boy_闪光提示" centerPoint3DX="232.75" centerPoint3DY="253.3" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="196.8" ty="217.85"/>
                   </matrix>
@@ -1294,7 +1294,7 @@ onClipEvent (load) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="冷兵器商人_闪光提示" centerPoint3DX="140.25" centerPoint3DY="229.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="冷兵器商人_闪光提示" centerPoint3DX="140.25" centerPoint3DY="229.45" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="104.35" ty="193.9"/>
                   </matrix>
@@ -1388,14 +1388,14 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地大厅npc" color="#808080" parentLayerIndex="9" autoNamed="false" visible="false">
+        <DOMLayer name="基地大厅npc" color="#808080" parentLayerIndex="9" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="幸存老兵_闪光提示" centerPoint3DX="486.3" centerPoint3DY="267.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="幸存老兵_闪光提示" centerPoint3DX="486.3" centerPoint3DY="267.05" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="450.35" ty="231.2"/>
                   </matrix>
@@ -1419,7 +1419,7 @@ onClipEvent (load) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="学生妹_闪光提示" centerPoint3DX="433.9" centerPoint3DY="253.15">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="学生妹_闪光提示" centerPoint3DX="433.9" centerPoint3DY="253.15" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="397.95" ty="217.3"/>
                   </matrix>
@@ -1435,7 +1435,7 @@ onClipEvent (load) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="杀马特_闪光提示" centerPoint3DX="385.75" centerPoint3DY="225.3">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="杀马特_闪光提示" centerPoint3DX="385.75" centerPoint3DY="225.3" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="349.8" ty="189.45"/>
                   </matrix>
@@ -1443,7 +1443,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="黑铁会外交部长头像" name="黑铁会外交部长头像" selected="true" centerPoint3DX="347" centerPoint3DY="236.6" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="黑铁会外交部长头像" name="黑铁会外交部长头像" centerPoint3DX="347" centerPoint3DY="236.6" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="325.05" ty="214.6"/>
                   </matrix>
@@ -1451,7 +1451,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="黑铁会外交部长_闪光提示" centerPoint3DX="383.05" centerPoint3DY="272.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="黑铁会外交部长_闪光提示" centerPoint3DX="383.05" centerPoint3DY="272.45" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="347.1" ty="236.6"/>
                   </matrix>
@@ -1467,7 +1467,7 @@ onClipEvent (load) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="前治安官_闪光提示" centerPoint3DX="644.7" centerPoint3DY="244.8">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="前治安官_闪光提示" centerPoint3DX="644.7" centerPoint3DY="244.8" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="609.35" ty="209.05"/>
                   </matrix>
@@ -1483,7 +1483,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="宝石线人_闪光提示" centerPoint3DX="583.95" centerPoint3DY="257.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="宝石线人_闪光提示" centerPoint3DX="583.95" centerPoint3DY="257.45" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="548" ty="221.6"/>
                   </matrix>
@@ -1495,14 +1495,14 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地大厅" color="#9933CC" parentLayerIndex="9" autoNamed="false" visible="false">
+        <DOMLayer name="基地大厅" color="#9933CC" parentLayerIndex="9" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="基地大厅整体" name="基地大厅" selected="true" centerPoint3DX="482.7" centerPoint3DY="203.6">
+                <DOMSymbolInstance libraryItemName="基地大厅整体" name="基地大厅" centerPoint3DX="482.7" centerPoint3DY="203.6">
                   <matrix>
                     <Matrix a="0.114669799804688" d="0.114669799804688" tx="235.35" ty="146.7"/>
                   </matrix>
@@ -1532,14 +1532,14 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="医务室npc" color="#808080" parentLayerIndex="9" autoNamed="false" visible="false">
+        <DOMLayer name="医务室npc" color="#808080" parentLayerIndex="9" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="丽丽丝_闪光提示" centerPoint3DX="640.75" centerPoint3DY="181.4">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="丽丽丝_闪光提示" centerPoint3DX="640.75" centerPoint3DY="181.4" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="605.4" ty="145.65"/>
                   </matrix>
@@ -1547,7 +1547,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="格格巫_闪光提示" centerPoint3DX="586.85" centerPoint3DY="181.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="格格巫_闪光提示" centerPoint3DX="586.85" centerPoint3DY="181.5" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="550.9" ty="145.65"/>
                   </matrix>
@@ -1555,7 +1555,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="格格巫头像" name="格格巫头像" selected="true" centerPoint3DX="550.9" centerPoint3DY="145.65" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="格格巫头像" name="格格巫头像" centerPoint3DX="550.9" centerPoint3DY="145.65" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="528.95" ty="123.65"/>
                   </matrix>
@@ -1649,14 +1649,14 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="佣兵酒吧npc" color="#FF4F4F" parentLayerIndex="9" autoNamed="false" visible="false">
+        <DOMLayer name="佣兵酒吧npc" color="#FF4F4F" parentLayerIndex="9" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="酒保_闪光提示" centerPoint3DX="464.3" centerPoint3DY="143">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="酒保_闪光提示" centerPoint3DX="464.3" centerPoint3DY="143" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="428.7" ty="108"/>
                   </matrix>
@@ -1664,7 +1664,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="酒保头像" name="酒保头像" selected="true" centerPoint3DX="428.65" centerPoint3DY="107.9" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="酒保头像" name="酒保头像" centerPoint3DX="428.65" centerPoint3DY="107.9" exportAsBitmap="true">
                   <matrix>
                     <Matrix tx="406.7" ty="85.9"/>
                   </matrix>
@@ -1672,7 +1672,7 @@ onClipEvent (load) {
                     <Point x="21.95" y="22"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="舞女_闪光提示" centerPoint3DX="409.35" centerPoint3DY="147.9">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="舞女_闪光提示" centerPoint3DX="409.35" centerPoint3DY="147.9" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="373.4" ty="112.05"/>
                   </matrix>
@@ -1730,14 +1730,14 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="地下一层" color="#4FFF4F" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="地下一层npc" color="#31ECB9" parentLayerIndex="20" autoNamed="false" visible="false">
+        <DOMLayer name="地下一层npc" color="#31ECB9" parentLayerIndex="20" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="The Girl_闪光提示" centerPoint3DX="455.9" centerPoint3DY="340">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="The Girl_闪光提示" centerPoint3DX="455.9" centerPoint3DY="340" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="420.1" ty="304.5"/>
                   </matrix>
@@ -1745,7 +1745,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Andy Law_闪光提示" centerPoint3DX="517.15" centerPoint3DY="336.5">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Andy Law_闪光提示" centerPoint3DX="517.15" centerPoint3DY="336.5" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="481.4" ty="301.25"/>
                   </matrix>
@@ -1753,7 +1753,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Blue_闪光提示" centerPoint3DX="640.15" centerPoint3DY="345.15">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Blue_闪光提示" centerPoint3DX="640.15" centerPoint3DY="345.15" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="604.75" ty="308.65"/>
                   </matrix>
@@ -1870,7 +1870,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Shop Girl_闪光提示" centerPoint3DX="569.5" centerPoint3DY="298.9">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Shop Girl_闪光提示" centerPoint3DX="569.5" centerPoint3DY="298.9" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="533.8" ty="263.05"/>
                   </matrix>
@@ -1878,7 +1878,7 @@ onClipEvent (load) {
                     <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="小F_闪光提示" centerPoint3DX="628.9" centerPoint3DY="287.3">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="小F_闪光提示" centerPoint3DX="628.9" centerPoint3DY="287.3" isVisible="false">
                   <matrix>
                     <Matrix a="1.27279663085938" d="1.27279663085938" tx="593" ty="251.6"/>
                   </matrix>
@@ -1944,7 +1944,7 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="地下二层" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="地下二层npc" color="#FF4F4F" parentLayerIndex="26" autoNamed="false" visible="false">
+        <DOMLayer name="地下二层npc" color="#FF4F4F" parentLayerIndex="26" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
