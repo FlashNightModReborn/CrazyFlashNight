@@ -68,8 +68,8 @@
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种76</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>20</Quantity>
+                        <Interval>500</Interval>
+                        <Quantity>10</Quantity>
                         <Level>44</Level>
                     </Enemy>
                     <Enemy id="1">
@@ -125,8 +125,8 @@
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种76</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>20</Quantity>
+                        <Interval>500</Interval>
+                        <Quantity>10</Quantity>
                         <Level>44</Level>
                     </Enemy>
                     <Enemy id="2">
@@ -168,6 +168,8 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>44</Level>
+                        <x>800</x>
+                        <y>400</y>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种77</Type>
@@ -266,7 +268,7 @@
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#严肃</Char>
-                <Text>又是这群家伙，别跑！</Text>
+                <Text>又是这种家伙，别跑！</Text>
             </SubDialogue>
         </Dialogue>
         <Wave>
@@ -280,8 +282,8 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>44</Level>
-                        <x>200</x>
-                        <y>500</y>
+                        <x>700</x>
+                        <y>400</y>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种287</Type>
@@ -328,8 +330,8 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>44</Level>
-                        <x>200</x>
-                        <y>500</y>
+                        <x>700</x>
+                        <y>400</y>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种287</Type>
@@ -375,7 +377,26 @@
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
-                    
+                    <Enemy id="0">
+                        <Type>兵种12</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <x>800</x>
+                        <y>410</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种347</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
         </Wave>
@@ -390,31 +411,48 @@
                     <Duration>0</Duration>
                 </WaveInformation>
                 <EnemyGroup>
-                    
+                    <Enemy id="0">
+                        <Type>兵种12</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <x>800</x>
+                        <y>410</y>
+                        <Parameters>死亡动画:a0</Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种287</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种347</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种372</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                    </Enemy>
                 </EnemyGroup>
-            </SubWave>
-        </Wave>
-    </SubStage>
-    <SubStage id="9">
-        <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdyjy_3_BG.swf</Background>
-        </BasicInformation>
-        <Wave>
-            <SubWave id="0">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                            
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    
-                </EnemyGroup>
+                <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>又抓住一个。</Text>
+            </SubDialogue>
+        </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
