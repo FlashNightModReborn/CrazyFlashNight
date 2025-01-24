@@ -84,27 +84,6 @@
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>6</Quantity>
-                        <Level>40</Level>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>6</Quantity>
-                        <Level>40</Level>
-                    </Enemy>
-                </EnemyGroup>
             </SubWave>
         </Wave>
     </SubStage>
@@ -117,33 +96,12 @@
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>6</Quantity>
-                        <Level>40</Level>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种70</Type>
-                        <Interval>500</Interval>
-                        <Quantity>4</Quantity>
-                        <Level>40</Level>
-                    </Enemy>
-                </EnemyGroup>
             </SubWave>
         </Wave>
     </SubStage>
     <SubStage id="3">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfqck_4_BG.swf</Background>
+            <Background>flashswf/backgrounds/武器仓库内部2.swf</Background>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
