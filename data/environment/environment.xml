@@ -2180,6 +2180,41 @@
             <SpeedRate>5</SpeedRate>
         </Skybox>
     </Environment>
+    <!-- 诺亚武器仓库-->
+    <Environment>
+        <BackgroundURL>武器仓库外围.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>280</Ymin>
+        <Ymax>520</Ymax>
+        <Width>1800</Width>
+        <Height>560</Height>
+        <Horizon>0</Horizon>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>750</x0>
+            <y0>260</y0>
+            <x1>1050</x1>
+            <y1>290</y1>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>武器仓库走道.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1500</Xmax>
+        <Ymin>670</Ymin>
+        <Ymax>850</Ymax>
+        <Width>1500</Width>
+        <Height>850</Height>
+        <Horizon>0</Horizon>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+    </Environment>
     <!-- 试炼场深处-->
     <Environment>
         <BackgroundURL>试炼场深处钻头入口_BG.swf</BackgroundURL>

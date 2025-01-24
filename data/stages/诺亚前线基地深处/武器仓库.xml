@@ -41,8 +41,16 @@
     </Rewards>
     <SubStage id="0">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfqck_1_BG.swf</Background>
+            <Background>flashswf/backgrounds/武器仓库外围.swf</Background>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>就是这里了，冲进去！</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -52,21 +60,14 @@
                     <Enemy id="0">
                         <Type>兵种71</Type>
                         <Interval>500</Interval>
-                        <Quantity>6</Quantity>
-                        <Level>40</Level>
+                        <Quantity>5</Quantity>
+                        <Level>48</Level>
                     </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
+                    <Enemy id="1">
                         <Type>兵种72</Type>
                         <Interval>500</Interval>
-                        <Quantity>6</Quantity>
-                        <Level>40</Level>
+                        <Quantity>5</Quantity>
+                        <Level>48</Level>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -74,7 +75,9 @@
     </SubStage>
     <SubStage id="1">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfqck_2_BG.swf</Background>
+            <Background>flashswf/backgrounds/武器仓库走道.swf</Background>
+            <PlayerX>780</PlayerX>
+            <PlayerY>710</PlayerY>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
