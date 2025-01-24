@@ -1,23 +1,23 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="80" height="80" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="8.66021495624003" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="NPC" itemID="66a3c6a9-000002cd"/>
-          <DOMFolderItem name="NPC/Itinerantsheild" itemID="66a3c6b6-000002d2" isExpanded="true"/>
-          <DOMFolderItem name="NPC/狗" itemID="66a8f679-00000308" isExpanded="true"/>
-          <DOMFolderItem name="NPC/僵尸" itemID="66a8f650-00000304" isExpanded="true"/>
+          <DOMFolderItem name="NPC" itemID="66a3c6a9-000002cd" isExpanded="true"/>
+          <DOMFolderItem name="NPC/Itinerantsheild" itemID="66a3c6b6-000002d2"/>
+          <DOMFolderItem name="NPC/狗" itemID="66a8f679-00000308"/>
+          <DOMFolderItem name="NPC/僵尸" itemID="66a8f650-00000304"/>
           <DOMFolderItem name="NPC/克隆兽" itemID="66a77957-000005f9"/>
           <DOMFolderItem name="NPC/闪6女特工" itemID="66a7af1b-0000064c"/>
           <DOMFolderItem name="NPC/下水道" itemID="671e21c8-00000443" isExpanded="true"/>
           <DOMFolderItem name="NPC/下水道/防化服士兵" itemID="671e21db-0000044c"/>
           <DOMFolderItem name="动画类" itemID="669dfdeb-00003035"/>
           <DOMFolderItem name="技能类" itemID="669dfdce-00003030"/>
-          <DOMFolderItem name="特效类" itemID="669e439b-00003308"/>
+          <DOMFolderItem name="特效类" itemID="669e439b-00003308" isExpanded="true"/>
           <DOMFolderItem name="特效类/爆炸" itemID="67251edb-0000ccae" isExpanded="true"/>
           <DOMFolderItem name="特效类/刀光" itemID="672521ac-0000cd05" isExpanded="true"/>
           <DOMFolderItem name="特效类/其他" itemID="672520ca-0000ccfa" isExpanded="true"/>
           <DOMFolderItem name="特效类/血液" itemID="669e4395-00003307"/>
           <DOMFolderItem name="特效类/战斗" itemID="657437e1-00000909" isExpanded="true"/>
           <DOMFolderItem name="武器" itemID="66a8f6a5-00000309"/>
-          <DOMFolderItem name="主角" itemID="66a8f454-000002ee"/>
+          <DOMFolderItem name="主角" itemID="66a8f454-000002ee" isExpanded="true"/>
           <DOMFolderItem name="主角/男主角" itemID="66a8f49a-000002f8"/>
           <DOMFolderItem name="主角/女主角" itemID="66a8f45b-000002f2"/>
      </folders>
@@ -210,39 +210,32 @@
                                         <script><![CDATA[this._lockroot = false;
 this._visible = false;
 stop();
-音效播放器 = new Array(6);
-播放时间记录 = new Object();
-同时播放数量 = 6;
-播放间隔帧 = 2;
-frame = 0;
-playindex = 0;
 
-for (var i = 0; i < 同时播放数量; i++)
-{
-	var container = this.createEmptyMovieClip("container" + i, this.getNextHighestDepth());
-	音效播放器[i] = container;
-}
+if(isNaN(_root.音效音量)) _root.音效音量 = 100;
 
-function 播放音效(音效id, 音量乘数, 声音源)
-{
-	if(frame - 播放时间记录[音效id] < 播放间隔帧){
-		return false;
+this.soundDict = new Object();
+this.soundLastTime = new Object();
+
+this.minInterval = 90; //相同声音播放的最小间隔
+
+function 播放音效(音效id, 音量乘数, 声音源){
+	if(!soundDict[音效id]){
+		//_root.发布消息("new sound "+ 音效id);
+		soundDict[音效id] = new Sound(this);
+		soundDict[音效id].attachSound(音效id);
 	}
-	var sound = new Sound(音效播放器[playindex]);
-	sound.attachSound(音效id);
-	音量乘数 = (音量乘数 >= 1 or 音量乘数 <= 0) ? 1 : 音量乘数;
+	var time = getTimer();
+	//若两次播放声音小于最小间隔则无法播放
+	if(!isNaN(soundLastTime[音效id]) && time - soundLastTime[音效id] < this.minInterval) return false;
+	soundLastTime[音效id] = time;
+	音量乘数 = (音量乘数 >= 1 || 音量乘数 <= 0) ? 1 : 音量乘数;
 	var 音量 = Math.floor(音量乘数 * _root.音效音量);
 	音量 = Math.max(音量, 1);
-	sound.setVolume(音量);
-	sound.start(0,1);
-	playindex = (playindex + 1) % 同时播放数量;
-	播放时间记录[音效id] = frame;
+	//soundDict[音效id].setVolume(音量);
+	soundDict[音效id].start(0,1);
 	return true;
 }
 
-this.onEnterFrame = function(){
-	frame ++;
-}
 ]]></script>
                                    </Actionscript>
                                    <elements/>
@@ -257,25 +250,25 @@ this.onEnterFrame = function(){
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="6668480" publishTime="1730486958"/>
-          <PublishItem publishSize="5205777" publishTime="1730486264"/>
-          <PublishItem publishSize="5147539" publishTime="1730486082"/>
-          <PublishItem publishSize="4962855" publishTime="1730032253"/>
-          <PublishItem publishSize="4962854" publishTime="1730031884"/>
-          <PublishItem publishSize="4903580" publishTime="1727876258"/>
-          <PublishItem publishSize="4863838" publishTime="1727875549"/>
-          <PublishItem publishSize="4863831" publishTime="1727875526"/>
-          <PublishItem publishSize="4846079" publishTime="1727870423"/>
-          <PublishItem publishSize="4832649" publishTime="1727870026"/>
-          <PublishItem publishSize="4744080" publishTime="1722591265"/>
-          <PublishItem publishSize="2599188" publishTime="1716902464"/>
-          <PublishItem publishSize="2519700" publishTime="1710947088"/>
-          <PublishItem publishSize="2439161" publishTime="1709300374"/>
-          <PublishItem publishSize="2378689" publishTime="1709216713"/>
-          <PublishItem publishSize="2373637" publishTime="1709213961"/>
-          <PublishItem publishSize="2384259" publishTime="1709213751"/>
-          <PublishItem publishSize="2355408" publishTime="1709209665"/>
-          <PublishItem publishSize="2187330" publishTime="1708752142"/>
-          <PublishItem publishSize="2048235" publishTime="1706936834"/>
+          <PublishItem publishSize="588883" publishTime="1737658520"/>
+          <PublishItem publishSize="588799" publishTime="1737658080"/>
+          <PublishItem publishSize="588795" publishTime="1737657878"/>
+          <PublishItem publishSize="588800" publishTime="1737657812"/>
+          <PublishItem publishSize="588854" publishTime="1737657570"/>
+          <PublishItem publishSize="588795" publishTime="1737657183"/>
+          <PublishItem publishSize="588849" publishTime="1737657165"/>
+          <PublishItem publishSize="588852" publishTime="1737657156"/>
+          <PublishItem publishSize="588850" publishTime="1737657146"/>
+          <PublishItem publishSize="588855" publishTime="1737657130"/>
+          <PublishItem publishSize="588841" publishTime="1737656983"/>
+          <PublishItem publishSize="588826" publishTime="1737656951"/>
+          <PublishItem publishSize="588761" publishTime="1737656883"/>
+          <PublishItem publishSize="588785" publishTime="1737656777"/>
+          <PublishItem publishSize="588729" publishTime="1737656656"/>
+          <PublishItem publishSize="588812" publishTime="1737656612"/>
+          <PublishItem publishSize="588823" publishTime="1737656589"/>
+          <PublishItem publishSize="588828" publishTime="1737656547"/>
+          <PublishItem publishSize="588836" publishTime="1737656510"/>
+          <PublishItem publishSize="588751" publishTime="1737656386"/>
      </publishHistory>
 </DOMDocument>
