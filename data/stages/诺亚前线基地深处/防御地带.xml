@@ -95,47 +95,66 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/防御地带野外.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>400</x>
+                <y>410</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>900</x>
+                <y>370</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>3</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种70</Type>
-                        <Interval>600</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种71</Type>
                         <Interval>900</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种72</Type>
                         <Interval>900</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
                     <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种70</Type>
                         <Interval>1200</Interval>
-                        <Quantity>6</Quantity>
+                        <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种74</Type>
                         <Interval>1200</Interval>
-                        <Quantity>6</Quantity>
+                        <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -147,15 +166,17 @@
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种372</Type>
-                        <Interval>1200</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种373</Type>
-                        <Interval>1200</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -165,6 +186,22 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/防御地带野外.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>600</x>
+                <y>450</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>2</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+            <Point id="1">
+                <x>1000</x>
+                <y>380</y>
+                <Identifier>出生点-钻头</Identifier>
+                <QuantityMax>2</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
         <Dialogue>
             <SubDialogue id="0">
                 <Name>$PC</Name>
@@ -182,53 +219,56 @@
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
-                    <Duration>0</Duration>
+                    <Duration>30</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种70</Type>
-                        <Interval>1200</Interval>
+                        <Interval>2500</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种74</Type>
-                        <Interval>1200</Interval>
-                        <Quantity>4</Quantity>
+                        <Interval>2000</Interval>
+                        <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种372</Type>
-                        <Interval>2400</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>99</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种373</Type>
-                        <Interval>2400</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>99</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
             <SubWave id="1">
                 <WaveInformation>
                     <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
                 </WaveInformation>
-        <Dialogue>
-            <SubDialogue id="0">
-                <Name>Boy(无线电)</Name>
-                <Title>BPK战队-队长</Title>
-                <Char>无头像</Char>
-                <Text>跟他们前往战壕，准备进入防御地带内部。我们这边伤亡不小，牵制时间有限。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>明白！</Text>
-            </SubDialogue>
-        </Dialogue>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>Boy(无线电)</Name>
+                        <Title>BPK战队-队长</Title>
+                        <Char>无头像</Char>
+                        <Text>跟他们前往战壕，准备进入防御地带内部。我们这边伤亡不小，牵制时间有限。</Text>
+                    </SubDialogue>
+                    <SubDialogue id="1">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>明白！</Text>
+                    </SubDialogue>
+                </Dialogue>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种97</Type>
@@ -331,19 +371,19 @@
                         <y>430</y>
                     </Enemy>
                 </EnemyGroup>
-              <Dialogue>  
-           <SubDialogue id="0">
-                <Name>Boy(无线电)</Name>
-                <Title>BPK战队-队长</Title>
-                <Char>无头像</Char>
-                <Text>前面就是地下入口了，你乘应急电梯下去。我们不确定里面有什么，小心点。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>都到这了肯定不能退缩了！</Text>
-            </SubDialogue>
+                <Dialogue>  
+                    <SubDialogue id="0">
+                        <Name>Boy(无线电)</Name>
+                        <Title>BPK战队-队长</Title>
+                        <Char>无头像</Char>
+                        <Text>前面就是地下入口了，你乘应急电梯下去。我们不确定里面有什么，小心点。</Text>
+                    </SubDialogue>
+                    <SubDialogue id="1">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>都到这了肯定不能退缩了！</Text>
+                    </SubDialogue>
                 </Dialogue>
             </SubWave>
         </Wave>
@@ -528,19 +568,19 @@
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>友军终于到了。</Text>
-            </SubDialogue>
-            <SubDialogue id="1">
-                <Name>surveyor</Name>
-                <Title>火力支援学说专家</Title>
-                <Char>surveyor</Char>
-                <Text>诺亚这些人真是疯癫，把各种人拿来改造···我们赶紧进去吧。</Text>
-            </SubDialogue>
-        </Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>友军终于到了。</Text>
+                    </SubDialogue>
+                    <SubDialogue id="1">
+                        <Name>surveyor</Name>
+                        <Title>火力支援学说专家</Title>
+                        <Char>surveyor</Char>
+                        <Text>诺亚这些人真是疯癫，把各种人拿来改造···我们赶紧进去吧。</Text>
+                    </SubDialogue>
+                </Dialogue>
             </SubWave>
             <SubWave id="2">
                 <WaveInformation>
