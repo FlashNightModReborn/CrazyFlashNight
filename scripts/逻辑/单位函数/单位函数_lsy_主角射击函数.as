@@ -10,9 +10,9 @@
 	if (!this.射击许可标签) return;
 	var 继续射击许可 = this.主手持续射击(_parent, 攻击模式, this.射击速度);
 	if(继续射击许可){
-		_parent.keepshooting = _root.帧计时器.添加循环任务(this.主手持续射击, this.射击速度, _parent, 攻击模式, this.射击速度);
+		_parent.keepshooting = _root.帧计时器.添加生命周期任务(_parent, "开始射击", this.主手持续射击, this.射击速度, _parent, 攻击模式, this.射击速度);
 		if(this.射击速度 > 300){
-			_root.帧计时器.添加循环任务(function(自机){自机.射击最大后摇中 = false;}, 300, _parent);
+			_root.帧计时器.添加生命周期任务(_parent, "开始射击", function(自机){自机.射击最大后摇中 = false;}, 300, _parent);
 		}
 	}
 }
@@ -48,7 +48,7 @@ _root.主角函数.主手持续射击 = function(自机, 攻击模式, 射击速
 		if (弹匣余弹量 <= 0) 自机.主手射击中 = false;
 		自机.射击最大后摇中 = 自机.主手射击中;
 		if(射击速度 > 300){
-			_root.帧计时器.添加循环任务(function(自机){自机.射击最大后摇中 = false;}, 300, 自机);
+			_root.帧计时器.添加生命周期任务(自机, "主手持续射击", function(自机){自机.射击最大后摇中 = false;}, 300, 自机);
 		}
 	}
 
@@ -91,7 +91,7 @@ _root.主角函数.副手持续射击 = function(自机, 攻击模式, 射击速
 		if (弹匣余弹量 <= 0) 自机.副手射击中 = false;
 		自机.射击最大后摇中 = 自机.副手射击中;
 		if(射击速度 > 300){
-			_root.帧计时器.添加循环任务(function(自机){自机.射击最大后摇中 = false;}, 300, 自机);
+			_root.帧计时器.添加生命周期任务(自机, "副手持续射击", function(自机){自机.射击最大后摇中 = false;}, 300, 自机);
 		}
 	}
 
@@ -470,7 +470,7 @@ _root.主角函数.初始化双枪射击函数 = function(){
 		if (!this.射击许可标签) return;
 		var 继续射击许可 = 主手持续射击(_parent, "手枪", 主手射击速度);
 		if(继续射击许可) {
-			_parent.keepshooting = _root.帧计时器.添加循环任务(this.主手持续射击, 主手射击速度, _parent, "手枪", 主手射击速度);
+			_parent.keepshooting = _root.帧计时器.添加生命周期任务(_parent, "主手开始射击", this.主手持续射击, 主手射击速度, _parent, "手枪", 主手射击速度);
 		}
 	}
 
@@ -485,7 +485,7 @@ _root.主角函数.初始化双枪射击函数 = function(){
 		if (!this.射击许可标签) return;
 		var 继续射击许可 = 副手持续射击(_parent, "手枪2", 副手射击速度);
 		if(继续射击许可){
-			_parent.keepshooting2 = _root.帧计时器.添加循环任务(this.副手持续射击, 副手射击速度, _parent, "手枪2", 副手射击速度);
+			_parent.keepshooting2 = _root.帧计时器.添加生命周期任务(_parent, "副手开始射击", this.副手持续射击, 副手射击速度, _parent, "手枪2", 副手射击速度);
 		}
 	}
 
