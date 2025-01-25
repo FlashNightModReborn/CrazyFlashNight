@@ -37,17 +37,18 @@
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种71</Type>
-                        <Interval>500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>44</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种72</Type>
-                        <Interval>500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>44</Level>
                     </Enemy>
@@ -56,18 +57,13 @@
             <SubWave id="1">
                 <WaveInformation>
                     <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种76</Type>
                         <Interval>500</Interval>
                         <Quantity>10</Quantity>
-                        <Level>44</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种77</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
                         <Level>44</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -86,28 +82,31 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/nyqxjdfydd_3_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1200</x>
+                <y>350</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>5</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
+                    <FinishRequirement>5</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种70</Type>
-                        <Interval>600</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>44</Level>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种74</Type>
-                        <Interval>600</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>5</Quantity>
-                        <Level>44</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种77</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
                         <Level>44</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -115,6 +114,7 @@
             <SubWave id="1">
                 <WaveInformation>
                     <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -122,17 +122,12 @@
                         <Interval>1000</Interval>
                         <Quantity>10</Quantity>
                         <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种76</Type>
                         <Interval>500</Interval>
                         <Quantity>10</Quantity>
-                        <Level>44</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种77</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
                         <Level>44</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -143,6 +138,14 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/nyqxjdfqck_1_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>340</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>5</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Dialogue>
             <SubDialogue id="0">
                 <Name>$PC</Name>
@@ -162,6 +165,7 @@
                         <Interval>1000</Interval>
                         <Quantity>10</Quantity>
                         <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种287</Type>
@@ -170,12 +174,6 @@
                         <Level>44</Level>
                         <x>800</x>
                         <y>400</y>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种77</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>44</Level>
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
@@ -210,6 +208,7 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>44</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种74</Type>
@@ -225,6 +224,20 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/nyqxjdyjy_3_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>340</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1400</x>
+                <y>590</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -232,10 +245,40 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种372</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>5</Quantity>
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
                         <Level>44</Level>
+                        <x>900</x>
+                        <y>370</y>
+                        <Parameters>
+                            <身高>290</身高>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>44</Level>
+                        <x>500</x>
+                        <y>500</y>
+                        <Parameters>
+                            <身高>150</身高>
+                        </Parameters>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种372</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种287</Type>
@@ -245,14 +288,15 @@
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种373</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>5</Quantity>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
                         <Level>44</Level>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种77</Type>
-                        <Interval>600</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
                         <Level>44</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -263,6 +307,14 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/nyqxjdbgc_1_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>580</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Dialogue>
             <SubDialogue id="0">
                 <Name>$PC</Name>
@@ -297,14 +349,15 @@
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种373</Type>
-                        <Interval>1000</Interval>
+                        <Interval>2000</Interval>
                         <Quantity>5</Quantity>
                         <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种77</Type>
                         <Interval>600</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>44</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -323,6 +376,14 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/nyqxjdbgc_3_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>340</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -348,6 +409,7 @@
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种77</Type>
@@ -400,6 +462,7 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>44</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -409,6 +472,20 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/nyqxjdyjy_1_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1000</x>
+                <y>350</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1500</x>
+                <y>580</y>
+                <Identifier>出生点-管道</Identifier>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -419,7 +496,7 @@
                         <Type>兵种12</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>44</Level>
+                        <Level>50</Level>
                         <x>800</x>
                         <y>410</y>
                         <Parameters>死亡动画:a0</Parameters>
@@ -435,15 +512,24 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>44</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种372</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>44</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种373</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>44</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种77</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>44</Level>
