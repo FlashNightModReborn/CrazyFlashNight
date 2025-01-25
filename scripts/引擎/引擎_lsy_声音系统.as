@@ -11,9 +11,9 @@ _root.soundManager.createEmptyMovieClip("武器",0);
 _root.soundManager.createEmptyMovieClip("特效",1);
 _root.soundManager.createEmptyMovieClip("人物",2);
 
-_root.soundManager.武器.loadMovie("flashswf/sounds/音效-武器.swf");
-_root.soundManager.特效.loadMovie("flashswf/sounds/音效-特效.swf");
-_root.soundManager.人物.loadMovie("flashswf/sounds/音效-人物.swf");
+_root.soundManager.武器.loadMovie("sounds/音效-武器.swf");
+_root.soundManager.特效.loadMovie("sounds/音效-特效.swf");
+_root.soundManager.人物.loadMovie("sounds/音效-人物.swf");
 
 _root.播放音效 = function(音效id, 音量乘数, 声音源){
 	_root.soundManager.playSound(音效id,音量乘数,声音源);
@@ -45,17 +45,17 @@ _root.soundManager.playSound = function(音效id, 音量乘数, 声音源){
 	音量乘数 = (音量乘数 >= 1 || 音量乘数 <= 0) ? 1 : 音量乘数;
 	var 音量 = Math.floor(音量乘数 * _root.音效音量);
 	音量 = Math.max(音量, 1);
-	//this.soundDict[音效id].setVolume(音量);
+	this.soundDict[音效id].setVolume(音量);
 	this.soundDict[音效id].start(0,1);
 	return true;
 }
 
 //使用BaseLoader分别导入三个DOMDocument里的标识符
-var loader0 = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader("flashswf/sounds/音效-武器/DOMDocument.xml");
+var loader0 = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader("sounds/音效-武器/DOMDocument.xml");
 loader0.load(function(domdata:Object):Void {
     var soundItems = domdata.media.DOMSoundItem;
-    for (var soundName:String in soundItems) {
-        var soundIdentifier = soundItems[soundName].linkageIdentifier;
+    for (var i in soundItems) {
+        var soundIdentifier = soundItems[i].linkageIdentifier;
         if (soundIdentifier != null) {
             _root.soundManager.soundSourceDict[soundIdentifier] = "武器";
         }
@@ -64,11 +64,11 @@ loader0.load(function(domdata:Object):Void {
     onError();
 });
 
-var loader1 = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader("flashswf/sounds/音效-特效/DOMDocument.xml");
+var loader1 = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader("sounds/音效-特效/DOMDocument.xml");
 loader1.load(function(domdata:Object):Void {
     var soundItems = domdata.media.DOMSoundItem;
-    for (var soundName:String in soundItems) {
-        var soundIdentifier = soundItems[soundName].linkageIdentifier;
+    for (var i in soundItems) {
+        var soundIdentifier = soundItems[i].linkageIdentifier;
         if (soundIdentifier != null) {
             _root.soundManager.soundSourceDict[soundIdentifier] = "特效";
         }
@@ -77,11 +77,11 @@ loader1.load(function(domdata:Object):Void {
     onError();
 });
 
-var loader2 = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader("flashswf/sounds/音效-人物/DOMDocument.xml");
+var loader2 = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader("sounds/音效-人物/DOMDocument.xml");
 loader2.load(function(domdata:Object):Void {
     var soundItems = domdata.media.DOMSoundItem;
-    for (var soundName:String in soundItems) {
-        var soundIdentifier = soundItems[soundName].linkageIdentifier;
+    for (var i in soundItems) {
+        var soundIdentifier = soundItems[i].linkageIdentifier;
         if (soundIdentifier != null) {
             _root.soundManager.soundSourceDict[soundIdentifier] = "人物";
         }

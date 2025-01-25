@@ -56,19 +56,7 @@ ItemDataLoader.loadItemData(
     }
 );
 */
-import org.flashNight.gesh.object.ObjectUtil;
-var loader2 = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader("flashswf/sounds/音效-人物/DOMDocument.xml");
-loader2.load(function(domdata:Object):Void {
-    var soundItems = domdata.media.DOMSoundItem;
-    for (var soundName:String in soundItems) {
-        var soundIdentifier = soundItems[soundName].linkageIdentifier;
-        if (soundIdentifier != null) {
-            trace(soundIdentifier);
-        }
-    }
-}, function():Void {
-    onError();
-});]]></script>
+]]></script>
                                    </Actionscript>
                                    <elements/>
                               </DOMFrame>
@@ -83,6 +71,7 @@ loader2.load(function(domdata:Object):Void {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="275445" publishTime="1737783484"/>
           <PublishItem publishSize="275306" publishTime="1737737288"/>
           <PublishItem publishSize="275299" publishTime="1737737253"/>
           <PublishItem publishSize="275274" publishTime="1737737005"/>
@@ -102,6 +91,5 @@ loader2.load(function(domdata:Object):Void {
           <PublishItem publishSize="275233" publishTime="1737735632"/>
           <PublishItem publishSize="275232" publishTime="1737735516"/>
           <PublishItem publishSize="275246" publishTime="1737735483"/>
-          <PublishItem publishSize="275227" publishTime="1737735389"/>
      </publishHistory>
 </DOMDocument>
