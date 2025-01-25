@@ -57,14 +57,6 @@
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
-                <Dialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>这么多蛆虫···看来研究院就在前方。</Text>
-            </SubDialogue>
-        </Dialogue>
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种76</Type>
@@ -79,6 +71,14 @@
                         <Level>44</Level>
                     </Enemy>
                 </EnemyGroup>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>这么多蛆虫···看来研究院就在前方。</Text>
+                    </SubDialogue>
+                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -178,14 +178,14 @@
                         <Level>44</Level>
                     </Enemy>
                 </EnemyGroup>
-        <Dialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>诺亚的改造真是奇怪···</Text>
-            </SubDialogue>
-        </Dialogue>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>诺亚的改造真是奇怪···</Text>
+                    </SubDialogue>
+                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -284,6 +284,10 @@
                         <Level>44</Level>
                         <x>700</x>
                         <y>400</y>
+                        <Parameters>
+                            <方向>左</方向>
+                            <登场动画>a1</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种287</Type>
@@ -304,14 +308,14 @@
                         <Level>44</Level>
                     </Enemy>
                 </EnemyGroup>
-        <Dialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>给它跑了，得赶快追上···</Text>
-            </SubDialogue>
-        </Dialogue>
+                <Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>给它跑了，得赶快追上···</Text>
+                    </SubDialogue>
+                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -446,13 +450,13 @@
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
-            <SubDialogue id="0">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#严肃</Char>
-                <Text>又抓住一个。</Text>
-            </SubDialogue>
-        </Dialogue>
+                    <SubDialogue id="0">
+                        <Name>$PC</Name>
+                        <Title>$PC_TITLE</Title>
+                        <Char>$PC_CHAR#严肃</Char>
+                        <Text>又抓住一个。</Text>
+                    </SubDialogue>
+                </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>

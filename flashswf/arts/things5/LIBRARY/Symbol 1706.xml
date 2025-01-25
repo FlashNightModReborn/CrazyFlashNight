@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1706" itemID="6577efbc-00000750" symbolType="graphic" lastModified="1702098593">
+  <timeline>
+    <DOMTimeline name="Symbol 1706">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0029754638671875" b="-0.0076904296875" c="0.009002685546875" d="-0.0022430419921875" tx="-34.3" ty="9.55"/>
+                        </matrix>
+                        <GradientEntry color="#A70303" ratio="0"/>
+                        <GradientEntry color="#A70303" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!-794 65[-753 296 -512 258!-512 258[-736 253 -794 65"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0019683837890625" b="-0.005035400390625" c="0.0059051513671875" d="-0.0014801025390625" tx="-35.25" ty="11.15"/>
+                        </matrix>
+                        <GradientEntry color="#A70303" ratio="0"/>
+                        <GradientEntry color="#A70303" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!-777 139[-749 291 -592 266!-592 266[-739 263 -777 139"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

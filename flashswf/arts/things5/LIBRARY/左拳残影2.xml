@@ -1,0 +1,49 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="左拳残影2" itemID="65a8dc15-000012ce" lastModified="1705565205" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="左拳残影2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 1754" selected="true" centerPoint3DX="-0.75" centerPoint3DY="40.6">
+                  <matrix>
+                    <Matrix a="-0.860061645507813" b="-0.487579345703125" c="-0.487579345703125" d="0.860061645507813" tx="23.15" ty="25.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.9" y="-14.45"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Symbol 1876" selected="true" centerPoint3DX="37.05" centerPoint3DY="32.25">
+                  <matrix>
+                    <Matrix a="0.0595855712890625" b="-0.9814453125" c="0.9814453125" d="0.0595855712890625" tx="48.45" ty="38.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Symbol 1756" selected="true" centerPoint3DX="14.9" centerPoint3DY="33.1">
+                  <matrix>
+                    <Matrix a="0.0205535888671875" b="-0.98321533203125" c="0.983230590820313" d="0.0205535888671875" tx="31.4" ty="37.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

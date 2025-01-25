@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1988" itemID="6577efbc-000007f2" symbolType="graphic" lastModified="1702098593">
+  <timeline>
+    <DOMTimeline name="Symbol 1988">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#DC1549"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="2">
+                        <fill>
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="-0.001434326171875" b="-0.0203857421875" c="0.0149078369140625" d="-0.0010528564453125" tx="-64.3" ty="-42.6"/>
+                            </matrix>
+                            <GradientEntry ratio="0"/>
+                            <GradientEntry color="#DC1549" ratio="1"/>
+                          </LinearGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!737 -512[488 -719 14 -931!14 -931[-533 -1177 -967 -1225!-967 -1225|-977 -1255!-977 -1255[-810 -1268 -499 -1189!-499 -1189[-203 -1113 105 -983!105 -983[425 -850 622 -715!622 -715[842 -565 842 -457!842 -457[842 -422 818 -417!818 -417|637
+ -412!637 -412[199 -412 -530 -624!-530 -624[-900 -732 -1257 -857!-1257 -857|-1266 -867!-1266 -867[-1268 -877 -1237 -877!-1237 -877|-455 -692!-455 -692[348 -507 452 -507!452 -507|737 -512!-967 -1285|-992 -1315!-992 -1315[-988 -1323 -950
+ -1324!-950 -1324[-911 -1326 -897 -1315!-897 -1315[-909 -1297 -967 -1285"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,125 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 30" itemID="6577efbc-00000256" lastModified="1702098593">
+  <timeline>
+    <DOMTimeline name="Symbol 30">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B0DFF4" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="256" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#B3AF88">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="255" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="256" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._visible = 0;
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#C894FC">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!424 -15|424 75!424 75|-424 75!-424 75|-424 -15!-424 -15|424 -15"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="256" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#894DBE" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="267" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.511459350585938" d="1.5" tx="-21.2" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#EAE212" parentLayerIndex="3" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 28" name="血槽条" centerPoint3DX="20.25" centerPoint3DY="0.75">
+                  <matrix>
+                    <Matrix a="0.511459350585938" d="1.5" tx="-21.2" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   this._width = _parent._parent._parent.hp / _parent._parent._parent.hp满血值 * _parent.血槽底._width;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="256" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#60DECC" parentLayerIndex="3" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="256" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 27" name="血槽底" centerPoint3DX="20.25" centerPoint3DY="0.75">
+                  <matrix>
+                    <Matrix a="0.511459350585938" d="1.5" tx="-21.2" ty="-0.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="256" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

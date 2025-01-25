@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1737732193">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1737825659">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="1">
+    <DOMTimeline name="asLoader" currentFrame="45">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -33,7 +33,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="label2" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="label2" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements/>
@@ -59,7 +59,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="文件夹 1" color="#FF800A" layerType="folder"/>
-        <DOMLayer name="load脚本1" color="#9933CC" autoNamed="false">
+        <DOMLayer name="load脚本1" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -176,6 +176,7 @@ _root.stop();
 #include "../逻辑/单位函数/单位函数_fs_佣兵加血加蓝.as"
 #include "../逻辑/单位函数/单位函数_lsy_敌人ai.as"
 #include "../逻辑/单位函数/单位函数_lsy_敌人模板迁移.as"
+#include "../逻辑/单位函数/单位函数_lsy_敌人特殊函数.as"
 #include "../逻辑/单位函数/单位函数_lsy_主角射击函数.as"
 #include "../逻辑/单位函数/单位函数_lsy_主角行走状态机.as"
 #include "../逻辑/单位函数/单位函数_雾人_aka_fs_主动战技.as"

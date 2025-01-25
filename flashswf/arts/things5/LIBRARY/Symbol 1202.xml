@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1202" itemID="6577efbc-000005bc" symbolType="graphic" lastModified="1702098593">
+  <timeline>
+    <DOMTimeline name="Symbol 1202">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.121612548828125" d="0.120941162109375" tx="150.3" ty="-61.15"/>
+                        </matrix>
+                        <GradientEntry color="#4C0300" ratio="0"/>
+                        <GradientEntry color="#4C0300" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1975 -2256[2109 -2814 1581 -3204!1581 -3204[3578 -2040 4999 759!4999 759[3047 -1297 1014 -2733!1014 -2733|1746 -2262!1746 -2262|1975 -2256"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
