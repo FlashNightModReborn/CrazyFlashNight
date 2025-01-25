@@ -198,11 +198,15 @@ _root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor)
 {
     var frameTimer = _root.帧计时器;
     var frame:Number = frameTimer.当前帧数;
+
+	/*
     
     // 1) 控制帧频滚动的间隔：如果没到指定的帧，就不执行
     if(frame % frameTimer.scrollDelay !== 0) {
         return;
     }
+
+	*/
     
     // 2) 舞台显示区域（假设顶部有UI占64像素）
     var stageWidth:Number  = Stage.width;

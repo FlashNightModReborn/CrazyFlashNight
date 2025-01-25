@@ -322,7 +322,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.发射效果上限 = 15;
             _root.显示列表.继续播放(_root.显示列表.预设任务ID);
             _root.UI系统.经济面板动效 = true;
-            this.scrollDelay = 1;
+            // this.scrollDelay = 1;
             this.offsetTolerance = 10;
             break;
         case 1:
@@ -337,7 +337,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.发射效果上限 = 10;
             _root.显示列表.继续播放(_root.显示列表.预设任务ID);
             _root.UI系统.经济面板动效 = true;
-            this.scrollDelay = 1;
+            // this.scrollDelay = 1;
             this.offsetTolerance = 30;
             break;
         case 2:
@@ -352,7 +352,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.发射效果上限 = 5;
             _root.显示列表.暂停播放(_root.显示列表.预设任务ID);
             _root.UI系统.经济面板动效 = false;
-            this.scrollDelay = 1;
+            // this.scrollDelay = 1;
             this.offsetTolerance = 50;
             break;
         default:
@@ -367,7 +367,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             _root.发射效果上限 = 0;
             _root.显示列表.暂停播放(_root.显示列表.预设任务ID);
             _root.UI系统.经济面板动效 = false;
-            this.scrollDelay = 2;
+            // this.scrollDelay = 2;
             this.offsetTolerance = 80;
     }
 };
