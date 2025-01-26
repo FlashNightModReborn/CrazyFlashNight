@@ -1,0 +1,877 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite 35" itemID="561603d5-00000024" sourceFlashFilepath="../../../../../../../../../../Users/admin/Downloads/收割者无人机.fla" sourceLibraryItemHRef="sprite 35" sourceLastModified="1445500711" lastModified="1445614461" lastUniqueIdentifier="22" sourceItemID="561603d5-00000024">
+  <timeline>
+    <DOMTimeline name="sprite 35">
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="42" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+    if (_parent["方向"] == "右")
+    {
+        if (Key.isDown(_root["右键"]) == true)
+        {
+            _parent[移动]("右", 快速度);
+        }
+        else
+        {
+            _parent[移动]("右", 慢速度);
+        } // end else if
+    }
+    else if (_parent["方向"] == "左")
+    {
+        if (Key.isDown(_root["左键"]) == true)
+        {
+            _parent[移动]("左", 快速度);
+        }
+        else
+        {
+            _parent[移动]("左", 慢速度);
+        } // end else if
+    } // end else if
+} // End of the function
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[_parent[动画完毕]();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite 30 (杩戞垬瀛愬脊)">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="98.05" ty="9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load)
+{
+    声音 = "";
+    霰弹值 = 1;
+    子弹散射度 = 0;
+    发射效果 = "";
+    子弹种类 = "近战子弹";
+    子弹威力 = _parent._parent["空手攻击力"];
+    子弹速度 = 0;
+    击中地图效果 = "";
+    Z轴攻击范围 = 30;
+    击倒率 = 10;
+    击中后子弹的效果 = "空手攻击火花";
+    if (_parent._parent["是否为敌人"] == true)
+    {
+        子弹敌我属性 = false;
+    }
+    else
+    {
+        子弹敌我属性 = true;
+    } // end else if
+    var myPoint = {x: this._x, y: this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+    shootX = myPoint.x;
+    shootY = myPoint.y;
+    _root[子弹区域shoot](eval("声音"), eval("霰弹值"), eval("子弹散射度"), eval("发射效果"), eval("子弹种类"), eval("子弹威力"), eval("子弹速度"), Z轴攻击范围, eval("击中地图效果"), _parent._parent._name, shootX, shootY, _parent._parent.Z轴坐标, eval("子弹敌我属性"), eval("击倒率"), eval("击中后子弹的效果"));
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite 30 (杩戞垬瀛愬脊)">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="100.45" ty="9.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load)
+{
+    声音 = "";
+    霰弹值 = 1;
+    子弹散射度 = 0;
+    发射效果 = "";
+    子弹种类 = "近战子弹";
+    子弹威力 = _parent._parent["空手攻击力"];
+    子弹速度 = 0;
+    击中地图效果 = "";
+    Z轴攻击范围 = 30;
+    击倒率 = 10;
+    击中后子弹的效果 = "空手攻击火花";
+    if (_parent._parent["是否为敌人"] == true)
+    {
+        子弹敌我属性 = false;
+    }
+    else
+    {
+        子弹敌我属性 = true;
+    } // end else if
+    var myPoint = {x: this._x, y: this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+    shootX = myPoint.x;
+    shootY = myPoint.y;
+    _root[子弹区域shoot](eval("声音"), eval("霰弹值"), eval("子弹散射度"), eval("发射效果"), eval("子弹种类"), eval("子弹威力"), eval("子弹速度"), Z轴攻击范围, eval("击中地图效果"), _parent._parent._name, shootX, shootY, _parent._parent.Z轴坐标, eval("子弹敌我属性"), eval("击倒率"), eval("击中后子弹的效果"));
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="6" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite 30 (杩戞垬瀛愬脊)">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="100.45" ty="11.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load)
+{
+    声音 = "";
+    霰弹值 = 1;
+    子弹散射度 = 0;
+    发射效果 = "";
+    子弹种类 = "近战子弹";
+    子弹威力 = _parent._parent["空手攻击力"];
+    子弹速度 = 0;
+    击中地图效果 = "";
+    Z轴攻击范围 = 30;
+    击倒率 = 10;
+    击中后子弹的效果 = "空手攻击火花";
+    if (_parent._parent["是否为敌人"] == true)
+    {
+        子弹敌我属性 = false;
+    }
+    else
+    {
+        子弹敌我属性 = true;
+    } // end else if
+    var myPoint = {x: this._x, y: this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+    shootX = myPoint.x;
+    shootY = myPoint.y;
+    _root[子弹区域shoot](eval("声音"), eval("霰弹值"), eval("子弹散射度"), eval("发射效果"), eval("子弹种类"), eval("子弹威力"), eval("子弹速度"), Z轴攻击范围, eval("击中地图效果"), _parent._parent._name, shootX, shootY, _parent._parent.Z轴坐标, eval("子弹敌我属性"), eval("击倒率"), eval("击中后子弹的效果"));
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="6" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite 30 (杩戞垬瀛愬脊)">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="98.95" ty="8.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load)
+{
+    声音 = "";
+    霰弹值 = 1;
+    子弹散射度 = 0;
+    发射效果 = "";
+    子弹种类 = "近战子弹";
+    子弹威力 = _parent._parent["空手攻击力"];
+    子弹速度 = 0;
+    击中地图效果 = "";
+    Z轴攻击范围 = 30;
+    击倒率 = 10;
+    击中后子弹的效果 = "空手攻击火花";
+    if (_parent._parent["是否为敌人"] == true)
+    {
+        子弹敌我属性 = false;
+    }
+    else
+    {
+        子弹敌我属性 = true;
+    } // end else if
+    var myPoint = {x: this._x, y: this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+    shootX = myPoint.x;
+    shootY = myPoint.y;
+    _root[子弹区域shoot](eval("声音"), eval("霰弹值"), eval("子弹散射度"), eval("发射效果"), eval("子弹种类"), eval("子弹威力"), eval("子弹速度"), Z轴攻击范围, eval("击中地图效果"), _parent._parent._name, shootX, shootY, _parent._parent.Z轴坐标, eval("子弹敌我属性"), eval("击倒率"), eval("击中后子弹的效果"));
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="7" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite 30 (杩戞垬瀛愬脊)">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="99.45" ty="10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load)
+{
+    声音 = "";
+    霰弹值 = 1;
+    子弹散射度 = 0;
+    发射效果 = "";
+    子弹种类 = "近战子弹";
+    子弹威力 = _parent._parent["空手攻击力"];
+    子弹速度 = 0;
+    击中地图效果 = "";
+    Z轴攻击范围 = 30;
+    击倒率 = 10;
+    击中后子弹的效果 = "空手攻击火花";
+    if (_parent._parent["是否为敌人"] == true)
+    {
+        子弹敌我属性 = false;
+    }
+    else
+    {
+        子弹敌我属性 = true;
+    } // end else if
+    var myPoint = {x: this._x, y: this._y};
+    _parent.localToGlobal(myPoint);
+    _root.gameworld.globalToLocal(myPoint);
+    shootX = myPoint.x;
+    shootY = myPoint.y;
+    _root[子弹区域shoot](eval("声音"), eval("霰弹值"), eval("子弹散射度"), eval("发射效果"), eval("子弹种类"), eval("子弹威力"), eval("子弹速度"), Z轴攻击范围, eval("击中地图效果"), _parent._parent._name, shootX, shootY, _parent._parent.Z轴坐标, eval("子弹敌我属性"), eval("击倒率"), eval("击中后子弹的效果"));
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 12" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件 7" selected="true">
+                  <matrix>
+                    <Matrix a="0.264297485351563" b="0.135040283203125" c="-0.135040283203125" d="0.2034912109375" tx="10.55" ty="-33.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="11" blurY="11" knockout="true" strength="5"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 11" color="#FFFF4F">
+          <frames>
+            <DOMFrame index="0" duration="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件 14" selected="true">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258819580078125" c="0.258819580078125" d="-0.965927124023438" tx="26.05" ty="-6.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite 4474" selected="true" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.418472290039063" b="0.0290069580078125" c="-0.0168914794921875" d="0.243621826171875" tx="25" ty="-7.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="28" blurY="28"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="39" motionTweenScale="false" keyMode="8192" soundName="sound 34" soundLoop="0" soundZoomLevel="65535">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite 14">
+                  <matrix>
+                    <Matrix a="0.398849487304688" d="0.32000732421875" tx="-17.55" ty="91.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame)
+{
+    _parent[攻击时移动](10, 10);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 10" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="43" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件 10" selected="true">
+                  <matrix>
+                    <Matrix a="0.952346801757813" b="0.301742553710938" c="-0.111099243164063" d="0.35064697265625" tx="6.6" ty="-5.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="43" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape 4" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.978195190429688" b="-0.204391479492188" c="-0.204391479492188" d="0.978195190429688" tx="2.15" ty="-10.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="43" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#240C00"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#4F1A00"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#999999"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#E0E9EE"/>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <SolidColor color="#A91D1E"/>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <SolidColor color="#8AA0AB"/>
+                    </FillStyle>
+                    <FillStyle index="7">
+                      <SolidColor color="#0000FF"/>
+                    </FillStyle>
+                    <FillStyle index="8">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                    <FillStyle index="9">
+                      <SolidColor color="#003333"/>
+                    </FillStyle>
+                    <FillStyle index="10">
+                      <SolidColor color="#4D0200"/>
+                    </FillStyle>
+                    <FillStyle index="11">
+                      <SolidColor color="#1E1E1E"/>
+                    </FillStyle>
+                    <FillStyle index="12">
+                      <SolidColor color="#000033"/>
+                    </FillStyle>
+                    <FillStyle index="13">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.5">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!523.5 -543S5|491.5 -554"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!491.5 -554S7|411 -583.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!411 -583.5S7|363 -601"/>
+                    <Edge fillStyle0="2" fillStyle1="13" strokeStyle="1" edges="!363 -601S7|391 -564.5!391 -564.5|224.5 -544.5"/>
+                    <Edge fillStyle0="2" fillStyle1="8" strokeStyle="1" edges="!224.5 -544.5S7|12 -630.5!12 -630.5|79 -666"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!79 -666S7|-166 -652.5"/>
+                    <Edge fillStyle0="2" fillStyle1="5" edges="!-166 -652.5S3|-166.5 -651"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!-166.5 -651S7|192 -520.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!192 -520.5S3|204 -516.5!204 -516.5|205 -516.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!205 -516.5S3|523.5 -543"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!490 -591.5S7|411 -583.5"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!491.5 -554S5|490 -591.5"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!588.5 -519S5|523.5 -543"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!94.5 -776.5S3|90 -782"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!90 -782S7|41.5 -847.5"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!41.5 -847.5S5|9.5 -891.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!9.5 -891.5S7|-46 -887!-46 -887|-122.5 -953!-122.5 -953|-246.5 -945.5!-246.5 -945.5|-263 -875.5!-263 -875.5|-333.5 -871"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!-333.5 -871S7|-168 -652"/>
+                    <Edge fillStyle0="2" fillStyle1="5" strokeStyle="1" edges="!-168 -652S7|-166 -652.5"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!94.5 -776.5S3|94 -782"/>
+                    <Edge fillStyle0="4" fillStyle1="2" edges="!94 -782S3|90 -782"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!223.5 -793.5S5|145.5 -853!145.5 -853|41.5 -847.5"/>
+                    <Edge fillStyle0="2" fillStyle1="13" strokeStyle="1" edges="!151.5 -698S7|188 -705"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!188 -705S3|170.5 -720.5!170.5 -720.5|138 -717"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!138 -717S7|151.5 -698"/>
+                    <Edge fillStyle0="8" fillStyle1="13" strokeStyle="1" edges="!169 -683S7|133 -694.5"/>
+                    <Edge fillStyle0="8" fillStyle1="2" strokeStyle="1" edges="!133 -694.5S7|79 -666"/>
+                    <Edge fillStyle0="2" fillStyle1="13" strokeStyle="1" edges="!133 -694.5S7|151.5 -698"/>
+                    <Edge fillStyle0="9" fillStyle1="8" strokeStyle="1" edges="!133.5 -657.5S7|99.5 -636.5!99.5 -636.5|197 -597.5!197 -597.5|182 -640!182 -640|133.5 -657.5"/>
+                    <Edge fillStyle0="3" fillStyle1="13" strokeStyle="1" edges="!317 -658.5S7|319 -657.5"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!319 -657.5S7|318.5 -658.5!318.5 -658.5|317 -658.5"/>
+                    <Edge fillStyle0="3" fillStyle1="13" strokeStyle="1" edges="!188 -705S7|203.5 -708!203.5 -708|237 -693"/>
+                    <Edge fillStyle0="3" fillStyle1="9" strokeStyle="1" edges="!237 -693S7|253.5 -686"/>
+                    <Edge fillStyle0="3" fillStyle1="7" edges="!253.5 -686S3|274 -678.5!274 -678.5|272 -678.5"/>
+                    <Edge fillStyle0="3" fillStyle1="13" strokeStyle="1" edges="!272 -678.5S7|317 -658.5"/>
+                    <Edge fillStyle0="13" fillStyle1="8" strokeStyle="1" edges="!251.5 -650.5S7|251.5 -650!251.5 -650|224.5 -544.5!210.5 -667.5|250.5 -651!250.5 -651|251.5 -650.5"/>
+                    <Edge fillStyle0="13" fillStyle1="13" strokeStyle="1" edges="!251.5 -650.5S7|317 -658.5"/>
+                    <Edge fillStyle0="9" fillStyle1="7" strokeStyle="1" edges="!272 -678.5S7|253.5 -686"/>
+                    <Edge fillStyle0="9" fillStyle1="13" strokeStyle="2" edges="!210.5 -667.5S7|272 -678.5"/>
+                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="1" edges="!205 -516.5S7|259.5 -497"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!259.5 -497S7|341 -502.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!341 -502.5S7|358 -503!358 -503|371.5 -504"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!371.5 -504S7|588.5 -519"/>
+                    <Edge fillStyle0="7" fillStyle1="13" strokeStyle="1" edges="!275 -623.5S7|271.5 -587.5!271.5 -587.5|317.5 -596.5!317.5 -596.5|307.5 -627.5!307.5 -627.5|275 -623.5"/>
+                    <Edge fillStyle0="3" fillStyle1="13" strokeStyle="1" edges="!319 -657.5S7|363 -601"/>
+                    <Edge fillStyle0="9" fillStyle1="8" strokeStyle="1" edges="!169 -683S7|210.5 -667.5"/>
+                    <Edge fillStyle0="9" fillStyle1="13" strokeStyle="2" edges="!237 -693S7|169 -683"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!138 -717S7|94.5 -776.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!94 -782S3|223.5 -793.5"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="!372.5 -409.5S6|380.5 -409.5"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!380.5 -409.5S6|373 -415.5!373 -415.5|372.5 -409.5"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!246.5 -402S7|352.5 -408.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!352.5 -408.5S7|359.5 -408.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!359.5 -408.5S3|341 -502.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!372.5 -409.5S7|359.5 -408.5"/>
+                    <Edge fillStyle0="6" fillStyle1="2" edges="!187 -423.5S3|186.5 -417.5"/>
+                    <Edge fillStyle0="6" fillStyle1="2" strokeStyle="1" edges="!186.5 -417.5S7|165.5 -192"/>
+                    <Edge fillStyle0="6" fillStyle1="2" edges="!165.5 -192S3|158 -104!158 -104|157.5 -100.5"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!157.5 -100.5S7|160 -92.5"/>
+                    <Edge fillStyle0="6" fillStyle1="2" strokeStyle="1" edges="!160 -92.5S7|160.5 -90!160.5 -90[#A0.9F -88.140625 161 -86.5!161 -86.5[#A3.06 #FFFFB0.3F 165 -73!165 -73[#AD.E2 -41.5625 183 -10!183 -10[#B9.21 -2.078125 187 6!187 6|195 35"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!195 35S7|206 36"/>
+                    <Edge fillStyle0="6" fillStyle1="3" strokeStyle="1" edges="!206 36S7|246.5 -402"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!246.5 -402S7|187 -423.5"/>
+                    <Edge fillStyle0="2" fillStyle1="6" edges="!160 -92.5S3|157.5 -100!157.5 -100|157.5 -100.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!157.5 -100.5S7|156.5 -104.5!156.5 -104.5|156 -104.5!156 -104.5|-73 -165"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!-73 -165S7|-69 -137!-69 -137|-174 -130.5"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="!-174 -130.5S7|-245.5 -127"/>
+                    <Edge fillStyle0="2" fillStyle1="11" strokeStyle="1" edges="!-245.5 -127S7|-231.5 -50.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!-231.5 -50.5S7|-37 18.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!-37 18.5S7|195 35!156.5 -104.5|156 -106!156 -106|156 -104.5!158 -104|156.5 -104.5!165.5 -192|156 -106"/>
+                    <Edge fillStyle0="5" fillStyle1="3" edges="!293.5 70S3|302.5 -39.5!302.5 -39.5|351 -86!351 -86|380.5 -409.5"/>
+                    <Edge fillStyle0="2" fillStyle1="5" strokeStyle="1" edges="!282 71S7|293 -46.5!293 -46.5|343 -89!343 -89|372.5 -409.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!352.5 -408.5S3|325 -98.5!325 -98.5|274 -44!274 -44|265 72.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!265 72.5S7|282 71"/>
+                    <Edge fillStyle0="3" fillStyle1="7" strokeStyle="1" edges="!569.5 -389.5S7|472 -378!472 -378|455 -410.5!455 -410.5|572.5 -422!572.5 -422|569.5 -389.5"/>
+                    <Edge fillStyle0="3" fillStyle1="5" edges="!486.5 -302S3|493 -290"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!493 -290S7|632.5 -285"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!632.5 -285S5|588.5 -519"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="!486 -297.5S7|486.5 -302"/>
+                    <Edge fillStyle0="5" fillStyle1="2" edges="!486.5 -302S3|484 -300"/>
+                    <Edge fillStyle0="5" fillStyle1="3" strokeStyle="1" edges="!484 -300S7|486 -297.5"/>
+                    <Edge fillStyle0="3" fillStyle1="5" strokeStyle="1" edges="!493 -290S7|486 -297.5"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!486 -297.5S7|450.5 95.5!450.5 95.5|556 54"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!556 54S5|632.5 -285"/>
+                    <Edge fillStyle0="1" fillStyle1="6" edges="!187 -423.5S3|205 -516.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!484 -300S7|380.5 -409.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!358 -503S7|373 -415.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!371.5 -504S3|486.5 -302"/>
+                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="1" edges="!259.5 -497S7|246.5 -402"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!490 -591.5S5|223.5 -793.5"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!446.5 97.5S3|449.5 97.5"/>
+                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!449.5 97.5S7|449.5 96!449.5 96|446.5 97.5"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!450.5 95.5S7|449.5 96"/>
+                    <Edge fillStyle0="4" fillStyle1="3" edges="!556 54S3|558 55"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!558 55S5|558 53.5!558 53.5|556 54"/>
+                    <Edge fillStyle0="3" fillStyle1="8" strokeStyle="1" edges="!410.5 325S7[#19E.4E #144.D8 418 324.5!418 324.5|424 324"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!424 324S7|427.5 323.5!427.5 323.5|428.5 323.5!428.5 323.5|449.5 97.5"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!487.5 320S5|499.5 319!499.5 319|500 315"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!500 315S7|487.5 320"/>
+                    <Edge fillStyle0="3" fillStyle1="8" strokeStyle="1" edges="!424 324S7|487.5 320"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!500 315S5|558 55"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!202.5 77S7|203.5 64"/>
+                    <Edge fillStyle0="2" fillStyle1="6" edges="!203.5 64S3|200.5 53"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="!200.5 53S7|195 35"/>
+                    <Edge fillStyle0="2" fillStyle1="5" edges="!293.5 71S3|283 73.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!283 73.5S7|308 181"/>
+                    <Edge fillStyle0="2" fillStyle1="5" strokeStyle="1" edges="!308 181S7|358.5 179.5!358.5 179.5|373 327!373 327|373 327.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!373 327.5S7|388 326.5"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!388 326.5S3|378 196.5!378 196.5[#176.CC #A5.F5 355 163!355 163|318 164.5!318 164.5|297.5 70.5"/>
+                    <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!297.5 70.5S7|293.5 71"/>
+                    <Edge fillStyle0="3" fillStyle1="4" edges="!293.5 70S3|297.5 70.5"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!297.5 70.5S7|446.5 97.5"/>
+                    <Edge fillStyle0="5" fillStyle1="4" edges="!293.5 71S3|293.5 70"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="!282 71S7|293.5 71"/>
+                    <Edge fillStyle0="2" fillStyle1="5" strokeStyle="1" edges="!283 73.5S7|282 71"/>
+                    <Edge fillStyle0="6" fillStyle1="3" strokeStyle="1" edges="!203.5 64S7|206 36"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!265 72.5S7|202.5 77"/>
+                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="1" edges="!202.5 77S7|171.5 291!171.5 291|333 323"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!333 323S7|360 327.5"/>
+                    <Edge fillStyle0="3" fillStyle1="5" edges="!360 327.5S3|347.5 190.5!347.5 190.5|308.5 192"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!308.5 192S3|295 193!295 193|265 72.5"/>
+                    <Edge fillStyle0="2" fillStyle1="5" edges="!308.5 192S3|308 181"/>
+                    <Edge fillStyle0="2" fillStyle1="6" edges="!90 362S3|129 209.5!129 209.5[#7D.BB #CA.66 127.5 192.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!127.5 192.5S7|90 362"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!129 186S7|191.5 92"/>
+                    <Edge fillStyle0="6" fillStyle1="2" edges="!191.5 92S3|136.5 170!136.5 170[#83.B4 #B2.8F 129 186"/>
+                    <Edge fillStyle0="2" fillStyle1="6" edges="!127.5 192.5S3[#80.19 #BD.4F 129 186"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!171.5 291S7|131 329!131 329[#83.96 #153.88 123.5 349"/>
+                    <Edge fillStyle0="6" fillStyle1="2" edges="!123.5 349S3[#B4.92 #153.73 350 367.5"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!350 367.5S7|362.5 355.5"/>
+                    <Edge fillStyle0="6" fillStyle1="8" strokeStyle="1" edges="!362.5 355.5S7|373 327.5"/>
+                    <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="!373 327.5S7|365 327.5"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="!365 327.5S3|362 328!362 328|360 328"/>
+                    <Edge fillStyle0="6" fillStyle1="3" edges="!360 328S3|333 323"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!97.5 367S7[#66.EA #16B.7A 113.5 351!113.5 351[#78.D9 #156.67 131 329!131 329|125.5 334!125.5 334|90.5 367!90.5 367[#5C.85 #16F.3F 94.5 367.5"/>
+                    <Edge fillStyle0="6" strokeStyle="1" edges="!94.5 367.5S5|95 367.5"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!95 367.5S7|95.5 367.5"/>
+                    <Edge fillStyle0="6" fillStyle1="2" strokeStyle="1" edges="!95.5 367.5S7[#60.6E #16F.64 97.5 367"/>
+                    <Edge fillStyle0="6" edges="!88.5 367S1|88.5 367.5"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!88.5 367.5S7|89 367!89 367|88.5 367"/>
+                    <Edge fillStyle0="6" edges="!95 367.5S1|94 368"/>
+                    <Edge fillStyle0="6" fillStyle1="2" strokeStyle="1" edges="!94 368S7|95.5 367.5"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!125.5 334S7|89 367!89 367[#59.C1 #16E.FF 90.5 367"/>
+                    <Edge fillStyle0="6" edges="!88.5 367.5S1|94.5 367.5"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!90.5 367S7|88.5 367.5"/>
+                    <Edge fillStyle0="2" fillStyle1="6" edges="!88.5 367S3|90 362"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="!123.5 349S7[#72.FD #166.8F 97.5 367"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!350 367.5S6|349 368.5!349 368.5|356.5 372"/>
+                    <Edge strokeStyle="1" edges="!356.5 372S4|361.5 370"/>
+                    <Edge fillStyle1="8" edges="!361.5 370S2|361 369.5"/>
+                    <Edge fillStyle1="6" edges="!361 369.5S2[#163.89 #170.92 350 367.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!388 326.5S3|388 327"/>
+                    <Edge fillStyle0="3" fillStyle1="8" strokeStyle="1" edges="!388 327S7|410.5 325"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!410.5 325S7|388 326.5"/>
+                    <Edge fillStyle0="5" fillStyle1="3" edges="!360 327.5S3|360 328"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="!360 327.5S7|362 328"/>
+                    <Edge fillStyle0="8" fillStyle1="6" edges="!362.5 355.5S3|361 369.5"/>
+                    <Edge fillStyle0="2" fillStyle1="8" strokeStyle="1" edges="!373 327.5S7|388 327"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!349.5 380S5|361.5 374.5!361.5 374.5|356.5 372"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!356.5 372S7|349.5 380"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!94 368S5|321 392!321 392|349.5 380"/>
+                    <Edge fillStyle0="2" fillStyle1="6" edges="!191.5 92S3|202.5 77"/>
+                    <Edge fillStyle1="8" strokeStyle="1" edges="!487.5 320S6|361.5 370"/>
+                    <Edge fillStyle0="4" fillStyle1="6" strokeStyle="1" edges="!-534.5 -1165.5S7|-420.5 -1137"/>
+                    <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!-420.5 -1137S7|-232 -1148"/>
+                    <Edge fillStyle0="4" strokeStyle="1" edges="!-232 -1148S5|-345.5 -1176.5!-345.5 -1176.5|-534.5 -1165.5"/>
+                    <Edge fillStyle0="7" fillStyle1="3" strokeStyle="1" edges="!-241 -1090.5S7|-329 -1077.5!-329 -1077.5|-337.5 -980!-337.5 -980|-303 -976.5!-303 -976.5|-297 -1041.5!-297 -1041.5|-251 -1051!-251 -1051|-195 -1004!-195 -1004|-158.5 -1018.5!-158.5 -1018.5|-241 -1090.5"/>
+                    <Edge fillStyle0="2" fillStyle1="9" strokeStyle="1" edges="!-124 -880S7|-21 -715!-21 -715|-58.5 -708.5!-58.5 -708.5|-160.5 -868!-160.5 -868|-124 -880"/>
+                    <Edge fillStyle0="1" fillStyle1="6" strokeStyle="1" edges="!-333.5 -871S7|-373 -814.5!-373 -814.5|-293 -703.5!-293 -703.5|-302.5 -688.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-302.5 -688.5S7|-202 -612"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-202 -612S5|-168 -652"/>
+                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="1" edges="!-420.5 -1137S7|-383 -937!-383 -937|-333.5 -871"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!-245 -546.5S7|-377.5 -540"/>
+                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="1" edges="!-377.5 -540S7|-364 -442!-364 -442|-314 -442.5!-314 -442.5|-279.5 -236.5!-279.5 -236.5|-185 -238!-185 -238|-174 -130.5"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-166.5 -651S5|-202 -612"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-202 -612S7|-126 -554"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!-126 -554S7|-123.5 -536.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-123.5 -536.5S7|187 -423.5"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="!-166.5 -651S6|-168 -652"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!-126 -554S7|-245 -546.5"/>
+                    <Edge fillStyle0="3" edges="!-491.5 -816.5S1|-500.5 -816"/>
+                    <Edge fillStyle0="3" fillStyle1="5" edges="!-500.5 -816S3|-501 -814"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!-501 -814S3|-525.5 -742!-525.5 -742|-624.5 -731.5"/>
+                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="1" edges="!-624.5 -731.5S7|-377.5 -540"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!-440 -793.5S5|-472 -817.5!-472 -817.5|-491.5 -816.5"/>
+                    <Edge fillStyle0="5" fillStyle1="2" edges="!-507.5 -816S3|-501 -814"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="!-440 -793.5S6|-488.5 -922.5!-488.5 -922.5|-534.5 -1165.5"/>
+                    <Edge fillStyle0="5" edges="!-500.5 -816S1|-507.5 -816"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!-762 -648.5S6|-792 -743.5!-792 -743.5|-718.5 -803!-718.5 -803|-507.5 -816"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="!-628.5 -733.5S7|-624.5 -731.5"/>
+                    <Edge fillStyle0="10" fillStyle1="2" edges="!-755 -639.5S3|-762 -648.5"/>
+                    <Edge fillStyle0="10" edges="!-762 -648.5S1|-758 -637"/>
+                    <Edge fillStyle0="10" fillStyle1="6" edges="!-758 -637S3|-755 -639.5"/>
+                    <Edge fillStyle0="6" edges="!-758 -637S1|-756.5 -632"/>
+                    <Edge fillStyle0="6" strokeStyle="1" edges="!-756.5 -632S5|-723.5 -529.5"/>
+                    <Edge fillStyle0="6" fillStyle1="2" strokeStyle="1" edges="!-723.5 -529.5S7|-702 -461.5"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!-702 -461.5S7|-688 -428!-688 -428|-642 -411.5"/>
+                    <Edge fillStyle0="6" fillStyle1="2" strokeStyle="1" edges="!-642 -411.5S7|-577 -388.5"/>
+                    <Edge fillStyle0="6" fillStyle1="7" strokeStyle="1" edges="!-577 -388.5S7|-534 -443!-534 -443|-593 -495.5!-593 -495.5|-539.5 -564!-539.5 -564|-363 -435"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!-363 -435S7|-364 -442"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-723.5 -529.5S5|-807 -506!-807 -506|-788.5 -435"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="!-788.5 -435S7|-702 -461.5"/>
+                    <Edge fillStyle0="9" fillStyle1="6" strokeStyle="1" edges="!-667.5 -563.5S7|-572.5 -643!-572.5 -643|-592.5 -672!-592.5 -672|-693.5 -586!-693.5 -586|-667.5 -563.5"/>
+                    <Edge fillStyle0="6" fillStyle1="2" edges="!-628.5 -733.5S3|-755 -639.5"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!-718.5 -803S7|-628.5 -733.5"/>
+                    <Edge fillStyle0="2" fillStyle1="7" strokeStyle="1" edges="!-553 -380S7|-577 -388.5"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="!-551.5 -379S7|-553 -380"/>
+                    <Edge fillStyle0="7" fillStyle1="6" edges="!-553 -380S3|-551 -385!-551 -385|-507.5 -446.5!-507.5 -446.5|-561.5 -493.5!-561.5 -493.5|-538 -526.5!-538 -526.5|-372.5 -419!-372.5 -419|-360.5 -420.5"/>
+                    <Edge fillStyle0="7" fillStyle1="6" strokeStyle="1" edges="!-360.5 -420.5S7|-363 -435"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!-551.5 -379S7|-547.5 -271.5"/>
+                    <Edge fillStyle0="1" fillStyle1="11" strokeStyle="1" edges="!-547.5 -271.5S7|-519 -232.5!-519 -232.5|-452.5 -168.5!-452.5 -168.5|-321.5 -123"/>
+                    <Edge fillStyle0="1" fillStyle1="6" strokeStyle="1" edges="!-321.5 -123S7|-345.5 -307!-345.5 -307|-551.5 -379"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!-765.5 -347.5S6|-772 -372.5"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="!-772 -372.5S6|-788.5 -435"/>
+                    <Edge fillStyle0="6" fillStyle1="2" strokeStyle="1" edges="!-772 -372.5S7|-642 -411.5"/>
+                    <Edge fillStyle1="11" strokeStyle="1" edges="!-422.5 -28S6|-435 -32!-435 -32|-442.5 -91!-442.5 -91|-580 -139!-580 -139|-765.5 -347.5"/>
+                    <Edge fillStyle0="11" fillStyle1="11" strokeStyle="1" edges="!-442.5 -91S7|-452.5 -168.5"/>
+                    <Edge fillStyle0="11" fillStyle1="2" strokeStyle="1" edges="!-547.5 -271.5S7|-765.5 -347.5"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="!-360.5 -420.5S7|-345.5 -307"/>
+                    <Edge fillStyle0="6" fillStyle1="11" strokeStyle="1" edges="!-321.5 -123S7|-245.5 -127"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!-245 -546.5S3|-406.5 -678!-406.5 -678|-302.5 -688.5"/>
+                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="1" edges="!-302.5 -688.5S7|-440 -793.5"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="!-73 -165S7|-123.5 -536.5"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="!9.5 -891.5S5|-39.5 -958.5!-39.5 -958.5|-232 -1148"/>
+                    <Edge fillStyle1="8" edges="!-4 182.5S2|-4 187"/>
+                    <Edge strokeStyle="1" edges="!-4 187S4|-1.5 186.5"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!-1.5 186.5S6|-4 182.5"/>
+                    <Edge fillStyle0="2" fillStyle1="8" strokeStyle="1" edges="!-51 166S7|-50 166!-50 166|-4 182.5"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!-37 18.5S7|-51 166"/>
+                    <Edge fillStyle0="1" fillStyle1="12" strokeStyle="1" edges="!-301 83.5S7|-253.5 72"/>
+                    <Edge fillStyle0="1" fillStyle1="8" strokeStyle="1" edges="!-253.5 72S7|-212 61.5"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-212 61.5S7|-215 43.5"/>
+                    <Edge fillStyle0="1" fillStyle1="11" strokeStyle="1" edges="!-215 43.5S7|-422.5 -28"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-422.5 -28S5|-612.5 76"/>
+                    <Edge fillStyle0="1" fillStyle1="13" strokeStyle="1" edges="!-612.5 76S7|-459 120.5"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-459 120.5S5|-457.5 121.5"/>
+                    <Edge fillStyle0="1" fillStyle1="8" strokeStyle="1" edges="!-457.5 121.5S7|-301 83.5"/>
+                    <Edge fillStyle0="8" fillStyle1="1" strokeStyle="1" edges="!-51 166S7|-203.5 110.5!-203.5 110.5|-212 61.5"/>
+                    <Edge fillStyle0="8" fillStyle1="12" edges="!-253.5 72S3|-252.5 77"/>
+                    <Edge fillStyle0="8" fillStyle1="12" strokeStyle="1" edges="!-252.5 77S7|-224.5 133!-224.5 133|-233.5 165!-233.5 165|-262.5 201.5"/>
+                    <Edge fillStyle0="8" strokeStyle="1" edges="!-262.5 201.5S5|-4 187"/>
+                    <Edge fillStyle0="12" fillStyle1="8" strokeStyle="1" edges="!-301 83.5S7|-334.5 126.5!-334.5 126.5|-333.5 175!-333.5 175|-282.5 203"/>
+                    <Edge fillStyle0="12" strokeStyle="1" edges="!-282.5 203S5|-262.5 201.5"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!-1.5 186.5S5|-1 358!-1 358[#2B.CB #16A.87 88.5 367"/>
+                    <Edge fillStyle1="8" edges="!-445.5 213S2|-445 212.5"/>
+                    <Edge fillStyle1="8" strokeStyle="1" edges="!-445 212.5S6|-469 213.5"/>
+                    <Edge fillStyle1="13" strokeStyle="1" edges="!-469 213.5S6|-625.5 169!-625.5 169|-612.5 76"/>
+                    <Edge fillStyle0="8" edges="!-457.5 121.5S1|-459.5 121"/>
+                    <Edge fillStyle0="8" fillStyle1="13" strokeStyle="1" edges="!-459.5 121S7|-469 213.5"/>
+                    <Edge fillStyle0="13" strokeStyle="1" edges="!-459.5 121S5|-459 120.5"/>
+                    <Edge fillStyle1="8" strokeStyle="1" edges="!-282.5 203S6|-445.5 213"/>
+                    <Edge fillStyle0="1" fillStyle1="11" strokeStyle="1" edges="!-231.5 -50.5S7|-215 43.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="元件 5" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="43" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="元件 5" selected="true">
+                  <matrix>
+                    <Matrix a="-0.781219482421875" b="1.38409423828125" c="1.30624389648438" d="0.737289428710938" tx="-27.15" ty="-37.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.3" y="-0.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="43" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape 4" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.98089599609375" b="-0.191299438476563" c="-0.191299438476563" d="0.98089599609375" tx="41.6" ty="-11.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF9900"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#FFFF00"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#FF6600"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-1770.5 -753[#FFF929.4D #FFFD0C.7F -1728 -753!-1728 -753|-1633.5 -745.5!-1633.5 -745.5[#FFF987.08 #FFFD19.84 -1676.5 -739!-1676.5 -739[#FFF95E.78 #FFFD20.B7 -1714 -731!-1714 -731[#FFF92A.7D #FFFD2E.53 -1764.5 -709.5!-1764.5 -709.5[#FFF90A.67
+ #FFFD48.4D -1771 -678!-1771 -678|-1880.5 -677!-1880.5 -677[#FFF879.5B #FFFD4F.E2 -1908.5 -696!-1908.5 -696[#FFF89D.AE #FFFD40.04 -1857.5 -711!-1857.5 -711[#FFF8DF.09 #FFFD32.01 -1829 -725.5!-1829 -725.5[#FFF8D7.19 #FFFD22.BB -1801 -745.5
+!-1801 -745.5[#FFF905.4B #FFFD11.19 -1770.5 -753"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-1719.5 -549.5[#FFF95A.F4 #FFFDD5.24 -1681.5 -558.5!-1681.5 -558.5[#FFF9C2.FE #FFFDC1.65 -1492.5 -559!-1492.5 -559[#FFFA6D.EF #FFFDD8.47 -1419 -565.5!-1419 -565.5[#FFFA7B.CF #FFFDBD.3D -1464.5 -611.5!-1464.5 -611.5[#FFFA99.36 #FFFD80.52
+ -1262.5 -619.5!-1262.5 -619.5|-1244 -616.5!-1244 -616.5[#FFFB1A.3D #FFFDA2.4A -1265 -605!-1265 -605[#FFFB04.CD -604.46875 -1281 -594.5!-1281 -594.5[#FFFB16.5D #FFFDB3.DB -1233.5 -588.5!-1233.5 -588.5[#FFFB4F.DE #FFFDB3.45 -1167 -586.5
+!-1167 -586.5[#FFFB8F.F1 #FFFDB7.E9 -1109 -567!-1109 -567[-1114 #FFFDD0.52 -1123.5 -556!-1123.5 -556[#FFFB93.21 #FFFDD7.65 -1136 -545!-1136 -545|-1128.5 -541.5!-1128.5 -541.5[#FFFBC9.17 #FFFDF9.F5 -1038 -511!-1038 -511[#FFFC0D.EE #FFFE05.9F
+ -990 -488!-990 -488[#FFFC34.9D #FFFE28.F6 -963.5 -446.5!-963.5 -446.5[#FFFC44.5E #FFFE59.16 -960.5 -400!-960.5 -400[#FFFC3A.1F #FFFE88.9F -984 -359!-984 -359[#FFFC0C.78 #FFFEA3.9D -1008.5 -326!-1008.5 -326[#FFFC0F.B #FFFECE.5B -1031.5
+ -285.5!-1031.5 -285.5[#FFFBE1.F6 #FFFEF6.14 -1092.5 -252!-1092.5 -252[#FFFB92.D1 #FFFF12.79 -1180.5 -233.5!-1180.5 -233.5[#FFFB2F.F7 -228.96875 -1282 -238!-1282 -238[#FFFB16.66 #FFFF01.3F -1249.5 -282.5!-1249.5 -282.5[-1313.125 #FFFEDA.D1
+ -1356 -281!-1356 -281[#FFFA63.3C #FFFEF6.B4 -1504.5 -305!-1504.5 -305[#FFFA50.D #FFFECF.F9 -1437.5 -320.5!-1437.5 -320.5[#FFFA6A.35 #FFFEB8.35 -1430 -337.5!-1430 -337.5[#FFFA69.ED #FFFEA5.12 -1437.5 -357!-1437.5 -357[#FFFA52.29 #FFFE84.FD
+ -1493 -393.5!-1493 -393.5[#FFF9FE.EB #FFFE66.39 -1592 -408.5!-1592 -408.5[#FFF990.96 -408.96875 -1653.5 -420!-1653.5 -420[#FFF987.A9 #FFFE56.D3 -1649 -432.5!-1649 -432.5[#FFF99B.B5 #FFFE3C.CB -1667 -466.5!-1667 -466.5[#FFF95C.24 #FFFE1D.4F
+ -1773 -490.5!-1773 -490.5[#FFF8BC.DB #FFFE13.7B -1913.5 -513.5!-1913.5 -513.5[#FFF8FC.7B #FFFDFE.02 -1753 -520.5!-1753 -520.5[#FFF940.BC #FFFDF3.72 -1719 -531.5!-1719 -531.5[#FFF951.D2 #FFFDE5.5C -1719.5 -549.5"/>
+                    <Edge fillStyle1="1" edges="
+!-2172.5 -555.5|-2184.5 -556.5!-2184.5 -556.5|-2241.5 -554.5!-2241.5 -554.5[#FFF73B.13 #FFFDD5.8F -2248 -555.5!-2248 -555.5|-2268.5 -560.5!-2268.5 -560.5[#FFF713.D7 #FFFDCC.C9 -2295.5 -577!-2295.5 -577|-2273.5 -572.5!-2273.5 -572.5[#FFF733.49
+ #FFFDC6.0A -2231.5 -570!-2231.5 -570|-2208.5 -568!-2208.5 -568[#FFF765.3D #FFFDC7.A7 -2197.5 -572!-2197.5 -572|-2193 -568!-2193 -568[-2190.25 #FFFDCA.DF -2187 -563.5!-2187 -563.5|-2172 -557"/>
+                    <Edge fillStyle1="3" edges="
+!-2172 -557|-2165.5 -554.5!-2165.5 -554.5|-2172.5 -555.5"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="
+!-2172 -557|-2172.5 -555.5"/>
+                    <Edge fillStyle0="1" edges="
+!-1259.5 -715[#FFFB4A.4D #FFFD55.A5 -1245 -684.5!-1245 -684.5[#FFFB18.FB #FFFD52.CF -1271 -688!-1271 -688[#FFFA97.B1 #FFFD3B.B3 -1493.5 -691!-1493.5 -691[#FFF9C2.88 #FFFD4E.DD -1700.5 -644!-1700.5 -644[#FFFA07.AE #FFFD8D.C5 -1683.5 -597
+!-1683.5 -597[#FFF8F2.41 #FFFDC2.2F -2131 -543.5!-2131 -543.5[#FFF7F8.1B #FFFE04.BF -1946.5 -499.5!-1946.5 -499.5[#FFF874.9C #FFFE0E.65 -1923 -492.5!-1923 -492.5[#FFF888.C2 -485.84375 -1912.5 -473!-1912.5 -473[#FFF886.AA #FFFE42.5B -1846.5
+ -445!-1846.5 -445[#FFF922.5D #FFFE44.26 -1697.5 -411.5!-1697.5 -411.5[#FFF96F.A1 -403.34375 -1675.5 -396!-1675.5 -396[#FFF986.A3 #FFFE8E.8F -1796 -354!-1796 -354[#FFF924.9A #FFFEB7.D3 -1652 -320.5!-1652 -320.5[#FFF9AB.3D #FFFEBF.C1 -1596.5
+ -295!-1596.5 -295[#FFF9E3.06 #FFFEF9.DB -1514.5 -248!-1514.5 -248[#FFFA3F.D7 -236.1875 -1416.5 -237.5!-1416.5 -237.5[#FFFAB5.ED -226.6875 -1341 -212!-1341 -212[#FFFAC9.3C #FFFF32.A2 -1341.5 -199!-1341.5 -199[#FFFABB.95 #FFFF3F.CC -1368
+ -186.5!-1368 -186.5[#FFFAB0.1F #FFFF4B.D2 -1342 -176!-1342 -176|-1333 -174!-1333 -174|-1301.5 -170.5!-1301.5 -170.5[#FFFB1E.1D #FFFF58.07 -1207.5 -181!-1207.5 -181[#FFFB63.CB -189.4375 -1159.5 -189!-1159.5 -189[#FFFB8B.57 #FFFF43.6C
+ -1131.5 -181!-1131.5 -181[#FFFB9D.49 #FFFF52.0B -1126 -163!-1126 -163[#FFFB98.A6 #FFFF61.75 -1130.5 -154!-1130.5 -154[#FFFB90.A5 #FFFF6D.6F -1145 -139!-1145 -139[#FFFB91.B5 #FFFF71.AF -1123.5 -146.5!-1123.5 -146.5[#FFFBDD.BD #FFFF55.A5
+ -988.5 -224.5!-988.5 -224.5[#FFFC6E.D6 #FFFEE4.8F -894 -342!-894 -342[#FFFC8E.F2 #FFFE82.63 -881 -422!-881 -422[#FFFC8F.27 #FFFE47.85 -883.5 -450!-883.5 -450[#FFFC85.42 #FFFE25.92 -892 -485.5!-892 -485.5[-874.3125 #FFFDD8.93 -919 -597
+!-919 -597[#FFFC6D.37 #FFFDE0.5C -951.5 -593!-951.5 -593[#FFFC41.9F #FFFDA3.AE -965.5 -614.5!-965.5 -614.5[#FFFC19.C1 #FFFD6B.42 -1036.5 -685!-1036.5 -685[#FFFBC2.CA #FFFD33.E2 -1146 -714!-1146 -714[#FFFB41.1F #FFFD38.89 -1258.5 -719"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="
+!-1258.5 -719|-1259.5 -715"/>
+                    <Edge fillStyle0="1" edges="
+!-1975.5 -380[#FFF86A.F #FFFE91.F7 -1896 -359!-1896 -359[-1959 #FFFE7E.DA -1965 -412.5!-1965 -412.5[-1972.875 #FFFE3F.F2 -2082.5 -418!-2082.5 -418[#FFF80C.BE #FFFE63.39 -2005 -394.5!-2005 -394.5[#FFF838.9B #FFFE7D.6A -1975.5 -380!-1972.5
+ -310.5[#FFF835.69 #FFFECB.4C -2016 -301!-2016 -301[#FFF822.59 #FFFEDC.96 -2004 -289.5!-2004 -289.5|-1959.5 -279.5!-1959.5 -279.5|-1958 -285.5!-1958 -285.5[#FFF851.C7 #FFFEE0.5A -1973.5 -292!-1973.5 -292|-1977 -294!-1977 -294[#FFF854.4E
+ -292 -1962 -306!-1962 -306[#FFF856.2C #FFFECB.8F -1965.5 -309.5!-1965.5 -309.5|-1972.5 -310.5"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-1193 -650.5[#FFFB56.B2 #FFFD77.6C -1202 -649!-1202 -649[#FFFB45.61 -649.1875 -1222.5 -651.5!-1222.5 -651.5|-1253.5 -659.5!-1253.5 -659.5[#FFFB0C.3D #FFFD67.DE -1265.5 -665!-1265.5 -665|-1242.5 -664!-1242.5 -664[-1233 #FFFD68.49 -1221
+ -661.5!-1221 -661.5|-1201 -656!-1201 -656[#FFFB57.4C #FFFD73.51 -1193 -650.5"/>
+                    <Edge fillStyle0="1" edges="
+!-917 -627|-909 -627.5!-909 -627.5[#FFFC72.09 #FFFD82.B9 -915.5 -648.5!-915.5 -648.5[#FFFC66.BF #FFFD6C.2A -930 -669!-930 -669[#FFFC58.43 #FFFD5C.A2 -942.5 -678!-942.5 -678|-949.5 -679.5!-949.5 -679.5[#FFFC41.3F #FFFD57.5B -967.5 -684.5
+!-967.5 -684.5|-969.5 -678.5!-969.5 -678.5[#FFFC40.ED #FFFD5F.9C -947.5 -662.5!-947.5 -662.5[#FFFC57.D7 #FFFD73.74 -933.5 -643.5!-933.5 -643.5[#FFFC5D.69 #FFFD85.83 -927.5 -630!-927.5 -630[#FFFC62.8E #FFFD8D.21 -917 -627"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="
+!-967.5 -530.5[#FFFC06.AC #FFFDB0.33 -1079 -623!-1079 -623[#FFFBFD.57 #FFFD92.91 -982 -595.5!-982 -595.5[#FFFC22.75 #FFFDB2.1C -967.5 -530.5"/>
+                    <Edge fillStyle0="3" edges="
+!-1258.5 -719|-1270.5 -721.5!-1270.5 -721.5|-1259.5 -715"/>
+                    <Edge fillStyle1="1" edges="
+!-1560 -173.5[#FFF9BB.D #FFFF23.52 -1519.5 -226!-1519.5 -226[#FFF9F4.A8 #FFFF4B.0C -1414 -185!-1414 -185[#FFFA8C.4A #FFFF65.7C -1339 -143.5!-1339 -143.5|-1333 -142.5!-1333 -142.5[#FFFAE4.8F #FFFF75.CF -1274.5 -137.5!-1274.5 -137.5[#FFFAE3.76
+ #FFFF7E.BA -1333.5 -128!-1333.5 -128|-1438.5 -127!-1438.5 -127[#FFFA14.27 #FFFF81.99 -1560 -173.5"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="42" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape 33" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0998382568359375" b="-0.0092010498046875" c="0.0059661865234375" d="0.072479248046875" tx="-70.1" ty="-28.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="43" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite 3" selected="true">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-9.05" ty="64.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load)
+{
+    if (_root["是否阴影"] == true)
+    {
+        this._visible = 1;
+    }
+    else
+    {
+        this._visible = 0;
+    } // end else if
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

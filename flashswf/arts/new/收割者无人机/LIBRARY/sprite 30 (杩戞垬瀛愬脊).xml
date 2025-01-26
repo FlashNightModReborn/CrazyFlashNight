@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite 30 (杩戞垬瀛愬脊)" itemID="561603d5-0000001f" linkageExportForAS="true" linkageIdentifier="杩戞垬瀛愬脊" sourceFlashFilepath="../../../../../../../../../../Users/admin/Downloads/收割者无人机.fla" sourceLibraryItemHRef="sprite 30 (杩戞垬瀛愬脊)" sourceLastModified="1444283349" lastModified="1445612310" lastUniqueIdentifier="4" sourceItemID="561603d5-0000001f">
+  <timeline>
+    <DOMTimeline name="sprite 30 (杩戞垬瀛愬脊)">
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite 14" name="area">
+                  <matrix>
+                    <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
