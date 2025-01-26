@@ -820,7 +820,7 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	var 环境信息:Object = {};
 	环境信息.地址 = 当前配置.BackgroundURL;
 	//地图尺寸
-	环境信息.对齐原点 = 当前配置.Alignment ? true : false;
+	环境信息.对齐原点 = 当前配置.Alignment ? true : 默认配置.对齐原点;
 	环境信息.Xmin = !isNaN(当前配置.Xmin) ? Number(当前配置.Xmin) : 默认配置.Xmin;
 	环境信息.Xmax = !isNaN(当前配置.Xmax) ? Number(当前配置.Xmax) : 默认配置.Xmax;
 	环境信息.Ymin = !isNaN(当前配置.Ymin) ? Number(当前配置.Ymin) : 默认配置.Ymin;
@@ -829,8 +829,8 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	环境信息.背景高 = !isNaN(当前配置.Height) ? Number(当前配置.Height) : 默认配置.背景高;
 	//后景信息
 	环境信息.地平线高度 = !isNaN(当前配置.Horizon) ? 当前配置.Horizon : 默认配置.地平线高度;
-	环境信息.后景 = 当前配置.Skybox ? _root.配置数据为数组(当前配置.Skybox) : null;
-	环境信息.禁用天空 = 当前配置.DisableSky == true ? true : false;
+	环境信息.后景 = 当前配置.Skybox ? _root.配置数据为数组(当前配置.Skybox) : 默认配置.后景;
+	环境信息.禁用天空 = 当前配置.DisableSky == true ? true : 默认配置.禁用天空;
 	//天气信息
 	环境信息.天气情况 = 当前配置.WeatherCondition != undefined ? 当前配置.WeatherCondition : 默认配置.天气情况;
 	环境信息.空间情况 = 当前配置.SpaceCondition != undefined ? 当前配置.SpaceCondition : 默认配置.空间情况;
@@ -838,7 +838,7 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	环境信息.最大光照 = 当前配置.MaxIllumination != undefined ? Number(当前配置.MaxIllumination) : 默认配置.最大光照;
 	环境信息.最小光照 = 当前配置.MinIllumination != undefined ? Number(当前配置.MinIllumination) : 默认配置.最小光照;
 	//背景元素
-	环境信息.背景元素 = 当前配置.Elements ? _root.解析背景元素(_root.配置数据为数组(当前配置.Elements.Element)) : null;
+	环境信息.背景元素 = 当前配置.Elements ? _root.解析背景元素(_root.配置数据为数组(当前配置.Elements.Element)) : 默认配置.背景元素;
 	//无限过图参数
 	if(当前配置.Door){
 		var 门数据 = _root.配置数据为数组(当前配置.Door);
@@ -848,14 +848,14 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 			环境信息.门[door.Index] = door;
 		}
 	}else{
-		环境信息.门 = null;
+		环境信息.门 = 默认配置.门;
 	}
 	// 环境信息.门朝向 = 当前配置.DoorDirection ? 当前配置.DoorDirection : 默认配置.门朝向; //弃用
-	环境信息.地图碰撞箱 = 当前配置.Collision ? _root.配置数据为数组(当前配置.Collision) : null;
-	环境信息.左侧出生线 = 当前配置.LeftSpawnLine ? 当前配置.LeftSpawnLine : null;
-	环境信息.右侧出生线 = 当前配置.RightSpawnLine ? 当前配置.RightSpawnLine : null;
+	环境信息.地图碰撞箱 = 当前配置.Collision ? _root.配置数据为数组(当前配置.Collision) : 默认配置.地图碰撞箱;
+	环境信息.左侧出生线 = 当前配置.LeftSpawnLine ? 当前配置.LeftSpawnLine : 默认配置.左侧出生线;
+	环境信息.右侧出生线 = 当前配置.RightSpawnLine ? 当前配置.RightSpawnLine : 默认配置.右侧出生线;
 	//佣兵刷新数据
-	环境信息.佣兵刷新数据 = 当前配置.MercenaryRefresh ? 当前配置.MercenaryRefresh : null;
+	环境信息.佣兵刷新数据 = 当前配置.MercenaryRefresh ? 当前配置.MercenaryRefresh : 默认配置.佣兵刷新数据;
 
 	return 环境信息;
 }

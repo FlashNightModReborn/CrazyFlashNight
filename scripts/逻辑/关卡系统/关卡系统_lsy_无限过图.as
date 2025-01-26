@@ -37,11 +37,9 @@ _root.开启生存模式 = function(模式) {
     if (!环境信息) {
         环境信息 = _root.duplicateOf(_root.天气系统.环境设置.Default);
     }
+	//配置关卡环境参数
     if (基本配置.Environment) {
-		var 关卡环境参数 = _root.配置环境信息(基本配置.Environment, null);
-        for (var key in 基本配置.Environment) {
-            if (关卡环境参数[key] != null) 环境信息[key] = 关卡环境参数[key];
-        }
+		环境信息 = _root.配置环境信息(基本配置.Environment, 环境信息);
     }
     _root.天气系统.无限过图环境信息 = 环境信息;
 
