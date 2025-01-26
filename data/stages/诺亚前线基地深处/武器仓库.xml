@@ -108,33 +108,12 @@
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>6</Quantity>
-                        <Level>40</Level>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
-                        <Quantity>4</Quantity>
-                        <Level>40</Level>
-                    </Enemy>
-                </EnemyGroup>
             </SubWave>
         </Wave>
     </SubStage>
     <SubStage id="4">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdfqck_3_BG.swf</Background>
+            <Background>flashswf/backgrounds/武器仓库数据中心.swf</Background>
         </BasicInformation>
         <Wave>
             <SubWave id="0">

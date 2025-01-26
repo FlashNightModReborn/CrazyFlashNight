@@ -2241,6 +2241,27 @@
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
+    <Environment>
+        <BackgroundURL>武器仓库数据中心.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>20</Xmin>
+        <Xmax>1100</Xmax>
+        <Ymin>580</Ymin>
+        <Ymax>820</Ymax>
+        <Width>1100</Width>
+        <Height>820</Height>
+        <Horizon>0</Horizon>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+        <Door>
+            <Index>1</Index>
+            <Direction>左</Direction>
+            <x0>20</x0>
+            <y0>580</y0>
+            <x1>100</x1>
+            <y1>820</y1>
+        </Door>
+    </Environment>
     <!-- 试炼场深处-->
     <Environment>
         <BackgroundURL>试炼场深处钻头入口_BG.swf</BackgroundURL>
