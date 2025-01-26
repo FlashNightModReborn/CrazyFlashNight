@@ -51,7 +51,7 @@
           <DOMSoundItem name="音效/刀蓄力.wav" itemID="679517a4-000008ea" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/刀蓄力.wav" sourceLastImported="1737824116" externalFileCRC32="2460959747" externalFileSize="74662" href="音效/刀蓄力.wav" soundDataHRef="M 40 1722600527.dat" format="44kHz 16bit Mono" sampleCount="37309" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="音效/流星锤.wav" itemID="679517a5-000008eb" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/流星锤.wav" sourceLastImported="1737824116" externalFileCRC32="170961830" externalFileSize="99534" href="音效/流星锤.wav" soundDataHRef="M 36 1722597327.dat" format="44kHz 16bit Mono" sampleCount="49745" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="音效/吐.wav" itemID="679517a5-000008ec" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/吐.wav" sourceLastImported="1737824116" externalFileCRC32="784112601" externalFileSize="39426" href="音效/吐.wav" soundDataHRef="M 29 1722580433.dat" format="44kHz 16bit Mono" sampleCount="19691" exportFormat="5" exportBits="17"/>
-          <DOMBitmapItem name="位图 28" itemID="65c37675-00002def" sourceExternalFilepath="./LIBRARY/位图 28" sourceLastImported="1707308661" originalCompressionType="lossless" quality="50" href="位图 28" bitmapDataHRef="M 28 1707308661.dat" frameRight="7740" frameBottom="10780"/>
+          <DOMBitmapItem name="位图 28" itemID="65c37675-00002def" sourceExternalFilepath="./LIBRARY/位图 28" sourceLastImported="1707308661" originalCompressionType="lossless" quality="50" href="位图 28" bitmapDataHRef="M 28 1707308661.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
           <Include href="Symbol 2.xml" loadImmediate="false" itemID="6577efbc-0000023e" lastModified="1702098593"/>
@@ -1042,7 +1042,7 @@
           <Include href="Symbol 1308.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000061a" lastModified="1702098593"/>
           <Include href="Symbol 1309.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000061b" lastModified="1702098593"/>
           <Include href="Symbol 1310.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000061c" lastModified="1702098593"/>
-          <Include href="Symbol 1311.xml" loadImmediate="false" itemID="6577efbc-0000061d" lastModified="1737824279"/>
+          <Include href="Symbol 1311.xml" loadImmediate="false" itemID="6577efbc-0000061d" lastModified="1737918381"/>
           <Include href="Symbol 1313.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000061f" lastModified="1702098593"/>
           <Include href="Symbol 1314.xml" loadImmediate="false" itemID="6577efbc-00000620" lastModified="1702098593"/>
           <Include href="Symbol 1315.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000621" lastModified="1702098593"/>
@@ -1124,7 +1124,7 @@
           <Include href="Symbol 1399.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000066d" lastModified="1702098593"/>
           <Include href="Symbol 1400.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000066e" lastModified="1702098593"/>
           <Include href="Symbol 1401.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000066f" lastModified="1702098593"/>
-          <Include href="Symbol 1402.xml" loadImmediate="false" itemID="6577efbc-00000670" lastModified="1734950903"/>
+          <Include href="Symbol 1402.xml" loadImmediate="false" itemID="6577efbc-00000670" lastModified="1737918594"/>
           <Include href="Symbol 1403.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000671" lastModified="1702098593"/>
           <Include href="Symbol 1404.xml" loadImmediate="false" itemID="6577efbc-00000672" lastModified="1702098593"/>
           <Include href="Symbol 1406.xml" loadImmediate="false" itemID="6577efbc-00000673" lastModified="1702098593"/>
@@ -1142,7 +1142,7 @@
           <Include href="Symbol 1429.xml" loadImmediate="false" itemID="6577efbc-0000067f" lastModified="1722583300"/>
           <Include href="Symbol 1430.xml" loadImmediate="false" itemID="6577efbc-00000680" lastModified="1702098593"/>
           <Include href="Symbol 1431.xml" loadImmediate="false" itemID="6577efbc-00000681" lastModified="1702098593"/>
-          <Include href="Symbol 1432.xml" loadImmediate="false" itemID="6577efbc-00000682" lastModified="1702098593"/>
+          <Include href="Symbol 1432.xml" loadImmediate="false" itemID="6577efbc-00000682" lastModified="1737919238"/>
           <Include href="Symbol 1433.xml" loadImmediate="false" itemID="6577efbc-00000683" lastModified="1702098593"/>
           <Include href="Symbol 1434.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000684" lastModified="1702098593"/>
           <Include href="Symbol 1435.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000685" lastModified="1702098593"/>
@@ -1267,7 +1267,7 @@
           <Include href="Symbol 1585.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000006fc" lastModified="1702098593"/>
           <Include href="Symbol 1586.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-000006fd" lastModified="1702098593"/>
           <Include href="Symbol 1587.xml" loadImmediate="false" itemID="6577efbc-000006fe" lastModified="1702098593"/>
-          <Include href="Symbol 1588.xml" itemID="6577efbc-000006ff" lastModified="1737791774"/>
+          <Include href="Symbol 1588.xml" itemID="6577efbc-000006ff" lastModified="1737919193"/>
           <Include href="Symbol 1590.xml" loadImmediate="false" itemID="6577efbc-00000700" lastModified="1702098593"/>
           <Include href="Symbol 1592.xml" loadImmediate="false" itemID="6577efbc-00000701" lastModified="1702098593"/>
           <Include href="Symbol 1594.xml" loadImmediate="false" itemID="6577efbc-00000702" lastModified="1702098593"/>
@@ -2050,6 +2050,10 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3181306" publishTime="1737918817"/>
+          <PublishItem publishSize="3181285" publishTime="1737918642"/>
+          <PublishItem publishSize="3181314" publishTime="1737918512"/>
+          <PublishItem publishSize="3181288" publishTime="1737918357"/>
           <PublishItem publishSize="3185747" publishTime="1737825801"/>
           <PublishItem publishSize="3189347" publishTime="1737791769"/>
           <PublishItem publishSize="3189361" publishTime="1737789293"/>
@@ -2066,9 +2070,5 @@
           <PublishItem publishSize="3185170" publishTime="1723308148"/>
           <PublishItem publishSize="3185170" publishTime="1723307967"/>
           <PublishItem publishSize="3185173" publishTime="1723307929"/>
-          <PublishItem publishSize="2807170" publishTime="1719164761"/>
-          <PublishItem publishSize="2807163" publishTime="1719164149"/>
-          <PublishItem publishSize="2807157" publishTime="1719163587"/>
-          <PublishItem publishSize="2807132" publishTime="1716367401"/>
      </publishHistory>
 </DOMDocument>

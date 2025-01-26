@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1402" itemID="6577efbc-00000670" lastModified="1734950903">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1402" itemID="6577efbc-00000670" lastModified="1737918594">
   <timeline>
     <DOMTimeline name="Symbol 1402" currentFrame="22">
       <layers>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#899676">
+        <DOMLayer name="Script Layer" color="#FF0000" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -44,7 +44,50 @@ gotoAndPlay(_parent.近战招式);
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="49" keyMode="9728">
+            <DOMFrame index="1" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="近战子弹" selected="true" centerPoint3DX="-2" centerPoint3DY="180.85">
+                  <matrix>
+                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-14.5" ty="168.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_parent._parent.基因虫数量 > 0)
+	{
+		_parent._parent.基因虫数量--;
+		var myPoint = {x:this._x, y:this._y};
+		_parent.localToGlobal(myPoint);
+		_root.gameworld.globalToLocal(myPoint);
+		shootX = myPoint.x;
+		shootY = myPoint.y;
+		兵种 = "敌人-普通基因虫";
+		等级 = _parent._parent.等级;
+		名字 = "基因虫";
+		是否为敌人 = _parent._parent.是否为敌人;
+		身高 = 175 + random(100);
+		长枪 = "";
+		手枪 = "";
+		手枪2 = "";
+		刀 = "";
+		手雷 = "";
+		僵尸型敌人newname = _parent._parent._name + 兵种 + _parent._parent.基因虫数量;
+		_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX, _y:shootY, 等级:this.等级, 名字:this.名字, 是否为敌人:this.是否为敌人, 身高:this.身高, 长枪:this.长枪, 手枪:this.手枪, 手枪2:this.手枪2, 刀:this.刀, 手雷:this.手雷});
+	}
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="27" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="50" keyMode="9728">
@@ -186,51 +229,10 @@ gotoAndPlay(_parent.近战招式);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#1FB7EB" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#1FB7EB">
           <frames>
-            <DOMFrame index="0" duration="22" keyMode="9728">
+            <DOMFrame index="0" duration="23" keyMode="9728">
               <elements/>
-            </DOMFrame>
-            <DOMFrame index="22" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="近战子弹" selected="true" centerPoint3DX="-2" centerPoint3DY="180.85">
-                  <matrix>
-                    <Matrix a="0.526702880859375" d="0.516220092773438" tx="-14.5" ty="168.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_parent._parent.基因虫数量 > 0)
-   {
-      _parent._parent.基因虫数量--;
-      var myPoint = {x:this._x,y:this._y};
-      _parent.localToGlobal(myPoint);
-      _root.gameworld.globalToLocal(myPoint);
-      shootX = myPoint.x;
-      shootY = myPoint.y;
-      兵种 = "敌人-普通基因虫";
-      等级 = _parent._parent.等级;
-      名字 = "基因虫";
-      是否为敌人 = _parent._parent.是否为敌人;
-      身高 = 175;
-      长枪 = "";
-      手枪 = "";
-      手枪2 = "";
-      刀 = "";
-      手雷 = "";
-      僵尸型敌人newname = _parent._parent._name + 兵种 + random(99);
-      _root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:shootX,_y:shootY,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷});
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
             <DOMFrame index="23" duration="2" keyMode="9728">
               <elements>

@@ -2106,7 +2106,6 @@
         <Ymax>600</Ymax>
         <Width>1500</Width>
         <Height>600</Height>
-        <Horizon>0</Horizon>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
@@ -2119,7 +2118,6 @@
         <Ymax>600</Ymax>
         <Width>1500</Width>
         <Height>600</Height>
-        <Horizon>0</Horizon>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
         <Door>
@@ -2140,7 +2138,6 @@
         <Ymax>600</Ymax>
         <Width>1500</Width>
         <Height>600</Height>
-        <Horizon>0</Horizon>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
         <Collision>
@@ -2190,7 +2187,6 @@
         <Ymax>520</Ymax>
         <Width>1800</Width>
         <Height>560</Height>
-        <Horizon>0</Horizon>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
         <Door>
@@ -2211,7 +2207,6 @@
         <Ymax>850</Ymax>
         <Width>1500</Width>
         <Height>850</Height>
-        <Horizon>0</Horizon>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
@@ -2224,7 +2219,6 @@
         <Ymax>650</Ymax>
         <Width>1350</Width>
         <Height>650</Height>
-        <Horizon>0</Horizon>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
@@ -2237,7 +2231,6 @@
         <Ymax>950</Ymax>
         <Width>1600</Width>
         <Height>900</Height>
-        <Horizon>0</Horizon>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
@@ -2250,7 +2243,6 @@
         <Ymax>820</Ymax>
         <Width>1100</Width>
         <Height>820</Height>
-        <Horizon>0</Horizon>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
         <Door>
@@ -2261,6 +2253,31 @@
             <x1>100</x1>
             <y1>820</y1>
         </Door>
+    </Environment>
+    <!-- 尸母巢穴-->
+    <Environment>
+        <BackgroundURL>尸母巢穴虫洞过渡_BG.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>20</Xmin>
+        <Xmax>1520</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>600</Ymax>
+        <Width>1600</Width>
+        <Height>600</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>630</x0>
+            <y0>290</y0>
+            <x1>1000</x1>
+            <y1>350</y1>
+        </Door>
+        <RightSpawnLine>
+            <x0>650</x0>
+            <y0>320</y0>
+            <x1>950</x1>
+            <y1>320</y1>
+        </RightSpawnLine>
     </Environment>
     <!-- 试炼场深处-->
     <Environment>

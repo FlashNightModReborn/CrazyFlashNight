@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1588" itemID="6577efbc-000006ff" linkageExportForAS="true" linkageIdentifier="敌人-普通尸母" lastModified="1737791774">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 1588" itemID="6577efbc-000006ff" linkageExportForAS="true" linkageIdentifier="敌人-普通尸母" lastModified="1737919193">
   <timeline>
-    <DOMTimeline name="Symbol 1588">
+    <DOMTimeline name="Symbol 1588" currentFrame="22">
       <layers>
         <DOMLayer name="Labels Layer" color="#E56EC3">
           <frames>
@@ -75,7 +75,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#6AFF95" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#6AFF95">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -127,46 +127,14 @@
         <DOMLayer name="Layer 4" color="#EADA9E">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1359" symbolType="button">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-   if(_root.控制目标 == this._name and this.hp > 0)
-   {
-      gotoAndStop("被击");
-   }
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.gameworld[_root.控制目标].攻击目标 = this._name;
-      _root.控制目标全自动 = true;
-   }
-}
-on(press, release, rollOver){
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.鼠标.gotoAndStop("手型攻击");
-   }
-}
-on(rollOut){
-   _root.鼠标.gotoAndStop("手型普通");
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="120" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#FCD2EB">
+        <DOMLayer name="Layer 5" color="#FCD2EB" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -201,9 +169,9 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 21" centerPoint3DX="109.6" centerPoint3DY="-37.05">
+                <DOMSymbolInstance libraryItemName="Symbol 21" centerPoint3DX="88.4" centerPoint3DY="-37.05">
                   <matrix>
-                    <Matrix a="6.51220703125" d="0.72247314453125" tx="79.6" ty="-118.1"/>
+                    <Matrix a="8.33293151855469" d="0.72247314453125" tx="50" ty="-118.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -311,7 +279,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#FFF036">
+        <DOMLayer name="Layer 10" color="#FFF036" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -369,7 +337,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1429" name="man" centerPoint3DX="161.6" centerPoint3DY="88.25">
+                <DOMSymbolInstance libraryItemName="Symbol 1429" name="man" selected="true" centerPoint3DX="161.6" centerPoint3DY="88.25">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>
@@ -478,7 +446,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1432" name="man" centerPoint3DX="571.1" centerPoint3DY="281.55">
+                <DOMSymbolInstance libraryItemName="Symbol 1432" name="man" selected="true" centerPoint3DX="571.1" centerPoint3DY="281.55">
                   <matrix>
                     <Matrix tx="409.1" ty="177.8"/>
                   </matrix>

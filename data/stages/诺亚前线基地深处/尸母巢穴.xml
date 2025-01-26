@@ -48,6 +48,18 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/nyqxjdsmcx_1_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1700</x>
+                <y>400</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1700</x>
+                <y>550</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -56,46 +68,32 @@
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种75</Type>
-                        <Interval>500</Interval>
+                        <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>41</Level>
+                        <x>900</x>
+                        <y>500</y>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Interval>1000</Interval>
+                        <Quantity>4</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种75</Type>
-                        <Interval>500</Interval>
+                    <Enemy id="3">
+                        <Type>兵种70</Type>
+                        <Interval>3000</Interval>
                         <Quantity>1</Quantity>
                         <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>41</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -116,31 +114,21 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种71</Type>
-                        <Interval>500</Interval>
+                        <Interval>100</Interval>
                         <Quantity>4</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>front</SpawnIndex>
                     </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种75</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
+                    <Enemy id="2">
+                        <Type>兵种74</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
                         <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>4</Quantity>
-                        <Level>41</Level>
+                        <SpawnIndex>back</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -150,6 +138,18 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/nyqxjdsmcx_3_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1700</x>
+                <y>430</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1700</x>
+                <y>530</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -158,14 +158,37 @@
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种75</Type>
-                        <Interval>500</Interval>
+                        <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>41</Level>
+                        <x>700</x>
+                        <y>400</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种71</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>back</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>4</Quantity>
+                        <Interval>100</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种287</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>1</Quantity>
                         <Level>41</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -174,8 +197,15 @@
     </SubStage>
     <SubStage id="3">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdsmcx_4_BG.swf</Background>
+            <Background>flashswf/backgrounds/尸母巢穴虫洞过渡_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>960</x>
+                <y>310</y>
+                <QuantityMax>2</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -184,34 +214,31 @@
                 <EnemyGroup>
                     <Enemy id="0">
                         <Type>兵种75</Type>
-                        <Interval>500</Interval>
+                        <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种70</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种77</Type>
+                        <Interval>1800</Interval>
+                        <Quantity>3</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种75</Type>
-                        <Interval>500</Interval>
+                    <Enemy id="2">
+                        <Type>兵种77</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种287</Type>
+                        <Interval>5000</Interval>
                         <Quantity>1</Quantity>
                         <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种70</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>41</Level>
+                        <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -219,8 +246,15 @@
     </SubStage>
     <SubStage id="4">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdsmcx_3_BG.swf</Background>
+            <Background>flashswf/backgrounds/nyqxjdcd_1_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1500</x>
+                <y>340</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -228,35 +262,29 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种75</Type>
-                        <Interval>500</Interval>
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>41</Level>
+                        <x>1200</x>
+                        <y>500</y>
+                        <Parameters>
+                            <身高>450</身高>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
+                        <Type>兵种77</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>3</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>right</SpawnIndex>
                     </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
+                    <Enemy id="2">
                         <Type>兵种75</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -264,8 +292,20 @@
     </SubStage>
     <SubStage id="5">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdsmcx_2_BG.swf</Background>
+            <Background>flashswf/backgrounds/nyqxjdcd_2_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1600</x>
+                <y>350</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1600</x>
+                <y>500</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -273,28 +313,36 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种75</Type>
-                        <Interval>500</Interval>
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>41</Level>
+                        <x>1000</x>
+                        <y>400</y>
+                        <Parameters>
+                            <身高>450</身高>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
+                        <Type>兵种74</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>back</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
+                        <Type>兵种75</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种70</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
+                        <Type>兵种287</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
                         <Level>41</Level>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -302,8 +350,15 @@
     </SubStage>
     <SubStage id="6">
         <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdsmcx_1_BG.swf</Background>
+            <Background>flashswf/backgrounds/nyqxjdcd_3_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1600</x>
+                <y>350</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -311,186 +366,40 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>41</Level>
+                        <x>800</x>
+                        <y>550</y>
+                        <Parameters>
+                            <身高>450</身高>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种77</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>41</Level>
+                        <x>1100</x>
+                        <y>410</y>
+                        <Parameters>
+                            <身高>450</身高>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
                         <Type>兵种75</Type>
-                        <Interval>500</Interval>
+                        <Interval>1900</Interval>
                         <Quantity>1</Quantity>
                         <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
+                        <Type>兵种77</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
                         <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="3">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-        </Wave>
-    </SubStage>
-    <SubStage id="7">
-        <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdsmcx_2_BG.swf</Background>
-        </BasicInformation>
-        <Wave>
-            <SubWave id="0">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种75</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种70</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种75</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种70</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-        </Wave>
-    </SubStage>
-    <SubStage id="8">
-        <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdsmcx_3_BG.swf</Background>
-        </BasicInformation>
-        <Wave>
-            <SubWave id="0">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种75</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-        </Wave>
-    </SubStage>
-    <SubStage id="9">
-        <BasicInformation>
-            <Background>flashswf/backgrounds/nyqxjdsmcx_5_BG.swf</Background>
-        </BasicInformation>
-        <Wave>
-            <SubWave id="0">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种75</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种84</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种70</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种71</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="3">
-                        <Type>兵种72</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
-                    </Enemy>
-                    <Enemy id="4">
-                        <Type>兵种74</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>41</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
