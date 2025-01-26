@@ -79,6 +79,20 @@
             <PlayerX>780</PlayerX>
             <PlayerY>710</PlayerY>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>往右侧走，得先去数据中心。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>明白了！</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -121,6 +135,14 @@
                 </Door>
             </Environment>
         </BasicInformation>
+         <Dialogue>
+            <SubDialogue id="0">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>就是这里，坚持一会，你携带的纳米机器人会采集这里的数据。</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -146,6 +168,14 @@
                         <Level>40</Level>
                     </Enemy>
                 </EnemyGroup>
+                <Dialogue>
+            <SubDialogue id="0">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>收集完成，返程吧，我们的小队应该到门口了。</Text>
+            </SubDialogue>
+        </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
@@ -181,6 +211,20 @@
                 </Door>
             </Environment>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>情况不对，我们和小队失联了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>估计是有强敌来了···我得尽快到门口。</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -195,6 +239,26 @@
             <PlayerX>1400</PlayerX>
             <PlayerY>700</PlayerY>
         </BasicInformation>
+        <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这是？</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>已确认小队失联，请尽快脱战。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>笑话，哪里跑得了，准备战斗！</Text>
+            </SubDialogue>
+        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -206,8 +270,24 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <x>850</x>
+                        <y>720</y>
                     </Enemy>
                 </EnemyGroup>
+                <Dialogue>
+            <SubDialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>已经把它给打跑了。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>Itinerant(无线电)</Name>
+                <Title>后勤部长</Title>
+                <Char>无头像</Char>
+                <Text>做的不错。另外已检测到其他诺亚小队正在接近，请尽快撤回。</Text>
+            </SubDialogue>
+        </Dialogue>
             </SubWave>
         </Wave>
     </SubStage>
