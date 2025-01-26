@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物2" itemID="66adb4fd-00000cac" linkageExportForAS="true" linkageIdentifier="可拾取物2" lastModified="1737625317" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="可拾取物2" itemID="66adb4fd-00000cac" linkageExportForAS="true" linkageIdentifier="可拾取物2" lastModified="1737857497" lastUniqueIdentifier="5">
   <timeline>
-    <DOMTimeline name="可拾取物2" currentFrame="21">
+    <DOMTimeline name="可拾取物2" currentFrame="29" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;5&lt;/guideline&gt;&lt;guideline direction="v"&gt;-1&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Labels Layer" color="#B8E7BC">
+        <DOMLayer name="Labels Layer" color="#B8E7BC" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8287DA" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#8287DA" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -174,7 +174,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#338BF5">
+        <DOMLayer name="Layer 3" color="#338BF5" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -193,7 +193,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#2AE1FD">
+        <DOMLayer name="Layer 4" color="#2AE1FD" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -212,11 +212,11 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#D47DF8" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#D47DF8" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-2.05" centerPoint3DY="2.2">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-2.05" centerPoint3DY="2.2">
                   <matrix>
                     <Matrix a="1.20001220703125" d="0.960556030273438" tx="-15" ty="-12"/>
                   </matrix>
@@ -243,11 +243,11 @@ onClipEvent (mouseUp) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#AEAAE8" visible="false">
+        <DOMLayer name="Layer 6" color="#AEAAE8" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="物品图标" selected="true" centerPoint3DX="12" centerPoint3DY="11">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 19" name="物品图标" centerPoint3DX="12" centerPoint3DY="11">
                   <matrix>
                     <Matrix ty="-1"/>
                   </matrix>
@@ -371,7 +371,26 @@ onClipEvent (mouseUp) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#D0CA06">
+        <DOMLayer name="焦点高亮框" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="互动提示/互动提示-高亮" name="焦点高亮框" selected="true" centerPoint3DX="-1.4" centerPoint3DY="5.3">
+                  <matrix>
+                    <Matrix a="1.03327941894531" c="-0.462936401367188" d="0.639389038085938" tx="-1.4" ty="5.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="-0.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#D0CA06" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -403,7 +422,7 @@ onClipEvent (mouseUp) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#AA7B70">
+        <DOMLayer name="Sound Layer 0" color="#AA7B70" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements/>

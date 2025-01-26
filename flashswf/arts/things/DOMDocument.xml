@@ -1,4 +1,4 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#006666" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#006666" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" rulerVisible="true" nextSceneIdentifier="2" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
           <DOMFolderItem name="0.防具相关" itemID="6690e6fb-00001760"/>
           <DOMFolderItem name="0.防具相关/01.Andy套装相关" itemID="668e903f-0000149a"/>
@@ -56,6 +56,7 @@
           <DOMFolderItem name="方舟指挥官/1.特效文件夹/1.特效文件夹/08.力大砖飞/陨星坠地" itemID="6554d2de-0000309e"/>
           <DOMFolderItem name="方舟指挥官/1.特效文件夹/1.特效文件夹/08.力大砖飞/陨星坠地/未命名文件夹 1" itemID="654f0342-00002948"/>
           <DOMFolderItem name="废弃NPC套装" itemID="6690eed6-0000234c"/>
+          <DOMFolderItem name="互动提示" itemID="67959358-00000dc0"/>
           <DOMFolderItem name="技能相关" itemID="668e87dc-0000135b"/>
           <DOMFolderItem name="特效与子弹相关" itemID="6690f52b-00003159"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
@@ -74,14 +75,14 @@
           <DOMFolderItem name="消耗道具相关/4.礼包类/强化石" itemID="66a5eace-000017e3" isExpanded="true"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 4557" itemID="668e7c19-000001df" font="SimHei" size="0" id="4557" embeddedCharacters="ACEHIMPR"/>
-          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
-          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
-          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
-          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
-          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
-          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
           <DOMFontItem name="Font 28" itemID="668e7c19-000001d1" font="MicrosoftYaHei" size="0" id="28" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
+          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
+          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
+          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
+          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
+          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
+          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
+          <DOMFontItem name="Font 4557" itemID="668e7c19-000001df" font="SimHei" size="0" id="4557" embeddedCharacters="ACEHIMPR"/>
      </fonts>
      <media>
           <DOMBitmapItem name="3.位图相关/bitmap2.png" itemID="678d1911-00000d2e" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap2.png" sourceLastImported="1737536156" externalFileCRC32="3270516248" externalFileSize="5808" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap2.png" bitmapDataHRef="M 2 1720533000.dat" frameRight="860" frameBottom="860"/>
@@ -1791,6 +1792,7 @@
           <Include href="废弃NPC套装/Symbol 3588.xml" itemID="668e7c1e-00000ed8" lastModified="1720533000"/>
           <Include href="废弃NPC套装/Symbol 3590.xml" itemID="668e7c1e-00000ed9" lastModified="1720533000"/>
           <Include href="废弃NPC套装/Symbol 3591.xml" itemID="668e7c1e-00000eda" lastModified="1720533000"/>
+          <Include href="互动提示/互动提示-高亮.xml" itemIcon="1" loadImmediate="false" itemID="676c09fa-00000f73" lastModified="1737857518"/>
           <Include href="技能相关/Symbol 6.xml" itemID="668e7c1e-000005b9" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4640.xml" itemID="668e7c1e-00001150" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 4643.xml" itemID="668e7c1e-00001151" lastModified="1720533000"/>
@@ -1826,8 +1828,8 @@
           <Include href="技能相关/Symbol 5345.xml" itemID="668e7c1e-00001213" lastModified="1720533000"/>
           <Include href="技能相关/Symbol 5914.xml" itemID="668e7c1e-0000131c" lastModified="1720533000"/>
           <Include href="加载MC库0.xml" itemID="66aca1fb-00000e15" lastModified="1733419926"/>
-          <Include href="可拾取物2.xml" itemID="66adb4fd-00000cac" lastModified="1737625317"/>
-          <Include href="可拾取物动态文字.xml" loadImmediate="false" itemID="678d1c0c-00000d64" lastModified="1737301249"/>
+          <Include href="可拾取物2.xml" itemID="66adb4fd-00000cac" lastModified="1737857497"/>
+          <Include href="可拾取物动态文字.xml" loadImmediate="false" itemID="678d1c0c-00000d64" lastModified="1737854945"/>
           <Include href="可拾取物文字.xml" loadImmediate="false" itemID="678d1c21-00000d66" lastModified="1737301130"/>
           <Include href="判定使用.xml" itemID="668d55c7-000024ba" lastModified="1720540686"/>
           <Include href="特效与子弹相关/背包喷火暂定.xml" itemID="669bbee5-00002a41" lastModified="1721482981"/>
@@ -3366,6 +3368,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2847093" publishTime="1737857309"/>
+          <PublishItem publishSize="2847090" publishTime="1737857184"/>
+          <PublishItem publishSize="2847090" publishTime="1737857067"/>
+          <PublishItem publishSize="2846019" publishTime="1737856463"/>
+          <PublishItem publishSize="2846011" publishTime="1737855907"/>
+          <PublishItem publishSize="2845929" publishTime="1737855081"/>
           <PublishItem publishSize="2845918" publishTime="1737625359"/>
           <PublishItem publishSize="2845961" publishTime="1737625120"/>
           <PublishItem publishSize="2845953" publishTime="1737624332"/>
@@ -3380,11 +3388,5 @@
           <PublishItem publishSize="2901769" publishTime="1733475842"/>
           <PublishItem publishSize="2901757" publishTime="1733475666"/>
           <PublishItem publishSize="2901766" publishTime="1733475607"/>
-          <PublishItem publishSize="2901754" publishTime="1733475476"/>
-          <PublishItem publishSize="2900254" publishTime="1733473603"/>
-          <PublishItem publishSize="2900255" publishTime="1733473410"/>
-          <PublishItem publishSize="2900264" publishTime="1733473052"/>
-          <PublishItem publishSize="2900381" publishTime="1733472617"/>
-          <PublishItem publishSize="2902587" publishTime="1733420654"/>
      </publishHistory>
 </DOMDocument>
