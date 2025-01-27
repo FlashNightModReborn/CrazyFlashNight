@@ -631,7 +631,58 @@ _root.子弹区域shoot表演 = _root.子弹区域shoot;
 
 // 初始化函数
 
-_root.子弹属性初始化 = Delegate.create(BulletAttributesFactory, BulletAttributesFactory.initializeFromMovieClip);
+_root.子弹属性初始化 = function(子弹元件:MovieClip,子弹种类:String,发射者:MovieClip){
+	var myPoint = {x:子弹元件._x,y:子弹元件._y};
+	子弹元件._parent.localToGlobal(myPoint);
+	var 转换中间y = myPoint.y;
+	_root.gameworld.globalToLocal(myPoint);
+	shootX = myPoint.x;
+	shootY = myPoint.y;
+	if(!发射者){
+		发射者 = 子弹元件._parent._parent;
+	}
+	var 子弹属性 = {
+		声音:"",
+		霰弹值:1,
+		子弹散射度:1,
+		发射效果:"",
+		子弹种类:子弹种类 == undefined ? "普通子弹" : 子弹种类,
+		子弹威力:10,
+		子弹速度:10,
+		Z轴攻击范围:10,
+		击中地图效果:"火花",
+		发射者:发射者._name,
+		shootX:shootX,
+		shootY:shootY,
+		转换中间y:转换中间y,
+		shootZ:发射者.Z轴坐标,
+		子弹敌我属性:!发射者.是否为敌人,
+		击倒率:10,
+		击中后子弹的效果:"",
+		水平击退速度:NaN,
+		垂直击退速度:NaN,
+		命中率:NaN,
+		固伤:NaN,
+		百分比伤害:NaN,
+		血量上限击溃:NaN,
+		防御粉碎:NaN,
+		吸血:NaN,
+		毒:NaN,
+		最小霰弹值:1,
+		不硬直:false,
+		区域定位area:undefined,
+		伤害类型:undefined,
+		魔法伤害属性:undefined,
+		速度X:undefined,
+		速度Y:undefined,
+		ZY比例:undefined,
+		斩杀:undefined,
+		暴击:undefined,
+		水平击退反向:false,
+		角度偏移:0
+	}
+	return 子弹属性;
+}
 
 /*使用示例：
 
