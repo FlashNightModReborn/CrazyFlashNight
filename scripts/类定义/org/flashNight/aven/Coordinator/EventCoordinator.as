@@ -178,40 +178,55 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
      *   - 若用户在之后修改 onUnload，则用 watch() 捕获并存储到 __EC_userUnload__，最终在代理中统一调用
      */
     private static function setupAutomaticCleanup(target:Object):Void {
-        if (!eventHandlers[getTargetKey(target)].__EC_userUnload__) {
-            // 先记录初始 userUnload
-            eventHandlers[getTargetKey(target)].__EC_userUnload__ = target.onUnload;
+        var tKey:String = getTargetKey(target);
+        var ecData:Object = eventHandlers[tKey];
+
+        // 如果还没有记录用户卸载函数，则初始记录一下
+        if (ecData.__EC_userUnload__ == undefined) {
+            ecData.__EC_userUnload__ = target.onUnload;
         }
 
-        // === 最终代理 ===
-        target.onUnload = function() {
-            var tKey:String = getTargetKey(this);
+        // 用局部变量记录“最早的用户 onUnload”，后面还原时要用
+        // 也可考虑 ecData.__EC_original_onUnload__
+        var originalUserUnload:Function = ecData.__EC_userUnload__;
 
-            // 执行清理
+        // 重新给 target.onUnload 赋值为代理函数
+        target.onUnload = function() {
+            // 1) 先取最新用户卸载函数（注意 watch 可能改过它）
+            //    如果 eventHandlers 已被清理，则用原始记录的备份
+            var currentKey:String = getTargetKey(this);
+            var userUnload:Function;
+            if (eventHandlers[currentKey] != undefined) {
+                userUnload = eventHandlers[currentKey].__EC_userUnload__;
+            } else {
+                userUnload = originalUserUnload;
+            }
+
+            // 2) 清理所有事件监听
             EventCoordinator.clearEventListeners(this);
 
-            // 再调用用户最新版 onUnload
-            var userUnload:Function = (eventHandlers[tKey] != undefined)
-                ? eventHandlers[tKey].__EC_userUnload__
-                : null;
+            // 3) 把 onUnload 还原为用户真正的卸载函数
+            this.onUnload = userUnload;
+
+            // 4) 现在再执行一次用户卸载逻辑
             if (typeof userUnload == "function") {
                 userUnload.apply(this);
             }
         };
 
-        // watch onUnload 以捕获用户二次赋值
+        // =========== watch() 逻辑保持不变, 只是确保 watch 后会更新 __EC_userUnload__ =======
         if (typeof target.watch == "function") {
             target.watch("onUnload", function(prop, oldVal, newVal) {
-                var tKey:String = getTargetKey(this);
-                // 若 eventHandlers 已被清理，可能说明对象不再使用
-                if (eventHandlers[tKey] != undefined) {
-                    eventHandlers[tKey].__EC_userUnload__ = newVal;
+                var currentKey:String = getTargetKey(this);
+                if (eventHandlers[currentKey] != undefined) {
+                    eventHandlers[currentKey].__EC_userUnload__ = newVal;
                 }
-                // 使 onUnload 保持代理函数，不被用户覆盖
-                return oldVal; 
+                // 保持代理函数不被覆盖
+                return oldVal;
             });
         }
     }
+
 
     //======================================================================
     // ============   6. 为目标生成(或获取)唯一标识符Key   =============
