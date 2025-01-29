@@ -84,7 +84,8 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
         // 插入新的监听器
         var infoObj:Object = eventHandlers[targetKey][eventName];
         var handlerID:String = "HID" + (nextID++);
-        infoObj.handlers.push({id: handlerID, func: handler});
+        var infoHandlers:Array = infoObj.handlers;
+        infoHandlers[infoHandlers.length] = {id: handlerID, func: handler};
 
         return handlerID;
     }
@@ -107,7 +108,8 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
         }
 
         var handlers:Array = eventInfo.handlers;
-        for (var i:Number = 0; i < handlers.length; i++) {
+        var len:Number = handlers.length;
+        for (var i:Number = 0; i < len; i++) {
             if (handlers[i].id === handlerID) {
                 handlers.splice(i, 1);
                 trace("Handler removed: " + handlerID);
