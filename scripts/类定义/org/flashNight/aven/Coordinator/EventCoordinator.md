@@ -1,0 +1,1 @@
+org.flashNight.aven.Coordinator.EventCoordinatorTest.runAllTests();
