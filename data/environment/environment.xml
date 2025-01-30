@@ -2333,6 +2333,23 @@
         <BackgroundURL>nyqxjdcd_3_BG.swf</BackgroundURL>
         <SpaceCondition>室内</SpaceCondition>
     </Environment>
+    <Environment>
+        <BackgroundURL>尸母巢穴中心_BG.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>20</Xmin>
+        <Xmax>1750</Xmax>
+        <Ymin>300</Ymin>
+        <Ymax>600</Ymax>
+        <Width>1750</Width>
+        <Height>600</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <Collision>
+            <Point>480,290</Point>
+            <Point>480,360</Point>
+            <Point>1250,360</Point>
+            <Point>1250,290</Point>
+        </Collision>
+    </Environment>
     <!-- 试炼场深处-->
     <Environment>
         <BackgroundURL>试炼场深处钻头入口_BG.swf</BackgroundURL>

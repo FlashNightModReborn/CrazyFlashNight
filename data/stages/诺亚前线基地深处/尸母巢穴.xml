@@ -276,6 +276,13 @@
                         <Level>41</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种287</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
         </Wave>
@@ -329,10 +336,17 @@
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种287</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
                         <Level>41</Level>
                         <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种287</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -390,6 +404,76 @@
                         <Quantity>3</Quantity>
                         <Level>41</Level>
                         <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种287</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="7">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/尸母巢穴中心_BG.swf</Background>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>572</x>
+                <y>-1</y>
+                <url>flashswf/movies/尸母巢穴巨型尸母.swf</url>
+            </Instance>
+        </Instances>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1700</x>
+                <y>370</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="1">
+                <x>1700</x>
+                <y>510</y>
+                <QuantityMax>1</QuantityMax>
+            </Point>
+            <Point id="2">
+                <x>50</x>
+                <y>450</y>
+                <QuantityMax>1</QuantityMax>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种75</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>8</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种77</Type>
+                        <Interval>4000</Interval>
+                        <Quantity>12</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <Parameters>
+                            <身高>250</身高>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种77</Type>
+                        <Interval>5000</Interval>
+                        <Quantity>6</Quantity>
+                        <Level>41</Level>
+                        <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
