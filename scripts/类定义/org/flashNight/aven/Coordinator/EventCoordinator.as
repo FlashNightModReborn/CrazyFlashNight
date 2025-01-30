@@ -127,8 +127,7 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
         }
 
         // 获取目标对象的唯一标识符
-        var targetKey:String = getTargetKey(target);
-        var eventHandler:Object = eventHandlers[targetKey];
+        var eventHandler:Object = eventHandlers[getTargetKey(target)];
         var eventInfo:Object = eventHandler ? eventHandler[eventName] : null;
 
         // 如果没有该事件的处理器信息，直接返回
@@ -193,13 +192,11 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
      * @param enable 是否启用监听器（true 为启用，false 为禁用）。
      */
     public static function enableEventListeners(target:Object, enable:Boolean):Void {
-        // 获取目标对象的唯一标识符
-        var targetKey:String = getTargetKey(target);
-        if (!eventHandlers[targetKey]) {
+        var eventHandler:Object = eventHandlers[getTargetKey(target)];
+
+        if (!eventHandler) {
             return; // 如果没有事件处理器信息，直接返回
         }
-
-        var eventHandler:Object = eventHandlers[targetKey];
 
         // 遍历所有事件，设置启用/禁用状态
         for (var eventName:String in eventHandler) {
@@ -226,16 +223,16 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
      *    c. 调用用户的卸载逻辑。
      * 3. 使用 watch() 监控 onUnload 属性，防止用户代码覆盖代理函数。
      * @param target 目标对象。
+     * @return 恒定true，标志操作完成。
      */
     private static function setupAutomaticCleanup(target:Object):Boolean {
-        var tKey:String = getTargetKey(target);
-
+        var eventHandler:Object = eventHandlers[getTargetKey(target)];
         // 保存用户的初始卸载函数引用，防止后续清理后无法访问
-        var originalUserUnload:Function = eventHandlers[tKey].__EC_userUnload__;
+        var originalUserUnload:Function = eventHandler.__EC_userUnload__;
 
         // 如果尚未记录用户的 onUnload 函数，则记录初始的用户卸载函数
         if (originalUserUnload == undefined) {
-            originalUserUnload = eventHandlers[tKey].__EC_userUnload__ = target.onUnload;
+            originalUserUnload = eventHandler.__EC_userUnload__ = target.onUnload;
         }
 
         /**
@@ -247,16 +244,8 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
          * 4. 执行用户的卸载逻辑。
          */
         target.onUnload = function() {
-            var currentKey:String = getTargetKey(this);
-            var userUnload:Function = originalUserUnload;
-            
             // 获取最新的用户卸载函数（可能已通过 watch() 修改）
-            if (eventHandlers[currentKey] != undefined) {
-                var ecData:Object = eventHandlers[currentKey];
-                if (ecData.__EC_userUnload__ != undefined) {
-                    userUnload = ecData.__EC_userUnload__;
-                }
-            }
+            var userUnload:Function = eventHandlers[getTargetKey(this)].__EC_userUnload__ || originalUserUnload;
 
             // 1. 清理所有事件监听器
             EventCoordinator.clearEventListeners(this);
@@ -278,8 +267,7 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
          */
         if (typeof target.watch == "function") {
             target.watch("onUnload", function(prop:String, oldVal:Function, newVal:Function):Function {
-                var currentKey:String = getTargetKey(this);
-                var eck:Object = eventHandlers[currentKey];
+                var eck:Object = eventHandlers[getTargetKey(this)];
                 if (eck != undefined) {
                     // 更新 __EC_userUnload__ 为用户的新卸载函数
                     eck.__EC_userUnload__ = newVal;
