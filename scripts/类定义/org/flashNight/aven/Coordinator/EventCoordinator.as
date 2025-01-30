@@ -30,10 +30,12 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
      */
     public static function addEventListener(target:Object, eventName:String, handler:Function):String {
         // 参数验证：确保目标对象、事件名称和处理函数不为空
+        // trace("Attempting to add event: " + eventName + " on target: " + target + " with handler: " + handler);
         if (!target || !eventName || !handler) {
-            trace("错误：addEventListener 参数无效。");
+            trace("Invalid parameters detected! target=" + target + ", eventName=" + eventName + ", handler=" + handler);
             return null;
         }
+
 
         // 获取目标对象的唯一标识符
         var targetKey:String = getTargetKey(target); 

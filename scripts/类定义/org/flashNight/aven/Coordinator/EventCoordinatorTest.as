@@ -314,30 +314,36 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         trace("\n-- testClosureCapture --");
 
         /**
-         * 目标：验证对不同事件的 addEventListener，不应出现事件名“串线”或共享闭包的问题。
-         * 做法：一次性注册多个不同事件，各自累加自己的计数器。
-         * 然后单独触发，检查只对应的计数器被 +1。
-         */
+        * 目标：验证对不同事件的 addEventListener，不应出现事件名“串线”或共享闭包的问题。
+        * 做法：一次性注册多个不同事件，各自累加自己的计数器。
+        * 然后单独触发，检查只对应的计数器被 +1。
+        */
 
         var testTarget:Object = {};
 
         // 定义多种事件名
         var eventNames:Array = ["onPress", "onRelease", "onMouseUp", "onMouseDown"];
+
         // 为每个事件准备一个计数器
-        var counters:Object = { };
+        var counters:Object = {};
+
+        // “工厂函数”形式：返回一个新的处理器，内部捕获 lockedEvent
+        var createHandler:Function = function(lockedEvent:String, counters:Object) {
+            return function() {
+                counters[lockedEvent]++;
+            };
+        };
 
         // 注册监听器
         for (var i:Number = 0; i < eventNames.length; i++) {
             var en:String = eventNames[i];
             counters[en] = 0;
 
-            // 为该事件添加监听器；闭包锁定 en
-            EventCoordinator.addEventListener(testTarget, en, (function(lockedEvent:String) {
-                return function() {
-                    // 触发时只会给 lockedEvent 对应的 counter +1
-                    counters[lockedEvent]++;
-                };
-            })(en));
+            // 使用 createHandler() 创建并返回一个闭包
+            var handler:Function = createHandler(en, counters);
+
+            // 传给 addEventListener
+            EventCoordinator.addEventListener(testTarget, en, handler);
         }
 
         // 依次触发事件，并检查只有对应计数器被 +1
@@ -371,6 +377,7 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         
         trace("-- testClosureCapture Completed --\n");
     }
+
     
     //--------------------------------------------------------------------------
     // 8. 性能测试
