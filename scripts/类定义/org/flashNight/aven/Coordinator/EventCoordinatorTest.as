@@ -1,7 +1,10 @@
 ﻿/**
  * EventCoordinatorTest.as
- * 
+ *
  * 测试 org.flashNight.aven.Coordinator.EventCoordinator 的正确性和性能。
+ * 
+ * 附加：testClosureCapture() 主要用于验证事件名称在闭包中是否正确锁定，
+ *      防止潜在的“变量覆盖 / 闭包共享”问题。
  */
 
 import org.flashNight.aven.Coordinator.*;
@@ -22,6 +25,7 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         testOriginalHandlers();
         testMultipleTargets();
         testUnloadHandling();
+        testClosureCapture();   // <-- 新增的闭包测试
         performanceTest();
         trace("\n=== Tests Completed ===");
         trace("Total Assertions: " + totalAssertions);
@@ -99,7 +103,8 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         
         // 3) 测试 enableEventListeners
         //    再次添加2个监听器，然后禁用再启用
-        callCount = 0; callCount2 = 0;
+        callCount = 0; 
+        callCount2 = 0;
         EventCoordinator.addEventListener(testTarget, "onPress", function(){ callCount++; });
         EventCoordinator.addEventListener(testTarget, "onPress", function(){ callCount2++; });
         
@@ -269,6 +274,7 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
     private static function testUnloadHandling():Void {
         trace("\n-- testUnloadHandling --");
         
+        // 此处假设在舞台可用的环境下
         var testTarget:MovieClip = _root.createEmptyMovieClip("testUnloadMC", _root.getNextHighestDepth());
         var unloadCallCount:Number = 0;
         var userUnloadCallCount:Number = 0;
@@ -291,7 +297,7 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         assert(unloadCallCount == 1, "Handler should not be called after unload");
         assert(userUnloadCallCount == 1, "User's onUnload should have been called once");
         
-        // 确保用户自定义卸载逻辑仍然有效
+        // 再次执行用户卸载逻辑，确保仍可用
         testTarget.onUnload();
         assert(userUnloadCallCount == 2, "User's onUnload should have been called twice");
         
@@ -300,9 +306,74 @@ class org.flashNight.aven.Coordinator.EventCoordinatorTest {
         
         trace("-- testUnloadHandling Completed --\n");
     }
+
+    //--------------------------------------------------------------------------
+    // 7. 新增：闭包捕获问题测试
+    //--------------------------------------------------------------------------
+    private static function testClosureCapture():Void {
+        trace("\n-- testClosureCapture --");
+
+        /**
+         * 目标：验证对不同事件的 addEventListener，不应出现事件名“串线”或共享闭包的问题。
+         * 做法：一次性注册多个不同事件，各自累加自己的计数器。
+         * 然后单独触发，检查只对应的计数器被 +1。
+         */
+
+        var testTarget:Object = {};
+
+        // 定义多种事件名
+        var eventNames:Array = ["onPress", "onRelease", "onMouseUp", "onMouseDown"];
+        // 为每个事件准备一个计数器
+        var counters:Object = { };
+
+        // 注册监听器
+        for (var i:Number = 0; i < eventNames.length; i++) {
+            var en:String = eventNames[i];
+            counters[en] = 0;
+
+            // 为该事件添加监听器；闭包锁定 en
+            EventCoordinator.addEventListener(testTarget, en, (function(lockedEvent:String) {
+                return function() {
+                    // 触发时只会给 lockedEvent 对应的 counter +1
+                    counters[lockedEvent]++;
+                };
+            })(en));
+        }
+
+        // 依次触发事件，并检查只有对应计数器被 +1
+        for (var j:Number = 0; j < eventNames.length; j++) {
+            var triggerEvent:String = eventNames[j];
+
+            // 调用 testTarget[triggerEvent]()：模拟事件触发
+            testTarget[triggerEvent]();
+
+            // 检查 counters
+            for (var k:Number = 0; k < eventNames.length; k++) {
+                var checkEvent:String = eventNames[k];
+                var expected:Number = (k == j) ? 1 : 0;
+                var actual:Number = counters[checkEvent];
+                
+                assert(
+                    actual == expected,
+                    "When calling " + triggerEvent + ", counters[" + checkEvent + "] should be " + expected + 
+                    ", got " + actual
+                );
+            }
+
+            // 重置所有 counters，以便下次触发测试更干净
+            for (var m:Number = 0; m < eventNames.length; m++) {
+                counters[eventNames[m]] = 0;
+            }
+        }
+
+        // 清理
+        EventCoordinator.clearEventListeners(testTarget);
+        
+        trace("-- testClosureCapture Completed --\n");
+    }
     
     //--------------------------------------------------------------------------
-    // 7. 性能测试
+    // 8. 性能测试
     //--------------------------------------------------------------------------
     
     private static function performanceTest():Void {

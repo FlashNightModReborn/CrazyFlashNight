@@ -37,22 +37,25 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
 
         // 获取目标对象的唯一标识符
         var targetKey:String = getTargetKey(target); 
-        
-        // 如果该目标对象尚未有事件处理器信息，初始化一个空对象
-        if (eventHandlers[targetKey] == undefined) {
-            eventHandlers[targetKey] = {}; 
-        }
+        var localEventHandlers:Object = eventHandlers;
+        var eventHandler:Object = localEventHandlers[targetKey];
+        var eventInfo:Object = eventHandler[eventName];
         
         // 如果这是首次绑定该事件，需生成一个新的代理函数来管理自定义监听器
-        if (eventHandlers[targetKey][eventName] == undefined) {
-            // 保存目标对象原生的事件处理器（如果有的话）
-            var originalHandler:Function = target[eventName]; 
+        if (eventInfo == undefined) {
 
+            // 如果该目标对象尚未有事件处理器信息，初始化一个空对象
+            if (eventHandler == undefined) {
+                eventHandler = localEventHandlers[targetKey] = {}; 
+            }
+
+            // 保存目标对象原生的事件处理器（如果有的话）
             // 初始化该事件的处理器信息
-            eventHandlers[targetKey][eventName] = {
-                original: originalHandler, // 原生事件处理器
-                handlers: [],             // 存放自定义事件处理器的数组
-                isEnabled: true           // 标记自定义监听器是否启用
+
+            eventInfo = eventHandler[eventName] = {
+                original: target[eventName], // 原生事件处理器
+                handlers: [],                // 存放自定义事件处理器的数组
+                isEnabled: true              // 标记自定义监听器是否启用
             };
             
             /**
@@ -63,16 +66,10 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
              * - 根据 `isEnabled` 标记，决定是否执行自定义监听器。
              */
             target[eventName] = function() {
-                // 获取当前触发事件的目标对象的唯一标识符
-                var tKey:String = getTargetKey(this); 
-                var info:Object = eventHandlers[tKey] ? eventHandlers[tKey][eventName] : null;
-
-                // 如果没有事件处理器信息，直接返回
-                if (!info) {
-                    return;
-                }
+                var info:Object = eventHandlers[getTargetKey(this)][eventName];
 
                 // 检查自定义监听器是否被禁用
+                // 如果没有事件处理器信息，也在直接返回的逻辑中
                 if (!info.isEnabled) {
                     if (info.original) {
                         // 如果禁用，则仅执行原生事件处理器
@@ -96,17 +93,17 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             // 如果事件不是 "onUnload"，则设置自动清理逻辑
             if (eventName != "onUnload") {
                 // 确保只为每个目标对象设置一次自动清理标记
-                if (!eventHandlers[targetKey].__EC_autoCleanup__) {
-                    eventHandlers[targetKey].__EC_autoCleanup__ = true;
-                    setupAutomaticCleanup(target); // 设置自动清理
+                if (!eventHandler.__EC_autoCleanup__) {
+                    // 设置自动清理
+                    eventHandler.__EC_autoCleanup__ = setupAutomaticCleanup(target); 
                 }
             }
         }
 
         // 添加新的自定义事件处理器
-        var infoObj:Object = eventHandlers[targetKey][eventName];
         var handlerID:String = "HID" + (nextID++); // 生成唯一的处理器 ID
-        infoObj.handlers.push({ id: handlerID, func: handler });
+        var eih:Array = eventInfo.handlers;
+        eih[eih.length] = { id: handlerID, func: handler };
 
         return handlerID; // 返回处理器的唯一 ID
     }
@@ -129,7 +126,8 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
 
         // 获取目标对象的唯一标识符
         var targetKey:String = getTargetKey(target);
-        var eventInfo:Object = eventHandlers[targetKey] ? eventHandlers[targetKey][eventName] : null;
+        var eventHandler:Object = eventHandlers[targetKey];
+        var eventInfo:Object = eventHandler ? eventHandler[eventName] : null;
 
         // 如果没有该事件的处理器信息，直接返回
         if (!eventInfo) {
@@ -149,7 +147,7 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
         // 如果处理器列表为空，则恢复原生事件处理器并清理记录
         if (handlers.length == 0) {
             target[eventName] = eventInfo.original; // 恢复原生事件处理器
-            delete eventHandlers[targetKey][eventName]; // 删除该事件的处理器记录
+            delete eventHandler[eventName]; // 删除该事件的处理器记录
             trace("所有监听器已移除：" + eventName + "，已恢复原生处理器。");
         }
     }
@@ -164,13 +162,14 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
     public static function clearEventListeners(target:Object):Void {
         // 获取目标对象的唯一标识符
         var targetKey:String = getTargetKey(target);
-        if (!eventHandlers[targetKey]) {
+        var eventHandler:Object = eventHandlers[targetKey];
+        if (!eventHandler) {
             return; // 如果没有事件处理器信息，直接返回
         }
 
         // 遍历所有事件，恢复原生处理器
-        for (var eventName:String in eventHandlers[targetKey]) {
-            var eventInfo:Object = eventHandlers[targetKey][eventName];
+        for (var eventName:String in eventHandler) {
+            var eventInfo:Object = eventHandler[eventName];
             if (typeof eventInfo == "object" && eventInfo.handlers) {
                 target[eventName] = eventInfo.original; // 恢复原生事件处理器
             }
@@ -198,9 +197,11 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             return; // 如果没有事件处理器信息，直接返回
         }
 
+        var eventHandler:Object = eventHandlers[targetKey];
+
         // 遍历所有事件，设置启用/禁用状态
-        for (var eventName:String in eventHandlers[targetKey]) {
-            var eventInfo:Object = eventHandlers[targetKey][eventName];
+        for (var eventName:String in eventHandler) {
+            var eventInfo:Object = eventHandler[eventName];
             if (eventInfo && eventInfo.handlers != undefined) {
                 eventInfo.isEnabled = enable; // 设置是否启用自定义监听器
             }
@@ -224,16 +225,16 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
      * 3. 使用 watch() 监控 onUnload 属性，防止用户代码覆盖代理函数。
      * @param target 目标对象。
      */
-    private static function setupAutomaticCleanup(target:Object):Void {
+    private static function setupAutomaticCleanup(target:Object):Boolean {
         var tKey:String = getTargetKey(target);
-
-        // 如果尚未记录用户的 onUnload 函数，则记录初始的用户卸载函数
-        if (eventHandlers[tKey].__EC_userUnload__ == undefined) {
-            eventHandlers[tKey].__EC_userUnload__ = target.onUnload;
-        }
 
         // 保存用户的初始卸载函数引用，防止后续清理后无法访问
         var originalUserUnload:Function = eventHandlers[tKey].__EC_userUnload__;
+
+        // 如果尚未记录用户的 onUnload 函数，则记录初始的用户卸载函数
+        if (originalUserUnload == undefined) {
+            originalUserUnload = eventHandlers[tKey].__EC_userUnload__ = target.onUnload;
+        }
 
         /**
          * 替换目标对象的 onUnload 为代理函数。
@@ -246,7 +247,7 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
         target.onUnload = function() {
             var currentKey:String = getTargetKey(this);
             var userUnload:Function = originalUserUnload;
-
+            
             // 获取最新的用户卸载函数（可能已通过 watch() 修改）
             if (eventHandlers[currentKey] != undefined) {
                 var ecData:Object = eventHandlers[currentKey];
@@ -276,9 +277,10 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
         if (typeof target.watch == "function") {
             target.watch("onUnload", function(prop:String, oldVal:Function, newVal:Function):Function {
                 var currentKey:String = getTargetKey(this);
-                if (eventHandlers[currentKey] != undefined) {
+                var eck:Object = eventHandlers[currentKey];
+                if (eck != undefined) {
                     // 更新 __EC_userUnload__ 为用户的新卸载函数
-                    eventHandlers[currentKey].__EC_userUnload__ = newVal;
+                    eck.__EC_userUnload__ = newVal;
                     trace("用户的 onUnload 函数已更新。");
                 }
                 // 返回旧值，保持代理函数不被覆盖
@@ -287,6 +289,9 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
         }
 
         trace("自动清理及用户卸载逻辑已设置。");
+
+        // 设置完成
+        return true;
     }
 
     //======================================================================
@@ -299,16 +304,25 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
      * @return 目标对象的唯一标识字符串。
      */
     private static function getTargetKey(target:Object):String {
-        if (target.__EC_uid__ == undefined) {
+        var key:String = target.__EC_uid__;
+        if (key == undefined) {
             // 生成唯一标识符，并赋值给目标对象的隐藏属性
-            target.__EC_uid__ = "EC" + (nextID++);
+            key = target.__EC_uid__ = "EC" + (nextID++);
             
             // 使用 ASSetPropFlags 防止 __EC_uid__ 被枚举或删除，增强兼容性
+            // 当前环境默认不需要考虑超低版本的flashplayer的支持
+
+            _global.ASSetPropFlags(target, ["__EC_uid__"], 1, true);
+
+            /*
+
             if (_global.ASSetPropFlags) {
                 _global.ASSetPropFlags(target, ["__EC_uid__"], 1, true);
             }
+
+            */
         }
-        return target.__EC_uid__;
+        return key;
     }
 
     //======================================================================
