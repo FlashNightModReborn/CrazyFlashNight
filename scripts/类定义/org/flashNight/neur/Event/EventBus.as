@@ -16,7 +16,8 @@ class org.flashNight.neur.Event.EventBus {
     private var tempCallbacksCount:Number; // tempCallbacks 数组中的有效元素计数
 
     // 静态实例，类加载时初始化，采用饿汉式单例模式
-    private static var instance:EventBus = new EventBus();
+    // 脚本调用时可直接调用 instance 以避免一层函数调用开销
+    public static var instance:EventBus = new EventBus();
 
     /**
      * 私有化构造函数，防止外部直接创建对象。

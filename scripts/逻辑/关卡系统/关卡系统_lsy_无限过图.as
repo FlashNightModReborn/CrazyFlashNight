@@ -1,4 +1,5 @@
 ﻿//迁移了所有生存模式与无限过图的函数，以及4个难度关卡按钮里的函数
+import org.flashNight.neur.Event.*;
 
 _root.开启生存模式 = function(模式) {
     _root.当前为战斗地图 = true;
@@ -539,7 +540,8 @@ _root.生存模式出兵 = function(兵种, 序列, 波次)
 		_root.无限过图解析额外参数(敌人参数, 兵种信息.Parameters);
 	}
 	//游戏世界.attachMovie("单个敌人加载器2", "第" + 波次 + "波" + 兵种.名字 + "-" + _root.生存模式OBJ.已出兵记录[波次][序列] + random(100), _root.gameworld.getNextHighestDepth(), 敌人参数);
-	
+	EventBus.instance.publish("WaveStarted", 波次);
+
 	do{
 		var 敌人实例名:String = 兵种信息.InstanceName ? 兵种信息.InstanceName : 兵种.名字 + "_" + 波次 + "_" + 序列 + "_" + 当前波次出兵记录[序列];
 		var 生成结果 = _root.无限过图生成敌人(兵种, 敌人实例名, 敌人参数, SpawnIndex, 兵种信息.x, 兵种信息.y);
@@ -552,6 +554,7 @@ _root.生存模式出兵 = function(兵种, 序列, 波次)
 		}
 	}while(SpawnIndex === "front" || SpawnIndex === "back");
 	//若SpawnIndex设置front或back则一次性刷完
+	
 };
 
 _root.rogue模式出兵 = function(本波敌人, 波次)
@@ -574,6 +577,8 @@ _root.rogue模式出兵 = function(本波敌人, 波次)
 	// if(兵种信息.Parameters){
 	// 	_root.无限过图解析额外参数(敌人参数, 兵种信息.Parameters);
 	// }
+
+	EventBus.instance.publish("WaveStarted", 波次);
 	
 	var 敌人实例名:String = Attribute.名字 + "_" + 波次 + "_0_" + 本波敌人.Current;
 	var 生成结果 = _root.无限过图生成敌人(Attribute, 敌人实例名, 敌人参数, SpawnIndex, 兵种信息.x, 兵种信息.y);
