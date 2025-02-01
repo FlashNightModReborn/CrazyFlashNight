@@ -429,18 +429,15 @@
         </Instances>
         <SpawnPoint>
             <Point id="0">
-                <x>1700</x>
-                <y>370</y>
+                <x>1720</x>
+                <y>470</y>
                 <QuantityMax>1</QuantityMax>
+                <BiasX>100</BiasX>
+                <BiasY>20</BiasY>
             </Point>
             <Point id="1">
-                <x>1700</x>
-                <y>510</y>
-                <QuantityMax>1</QuantityMax>
-            </Point>
-            <Point id="2">
                 <x>50</x>
-                <y>450</y>
+                <y>500</y>
                 <QuantityMax>1</QuantityMax>
                 <NoCount>true</NoCount>
             </Point>
@@ -454,26 +451,16 @@
                     <Enemy id="0">
                         <Type>兵种75</Type>
                         <Interval>3000</Interval>
-                        <Quantity>8</Quantity>
+                        <Quantity>12</Quantity>
                         <Level>41</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种77</Type>
-                        <Interval>4000</Interval>
-                        <Quantity>12</Quantity>
+                        <Interval>5000</Interval>
+                        <Quantity>8</Quantity>
                         <Level>41</Level>
                         <SpawnIndex>1</SpawnIndex>
-                        <Parameters>
-                            <身高>250</身高>
-                        </Parameters>
-                    </Enemy>
-                    <Enemy id="2">
-                        <Type>兵种77</Type>
-                        <Interval>5000</Interval>
-                        <Quantity>6</Quantity>
-                        <Level>41</Level>
-                        <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

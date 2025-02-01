@@ -27,7 +27,7 @@ _root.敌人函数.基因虫生成僵尸 = function(){
 	for(var i=0; i<兵种库.length; i++){
 		if(兵种库[i].权重 == 目标权重) 目标权重兵种库.push(兵种库[i]);
 	}
-	var offset = 生成数量 * 5;
+	var offset = 生成数量 * 8;
 	var 名字 = "基因变身怪";
 	var 是否为敌人 = this.是否为敌人;
 	for(var i=0; i<生成数量; i++){

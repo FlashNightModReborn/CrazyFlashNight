@@ -50,7 +50,7 @@
           <DOMSoundItem name="音效/刀whoosh2.wav" itemID="679517a4-000008e9" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/刀whoosh2.wav" sourceLastImported="1737824116" externalFileCRC32="3851544294" externalFileSize="66372" href="音效/刀whoosh2.wav" soundDataHRef="M 39 1722600230.dat" format="44kHz 16bit Mono" sampleCount="33164" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="音效/刀蓄力.wav" itemID="679517a4-000008ea" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/刀蓄力.wav" sourceLastImported="1737824116" externalFileCRC32="2460959747" externalFileSize="74662" href="音效/刀蓄力.wav" soundDataHRef="M 40 1722600527.dat" format="44kHz 16bit Mono" sampleCount="37309" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="音效/流星锤.wav" itemID="679517a5-000008eb" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/流星锤.wav" sourceLastImported="1737824116" externalFileCRC32="170961830" externalFileSize="99534" href="音效/流星锤.wav" soundDataHRef="M 36 1722597327.dat" format="44kHz 16bit Mono" sampleCount="49745" exportFormat="5" exportBits="17"/>
-          <DOMSoundItem name="音效/吐.wav" itemID="679517a5-000008ec" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/吐.wav" sourceLastImported="1737824116" externalFileCRC32="784112601" externalFileSize="39426" href="音效/吐.wav" soundDataHRef="M 29 1722580433.dat" format="44kHz 16bit Mono" sampleCount="19691" exportFormat="5" exportBits="17"/>
+          <DOMSoundItem name="音效/吐.wav" itemID="66ac7dd1-000008a6" sourceExternalFilepath="G:/gunsound/things5/吐.wav" sourceLastImported="1722580411" externalFileCRC32="784112601" externalFileSize="39426" href="音效/吐.wav" soundDataHRef="M 29 1722580433.dat" format="44kHz 16bit Mono" sampleCount="19691" exportFormat="5" exportBits="17"/>
           <DOMBitmapItem name="位图 28" itemID="65c37675-00002def" sourceExternalFilepath="./LIBRARY/位图 28" sourceLastImported="1707308661" originalCompressionType="lossless" quality="50" href="位图 28" bitmapDataHRef="M 28 1707308661.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
@@ -1124,7 +1124,7 @@
           <Include href="Symbol 1399.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000066d" lastModified="1702098593"/>
           <Include href="Symbol 1400.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000066e" lastModified="1702098593"/>
           <Include href="Symbol 1401.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-0000066f" lastModified="1702098593"/>
-          <Include href="Symbol 1402.xml" loadImmediate="false" itemID="6577efbc-00000670" lastModified="1737918594"/>
+          <Include href="Symbol 1402.xml" loadImmediate="false" itemID="6577efbc-00000670" lastModified="1738391848"/>
           <Include href="Symbol 1403.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000671" lastModified="1702098593"/>
           <Include href="Symbol 1404.xml" loadImmediate="false" itemID="6577efbc-00000672" lastModified="1702098593"/>
           <Include href="Symbol 1406.xml" loadImmediate="false" itemID="6577efbc-00000673" lastModified="1702098593"/>
@@ -1290,7 +1290,7 @@
           <Include href="Symbol 1625.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000713" lastModified="1702098593"/>
           <Include href="Symbol 1626.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000714" lastModified="1702098593"/>
           <Include href="Symbol 1629.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000715" lastModified="1702098593"/>
-          <Include href="Symbol 1635.xml" loadImmediate="false" itemID="6577efbc-00000716" lastModified="1722580495"/>
+          <Include href="Symbol 1635.xml" loadImmediate="false" itemID="6577efbc-00000716" lastModified="1738344592"/>
           <Include href="Symbol 1636.xml" loadImmediate="false" itemID="6577efbc-00000717" lastModified="1702098593"/>
           <Include href="Symbol 1637.xml" loadImmediate="false" itemID="6577efbc-00000718" lastModified="1702098593"/>
           <Include href="Symbol 1638.xml" loadImmediate="false" itemID="6577efbc-00000719" lastModified="1702098593"/>
@@ -1736,13 +1736,13 @@
           <Include href="Symbol 2378.xml" itemID="6577efbc-000008d3" lastModified="1722583642"/>
           <Include href="Symbol 2379.xml" itemIcon="0" loadImmediate="false" itemID="6577efbc-000008d4" lastModified="1702098593"/>
           <Include href="Symbol 2380.xml" loadImmediate="false" itemID="6577efbc-000008d5" lastModified="1722579497"/>
-          <Include href="Symbol 2381.xml" itemID="6577efbc-000008d6" lastModified="1722577488"/>
+          <Include href="Symbol 2381.xml" itemID="6577efbc-000008d6" lastModified="1738391846"/>
           <Include href="Symbol 2382.xml" itemID="6577efbc-000008d7" lastModified="1702098593"/>
           <Include href="Symbol 2383.xml" itemID="6577efbc-000008d8" lastModified="1734950701"/>
           <Include href="敌人-铠甲勇士.xml" itemID="66bf53ea-00001781" lastModified="1734964141"/>
           <Include href="敌人-铠甲勇士战马形态.xml" itemID="66bf53aa-00001780" lastModified="1734950475"/>
           <Include href="敌人-普通爆炸僵尸.xml" itemID="679482ad-000008c6" lastModified="1737824298"/>
-          <Include href="敌人-普通基因虫.xml" itemID="66bf531e-0000177f" lastModified="1737826029"/>
+          <Include href="敌人-普通基因虫.xml" itemID="66bf531e-0000177f" lastModified="1738391846"/>
           <Include href="敌人-普通僵尸蛆.xml" itemID="66bf5250-0000177e" lastModified="1737826038"/>
           <Include href="定位子弹/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="65a55354-00001a7f" lastModified="1705337906"/>
           <Include href="定位子弹/Symbol 14.xml" loadImmediate="false" itemID="65a55354-00001a7e" lastModified="1701884437"/>

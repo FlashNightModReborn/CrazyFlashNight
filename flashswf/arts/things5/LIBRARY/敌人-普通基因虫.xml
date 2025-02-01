@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-普通基因虫" itemID="66bf531e-0000177f" linkageExportForAS="true" linkageIdentifier="敌人-普通基因虫" lastModified="1737826029">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-普通基因虫" itemID="66bf531e-0000177f" linkageExportForAS="true" linkageIdentifier="敌人-普通基因虫" lastModified="1738391846">
   <timeline>
     <DOMTimeline name="敌人-普通基因虫">
       <layers>
@@ -126,7 +126,7 @@ this.基因虫生成僵尸 = _root.敌人函数.基因虫生成僵尸;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="信息框" color="#F7EF62" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="信息框" color="#F7EF62" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -286,7 +286,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#FEB7A9">
+        <DOMLayer name="Layer 8" color="#FEB7A9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -329,7 +329,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1635" name="man" centerPoint3DX="149.3" centerPoint3DY="18.65">
+                <DOMSymbolInstance libraryItemName="Symbol 1635" name="man" selected="true" centerPoint3DX="149.3" centerPoint3DY="18.65">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>
