@@ -2,8 +2,7 @@
     文件: org/flashNight/naki/DataStructures/NAryTreeTest.as
     描述: NAryTree 的测试类（增强版），包含内置断言系统、边界情况、遍历顺序、全局索引及性能测试
 ---------------------------------------------------------------------------*/
-import org.flashNight.naki.DataStructures.NAryTree;
-import org.flashNight.naki.DataStructures.NAryTreeNode;
+import org.flashNight.naki.DataStructures.*;
 
 class org.flashNight.naki.DataStructures.NAryTreeTest {
     // 用于记录测试通过数和失败数
