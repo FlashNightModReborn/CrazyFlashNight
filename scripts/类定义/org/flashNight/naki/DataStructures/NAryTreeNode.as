@@ -82,7 +82,7 @@ class org.flashNight.naki.DataStructures.NAryTreeNode {
         // 添加 child 到 childList，并在 childMap 中记录其索引
         var list:Array = this.childList;
         var index:Number = list.length;
-        list.push(child);
+        list[list.length] = child;
         map[uid] = index;
     }
     
@@ -104,18 +104,13 @@ class org.flashNight.naki.DataStructures.NAryTreeNode {
         var lastIndex:Number = list.length - 1;
 
         if (index != lastIndex) {
-            // **Swap and pop**: 用 childList 最后一个元素替换 index 处元素
-            var lastChild:NAryTreeNode = list[lastIndex];
-            list[index] = lastChild;  
-            map[lastChild.uid] = index; // 更新 childMap
+            // 链式赋值：同时完成子节点替换与索引更新
+            map[(list[index] = list[lastIndex]).uid] = index;
         }
 
         // 移除最后一个元素（原本要删除的 child）
-        list.pop();
+        list.length = lastIndex; 
         delete map[temp];
-
-        // **避免 O(n) 级别的索引更新**
-        // 仅修改了 index 和 lastIndex，而不需要循环更新 childMap
 
         // 若当前节点所属树存在，则注销 child 及其所有后代
         if (this.tree != null) {
@@ -126,6 +121,7 @@ class org.flashNight.naki.DataStructures.NAryTreeNode {
         child.tree = null;
         return true;
     }
+
 
     
     /**
@@ -217,8 +213,7 @@ class org.flashNight.naki.DataStructures.NAryTreeNode {
                 do {
                     // 将 children[i] 放到新栈区中，使得最后入栈的是 children[0]
                     stack[newTop - 1 - i] = children[i];
-                    i++;
-                } while (i < len);
+                } while (++i < len);
                 top = newTop;
             }
         } while (top > 0);

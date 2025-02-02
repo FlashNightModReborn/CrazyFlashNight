@@ -214,9 +214,12 @@ _root.主角函数.初始化长枪射击函数 = function(){
 			}
 		}else if(暴击== "满血暴击"){
 			子弹属性.暴击 = function(当前子弹){
-				if(当前子弹.命中对象.hp >= 当前子弹.命中对象.hp满血值){
+				// _root.发布消息(当前子弹.hitTarget.hp + " " + 当前子弹.hitTarget.hp满血值);
+				if(当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值){
+					// _root.发布消息("暴击");
 					return 1.5;
 				}
+				_root.发布消息("未暴击");
 				return 1;
 			}
 		}
@@ -288,7 +291,7 @@ _root.主角函数.初始化手枪射击函数 = function(){
 			}
 		}else if(暴击== "满血暴击"){
 			子弹属性.暴击 = function(当前子弹){
-				if(当前子弹.命中对象.hp >= 当前子弹.命中对象.hp满血值){
+				if(当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值){
 					return 1.5;
 				}
 				return 1;
@@ -361,7 +364,7 @@ _root.主角函数.初始化手枪2射击函数 = function(){
 			}
 		}else if(暴击== "满血暴击"){
 			子弹属性.暴击 = function(当前子弹){
-				if(当前子弹.命中对象.hp >= 当前子弹.命中对象.hp满血值){
+				if(当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值){
 					return 1.5;
 				}
 				return 1;
@@ -560,7 +563,7 @@ _root.主角函数.初始化双枪射击函数 = function(){
 			}
 		}else if(暴击== "满血暴击"){
 			子弹属性.暴击 = function(当前子弹){
-				if(当前子弹.命中对象.hp >= 当前子弹.命中对象.hp满血值){
+				if(当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值){
 					return 1.5;
 				}
 				return 1;
@@ -630,7 +633,7 @@ _root.主角函数.初始化双枪射击函数 = function(){
 			}
 		}else if(暴击== "满血暴击"){
 			子弹属性2.暴击 = function(当前子弹){
-				if(当前子弹.命中对象.hp >= 当前子弹.命中对象.hp满血值){
+				if(当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值){
 					return 1.5;
 				}
 				return 1;

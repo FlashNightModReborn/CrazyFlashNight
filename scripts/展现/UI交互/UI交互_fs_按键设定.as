@@ -19,3 +19,19 @@ _root.刷新键值设定();
 
 _root.keyshow = Delegate.create(KeyManager, KeyManager.getKeyName);
 _root.getKeySetting = Delegate.create(KeyManager, KeyManager.getKeySetting)
+
+
+KeyManager.onRepeat("互动键", 30, function() {
+    // _root.发布消息("互动键重复");
+    _root.帧计时器.eventBus.publish("interactionKeyDown");
+});
+
+KeyManager.onKeyDown("互动键", function() {
+    //_root.发布消息("互动键按下");
+    _root.帧计时器.eventBus.publish("interactionKeyDown");
+});
+
+KeyManager.onKeyUp("互动键", function() {
+    // _root.发布消息("互动键松开");
+    _root.帧计时器.eventBus.publish("interactionKeyUp");
+});
