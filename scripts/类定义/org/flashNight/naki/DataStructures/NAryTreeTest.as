@@ -1,6 +1,7 @@
 ﻿/*---------------------------------------------------------------------------
     文件: org/flashNight/naki/DataStructures/NAryTreeTest.as
-    描述: NAryTree 的测试类（增强版），包含内置断言系统、边界情况、遍历顺序、全局索引及性能测试
+    描述: NAryTree 的测试类（增强版），包含内置断言系统、边界情况、遍历顺序、
+         全局索引及性能测试（新增删除性能测试部分）
 ---------------------------------------------------------------------------*/
 import org.flashNight.naki.DataStructures.*;
 
@@ -20,7 +21,7 @@ class org.flashNight.naki.DataStructures.NAryTreeTest {
     /**
      * 内置断言函数
      * @param condition 测试条件，布尔值
-     * @param message 测试描述
+     * @param message   测试描述
      */
     private function assertTrue(condition:Boolean, message:String):Void {
         totalTests++;
@@ -34,9 +35,9 @@ class org.flashNight.naki.DataStructures.NAryTreeTest {
     
     /**
      * 断言两个值相等
-     * @param actual 实际值
+     * @param actual   实际值
      * @param expected 预期值
-     * @param message 测试描述
+     * @param message  测试描述
      */
     private function assertEqual(actual, expected, message:String):Void {
         totalTests++;
@@ -235,7 +236,7 @@ class org.flashNight.naki.DataStructures.NAryTreeTest {
         // 重复添加同一子节点
         root.addChild(child);
         var initialCount:Number = root.getNumberOfChildren();
-        root.addChild(child); // 应该被忽略
+        root.addChild(child); // 重复添加应被忽略
         assertEqual(root.getNumberOfChildren(), initialCount, "重复添加同一子节点不应增加子节点数量");
         
         // 子节点转移：将 child 从 root 转移到另一个树
@@ -277,7 +278,13 @@ class org.flashNight.naki.DataStructures.NAryTreeTest {
     
     /**
      * 性能测试模块（拓展版）：
-     * - 测试不同数据规模（100、1000、10000）的添加、遍历和搜索性能。
+     * - 测试不同数据规模（100、1000、10000、100000）的添加、遍历、搜索和删除性能
+     *
+     * 说明：
+     * 1. 添加测试：在根节点下添加大量子节点，评估添加操作性能。
+     * 2. 遍历测试：采用前序遍历统计节点数量。
+     * 3. 搜索测试：搜索最后一个添加的节点。
+     * 4. 删除测试：循环删除根节点下的所有子节点，评估删除操作性能。
      */
     private function testPerformance():Void {
         trace("---- testPerformance ----");
@@ -285,7 +292,7 @@ class org.flashNight.naki.DataStructures.NAryTreeTest {
         // 定义不同数据规模
         var dataSizes:Array = [100, 1000, 10000, 100000];
 
-        // 遍历每个数据规模，分别进行性能测试
+        // 遍历每个数据规模进行性能测试
         for (var j:Number = 0; j < dataSizes.length; j++) {
             var iterations:Number = dataSizes[j];
             var tree:NAryTree = new NAryTree("root");
@@ -323,11 +330,22 @@ class org.flashNight.naki.DataStructures.NAryTreeTest {
             trace("搜索节点 " + target + " 耗时: " + (endTime - startTime) + " 毫秒");
             assertTrue(result != null, "搜索性能测试中应能找到目标节点");
 
+            // ---------------------------
+            // 新增：测试删除操作性能
+            // 说明：循环删除根节点下的所有子节点，并统计耗时
+            startTime = getTimer();
+            while (root.getNumberOfChildren() > 0) {
+                // 每次删除第一个子节点
+                var childToRemove:NAryTreeNode = root.getChild(0);
+                root.removeChild(childToRemove);
+            }
+            endTime = getTimer();
+            trace("删除所有 " + iterations + " 个子节点耗时: " + (endTime - startTime) + " 毫秒");
+
             trace(""); // 分隔符，便于阅读
         }
     }
 
-    
     /**
      * 静态入口函数，可直接调用 runTests() 来运行所有测试
      */

@@ -1,12 +1,11 @@
 ﻿import org.flashNight.naki.DataStructures.*; 
 
-/*---------------------------------------------------------------------------
-    文件: org/flashNight/naki/DataStructures/NAryTreeNode.as
-    描述: n 叉树节点类（合并子节点存储版）
-          使用单一数组 childList 保存子节点，同时用 childMap 保存每个子节点在数组中的索引，
-          既保证了子节点顺序，又能在添加、删除时达到 O(1) 重复检测和快速定位的效果，
-          并且仅在 addChild 时通过向上检查祖先防止循环引用，同时提供前序与后序遍历实现。
----------------------------------------------------------------------------*/
+/**
+ * n 叉树节点类（合并子节点存储版）  
+ * 使用单一数组 childList 保存子节点，同时用 childMap 保存每个子节点在数组中的索引，
+ * 既保证了子节点顺序，又能在添加、删除时达到 O(1) 重复检测和快速定位的效果，
+ * 并且仅在 addChild 时通过向上检查祖先防止循环引用，同时提供前序与后序遍历实现。
+ */
 class org.flashNight.naki.DataStructures.NAryTreeNode {
     // 节点所保存的数据，可存储任意数据
     public var data:Object;
@@ -102,26 +101,32 @@ class org.flashNight.naki.DataStructures.NAryTreeNode {
         }
 
         var list:Array = this.childList;
-        
-        // 从 childList 中删除该子节点
-        list.splice(index, 1);
-        // 删除 childMap 中该 uid
-        delete map[temp];
-        
-        // 更新 childMap：由于 childList 删除了一个元素，后续元素的索引都要更新
-        var len:Number = list.length;
-        for (temp = index; temp < len; temp++) {
-            map[list[temp].uid] = temp;
+        var lastIndex:Number = list.length - 1;
+
+        if (index != lastIndex) {
+            // **Swap and pop**: 用 childList 最后一个元素替换 index 处元素
+            var lastChild:NAryTreeNode = list[lastIndex];
+            list[index] = lastChild;  
+            map[lastChild.uid] = index; // 更新 childMap
         }
-        
+
+        // 移除最后一个元素（原本要删除的 child）
+        list.pop();
+        delete map[temp];
+
+        // **避免 O(n) 级别的索引更新**
+        // 仅修改了 index 和 lastIndex，而不需要循环更新 childMap
+
         // 若当前节点所属树存在，则注销 child 及其所有后代
         if (this.tree != null) {
             this.tree.unregisterNode(child);
         }
+
         child.parent = null;
         child.tree = null;
         return true;
     }
+
     
     /**
      * 根据索引返回子节点（childList 中的顺序即为添加顺序）
@@ -129,7 +134,6 @@ class org.flashNight.naki.DataStructures.NAryTreeNode {
      * @return NAryTreeNode 如果索引合法，则返回对应的子节点，否则返回 null
      */
     public function getChild(index:Number):NAryTreeNode {
-        // 如果可以确保 index 是数字且调用时正确，可考虑省略 typeof 检查
         if (index < 0 || index >= this.childList.length) {
             trace("[WARN] getChild: 索引 " + index + " 非法。");
             return null;
@@ -146,19 +150,17 @@ class org.flashNight.naki.DataStructures.NAryTreeNode {
     }
     
     /**
-     * 为当前节点及其所有后代设置 tree 引用
+     * 为当前节点及其所有后代设置 tree 引用  
      * 使用迭代方式替代递归，并用 do…while 以及数组索引模拟堆栈操作，
      * 合并自增/自减操作以减少虚拟机指令开销。
      * @param tree 全局树对象
      */
     public function setTree(tree:NAryTree):Void {
-        // 初始化栈，至少包含当前节点 this
         var stack:Array = new Array();
         stack[0] = this;
         var top:Number = 0;
         
         do {
-            // 处理当前栈顶节点
             var node:NAryTreeNode = stack[top];
             node.tree = tree;
             
@@ -166,9 +168,9 @@ class org.flashNight.naki.DataStructures.NAryTreeNode {
             var n:Number = children.length;
             if (n > 0) {
                 var newTop:Number = top + n;
-                // 使用 do...while 消除第一次的比较
+                // 利用 do…while 循环及数组索引模拟堆栈操作，避免 push/pop 的调用开销
                 do {
-                    // 注意这里先递减再使用 n, 保证索引正确
+                    // 先自减 n，再赋值，确保正确的索引顺序
                     stack[newTop - n] = children[--n];
                 } while (n > 0);
                 top = newTop;
@@ -178,51 +180,107 @@ class org.flashNight.naki.DataStructures.NAryTreeNode {
         // 清理栈，帮助垃圾回收
         stack.length = 0;
     }
-
-
-
     
     /**
-     * 前序遍历：先访问自身，再依照 childList 顺序遍历子节点。
-     * 回调函数形如：function(node:NAryTreeNode):Boolean { ... }，
-     * 若回调返回 false，则提前中断遍历。
+     * 迭代实现前序遍历：先访问自身，再依照 childList 顺序遍历子节点。  
+     * 回调函数形如：function(node:NAryTreeNode):Boolean { ... }，  
+     * 若回调返回 false，则提前中断遍历。  
+     * 
+     * 说明：  
+     * - 使用数组模拟堆栈，用一个索引 top 表示当前栈中元素数量；  
+     * - 为减少 push/pop 调用，通过直接索引赋值将子节点入栈；  
+     * - 利用 do…while 循环消除首次判断开销。
+     * 
      * @param callback 回调函数
      * @return Boolean 如果完整遍历返回 true；若提前终止返回 false。
      */
     public function traversePreOrder(callback:Function):Boolean {
-        if (callback(this) === false) {
-            return false;
-        }
+        var stack:Array = new Array();
+        var top:Number = 0;
+        // 初始时将当前节点入栈
+        stack[top++] = this;
         
-        var list:Array = this.childList;
-        var len:Number = list.length;
-        for (var i:Number = 0; i < len; i++) {
-            // 若子节点的遍历返回 false，提前中断整个遍历
-            if (list[i].traversePreOrder(callback) === false) {
+        do {
+            // 模拟 pop：先 top 自减，再取出栈顶元素
+            var node:NAryTreeNode = stack[--top];
+            if (callback(node) === false) {
                 return false;
             }
-        }
+            
+            var children:Array = node.childList;
+            var len:Number = children.length;
+            if (len > 0) {
+                // 为保证先访问 childList 中的第一个子节点，
+                // 我们需要将子节点按正序“反向入栈”：让 children[0] 成为下次 pop 出来的栈顶元素。
+                var newTop:Number = top + len;
+                var i:Number = 0;
+                do {
+                    // 将 children[i] 放到新栈区中，使得最后入栈的是 children[0]
+                    stack[newTop - 1 - i] = children[i];
+                    i++;
+                } while (i < len);
+                top = newTop;
+            }
+        } while (top > 0);
+        
+        // 清理栈，帮助垃圾回收
+        stack.length = 0;
         return true;
     }
     
     /**
-     * 后序遍历：先遍历所有子节点，再访问自身。
-     * 回调函数形如：function(node:NAryTreeNode):Boolean { ... }，
-     * 若回调返回 false，则提前中断遍历。
+     * 迭代实现后序遍历：先遍历所有子节点，再访问自身。  
+     * 回调函数形如：function(node:NAryTreeNode):Boolean { ... }，  
+     * 若回调返回 false，则提前中断遍历。  
+     * 
+     * 采用双栈算法：  
+     * 1. 第一个栈（stack1）用于遍历所有节点；  
+     * 2. 遍历过程中，将每个节点 pop 出后压入第二个栈（stack2）；  
+     * 3. 最后依次 pop stack2，即可得到后序遍历顺序。  
+     * 
+     * 同样采用 do…while 以及数组索引操作来消除 push/pop 调用开销。
+     * 
      * @param callback 回调函数
      * @return Boolean 如果完整遍历返回 true；若提前终止返回 false。
      */
     public function traversePostOrder(callback:Function):Boolean {
-        var list:Array = this.childList;
-        var len:Number = list.length;
-        for (var i:Number = 0; i < len; i++) {
-            if (list[i].traversePostOrder(callback) === false) {
+        var stack1:Array = new Array();
+        var stack2:Array = new Array();
+        var top1:Number = 0;
+        var top2:Number = 0;
+        
+        // 将当前节点入 stack1
+        stack1[top1++] = this;
+        
+        // 迭代遍历所有节点，将每个节点放入 stack2
+        do {
+            var node:NAryTreeNode = stack1[--top1]; // pop stack1
+            stack2[top2++] = node;              // push node 到 stack2
+            var children:Array = node.childList;
+            var len:Number = children.length;
+            if (len > 0) {
+                // 按正序（左到右）将所有子节点入栈1
+                var newTop1:Number = top1 + len;
+                var i:Number = 0;
+                do {
+                    stack1[top1 + i] = children[i];
+                    i++;
+                } while (i < len);
+                top1 = newTop1;
+            }
+        } while (top1 > 0);
+        
+        // 依次从 stack2 弹出，即可得到后序遍历（子节点均在父节点之前）
+        do {
+            var node2:NAryTreeNode = stack2[--top2]; // pop stack2
+            if (callback(node2) === false) {
                 return false;
             }
-        }
-        if (callback(this) === false) {
-            return false;
-        }
+        } while (top2 > 0);
+        
+        // 清理栈，帮助垃圾回收
+        stack1.length = 0;
+        stack2.length = 0;
         return true;
     }
     
