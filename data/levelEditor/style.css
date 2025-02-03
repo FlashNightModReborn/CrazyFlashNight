@@ -1,0 +1,97 @@
+/* ========== 全局基础样式 ========== */
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #fafafa;
+  }
+  
+  /* ========== 整体容器 ========== */
+  .section {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .section:hover {
+    transform: translateY(-2px);
+  }
+  .section-stage {
+    background-color: #e3f2fd;
+  }
+  .section-rewards {
+    background-color: #f0f4c3;
+  }
+  .section-substages {
+    background-color: #f5f5f5;
+  }
+  
+  .input-group {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.5);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .input-group:hover {
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .dynamic-list {
+    margin-left: 20px;
+  }
+  .array-item {
+    margin: 5px 0;
+    padding: 8px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 4px;
+  }
+  
+  .nested {
+    margin-left: 20px;
+    border-left: 2px solid #ddd;
+    padding-left: 10px;
+  }
+  
+  .xml-params-editor {
+    border: 1px solid #eee;
+    padding: 10px;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.5);
+  }
+  .xml-param {
+    margin: 5px 0;
+    display: grid;
+    grid-template-columns: 120px 1fr 30px;
+    gap: 5px;
+    align-items: start;
+  }
+  
+  /* 按钮样式 */
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  /* 响应式布局 */
+  @media (min-width: 768px) {
+    .required-fields {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+  }
+  
