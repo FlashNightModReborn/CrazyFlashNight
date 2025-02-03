@@ -3,17 +3,67 @@
 <head>
     <title>无限过图关卡编辑器</title>
     <style>
-        .section { border: 1px solid #ccc; padding: 10px; margin: 10px; }
-        .substage { background-color: #f5f5f5; }
+        /* 基础样式 */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+
+        /* 三大模块样式 */
+        .section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section:hover {
+            transform: translateY(-2px);
+        }
+        .section-stage { background-color: #e3f2fd; } /* 浅蓝色 */
+        .section-rewards { background-color: #f0f4c3; } /* 浅黄色 */
+        .section-substages { background-color: #f5f5f5; } /* 浅灰色 */
+
+        /* 输入项样式 */
+        .input-group {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.5);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .input-group:hover {
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* 动态列表样式 */
         .dynamic-list { margin-left: 20px; }
-        .array-item { margin: 5px 0; }
-        .nested { margin-left: 20px; border-left: 2px solid #ddd; padding-left: 10px; }
-        .param-item { margin: 5px 0; }
-        /* 新增样式 */
+        .array-item {
+            margin: 5px 0;
+            padding: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+
+        /* 嵌套内容样式 */
+        .nested {
+            margin-left: 20px;
+            border-left: 2px solid #ddd;
+            padding-left: 10px;
+        }
+
+        /* 特殊组件样式 */
         .xml-params-editor {
             border: 1px solid #eee;
             padding: 10px;
             margin-top: 10px;
+            background: rgba(255,255,255,0.5);
         }
 
         .xml-param {
@@ -21,27 +71,39 @@
             display: grid;
             grid-template-columns: 120px 1fr 30px;
             gap: 5px;
+            align-items: start;
         }
 
-        .xml-param textarea {
-            height: 60px;
-            resize: vertical;
+        /* 按钮样式 */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #45a049;
         }
 
-        .required-fields {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 10px;
+        /* 响应式布局 */
+        @media (min-width: 768px) {
+            .required-fields {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="editor">
         <!-- StageInfo部分 -->
-        <div class="section">
+        <div class="section section-stage">
             <h2>关卡基本信息</h2>
-            <div>
+             <div class="input-group">
                 <label>关卡名称: 
                     <input id="StageInfo_Name" value="摇滚公园" 
                         onchange="editorData.StageInfo.Name = this.value">
@@ -69,13 +131,13 @@
         </div>
 
         <!-- Rewards部分 -->
-        <div class="section">
+         <div class="section section-rewards">
             <h2>奖励列表 <button onclick="addReward()">+</button></h2>
             <div id="Rewards" class="dynamic-list"></div>
         </div>
 
         <!-- SubStages部分 -->
-        <div class="section">
+        <div class="section section-substages">
             <h2>子关卡 <button onclick="addSubStage()">+</button></h2>
             <div id="SubStages" class="dynamic-list"></div>
         </div>
