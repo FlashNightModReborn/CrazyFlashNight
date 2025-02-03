@@ -281,22 +281,35 @@ function renderEnemyGroup(enemyGroup, stageIndex, subIndex) {
  * @returns {string} HTML字符串
  */
 function renderEnemy(enemy, stageIndex, subIndex, enemyIndex) {
+  // 新增：获取units数据并生成下拉选项
+  const units = Object.values(window.unitsDict);
+  const optionsHTML = units.length > 0 
+    ? units.map(unit => `
+        <option value="${unit.id}" ${unit.id === enemy.Type ? 'selected' : ''}>
+          ${unit.name} (ID: ${unit.id})${!unit.is_hostile ? ' [友军]' : ''}
+        </option>
+      `).join('')
+    : '<option value="">请先导入units.json</option>';
+
   return `
     <div class="enemy section">
       <div class="required-fields">
-        <label>类型: 兵种
-          <input 
-            type="number" 
-            value="${enemy.Type}"
+        <!-- 修改点：将input替换为select -->
+        <label>类型:
+          <select 
             data-stage-index="${stageIndex}"
             data-subwave-index="${subIndex}"
             data-enemy-index="${enemyIndex}"
             data-enemy-field="Type"
+            onchange="this.dispatchEvent(new Event('input'))" // 触发input事件以更新数据
           >
+            ${optionsHTML}
+          </select>
         </label>
-        <label>
-          <span>${ window.getUnitDisplayText(enemy.Type) }</span>
-        </label>
+        
+        <!-- 原有显示单元信息的span -->
+        <span class="unit-info">${window.getUnitDisplayText(enemy.Type)}</span>
+
         <label>间隔:
           <input 
             type="number" 

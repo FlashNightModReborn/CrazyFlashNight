@@ -95,3 +95,16 @@ body {
     }
   }
   
+
+  /* 优化下拉菜单显示 */
+  select {
+    padding: 4px;
+    min-width: 180px;
+    margin-right: 8px;
+  }
+
+  .unit-info {
+    color: #666;
+    font-size: 0.9em;
+    margin-left: 8px;
+  }

@@ -91,6 +91,9 @@ window.bindEventHandlers = function () {
       const xml = generateXML();
       document.getElementById('output').textContent = xml;
     });
+
+    // 6) 复制XML
+    document.getElementById('btn-copy-xml').addEventListener('click', handleCopyXML);
   };
   
   // ============ 具体处理函数 ============
@@ -102,13 +105,14 @@ window.bindEventHandlers = function () {
   
     const reader = new FileReader();
     reader.onload = function () {
-      // 清空再读
       window.unitsDict = {};
       const rawUnitsArray = JSON.parse(this.result);
       rawUnitsArray.forEach((unit) => {
         window.unitsDict[unit.id] = unit;
       });
+      window.renderSubStages(); // 新增此行
     };
+    
     reader.readAsText(file);
   }
   
@@ -412,4 +416,18 @@ window.bindEventHandlers = function () {
     xml += `  </SubStage>\n`;
     return xml;
   }
-  
+    
+  function handleCopyXML() {
+    const output = document.getElementById('output');
+    const text = output.textContent;
+    if (text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('XML已复制到剪贴板！');
+      }).catch(err => {
+        console.error('复制失败:', err);
+        alert('复制失败，请手动复制。');
+      });
+    } else {
+      alert('请先生成XML内容！');
+    }
+  }
