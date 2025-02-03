@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>无限过图关卡编辑器</title>
+    <style>
+        .section { border: 1px solid #ccc; padding: 10px; margin: 10px; }
+        .substage { background-color: #f5f5f5; }
+        .dynamic-list { margin-left: 20px; }
+        .array-item { margin: 5px 0; }
+        .nested { margin-left: 20px; border-left: 2px solid #ddd; padding-left: 10px; }
+        .param-item { margin: 5px 0; }
+        /* 新增样式 */
+        .xml-params-editor {
+            border: 1px solid #eee;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .xml-param {
+            margin: 5px 0;
+            display: grid;
+            grid-template-columns: 120px 1fr 30px;
+            gap: 5px;
+        }
+
+        .xml-param textarea {
+            height: 60px;
+            resize: vertical;
+        }
+
+        .required-fields {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="editor">
+        <!-- StageInfo部分 -->
+        <div class="section">
+            <h2>关卡基本信息</h2>
+            <div>
+                <label>关卡名称: 
+                    <input id="StageInfo_Name" value="摇滚公园" 
+                        onchange="editorData.StageInfo.Name = this.value">
+                </label>
+            </div>
+            <div>
+                <label>解锁需要主线进度: 
+                    <input type="number" id="StageInfo_UnlockCondition" value="27" 
+                        onchange="editorData.StageInfo.UnlockCondition = parseInt(this.value)">
+                </label>
+            </div>
+            <div>
+                <label>关卡描述: 
+                    <textarea id="StageInfo_Description" 
+                        onchange="editorData.StageInfo.Description = this.value"
+                        style="width:300px;height:60px">盗贼组织“狂野玫瑰”的大本营...</textarea>
+                </label>
+            </div>
+            
+            <!-- 固定参数 -->
+            <input type="hidden" id="StageInfo_Type" value="无限过图">
+            <input type="hidden" id="StageInfo_FadeTransitionFrame" value="wuxianguotu_1">
+            <!-- 可选参数 -->
+            
+        </div>
+
+        <!-- Rewards部分 -->
+        <div class="section">
+            <h2>奖励列表 <button onclick="addReward()">+</button></h2>
+            <div id="Rewards" class="dynamic-list"></div>
+        </div>
+
+        <!-- SubStages部分 -->
+        <div class="section">
+            <h2>子关卡 <button onclick="addSubStage()">+</button></h2>
+            <div id="SubStages" class="dynamic-list"></div>
+        </div>
+
+        <button onclick="generateXML()">生成XML</button>
+        <pre id="output"></pre>
+    </div>
+<script>
+// 数据模型
+let editorData = {
+    StageInfo: {
+        Type: "无限过图",
+        Name: "摇滚公园",
+        FadeTransitionFrame: "wuxianguotu_1",
+        UnlockCondition: 27,
+        Description: "盗贼组织“狂野玫瑰”的大本营..."
+    },
+    Rewards: [],
+    SubStages: []
+};
+
+// 控制函数，在对应属性未启用时不显示UI
+function toggleOptional(element, checked, targetNode) {
+    element.parentElement.nextElementSibling.style.display = checked ? 'block' : 'none';
+    targetNode.enabled = checked;
+}
+
+// 动态添加奖励
+function addReward() {
+    const reward = {
+        Name: "",
+        AcquisitionProbability: 1,
+        QuantityMax: 1
+    };
+    editorData.Rewards.push(reward);
+    renderRewards();
+}
+
+// 渲染奖励列表
+function renderRewards() {
+    const container = document.getElementById('Rewards');
+    container.innerHTML = editorData.Rewards.map((reward, index) => `
+        <div class="array-item">
+            <label>物品名：
+                <input value="${reward.Name}" placeholder="名称" 
+                    onchange="editorData.Rewards[${index}].Name = this.value">
+            </label>
+            <label>生成概率：1/
+                <input type="number" value="${reward.AcquisitionProbability}" 
+                    onchange="editorData.Rewards[${index}].AcquisitionProbability = parseInt(this.value)">
+            </label>
+            <label>最大数量：
+                   <input type="number" value="${reward.QuantityMax}" 
+                   onchange="editorData.Rewards[${index}].QuantityMax = parseInt(this.value)">
+            </label>
+            <button onclick="editorData.Rewards.splice(${index},1); renderRewards()">-</button>
+        </div>
+    `).join('');
+}
+
+// 添加子关卡
+function addSubStage() {
+    const newStage = {
+        id: editorData.SubStages.length,
+        BasicInformation: {
+            Background: "flashswf/backgrounds/",
+            Animation: { enabled: false, Path: "", Pause: 0, Load: 1 },
+            PlayerPosition: { enabled: false, X: 0, Y: 0 }
+        },
+        SpawnPoints: [],
+        Wave: {
+            SubWaves: [{
+                id: 0,
+                WaveInformation: { Duration: 0, FinishRequirement: null },
+                EnemyGroup: []
+            }]
+        },
+        Instances: []
+    };
+    editorData.SubStages.push(newStage);
+    renderSubStages();
+}
+// 移除子关卡
+function removeSubStage(stageindex) {
+    editorData.SubStages.splice(stageindex,1);
+    //重新计算子关卡id
+    for(let i = stageindex; i < editorData.SubStages.length;i++){
+        editorData.SubStages[i].id--;
+    }
+    renderSubStages();
+}
+
+// 渲染子关卡
+function renderSubStages() {
+    const container = document.getElementById('SubStages');
+    container.innerHTML = editorData.SubStages.map((stage, stageIndex) => `
+        <div class="substage">
+            <h3>子关卡 ${stage.id} <button onclick="removeSubStage(${stageIndex})">删除</button></h3>
+            <div class="section">
+                <label>背景路径: 
+                    <input value="${stage.BasicInformation?.Background || ''}" 
+                        onchange="editorData.SubStages[${stageIndex}].BasicInformation.Background = this.value">
+                </label>
+                <!-- 可选参数 -->
+                <label><input type="checkbox" id="hasAnimation" 
+                    onchange="toggleOptional(this, this.checked, editorData.SubStages[${stageIndex}].BasicInformation.Animation)">包含动画</label>
+                <div id="AnimationParams" class="nested" style="display:none">
+                    <label>动画路径: <input id="Animation_Path" 
+                    onchange="editorData.SubStages[${stageIndex}].BasicInformation.Animation.Path = this.value"></label>
+                    <label>暂停游戏: <input type="checkbox" id="Animation_Pause" 
+                        onchange="editorData.SubStages[${stageIndex}].BasicInformation.Animation.Pause = this.checked ? 1 : 0"></label>
+                    <label>加载时机:
+                        <select id="Animation_Load" onchange="editorData.SubStages[${stageIndex}].BasicInformation.Animation.Load = parseInt(this.value)">
+                            <option value="1">进图时</option>
+                            <option value="0">结束时</option>
+                        </select>
+                    </label>
+                </div>
+                <label><input type="checkbox" id="hasPlayerPos" 
+                    onchange="toggleOptional(this, this.checked, editorData.SubStages[${stageIndex}].BasicInformation.PlayerPosition)">设置玩家出生点</label>
+                <div id="PlayerPositionParams" class="nested" style="display:none">
+                    <label>X坐标: <input type="number" id="PlayerX" value="0" 
+                        onchange="editorData.SubStages[${stageIndex}].BasicInformation.PlayerPosition.X = parseInt(this.value)"></label>
+                    <label>Y坐标: <input type="number" id="PlayerY" value="0" 
+                        onchange="editorData.SubStages[${stageIndex}].BasicInformation.PlayerPosition.Y = parseInt(this.value)"></label>
+                </div>
+                <!-- 波次编辑 -->
+                <h4>敌人波次 <button onclick="addSubWave(${stageIndex})">+子波次</button></h4>
+                ${stage.Wave.SubWaves.map((subwave, subIndex) => `
+                    <div class="subwave section">
+                        <h5>子波次 ${subIndex} <button onclick="removeSubWave(${stageIndex}, ${subIndex})">×</button></h5>
+                        
+                        <!-- 波次信息 -->
+                        <div class="wave-info">
+                            <label>自动通过波次所需时间: 
+                                <input type="number" value="${subwave.WaveInformation.Duration}" placeholder="未使用时填写0"
+                                    onchange="updateSubWaveField(${stageIndex}, ${subIndex}, 'Duration', this.value)">
+                            </label>
+                            <label>通过波次所需剩余敌人数: 
+                                <input type="number" value="${subwave.WaveInformation.FinishRequirement || ''}" placeholder="未使用时留空"
+                                    onchange="updateSubWaveField(${stageIndex}, ${subIndex}, 'FinishRequirement', this.value)">
+                            </label>
+                        </div>
+                        
+                        <!-- 敌人列表 -->
+                        <div class="enemy-group">
+                            <h6>敌人列表 <button onclick="addEnemy(${stageIndex}, ${subIndex})">+</button></h6>
+                            ${subwave.EnemyGroup.map((enemy, enemyIndex) => `
+                                <div class="enemy section">
+                                    <!-- 必要参数 -->
+                                    <div class="required-fields">
+                                        <label>类型: 
+                                            <input value="${enemy.Type}"
+                                                onchange="updateEnemyField(${stageIndex}, ${subIndex}, ${enemyIndex}, 'Type', this.value)">
+                                        </label>
+                                        <label>间隔: 
+                                            <input type="number" value="${enemy.Interval}"
+                                                onchange="updateEnemyField(${stageIndex}, ${subIndex}, ${enemyIndex}, 'Interval', this.value)">
+                                        </label>
+                                        <label>数量: 
+                                            <input type="number" value="${enemy.Quantity}"
+                                                onchange="updateEnemyField(${stageIndex}, ${subIndex}, ${enemyIndex}, 'Quantity', this.value)">
+                                        </label>
+                                        <label>等级: 
+                                            <input type="number" value="${enemy.Level}"
+                                                onchange="updateEnemyField(${stageIndex}, ${subIndex}, ${enemyIndex}, 'Level', this.value)">
+                                        </label>
+                                    </div>
+                                    
+                                    <!-- XML参数编辑器 -->
+                                    <div class="xml-params-editor">
+                                        <h6>参数配置 <button onclick="addXmlParam(${stageIndex}, ${subIndex}, ${enemyIndex})">+参数</button></h6>
+                                        <div class="xml-params-list">
+                                            ${Object.entries(enemy.Parameters || {}).map(([key, value]) => `
+                                                <div class="xml-param">
+                                                    <input type="text" value="${key}" 
+                                                        onchange="updateXmlParamKey(${stageIndex}, ${subIndex}, ${enemyIndex}, '${key}', this.value)">
+                                                    <textarea onchange="updateXmlParamValue(${stageIndex}, ${subIndex}, ${enemyIndex}, '${key}', this.value)"
+                                                        >${value}</textarea>
+                                                    <button onclick="removeXmlParam(${stageIndex}, ${subIndex}, ${enemyIndex}, '${key}')">×</button>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+}
+
+// 敌人属性XML参数操作方法
+// 添加XML参数
+function addXmlParam(stageIndex, subIndex, enemyIndex) {
+    const params = editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex].Parameters;
+    const newKey = `参数${Object.keys(params).length + 1}`;
+    params[newKey] = "";
+    renderSubStages();
+}
+// 移除XML参数
+function removeXmlParam(stageIndex, subIndex, enemyIndex, key) {
+    delete editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex].Parameters[key];
+    renderSubStages();
+}
+
+function updateXmlParamKey(stageIndex, subIndex, enemyIndex, oldKey, newKey) {
+    const params = editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex].Parameters;
+    params[newKey] = params[oldKey];
+    delete params[oldKey];
+    renderSubStages();
+}
+
+function updateXmlParamValue(stageIndex, subIndex, enemyIndex, key, value) {
+    editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex].Parameters[key] = value;
+}
+
+// 添加子波次
+function addSubWave(stageIndex) {
+    const subWaves = editorData.SubStages[stageIndex].Wave.SubWaves;
+    subWaves.push({
+        id: subWaves.length,
+        WaveInformation: { Duration: 0, FinishRequirement: null },
+        EnemyGroup: []
+    });
+    renderSubStages();
+}
+// 移除子波次
+function removeSubWave(stageIndex, subIndex) {
+    const subWaves = editorData.SubStages[stageIndex].Wave.SubWaves;
+    subWaves.splice(subIndex, 1);
+    renderSubStages();
+}
+
+function updateSubWaveField(stageIndex, subIndex, field, value) {
+    const waveInfo = editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].WaveInformation;
+    waveInfo[field] = field === 'Duration' ? parseInt(value) : value;
+}
+
+function updateEnemyField(stageIndex, waveIndex, subIndex, enemyIndex, field, value) {
+    const enemy = editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex];
+    enemy[field] = ['Interval', 'Quantity', 'Level'].includes(field) ? parseInt(value) : value;
+}
+
+// 参数操作方法
+function addEnemyParam(stageIndex, waveIndex, subIndex, enemyIndex) {
+    const params = editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex].Parameters;
+    const newKey = `param_${Object.keys(params).length}`;
+    params[newKey] = "";
+    renderSubStages();
+}
+
+function removeEnemyParam(stageIndex, waveIndex, subIndex, enemyIndex, key) {
+    delete editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex].Parameters[key];
+    renderSubStages();
+}
+
+function updateEnemyParamKey(stageIndex, waveIndex, subIndex, enemyIndex, oldKey, newKey) {
+    const params = editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex].Parameters;
+    params[newKey] = params[oldKey];
+    delete params[oldKey];
+}
+
+function updateEnemyParamValue(stageIndex, waveIndex, subIndex, enemyIndex, key, value) {
+    editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex].Parameters[key] = value;
+}
+
+// 其他操作方法
+function addSpawnPoint(stageIndex) {
+    const newPoint = {
+        id: editorData.SubStages[stageIndex].SpawnPoints.length,
+        x: 0,
+        y: 0,
+        Bias: false,
+        BiasX: 20,
+        BiasY: 100
+    };
+    editorData.SubStages[stageIndex].SpawnPoints.push(newPoint);
+    renderSubStages();
+}
+function removeSpawnPoint(stageIndex,pointIndex) {
+    let spawnPoints = editorData.SubStages[stageIndex].SpawnPoints;
+    spawnPoints.splice(pointIndex,1);
+    //重新计算出生点id
+    for(let i = pointIndex; i < spawnPoints.length;i++){
+        spawnPoints[i].id--;
+    }
+    renderSubStages();
+}
+
+function addEnemy(stageIndex, subIndex) {
+    const enemies = editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup;
+    enemies.push({
+        Type: "兵种",
+        Interval: 100,
+        Quantity: 1,
+        Level: 1,
+        Parameters: {}
+    });
+    renderSubStages();
+}
+
+
+// 添加输入验证
+function validateEnemy(enemy) {
+    if(!enemy.Type) return false;
+    if(enemy.Interval < 100) alert("间隔时间建议不小于100");
+    return true;
+}
+
+// 生成子关卡XML
+function generateSubStageXML(stage) {
+    let xml = `  <SubStage id="${stage.id}">\n`;
+    
+    // 基础信息
+    xml += `    <BasicInformation>\n`;
+    xml += `      <Background>${stage.BasicInformation.Background}</Background>\n`;
+    if(stage.BasicInformation.Animation.enabled) {
+        xml += `      <Animation>\n`;
+        xml += `        <Path>${stage.BasicInformation.Animation.Path}</Path>\n`;
+        xml += `        <Pause>${stage.BasicInformation.Animation.Pause}</Pause>\n`;
+        xml += `        <Load>${stage.BasicInformation.Animation.Load}</Load>\n`;
+        xml += `      </Animation>\n`;
+    }
+    if(stage.BasicInformation.PlayerPosition.enabled) {
+        xml += `      <PlayerX>${stage.BasicInformation.PlayerPosition.X}</PlayerX>\n`;
+        xml += `      <PlayerY>${stage.BasicInformation.PlayerPosition.Y}</PlayerY>\n`;
+    }
+    xml += `    </BasicInformation>\n`;
+
+    // 生成出生点XML
+    if(stage.SpawnPoints.length > 0) {
+        xml += `    <SpawnPoint>\n`;
+        stage.SpawnPoints.forEach(point => {
+            xml += `      <Point id="${point.id}">\n`;
+            xml += `        <x>${point.x}</x>\n`;
+            xml += `        <y>${point.y}</y>\n`;
+            if(point.Bias) {
+                xml += `        <BiasX>${point.BiasX}</BiasX>\n`;
+                xml += `        <BiasY>${point.BiasY}</BiasY>\n`;
+            }
+            xml += `      </Point>\n`;
+        });
+        xml += `    </SpawnPoint>\n`;
+    }
+
+    // 生成敌人波次XML
+    xml += `    <Wave>\n`;
+    stage.Wave.SubWaves.forEach(subwave => {
+        xml += `      <SubWave id="${subwave.id}">\n`;
+        xml += `        <WaveInformation>\n`;
+        xml += `          <Duration>${subwave.WaveInformation.Duration}</Duration>\n`;
+        if(subwave.WaveInformation.FinishRequirement) {
+            xml += `          <FinishRequirement>${subwave.WaveInformation.FinishRequirement}</FinishRequirement>\n`;
+        }
+        xml += `        </WaveInformation>\n`;
+        
+        xml += `        <EnemyGroup>\n`;
+        subwave.EnemyGroup.forEach(enemy => {
+            xml += `          <Enemy>\n`;
+            xml += `            <Type>${enemy.Type}</Type>\n`;
+            xml += `            <Interval>${enemy.Interval}</Interval>\n`;
+            xml += `            <Quantity>${enemy.Quantity}</Quantity>\n`;
+            xml += `            <Level>${enemy.Level}</Level>\n`;
+            
+            // 生成XML参数
+            if(Object.keys(enemy.Parameters).length > 0) {
+                xml += `            <Parameters>\n`;
+                Object.entries(enemy.Parameters).forEach(([key, value]) => {
+                    xml += `              <${key}>${escapeXml(value)}</${key}>\n`;
+                });
+                xml += `            </Parameters>\n`;
+            }
+            
+            xml += `          </Enemy>\n`;
+        });
+        xml += `        </EnemyGroup>\n`;
+        xml += `      </SubWave>\n`;
+    });
+    xml += `    </Wave>\n`;
+
+    xml += `  </SubStage>\n`;
+    return xml;
+}
+
+// 生成XML
+function generateXML() {
+    let xml = `<?xml version='1.0' encoding='utf-8'?>\n<GameStage>\n`;
+    
+    // StageInfo部分
+    xml += `  <StageInfo>\n`;
+    // 固定字段
+    xml += `    <Type>${editorData.StageInfo.Type}</Type>\n`;
+    xml += `    <Name>${escapeXml(editorData.StageInfo.Name)}</Name>\n`;
+    xml += `    <FadeTransitionFrame>${editorData.StageInfo.FadeTransitionFrame}</FadeTransitionFrame>\n`;
+    xml += `    <UnlockCondition>${editorData.StageInfo.UnlockCondition}</UnlockCondition>\n`;
+    xml += `    <Description>${escapeXml(editorData.StageInfo.Description)}</Description>\n`;
+    
+    // 可选字段
+    
+    xml += `  </StageInfo>\n`;
+
+    // Rewards部分
+    xml += `  <Rewards>`;
+    xml += editorData.Rewards.map(reward => `
+    <Reward>
+        <Name>${escapeXml(reward.Name)}</Name>
+        <AcquisitionProbability>${reward.AcquisitionProbability}</AcquisitionProbability>
+        <QuantityMax>${reward.QuantityMax}</QuantityMax>
+    </Reward>`).join('');
+    xml += '\n  </Rewards>\n';
+
+    // SubStages部分（需要扩展实现）
+    editorData.SubStages.forEach(subStage => {
+        xml += generateSubStageXML(subStage);
+    });
+
+    xml += `</GameStage>`;
+    document.getElementById('output').textContent = xml;
+}
+
+// XML转义
+function escapeXml(unsafe) {
+    return unsafe.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&apos;");
+}
+
+// 敌人参数编辑器示例
+function createParameterEditor(parameters) {
+    return `
+        <div class="parameters">
+            ${Object.entries(parameters).map(([key, value]) => `
+                <div>
+                    <input value="${key}" placeholder="参数名">
+                    <input value="${value}" placeholder="值">
+                </div>
+            `).join('')}
+            <button onclick="addParameterField(this)">添加参数</button>
+        </div>
+    `;
+}
+
+// 初始化
+renderRewards();
+</script>
+</body>
+</html>

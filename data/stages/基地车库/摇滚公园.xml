@@ -487,7 +487,9 @@ SubWave的必要参数：
                         <Level>30</Level>
                         <x>1007</x>
                         <y>434</y>
-                        <Parameters>不掉钱:true</Parameters>
+                        <Parameters>
+                            <不掉钱>true</不掉钱>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种51</Type>
@@ -496,7 +498,9 @@ SubWave的必要参数：
                         <Level>30</Level>
                         <x>1200</x>
                         <y>437</y>
-                        <Parameters>不掉钱:true</Parameters>
+                        <Parameters>
+                            <不掉钱>true</不掉钱>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种52</Type>
@@ -505,7 +509,9 @@ SubWave的必要参数：
                         <Level>30</Level>
                         <x>1105</x>
                         <y>452</y>
-                        <Parameters>不掉钱:true</Parameters>
+                        <Parameters>
+                            <不掉钱>true</不掉钱>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种13</Type>
