@@ -100,10 +100,15 @@
 </head>
 <body>
     <div id="editor">
+        <!-- 导入units.json -->
+        <div class="section">
+            <label>导入units.json</label>
+            <input type="file" id="unitsloader" accept=".json" />
+        </div>
         <!-- StageInfo部分 -->
         <div class="section section-stage">
             <h2>关卡基本信息</h2>
-             <div class="input-group">
+            <div class="input-group">
                 <label>关卡名称: 
                     <input id="StageInfo_Name" value="摇滚公园" 
                         onchange="editorData.StageInfo.Name = this.value">
@@ -131,7 +136,7 @@
         </div>
 
         <!-- Rewards部分 -->
-         <div class="section section-rewards">
+        <div class="section section-rewards">
             <h2>奖励列表 <button onclick="addReward()">+</button></h2>
             <div id="Rewards" class="dynamic-list"></div>
         </div>
@@ -146,6 +151,27 @@
         <pre id="output"></pre>
     </div>
 <script>
+//导入units.json
+const unitsInput = document.getElementById("unitsloader");
+let unitsDict = {};
+unitsInput.addEventListener("change", updateUnits);
+//导入后的数据处理
+function updateUnits(){
+    const file = unitsInput.files[0];
+    if(file != null){
+        let reader = new FileReader();
+        reader.onload = function(){
+            unitsDict = {};
+            let rawUnitsDict = JSON.parse(this.result);
+            for(let i = 0; i<rawUnitsDict.length; i++){
+                let unitID = rawUnitsDict[i].id;
+                unitsDict[unitID] = rawUnitsDict[i];
+            }
+        };
+        reader.readAsText(file);
+    }
+}
+
 // 数据模型
 let editorData = {
     StageInfo: {
@@ -289,10 +315,12 @@ function renderSubStages() {
                                 <div class="enemy section">
                                     <!-- 必要参数 -->
                                     <div class="required-fields">
-                                        <label>类型: 
-                                            <input value="${enemy.Type}"
-                                                onchange="updateEnemyField(${stageIndex}, ${subIndex}, ${enemyIndex}, 'Type', this.value)">
+                                        <label>类型: 兵种
+                                            <input type="number" value="${enemy.Type}"
+                                                onchange="updateEnemyType(${stageIndex}, ${subIndex}, ${enemyIndex}, this.value, this.parentElement.nextElementSibling)">
                                         </label>
+                                        <label>未找到units数据</label>
+                                        <br />
                                         <label>间隔: 
                                             <input type="number" value="${enemy.Interval}"
                                                 onchange="updateEnemyField(${stageIndex}, ${subIndex}, ${enemyIndex}, 'Interval', this.value)">
@@ -379,32 +407,48 @@ function updateSubWaveField(stageIndex, subIndex, field, value) {
     waveInfo[field] = field === 'Duration' ? parseInt(value) : value;
 }
 
-function updateEnemyField(stageIndex, waveIndex, subIndex, enemyIndex, field, value) {
-    const enemy = editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex];
+function updateEnemyType(stageIndex, subIndex, enemyIndex, value, textField) {
+    console.log(enemyIndex);
+    const enemy = editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex];
+    enemy.Type = parseInt(value);
+    const enemyData = unitsDict[enemy.Type];
+    if(enemyData != null){
+        let str = "[" + enemyData.name + "] [" + enemyData.spritename + "]";
+        if(enemyData.is_hostile === false){
+            str+=" [友军]";
+        }
+        textField.innerHTML = str;
+    }else{
+        textField.innerHTML = "未找到units数据";
+    }
+    
+}
+function updateEnemyField(stageIndex, subIndex, enemyIndex, field, value) {
+    const enemy = editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex];
     enemy[field] = ['Interval', 'Quantity', 'Level'].includes(field) ? parseInt(value) : value;
 }
 
 // 参数操作方法
-function addEnemyParam(stageIndex, waveIndex, subIndex, enemyIndex) {
-    const params = editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex].Parameters;
+function addEnemyParam(stageIndex, subIndex, enemyIndex) {
+    const params = editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex].Parameters;
     const newKey = `param_${Object.keys(params).length}`;
     params[newKey] = "";
     renderSubStages();
 }
 
-function removeEnemyParam(stageIndex, waveIndex, subIndex, enemyIndex, key) {
-    delete editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex].Parameters[key];
+function removeEnemyParam(stageIndex, subIndex, enemyIndex, key) {
+    delete editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex].Parameters[key];
     renderSubStages();
 }
 
-function updateEnemyParamKey(stageIndex, waveIndex, subIndex, enemyIndex, oldKey, newKey) {
-    const params = editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex].Parameters;
+function updateEnemyParamKey(stageIndex, subIndex, enemyIndex, oldKey, newKey) {
+    const params = editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex].Parameters;
     params[newKey] = params[oldKey];
     delete params[oldKey];
 }
 
-function updateEnemyParamValue(stageIndex, waveIndex, subIndex, enemyIndex, key, value) {
-    editorData.SubStages[stageIndex].Waves[waveIndex].SubWaves[subIndex].Enemies[enemyIndex].Parameters[key] = value;
+function updateEnemyParamValue(stageIndex, subIndex, enemyIndex, key, value) {
+    editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup[enemyIndex].Parameters[key] = value;
 }
 
 // 其他操作方法
@@ -433,7 +477,7 @@ function removeSpawnPoint(stageIndex,pointIndex) {
 function addEnemy(stageIndex, subIndex) {
     const enemies = editorData.SubStages[stageIndex].Wave.SubWaves[subIndex].EnemyGroup;
     enemies.push({
-        Type: "兵种",
+        Type: 0,
         Interval: 100,
         Quantity: 1,
         Level: 1,
@@ -500,7 +544,7 @@ function generateSubStageXML(stage) {
         xml += `        <EnemyGroup>\n`;
         subwave.EnemyGroup.forEach(enemy => {
             xml += `          <Enemy>\n`;
-            xml += `            <Type>${enemy.Type}</Type>\n`;
+            xml += `            <Type>兵种${enemy.Type}</Type>\n`;
             xml += `            <Interval>${enemy.Interval}</Interval>\n`;
             xml += `            <Quantity>${enemy.Quantity}</Quantity>\n`;
             xml += `            <Level>${enemy.Level}</Level>\n`;
