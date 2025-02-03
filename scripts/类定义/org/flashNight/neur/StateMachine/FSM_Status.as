@@ -29,7 +29,7 @@ class org.flashNight.neur.StateMachine.FSM_Status implements Status {
     }
 
     public function OnInit():Void{
-        if (!isRootMachine) return;
+        if (!isRootMachine()) return;
         this.onEnter();
     }
 }
