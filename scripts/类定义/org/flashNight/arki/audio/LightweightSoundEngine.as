@@ -1,83 +1,161 @@
 ﻿/* 
  * 文件：org/flashNight/arki/audio/LightweightSoundEngine.as
- * 说明：轻量化音效引擎，负责音效的快速播放，满足不需要状态机的简单音效需求。
+ * 说明：一个轻量化的音效引擎，实现 IMusicEngine，不使用 FSM。
+ *       主要用于短音效播放，具备最小间隔控制等简单功能。
  */
 
 import org.flashNight.arki.audio.IMusicEngine;
+import org.flashNight.arki.audio.SoundPreprocessor;
+import org.flashNight.arki.audio.IMusicPlayer; // 若要用到多轨 SoundPlayer，也可引入
 
 class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
-    private var soundDict:Object;
-    private var soundLastTime:Object;
-    private var soundSourceDict:Object;
-    private var minInterval:Number;
     
-    public function LightweightSoundEngine() {
-        this.soundDict = new Object();
-        this.soundLastTime = new Object();
-        this.soundSourceDict = new Object();
-        this.minInterval = 90;  // 最小播放间隔为 90ms
+    private var preprocessor:SoundPreprocessor; // 引用预处理器（含 soundManager、soundDict 等）
+    private var currentVolume:Number;
+    // 记录最后一次播放的音效 ID，用于 stop()
+    private var lastSoundId:String;
+    
+    public function LightweightSoundEngine(preprocessor:SoundPreprocessor) {
+        this.preprocessor = preprocessor;
+        this.currentVolume = 100; // 默认音量
+        this.lastSoundId = null;
     }
-
-    // 实现 IMusicEngine 接口的 handleCommand 方法
+    
+    /**
+     * 实现 IMusicEngine.handleCommand()
+     * 常用命令：
+     *   - "play": { soundId, volumeMultiplier, source }
+     *   - "stop": 无参数
+     * 其余命令可根据需要扩展或忽略
+     */
     public function handleCommand(command:String, params:Object):Void {
-        switch (command) {
+        switch(command) {
             case "play":
-                this.playSound(params.soundId, params.volumeMultiplier, params.soundSource);
+                this.handlePlayCommand(params);
                 break;
             case "stop":
                 this.stop();
                 break;
-            case "setVolume":
-                this.setVolume(params.volume);
-                break;
+            // 可根据需求扩展 "mute", "unmute", "adjust" 等
             default:
-                trace("[LightweightSoundEngine] Command not recognized: " + command);
+                trace("[LightweightSoundEngine] Unknown command: " + command);
+                break;
         }
     }
-
-    // 播放音效
-    private function playSound(soundId:String, volumeMultiplier:Number, soundSource:String):Void {
-        var target_mc:MovieClip;
-        switch (this.soundSourceDict[soundId]) {
-            case "武器":
-                target_mc = _root.soundManager.武器;
-                break;
-            case "特效":
-                target_mc = _root.soundManager.特效;
-                break;
-            case "人物":
-                target_mc = _root.soundManager.人物;
-                break;
-            default:
-                return;
+    
+    /**
+     * 处理 "play" 命令
+     * params: { soundId: String, volumeMultiplier: Number, source: String (可选) }
+     *   - 若多次播放间隔 < minInterval，则拒绝播放
+     *   - 根据 soundSourceDict 找到分类 MovieClip
+     *   - attachSound 并 setVolume、start()
+     */
+    private function handlePlayCommand(params:Object):Void {
+        if (params == null || params.soundId == undefined) {
+            trace("[LightweightSoundEngine] Error: 'play' requires 'soundId' parameter.");
+            return;
         }
+        var soundId:String = params.soundId;
+        var volumeMultiplier:Number = (params.volumeMultiplier != undefined) ? params.volumeMultiplier : 1;
+        var source:String = params.source; // 可选分类
         
-        if (!this.soundDict[soundId]) {
-            this.soundDict[soundId] = new Sound(target_mc);
-            this.soundDict[soundId].attachSound(soundId);
-        }
-        
-        var time:Number = getTimer();
-        // 若两次播放声音小于最小间隔则无法播放
-        if (!isNaN(this.soundLastTime[soundId]) && time - this.soundLastTime[soundId] < this.minInterval) {
+        // 根据 preprocessor 决定分类
+        var category:String = (source != undefined) ? source : this.preprocessor.soundSourceDict[soundId];
+        if (category == undefined) {
+            trace("[LightweightSoundEngine] Error: No category found for soundId: " + soundId);
             return;
         }
         
-        this.soundLastTime[soundId] = time;
-        var volume:Number = Math.floor(volumeMultiplier * _root.音效音量);
-        volume = Math.max(volume, 1);
-        this.soundDict[soundId].setVolume(volume);
-        this.soundDict[soundId].start(0, 1);  // 播放一次
-        trace("[LightweightSoundEngine] Playing soundId: " + soundId + " with volume: " + volume);
+        // 获取对应轨道 MovieClip
+        var target_mc:MovieClip = this.getCategoryMovieClip(category);
+        if (!target_mc) {
+            trace("[LightweightSoundEngine] Error: Could not get target MovieClip for category: " + category);
+            return;
+        }
+        
+        // 检查最小播放间隔
+        var time:Number = getTimer();
+        var lastTime:Number = this.preprocessor.soundLastTime[soundId];
+        if (!isNaN(lastTime) && time - lastTime < this.preprocessor.minInterval) {
+            trace("[LightweightSoundEngine] Play ignored due to min interval for soundId: " + soundId);
+            return;
+        }
+        this.preprocessor.soundLastTime[soundId] = time;
+        
+        // 若不存在 Sound 对象，则创建并 attachSound
+        if (!this.preprocessor.soundDict[soundId]) {
+            this.preprocessor.soundDict[soundId] = new Sound(target_mc);
+            this.preprocessor.soundDict[soundId].attachSound(soundId);
+        }
+        
+        var soundObj:Sound = this.preprocessor.soundDict[soundId];
+        // 计算最终音量
+        var baseVolume:Number = (_root.音效音量 != undefined) ? _root.音效音量 : 100;
+        var vol:Number = Math.floor(volumeMultiplier * baseVolume);
+        vol = Math.max(vol, 1); // 不低于 1
+        
+        // 如果引擎本身有一个 currentVolume，也可在此叠加
+        // 这里只是示范：vol * (this.currentVolume / 100)
+        var finalVolume:Number = Math.floor(vol * (this.currentVolume / 100));
+        
+        soundObj.setVolume(finalVolume);
+        soundObj.start(0, 1); // 播放一次
+        
+        this.lastSoundId = soundId;
+        trace("[LightweightSoundEngine] Playing soundId=" + soundId + ", volume=" + finalVolume + ", category=" + category);
     }
-
+    
+    /**
+     * 根据分类返回相应的 MovieClip
+     */
+    private function getCategoryMovieClip(category:String):MovieClip {
+        var mc:MovieClip = null;
+        switch (category) {
+            case "武器":
+                mc = this.preprocessor.soundManager.武器;
+                break;
+            case "特效":
+                mc = this.preprocessor.soundManager.特效;
+                break;
+            case "人物":
+                mc = this.preprocessor.soundManager.人物;
+                break;
+        }
+        return mc;
+    }
+    
+    /**
+     * IMusicEngine.stop(): 停止最后一次播放的音效（若需要“停止所有”，可自行扩展）
+     */
     public function stop():Void {
-        trace("[LightweightSoundEngine] Stopping sound.");
-        // 停止播放当前音效
+        if (this.lastSoundId != null) {
+            var soundObj:Sound = this.preprocessor.soundDict[this.lastSoundId];
+            if (soundObj) {
+                soundObj.stop();
+                trace("[LightweightSoundEngine] Stopped soundId=" + this.lastSoundId);
+            }
+            this.lastSoundId = null;
+        }
     }
-
+    
+    /**
+     * IMusicEngine.setVolume(...)
+     * 调整引擎整体音量，后续播放时会受此影响
+     * 也可立即对当前播放的音效应用
+     */
     public function setVolume(volume:Number):Void {
-        trace("[LightweightSoundEngine] Setting volume to: " + volume);
-        // 设置音量
+        this.currentVolume = volume;
+        // 若要实时调整当前播放音效音量，可在此生效
+        if (this.lastSoundId != null) {
+            var soundObj:Sound = this.preprocessor.soundDict[this.lastSoundId];
+            if (soundObj) {
+                // 计算与原先 volumeMultiplier、_root.音效音量 的叠加关系较复杂
+                // 简化处理：只乘以 currentVolume / 100
+                var oldVol:Number = soundObj.getVolume();
+                var newVol:Number = Math.floor(oldVol * (volume / 100));
+                soundObj.setVolume(newVol);
+            }
+        }
+        trace("[LightweightSoundEngine] setVolume=" + volume);
     }
 }
