@@ -236,6 +236,9 @@ _root.敌人函数.中招呐喊 = function(){
 };
 
 _root.敌人函数.击倒呐喊 = function(){
+	var time = getTimer();
+	if(time - this.上次击倒呐喊时间 < 300) return; // 击倒呐喊的最低间隔为300毫秒
+	this.上次击倒呐喊时间 = time;
 	if (性别 === "女"){
 		_root.播放音效(女_击倒呐喊_库[random(女_击倒呐喊_库.length)]);
 	}else{
