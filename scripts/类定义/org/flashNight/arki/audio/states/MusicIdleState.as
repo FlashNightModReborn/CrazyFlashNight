@@ -3,12 +3,11 @@
  * 说明：空闲状态，进入该状态时停止音乐播放。
  */
  
-import org.flashNight.arki.audio.states.*;
+import org.flashNight.arki.audio.states.BaseMusicState;
 
 class org.flashNight.arki.audio.states.MusicIdleState extends BaseMusicState {
     
     public function MusicIdleState() {
-        // 调用基类构造函数，传 null（后续重写 onEnter/onAction/onExit）
         super(null, null, null);
     }
     
@@ -20,7 +19,7 @@ class org.flashNight.arki.audio.states.MusicIdleState extends BaseMusicState {
     }
     
     public function onAction():Void {
-        // 空闲状态下无需每帧处理，等待外部命令
+        // 空闲状态下等待外部命令
     }
     
     public function onExit():Void {

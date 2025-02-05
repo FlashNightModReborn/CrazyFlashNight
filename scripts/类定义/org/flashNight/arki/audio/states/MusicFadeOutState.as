@@ -1,17 +1,15 @@
 ﻿/* 
  * 文件：org/flashNight/arki/audio/states/MusicFadeOutState.as
- * 说明：淡出状态，进入时启动淡出效果，计时结束后可切换到空闲状态。
+ * 说明：淡出状态，通过计时检测淡出过程是否完成，然后自动切换到 Idle 状态。
  */
  
-import org.flashNight.arki.audio.states.*;
+import org.flashNight.arki.audio.states.BaseMusicState;
 
 class org.flashNight.arki.audio.states.MusicFadeOutState extends BaseMusicState {
-    private var fadeDuration:Number;
     private var elapsed:Number;
     
     public function MusicFadeOutState() {
         super(null, null, null);
-        fadeDuration = 60; // 默认 60 帧内完成淡出
         elapsed = 0;
     }
     
@@ -25,6 +23,7 @@ class org.flashNight.arki.audio.states.MusicFadeOutState extends BaseMusicState 
     
     public function onAction():Void {
         elapsed++;
+        trace("[MusicFadeOutState] Fading out... " + elapsed + "/" + fadeDuration + " frames");
     }
     
     public function onExit():Void {
