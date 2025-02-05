@@ -4,15 +4,11 @@
  *       对外仅提供 handleCommand(command, params) 接口，内部根据 command 及参数控制状态转换。
  */
 
-import org.flashNight.neur.StateMachine.FSM_StateMachine;
-import org.flashNight.arki.audio.IMusicPlayer;
-import org.flashNight.arki.audio.states.MusicIdleState;
-import org.flashNight.arki.audio.states.MusicFadeInState;
-import org.flashNight.arki.audio.states.MusicPlayingState;
-import org.flashNight.arki.audio.states.MusicFadeOutState;
-import org.flashNight.arki.audio.states.MusicMuteState;
+import org.flashNight.neur.StateMachine.*;
+import org.flashNight.arki.audio.*;
+import org.flashNight.arki.audio.states.*;
 
-class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine {
+class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements IMusicEngine {
     private var musicPlayer:IMusicPlayer;
     
     // 各状态引用

@@ -5,6 +5,7 @@
  */
  
 import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
+import org.flashNight.gesh.path.*;
 
 class org.flashNight.arki.audio.SoundPreprocessor {
     // 音频管理容器（创建在指定容器上，默认 _root）
@@ -23,7 +24,9 @@ class org.flashNight.arki.audio.SoundPreprocessor {
      * @param container		指定创建音频容器的 MovieClip（若传 null 则为 _root）
      */
     public function SoundPreprocessor(container:MovieClip) {
+        PathManager.initialize();
         if (container == null) container = _root;
+        
         // 创建 soundManager 空的 MovieClip，深度取当前最高深度
         this.soundManager = container.createEmptyMovieClip("soundManager", container.getNextHighestDepth());
         
@@ -39,9 +42,9 @@ class org.flashNight.arki.audio.SoundPreprocessor {
         this.soundManager.createEmptyMovieClip("人物", 2);
         
         // 加载对应的 SWF 文件
-        this.soundManager.武器.loadMovie("sounds/音效-武器.swf");
-        this.soundManager.特效.loadMovie("sounds/音效-特效.swf");
-        this.soundManager.人物.loadMovie("sounds/音效-人物.swf");
+        this.soundManager.武器.loadMovie(PathManager.resolvePath("sounds/音效-武器.swf"));
+        this.soundManager.特效.loadMovie(PathManager.resolvePath("sounds/音效-特效.swf"));
+        this.soundManager.人物.loadMovie(PathManager.resolvePath("sounds/音效-人物.swf"));
     }
     
     /**
