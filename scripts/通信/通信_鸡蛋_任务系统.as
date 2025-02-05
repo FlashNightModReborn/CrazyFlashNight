@@ -273,9 +273,9 @@ _root.UpdateTaskProgress = function(id){
 		if (tasks_finished[String(id)] == undefined){
 			tasks_finished[String(id)] = 0;
 		}
-		var _loc3_ = _root.getTaskData(id).chain;
-		if (task_chains_progress[_loc3_[0]] < Number(_loc3_[1]) || task_chains_progress[_loc3_[0]] == undefined){
-			task_chains_progress[_loc3_[0]] = Number(_loc3_[1]);
+		var chain = _root.getTaskData(id).chain;
+		if (task_chains_progress[chain[0]] < Number(chain[1]) || task_chains_progress[chain[0]] == undefined){
+			task_chains_progress[chain[0]] = Number(chain[1]);
 		}
 		tasks_finished[String(id)] += 1;
 		task_history.push(id);
