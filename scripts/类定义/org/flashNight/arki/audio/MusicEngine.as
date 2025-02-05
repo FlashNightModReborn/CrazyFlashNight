@@ -218,4 +218,20 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
         super.onAction();
         // 在 onAction 中可加入全局监控逻辑
     }
+
+    // 播放背景音乐或点歌
+    private function playMusic(params:Object):Void {
+        trace("[MusicEngine] Playing music with parameters: " + params);
+        // 此处执行背景音乐或点歌的播放逻辑
+    }
+
+    public function stop():Void {
+        trace("[MusicEngine] Stopping music.");
+        // 停止播放
+    }
+
+    public function setVolume(volume:Number):Void {
+        trace("[MusicEngine] Setting volume to: " + volume);
+        // 设置音量
+    }
 }

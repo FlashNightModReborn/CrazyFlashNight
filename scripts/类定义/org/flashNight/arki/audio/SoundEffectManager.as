@@ -1,68 +1,51 @@
 ﻿/* 
  * 文件：org/flashNight/arki/audio/SoundEffectManager.as
- * 说明：音效管理器，负责管理多个音效轨道。
- *       音效轨道使用轻量化的音效引擎，背景音乐与点歌音乐使用全功能的 MusicEngine。
+ * 说明：音效管理器，将音效分配到不同的轨道，每个轨道可以使用不同的音效引擎。
  */
- 
-import org.flashNight.arki.audio.MusicPlayer;
-import org.flashNight.arki.audio.LightweightSoundEngine;
+
+import org.flashNight.arki.audio.IMusicEngine;
 import org.flashNight.arki.audio.MusicEngine;
-import org.flashNight.arki.audio.SoundPreprocessor;
+import org.flashNight.arki.audio.LightweightSoundEngine;
 
 class org.flashNight.arki.audio.SoundEffectManager {
-    private var preprocessor:SoundPreprocessor;
+    private var lightweightEngine:IMusicEngine;
+    private var musicEngineBackground:IMusicEngine;
+    private var musicEnginePlaylist:IMusicEngine;
     
-    // 轨道播放器：背景音乐、点歌、音效
-    public var backgroundPlayer:MusicEngine;
-    public var playlistPlayer:MusicEngine;
-    public var effectPlayers:Object;
-    
-    // 构造函数：初始化播放器，并为音效轨道分配轻量化引擎
-    public function SoundEffectManager(preprocessor:SoundPreprocessor) {
-        this.preprocessor = preprocessor;
-        // 创建背景与点歌音乐引擎（使用全功能 MusicEngine）
-        this.backgroundPlayer = new MusicEngine(null, null, null);
-        this.playlistPlayer = new MusicEngine(null, null, null);
-        // 创建音效轨道播放器（使用轻量化音效引擎）
-        this.effectPlayers = new Object();
-        this.effectPlayers["武器"] = new LightweightSoundEngine(preprocessor.soundManager);
-        this.effectPlayers["特效"] = new LightweightSoundEngine(preprocessor.soundManager);
-        this.effectPlayers["人物"] = new LightweightSoundEngine(preprocessor.soundManager);
+    public function SoundEffectManager() {
+        // 初始化轻量化音效引擎和全功能音乐引擎
+        this.lightweightEngine = new LightweightSoundEngine();
+        this.musicEngineBackground = new MusicEngine(_root.soundManager);
+        this.musicEnginePlaylist = new MusicEngine(_root.soundManager);
     }
-    
+
     // 播放音效
-    public function playSound(soundId:String, volumeMultiplier:Number, source:String):Boolean {
-        var category:String = (source != undefined && source != null) ? source : this.preprocessor.soundSourceDict[soundId];
-        if (category == undefined) {
-            trace("[SoundEffectManager] Error: No category found for soundId: " + soundId);
-            return false;
-        }
-        var player:IMusicEngine = this.effectPlayers[category];
-        if (player == undefined) {
-            trace("[SoundEffectManager] Error: No MusicPlayer found for category: " + category);
-            return false;
-        }
-        return player.play(soundId);
+    public function playSound(soundId:String, volumeMultiplier:Number, soundSource:String):Void {
+        // 对于音效轨道，使用轻量化音效引擎
+        this.lightweightEngine.handleCommand("play", {soundId: soundId, volumeMultiplier: volumeMultiplier, soundSource: soundSource});
     }
-    
-    // 停止音效
-    public function stop():Void {
-        // 停止背景音乐与点歌音乐
-        this.backgroundPlayer.stop();
-        this.playlistPlayer.stop();
-        
-        // 停止所有音效轨道
-        for (var key:String in this.effectPlayers) {
-            this.effectPlayers[key].stop();
-        }
+
+    // 播放背景音乐
+    public function playBackgroundMusic(params:Object):Void {
+        this.musicEngineBackground.handleCommand("play", params);
     }
-    
-    // 调整音量（调整所有轨道）
+
+    // 播放点歌音乐
+    public function playPlaylistMusic(params:Object):Void {
+        this.musicEnginePlaylist.handleCommand("play", params);
+    }
+
+    // 停止所有音效
+    public function stopAll():Void {
+        this.lightweightEngine.handleCommand("stop", null);
+        this.musicEngineBackground.handleCommand("stop", null);
+        this.musicEnginePlaylist.handleCommand("stop", null);
+    }
+
+    // 设置音量
     public function setVolume(volume:Number):Void {
-        this.backgroundPlayer.setVolume(volume);
-        this.playlistPlayer.setVolume(volume);
-        for (var key:String in this.effectPlayers) {
-            this.effectPlayers[key].setVolume(volume);
-        }
+        this.lightweightEngine.handleCommand("setVolume", {volume: volume});
+        this.musicEngineBackground.handleCommand("setVolume", {volume: volume});
+        this.musicEnginePlaylist.handleCommand("setVolume", {volume: volume});
     }
 }
