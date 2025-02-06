@@ -79,6 +79,20 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         return list;
     }
 
+    // 覆写修改 searchFirstKey 方法以获得顺序支持
+    public function searchFirstKey(name:String):String {
+        var iterator:IIterator = new TreeSetMinimalIterator(this.indexes);
+        while (iterator.hasNext()) {
+            var index:Number = Number(iterator.next().getValue());
+            var key:String = String(index);
+            var item:Object = this.items[key];
+            if (item && item.name == name) {
+                return key;
+            }
+        }
+        return undefined;
+    }
+
 
     //寻找空格
     //寻找第一个空格的数字索引，若栏位全满则返回-1
