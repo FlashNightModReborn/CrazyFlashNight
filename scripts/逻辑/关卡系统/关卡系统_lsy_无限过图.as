@@ -34,9 +34,9 @@ _root.开启生存模式 = function(模式) {
     // 设置地图尺寸
     var bglist = 基本配置.Background.split("/");
     var url = bglist[bglist.length - 1];
-    var 环境信息 = _root.duplicateOf(_root.天气系统.环境设置[url]);
+    var 环境信息 = _root.duplicateOf(_root.天气系统.关卡环境设置[url]);
     if (!环境信息) {
-        环境信息 = _root.duplicateOf(_root.天气系统.环境设置.Default);
+        环境信息 = _root.duplicateOf(_root.天气系统.关卡环境设置.Default);
     }
 	//配置关卡环境参数
     if (基本配置.Environment) {

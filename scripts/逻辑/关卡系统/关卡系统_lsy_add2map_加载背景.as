@@ -112,9 +112,9 @@ _root.贴背景图 = function(){
 	背景层.外部动画加载壳mc.unloadMovie(); //尝试直接卸载原背景
 };
 
-_root.配置基地场景环境信息 = function(){
+_root.配置场景环境信息 = function(){
 	var 游戏世界 = _root.gameworld;
-	var 环境信息 = _root.天气系统.环境设置[_root.关卡标志];
+	var 环境信息 = _root.天气系统.场景环境设置[_root.关卡标志];
 	if(环境信息){
 		//配置地图尺寸
 		_root.Xmax = 环境信息.Xmax;
@@ -155,15 +155,13 @@ _root.配置基地场景环境信息 = function(){
 	_root.贴背景图();
 }
 
-_root.配置场景环境信息 = _root.配置基地场景环境信息;//想了想基地和外部地图好像可以用一套函数
-
 _root.加载场景背景 = function (动画名){
 	var 游戏世界 = _root.gameworld;
 	var 背景层 = 游戏世界.背景;
 	背景层.attachMovie("外部动画加载壳mc","外部动画加载壳mc",背景层.getNextHighestDepth());
 	var list = 动画名.split("/")
 	var url = list[list.length-1];
-	var 环境配置 = _root.天气系统.环境设置[url];	
+	var 环境配置 = _root.天气系统.关卡环境设置[url];	
 	_root.服务器.发布服务器消息("加载场景背景 " + url + " " + _root.格式化对象为字符串(环境配置));
 	if(环境配置) {
 		_root.天气系统.配置环境(环境配置);

@@ -106,7 +106,7 @@ _root.解析并设置基本配置 = function(关卡数据:Array)
 		配置.PlayerY = 配置.PlayerY ? Number(配置.PlayerY) : undefined;
 		var environment = 配置.Environment;
 		if(Boolean(environment.Default)){
-			配置.Environment = _root.天气系统.环境设置.Default;
+			配置.Environment = _root.天气系统.关卡环境设置.Default;
 		}
 		基本配置列表.push(配置);
 	}
@@ -752,113 +752,36 @@ _root.加载并配置发型库 = function(xml文件地址:String):Void
 	发型.load(xml文件地址);
 };
 
-_root.加载并配置环境设置 = function(xml文件地址:String):Void 
-{
-    var 环境XML:XML = new XML();
-    环境XML.ignoreWhite = true;
-    环境XML.onLoad = function(加载成功:Boolean)
-	{
-        if (加载成功)
-		{
-            var 环境设置 = {};
-            var 环境设置数据 = _root.解析XML节点(this.firstChild);
-            var environmentNodes:Array = 环境设置数据.Environment;
-            // 默认配置
-            var 默认配置:Object = {
-                地址: "gk20_2_BG.swf",//背景swf的地址
-				//地图尺寸
-				对齐原点: false,
-				Xmin: 50,
-				Xmax: 1750,
-				Ymin: 330,
-				Ymax: 600,
-				背景长: 1750,
-				背景高: 600,
-				//后景信息
-				地平线高度: 200,
-				后景: null,
-				禁用天空: false,
-				//天气信息
-                天气情况: "正常",//后续或许可以随机天气，或者指定下雨沙尘暴
-                空间情况: "室外",//决定是否启用天空盒
-                视觉情况: "光照",//决定使用的色彩引擎方案
-                最大光照: 8,
-                最小光照: 4,
-				//背景元素
-				背景元素: null,
-				//无限过图参数
-				门: null,
-				// 门朝向: "右", //弃用
-				地图碰撞箱: null,
-				左侧出生线: null,
-				右侧出生线: null,
-				//佣兵刷新数据
-				佣兵刷新数据: null
-            };
-			环境设置.Default = 默认配置;//把默认配置也存入环境设置
-            for (var i:Number = 0; i < environmentNodes.length; i++)
-            {
-                var 环境信息:Object = {};
-				var child_Nodes:Array = environmentNodes[i];
-				if(!child_Nodes.BackgroundURL) continue;
-                
-                环境设置[child_Nodes.BackgroundURL] = _root.配置环境信息(child_Nodes, 默认配置);// 使用 URL 作为键存储环境信息
-            }
-			_root.天气系统.环境设置 = 环境设置;
-			//_root.服务器.发布服务器消息("环境设置配置成功: " + _root.格式化对象为字符串(_root.天气系统.环境设置));
-        }
-		else
-		{
-           // _root.服务器.发布服务器消息("无法加载 XML 文件: " + xml文件地址);
-        }
-    };
-    环境XML.load(xml文件地址);
+_root.配置关卡环境数据 = function(data:Object):Void {
+	var 关卡环境设置 = {};
+	var environmentNodes:Array = data.Environment;
+	// 默认配置
+	关卡环境设置.Default = _root.天气系统.默认环境配置;//把默认配置也存入环境设置
+	for (var i:Number = 0; i < environmentNodes.length; i++){
+		var 环境信息:Object = {};
+		var child_Nodes:Array = environmentNodes[i];
+		if(!child_Nodes.BackgroundURL) continue;
+		
+		关卡环境设置[child_Nodes.BackgroundURL] = _root.配置环境信息(child_Nodes, 默认配置);// 使用 URL 作为键存储环境信息
+	}
+	_root.天气系统.关卡环境设置 = 关卡环境设置;
 };
 
-_root.配置环境信息 = function(当前配置, 默认配置):Object{
-	if(!当前配置) return null;
-	var 环境信息:Object = {};
-	环境信息.地址 = 当前配置.BackgroundURL;
-	//地图尺寸
-	环境信息.对齐原点 = 当前配置.Alignment ? true : 默认配置.对齐原点;
-	环境信息.Xmin = !isNaN(当前配置.Xmin) ? Number(当前配置.Xmin) : 默认配置.Xmin;
-	环境信息.Xmax = !isNaN(当前配置.Xmax) ? Number(当前配置.Xmax) : 默认配置.Xmax;
-	环境信息.Ymin = !isNaN(当前配置.Ymin) ? Number(当前配置.Ymin) : 默认配置.Ymin;
-	环境信息.Ymax = !isNaN(当前配置.Ymax) ? Number(当前配置.Ymax) : 默认配置.Ymax;
-	环境信息.背景长 = !isNaN(当前配置.Width) ? Number(当前配置.Width) : 默认配置.背景长;
-	环境信息.背景高 = !isNaN(当前配置.Height) ? Number(当前配置.Height) : 默认配置.背景高;
-	//后景信息
-	环境信息.地平线高度 = !isNaN(当前配置.Horizon) ? 当前配置.Horizon : 默认配置.地平线高度;
-	环境信息.后景 = 当前配置.Skybox ? _root.配置数据为数组(当前配置.Skybox) : 默认配置.后景;
-	环境信息.禁用天空 = 当前配置.DisableSky == true ? true : 默认配置.禁用天空;
-	//天气信息
-	环境信息.天气情况 = 当前配置.WeatherCondition != undefined ? 当前配置.WeatherCondition : 默认配置.天气情况;
-	环境信息.空间情况 = 当前配置.SpaceCondition != undefined ? 当前配置.SpaceCondition : 默认配置.空间情况;
-	环境信息.视觉情况 = 当前配置.VisualCondition != undefined ? 当前配置.VisualCondition : 默认配置.视觉情况;
-	环境信息.最大光照 = 当前配置.MaxIllumination != undefined ? Number(当前配置.MaxIllumination) : 默认配置.最大光照;
-	环境信息.最小光照 = 当前配置.MinIllumination != undefined ? Number(当前配置.MinIllumination) : 默认配置.最小光照;
-	//背景元素
-	环境信息.背景元素 = 当前配置.Elements ? _root.解析背景元素(_root.配置数据为数组(当前配置.Elements.Element)) : 默认配置.背景元素;
-	//无限过图参数
-	if(当前配置.Door){
-		var 门数据 = _root.配置数据为数组(当前配置.Door);
-		环境信息.门 = new Object();
-		for(var i=0; i<门数据.length; i++){
-			var door = 门数据[i];
-			环境信息.门[door.Index] = door;
-		}
-	}else{
-		环境信息.门 = 默认配置.门;
+_root.配置场景环境数据 = function(data:Object):Void {
+	var 场景环境设置 = {};
+	var environmentNodes:Array = data.Environment;
+	// 默认配置
+	场景环境设置.Default = _root.天气系统.默认环境配置;//把默认配置也存入环境设置
+	for (var i:Number = 0; i < environmentNodes.length; i++){
+		var 环境信息:Object = {};
+		var child_Nodes:Array = environmentNodes[i];
+		if(!child_Nodes.BackgroundURL) continue;
+		
+		场景环境设置[child_Nodes.BackgroundURL] = _root.配置环境信息(child_Nodes, 默认配置);// 使用 URL 作为键存储环境信息
 	}
-	// 环境信息.门朝向 = 当前配置.DoorDirection ? 当前配置.DoorDirection : 默认配置.门朝向; //弃用
-	环境信息.地图碰撞箱 = 当前配置.Collision ? _root.配置数据为数组(当前配置.Collision) : 默认配置.地图碰撞箱;
-	环境信息.左侧出生线 = 当前配置.LeftSpawnLine ? 当前配置.LeftSpawnLine : 默认配置.左侧出生线;
-	环境信息.右侧出生线 = 当前配置.RightSpawnLine ? 当前配置.RightSpawnLine : 默认配置.右侧出生线;
-	//佣兵刷新数据
-	环境信息.佣兵刷新数据 = 当前配置.MercenaryRefresh ? 当前配置.MercenaryRefresh : 默认配置.佣兵刷新数据;
+	_root.天气系统.场景环境设置 = 场景环境设置;
+};
 
-	return 环境信息;
-}
 
 _root.解析背景元素 = function(背景元素数据:Array):Object{
 	var len = 背景元素数据.length;

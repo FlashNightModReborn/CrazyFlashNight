@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1737825659">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1738836318">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="45">
+    <DOMTimeline name="asLoader" currentFrame="73">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -213,10 +213,6 @@ _root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues
               <elements/>
             </DOMFrame>
             <DOMFrame index="58" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.加载并配置环境设置("data/environment/environment.xml");
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="59" keyMode="9728">
@@ -349,7 +345,7 @@ var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getIn
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="70" duration="27" keyMode="9728">
+            <DOMFrame index="70" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.InformationDictionaryLoader;
 
@@ -375,6 +371,42 @@ var 情报信息loader:InformationDictionaryLoader = InformationDictionaryLoader
         trace("主程序：情报信息数据加载失败！");
     }
 );]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.StageEnvironmentLoader;
+var stage_env_loader:StageEnvironmentLoader = StageEnvironmentLoader.getInstance();
+
+stage_env_loader.loadStageEnvironment(
+    function(data:Object):Void {
+        trace("主程序：关卡环境数据加载成功！");
+		_root.配置关卡环境数据(data);
+    },
+    function():Void {
+        trace("主程序：关卡环境数据加载失败！");
+    }
+);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="73" duration="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.SceneEnvironmentLoader;
+var scene_env_loader:SceneEnvironmentLoader = SceneEnvironmentLoader.getInstance();
+
+scene_env_loader.loadSceneEnvironment(
+    function(data:Object):Void {
+        trace("主程序：场景环境数据加载成功！");
+		_root.配置场景环境数据(data);
+    },
+    function():Void {
+        trace("主程序：场景环境数据加载失败！");
+    }
+);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
