@@ -144,18 +144,17 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
      * 也可立即对当前播放的音效应用
      */
     public function setVolume(volume:Number):Void {
-        this.currentVolume = volume;
-        // 若要实时调整当前播放音效音量，可在此生效
-        if (this.lastSoundId != null) {
-            var soundObj:Sound = this.preprocessor.soundDict[this.lastSoundId];
-            if (soundObj) {
-                // 计算与原先 volumeMultiplier、_root.音效音量 的叠加关系较复杂
-                // 简化处理：只乘以 currentVolume / 100
-                var oldVol:Number = soundObj.getVolume();
-                var newVol:Number = Math.floor(oldVol * (volume / 100));
-                soundObj.setVolume(newVol);
-            }
+    this.currentVolume = volume;
+    // 如果最后播放的音效存在，调整其音量
+    if (this.lastSoundId != null) {
+        var soundObj:Sound = this.preprocessor.soundDict[this.lastSoundId];
+        if (soundObj) {
+            var oldVol:Number = soundObj.getVolume();
+            var newVol:Number = Math.floor(oldVol * (volume / 100));
+            soundObj.setVolume(newVol);
         }
-        trace("[LightweightSoundEngine] setVolume=" + volume);
     }
+    trace("[LightweightSoundEngine] setVolume=" + volume);
+}
+
 }

@@ -9,10 +9,7 @@
  * 对于背景音乐/点歌，则可直接调用 bgmEngine.handleCommand(...) 或 karaokeEngine.handleCommand(...)
  */
  
-import org.flashNight.arki.audio.SoundPreprocessor;
-import org.flashNight.arki.audio.IMusicEngine;
-import org.flashNight.arki.audio.MusicEngine;
-import org.flashNight.arki.audio.LightweightSoundEngine;
+import org.flashNight.arki.audio.*;
 
 class org.flashNight.arki.audio.SoundEffectManager {
     
@@ -27,6 +24,10 @@ class org.flashNight.arki.audio.SoundEffectManager {
         // 初始化三轨道
         bgmEngine = new MusicEngine(null, null, null); 
         karaokeEngine = new MusicEngine(null, null, null);
+
+        bgmEngine.setMusicPlayer(new SimMusicPlayer());
+        karaokeEngine.setMusicPlayer(new SimMusicPlayer());
+        
         sfxEngine = new LightweightSoundEngine(this.preprocessor);
         
         // 如有需要，可设置 MusicPlayer 给两个全功能引擎
