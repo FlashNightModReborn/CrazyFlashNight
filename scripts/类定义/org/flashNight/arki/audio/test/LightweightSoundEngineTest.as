@@ -42,6 +42,7 @@ class org.flashNight.arki.audio.test.LightweightSoundEngineTest {
             sword_attack: "武器",
             fire_effect: "特效",
             hero_jump: "人物",
+            for_set_volume: "特效",
             invalid_sound: "未知分类" // 测试错误分类
         };
         
@@ -108,9 +109,9 @@ class org.flashNight.arki.audio.test.LightweightSoundEngineTest {
         // 设置全局音量为 50%
         engine.setVolume(50);
         // 播放音效并验证音量计算
-        engine.handleCommand("play", {soundId: "sword_attack", volumeMultiplier: 0.8});
+        engine.handleCommand("play", {soundId: "for_set_volume", volumeMultiplier: 0.8});
         // 预期音量计算：假设 _root.音效音量 = 100 → 100 * 0.8 * 0.5 = 40
-        var soundObj:Sound = preprocessor.soundDict["sword_attack"];
+        var soundObj:Sound = preprocessor.soundDict["for_set_volume"];
         if (soundObj.getVolume() == 40) {
             trace("  [PASS] Volume correctly set to 40");
         } else {
