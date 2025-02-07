@@ -1,0 +1,168 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/Tomboy" itemID="65b6438a-00003913" lastModified="1706813131" lastUniqueIdentifier="18">
+  <timeline>
+    <DOMTimeline name="Tomboy">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 2" centerPoint3DX="124" centerPoint3DY="232.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="37.35" ty="145.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1543" centerPoint3DX="83.3" centerPoint3DY="116.35">
+                  <matrix>
+                    <Matrix a="-0.264877319335938" b="-0.0378265380859375" c="-0.0378265380859375" d="0.264877319335938" tx="62.3" ty="55.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1545" centerPoint3DX="98.35" centerPoint3DY="114.1">
+                  <matrix>
+                    <Matrix a="-0.254928588867188" b="0.080108642578125" c="0.080108642578125" d="0.254928588867188" tx="78.05" ty="88.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1547" centerPoint3DX="90.45" centerPoint3DY="120.6">
+                  <matrix>
+                    <Matrix a="-0.230117797851563" b="0.135467529296875" c="0.135467529296875" d="0.230117797851563" tx="70.95" ty="77.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1549" centerPoint3DX="96.3" centerPoint3DY="176.45">
+                  <matrix>
+                    <Matrix a="-0.267532348632813" b="0.0255889892578125" c="0.0255889892578125" d="0.267532348632813" tx="57.65" ty="140.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1551" centerPoint3DX="91.85" centerPoint3DY="197.75">
+                  <matrix>
+                    <Matrix a="-0.255996704101563" b="-0.0801849365234375" c="-0.0801849365234375" d="0.255996704101563" tx="59.6" ty="116.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1553" centerPoint3DX="89.6" centerPoint3DY="177.65">
+                  <matrix>
+                    <Matrix a="-0.179183959960938" b="0.199554443359375" c="0.199554443359375" d="0.179183959960938" tx="53.95" ty="94.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1549" centerPoint3DX="52" centerPoint3DY="178.2">
+                  <matrix>
+                    <Matrix a="-0.2662353515625" b="0.0115509033203125" c="0.0115509033203125" d="0.2662353515625" tx="13.35" ty="142.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1551" centerPoint3DX="53.95" centerPoint3DY="204.4">
+                  <matrix>
+                    <Matrix a="-0.20172119140625" b="-0.1746826171875" c="-0.1746826171875" d="0.20172119140625" tx="21.7" ty="122.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1555" centerPoint3DX="92.4" centerPoint3DY="112.45">
+                  <matrix>
+                    <Matrix a="-0.250961303710938" b="-0.093292236328125" c="-0.093292236328125" d="0.250961303710938" tx="39.95" ty="78.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1557" centerPoint3DX="81.4" centerPoint3DY="175.4">
+                  <matrix>
+                    <Matrix a="-0.263519287109375" b="0.045135498046875" c="0.045135498046875" d="0.263519287109375" tx="31.85" ty="94.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1559" centerPoint3DX="108.55" centerPoint3DY="183.3">
+                  <matrix>
+                    <Matrix a="-0.250961303710938" b="-0.093292236328125" c="-0.093292236328125" d="0.250961303710938" tx="43.55" ty="55.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1562" centerPoint3DX="244.2" centerPoint3DY="183.5">
+                  <matrix>
+                    <Matrix a="-0.176376342773438" b="-0.0965423583984375" c="-0.0965423583984375" d="0.176376342773438" tx="95.3" ty="92.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1564" centerPoint3DX="69.1" centerPoint3DY="108.05">
+                  <matrix>
+                    <Matrix a="-0.1881103515625" b="0.1898193359375" c="0.1898193359375" d="0.1881103515625" tx="48.95" ty="77.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1566" centerPoint3DX="66.95" centerPoint3DY="108.75">
+                  <matrix>
+                    <Matrix a="-0.260879516601563" b="-0.059661865234375" c="-0.059661865234375" d="0.260879516601563" tx="36.9" ty="48.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1547" centerPoint3DX="56.8" centerPoint3DY="111.25">
+                  <matrix>
+                    <Matrix a="-0.1881103515625" b="0.1898193359375" c="0.1898193359375" d="0.1881103515625" tx="37.3" ty="67.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="新地图素材/假小子机枪手/Symbol 1568" centerPoint3DX="101.2" centerPoint3DY="71.2">
+                  <matrix>
+                    <Matrix a="-0.2669677734375" b="0.012603759765625" c="0.012603759765625" d="0.2669677734375" tx="60.75" ty="22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

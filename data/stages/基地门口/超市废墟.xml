@@ -1,12 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>超市废墟</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>3</UnlockCondition>
-        <Description>暂无资料</Description>
-    </StageInfo>
     <Rewards>
         <Reward>
             <Name>抗生素</Name>
@@ -127,17 +120,17 @@
                         <IsHostile>true</IsHostile>
                         <Height>180</Height>
                         <NPC>false</NPC>
-                        <PrimaryWeapon></PrimaryWeapon>
-                        <SecondaryWeapon></SecondaryWeapon>
-                        <SecondaryWeapon2></SecondaryWeapon2>
-                        <MeleeWeapon></MeleeWeapon>
-                        <Grenade></Grenade>
+                        <PrimaryWeapon />
+                        <SecondaryWeapon />
+                        <SecondaryWeapon2 />
+                        <MeleeWeapon />
+                        <Grenade />
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-络腮胡</HairStyle>
                         <HeadEquipment>男变装-圆框墨镜</HeadEquipment>
                         <BodyArmor>褐色背带背心</BodyArmor>
                         <LegArmor>盗贼牛仔裤带腿包</LegArmor>
-                        <HandGear></HandGear>
+                        <HandGear />
                         <FootGear>褐色简单皮鞋</FootGear>
                         <NeckGear>新手军牌</NeckGear>
                         <Gender>男</Gender>

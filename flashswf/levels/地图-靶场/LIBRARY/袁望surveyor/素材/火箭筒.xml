@@ -1,0 +1,59 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="袁望surveyor/素材/火箭筒" itemID="658e93ac-000001e5" sourceFlashFilepath="../../../../../../Users/Lenovo/Downloads/军阀新人物合集.fla" sourceLibraryItemHRef="袁望surveyor/素材/火箭筒" sourceLastModified="1716659702" lastModified="1716659702" lastUniqueIdentifier="6" sourceItemID="00000000-7fffffff">
+  <timeline>
+    <DOMTimeline name="火箭筒">
+      <layers>
+        <DOMLayer name="Layer_5" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/sprite 10" name="枪口位置">
+                  <matrix>
+                    <Matrix a="1.380615234375" d="1.380615234375" tx="236.7" ty="-58.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_3" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/sprite 4185" blendMode="add">
+                  <matrix>
+                    <Matrix tx="209.55" ty="-12.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/shape 4493" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

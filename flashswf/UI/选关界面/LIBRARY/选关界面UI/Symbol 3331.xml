@@ -1,0 +1,113 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/Symbol 3331" itemID="6597607e-00000e48" lastModified="1704196122">
+  <timeline>
+    <DOMTimeline name="Symbol 3331">
+      <layers>
+        <DOMLayer name="Script Layer" color="#C6C838">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#B0A6EF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="device" width="68.2" height="19.8" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="-86.35" ty="-6.6"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>沙漠虫洞</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="15" bitmapSize="300" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" size="15" bitmapSize="300" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#000000" strength="10"/>
+                  </filters>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 60" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.37310791015625" d="1.37310791015625" tx="-49.25" ty="0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#79FF73">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 3328" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F1C88F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.06451416015625" d="0.06451416015625" tx="-49.9" ty="2.85"/>
+                        </matrix>
+                        <GradientEntry color="#666666" ratio="0"/>
+                        <GradientEntry ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-847 -735[-803 -698 -764 -635!-764 -635|-712 -743!-712 -743|-747 -608!-747 -608|-719 -553!-719 -553|-674 -440!-674 -440|-624 -490!-624 -490|-664 -410!-664 -410[-631 -301 -616 -174!-616 -174|-572 -183!-572 -183|-613 -144!-613 -144[-606
+ -62 -605 27!-605 27|-608 122!-608 122|-563 148!-563 148|-610 155!-610 155[-619 283 -645 395!-645 395|-596 469!-596 469|-655 432!-655 432[-681 525 -719 606!-719 606|-668 751!-668 751|-737 644!-737 644[-771 707 -809 751!-809 751|-772 965
+!-772 965|-835 779!-835 779[-870 811 -907 829!-907 829|-899 1089!-899 1089|-939 841!-939 841|-994 848!-994 848|-1009 847!-1009 847|-1035 1113!-1035 1113|-1042 842!-1042 842[-1079 833 -1112 812!-1112 812|-1167 1033!-1167 1033|-1142 789
+!-1142 789[-1179 757 -1212 709!-1212 709|-1283 858!-1283 858|-1235 673!-1235 673|-1269 608!-1269 608|-1301 534!-1301 534|-1372 605!-1372 605|-1315 492!-1315 492[-1348 396 -1364 287!-1364 287|-1423 298!-1423 298|-1370 247!-1370 247[-1384
+ 142 -1383 27!-1383 27|-1383 -4!-1383 -4|-1433 -33!-1433 -33|-1382 -41!-1382 -41[-1377 -172 -1355 -287!-1355 -287|-1400 -354!-1400 -354|-1347 -322!-1347 -322[-1324 -426 -1286 -517!-1286 -517|-1328 -636!-1328 -636|-1271 -549!-1271 -549
+|-1269 -553!-1269 -553[-1234 -628 -1194 -679!-1194 -679|-1223 -850!-1223 -850|-1174 -704!-1174 -704[-1134 -748 -1090 -770!-1090 -770|-1097 -974!-1097 -974|-1065 -781!-1065 -781[-1031 -793 -994 -793!-994 -793|-981 -793!-981 -793|-960 -998
+!-960 -998|-955 -790!-955 -790[-911 -781 -870 -753!-870 -753|-828 -918!-828 -918|-847 -735"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

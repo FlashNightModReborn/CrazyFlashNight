@@ -1,13 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>军阀秘密基地</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>42</UnlockCondition>
-        <Description>将军死后，牛仔突然出现并收拢了军阀残部。在此建立了一个秘密基地</Description>
-        <Limitation>DisableCompanion</Limitation>
-    </StageInfo>
     <Rewards>
         <Reward id="4">
             <Name>普通hp粉尘</Name>

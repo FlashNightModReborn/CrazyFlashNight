@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/Andy-NPC" itemID="668a8cfe-000031c4" lastModified="1720800040" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/Andy-NPC" itemID="668a8cfe-000031c4" lastModified="1738914174" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="Andy-NPC">
       <layers>
-        <DOMLayer name="Labels Layer" color="#F5B2AB" locked="true">
+        <DOMLayer name="Labels Layer" color="#F5B2AB">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BCA922" locked="true">
+        <DOMLayer name="Script Layer" color="#BCA922">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -71,14 +71,14 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="技能图标" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="技能图标" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
@@ -112,7 +112,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#50EBDF" locked="true">
+        <DOMLayer name="Layer 3" color="#50EBDF">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
@@ -128,7 +128,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#CCE86D" locked="true">
+        <DOMLayer name="Layer 4" color="#CCE86D">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
@@ -144,7 +144,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#A4C9FA" locked="true">
+        <DOMLayer name="Layer 5" color="#A4C9FA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>

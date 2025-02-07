@@ -1,0 +1,84 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/混沌系列素材包/尾上世莉架/人物组件/头部" itemID="654fa1c2-0000006f" symbolType="graphic" lastModified="1728926411" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="头部">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFD9C3"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal" weight="0.1">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!3534 279[2741 -33 1809 4!1809 4[1070 -34 277 641!277 641[99 1611 36 2250!36 2250[#12.2 #97F.49 3 2702.5!3 2702.5|3 2703!3 2703[-7.3828125 #BA4.F5 21 3114!21 3114[28 3336 135 3540!135 3540[541 4161 760 4437!760 4437[#395.0B #1218.EB 1240
+ 4574!1240 4574[#70C.CB #119C.D5 2170 4429!2170 4429[#9E7.0B #10FD.46 2865 4127!2865 4127|3237 3879!3237 3879[3877 3383 4222 2730!4222 2730[4645 1980 4467 1188!4467 1188[4083 621 3534 279"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!670 3668[#39C.38 #E25.64 1232 3804"/>
+                    <Edge cubics="!4222 2730(;4504,2231 4585,1715 4467,1188q4222 2730Q4645 1980q4467 1188);"/>
+                    <Edge cubics="!3534 279(;3901,507 4211,810 4467,1188q3534 279Q4083 621q4467 1188);"/>
+                    <Edge cubics="!277 641(;806,191 1317,-21 1809,4q277 641Q1070 -34q1809 4);"/>
+                    <Edge cubics="!36 2250(;78,1824 158,1287 277,641q36 2250Q99 1611q277 641);"/>
+                    <Edge cubics="!21 3114(;25,3263 64,3404 135,3540q21 3114Q28 3336q135 3540);"/>
+                    <Edge cubics="!3237 3879(;3663,3549 3992,3166 4222,2730q3237 3879Q3877 3383q4222 2730);"/>
+                    <Edge cubics="!1809 4(;2431,-21 3006,71 3534,279q1809 4Q2741 -33q3534 279);"/>
+                    <Edge cubics="!3 2703(;-4,2891 2,3026 21,3114q3 2703Q-7 2981q21 3114);"/>
+                    <Edge cubics="!719 3627(;933,3810 1202,3880 1527,3835q719 3627Q1040 3902q1527 3835);"/>
+                    <Edge cubics="!36 2250(;24,2371 13,2522 3,2703q36 2250Q18 2431q3 2703);"/>
+                    <Edge cubics="!2170 4429(;2413,4376 2645,4275 2865,4127q2170 4429Q2535 4349q2865 4127);"/>
+                    <Edge cubics="!760 4437(;865,4568 1025,4613 1240,4574q760 4437Q917 4633q1240 4574);"/>
+                    <Edge cubics="!1240 4574(;1617,4531 1927,4482 2170,4429q1240 4574Q1805 4509q2170 4429);"/>
+                    <Edge cubics="!2865 4127(;2865,4127 3237,3879 3237,3879q2865 4127 3237 3879);"/>
+                    <Edge cubics="!135 3540(;406,3954 614,4253 760,4437q135 3540Q541 4161q760 4437);"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="所有素材/混沌系列素材包/尾上世莉架/人物组件/左眼" centerPoint3DX="130.85" centerPoint3DY="120.9">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="-0.2587890625" c="0.2587890625" d="0.965927124023438" tx="88.8" ty="102.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.55" y="29.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/混沌系列素材包/尾上世莉架/人物组件/右眼" centerPoint3DX="25.35" centerPoint3DY="104.2">
+                  <matrix>
+                    <Matrix d="0.924911499023438" tx="-12.1" ty="81.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="27.45" y="29.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/混沌系列素材包/尾上世莉架/人物组件/鼻子">
+                  <matrix>
+                    <Matrix tx="47.5" ty="147.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.1" y="6.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

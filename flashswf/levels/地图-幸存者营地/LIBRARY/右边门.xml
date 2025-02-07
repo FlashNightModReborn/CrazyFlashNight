@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="右边门" itemID="6605594d-0000071f" lastModified="1711626598">
+  <timeline>
+    <DOMTimeline name="右边门">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#242223"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#1F1D1E"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!946 340|946 0!946 0|473 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!473 0|0 713"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!0 713|0 1771"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 1771|946 340"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!0 713|0 0!0 0|473 0"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!236 814|236 1396!236 1396|188 1393!188 1393|188 814!188 814|236 814"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="!0 1771|0 2276!0 2276|946 2276!946 2276|946 340"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/牙狼素材/牙狼右下臂" itemID="657eb444-0000096e" linkageExportForAS="true" linkageIdentifier="男变装-牙狼铠右下臂" lastModified="1702995469" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="牙狼右下臂">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/牙狼素材/下臂" centerPoint3DX="-9.2" centerPoint3DY="-23.05">
+                  <matrix>
+                    <Matrix a="-0.659332275390625" b="-0.09857177734375" c="-0.147857666015625" d="0.988998413085938" tx="43.1" ty="-113.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="58.5" y="96.25"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-9" contrast="-6" saturation="-12" hue="-6"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

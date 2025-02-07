@@ -1,0 +1,41 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/魔神选关" itemID="660f6dc0-000019c9" lastModified="1712287168">
+  <timeline>
+    <DOMTimeline name="魔神选关">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0128173828125" c="-0.062774658203125" d="0" tx="51.45" ty="10.5"/>
+                        </matrix>
+                        <GradientEntry color="#CC0000" ratio="0"/>
+                        <GradientEntry color="#660000" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!1812 320S1|1812 100!1812 100[1812 0 1712 0!1712 0|100 0!100 0[0 0 0 100!0 100|0 320!0 320[0 420 100 420!100 420|1712 420!1712 420[1812 420 1812 320"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

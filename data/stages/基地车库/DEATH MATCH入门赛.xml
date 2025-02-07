@@ -1,12 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>DEATH MATCH入门赛</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>8</UnlockCondition>
-        <Description>为了让新手练习而设立的场地</Description>
-    </StageInfo>
     <Rewards>
     </Rewards>
     <SubStage id="0">
@@ -32,11 +25,11 @@
                         <IsHostile>true</IsHostile>
                         <Height>180</Height>
                         <NPC>false</NPC>
-                        <PrimaryWeapon></PrimaryWeapon>
-                        <SecondaryWeapon></SecondaryWeapon>
-                        <SecondaryWeapon2></SecondaryWeapon2>
-                        <MeleeWeapon></MeleeWeapon>
-                        <Grenade></Grenade>
+                        <PrimaryWeapon />
+                        <SecondaryWeapon />
+                        <SecondaryWeapon2 />
+                        <MeleeWeapon />
+                        <Grenade />
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-黑暴走头</HairStyle>
                         <HeadEquipment>红色风镜</HeadEquipment>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1770" itemID="6597607e-000009f7" lastModified="1737229108">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1770" itemID="6597607e-000009f7" lastModified="1738914571">
   <timeline>
     <DOMTimeline name="Symbol 1770">
       <layers>
-        <DOMLayer name="Script Layer" color="#C1F7A1">
+        <DOMLayer name="Script Layer" color="#C1F7A1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -12,7 +12,7 @@
 	var 对话检测 = !!NPC对象.默认对话;
 	var 商店检测 = !!NPC对象.物品栏;
 	var 雇佣检测 = !!NPC对象.佣兵数据 && NPC对象.受雇欲望 > _root.受雇欲望基准 - 1;
-	var 任务检测 = !!NPC对象.NPC任务_任务;
+	var 任务检测 = !!NPC对象.NPC任务_任务_关卡路径;
 	var 技能检测 = !!NPC对象.可学的技能;
 	
 	text1._visible = 对话检测;
@@ -73,11 +73,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#80D240" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#80D240">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 1768" name="bt3" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 1768" name="bt3" symbolType="button">
                   <matrix>
                     <Matrix a="3.24359130859375" d="0.666000366210938" tx="41.3" ty="42.7"/>
                   </matrix>
@@ -86,28 +86,25 @@ _root.全部翻译(this);
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (press) {
-	if (_root.gameworld[当前NPC].NPC任务_任务)
+	if (_root.gameworld[当前NPC].NPC任务_任务_关卡路径)
 	{
-		var data = _root.getTaskData(_root.gameworld[当前NPC].NPC任务_任务[0]);
-		_root.委托任务界面.NPC任务_任务 = _root.gameworld[当前NPC].NPC任务_任务;
-		_root.委托任务界面.NPC任务_任务_动画 = _root.gameworld[当前NPC].NPC任务_任务_动画;
-		_root.委托任务界面.NPC任务_任务_契约金 = _root.gameworld[当前NPC].NPC任务_任务_契约金;
-		_root.委托任务界面.NPC任务_任务_等级限制 = _root.gameworld[当前NPC].NPC任务_任务_等级限制;
-		_root.委托任务界面.NPC任务_任务_K点 = _root.gameworld[当前NPC].NPC任务_任务_K点;
-		_root.委托任务界面.NPC任务_任务_起始帧 = _root.gameworld[当前NPC].NPC任务_任务_起始帧;
-		_root.SetDialogue(data.get_conversation);
-		_root.委托任务界面.商品编号 = _root.gameworld[当前NPC].商品编号;
+		var taskData = _root.getTaskData(_root.gameworld[当前NPC].NPC任务_任务_关卡路径);
+		_root.委托任务界面.taskData = taskData;
+		_root.委托任务界面.NPC任务_任务_契约金 = taskData.deposit;
+		_root.委托任务界面.NPC任务_任务_等级限制 = taskData.restricted_level;
+		_root.委托任务界面.NPC任务_任务_K点 = taskData.Kdeposit;
+		_root.SetDialogue(taskData.get_conversation);
 		_root.委托任务界面.配置关卡属性(_root.gameworld[当前NPC].NPC任务_任务_关卡路径);
-		_root.委托任务界面.显示任务明细(_root.委托任务界面.NPC任务_任务);
+		_root.委托任务界面.显示任务明细(taskData);
 		_root.委托任务界面._visible = true;
 	}
 	else
 	{
 		text3._visible = 0;
 	}
-	if (_root.gameworld[当前NPC].佣兵数据 != undefined && text6._visible != false)
+	/*if (_root.gameworld[当前NPC].佣兵数据 != undefined && text6._visible != false)
 	{
-	}
+	}*/
 	this._visible = 0;
 }
 ]]></script>

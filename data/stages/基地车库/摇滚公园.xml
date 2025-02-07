@@ -11,14 +11,6 @@ StageInfo描述场景基本信息。
     Description：关卡描述。副本关卡不使用
     MaterialDetail：奖励品描述。副本关卡不使用
 -->
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>摇滚公园</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>27</UnlockCondition>
-        <Description>盗贼组织“狂野玫瑰”的大本营，这个组织的成员基本都是女性，但其实力并不逊于其他盗贼组织，甚至可以和黑铁会抗衡&amp;lt;BR&amp;gt;这里可以获得一些高级材料</Description>
-        <MaterialDetail>增效剂</MaterialDetail>
-    </StageInfo>
     <!-- 
 Rewards描述奖励品列表。每个Reward描述一种奖励品
 Reward的必要参数：

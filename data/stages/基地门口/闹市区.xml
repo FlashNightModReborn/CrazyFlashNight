@@ -1,12 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>闹市区</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>19</UnlockCondition>
-        <Description>此地有不少食物和药品，可说是生存者们的宝库，但如果遇到了僵尸就凶多吉少了。。。&amp;lt;BR&amp;gt;这里可以获得一些普通材料</Description>
-    </StageInfo>
     <Rewards>
         <Reward>
             <Name>抗生素</Name>
@@ -313,7 +306,7 @@
                 <HeadEquipment>防毒面具1号</HeadEquipment>
                 <BodyArmor>新手衣服</BodyArmor>
                 <LegArmor>新手裤子</LegArmor>
-                <HandGear></HandGear>
+                <HandGear />
                 <FootGear>新手皮鞋</FootGear>
                 <NeckGear>新手军牌</NeckGear>
                 <Gender>女</Gender>
@@ -328,7 +321,7 @@
                 <HeadEquipment>红外夜视仪</HeadEquipment>
                 <BodyArmor>军绿防弹衣</BodyArmor>
                 <LegArmor>墨绿军用下装</LegArmor>
-                <HandGear></HandGear>
+                <HandGear />
                 <FootGear>墨绿军用鞋</FootGear>
                 <NeckGear>新手军牌</NeckGear>
                 <Gender>男</Gender>
@@ -361,14 +354,14 @@
                         <PrimaryWeapon>G36</PrimaryWeapon>
                         <SecondaryWeapon>M1911</SecondaryWeapon>
                         <SecondaryWeapon2>m9</SecondaryWeapon2>
-                        <MeleeWeapon></MeleeWeapon>
-                        <Grenade></Grenade>
+                        <MeleeWeapon />
+                        <Grenade />
                         <FaceType>女变装-基本脸型</FaceType>
                         <HairStyle>发型-女式-银色清爽直发</HairStyle>
                         <HeadEquipment>防毒面具1号</HeadEquipment>
                         <BodyArmor>新手衣服</BodyArmor>
                         <LegArmor>新手裤子</LegArmor>
-                        <HandGear></HandGear>
+                        <HandGear />
                         <FootGear>新手皮鞋</FootGear>
                         <NeckGear>新手军牌</NeckGear>
                         <Gender>女</Gender>
@@ -384,17 +377,17 @@
                         <IsHostile>false</IsHostile>
                         <Height>180</Height>
                         <NPC>false</NPC>
-                        <PrimaryWeapon></PrimaryWeapon>
+                        <PrimaryWeapon />
                         <SecondaryWeapon>Mossberg500</SecondaryWeapon>
                         <SecondaryWeapon2>Mossberg500</SecondaryWeapon2>
-                        <MeleeWeapon></MeleeWeapon>
-                        <Grenade></Grenade>
+                        <MeleeWeapon />
+                        <Grenade />
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-黑蓬头</HairStyle>
                         <HeadEquipment>红外夜视仪</HeadEquipment>
                         <BodyArmor>军绿防弹衣</BodyArmor>
                         <LegArmor>墨绿军用下装</LegArmor>
-                        <HandGear></HandGear>
+                        <HandGear />
                         <FootGear>墨绿军用鞋</FootGear>
                         <NeckGear>新手军牌</NeckGear>
                         <Gender>男</Gender>

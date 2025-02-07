@@ -1,0 +1,80 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/图层很高的沙袋" itemID="6633a522-00000d00" lastModified="1714660652" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="图层很高的沙袋">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/侧棱柱" centerPoint3DX="-78.3" centerPoint3DY="-29">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="-243.05" ty="-59.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="214.85" y="39.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="-190.5" centerPoint3DY="-78.45">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="-243.05" ty="-118"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.45" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="-108.7" centerPoint3DY="-78.45">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="-161.25" ty="-118"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="-22.5" centerPoint3DY="-78.45">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="-75.05" ty="-118"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.45" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="60.3" centerPoint3DY="-78.45">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="7.75" ty="-118"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="255.35" centerPoint3DY="-67.6">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="202.8" ty="-107.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="144" centerPoint3DY="-38.5">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="91.45" ty="-78.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="素材/沙袋堆" centerPoint3DX="224.3" centerPoint3DY="-38.5">
+                  <matrix>
+                    <Matrix a="0.766891479492188" d="0.766891479492188" tx="171.75" ty="-78.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="51.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

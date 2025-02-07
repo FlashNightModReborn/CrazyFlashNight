@@ -1,12 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>难民营地</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>30</UnlockCondition>
-        <Description>各地流浪的游民聚集于此，久而久之成为了一个属于流浪者的聚落，由于缺乏食物和药品，这里的人都徘徊于生死线之间&amp;lt;BR&amp;gt;这里可以获得一些中级材料</Description>
-    </StageInfo>
     <Rewards>
         <Reward id="0">
             <Name>抗生素</Name>
@@ -112,12 +105,12 @@
                         <NPC>false</NPC>
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-黑蓬头</HairStyle>
-                        <HeadEquipment></HeadEquipment>
+                        <HeadEquipment />
                         <BodyArmor>浅灰背心</BodyArmor>
                         <LegArmor>咖啡色多包短裤</LegArmor>
-                        <HandGear></HandGear>
+                        <HandGear />
                         <FootGear>白色板鞋</FootGear>
-                        <NeckGear></NeckGear>
+                        <NeckGear />
                         <Gender>男</Gender>
                     </Enemy>
                     <Enemy id="1">
@@ -133,12 +126,12 @@
                         <NPC>false</NPC>
                         <FaceType>女变装-基本脸型</FaceType>
                         <HairStyle>发型-女式-丸子头</HairStyle>
-                        <HeadEquipment></HeadEquipment>
+                        <HeadEquipment />
                         <BodyArmor>浅灰背心</BodyArmor>
                         <LegArmor>咖啡色多包短裤</LegArmor>
-                        <HandGear></HandGear>
+                        <HandGear />
                         <FootGear>棕色圆头皮鞋</FootGear>
-                        <NeckGear></NeckGear>
+                        <NeckGear />
                         <Gender>女</Gender>
                     </Enemy>
                     <Enemy id="2">
@@ -154,12 +147,12 @@
                         <NPC>false</NPC>
                         <FaceType>女变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-黑妹妹头</HairStyle>
-                        <HeadEquipment></HeadEquipment>
+                        <HeadEquipment />
                         <BodyArmor>米色高腰背心</BodyArmor>
                         <LegArmor>棕色带腿包短裤</LegArmor>
-                        <HandGear></HandGear>
+                        <HandGear />
                         <FootGear>棕色圆头皮鞋</FootGear>
-                        <NeckGear></NeckGear>
+                        <NeckGear />
                         <Gender>女</Gender>
                     </Enemy>
                     <Enemy id="3">
@@ -175,12 +168,12 @@
                         <NPC>false</NPC>
                         <FaceType>男变装-基本脸型</FaceType>
                         <HairStyle>发型-男式-黑圆平头</HairStyle>
-                        <HeadEquipment></HeadEquipment>
+                        <HeadEquipment />
                         <BodyArmor>廉价西服</BodyArmor>
                         <LegArmor>咖啡色多包短裤</LegArmor>
-                        <HandGear></HandGear>
+                        <HandGear />
                         <FootGear>白色板鞋</FootGear>
-                        <NeckGear></NeckGear>
+                        <NeckGear />
                         <Gender>男</Gender>
                     </Enemy>
                     <Enemy id="4">

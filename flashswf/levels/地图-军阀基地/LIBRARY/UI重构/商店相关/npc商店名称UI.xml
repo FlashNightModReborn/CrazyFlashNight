@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/商店相关/npc商店名称UI" itemID="668a5bba-000008f1" lastModified="1720351498" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="npc商店名称UI">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称框" centerPoint3DX="15.05" centerPoint3DY="-0.25">
+                  <matrix>
+                    <Matrix tx="-36.95" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="52" y="9.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/购物图标UI" centerPoint3DX="-48.65">
+                  <matrix>
+                    <Matrix a="1.0262451171875" d="1.170166015625" tx="-58.3" ty="-7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.35" y="6.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	if(_parent._parent.商店 == "")
+	{
+	this._visible = 0;
+	}
+	else
+	{
+		this._visible = 1;
+	}
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter color="#000000" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

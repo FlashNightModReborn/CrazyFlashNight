@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1737229151" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1873" itemID="6597607e-00000a30" lastModified="1738919380" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="Symbol 1873">
       <layers>
@@ -6,42 +6,35 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 显示任务明细(任务数组)
+                <script><![CDATA[function 显示任务明细(taskData)
 {
-	var 获取任务文档数据 = _root.getTaskData(任务数组[0]);
-	收集品条件 = _root.获得翻译("需收集：");
-	var i = 0;
-	while (i < 任务数组[8].length)
+	var requirementArr = taskData.finish_requirements[0].split("#");
+	if (taskData.finish_submit_items.length > 0)
 	{
-		收集品条件 += _root.获得翻译(任务数组[8][i][0]) + "   " + 任务数组[8][i][1] + "   ";
-		i++;
+		收集品条件 = "需收集：";
+		var i = 0;
+		while (i < taskData.finish_submit_items.length)
+		{
+			收集品条件 += taskData.finish_submit_items[i] + "   ";
+			i++;
+		}
+	}else{
+		收集品条件 = "无需收集";
 	}
-	if (收集品条件 == _root.获得翻译("需收集："))
-	{
-		收集品条件 = _root.获得翻译("无需收集");
-	}
-	if (任务数组[12] == "无限制")
+	if (taskData.finish_requirements.length <= 0)
 	{
 		通关条件 = "";
 	}
 	else
 	{
-		通关条件 = "\r" + _root.获得翻译("通关要求：") + _root.获得翻译(任务数组[12]);
+		通关条件 = "\r" + _root.获得翻译("通关要求：") + _root.获得翻译(requirementArr[0]);
 	}
-	//提交任务 = "\r" + _root.获得翻译("提交任务：") + _root.获得翻译(任务数组[3]);
-	提交任务 = "\r" + _root.获得翻译("提交任务：") + _root.获得翻译(获取任务文档数据.finish_npc);
+	提交任务 = "\r" + _root.获得翻译("提交任务：") + _root.获得翻译(taskData.finish_npc);
 	奖励物品 = "\r" + _root.获得翻译("奖励：");
 	var i = 0;
-	/*
-	while (i < 任务数组[9].length)
+	while (i < taskData.rewards.length)
 	{
-		奖励物品 += _root.获得翻译(任务数组[9][i][0]) + "   " + 任务数组[9][i][1] + "   ";
-		i++;
-	}
-	*/
-	while (i < 获取任务文档数据.rewards.length)
-	{
-		奖励物品分割 = 获取任务文档数据.rewards[i].split("#");
+		奖励物品分割 = taskData.rewards[i].split("#");
 		奖励物品 += _root.获得翻译(奖励物品分割[0]) + "   " + 奖励物品分割[1] + "   ";
 		i++;
 	}
@@ -49,35 +42,36 @@
 	{
 		奖励物品 = "";
 	}
-	关卡难度 = 任务数组[6];
-	NPC任务_任务_契约金 =  获取任务文档数据.deposit  || 获取任务文档数据.deposit === 0 ? Number(获取任务文档数据.deposit) : NPC任务_任务_契约金;
-	NPC任务_任务_K点 = 获取任务文档数据.Kdeposit || 获取任务文档数据.Kdeposit === 0 ? Number(获取任务文档数据.Kdeposit) : NPC任务_任务_K点;
-	NPC任务_任务_等级限制 = 获取任务文档数据.restricted_level  || 获取任务文档数据.restricted_level == 0 ? Number(获取任务文档数据.restricted_level) : NPC任务_任务_等级限制;
-	推荐等级 = 获取任务文档数据.recommended_level ?  "   "  + _root.获得翻译("推荐等级：") + 获取任务文档数据.recommended_level : "";
-	
-	任务明细 = 任务数组[0] + "\r" + _root.获得翻译("难度限制：") + _root.getDifficultyString(关卡难度) + "\r " + _root.获得翻译("完成条件：") + 收集品条件 + 通关条件 + 提交任务 + 奖励物品 + "\r " + _root.获得翻译或不显示(任务数组[5]);
-	if(this.限制词条.length > 0){
-		任务明细 +="<FONT COLOR=\'#FFCC00\'>" + _root.任务栏UI函数.打印限制词条明细(this.限制词条) + "</FONT>";
+	关卡难度 = requirementArr[1];
+	NPC任务_任务_契约金 = taskData.deposit > 0 ? Number(taskData.deposit) : 0;
+	NPC任务_任务_K点 = taskData.Kdeposit > 0 ? Number(taskData.Kdeposit) : 0;
+	NPC任务_任务_等级限制 = taskData.restricted_level > 0 ? Number(taskData.restricted_level) : 1;
+	推荐等级 = taskData.recommended_level ? "   " + _root.获得翻译("推荐等级：") + taskData.recommended_level : "";
+
+	任务明细 = taskData.title + "\r难度限制：" + _root.getDifficultyString(关卡难度) + "\r完成条件：" + 收集品条件 + 通关条件 + 提交任务 + 奖励物品 + "\r " + taskData.description;
+	if (this.限制词条.length > 0)
+	{
+		任务明细 += "\r<FONT COLOR=\'#FFCC00\'>" + _root.任务栏UI函数.打印限制词条明细(this.限制词条) + "</FONT>";
 	}
-	接收条件 = _root.获得翻译("委托领取条件") + "\r" + _root.获得翻译("任务_契约金：") + NPC任务_任务_契约金 + "   " +  _root.获得翻译("情报费（K点）：") + NPC任务_任务_K点 + "\r" + _root.获得翻译("任务等级限制：") + NPC任务_任务_等级限制 + 推荐等级 + "\r";
+	接收条件 = _root.获得翻译("委托领取条件") + "\r" + _root.获得翻译("任务_契约金：") + NPC任务_任务_契约金 + "   " + _root.获得翻译("情报费（K点）：") + NPC任务_任务_K点 + "\r" + _root.获得翻译("任务等级限制：") + NPC任务_任务_等级限制 + 推荐等级 + "\r";
 	进入挑战 = false;
-	if(获取任务文档数据.challenge){
-		this.挑战难度 = 获取任务文档数据.challenge.difficulty;
-		this.挑战限制词条 = 获取任务文档数据.challenge.limitations ? 获取任务文档数据.challenge.limitations : null;
-		挑战内容 = _root.任务栏UI函数.打印任务挑战明细(任务数组[0]);
+	if (taskData.challenge)
+	{
+		this.挑战难度 = taskData.challenge.difficulty;
+		this.挑战限制词条 = taskData.challenge.limitations ? taskData.challenge.limitations : null;
+		挑战内容 = _root.任务栏UI函数.打印任务挑战明细(taskData.title);
 		进入挑战按钮._visible = true;
 		取消按钮._visible = false;
-	}else{
+	}
+	else
+	{
 		进入挑战按钮._visible = false;
 		取消按钮._visible = true;
 		挑战内容 = "";
 	}
-	if (NPC任务_任务_动画 != "")
+	if (taskData.imageurl != null)
 	{
-		var list = NPC任务_任务_动画.split("/");
-		var url = list[list.length - 1];
-		url = "flashswf/images/" + url;
-		委托任务动画壳.loadMovie(url);
+		委托任务动画壳.loadMovie(taskData.imageurl);
 		委托任务背景.visible = false;
 	}
 	else
@@ -88,7 +82,6 @@
 }
 function 虚拟币支付(amount, 商品编号)
 {
-	var _loc5_ = _root.getTaskData(NPC任务_任务[0]);
 	if (amount > 0)
 	{
 		if (_root.虚拟币 >= amount)
@@ -96,20 +89,23 @@ function 虚拟币支付(amount, 商品编号)
 			_root.虚拟币 -= amount;
 			_root.发布消息(_root.获得翻译("支付成功！"));
 			_root.金钱 -= NPC任务_任务_契约金;
-			_root.AddTask(_loc5_.id);
+			_root.AddTask(taskData.id);
 			_root.任务栏界面.排列任务图标();
 			_root.发布消息(_root.获得翻译("领取新任务！"));
 			_root.最上层发布文字提示(_root.获得翻译("领取新任务！"));
 			_root.当前通关的关卡 = "";
-			_root.当前关卡名 = NPC任务_任务[12];
+			_root.当前关卡名 = this.当前关卡名;
 
 			_root.场景进入位置名 = "出生地";
 			this._visible = false;
 			_root.对话框界面._visible = false;
 			_root.获取虚拟币值();
-			if(this.进入挑战){
+			if (this.进入挑战)
+			{
 				this.委托界面进入关卡(挑战难度);
-			}else{
+			}
+			else
+			{
 				this.委托界面进入关卡(关卡难度);
 			}
 		}
@@ -125,19 +121,22 @@ function 虚拟币支付(amount, 商品编号)
 		{
 			_root.发布消息(_root.获得翻译("支付成功！"));
 			_root.金钱 -= NPC任务_任务_契约金;
-			_root.AddTask(_loc5_.id);
+			_root.AddTask(taskData.id);
 			_root.任务栏界面.排列任务图标();
 			_root.发布消息(_root.获得翻译("领取新任务！"));
 			_root.最上层发布文字提示(_root.获得翻译("领取新任务！"));
 			_root.当前通关的关卡 = "";
-			_root.当前关卡名 = NPC任务_任务[12];
+			_root.当前关卡名 = this.当前关卡名;
 
 			_root.场景进入位置名 = "出生地";
 			this._visible = false;
 			_root.对话框界面._visible = false;
-			if(this.进入挑战){
+			if (this.进入挑战)
+			{
 				this.委托界面进入关卡(挑战难度);
-			}else{
+			}
+			else
+			{
 				this.委托界面进入关卡(关卡难度);
 			}
 		}

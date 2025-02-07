@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/牙狼素材/男变装-牙狼铠上臂" itemID="657ebb88-00000a09" linkageExportForAS="true" linkageIdentifier="男变装-牙狼铠上臂" lastModified="1702997113" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="男变装-牙狼铠上臂">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/牙狼素材/左上臂" centerPoint3DX="0.65" centerPoint3DY="-3.9">
+                  <matrix>
+                    <Matrix a="-0.79998779296875" tx="32.1" ty="-68.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="39.3" y="64.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-9" contrast="-6" saturation="-12" hue="-6"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/牙狼素材/肩甲" centerPoint3DX="-25" centerPoint3DY="-51.9">
+                  <matrix>
+                    <Matrix a="-1.12901306152344" b="0.122909545898438" c="0.113525390625" d="1.04269409179688" tx="23.05" ty="-99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.1" y="74.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-9" contrast="-6" saturation="-12" hue="-6"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1737624986" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1738914408" lastUniqueIdentifier="21">
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -397,7 +397,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="NPC" color="#FF800A" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="NPC" color="#FF800A" autoNamed="false" layerType="folder"/>
         <DOMLayer name="黑铁会外交部长" color="#E352B2" parentLayerIndex="16" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -427,14 +427,40 @@ onClipEvent (load) {
 	}
 	默认对话 = _root.读取并组装NPC对话(名字);
 	物品栏 = _root.getNPCShop(名字);
-	NPC任务_任务 = ["制霸黑铁会获强化石", "NPC任务", "黑铁会外交部长", "黑铁会外交部长", 0, "参加黑铁会强者称霸赛", "简单", "新任务", [], [["金币", 180000], ["经验值", 800000], ["普通hp药剂", 300], ["普通mp药剂", 300], ["强化石", 1200]], 任务前对话, 任务后对话, "制霸黑铁会获强化石"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 5000;
-	NPC任务_任务_等级限制 = 30;
-	NPC任务_任务_K点 = 0;
-	NPC任务_任务_起始帧 = "wuxianguotu_1";
-	商品编号 = "O2011100900000000801";
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/制霸黑铁会.xml";
+	NPC任务_任务_关卡路径 = "制霸黑铁会";
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="爱国青年npc" color="#9933CC" parentLayerIndex="16" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="NPC/爱国青年-NPC" centerPoint3DX="1137.95" centerPoint3DY="530.45">
+                  <matrix>
+                    <Matrix tx="1096.95" ty="455.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40.95" y="74.65"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.主线任务进度 < 3)
+	{
+		this._visible = 0;
+	}
+	是否为敌人 = false;
+	this._name = 名字 = "爱国青年";
+	商店 = "空手装备出售";
+	身高 = 180;
+	性别 = "男";
+	方向 = "右";
+	默认对话 = _root.读取并组装NPC对话(名字);
+	物品栏 = _root.getNPCShop(名字);
+	NPC任务_任务_关卡路径 = "二战亡灵";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -471,14 +497,7 @@ onClipEvent (load) {
 	}
 	默认对话 = _root.读取并组装NPC对话(名字);
 	物品栏 = _root.getNPCShop(名字);
-	NPC任务_任务 = ["夺取材料", "NPC任务", "宝石线人", "宝石线人", 0, "帮宝石线人击退军阀", "简单", "新任务", [], [["金币", 50000], ["经验值", 100000], ["强化石", 100], ["普通hp药剂", 10], ["普通mp药剂", 10]], 任务前对话, 任务后对话, "夺取材料"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 0;
-	NPC任务_任务_等级限制 = 8;
-	NPC任务_任务_K点 = 0;
-	NPC任务_任务_起始帧 = "wuxianguotu_1";
-	商品编号 = "O20111009000000008";
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/夺取材料.xml";
+	NPC任务_任务_关卡路径 = "夺取材料";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -486,96 +505,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="爱国青年npc" color="#9933CC" parentLayerIndex="16" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="NPC/爱国青年-NPC" centerPoint3DX="1137.95" centerPoint3DY="530.45">
-                  <matrix>
-                    <Matrix tx="1096.95" ty="455.8"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="40.95" y="74.65"/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	if (_root.主线任务进度 < 3)
-	{
-		this._visible = 0;
-	}
-	是否为敌人 = false;
-	this._name = 名字 = "爱国青年";
-	商店 = "空手装备出售";
-	身高 = 180;
-	性别 = "男";
-	方向 = "右";
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
-	NPC任务_任务 = ["二战亡灵", "NPC任务", "爱国青年", "爱国青年", 0, "抵挡二战日寇潮的进攻。", "简单", "新任务", [], [["金币", 20000], ["经验值", 5000], ["普通hp药剂", 20], ["普通mp药剂", 20], ["复活币", 20]], 任务前对话, 任务后对话, "二战亡灵"];
-	NPC任务_任务_动画 = "flashswf/unused/erzhanwangling.swf";
-	NPC任务_任务_契约金 = 0;
-	NPC任务_任务_等级限制 = 5;
-	NPC任务_任务_K点 = 0;
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/二战亡灵.xml";
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="宝石线人-弃用" color="#2A7DF3" parentLayerIndex="16" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="NPC/宝石线人-NPC" centerPoint3DX="1227.5" centerPoint3DY="476.45">
-                  <matrix>
-                    <Matrix tx="1175.5" ty="373.25"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	if (_root.主线任务进度 < 28)
-	{
-		this._visible = 0;
-	}
-	this._visible = 0;
-	是否为敌人 = false;
-	this._name = 名字 = "宝线人";
-	身高 = 175;
-	性别 = "女";
-	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	默认对话 = [[], [], []];
-	默认对话[0][0] = ["宝石线人", "线人", "宝石线人", "想要强化石吗？我知道哪里可以找到！", "普通"];
-	默认对话[1][0] = ["宝石线人", "线人", "宝石线人", "强化石可以强化装备，强化的装备会大大加强你的战斗力！", "普通"];
-	默认对话[2][0] = ["宝石线人", "线人", "宝石线人", "接受我的委托，找到的强化石分你一半哦！", "普通"];
-	任务前对话 = [];
-	任务前对话[0] = ["宝石线人", "线人", "宝石线人", "我的一批强化石被军阀抢走了，我知道他们现在在哪。", "普通"];
-	任务前对话[1] = ["宝石线人", "线人", "宝石线人", "如果你能帮我击退这些军阀，我可以送你一些强化石！", "普通"];
-	任务前对话[2] = ["宝石线人", "线人", "宝石线人", "当然除了强化石还有其他的各种奖励！", "普通"];
-	任务后对话 = [];
-	任务后对话[0] = ["宝石线人", "线人", "宝石线人", "厉害啊，A军团果然名不虚传啊……这是你应得的！", "普通"];
-	NPC任务_任务 = ["夺取材料", "NPC任务", "宝石线人", "宝石线人", 0, "帮宝石线人击退军阀", "简单", "新任务", [], [["金币", 50000], ["经验值", 120000], ["强化石", 300], ["普通hp药剂", 10], ["普通mp药剂", 10]], 任务前对话, 任务后对话, "夺取材料"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 0;
-	NPC任务_任务_等级限制 = 8;
-	NPC任务_任务_K点 = 0;
-	商品编号 = "O20111009000000008";
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/夺取材料.xml";
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="学生妹" color="#52BEE6" parentLayerIndex="16" autoNamed="false">
+        <DOMLayer name="学生妹" color="#52BEE6" parentLayerIndex="16" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -604,12 +534,7 @@ onClipEvent (load) {
 		_root.发布消息(名字 + "也许需要你的帮助");
 	}
 	默认对话 = _root.读取并组装NPC对话(名字);
-	NPC任务_任务 = ["堕落城的骚动", "NPC任务", "学生妹", "学生妹", 0, "阻止演唱会的进行。盗贼是很厉害的。", "简单", "新任务", [], [["金币", 20000], ["经验值", 600000], ["复活币", 1], ["普通hp药剂", 20], ["普通mp药剂", 20], ["金牌打手项链", 1]], 任务前对话, 任务后对话, "堕落城的骚动"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 10000;
-	NPC任务_任务_等级限制 = 10;
-	NPC任务_任务_K点 = 0;
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/堕落城的骚动.xml";
+	NPC任务_任务_关卡路径 = "堕落城的骚动";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -646,18 +571,7 @@ onClipEvent (load) {
 	}
 	默认对话 = _root.读取并组装NPC对话(名字);
 	物品栏 = _root.getNPCShop(名字);
-	任务前对话 = [];
-	任务前对话[0] = ["幸存老兵", "猎人", "幸存老兵", "我们小队在丛林里发现了一艘外星飞船，那里出现了无数黑色外星生物……", "普通"];
-	任务前对话[1] = ["幸存老兵", "猎人", "幸存老兵", "同伴一个接一个被它们杀掉了，幸存的只有我一个……", "普通"];
-	任务前对话[2] = ["幸存老兵", "猎人", "幸存老兵", "听说这里的A兵团是佣兵组织，请你帮我完成调查任务吧！", "普通"];
-	任务后对话 = [];
-	任务后对话[0] = ["幸存老兵", "猎人", "幸存老兵", "外星人已经被你摆平了？厉害啊，A军团果然名不虚传啊……", "普通"];
-	NPC任务_任务 = ["AVP", "NPC任务", "幸存老兵", "幸存老兵", 0, "丛林里发现了一艘外星飞船,对此展开调查。外星人是很厉害的。", "简单", "新任务", [], [["金币", 100000], ["经验值", 100000], ["复活币", 10], ["普通hp药剂", 10], ["普通mp药剂", 10], ["普通hp粉尘", 600], ["地球卫士项链", 1]], 任务前对话, 任务后对话, "AVP"];
-	NPC任务_任务_动画 = "flashswf/PVAindex.swf";
-	NPC任务_任务_契约金 = 1000;
-	NPC任务_任务_等级限制 = 8;
-	NPC任务_任务_K点 = 0;
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/AVP.xml";
+	NPC任务_任务_关卡路径 = "AVP";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -694,12 +608,7 @@ onClipEvent (load) {
 	}
 	默认对话 = _root.读取并组装NPC对话(名字);
 	物品栏 = _root.getNPCShop(名字);
-	NPC任务_任务 = ["僵尸逆袭", "NPC任务", "前治安官", "前治安官", 0, "抵挡僵尸潮的进攻。", "简单", "新任务", [], [["金币", 10000], ["经验值", 80000], ["复活币", 1], ["普通hp药剂", 600], ["普通mp药剂", 600], ["屠戮者项链", 1]], 任务前对话, 任务后对话, "僵尸逆袭"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 1000;
-	NPC任务_任务_等级限制 = 10;
-	NPC任务_任务_K点 = 0;
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/僵尸逆袭.xml";
+	NPC任务_任务_关卡路径 = "僵尸逆袭";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -736,12 +645,7 @@ onClipEvent (load) {
 	}
 	默认对话 = _root.读取并组装NPC对话(名字);
 	物品栏 = _root.getNPCShop(名字);
-	NPC任务_任务 = ["生存战", "NPC任务", "迷之盔甲君", "迷之盔甲君", 0, "你能战胜这一波波的敌人吗？敌人很多的哦！", "简单", "新任务", [], [["金币", 200000], ["经验值", 600000], ["复活币", 20], ["普通hp药剂", 20], ["普通mp药剂", 20], ["生存者军牌", 1]], 任务前对话, 任务后对话, "生存战"];
-	NPC任务_任务_动画 = "flashswf/Survival_mode_index.swf";
-	NPC任务_任务_契约金 = 500;
-	NPC任务_任务_等级限制 = 12;
-	NPC任务_任务_K点 = 0;
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/生存战.xml";
+	NPC任务_任务_关卡路径 = "生存战";
 
 	可学的技能 = _root.盔甲君的技能;
 }]]></script>

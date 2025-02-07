@@ -1,13 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>军阀前线基地</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>37</UnlockCondition>
-        <Description>军阀的前线指挥部，在军阀据点被击破时，长官会撤退到此地重整兵力&amp;lt;BR&amp;gt;这里可以获得一些高级材料</Description>
-        <MaterialDetail>高强度合金</MaterialDetail>
-    </StageInfo>
     <Rewards>
         <Reward id="0">
             <Name>抗生素</Name>

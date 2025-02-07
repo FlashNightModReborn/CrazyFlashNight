@@ -1,13 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>初期关卡</Type>
-        <Name>基地</Name>
-        <FadeTransitionFrame>关卡20-1</FadeTransitionFrame>
-        <UnlockCondition>35</UnlockCondition>
-        <Description>A兵团的大本营，由监狱改造而成，易守难攻&amp;lt;BR&amp;gt;这里可以获得一些中级材料</Description>
-        <MaterialDetail>小型液晶屏</MaterialDetail>
-    </StageInfo>
     <Rewards>
         <Reward id="0">
             <Name>抗生素</Name>

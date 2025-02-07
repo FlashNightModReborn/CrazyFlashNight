@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <symbols>
-          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1738836318"/>
+          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1738908656"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -8,56 +8,6 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
-                                   <Actionscript>
-                                        <script><![CDATA[/*import org.flashNight.gesh.xml.LoadXml.ItemDataLoader;
-import org.flashNight.gesh.object.ObjectUtil;
-
-// 获取 ItemDataLoader 实例
-var ItemDataLoader:ItemDataLoader = ItemDataLoader.getInstance();
-
-// 加载物品数据
-ItemDataLoader.loadItemData(
-    function(combinedData:Object):Void {
-        trace("主程序：物品数据加载成功！");
-        // 在此处处理合并后的物品数据
-		var itemDataDict = new Object();
-		var itemDataArray = new Array();
-		var itemNamesByID = new Object();
-		var maxID = 0;
-		var informationMaxValueDict = new Object();
-		for(var i in combinedData){
-			var itemData = combinedData[i];
-			itemDataDict[itemData.name] = itemData;
-			itemNamesByID[itemData.id] = itemData.name;
-			itemDataArray.push(itemData);
-			if(itemData.id > maxID) maxID = itemData.id;
-			if(itemData.use =="情报") informationMaxValueDict[itemData.name] = itemData.maxvalue;
-		}
-		itemDataArray = org.flashNight.naki.Sort.QuickSort.adaptiveSort(itemDataArray, function(a, b) {
-            return a.id - b.id; // Numeric comparison
-        });
-		org.flashNight.arki.item.ItemUtil.itemDataDict = itemDataDict;
-		org.flashNight.arki.item.ItemUtil.itemDataArray = itemDataArray;
-		org.flashNight.arki.item.ItemUtil.itemNamesByID = itemNamesByID;
-		org.flashNight.arki.item.ItemUtil.maxID = maxID;
-		org.flashNight.arki.item.ItemUtil.informationMaxValueDict = informationMaxValueDict;
-		_root.物品属性列表 = itemDataDict;
-		_root.物品属性数组 = itemDataArray;
-		_root.id物品名对应表 = itemNamesByID;
-		_root.物品最大id = maxID;
-		//测试物品属性数组完整度
-		trace("itemDataArray总长度："+_root.物品属性数组.length);
-		//测试物品工具函数
-		var test = new org.flashNight.arki.item.itemCollection.InventoryTest();
-		test.runTests();
-    },
-    function():Void {
-        trace("主程序：物品数据加载失败！");
-    }
-);
-*/
-]]></script>
-                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -71,6 +21,8 @@ ItemDataLoader.loadItemData(
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="276317" publishTime="1738908498"/>
+          <PublishItem publishSize="276240" publishTime="1738908474"/>
           <PublishItem publishSize="275445" publishTime="1737783484"/>
           <PublishItem publishSize="275306" publishTime="1737737288"/>
           <PublishItem publishSize="275299" publishTime="1737737253"/>
@@ -89,7 +41,5 @@ ItemDataLoader.loadItemData(
           <PublishItem publishSize="275235" publishTime="1737735956"/>
           <PublishItem publishSize="275237" publishTime="1737735921"/>
           <PublishItem publishSize="275233" publishTime="1737735632"/>
-          <PublishItem publishSize="275232" publishTime="1737735516"/>
-          <PublishItem publishSize="275246" publishTime="1737735483"/>
      </publishHistory>
 </DOMDocument>

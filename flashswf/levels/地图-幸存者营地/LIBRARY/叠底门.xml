@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="叠底门" itemID="6605761b-00001057" lastModified="1711633947">
+  <timeline>
+    <DOMTimeline name="叠底门">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#242223"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#1F1D1E"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2241 0S6|2893 0!2893 0|2893 469"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!2893 469S6|2893 3136!2893 3136|1589 3136!1589 3136|1129 3136"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!1129 3136S6|158 3136"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!158 3136S6|0 3136!0 3136|0 2450"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!0 2450S6|0 1381"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!0 1381S6|0 0!0 0|794 0"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!794 0S6|1455 0"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1455 0S6|1589 0!1589 0|2241 0"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!1914 1924S7|1848 1920!1848 1920|1848 1122!1848 1122|1914 1122!1914 1122|1914 1924"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!1589 983S7|1589 0"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!1363 1323S7|1363 1920!1363 1920|1287 1920!1287 1920|1287 1436"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!1287 1436S3|158 3136"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!1287 1436S7|1287 1122!1287 1122|1363 1122!1363 1122|1363 1323"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!1363 1323S3|1589 983!0 1381|794 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!1129 3136S3|1589 2440"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!1589 2440S7|1589 983"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!1589 2440S7|1589 3136"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!1455 0S3|0 2450"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!2241 0S3|1589 983!1589 2440|2893 469"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -85,7 +85,7 @@ _root.getItemData = function(index){
 
 //关卡
 _root.isStageUnlocked = function(name){
-	return _root.stages_unlock[name] <= _root.主线任务进度 ? true : false;
+	return _root.StageInfoDict[name].UnlockCondition <= _root.主线任务进度 ? true : false;
 }
 
 //商店

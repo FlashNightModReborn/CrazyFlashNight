@@ -1,13 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>生存战</Name>
-        <UnlockCondition>1</UnlockCondition>
-        <Description />
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <StartFrame>基地1层</StartFrame>
-    </StageInfo>
     <Rewards>
         <Reward id="0">
             <Name>抗生素</Name>
@@ -174,7 +166,7 @@
     </EnemyDrop>
     <Unions>
         <Union id="0">
-            <!-- 普通僵尸-->
+            
             <Weight>1</Weight>
             <Types>
                 <Type>兵种1</Type>
@@ -189,7 +181,7 @@
             </Types>
         </Union>
         <Union id="1">
-            <!-- 兽化僵尸-->
+            
             <Weight>1</Weight>
             <Types>
                 <Type>兵种13</Type>
@@ -199,7 +191,7 @@
             </Types>
         </Union>
         <Union id="2">
-            <!-- 小动物-->
+            
             <Weight>1</Weight>
             <Types>
                 <Type>兵种17</Type>
@@ -207,7 +199,7 @@
             </Types>
         </Union>
         <Union id="3">
-            <!-- 异形-->
+            
             <Weight>2</Weight>
             <Types>
                 <Type>兵种15</Type>
@@ -217,7 +209,7 @@
             </Types>
         </Union>
         <Union id="4">
-            <!-- 铁血-->
+            
             <Weight>5</Weight>
             <Unique>true</Unique>
             <Types>
@@ -228,7 +220,7 @@
             </Types>
         </Union>
         <Union id="5">
-            <!-- 主角模板盗贼-->
+            
             <Weight>9</Weight>
             <Unique>true</Unique>
             <Types>
@@ -243,7 +235,7 @@
             </Types>
         </Union>
         <Union id="6">
-            <!-- 堕落城盗贼-->
+            
             <Weight>2</Weight>
             <Types>
                 <Type>兵种44</Type>
@@ -258,7 +250,7 @@
             </Types>
         </Union>
         <Union id="7">
-            <!-- 堕落城精英盗贼A组-->
+            
             <Weight>5</Weight>
             <Types>
                 <Type>兵种48</Type>
@@ -267,7 +259,7 @@
             </Types>
         </Union>
         <Union id="8">
-            <!-- 堕落城精英盗贼B组-->
+            
             <Weight>8</Weight>
             <Types>
                 <Type>兵种270</Type>
@@ -276,14 +268,14 @@
             </Types>
         </Union>
         <Union id="9">
-            <!-- 终结者-->
+            
             <Weight>5</Weight>
             <Types>
                 <Type>兵种25</Type>
             </Types>
         </Union>
         <Union id="10">
-            <!-- 拿着炫酷武器的终结者-->
+            
             <Weight>10</Weight>
             <Unique>true</Unique>
             <Types>
@@ -294,7 +286,7 @@
                 <Type>兵种167</Type>
             </Types>
         </Union>
-        <!-- A组BOSS-->
+        
         <Union id="11">
             <Weight>15</Weight>
             <Unique>true</Unique>
@@ -305,7 +297,7 @@
             </Types>
         </Union>
         <Union id="12">
-            <!-- B组BOSS-->
+            
             <Weight>25</Weight>
             <Unique>true</Unique>
             <Types>
@@ -316,7 +308,7 @@
             </Types>
         </Union>
         <Union id="13">
-            <!-- 军阀普通单位-->
+            
             <Weight>3</Weight>
             <Types>
                 <Type>兵种56</Type>
@@ -325,7 +317,7 @@
             </Types>
         </Union>
         <Union id="14">
-            <!-- 军阀精英单位-->
+            
             <Weight>7</Weight>
             <Types>
                 <Type>兵种55</Type>
@@ -335,7 +327,7 @@
             </Types>
         </Union>
         <Union id="15">
-            <!-- 黑铁会和军阀人形怪-->
+            
             <Weight>13</Weight>
             <Unique>true</Unique>
             <Types>
@@ -393,7 +385,7 @@
             <EndWeight>30</EndWeight>
             <QuantityMax>10</QuantityMax>
             <RogueGroup>
-                <!-- 前10波逐渐加入僵尸、异形和盗贼的组合-->
+                
                 <Group id="0">
                     <StartWave>0</StartWave>
                     <EndWave>10</EndWave>
@@ -430,7 +422,7 @@
                         <Index>6</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 11波开始加入终结者-->
+                
                 <Group id="4">
                     <StartWave>10</StartWave>
                     <EndWave>60</EndWave>
@@ -441,7 +433,7 @@
                         <Index>9</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 16波开始加入军阀士兵-->
+                
                 <Group id="5">
                     <StartWave>15</StartWave>
                     <EndWave>40</EndWave>
@@ -450,7 +442,7 @@
                         <Index>13</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 21波开始加入精英盗贼-->
+                
                 <Group id="6">
                     <StartWave>20</StartWave>
                     <Weight>3</Weight>
@@ -459,7 +451,7 @@
                         <Index>7</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 26波开始原版生存战的Boss可能在随机波次出现-->
+                
                 <Group id="7">
                     <StartWave>25</StartWave>
                     <EndWave>70</EndWave>
@@ -468,7 +460,7 @@
                         <Index>11</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 31波开始僵尸、异形、铁血、终结者与三种Boss可能在同一波次组合出现-->
+                
                 <Group id="8">
                     <StartWave>30</StartWave>
                     <Weight>5</Weight>
@@ -482,7 +474,7 @@
                         <Index>11</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 36波开始加入更强的精英盗贼-->
+                
                 <Group id="9">
                     <StartWave>35</StartWave>
                     <Weight>5</Weight>
@@ -493,7 +485,7 @@
                         <Index>8</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 41波开始加入更强的军阀士兵-->
+                
                 <Group id="10">
                     <StartWave>40</StartWave>
                     <Weight>4</Weight>
@@ -502,7 +494,7 @@
                         <Index>14</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 51波开始增加全主角模板敌人波次的频率-->
+                
                 <Group id="11">
                     <StartWave>50</StartWave>
                     <Weight>1</Weight>
@@ -511,7 +503,7 @@
                         <Index>15</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 61波开始增加全终结者波次的频率-->
+                
                 <Group id="12">
                     <StartWave>60</StartWave>
                     <Weight>1</Weight>
@@ -520,7 +512,7 @@
                         <Index>10</Index>
                     </UnionIndex>
                 </Group>
-                <!-- 71波开始通缉Boss可能在随机波次出现-->
+                
                 <Group id="13">
                     <StartWave>70</StartWave>
                     <Weight>2</Weight>

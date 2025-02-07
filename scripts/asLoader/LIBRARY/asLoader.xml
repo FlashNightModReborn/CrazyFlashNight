@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1738836318">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1738908656">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="73">
+    <DOMTimeline name="asLoader" currentFrame="16">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -118,7 +118,7 @@ _root.stop();
               <Actionscript>
                 <script><![CDATA[#include "../逻辑系统分区/任务系统_兼容.as"
 #include "../逻辑系统分区/佣兵系统_兼容.as"
-#include "../逻辑系统分区/关卡系统_兼容.as"
+//#include "../逻辑系统分区/关卡系统_兼容.as"
 #include "../逻辑系统分区/兵种系统_兼容.as"
 #include "../逻辑系统分区/商城系统_兼容.as"
 #include "../逻辑系统分区/商店系统_兼容.as"
@@ -345,7 +345,7 @@ var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getIn
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="70" duration="2" keyMode="9728">
+            <DOMFrame index="70" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.InformationDictionaryLoader;
 
@@ -371,6 +371,28 @@ var 情报信息loader:InformationDictionaryLoader = InformationDictionaryLoader
         trace("主程序：情报信息数据加载失败！");
     }
 );]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.StageInfoLoader;
+import org.flashNight.gesh.object.ObjectUtil;
+
+// 获取 StageInfoLoader 实例
+var StageInfoLoader:StageInfoLoader = StageInfoLoader.getInstance();
+
+// 加载关卡信息
+StageInfoLoader.loadStageInfo(
+    function(combinedData:Object):Void {
+        trace("主程序：关卡信息加载成功！");
+        _root.StageInfoDict = combinedData;
+    },
+    function():Void {
+        trace("主程序：关卡信息加载失败！");
+    }
+);
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

@@ -346,48 +346,55 @@ _root.解析单次对话 = function(对话列表:Array){
 	return 输出对话;
 }
 
-_root.配置无限过图关卡 = function(对象, 配置数据){
-	_root.配置基础关卡信息(对象,配置数据);
-	var 关卡信息配置 = _root.配置数据为数组(配置数据.SubStage);
-
-	对象.无限过图基本配置 = _root.解析并设置基本配置(关卡信息配置);
-	对象.无限过图总关卡 = _root.解析并设置关卡配置(关卡信息配置);
-	对象.无限过图实例 = _root.解析并设置实例配置(关卡信息配置);
-	对象.无限过图出生点 = _root.解析并设置出生点配置(关卡信息配置);
-	对象.副本对话 = _root.解析并设置对话配置(关卡信息配置);
-
-	对象.rogue敌人集合表 = _root.解析rogue敌人集合(配置数据.Unions);
+_root.载入关卡数据 = function(stageType, url){
+	var loader = new org.flashNight.gesh.xml.LoadXml.BaseXMLLoader(url);
+	loader.load(function(data:Object):Void {
+		_root.发布调试消息("load xml " + stageType + "  " + url);
+		var 奖励品配置 = _root.配置数据为数组(data.Rewards.Reward);
+		_root.关卡可获得奖励品 = 奖励品配置[0] != null ? _root.解析并设置奖励品配置(奖励品配置) : [];
+		if(stageType == "无限过图"){
+			_root.无限过图模式关卡计数 = -1;
+			var subStageData = _root.配置数据为数组(data.SubStage);
+			_root.无限过图基本配置 = _root.解析并设置基本配置(subStageData);
+			_root.无限过图总关卡 = _root.解析并设置关卡配置(subStageData);
+			_root.无限过图实例 = _root.解析并设置实例配置(subStageData);
+			_root.无限过图出生点 = _root.解析并设置出生点配置(subStageData);
+			_root.副本对话 = _root.解析并设置对话配置(subStageData);
+			//
+			_root.rogue敌人集合表 = _root.解析rogue敌人集合(data.Unions);
+		}
+	}, function():Void {
+		_root.发布调试消息("fail to load xml " + stageType + "  " + url);
+		onError();
+	});
 };
 
-_root.配置外交地图关卡信息 = function(对象, 配置数据){
-	_root.配置基础关卡信息(对象,配置数据);
-	对象.root场景进入位置名 = 配置数据.StageInfo.Address;
-	对象.淡出动画淡出跳转帧 = 配置数据.StageInfo.RootFadeTransitionFrame;
+_root.配置外交地图关卡信息 = function(对象, StageInfo){
+	_root.配置基础关卡信息(对象,StageInfo);
+	对象.root场景进入位置名 = StageInfo.Address;
+	对象.淡出动画淡出跳转帧 = StageInfo.RootFadeTransitionFrame;
 	对象.onPress = function(){
 		_root.场景进入位置名 = 对象.root场景进入位置名;
 		_root.淡出动画.淡出跳转帧(对象.淡出动画淡出跳转帧);
 	};
 };
 
-_root.配置基础关卡信息 = function(对象, 配置数据){
-	var 奖励品配置 = _root.配置数据为数组(配置数据.Rewards.Reward);
-	对象.关卡可获得奖励品 = _root.解析并设置奖励品配置(奖励品配置);
-	对象.当前关卡名 = 配置数据.StageInfo.Name;
-	对象.淡出跳转帧 = 配置数据.StageInfo.FadeTransitionFrame;
-	对象.关卡开放条件 = 配置数据.StageInfo.UnlockCondition;
-	对象.详细 = 配置数据.StageInfo.Description;
-	对象.材料详细 = 配置数据.StageInfo.MaterialDetail;
-	对象.起点帧 = 配置数据.StageInfo.StartFrame ? 配置数据.StageInfo.StartFrame : null;
-	对象.终点帧 = 配置数据.StageInfo.EndFrame ? 配置数据.StageInfo.EndFrame : null;
-	对象.限制词条 = 配置数据.StageInfo.Limitation ? _root.配置数据为数组(配置数据.StageInfo.Limitation) : null;
+_root.配置基础关卡信息 = function(对象, StageInfo){
+	对象.关卡路径 = StageInfo.url;
+	对象.当前关卡名 = StageInfo.Name;
+	对象.淡出跳转帧 = StageInfo.FadeTransitionFrame;
+	对象.关卡开放条件 = StageInfo.UnlockCondition;
+	对象.详细 = StageInfo.Description;
+	对象.材料详细 = StageInfo.MaterialDetail;
+	对象.起点帧 = StageInfo.StartFrame ? StageInfo.StartFrame : null;
+	对象.终点帧 = StageInfo.EndFrame ? StageInfo.EndFrame : null;
+	对象.限制词条 = StageInfo.Limitation ? _root.配置数据为数组(StageInfo.Limitation) : null;
 };
 
-_root.自动输出关卡数据 = function(关卡数据地址)
-{
+_root.自动输出关卡数据 = function(关卡数据地址){
 	var 关卡数据 = _root.关卡数据缓存[关卡数据地址];
 	if (关卡数据 != undefined){
-		for (var 属性 in 关卡数据)
-		{
+		for (var 属性 in 关卡数据){
 			_root.输出对象属性(关卡数据[属性],属性);
 		}
 	}else{
@@ -395,6 +402,7 @@ _root.自动输出关卡数据 = function(关卡数据地址)
 	}
 };// 检查对象中的所有属性是否为 undefined
 
+/*
 _root.关卡数据缓存上限 = 32;
 _root.关卡数据缓清理许可 = true;
 _root.关卡数据地址 = "/stages/";
@@ -487,58 +495,24 @@ _root.配置关卡缓存数据 = function(关卡引用:Object, xml文件地址:S
 		}
 	}
 };// XML 加载成功时的处理逻辑
+*/
 
-_root.配置关卡属性 = function(xml文件地址:String):Void 
-{
-	var 关卡配置XML:XML = new XML();
-	关卡配置XML.ignoreWhite = true;
-	if (_root.关卡数据缓存[xml文件地址] and !_root.调试模式)
-	{
-		_root.从关卡缓存中读取数据(this,xml文件地址);
-		return;
-	}
-	this.关卡可获得奖励品 = [];
-	this.无限过图基本配置 = [];
-	this.无限过图总关卡 = [];
-	this.副本对话 = [];
+_root.配置关卡属性 = function(StageName:String):Void {
 	var 关卡引用:Object = this;
-	关卡配置XML.onLoad = function(加载成功:Boolean)
-	{
-		if (加载成功)
-		{
-			var 配置数据:Object = _root.解析XML节点(this.firstChild);
-			this.关卡类型 = 配置数据.StageInfo.Type;
-			switch (this.关卡类型)
-			{
-				case "无限过图" :
-					_root.配置无限过图关卡(关卡引用,配置数据);//现有资产遗留
-					break;
-				case "初期关卡" :
-					_root.配置基础关卡信息(关卡引用,配置数据);//未无限过图化的资产遗留
-					break;
-				case "外交地图" :
-					_root.配置外交地图关卡信息(关卡引用,配置数据);//外交地图数据配置
-					break;
-			}/// 配置缓存数据
-			_root.配置关卡缓存数据(关卡引用,xml文件地址);// 测试输出                                 
-			_root.发布调试消息("load xml " + this.关卡类型 + "  " + xml文件地址 + (配置数据.DebugMode ? " 调试模式启动" : ""));
-			if (配置数据.DebugMode and _root.调试模式)
-			{
-				_root.自动输出关卡数据(xml文件地址);
-			}
-			//硬代码删除未xml化副本的起始帧变量
-			delete this.NPC任务_任务_起始帧;
-		}
-		else
-		{
-			_root.发布调试消息("Failed to load XML" + xml文件地址);
-		}
-		if (关卡引用 != _root)
-		{
-			关卡引用.初始化关卡界面();//强制刷新，解决xml解析产生的异步问题
-		}
-	};// 加载 XML 文件
-	关卡配置XML.load(xml文件地址);
+	var StageInfo:Object = _root.StageInfoDict[StageName];
+	this.关卡类型 = StageInfo.Type;
+	switch (this.关卡类型){
+		case "无限过图" :
+		case "初期关卡" :
+			_root.配置基础关卡信息(关卡引用,StageInfo);
+			break;
+		case "外交地图" :
+			_root.配置外交地图关卡信息(关卡引用,StageInfo);//外交地图数据配置
+			break;
+	}/// 配置缓存数据
+	// _root.配置关卡缓存数据(关卡引用,xml文件地址);
+	//硬代码删除未xml化副本的起始帧变量
+	delete this.NPC任务_任务_起始帧;
 };// 使用函数
 
 _root.加载随机名称库 = function(xml文件地址:String):Void 

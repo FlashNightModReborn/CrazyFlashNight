@@ -1,19 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>黑铁会总堂外围</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>66</UnlockCondition>
-        <Description>进入黑铁会总堂前的最后一道关口，重兵把守！</Description>
-    </StageInfo>
     <Rewards>
         <Reward>
             <Name>抗生素</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>25</QuantityMax>
         </Reward>
-        <Reward >
+        <Reward>
             <Name>普通mp药剂</Name>
             <AcquisitionProbability>2</AcquisitionProbability>
             <QuantityMax>20</QuantityMax>

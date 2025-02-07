@@ -1,12 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>禁区边缘</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>24</UnlockCondition>
-        <Description>此地属于机械统治范围的边界，巡逻中的机器人会无情地消灭一切进入此地的生物</Description>
-    </StageInfo>
     <Rewards>
         <Reward id="0">
             <Name>抗生素</Name>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1737624827" lastUniqueIdentifier="24">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1738914277" lastUniqueIdentifier="24">
   <timeline>
     <DOMTimeline name="基地地下1层">
       <layers>
-        <DOMLayer name="Script Layer" color="#CAA521" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#CAA521">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -245,19 +245,7 @@ onClipEvent (load) {
 	默认对话[0][0] = ["A兵团士兵", "线人", "A兵团士兵", "补给的事情就拜托给你了！", "微笑"];
 	默认对话[1][0] = ["A兵团士兵", "线人", "A兵团士兵", "搜集的时候要小心，很多地方残留的大量僵尸！", "普通"];
 	默认对话[2][0] = ["A兵团士兵", "线人", "A兵团士兵", "A兵团最强的士兵真是靠的住！", "思考"];
-	任务前对话 = [];
-	任务前对话[0] = ["A兵团士兵", "线人", "A兵团士兵", "虽然方舟兽王已经打败了,不过我们也损失惨重,现在的我们需要大量补给!", "普通"];
-	任务前对话[1] = ["A兵团士兵", "线人", "A兵团士兵", "兵工厂、武器仓库、研究院都还有很多可用的装备，不过那些地方还残留许多僵尸顺便也清理一下吧！", "普通"];
-	任务前对话[2] = ["A兵团士兵", "线人", "A兵团士兵", "听说方舟兽王还有一丝气息，你去调查一下，防止他卷土重来！", "严肃"];
-	任务前对话[3] = ["A兵团士兵", "线人", "A兵团士兵", "当然我们也不会白让你辛苦，等任务回来我们会给你很大的谢礼！", "微笑"];
-	任务后对话 = [];
-	任务后对话[0] = ["A兵团士兵", "线人", "A兵团士兵", "真不愧是A兵团最厉害的士兵，这么快就搞定了。", "大笑"];
-	NPC任务_任务 = ["搜寻诺亚前线战场补给", "NPC任务", "A兵团士兵", "A兵团士兵", 0, "搜寻各个诺亚前线战场补给，消灭残余僵尸", "简单", "新任务", [], [["金币", 100000], ["经验值", 1000000], ["加强抗生素药剂", 10], ["加强mp药剂", 10], ["强化石", 1500], ["压缩胶囊之61套士兵", 1], ["压缩胶囊之boss大僵尸", 1], ["压缩胶囊之A兵团士兵", 1], ["压缩胶囊之驯化僵尸", 1]], 任务前对话, 任务后对话, "搜寻诺亚前线战场补给"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 10000;
-	NPC任务_任务_等级限制 = 36;
-	NPC任务_任务_K点 = 0;
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/搜寻诺亚前线战场补给.xml";
+	NPC任务_任务_关卡路径 = "搜寻诺亚前线战场补给";
 	商品编号 = "O2011100900000000802";
 }]]></script>
                   </Actionscript>
@@ -312,11 +300,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="蓝头巾" color="#EF7277" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="蓝头巾" color="#EF7277" parentLayerIndex="11" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/Blue-NPC" centerPoint3DX="1565.65" centerPoint3DY="553.2">
+                <DOMSymbolInstance libraryItemName="NPC/Blue-NPC" selected="true" centerPoint3DX="1565.65" centerPoint3DY="553.2">
                   <matrix>
                     <Matrix tx="1477.35" ty="429.15"/>
                   </matrix>
@@ -348,15 +336,7 @@ onClipEvent (load) {
 	}
 	默认对话 = _root.读取并组装NPC对话(名字);
 	可学的技能 = _root.blue的技能;
-	任务前对话 = [];
-	任务后对话 = [];
-	NPC任务_任务 = ["挑战Blue", "NPC任务", "Blue", "Blue", 0, "和Blue进行对决", "简单", "新任务", [], [["金币", 10000], ["经验值", 200000], ["复活币", 10]], 任务前对话, 任务后对话, "挑战Blue"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 0;
-	NPC任务_任务_等级限制 = 10;
-	NPC任务_任务_K点 = 0;
-	商品编号 = "O2011100900000000802";
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/挑战Blue.xml";
+	NPC任务_任务_关卡路径 = "挑战Blue";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -404,15 +384,7 @@ onClipEvent (load) {
 	}
 	默认对话 = _root.读取并组装NPC对话(名字);
 	可学的技能 = _root.andy的技能;
-	任务前对话 = [];
-	任务后对话 = [];
-	NPC任务_任务 = ["挑战Andylaw", "NPC任务", "Andy Law", "Andy Law", 0, "和Andy Law进行对决", "简单", "新任务", [], [["金币", 50000], ["经验值", 500000], ["K点", 1000], ["复活币", 20]], 任务前对话, 任务后对话, "挑战Andylaw"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 0;
-	NPC任务_任务_等级限制 = 20;
-	NPC任务_任务_K点 = 0;
-	商品编号 = "O2011100900000000802";
-	NPC任务_任务_关卡路径 = "data/stages/副本任务/挑战Andylaw.xml";
+	NPC任务_任务_关卡路径 = "挑战Andylaw";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

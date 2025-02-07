@@ -1,13 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <StageInfo>
-        <Type>无限过图</Type>
-        <Name>军阀临时补给点</Name>
-        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
-        <UnlockCondition>31</UnlockCondition>
-        <Description>军阀的常驻哨所之一，负责将抢夺而来的物质送往各据点，虽说驻守的士兵并不多，但个个都受过精良的战斗训练，不可大意&amp;lt;BR&amp;gt;这里可以获得一些中级材料</Description>
-        <MaterialDetail>不锈钢材</MaterialDetail>
-    </StageInfo>
     <Rewards>
         <Reward id="0">
             <Name>抗生素</Name>

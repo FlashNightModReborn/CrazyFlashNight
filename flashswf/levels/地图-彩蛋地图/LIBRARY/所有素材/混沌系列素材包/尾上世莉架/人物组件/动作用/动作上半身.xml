@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/混沌系列素材包/尾上世莉架/人物组件/动作用/动作上半身" itemID="65522f73-00000408" lastModified="1711012892" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="动作上半身">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/元件 10" centerPoint3DX="57.5" centerPoint3DY="80.55">
+                  <transformationPoint>
+                    <Point x="57.5" y="80.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="元件 9" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/元件 9" centerPoint3DX="70.7" centerPoint3DY="168.7">
+                  <matrix>
+                    <Matrix a="0.945846557617188" b="-0.3245849609375" c="0.3245849609375" d="0.945846557617188" tx="32.7" ty="158.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.35" y="22.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

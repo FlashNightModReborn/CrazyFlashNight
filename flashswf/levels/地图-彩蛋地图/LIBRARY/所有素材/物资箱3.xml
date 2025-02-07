@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/物资箱3" itemID="658bcf8c-00000261" lastModified="1703661452" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="物资箱3">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/大箱子容器" selected="true" centerPoint3DX="73.15" centerPoint3DY="64.6">
+                  <matrix>
+                    <Matrix ty="16.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="73.15" y="47.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/大箱子盖子" selected="true" centerPoint3DX="73.6" centerPoint3DY="26.65">
+                  <matrix>
+                    <Matrix tx="0.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="72.8" y="26.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

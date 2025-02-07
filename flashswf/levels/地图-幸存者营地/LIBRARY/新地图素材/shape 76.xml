@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/shape 76" itemID="65982a90-0000004c" symbolType="graphic" lastModified="1704471184">
+  <timeline>
+    <DOMTimeline name="shape 76">
+      <layers>
+        <DOMLayer name="Layer_2" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.12506103515625" c="-0.12506103515625" d="0" tx="-1.5" ty="-6.15"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF99" alpha="0.2" ratio="0.00784313725490196"/>
+                        <GradientEntry color="#FFFF99" alpha="0" ratio="0.8"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1414 -1200[1998 -704 1998 0!1998 0[1998 703 1414 1199!1414 1199[827 1695 0 1695!0 1695[-827 1695 -1411 1199!-1411 1199[-1998 703 -1998 0!-1998 0[-1998 -704 -1411 -1200!-1411 -1200[-827 -1696 0 -1695!0 -1695[827 -1696 1414 -1200"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="image/image 75" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-69" ty="-12.5"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1380 -250|1380 250!1380 250|-1380 250!-1380 250|-1380 -250!-1380 -250|1380 -250"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

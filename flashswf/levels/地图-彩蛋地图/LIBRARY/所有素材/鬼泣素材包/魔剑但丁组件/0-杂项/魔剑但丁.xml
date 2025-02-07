@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/魔剑但丁" itemID="655f3082-00000026" lastModified="1702145710" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="魔剑但丁">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/魔剑但丁不带裂口" selected="true" centerPoint3DX="158.25" centerPoint3DY="815.9">
+                  <transformationPoint>
+                    <Point x="158" y="815.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/中间细节">
+                  <matrix>
+                    <Matrix a="0" b="1" c="-0.625839233398438" d="0" tx="166.55" ty="502.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="309.45" y="29.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="所有素材/鬼泣素材包/魔剑但丁组件/0-杂项/中间细节">
+                  <matrix>
+                    <Matrix a="0" b="1" c="0.625839233398438" d="0" tx="151.05" ty="502.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="309.45" y="29.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

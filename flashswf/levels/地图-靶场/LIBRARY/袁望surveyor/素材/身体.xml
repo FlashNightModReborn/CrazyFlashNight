@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="袁望surveyor/素材/身体" itemID="658e8e79-0000014e" lastModified="1703841401">
+  <timeline>
+    <DOMTimeline name="身体">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/shape 204" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.41796875" d="1.2625732421875" tx="24.9" ty="54.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="20.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/shape 205" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.2625732421875" d="1.2625732421875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.2" y="28.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/shape 15" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5548095703125" b="-0.280731201171875" c="0.280731201171875" d="0.5548095703125" tx="17.45" ty="10.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.2" y="69.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
