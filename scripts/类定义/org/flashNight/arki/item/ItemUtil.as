@@ -111,55 +111,92 @@ class org.flashNight.arki.item.ItemUtil{
      * 返回带有背包，材料，情报，金币，K点，经验值，技能点7个键的Object。其中背包，材料，情报三项内记录要进行操作的物品栏位和对应物品
      * 若背包空间不足，返回null
      */
-    public static function require(itemArray:Array):Object{
-        var list = {金币:0,K点:0,经验值:0,技能点:0,背包:{},材料:{},情报:{}};
-        var mergables = {};//可堆叠物品
-        var unmergableList = [];//不可堆叠物品
-        //提取材料和情报
+    public static function require(itemArray:Array):Object {
+        var list = {金币:0, K点:0, 经验值:0, 技能点:0, 背包:{}, 材料:{}, 情报:{}};
+        var mergables:Object = {}; // 用来累计可合并物品的需求：键为物品名，值为总需求数量
+        var nonMergeableList:Array = []; // 不可合并物品（如武器、防具）—必须占用新格子
+
+        // 遍历要求数组，区分材料、情报、可合并与不可合并物品
         for(var i = 0; i < itemArray.length; i++){
-            var name = itemArray[i].name;
-            var value = itemArray[i].value;
+            var name:String = itemArray[i].name;
+            var value:Number = itemArray[i].value;
             if(name == "金币" || name == "K点" || name == "经验值" || name == "技能点"){
                 list[name] = value;
                 continue;
             }
-            var itemData = ItemUtil.getItemData(name);
+            var itemData:Object = ItemUtil.getItemData(name);
             if(itemData.use == "材料"){
                 list.材料[name] = value;
-            }else if(itemData.use == "情报"){
+            } else if(itemData.use == "情报"){
                 list.情报[name] = value;
-            }else if(itemData.type != "武器" && itemData.type != "防具"){
-                mergables[name] = value;
-            }else{
-                unmergableList.push(itemArray[i]);
+            } else if(itemData.type != "武器" && itemData.type != "防具"){
+                // 可合并物品
+                if(mergables[name] != undefined){
+                    mergables[name] += value;
+                } else {
+                    mergables[name] = value;
+                }
+            } else {
+                // 不可合并物品直接加入列表
+                nonMergeableList.push(itemArray[i]);
             }
         }
-        //提取可堆叠物品
-        var 背包 = _root.物品栏.背包;
-        var indexArr = 背包.getIndexes();
-        var itemArr = 背包.getItemArray();
+        
+        // 得到背包对象
+        var 背包:Object = _root.物品栏.背包;
+        var indexArr:Array = 背包.getIndexes();
+        var itemArr:Array = 背包.getItemArray();
+
+        // 对于可合并物品，先检查背包中是否已存在相同物品
         for(var i = 0; i < itemArr.length; i++){
-            var bagItem = itemArr[i];
-            if(!isNaN(mergables[bagItem.name]) && !isNaN(bagItem.value)){
-                list.背包[indexArr[i]] = {name:bagItem.name, value:mergables[bagItem.name]};
-                mergables[bagItem.name] = null;
+            var bagItem:Object = itemArr[i];
+            if(mergables[bagItem.name] != undefined && !isNaN(bagItem.value)){
+                // 记录：将原有合并堆增加新需求
+                list.背包[indexArr[i]] = { name: bagItem.name, value: mergables[bagItem.name] };
+                // 标记该物品已处理
+                delete mergables[bagItem.name];
             }
         }
-        //未找到对应可堆叠物品则加入不可堆叠物品
-        for(var key in mergables){
-            if(!isNaN(mergables[key])) unmergableList.push({name:key, value:mergables[key]});
+
+        // 对于剩余的可合并物品（在背包中尚无此类物品），用一个特殊的 key标记，让 ArrayInventory.add 识别为“新建合并项”
+        for (var key:String in mergables) {
+            var totalValue:Number = mergables[key];
+            // 查找背包中是否已有同名可堆叠物品
+            var existingIndex:Number = 背包.findByName(key);
+            if (existingIndex != -1) {
+                // 合并到现有格子
+                list.背包[existingIndex] = { name: key, value: totalValue };
+                delete mergables[key]; // 标记已处理
+            } else {
+                // 需要新格子，检查是否有空位
+                var requiredSlots:Number = 1; // 可堆叠物品只需 1 个新格子
+                var vacancies:Array = 背包.getVacancies(requiredSlots);
+                if (vacancies.length < requiredSlots) return null; // 空间不足
+                list.背包[vacancies[0]] = { name: key, value: totalValue };
+                delete mergables[key]; // 标记已处理
+            }
         }
-        //若背包空间不足以容纳不可堆叠物品则返回null;
-        var vacancyList = 背包.getVacancies(unmergableList.length);
-        if(isNaN(vacancyList.length) || vacancyList.length < unmergableList.length) return null;
-        //为不可堆叠物品分配空间
-        for(var i = 0; i < unmergableList.length; i++){
-            list.背包[vacancyList[i]] = unmergableList[i];
+
+        // 计算 mergeable items 的数量
+        var mergeableItemCount:Number = 0;
+        for (var key:String in mergables) {
+            mergeableItemCount++;
         }
-        //返回
-        // ServerManager.getInstance().sendServerMessage(ObjectUtil.toString(list));
+
+        // 处理不可合并物品，要求必须有空位（依旧检查容量）
+        var vacancyList:Array = 背包.getVacancies(nonMergeableList.length + mergeableItemCount);
+        if(isNaN(vacancyList.length) || vacancyList.length < nonMergeableList.length) return null;
+
+        // 处理非合并物品的插入
+        for(var i = 0; i < nonMergeableList.length; i++){
+            list.背包[vacancyList[i]] = nonMergeableList[i];
+        }
+
         return list;
     }
+
+
+
 
     /* 
      * acquire 函数处理获得物品事件。
@@ -167,9 +204,10 @@ class org.flashNight.arki.item.ItemUtil{
      * 若成功获得所有物品，返回true
      * 若背包空间不足，返回false
      */
-    public static function acquire(itemArray:Array):Boolean{
+    public static function acquire(itemArray:Array):Boolean {
         var list = ItemUtil.require(itemArray);
         if(list == null) return false;
+
         //获取
         if(list.金币 > 0) _root.金钱 += list.金币;
         if(list.K点 > 0) _root.虚拟币 += list.K点;
@@ -178,6 +216,7 @@ class org.flashNight.arki.item.ItemUtil{
             _root.主角是否升级(_root.等级,_root.经验值);
         }
         if(list.技能点 > 0) _root.技能点数 += list.技能点;
+
         //材料
         var 材料 = _root.收集品栏.材料;
         for(var name in list.材料){
@@ -185,6 +224,7 @@ class org.flashNight.arki.item.ItemUtil{
             if(材料.isEmpty(name)) 材料.add(name,value);
             else 材料.addValue(name,value);
         }
+
         //情报
         var 情报 = _root.收集品栏.情报;
         for(var name in list.情报){
@@ -192,24 +232,36 @@ class org.flashNight.arki.item.ItemUtil{
             if(情报.isEmpty(name)) 情报.add(name,value);
             else 情报.addValue(name,value);
         }
-        //背包
-        var 背包 = _root.物品栏.背包;
-        for(var i in list.背包){
-            if(背包.isEmpty(i)){
-                var item = {name:list.背包[i].name};
-                var itemData = ItemUtil.getItemData(item.name);
-                if(itemData.type == "武器" || itemData.type == "防具"){
-                    item.value = {level:list.背包[i].value};
-                }else{
-                    item.value = list.背包[i].value;
+
+        // 处理背包部分
+        var 背包:Object = _root.物品栏.背包; // ArrayInventory 实例
+        for(var key:String in list.背包){
+            var req:Object = list.背包[key];
+            // 如果 key 表示已有堆，则 key 是数字字符串；
+            // 如果是新建 mergeable 物品，则 key 可设为 "-mergeable-" 开头
+            if(key.indexOf("-mergeable-") == 0) {
+                // 尝试查找是否已有同名物品
+                var indexFound:Number = 背包.findByName(req.name);
+                if(indexFound != -1) {
+                    背包.addValue(String(indexFound), req.value);
+                } else {
+                    // 没有则添加新项，用 -1 表示新建堆
+                    背包.add(-1, { name: req.name, value: req.value });
                 }
-                背包.add(i, item);
-            }else{
-                背包.addValue(i, list.背包[i].value);
+            } else {
+                // 对于已有项，直接增加数量
+                if(背包.isEmpty(Number(key))){
+                    // 如果该格子为空，添加新物品
+                    背包.add(Number(key), { name: req.name, value: req.value });
+                } else {
+                    背包.addValue(key, req.value);
+                }
             }
         }
+
         return true;
     }
+
 
     /* 
      * cantain 函数检索玩家是否持有对应的物品。
