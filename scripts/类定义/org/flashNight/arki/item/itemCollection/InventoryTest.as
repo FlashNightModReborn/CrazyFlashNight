@@ -44,6 +44,64 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
     public function runTests():Void {
         trace("开始 Inventory 测试...");
 
+
+        trace("初始化测试数据...");
+        // 初始化测试所需的物品数据
+        // 创建 itemDataDict 对象
+        ItemUtil.itemDataDict = {};
+
+        // 手动为每个物品添加属性
+        ItemUtil.itemDataDict["匕首"] = {};
+        ItemUtil.itemDataDict["匕首"]["type"] = "武器";
+        ItemUtil.itemDataDict["匕首"]["use"] = "武器";
+
+        ItemUtil.itemDataDict["资料"] = {};
+        ItemUtil.itemDataDict["资料"]["type"] = "情报";
+        ItemUtil.itemDataDict["资料"]["use"] = "情报";
+
+        ItemUtil.itemDataDict["牛肉罐头"] = {};
+        ItemUtil.itemDataDict["牛肉罐头"]["type"] = "消耗品";
+        ItemUtil.itemDataDict["牛肉罐头"]["use"] = "食品";
+
+        ItemUtil.itemDataDict["战术导轨"] = {};
+        ItemUtil.itemDataDict["战术导轨"]["type"] = "材料";
+        ItemUtil.itemDataDict["战术导轨"]["use"] = "材料";
+
+        ItemUtil.itemDataDict["普通hp药剂"] = {};
+        ItemUtil.itemDataDict["普通hp药剂"]["type"] = "消耗品";
+        ItemUtil.itemDataDict["普通hp药剂"]["use"] = "药剂";
+
+        ItemUtil.itemDataDict["普通mp药剂"] = {};
+        ItemUtil.itemDataDict["普通mp药剂"]["type"] = "消耗品";
+        ItemUtil.itemDataDict["普通mp药剂"]["use"] = "药剂";
+
+        ItemUtil.itemDataDict["AK47"] = {};
+        ItemUtil.itemDataDict["AK47"]["type"] = "武器";
+        ItemUtil.itemDataDict["AK47"]["use"] = "武器";
+
+        ItemUtil.itemDataDict["负数物品"] = {};
+        ItemUtil.itemDataDict["负数物品"]["type"] = "垃圾";
+        ItemUtil.itemDataDict["负数物品"]["use"] = "无效"
+
+        ItemUtil.itemDataDict["NaN物品"] = {};
+        ItemUtil.itemDataDict["NaN物品"]["type"] = "垃圾";
+        ItemUtil.itemDataDict["NaN物品"]["use"] = "无效";
+
+        // 创建 itemNamesByID 对象
+        ItemUtil.itemNamesByID = {};
+
+        // 手动为每个 ID 添加属性
+        ItemUtil.itemNamesByID[0] = "匕首";
+        ItemUtil.itemNamesByID[1] = "资料";
+        ItemUtil.itemNamesByID[2] = "牛肉罐头";
+        ItemUtil.itemNamesByID[3] = "战术导轨";
+        ItemUtil.itemNamesByID[4] = "普通hp药剂";
+        ItemUtil.itemNamesByID[5] = "普通mp药剂";
+        ItemUtil.itemNamesByID[6] = "AK47";
+
+        ItemUtil.maxID = 6;
+        ItemUtil.informationMaxValueDict = {}; // 根据测试需要添加情报上限
+
         testBasic();
         testRequirement();
         testEdgeCases();
