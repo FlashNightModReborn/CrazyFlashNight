@@ -4,12 +4,17 @@
       <Identity>盗贼</Identity>
       <Identity>游寇</Identity>
       <Dialogue>
+         <Text>晚上好，堕落城！</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
          <Text>你瞅啥？</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
       </Dialogue>
       <Dialogue>
-         <Text>你瞅啥？……不对，你瞅两下</Text>
+         <Text>你瞅啥？……不对，你瞅我两下</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>5</MaxIntention>
       </Dialogue>
@@ -25,6 +30,11 @@
       </Dialogue>
       <Dialogue>
          <Text>我这儿有货，价格公道，南面公社那收来的。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>想搞点芙蓉公社的零嘴……但不如喝酒。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
       </Dialogue>
@@ -59,7 +69,12 @@
          <MaxIntention>5</MaxIntention>
       </Dialogue>
       <Dialogue>
-         <Text>没被黑铁会罩着的公社越来越少喽……没地方拾荒喽</Text>
+         <Text>没被黑铁会罩着的公社越来越少喽……没地方拾荒喽。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>该去废土互助会那边打打牙祭了。</Text>
          <MinIntention>2</MinIntention>
          <MaxIntention>5</MaxIntention>
       </Dialogue>
@@ -79,15 +94,60 @@
          <MaxIntention>0</MaxIntention>
       </Dialogue>
       <Dialogue>
+         <Text>天网是假的，审判日是假的，机器人是假的，电子空间是假的，哥哥的啤酒和金币是真的。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>摇滚是盗贼的，这千真万确。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>信息素打多了，就会铁山靠和下蛋了。</Text>
+         <MinIntention>3</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>军警宪政派？和老子有什么关系。</Text>
+         <MinIntention>3</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>基地里面的罐头……爬出来的蟑螂比老子胳膊都长……</Text>
+         <MinIntention>5</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>在这世道里混，谁还干净？不如多抢两块金币。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
          <Text>朋友来了有美酒~僵尸来了也别走~</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
       </Dialogue>
       <Dialogue>
+         <Text>别跟面具佬办事，没好下场。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>我认识一个人，他知道一些不该知道的事……你想知道吗？</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>知道为什么军阀那边的仙人掌都戴防毒面具吗？上次有个蠢货对着它们撒尿……</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>0</MaxIntention>
+      </Dialogue>
+      <Dialogue>
          <Text>铁拳~匕首~压缩饼干~牛肉罐头~黄桃罐头~啤酒~啤酒~啤酒~啤酒~钢管舞~兔，女郎？</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>这鬼地方真是混不下去了，去废城捡垃圾也比在大街上冷不丁被枪突突死要好。</Text>
          <MinIntention>2</MinIntention>
@@ -96,6 +156,26 @@
       <Dialogue>
          <Text>低价出摇滚演唱会前排门票，价格可谈。</Text>
          <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>日……摇滚那边上的狗洞给哪个王八犊子堵上啦。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>有《如何与美女沟通》卖吗？</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>最近捡到本《如何与僵尸沟通》，现在它们见我都不流口水改敬礼了。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>有母的吗，女僵尸也行。</Text>
+         <MinIntention>1</MinIntention>
          <MaxIntention>2</MaxIntention>
       </Dialogue>
       <Dialogue>
