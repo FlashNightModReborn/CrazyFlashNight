@@ -9,6 +9,31 @@
          <MaxIntention>1</MaxIntention>
       </Dialogue>
       <Dialogue>
+         <Text>你瞅啥？……不对，你瞅两下</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>不问来路，不谈过去。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>这世道好人没几个……你不是好人吧？</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>我这儿有货，价格公道，南面公社那收来的。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>要找点乐子？那你来对地方了。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
          <Text>A兵团的人？你们最近很阔啊。</Text>
          <MinIntention>2</MinIntention>
          <MaxIntention>3</MaxIntention>
@@ -18,6 +43,51 @@
          <MinIntention>0</MinIntention>
          <MaxIntention>0</MaxIntention>
       </Dialogue>
+      <Dialogue>
+         <Text>嘿，老兄，你最近风头很劲啊？</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>别站在门口，挡着我发财的路了！</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>要是这世界还能回到从前就好了……</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>没被黑铁会罩着的公社越来越少喽……没地方拾荒喽</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>干他娘的黑铁会疯子。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>敢不敢打个赌？这酒馆的老板就是黑铁会的卧底</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>0</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>你小子，眼里没光，缺点烟火生气。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>0</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>朋友来了有美酒~僵尸来了也别走~</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>铁拳~匕首~压缩饼干~牛肉罐头~黄桃罐头~啤酒~啤酒~啤酒~啤酒~钢管舞~兔，女郎？</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>      
       <Dialogue>
          <Text>这鬼地方真是混不下去了，去废城捡垃圾也比在大街上冷不丁被枪突突死要好。</Text>
          <MinIntention>2</MinIntention>
@@ -59,9 +129,14 @@
          <MaxIntention>5</MaxIntention>
       </Dialogue>
       <Dialogue>
-         <Text>昨晚啊，那老李的假肢飞出去砸晕了对面头目，现在那铁胳膊比人还值钱。</Text>
+         <Text>昨晚啊，那老李的假肢飞出去，砸死了对面头目，现在那铁胳膊比人还值钱。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>0</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>有个穿兜帽的家伙来找人，给出的赏金很高……但我敢打赌，找到之后活不过一晚上。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
       </Dialogue>
    </Group>
    <!-- 填塞超多设定的黑铁会对话 -->
