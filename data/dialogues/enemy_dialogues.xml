@@ -42,6 +42,11 @@
          <Text>要找点乐子？那你来对地方了。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>老子会"子弹时间"：把手表塞进弹仓，开枪时敌人就会愣住看时间。另外这招不能对着僵尸用。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
       </Dialogue>
       <Dialogue>
          <Text>A兵团的人？你们最近很阔啊。</Text>
@@ -119,6 +124,26 @@
          <MaxIntention>5</MaxIntention>
       </Dialogue>
       <Dialogue>
+         <Text>知道为啥下水道的耗子能长到狗那么大吗？听说黑铁会往地里倒的符水比辐射还带劲。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>变异老鼠会偷硬币，现在黑市里流通的金币，一半都带着老鼠牙印。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>东区垃圾场挖出个自动售货机，投币口卡着三颗眼球——猜猜最后吐出来的是汽水还是脑浆？</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>联合大学那帮书呆子最近在黑市悬赏活体僵尸，说是要搞什么"亡灵经济复兴计划"。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
          <Text>在这世道里混，谁还干净？不如多抢两块金币。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>5</MaxIntention>
@@ -130,6 +155,11 @@
       </Dialogue>
       <Dialogue>
          <Text>别跟面具佬办事，没好下场。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>听说过东街那戴防毒面具的傻子没？他以为捡到宝贝了，其实是火凤堂堂主的洗脚水。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
       </Dialogue>
@@ -185,6 +215,11 @@
       </Dialogue>
       <Dialogue>
          <Text>听说你们佣兵给钱就干事，敢不敢来干票大的？</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>0</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>从一个倒霉鬼手上抢了本《末世生存指南》，翻开第一页写着："第一步：别活在末世"。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>0</MaxIntention>
       </Dialogue>
