@@ -679,12 +679,17 @@
    <Group>
       <Identity>狂野玫瑰成员</Identity>
       <Dialogue>
-         <Text>刚赚了一大笔金币，叫声姐姐就请你喝酒哦。</Text>
+         <Text>刚赚了一大笔金币，叫声姐姐就请你喝酒哦~</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
       </Dialogue>
       <Dialogue>
-         <Text>联合大学时不时派人来演唱会砸场子，于是这回总务部请来了好多厉害的保镖。总觉得这样会让事情更糟。</Text>
+         <Text>城里的酒馆越来越多人来了，倒是个赚金币的好机会。让新来的妹妹们学学怎么用高脚杯装炸药吧~</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>联合大学的人老爱来演唱会捣乱，哼，这次总务部请来的保镖可都是咱们姐妹亲手调教过的。不过...让这些男人处理这种事，总觉得会适得其反呢。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>2</MaxIntention>
       </Dialogue>
@@ -692,11 +697,126 @@
          <Text>不知道城市外面现在变成了什么样子。</Text>
          <MinIntention>2</MinIntention>
          <MaxIntention>4</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>郊区外的月光现在照着的，恐怕只剩断壁残垣了吧...真想带姐妹们去看看战前的灯光秀啊。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
       </Dialogue>
       <Dialogue>
-         <Text>我喜欢这酒馆的热闹氛围。这座城市里安静的地方随时会死人，喧闹才意味着安全。</Text>
+         <Text>上次看见星空是七年前了，那晚我们二十个姐妹用口红在废墟墙上画银河。</Text>
+         <MinIntention>3</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>还记得战前的玻璃丝袜吗？姐姐现在的战术紧身裤里，藏着的是十二响的霰弹枪。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>城外月色再美，也比不上我们舞台上震撼人心的灯光秀。想去看看吗？姐姐带路。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>我喜欢这酒馆的热闹氛围。这座城市里安静的地方总是暗藏杀机，只有喧闹才能让我们安心。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>有钱？那就把强化石拿来吧，什么都不如强化石管用。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>听说学院派在研究新合金？让他们折腾去吧～姐姐们的晶能强化石可是用血与玫瑰淬炼的，岂是实验室的玩具能比的。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>舞台上的每一个高音，都是女人们向末日宣战的呐喊。黑暗终将散去，姐妹们燃烧的烈焰永不熄灭。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>如果光芒能够驱散绝望，那舞台就是照亮城中黑暗的明灯。狂野玫瑰的使命，就是点亮希望。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>还记得和那家伙初次见面时，她抱着电吉他，枪管还热着，就那样对我笑说：“一起扎小人吧。”</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>有时候我也怀念战前的光景，据说那时的演出遍地开花。如今嘛，一支乐队就能燃尽整个末日长夜。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>你看那边的聚光灯，其实是我们自己改装的设备，能照亮夜空，也能照亮希望。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>妹妹可知这电音鼓点中蕴藏的力量？当三千姐妹的和声响起时，连辐射云都会为我们让路。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>想听听我们的新曲吗？是能让枯萎的机械玫瑰重新绽放的旋律哦～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>若有人问起我们的主张，就告诉他们：这里是狂野玫瑰，姐姐们就是自己的女王。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>为什么狂野玫瑰发展这么快？因为末世里，人人都想要能让自己活下去的力量。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>废墟里想摘朵玫瑰？当心被扎得满手鲜血。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>小心，姐姐的鞭挞可不是开玩笑的哦~</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>听说黑铁会那群家伙又想加价供货？哼，真以为我们是好糊弄的小姑娘吗？</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>看见我耳坠上的紫晶了吗？上次有个蠢男人想用三箱子弹换，被姐妹们挂在旗杆上晾了一夜。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>两瓶抗辐射血清换你一支舞，别误会，姐姐只是想看机械义肢怎么跳出天鹅湖。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>学姐说下次血月时，会有人带着电子玫瑰来求婚...我倒想看看哪个笨蛋敢向整个狂野玫瑰求婚。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>塔罗显示你要遭遇桃花劫？别怕，姐姐们帮你把关——能接住十招的才有资格送花。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>      
+      <Dialogue>
+         <Text>敢和姐姐比射击？目标是三百米外的口红盖子，赌注是...帮你画个战损妆。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
       </Dialogue>
    </Group>
 </Dialogues>
