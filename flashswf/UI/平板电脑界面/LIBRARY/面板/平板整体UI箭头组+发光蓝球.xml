@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="面板/平板整体UI箭头组+发光蓝球" itemID="66c49dd7-00001731" lastModified="1724161495" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="平板整体UI箭头组+发光蓝球">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI箭头组" selected="true" centerPoint3DX="49.95" centerPoint3DY="14.85">
+                  <matrix>
+                    <Matrix tx="28.4" ty="10.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.55" y="4.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI发光蓝球" selected="true" centerPoint3DX="14.7" centerPoint3DY="14.7">
+                  <transformationPoint>
+                    <Point x="14.7" y="14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

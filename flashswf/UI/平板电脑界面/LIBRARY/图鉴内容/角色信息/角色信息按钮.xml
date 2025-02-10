@@ -1,0 +1,69 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图鉴内容/角色信息/角色信息按钮" itemID="66fe9020-00000331" lastModified="1728124220" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="角色信息按钮" currentFrame="19">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0711"/>
+                  <Point x="0.176" y="0.1129"/>
+                  <Point x="0.2632" y="0.2"/>
+                  <Point x="0.3431" y="0.2799"/>
+                  <Point x="0.4375" y="0.3871"/>
+                  <Point x="0.5012" y="0.5012"/>
+                  <Point x="0.5789" y="0.6404"/>
+                  <Point x="0.6628" y="0.7669"/>
+                  <Point x="0.752" y="0.8562"/>
+                  <Point x="0.8291" y="0.9332"/>
+                  <Point x="0.8947" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="图鉴内容/角色信息/角色信息图标整体" centerPoint3DX="75.7" centerPoint3DY="21">
+                  <transformationPoint>
+                    <Point x="75.7" y="21"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图鉴内容/角色信息/角色信息图标整体" centerPoint3DX="75.7" centerPoint3DY="21">
+                  <transformationPoint>
+                    <Point x="75.7" y="21"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

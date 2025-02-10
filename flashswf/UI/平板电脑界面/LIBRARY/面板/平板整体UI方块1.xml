@@ -1,0 +1,36 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="面板/平板整体UI方块1" itemID="66c4aa32-00001799" lastModified="1724164658">
+  <timeline>
+    <DOMTimeline name="平板整体UI方块1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#00558D"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#03A6FF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!343 342S1|343 0!343 0|0 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 0S3|343 342"/>
+                    <Edge fillStyle0="2" edges="!0 0S1|0 342!0 342|343 342"/>
+                    <Edge cubics="!0 0(;0,0 0,342 0,342q0 0 0 342);"/>
+                    <Edge cubics="!0 342(;0,342 343,342 343,342q0 342 343 342);"/>
+                    <Edge cubics="!343 342(;343,342 0,0 0,0q343 342 0 0);"/>
+                    <Edge cubics="!343 342(;343,342 343,0 343,0q343 342 343 0);"/>
+                    <Edge cubics="!343 0(;343,0 0,0 0,0q343 0 0 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

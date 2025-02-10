@@ -1,0 +1,89 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="叉整体" itemID="66fc3ef6-000056b5" lastModified="1728151368" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="叉整体" currentFrame="19">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="透明按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.59368896484375" d="0.648590087890625" tx="-6.3" ty="-1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	_root.自动存盘();
+	if (_parent.进入基建界面 == true && _parent.按钮占用 == true)
+	{
+		_parent.gotoAndPlay("进入基建后关闭界面");
+	}
+	else if (_parent.进入联络界面 == true && _parent.按钮占用 == true)
+	{
+		_parent.gotoAndPlay("进入联络后关闭界面");
+	}
+	else if (_parent.进入图鉴界面 == true && _parent.按钮占用 == true)
+	{
+		_parent.gotoAndPlay("进入图鉴后关闭界面");
+	}
+	else if (_parent.进入基建界面 == false && _parent.进入联络界面 == false && _parent.进入图鉴界面 == false && _parent.按钮占用 == false)
+	{
+		_parent.gotoAndPlay("关闭界面");
+	}
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="叉" centerPoint3DX="26.15" centerPoint3DY="4">
+                  <matrix>
+                    <Matrix tx="18.3" ty="-2.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.85" y="6.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="叉" centerPoint3DX="26.15" centerPoint3DY="4">
+                  <matrix>
+                    <Matrix tx="18.3" ty="-2.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.85" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

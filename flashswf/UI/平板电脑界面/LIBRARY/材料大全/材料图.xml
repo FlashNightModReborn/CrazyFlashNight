@@ -1,0 +1,66 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料大全/材料图" itemID="673b57fb-00001a23" lastModified="1731943037" lastUniqueIdentifier="16">
+  <timeline>
+    <DOMTimeline name="材料图">
+      <layers>
+        <DOMLayer name="材料图框" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料大全/材料图框" centerPoint3DX="42.45" centerPoint3DY="36.8">
+                  <transformationPoint>
+                    <Point x="42.45" y="36.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="材料图" color="#808080" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="材料图虚线" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料大全/材料图虚线" centerPoint3DX="42.45" centerPoint3DY="36.4">
+                  <matrix>
+                    <Matrix tx="4.6" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.85" y="32.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.5"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="材料图底色" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="材料大全/材料图底色" centerPoint3DX="42.1" centerPoint3DY="36.25">
+                  <matrix>
+                    <Matrix tx="4.25" ty="3.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.85" y="32.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.2890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

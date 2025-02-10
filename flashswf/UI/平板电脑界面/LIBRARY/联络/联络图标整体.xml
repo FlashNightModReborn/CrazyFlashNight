@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联络/联络图标整体" itemID="66fbc3d1-00004c32" lastModified="1727788078" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="联络图标整体">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="联络/联络图标文字透明" centerPoint3DX="56.1" centerPoint3DY="43.45">
+                  <matrix>
+                    <Matrix tx="29.7" ty="32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.4" y="11.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联络/联络图标透明" centerPoint3DX="16.7" centerPoint3DY="31.35">
+                  <matrix>
+                    <Matrix a="0.859359741210938" b="0.230255126953125" c="-0.230255126953125" d="0.859359741210938" tx="13.55" ty="6.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.2" y="26.4"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联络/联络图标" centerPoint3DX="14.8" centerPoint3DY="33.8">
+                  <matrix>
+                    <Matrix a="0.859359741210938" b="0.230255126953125" c="-0.230255126953125" d="0.859359741210938" tx="12.2" ty="8.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10.2" y="26.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="联络/联络图标文字" centerPoint3DX="53.7" centerPoint3DY="44.85">
+                  <matrix>
+                    <Matrix a="1.3004150390625" d="1.3004150390625" tx="27.3" ty="33.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.3" y="8.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

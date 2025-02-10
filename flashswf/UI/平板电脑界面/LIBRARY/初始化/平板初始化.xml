@@ -1,0 +1,879 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="初始化/平板初始化" itemID="66f84139-000003bf" lastModified="1731944973" lastUniqueIdentifier="12">
+  <timeline>
+    <DOMTimeline name="平板初始化" currentFrame="89">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="89" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.gotoAndStop("空闲");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 45" color="#FF4F4F" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1016"/>
+                  <Point x="0.1839" y="0.0828"/>
+                  <Point x="0.2724" y="0.1712"/>
+                  <Point x="0.3522" y="0.2511"/>
+                  <Point x="0.4332" y="0.4051"/>
+                  <Point x="0.5048" y="0.5048"/>
+                  <Point x="0.5732" y="0.6"/>
+                  <Point x="0.656" y="0.7535"/>
+                  <Point x="0.7381" y="0.8356"/>
+                  <Point x="0.821" y="0.9185"/>
+                  <Point x="0.881" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/补间 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="111.15" ty="171.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/补间 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="306.1" ty="173.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="paradise" color="#4FFF4F" parentLayerIndex="1" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1016"/>
+                  <Point x="0.1839" y="0.0828"/>
+                  <Point x="0.2724" y="0.1712"/>
+                  <Point x="0.3522" y="0.2511"/>
+                  <Point x="0.4332" y="0.4051"/>
+                  <Point x="0.5048" y="0.5048"/>
+                  <Point x="0.5732" y="0.6"/>
+                  <Point x="0.656" y="0.7535"/>
+                  <Point x="0.7381" y="0.8356"/>
+                  <Point x="0.821" y="0.9185"/>
+                  <Point x="0.881" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WOlogo_aradise" centerPoint3DX="416.6" centerPoint3DY="168">
+                  <matrix>
+                    <Matrix tx="326.1" ty="158"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90.5" y="10"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WOlogo_aradise" centerPoint3DX="249.7" centerPoint3DY="170.8">
+                  <matrix>
+                    <Matrix tx="159.2" ty="160.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90.5" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WOlogo_aradise" centerPoint3DX="249.7" centerPoint3DY="170.8">
+                  <matrix>
+                    <Matrix tx="159.2" ty="160.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90.5" y="10"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WOlogo_aradise" centerPoint3DX="249.7" centerPoint3DY="170.8">
+                  <matrix>
+                    <Matrix tx="159.2" ty="160.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="90.5" y="10"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 47" color="#9933CC" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1016"/>
+                  <Point x="0.1839" y="0.0828"/>
+                  <Point x="0.2724" y="0.1712"/>
+                  <Point x="0.3522" y="0.2511"/>
+                  <Point x="0.4332" y="0.4051"/>
+                  <Point x="0.5048" y="0.5048"/>
+                  <Point x="0.5732" y="0.6"/>
+                  <Point x="0.656" y="0.7535"/>
+                  <Point x="0.7381" y="0.8356"/>
+                  <Point x="0.821" y="0.9185"/>
+                  <Point x="0.881" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/补间 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="442.55" ty="122.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/补间 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="222.55" ty="125.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="west" color="#FF800A" parentLayerIndex="3" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1016"/>
+                  <Point x="0.1839" y="0.0828"/>
+                  <Point x="0.2724" y="0.1712"/>
+                  <Point x="0.3522" y="0.2511"/>
+                  <Point x="0.4332" y="0.4051"/>
+                  <Point x="0.5048" y="0.5048"/>
+                  <Point x="0.5732" y="0.6"/>
+                  <Point x="0.656" y="0.7535"/>
+                  <Point x="0.7381" y="0.8356"/>
+                  <Point x="0.821" y="0.9185"/>
+                  <Point x="0.881" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo_west" centerPoint3DX="104.9" centerPoint3DY="129.3">
+                  <matrix>
+                    <Matrix tx="43.35" ty="119.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.55" y="10.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo_west" centerPoint3DX="242.45" centerPoint3DY="127">
+                  <matrix>
+                    <Matrix tx="180.9" ty="116.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.55" y="10.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo_west" centerPoint3DX="242.45" centerPoint3DY="127">
+                  <matrix>
+                    <Matrix tx="180.9" ty="116.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.55" y="10.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo_west" centerPoint3DX="242.45" centerPoint3DY="127">
+                  <matrix>
+                    <Matrix tx="180.9" ty="116.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.55" y="10.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="P遮罩" color="#FF4FFF" locked="true" autoNamed="false" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1118"/>
+                  <Point x="0.1886" y="0.1102"/>
+                  <Point x="0.2785" y="0.2"/>
+                  <Point x="0.3512" y="0.2727"/>
+                  <Point x="0.4236" y="0.3948"/>
+                  <Point x="0.4877" y="0.4877"/>
+                  <Point x="0.5789" y="0.6199"/>
+                  <Point x="0.649" y="0.7375"/>
+                  <Point x="0.7368" y="0.8253"/>
+                  <Point x="0.8198" y="0.9083"/>
+                  <Point x="0.8638" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/补间 7" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="175.35" ty="217.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/补间 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="227.6" ty="151.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="P" color="#4FFFFF" parentLayerIndex="5" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="39" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo4" centerPoint3DX="224" centerPoint3DY="144.25">
+                  <matrix>
+                    <Matrix tx="134.75" ty="119.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="89.25" y="25.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo3" centerPoint3DX="179.15" centerPoint3DY="147.65">
+                  <matrix>
+                    <Matrix tx="136.25" ty="122.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="42.9" y="25.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/补间 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="224.75" ty="145.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="64" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/补间 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="224.75" ty="145.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文件夹 3" color="#4F80FF" locked="true" layerType="folder"/>
+        <DOMLayer name="轻按屏幕唤起按键" color="#9933CC" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="20" tweenType="motion" motionTweenRotate="none" motionTweenSnap="true" keyMode="20993">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/轻按屏幕唤起按键（文字）" blendMode="add" centerPoint3DX="226.55" centerPoint3DY="290.3">
+                  <matrix>
+                    <Matrix tx="171.2" ty="283.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.35" y="6.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/轻按屏幕唤起按键（文字）" blendMode="add" centerPoint3DX="226.55" centerPoint3DY="248.35">
+                  <matrix>
+                    <Matrix tx="171.2" ty="241.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="55.35" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI乱码块" color="#808080" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI乱码块" color="#4F80FF" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI中心球" color="#4FFFFF" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="20" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI中心球2" blendMode="add" centerPoint3DX="224.6" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="222.55" ty="147.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.45" y="3.55"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI中心球2" blendMode="add" centerPoint3DX="224.6" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="222.55" ty="147.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.45" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI七环右" color="#4F80FF" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="20" tweenType="motion" motionTweenRotate="none" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="20993" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/平板整体UI七环右" blendMode="add" centerPoint3DX="255.6" centerPoint3DY="149.4">
+                  <matrix>
+                    <Matrix tx="226.5" ty="62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.1" y="86.5"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.05078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/平板整体UI七环右" blendMode="add" centerPoint3DX="336" centerPoint3DY="149.4">
+                  <matrix>
+                    <Matrix tx="306.9" ty="62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.1" y="86.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI七环左" color="#808080" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="20" tweenType="motion" motionTweenRotate="none" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="20993" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/平板整体UI七环左" blendMode="add" centerPoint3DX="194.25" centerPoint3DY="149.45">
+                  <matrix>
+                    <Matrix tx="165.2" ty="63"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.05" y="86.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.05078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/平板整体UI七环左" blendMode="add" centerPoint3DX="113.05" centerPoint3DY="149.45">
+                  <matrix>
+                    <Matrix tx="84" ty="63"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.05" y="86.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI六环" color="#FF4F4F" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="77" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" duration="12" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI六环" blendMode="add" centerPoint3DX="224.6" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix a="0.0317840576171875" d="0.0317840576171875" tx="218.45" ty="145.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="193.5" y="135.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI六环" centerPoint3DX="224.6" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="110.15" ty="69.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="193.55" y="135.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI五环" color="#4FFF4F" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="77" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" duration="12" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI五环" blendMode="add" centerPoint3DX="224.75" centerPoint3DY="149.85">
+                  <matrix>
+                    <Matrix a="0.0331878662109375" d="0.0331878662109375" tx="220.6" ty="145.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="125.05" y="125.05"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI五环" blendMode="add" centerPoint3DX="224.75" centerPoint3DY="149.85">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="150.95" ty="76.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="124.8" y="124.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI四环" color="#808080" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="77" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" duration="12" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环" blendMode="add" centerPoint3DX="224.15" centerPoint3DY="149.65">
+                  <matrix>
+                    <Matrix a="0.03985595703125" d="0.03985595703125" tx="219.55" ty="145.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="115.4" y="115.4"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环 重对齐版本" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.590789794921875" d="0.590652465820313" tx="225" ty="150"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI三环" color="#9933CC" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="77" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" duration="12" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI三环" blendMode="add" centerPoint3DX="224.6" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0.0422210693359375" d="0.0422210693359375" tx="220.75" ty="146.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.2" y="91.2"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI三环" blendMode="add" centerPoint3DX="224.6" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="170.4" ty="95.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.65" y="91.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI二环" color="#FF800A" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="77" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" duration="12" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI二环" blendMode="add" centerPoint3DX="224.35" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix a="0.0324249267578125" d="0.0324249267578125" tx="221.75" ty="147.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="80.2" y="86.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI二环" centerPoint3DX="220.1" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="173.35" ty="98.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.05" y="86.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI一环" color="#FF4FFF" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="8" tweenType="motion" motionTweenRotate="clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI一环" blendMode="add" centerPoint3DX="224.6" centerPoint3DY="148.5">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="203.3" ty="128.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36" y="33.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="77" duration="12" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI一环" blendMode="add" centerPoint3DX="224.6" centerPoint3DY="148.5">
+                  <matrix>
+                    <Matrix a="0.05328369140625" d="0.05328369140625" tx="222.7" ty="146.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.65" y="33.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI一环" blendMode="add" centerPoint3DX="224.6" centerPoint3DY="148.5">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="203.3" ty="128.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36" y="33.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI大圆" color="#4FFFFF" parentLayerIndex="7" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="69" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="20" tweenType="motion" motionTweenRotate="counter-clockwise" motionTweenRotateTimes="1" motionTweenSnap="true" keyMode="22017" acceleration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI大圆" blendMode="add" centerPoint3DX="224.5" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="104.6" ty="65.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="202.75" y="142.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI大圆" centerPoint3DX="224.5" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="104.6" ty="65.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="202.75" y="142.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.05078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="边框与背景" color="#FF4FFF" locked="true" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="背景" color="#9933CC" parentLayerIndex="21" locked="true" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="平板背景空闲" blendMode="hardlight" centerPoint3DX="224.4" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix tx="0.65" ty="-5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="223.75" y="155.1"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="70" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="平板背景空闲" blendMode="hardlight" centerPoint3DX="224.4" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix tx="0.65" ty="-5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="223.75" y="155.1"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="平板背景空闲" blendMode="hardlight" centerPoint3DX="224.4" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix tx="0.65" ty="-5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="223.75" y="155.1"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.69921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="soundlayer1" color="#9933CC" parentLayerIndex="21" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="69" keyMode="9728" soundName="音效/intro1.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="70" duration="20" keyMode="9728" soundName="音效/expand.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="soundlayer2" color="#FF800A" parentLayerIndex="21" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="90" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

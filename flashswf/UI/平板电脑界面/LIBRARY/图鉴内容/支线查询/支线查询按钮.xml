@@ -1,0 +1,69 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图鉴内容/支线查询/支线查询按钮" itemID="66fd8d27-00000276" lastModified="1728124285" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="支线查询按钮" currentFrame="19">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.1118"/>
+                  <Point x="0.1783" y="0.1152"/>
+                  <Point x="0.2632" y="0.2"/>
+                  <Point x="0.3429" y="0.2797"/>
+                  <Point x="0.4308" y="0.379"/>
+                  <Point x="0.4937" y="0.4937"/>
+                  <Point x="0.5874" y="0.6644"/>
+                  <Point x="0.6509" y="0.7531"/>
+                  <Point x="0.7368" y="0.839"/>
+                  <Point x="0.8197" y="0.9219"/>
+                  <Point x="0.878" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="图鉴内容/支线查询/支线查询图标整体" centerPoint3DX="71.2" centerPoint3DY="21.75">
+                  <transformationPoint>
+                    <Point x="71.2" y="21.75"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图鉴内容/支线查询/支线查询图标整体" centerPoint3DX="71.2" centerPoint3DY="21.75">
+                  <transformationPoint>
+                    <Point x="71.2" y="21.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

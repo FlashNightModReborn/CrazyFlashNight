@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="面板/平板整体UI四环部件2" itemID="66c4998d-000016e8" lastModified="1724160397">
+  <timeline>
+    <DOMTimeline name="平板整体UI四环部件2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!101 177S2|0 0!0 0|204 0!204 0|101 177"/>
+                    <Edge cubics="!101 177(;101,177 0,0 0,0q101 177 0 0);"/>
+                    <Edge cubics="!0 0(;0,0 204,0 204,0q0 0 204 0);"/>
+                    <Edge cubics="!204 0(;204,0 101,177 101,177q204 0 101 177);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

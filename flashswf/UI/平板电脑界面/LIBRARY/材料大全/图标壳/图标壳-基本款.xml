@@ -1,0 +1,62 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料大全/图标壳/图标壳-基本款" itemID="67691f7c-000011ae" lastModified="1734943382">
+  <timeline>
+    <DOMTimeline name="图标壳-基本款">
+      <layers>
+        <DOMLayer name="Layer 1" color="#D3D352">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#999999"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#666666"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="2" edges="!90 -68|90 -73"/>
+                    <Edge fillStyle1="1" edges="!90 -73|89 -72"/>
+                    <Edge fillStyle1="3" edges="!89 -72|90 -68"/>
+                    <Edge fillStyle0="1" edges="!156 -161|156 -165!156 -165|-85 -165!-85 -165|-157 -72"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!-157 -72|89 -72"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!90 -73|156 -161"/>
+                    <Edge fillStyle1="3" edges="!90 171|87 174!87 174|-157 174!-157 174|-157 -72"/>
+                    <Edge fillStyle1="2" edges="!156 -161|156 88!156 88|90 171"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!90 171|90 -68"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#83C998" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor alpha="0.0980392156862745"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!240 -240|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

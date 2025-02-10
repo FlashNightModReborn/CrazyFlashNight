@@ -1,0 +1,54 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图鉴内容/角色信息/角色信息图标整体" itemID="66fe900c-00000329" lastModified="1727959365" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="角色信息图标整体">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="图鉴内容/角色信息/角色信息文字透明" centerPoint3DX="93.75" centerPoint3DY="27.05">
+                  <matrix>
+                    <Matrix tx="37.35" ty="13.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.4" y="13.25"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/角色信息/角色信息图标透明" centerPoint3DX="17.6" centerPoint3DY="19.45">
+                  <matrix>
+                    <Matrix a="0.7630615234375" b="-1.32164001464844" c="0.957046508789063" d="0.552566528320313" ty="29.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.1" y="9.55"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.3984375"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/角色信息/角色信息图标" centerPoint3DX="17.65" centerPoint3DY="21.65">
+                  <matrix>
+                    <Matrix a="0.144073486328125" b="-0.249542236328125" c="0.23309326171875" d="0.13458251953125" tx="0.8" ty="31.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.05" y="39.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="图鉴内容/角色信息/角色信息文字" centerPoint3DX="91.5" centerPoint3DY="28.55">
+                  <matrix>
+                    <Matrix tx="35.1" ty="15.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="56.4" y="13.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

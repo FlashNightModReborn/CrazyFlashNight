@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="面板/平板整体UI三环" itemID="66c498e7-000016e0" lastModified="1724160231" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="平板整体UI三环">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI三环部件1" centerPoint3DX="91.65" centerPoint3DY="91.7">
+                  <transformationPoint>
+                    <Point x="91.65" y="91.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI三环部件2" centerPoint3DX="173.7" centerPoint3DY="89.6">
+                  <matrix>
+                    <Matrix tx="164.45" ty="42"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.25" y="47.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

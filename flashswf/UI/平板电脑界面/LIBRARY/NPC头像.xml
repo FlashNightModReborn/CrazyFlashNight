@@ -1,0 +1,127 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC头像" itemID="670b3e25-000003ea" lastModified="1735727034" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="NPC头像">
+      <layers>
+        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 刷新(NPC名字)
+{
+	this.名字 = NPC名字;
+	肖像.gotoAndStop(this.名字);
+	肖像.肖像.stop();
+}
+
+function 打开商店()
+{
+	_root.购买物品界面._x = 43.5;
+	_root.购买物品界面._y = 101.5;
+	_root.物品UI函数.刷新商店图标(_root.getNPCShop(this.名字));
+}
+
+this.attachMovie("对话框肖像","肖像",0);
+肖像.swapDepths(肖像位置示意);
+肖像._x = 肖像位置示意._x;
+肖像._y = 肖像位置示意._y;
+肖像._xscale = 肖像位置示意._xscale;
+肖像._yscale = 肖像位置示意._yscale;
+肖像位置示意._visible = false;
+this._alpha = 0;
+this.onEnterFrame = function()
+{
+	this._alpha += 10;
+	if (this._alpha >= 100)
+	{
+		delete this.onEnterFrame;
+	}
+};
+
+刷新("Andy Law");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="进入商店文字" blendMode="add" centerPoint3DX="143.7" centerPoint3DY="152.8">
+                  <matrix>
+                    <Matrix tx="112.45" ty="143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.25" y="10.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 5" color="#4FFFFF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="透明按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="0.631866455078125" d="0.515579223632813" tx="112.45" ty="142.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	打开商店();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框肖像" name="肖像位置示意" centerPoint3DX="249.75" centerPoint3DY="447.8">
+                  <matrix>
+                    <Matrix a="0.82373046875" d="0.82373046875" tx="33" ty="79.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0099FF" alpha="0.2"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3000 0|3000 3400!3000 3400|0 3400!0 3400|0 0!0 0|3000 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

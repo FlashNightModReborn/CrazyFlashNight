@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="悬停/补间 18" itemID="66fc38f4-00005686" symbolType="graphic" lastModified="1727805684">
+  <timeline>
+    <DOMTimeline name="补间 18">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="15.45" ty="-63.25"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#04A8FF"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#04A8FF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-65 740S6|-65 490!-65 490|1587 490!1587 490|1587 740!1587 740|1587 990!1587 990|-65 990!-65 990|-65 740"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-65 740S7|1587 740"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-2204 1540S6|-2205 1540!-2205 1540|-2205 1290!-2205 1290|-553 1290!-553 1290|-553 1540!-553 1540|-552 1540!-552 1540|-552 1790"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-552 1790S7|-2204 1790"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-2204 1790S6|-2204 1540"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-2204 1540S7|-553 1540"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-553 1275S6|-2205 1275!-2205 1275|-2205 1025!-2205 1025|-553 1025!-553 1025|-553 1275!-552 1790|-552 2040!-552 2040|-2204 2040!-2204 2040|-2204 1790"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

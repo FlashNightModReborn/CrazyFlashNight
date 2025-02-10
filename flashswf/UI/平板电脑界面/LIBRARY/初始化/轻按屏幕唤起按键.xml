@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="初始化/轻按屏幕唤起按键" itemID="66fbaed8-000043bd" lastModified="1728124178" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="轻按屏幕唤起按键" currentFrame="19">
+      <layers>
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.轻按屏幕唤起按键._visible = 0;
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.065"/>
+                  <Point x="0.181" y="0.096"/>
+                  <Point x="0.2459" y="0.161"/>
+                  <Point x="0.3387" y="0.2537"/>
+                  <Point x="0.3982" y="0.3849"/>
+                  <Point x="0.4817" y="0.5"/>
+                  <Point x="0.5711" y="0.6233"/>
+                  <Point x="0.6536" y="0.7618"/>
+                  <Point x="0.748" y="0.8562"/>
+                  <Point x="0.8036" y="0.9118"/>
+                  <Point x="0.8586" y="0.9466"/>
+                  <Point x="0.9167" y="0.9726"/>
+                  <Point x="0.9434" y="0.9846"/>
+                  <Point x="0.9743" y="0.9743"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/轻按屏幕唤起按键（文字）" centerPoint3DX="55.35" centerPoint3DY="6.45">
+                  <transformationPoint>
+                    <Point x="55.35" y="6.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/轻按屏幕唤起按键（文字）" centerPoint3DX="55.35" centerPoint3DY="6.45">
+                  <transformationPoint>
+                    <Point x="55.35" y="6.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

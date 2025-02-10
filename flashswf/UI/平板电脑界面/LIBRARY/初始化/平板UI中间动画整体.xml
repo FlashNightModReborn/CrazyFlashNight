@@ -1,0 +1,457 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="初始化/平板UI中间动画整体" itemID="66fbb68d-00004b53" lastModified="1728123696" lastUniqueIdentifier="45">
+  <timeline>
+    <DOMTimeline name="平板UI中间动画整体" currentFrame="39">
+      <layers>
+        <DOMLayer name="平板整体UI中心球" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI中心球2" centerPoint3DX="224.6" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="222.55" ty="147.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="3.45" y="3.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI七环右" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/平板整体UI七环右" centerPoint3DX="336" centerPoint3DY="149.4">
+                  <matrix>
+                    <Matrix tx="306.9" ty="62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.1" y="86.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI七环左" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="初始化/平板整体UI七环左" centerPoint3DX="113.05" centerPoint3DY="149.45">
+                  <matrix>
+                    <Matrix tx="84" ty="63"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="29.05" y="86.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI六环" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI六环" centerPoint3DX="224.6" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="110.15" ty="69.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="193.55" y="135.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI五环" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.5"/>
+                  <Point x="0.666666666666667" y="0.833333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI五环" centerPoint3DX="224.75" centerPoint3DY="149.85">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="150.95" ty="76.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="124.8" y="124.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.166666666666667"/>
+                  <Point x="0.666666666666667" y="0.5"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI五环" centerPoint3DX="224.8" centerPoint3DY="149.85">
+                  <matrix>
+                    <Matrix a="0" b="-0.59130859375" c="0.59130859375" d="0" tx="151" ty="223.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="124.8" y="124.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI五环" centerPoint3DX="224.75" centerPoint3DY="149.8">
+                  <matrix>
+                    <Matrix a="-0.587234497070313" b="-0.067291259765625" c="0.067291259765625" d="-0.587234497070313" tx="289.65" ty="231.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="124.8" y="124.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI四环" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="20" tweenType="motion" motionTweenRotate="clockwise" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.5"/>
+                  <Point x="0.666666666666667" y="0.833333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环 重对齐版本">
+                  <matrix>
+                    <Matrix a="0.590789794921875" d="0.590652465820313" tx="225" ty="150"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="19" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.166666666666667"/>
+                  <Point x="0.666666666666667" y="0.5"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环 重对齐版本">
+                  <matrix>
+                    <Matrix a="0.328231811523438" b="0.491226196289063" c="-0.491104125976563" d="0.328155517578125" tx="224.95" ty="150.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI四环 重对齐版本">
+                  <matrix>
+                    <Matrix a="0.0238037109375" b="0.590225219726563" c="-0.590087890625" d="0.0238037109375" tx="225" ty="150.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI三环" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.5"/>
+                  <Point x="0.666666666666667" y="0.833333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI三环" centerPoint3DX="224.6" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="170.4" ty="95.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.65" y="91.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.166666666666667"/>
+                  <Point x="0.666666666666667" y="0.5"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI三环" centerPoint3DX="224.6" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0" b="0.59130859375" c="-0.59130859375" d="0" tx="278.85" ty="95.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.65" y="91.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.5"/>
+                  <Point x="0.666666666666667" y="0.833333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI三环" centerPoint3DX="223.95" centerPoint3DY="149.35">
+                  <matrix>
+                    <Matrix a="-0.591217041015625" b="0.00982666015625" c="-0.00982666015625" d="-0.591217041015625" tx="279.75" ty="203.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.75" y="91.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="9" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.166666666666667"/>
+                  <Point x="0.666666666666667" y="0.5"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI三环" centerPoint3DX="226.9" centerPoint3DY="150">
+                  <matrix>
+                    <Matrix a="-0.0069580078125" b="-0.590408325195313" c="0.590408325195313" d="-0.0069427490234375" tx="171.2" ty="204.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.65" y="91.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI三环" centerPoint3DX="225.25" centerPoint3DY="152.15">
+                  <matrix>
+                    <Matrix a="0.573715209960938" b="-0.135757446289063" c="0.135757446289063" d="0.57373046875" tx="159.65" ty="109.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.65" y="91.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI二环" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="25" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.5"/>
+                  <Point x="0.666666666666667" y="0.833333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI二环" centerPoint3DX="220.1" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="173.35" ty="98.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.05" y="86.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="14" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="66">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.113333333333333"/>
+                  <Point x="0.666666666666667" y="0.446666666666667"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI二环" centerPoint3DX="220.1" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="173.35" ty="98.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.05" y="86.65"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI二环" centerPoint3DX="220.1" centerPoint3DY="149.9">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="173.35" ty="98.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="79.05" y="86.65"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI一环" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.5"/>
+                  <Point x="0.666666666666667" y="0.833333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI一环" centerPoint3DX="224.6" centerPoint3DY="148.5">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="203.3" ty="128.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36" y="33.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.166666666666667"/>
+                  <Point x="0.666666666666667" y="0.5"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI一环" centerPoint3DX="224.6" centerPoint3DY="149.75">
+                  <matrix>
+                    <Matrix a="0.05316162109375" d="0.05316162109375" tx="222.7" ty="147.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36.7" y="33.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.5"/>
+                  <Point x="0.666666666666667" y="0.833333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI一环" centerPoint3DX="224.6" centerPoint3DY="148.5">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="203.3" ty="128.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36" y="33.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="9" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.166666666666667"/>
+                  <Point x="0.666666666666667" y="0.5"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI一环" centerPoint3DX="224.6" centerPoint3DY="149.75">
+                  <matrix>
+                    <Matrix a="0.05316162109375" d="0.05316162109375" tx="222.7" ty="147.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36.7" y="33.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI一环" centerPoint3DX="224.1" centerPoint3DY="148.7">
+                  <matrix>
+                    <Matrix a="0.513275146484375" d="0.513275146484375" tx="205.75" ty="131.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36.7" y="33.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="平板整体UI大圆" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="面板/平板整体UI大圆" centerPoint3DX="224.5" centerPoint3DY="149.95">
+                  <matrix>
+                    <Matrix a="0.59130859375" d="0.59130859375" tx="104.6" ty="65.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="202.75" y="142.15"/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.05078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

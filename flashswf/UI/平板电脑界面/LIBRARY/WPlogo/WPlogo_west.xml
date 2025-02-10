@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="WPlogo/WPlogo_west" itemID="66c4412c-00000fe7" lastModified="1724137772" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="WPlogo_west">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo2" selected="true" centerPoint3DX="60" centerPoint3DY="8.7">
+                  <matrix>
+                    <Matrix tx="-8.5" ty="-6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.5" y="15.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo1" selected="true" centerPoint3DX="42.4" centerPoint3DY="11.45">
+                  <matrix>
+                    <Matrix c="-0.499984741210938" d="0.866012573242188" tx="-8.1" ty="-4.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="59.5" y="18"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="WPlogo/WOlogo_aradise" itemID="66c44127-00000fe6" lastModified="1724137767" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="WOlogo_aradise">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo6" selected="true" centerPoint3DX="89.45" centerPoint3DY="8.8">
+                  <transformationPoint>
+                    <Point x="89.45" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="WPlogo/WPlogo5" selected="true" centerPoint3DX="91.6" centerPoint3DY="11.2">
+                  <matrix>
+                    <Matrix tx="2.15" ty="2.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="89.45" y="8.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
