@@ -165,7 +165,29 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
 }
 
 _root.创建子弹实例 = function(Obj, shooter, 射击角度){
+
+    /*
+    // ========== 时间桶统计逻辑 ==========
+    // 获取当前帧数
+    var 当前帧 = Math.floor(_root.帧计时器.当前帧数 / 30);
+    // 将统计桶挂载到游戏世界上（第一次调用时初始化）
     var 游戏世界 = _root.gameworld;
+    if(游戏世界.子弹调用桶 == undefined) {
+         // 初始化桶，记录桶对应的帧和当前调用次数
+         游戏世界.子弹调用桶 = { 当前帧: 当前帧, count: 0 };
+    }
+    // 当帧数发生变化时，输出上一个帧的调用次数，并重置桶
+    if(游戏世界.子弹调用桶.当前帧 != 当前帧) {
+         _root.发布消息("第 " + 游戏世界.子弹调用桶.当前帧 + " 秒内创建子弹次数: " + 游戏世界.子弹调用桶.count);
+         // 重置桶到当前帧
+         游戏世界.子弹调用桶.当前帧 = 当前帧;
+         游戏世界.子弹调用桶.count = 0;
+    }
+    // 本帧内的调用次数增加
+    游戏世界.子弹调用桶.count++;
+    // ========== 时间桶统计逻辑结束 ==========
+
+    */
     var 散射角度 = Obj.近战检测 ? 0 : 射击角度 + (Obj.联弹检测 ? 0 : _root.随机偏移(Obj.子弹散射度));
     var 形状偏角 = 0;
     if(Obj.ZY比例 && Obj.速度X && Obj.速度Y){
@@ -181,13 +203,13 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度){
     var bulletInstance;
     if(Obj.透明检测){
         bulletInstance = _root.对象浅拷贝(Obj);
-        _root.服务器.发布服务器消息("创建透明子弹: " + Obj.子弹种类 + " , " + Obj.子弹威力)
+        _root.服务器.发布服务器消息("创建透明子弹: " + Obj.子弹种类 + " , " + Obj.子弹威力);
     } else {
         _root.子弹生成计数 = (_root.子弹生成计数 + 1) % 100;
         var depth = 游戏世界.子弹区域.getNextHighestDepth();
         var b_name = Obj.发射者名 + Obj.子弹种类 + depth + 散射角度 + _root.子弹生成计数;
         bulletInstance = 游戏世界.子弹区域.attachMovie(Obj.baseAsset, b_name, depth, Obj);
-            _root.服务器.发布服务器消息("创建子弹实例: " + b_name + " " + Obj.子弹种类 + " , " + Obj.子弹威力)
+        _root.服务器.发布服务器消息("创建子弹实例: " + b_name + " " + Obj.子弹种类 + " , " + Obj.子弹威力);
     }
     bulletInstance.xmov = bulletInstance.子弹速度 * Math.cos(angle);
     bulletInstance.ymov = bulletInstance.子弹速度 * Math.sin(angle);
@@ -195,6 +217,7 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度){
 
     return bulletInstance;
 }
+
 
 // --------------------子弹伤害结算核心--------------------
 // 专注于伤害与效果计算，并将计算结果打包返回

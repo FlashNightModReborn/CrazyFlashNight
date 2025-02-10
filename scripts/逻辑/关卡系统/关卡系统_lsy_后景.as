@@ -38,7 +38,7 @@ _root.加载后景 = function(环境信息){
 			infoObj = {};
 			infoObj.speedrate = speedrate;
 			infoObj.mc = bgMc;
-			infoObj.delay = Math.round(Math.log(speedrate - 1) / Math.LN2);
+			infoObj.delay = Math.round(Math.log(speedrate - 4) / Math.LN2);
 			_root.天空盒.后景移动速度列表.push(infoObj);
 		}
 		
