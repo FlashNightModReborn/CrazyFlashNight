@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1738919210" lastUniqueIdentifier="200">
   <timeline>
-    <DOMTimeline name="选关界面 1024*576" currentFrame="32">
+    <DOMTimeline name="选关界面 1024*576">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E5DCA">
           <frames>
@@ -1127,7 +1127,7 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="498.25" centerPoint3DY="414.6">
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="498.25" centerPoint3DY="414.6">
                   <matrix>
                     <Matrix tx="247.25" ty="191.5"/>
                   </matrix>
@@ -3892,7 +3892,7 @@ on(rollOut){
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!20480 -2111|20480 11442!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111"/>
+                    <Edge fillStyle1="1" edges="!20480 11442|-130 11442!-130 11442|-130 -2111!-130 -2111|20480 -2111!20480 -2111|20480 11442"/>
                   </edges>
                 </DOMShape>
               </elements>

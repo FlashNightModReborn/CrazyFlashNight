@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关按钮" itemID="666ea230-0000056b" lastModified="1738918912">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关按钮" itemID="666ea230-0000056b" lastModified="1739186635">
   <timeline>
-    <DOMTimeline name="选关按钮">
+    <DOMTimeline name="选关按钮" currentFrame="1">
       <layers>
         <DOMLayer name="Script Layer" color="#D30EBB" current="true" isSelected="true" autoNamed="false">
           <frames>
@@ -108,19 +108,10 @@ else
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_root.鼠标控制移动();
-}
-on (release) {
 	this.选关界面进入关卡 = _root.选关界面进入关卡;
 	选关界面进入关卡("简单");
-	
 }
-on (rollOver) {
-	_root.注释(200,_root.获得翻译("简单") + "\r" + 注释文字);
-}
-on (rollOut) {
-	_root.注释结束();
-}]]></script>
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="button/Symbol 3282" name="冒险" symbolType="button">
@@ -132,18 +123,10 @@ on (rollOut) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_root.鼠标控制移动();
-}
-on (release) {
 	this.选关界面进入关卡 = _root.选关界面进入关卡;
 	选关界面进入关卡("冒险");
 }
-on (rollOver) {
-	_root.注释(200,_root.获得翻译("冒险") + "\r" + 注释文字);
-}
-on (rollOut) {
-	_root.注释结束();
-}]]></script>
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="button/Symbol 3283" name="修罗" symbolType="button">
@@ -155,18 +138,10 @@ on (rollOut) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_root.鼠标控制移动();
-}
-on (release) {
 	this.选关界面进入关卡 = _root.选关界面进入关卡;
 	选关界面进入关卡("修罗");
 }
-on (rollOver) {
-	_root.注释(200,_root.获得翻译("修罗") + "\r" + 注释文字);
-}
-on (rollOut) {
-	_root.注释结束();
-}]]></script>
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="button/Symbol 3284" name="地狱" symbolType="button">
@@ -178,18 +153,10 @@ on (rollOut) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	_root.鼠标控制移动();
-}
-on (release) {
 	this.选关界面进入关卡 = _root.选关界面进入关卡;
 	选关界面进入关卡("地狱");
 }
-on (rollOver) {
-	_root.注释(200,_root.获得翻译("地狱") + "\r" + 注释文字);
-}
-on (rollOut) {
-	_root.注释结束();
-}]]></script>
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

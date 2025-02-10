@@ -203,11 +203,11 @@ _root.天气系统.配置环境 = function (环境信息) {
 _root.天气系统.获得当前光照等级 = function(){
     var 时间 = this.获得当前时间();
     var 光照等级 = 0;
-    if((时间 < 4 and 时间 > 1) or (时间 < 13 and 时间 > 11) or (时间 < 21 and 时间 > 18)){
+    if((时间 < 4 && 时间 > 1) || (时间 < 13 && 时间 > 11) || (时间 < 21 && 时间 > 18)){
         var baseLevel = Math.floor(时间);
         var nextLevel = Math.ceil(时间);
         光照等级 = Interpolatior.linear(时间, baseLevel, nextLevel, this.昼夜光照[baseLevel], this.昼夜光照[nextLevel]);
-    }else if((时间 <= 11 and 时间 >= 4) or (时间 <= 18 and 时间 >= 13)){
+    }else if((时间 <= 11 && 时间 >= 4) || (时间 <= 18 && 时间 >= 13)){
         光照等级 = 7;
     }
     

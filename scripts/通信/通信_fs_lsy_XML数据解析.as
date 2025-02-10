@@ -730,7 +730,8 @@ _root.配置关卡环境数据 = function(data:Object):Void {
 	var 关卡环境设置 = {};
 	var environmentNodes:Array = data.Environment;
 	// 默认配置
-	关卡环境设置.Default = _root.天气系统.默认环境配置;//把默认配置也存入环境设置
+	var 默认配置 = _root.天气系统.默认环境配置;
+	关卡环境设置.Default = 默认配置;//把默认配置也存入环境设置
 	for (var i:Number = 0; i < environmentNodes.length; i++){
 		var 环境信息:Object = {};
 		var child_Nodes:Array = environmentNodes[i];
@@ -745,7 +746,8 @@ _root.配置场景环境数据 = function(data:Object):Void {
 	var 场景环境设置 = {};
 	var environmentNodes:Array = data.Environment;
 	// 默认配置
-	场景环境设置.Default = _root.天气系统.默认环境配置;//把默认配置也存入环境设置
+	var 默认配置 = _root.天气系统.默认环境配置;
+	场景环境设置.Default = 默认配置;//把默认配置也存入环境设置
 	for (var i:Number = 0; i < environmentNodes.length; i++){
 		var 环境信息:Object = {};
 		var child_Nodes:Array = environmentNodes[i];
