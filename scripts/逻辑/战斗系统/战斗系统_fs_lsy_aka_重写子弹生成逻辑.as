@@ -10,6 +10,7 @@ import org.flashNight.arki.bullet.BulletComponent.Init.*;
 import org.flashNight.naki.Sort.*;
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.component.Damage.*;
+import org.flashNight.aven.Proxy.*;
 
 DamageManagerFactory.init();
 //重写子弹生成逻辑
@@ -164,30 +165,10 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
     return bulletInstance;
 }
 
+
+
 _root.创建子弹实例 = function(Obj, shooter, 射击角度){
-
-    /*
-    // ========== 时间桶统计逻辑 ==========
-    // 获取当前帧数
-    var 当前帧 = Math.floor(_root.帧计时器.当前帧数 / 30);
-    // 将统计桶挂载到游戏世界上（第一次调用时初始化）
     var 游戏世界 = _root.gameworld;
-    if(游戏世界.子弹调用桶 == undefined) {
-         // 初始化桶，记录桶对应的帧和当前调用次数
-         游戏世界.子弹调用桶 = { 当前帧: 当前帧, count: 0 };
-    }
-    // 当帧数发生变化时，输出上一个帧的调用次数，并重置桶
-    if(游戏世界.子弹调用桶.当前帧 != 当前帧) {
-         _root.发布消息("第 " + 游戏世界.子弹调用桶.当前帧 + " 秒内创建子弹次数: " + 游戏世界.子弹调用桶.count);
-         // 重置桶到当前帧
-         游戏世界.子弹调用桶.当前帧 = 当前帧;
-         游戏世界.子弹调用桶.count = 0;
-    }
-    // 本帧内的调用次数增加
-    游戏世界.子弹调用桶.count++;
-    // ========== 时间桶统计逻辑结束 ==========
-
-    */
     var 散射角度 = Obj.近战检测 ? 0 : 射击角度 + (Obj.联弹检测 ? 0 : _root.随机偏移(Obj.子弹散射度));
     var 形状偏角 = 0;
     if(Obj.ZY比例 && Obj.速度X && Obj.速度Y){
@@ -218,6 +199,37 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度){
     return bulletInstance;
 }
 
+/*
+// 添加帧计时器监听
+Proxy.addPropertySetterWatcher(_root.帧计时器, "当前帧数", function(newVal, oldVal) {
+    var gameworld:MovieClip = _root.gameworld;
+    var s:Number = Math.floor(newVal / 30);
+    var bucket:Object = gameworld.bulletBucket;
+    
+    if (!bucket) {
+        gameworld.bulletBucket = bucket = {
+            s: s,
+            count: 0,
+            total: 0
+        };
+        // 设置为不可枚举
+        _global.ASSetPropFlags(gameworld, ["bulletBucket"], 1, true);
+        return;
+    }
+
+    if (bucket.s != s) {
+        _root.发布消息("DebugStats - 秒["+bucket.s+"] 子弹生成: "+bucket.count+" 累计: "+bucket.total);
+        bucket.total += bucket.count;
+        bucket.count = 0;
+        bucket.s = s;
+}
+});
+
+// 添加子弹计数监听
+Proxy.addFunctionCallWatcher(_root, "创建子弹实例", function() {
+    _root.gameworld.bulletBucket.count++;
+});
+*/
 
 // --------------------子弹伤害结算核心--------------------
 // 专注于伤害与效果计算，并将计算结果打包返回
