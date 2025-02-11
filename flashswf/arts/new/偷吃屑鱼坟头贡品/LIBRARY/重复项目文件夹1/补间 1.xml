@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="重复项目文件夹1/补间 1" itemID="66588747-00006b5f" symbolType="graphic" lastModified="1716769115">
+  <timeline>
+    <DOMTimeline name="补间 1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMSymbolInstance libraryItemName="重复项目文件夹1/ARMS shouldersheild2back" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix tx="-18.5" ty="-24.2"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="26.15" y="24.2"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,2569 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型号机器人/普通攻击动作" itemID="665c93bb-00001411" lastModified="1717346319" lastUniqueIdentifier="90">
+  <timeline>
+    <DOMTimeline name="普通攻击动作" currentFrame="46">
+      <layers>
+        <DOMLayer name="招式名" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="45" name="头部回旋" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="45" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="46" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹层" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="48.8">
+                  <matrix>
+                    <Matrix a="0.88824462890625" d="3.69497680664063" tx="48.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="11.45" centerPoint3DY="-92.65">
+                  <matrix>
+                    <Matrix a="1.23191833496094" d="7.34552001953125" tx="11.45" ty="-92.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 1.5;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="29.85" centerPoint3DY="-24.6">
+                  <matrix>
+                    <Matrix a="1.019775390625" d="6.038330078125" tx="29.85" ty="-24.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 2;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="79.6" centerPoint3DY="-42.6">
+                  <matrix>
+                    <Matrix a="0.77850341796875" d="6.4210205078125" tx="79.6" ty="-42.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" centerPoint3DX="101.15" centerPoint3DY="-50.6">
+                  <matrix>
+                    <Matrix a="0.665817260742188" d="6.4210205078125" tx="101.15" ty="-50.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 1;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战子弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 10;
+	
+	//非常用
+	/*
+	子弹属性.水平击退速度 = NaN;
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="39" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="追踪代码" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="47" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//本帧是锁定敌人位置的帧，建议比位移元件早一些。
+
+//你需要改的值，追踪持续帧是从挂载ef的位移元件的第二帧到预计实际到达敌人位置时的总帧数。
+速度上限 = _parent.行走X速度 * 7;
+速度下限 = _parent.行走X速度 * 3;
+追踪持续帧 = 8;
+
+//自动计算的值
+敌方目标 = _root.gameworld[_parent.攻击目标];
+上速度 = 0;
+下速度 = 0;
+左速度 = 0;
+右速度 = 0;
+距离X = _parent._x - 敌方目标._x;
+速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
+
+if (速度X >= 0)
+{
+	速度X = Math.max(速度X, 速度下限);
+	左速度 = 速度X;
+}
+else
+{
+	速度X = Math.min(速度X, -速度下限);
+	右速度 = -速度X;
+}
+/* 如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
+距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
+速度Z = 速度X * 距离Z / 距离X;
+if (速度Z >= 0)
+{
+	上速度 = 速度Z;
+}
+else
+{
+	下速度 = -速度Z;
+}
+*/]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="位移层" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="43" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="特效" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="36" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="备用" color="#4FFF4F" locked="true" autoNamed="false" animationType="motion object">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" tweenType="motion object" motionTweenRotate="none" motionTweenScale="false" isMotionObject="true" visibleAnimationKeyframes="2097151" keyMode="8195">
+              <motionObjectXML><AnimationCore TimeScale="30000" Version="1" duration="7000"><TimeMap strength="0" type="Quadratic"/><metadata><names><name langID="zh_CN" value=""/></names><Settings orientToPath="0" xformPtXOffsetPct="0.500608" xformPtYOffsetPct="0.501805" xformPtZOffsetPixels="0"/></metadata><PropertyContainer id="headContainer"><PropertyContainer id="Basic_Motion"><Property enabled="1" id="Motion_X" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="1998,4.25" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,-54.7" next="0,-54.7" previous="-1997,-14" roving="0" timevalue="6000"/></Property><Property enabled="1" id="Motion_Y" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="1998,35.75" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,75.55" next="0,75.55" previous="-1997,60.95" roving="0" timevalue="6000"/></Property><Property enabled="1" id="Rotation_Z" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,14.9989" next="0,14.9989" previous="0,14.9989" roving="0" timevalue="0"/><Keyframe anchor="0,151.946" next="0,151.946" previous="0,151.946" roving="0" timevalue="6000"/></Property></PropertyContainer><PropertyContainer id="Transformation"><Property enabled="1" id="Skew_X" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="6000"/></Property><Property enabled="1" id="Skew_Y" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="6000"/></Property><Property enabled="1" id="Scale_X" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,-100" next="0,-100" previous="0,-100" roving="0" timevalue="0"/><Keyframe anchor="0,-100" next="0,-100" previous="0,-100" roving="0" timevalue="6000"/></Property><Property enabled="1" id="Scale_Y" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,100" next="0,100" previous="0,100" roving="0" timevalue="0"/><Keyframe anchor="0,100" next="0,100" previous="0,100" roving="0" timevalue="6000"/></Property></PropertyContainer><PropertyContainer id="Colors"/><PropertyContainer id="Filters"/></PropertyContainer></AnimationCore></motionObjectXML>
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="117.05" centerPoint3DY="22.75">
+                  <matrix>
+                    <Matrix a="-0.9659423828125" b="-0.255615234375" c="-0.255615234375" d="0.9659423828125" tx="160.4" ty="19.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.2" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="20" tweenType="motion object" motionTweenRotate="none" motionTweenScale="false" isMotionObject="true" visibleAnimationKeyframes="2097151" keyMode="8195">
+              <motionObjectXML><AnimationCore TimeScale="30000" Version="1" duration="20000"><TimeMap strength="0" type="Quadratic"/><metadata><names><name langID="zh_CN" value=""/></names><Settings orientToPath="0" xformPtXOffsetPct="1.19137" xformPtYOffsetPct="3.06859" xformPtZOffsetPixels="0"/></metadata><PropertyContainer id="headContainer"><PropertyContainer id="Basic_Motion"><Property enabled="1" id="Motion_X" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="19000"/></Property><Property enabled="1" id="Motion_Y" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="19000"/></Property><Property enabled="1" id="Rotation_Z" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,-28.0558" next="0,-28.0558" previous="0,-28.0558" roving="0" timevalue="0"/><Keyframe anchor="0,-391.056" next="0,-391.056" previous="0,-391.056" roving="0" timevalue="19000"/></Property></PropertyContainer><PropertyContainer id="Transformation"><Property enabled="1" id="Skew_X" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="19000"/></Property><Property enabled="1" id="Skew_Y" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="19000"/></Property><Property enabled="1" id="Scale_X" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,99.8642" next="0,99.8642" previous="0,99.8642" roving="0" timevalue="0"/><Keyframe anchor="0,99.8642" next="0,99.8642" previous="0,99.8642" roving="0" timevalue="19000"/></Property><Property enabled="1" id="Scale_Y" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,-99.8642" next="0,-99.8642" previous="0,-99.8642" roving="0" timevalue="0"/><Keyframe anchor="0,-99.8642" next="0,-99.8642" previous="0,-99.8642" roving="0" timevalue="19000"/></Property></PropertyContainer><PropertyContainer id="Colors"/><PropertyContainer id="Filters"/></PropertyContainer></AnimationCore></motionObjectXML>
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="62.4" centerPoint3DY="98.3">
+                  <matrix>
+                    <Matrix a="0.880111694335938" b="-0.469024658203125" c="-0.469024658203125" d="-0.880111694335938" tx="32.85" ty="130.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.05" y="85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="11" tweenType="motion object" motionTweenRotate="none" motionTweenScale="false" isMotionObject="true" visibleAnimationKeyframes="2097151" keyMode="8195">
+              <motionObjectXML><AnimationCore TimeScale="30000" Version="1" duration="11000"><TimeMap strength="0" type="Quadratic"/><metadata><names><name langID="zh_CN" value=""/></names><Settings orientToPath="0" xformPtXOffsetPct="1.19137" xformPtYOffsetPct="3.06859" xformPtZOffsetPixels="0"/></metadata><PropertyContainer id="headContainer"><PropertyContainer id="Basic_Motion"><Property enabled="1" id="Motion_X" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="10000"/></Property><Property enabled="1" id="Motion_Y" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,64" next="0,64" previous="0,64" roving="0" timevalue="10000"/></Property><Property enabled="1" id="Rotation_Z" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,-28.0558" next="0,-28.0558" previous="0,-28.0558" roving="0" timevalue="0"/><Keyframe anchor="0,-214.056" next="0,-214.056" previous="0,-214.056" roving="0" timevalue="10000"/></Property></PropertyContainer><PropertyContainer id="Transformation"><Property enabled="1" id="Skew_X" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="10000"/></Property><Property enabled="1" id="Skew_Y" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="0"/><Keyframe anchor="0,0" next="0,0" previous="0,0" roving="0" timevalue="10000"/></Property><Property enabled="1" id="Scale_X" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,99.8642" next="0,99.8642" previous="0,99.8642" roving="0" timevalue="0"/><Keyframe anchor="0,99.8642" next="0,99.8642" previous="0,99.8642" roving="0" timevalue="10000"/></Property><Property enabled="1" id="Scale_Y" ignoreTimeMap="0" readonly="0" visible="1"><Keyframe anchor="0,-99.8642" next="0,-99.8642" previous="0,-99.8642" roving="0" timevalue="0"/><Keyframe anchor="0,-99.8642" next="0,-99.8642" previous="0,-99.8642" roving="0" timevalue="10000"/></Property></PropertyContainer><PropertyContainer id="Colors"/><PropertyContainer id="Filters"/></PropertyContainer></AnimationCore></motionObjectXML>
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="62.4" centerPoint3DY="98.3">
+                  <matrix>
+                    <Matrix a="0.880111694335938" b="-0.469024658203125" c="-0.469024658203125" d="-0.880111694335938" tx="32.85" ty="130.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="98.05" y="85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="备用" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头部" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="117.05" centerPoint3DY="22.75">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="160.4" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="62.4" centerPoint3DY="98.35">
+                  <matrix>
+                    <Matrix a="0.88128662109375" b="-0.469696044921875" c="-0.469696044921875" d="-0.88128662109375" tx="32.55" ty="130"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.2" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="31" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="4" tweenType="motion" motionTweenRotateTimes="1" motionTweenScale="false" motionTweenSnap="true" keyMode="21505">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="86.75" centerPoint3DY="-16.9">
+                  <matrix>
+                    <Matrix a="-0.825942993164063" b="0.55859375" c="0.55859375" d="0.825942993164063" tx="112.8" ty="-51.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.2" y="13.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="117.05" centerPoint3DY="22.75">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="160.4" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="线缆" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="63.2" ty="38.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="63.2" ty="38.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="42" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="44" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="63.2" ty="38.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0382080078125" d="0.0382080078125" tx="72.6" ty="42.55"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!1722 1416[1690 1422 1678 1412!1678 1412[1658 1404 1654 1396!1654 1396[1632 1383 1619 1371!1619 1371[1610 1360 1608 1357!1608 1357[1581 1332 1570 1320!1570 1320[1538 1289 1518 1261!1518 1261[1504 1241 1492 1228!1492 1228[1486 1211 1477
+ 1206!1477 1206[1465 1188 1457 1178!1457 1178[1450 1168 1446 1164!1446 1164[1426 1142 1411 1120!1411 1120[1390 1096 1379 1075!1379 1075[1354 1040 1334 1005!1334 1005[1323 995 1318 986!1318 986[1313 975 1305 965!1305 965[1285 937 1267
+ 909!1267 909[1251 885 1242 864!1242 864[1238 855 1234 845!1234 845[1230 835 1225 825!1225 825[1218 812 1218 795!1218 795[1215 778 1207 768!1207 768[1207 740 1202 729!1202 729[1201 706 1197 699!1197 699[1197 670 1192 659!1192 659[1187
+ 638 1186 625!1186 625[1185 610 1183 595!1183 595[1180 492 1182 395!1182 395[1191 372 1199 350!1199 350[1201 344 1208 337!1208 337[1217 312 1235 312!1235 312[1252 302 1275 302!1275 302[1330 300 1380 300!1380 300[1412 300 1445 298!1445
+ 298[1458 295 1465 294!1465 294[1500 290 1525 288!1525 288[1555 285 1580 284!1580 284[1600 283 1611 288!1611 288[1641 289 1660 296!1660 296[1675 300 1680 301!1680 301[1693 308 1696 309"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.03887939453125" d="0.03887939453125" tx="88.35" ty="40.85"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1720 1450S4[1710 1445 1704 1435!1704 1435[1694 1418 1685 1405!1685 1405[1673 1387 1661 1364!1661 1364[1657 1357 1650 1345!1650 1345[1632 1311 1614 1270!1614 1270[1609 1259 1606 1246!1606 1246[1605 1240 1592 1234!1592 1234[1593 1208 1592
+ 1190!1592 1190[1592 1173 1582 1159!1582 1159[1580 1131 1577 1115!1577 1115[1575 1103 1574 1090!1574 1090[1567 995 1569 895!1569 895[1570 847 1572 800!1572 800[1573 793 1574 785!1574 785[1578 763 1580 740!1580 740[1589 714 1587 685!1587
+ 685[1585 667 1589 650!1589 650[1593 625 1594 600!1594 600[1594 579 1603 568!1603 568[1603 533 1610 510!1610 510[1613 500 1614 490!1614 490[1615 483 1616 475!1616 475[1624 454 1627 440!1627 440[1635 410 1639 390!1639 390[1640 383 1642
+ 375!1642 375[1654 364 1653 345!1653 345[1654 326 1658 319!1658 319[1663 308 1665 305!1665 305[1677 296 1677 280!1677 280[1686 264 1693 254!1693 254[1698 243 1699 240!1699 240[1705 230 1710 229!1710 229[1727 210 1750 204!1750 204[1770
+ 198 1779 193!1779 193[1790 187 1805 187!1805 187[1839 180 1856 193!1856 193[1871 204 1878 221!1878 221[1883 230 1889 236!1889 236[1902 264 1909 289!1909 289[1915 300 1916 305!1916 305[1919 319 1928 328!1928 328[1945 350 1951 364!1951
+ 364[1957 383 1965 390"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0369873046875" d="0.0369873046875" tx="90" ty="43.9"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1695 1475S4[1683 1449 1666 1410!1666 1410[1654 1383 1642 1354!1642 1354[1637 1342 1632 1329!1632 1329[1629 1314 1623 1307!1623 1307[1615 1290 1612 1279!1612 1279[1610 1273 1608 1265!1608 1265[1602 1250 1592 1234!1592 1234[1593 1225 1589
+ 1216!1589 1216[1580 1198 1576 1185!1576 1185[1569 1166 1566 1146!1566 1146[1560 1130 1559 1125!1559 1125[1555 1108 1554 1100!1554 1100[1546 1069 1542 1045!1542 1045[1540 1033 1538 1020!1538 1020[1535 1003 1536 990!1536 990[1536 976 1532
+ 969!1532 969[1530 918 1528 875!1528 875[1525 850 1524 835!1524 835[1523 822 1522 810!1522 810[1520 785 1519 760!1519 760[1519 746 1523 739!1523 739[1533 720 1529 705!1529 705[1526 691 1533 686!1533 686[1537 650 1548 624!1548 624[1554
+ 590 1562 565!1562 565[1568 545 1578 527!1578 527[1585 513 1587 505!1587 505[1590 486 1603 464!1603 464[1608 453 1609 449!1609 449[1622 414 1640 395!1640 395[1648 386 1654 371!1654 371[1666 358 1672 347!1672 347[1692 329 1706 321!1706
+ 321[1713 318 1720 314!1720 314[1748 302 1770 297!1770 297[1788 290 1792 287!1792 287[1810 283 1820 282!1820 282[1846 280 1861 288!1861 288[1873 293 1875 295!1875 295[1880 302 1889 305!1889 305[1908 317 1917 328!1917 328[1937 344 1949
+ 356!1949 356[1974 378 1999 406!1999 406[2011 424 2018 429!2018 429[2023 440 2026 444!2026 444[2038 459 2046 479!2046 479[2051 490 2055 505!2055 505[2058 515 2060 525!2060 525[2063 535 2066 545!2066 545[2073 565 2075 575!2075 575[2078
+ 585 2078 595!2078 595[2080 615 2080 635"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.03668212890625" d="0.03668212890625" tx="95.55" ty="43.65"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1725 1445S4[1716 1423 1713 1400!1713 1400[1702 1343 1692 1295!1692 1295[1690 1285 1688 1275!1688 1275[1674 1238 1673 1205!1673 1205[1673 1198 1672 1190!1672 1190[1671 1176 1664 1171!1664 1171[1656 1164 1658 1145!1658 1145[1659 1129 1655
+ 1115!1655 1115[1653 1105 1652 1095!1652 1095[1650 1075 1648 1055!1648 1055[1648 1048 1647 1040!1647 1040[1645 990 1647 940!1647 940[1647 927 1648 915!1648 915[1649 894 1653 879!1653 879[1655 873 1657 865!1657 865[1667 850 1667 830!1667
+ 830[1675 796 1684 770!1684 770[1689 756 1693 749!1693 749[1704 717 1713 704!1713 704[1716 676 1728 667!1728 667[1732 644 1738 634!1738 634[1739 617 1749 615!1749 615[1753 600 1756 590!1756 590[1759 564 1768 557!1768 557[1775 538 1780
+ 525!1780 525[1787 507 1793 489!1793 489[1813 473 1813 455!1813 455[1822 438 1827 431!1827 431[1838 418 1842 412!1842 412[1869 385 1885 374!1885 374[1901 358 1914 348!1914 348[1925 340 1929 338!1929 338[1942 333 1950 329!1950 329[1969
+ 320 1996 312!1996 312[2024 309 2032 302!2032 302[2057 300 2064 311!2064 311[2068 318 2075 330!2075 330[2079 354 2088 359!2088 359[2098 387 2108 397!2108 397[2113 403 2115 410!2115 410[2124 435 2138 461!2138 461[2143 475 2144 480!2144
+ 480[2150 493 2152 497!2152 497[2158 513 2158 515!2158 515[2164 534 2168 555!2168 555[2170 568 2172 580!2172 580[2175 638 2175 690!2175 690[2175 705 2173 720!2173 720[2165 774 2165 825!2165 825[2165 875 2163 925!2163 925[2160 947 2158
+ 965!2158 965[2155 978 2153 985"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0404052734375" d="0.0404052734375" tx="102.95" ty="46"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1730 1495[1717 1482 1708 1461!1708 1461[1695 1428 1695 1390!1695 1390[1690 1375 1687 1369!1687 1369[1677 1316 1677 1270!1677 1270[1678 1263 1677 1255!1677 1255[1675 1205 1675 1155!1675 1155[1675 1122 1677 1090!1677 1090[1680 1073 1681
+ 1060!1681 1060[1682 1049 1687 1039!1687 1039[1688 997 1697 978!1697 978[1703 960 1704 955!1704 955[1718 916 1722 875!1722 875[1723 841 1733 828!1733 828[1735 795 1748 778!1748 778[1757 753 1766 730!1766 730[1774 711 1777 690!1777 690
+[1783 678 1784 675!1784 675[1794 658 1797 640!1797 640[1807 617 1814 595!1814 595[1824 569 1838 548!1838 548[1841 534 1849 528!1849 528[1853 502 1868 492!1868 492[1880 473 1889 459!1889 459[1902 442 1915 425!1915 425[1926 413 1939 403
+!1939 403[1952 389 1963 383!1963 383[1978 372 1990 366!1990 366[2031 347 2080 346!2080 346[2133 345 2185 347!2185 347[2193 348 2200 349!2200 349[2215 355 2221 358!2221 358[2230 363 2236 369!2236 369[2244 378 2255 382!2255 382[2271 387
+ 2275 399!2275 399[2290 412 2299 416!2299 416[2315 432 2329 451!2329 451[2344 472 2353 486!2353 486[2360 498 2363 502!2363 502[2368 513 2370 515!2370 515[2384 533 2388 555!2388 555[2390 567 2400 575!2400 575[2410 585 2412 600!2412 600
+[2426 619 2431 640!2431 640[2438 673 2442 695!2442 695[2445 755 2443 805!2443 805[2441 831 2432 838!2432 838[2431 856 2422 859!2422 859[2409 876 2405 889!2405 889[2389 914 2379 929!2379 929[2369 941 2356 960!2356 960[2349 969 2341 973
+!2341 973[2317 1003 2301 1017!2301 1017[2278 1039 2265 1050!2265 1050[2253 1060 2249 1069!2249 1069[2209 1102 2185 1125!2185 1125[2160 1151 2133 1178!2133 1178[2120 1190 2118 1193!2118 1193[2103 1210 2097 1218!2097 1218[2088 1233 2083
+ 1239!2083 1239[2055 1272 2026 1301!2026 1301[1996 1333 1970 1350"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.04248046875" d="0.04248046875" tx="107.05" ty="61.15"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1675 1470S4[1675 1405 1677 1340!1677 1340[1682 1311 1689 1294!1689 1294[1693 1285 1696 1275!1696 1275[1703 1249 1712 1221!1712 1221[1719 1199 1725 1185!1725 1185[1744 1146 1753 1105!1753 1105[1755 1094 1763 1083!1763 1083[1768 1078 1770
+ 1070!1770 1070[1779 1047 1788 1021!1788 1021[1797 1000 1801 991!1801 991[1807 978 1811 971!1811 971[1830 937 1848 899!1848 899[1855 888 1858 883!1858 883[1875 851 1883 839!1883 839[1889 831 1892 827!1892 827[1905 813 1909 809!1909 809
+[1918 800 1931 786!1931 786[1965 748 1989 724!1989 724[2000 715 2003 713!2003 713[2015 705 2020 704!2020 704[2030 693 2039 689!2039 689[2070 679 2091 672!2091 672[2115 667 2122 662!2122 662[2149 654 2175 651!2175 651[2192 650 2210 648
+!2210 648[2317 645 2415 645!2415 645[2450 645 2485 647!2485 647[2500 650 2508 654!2508 654[2530 665 2541 669!2541 669[2553 675 2557 678!2557 678[2580 690 2590 705!2590 705[2598 720 2600 730!2600 730[2606 751 2606 775!2606 775[2605 847
+ 2603 920!2603 920[2603 928 2601 935!2601 935[2600 943 2598 950!2598 950[2588 963 2588 980!2588 980[2579 996 2578 1010!2578 1010[2571 1034 2567 1046!2567 1046[2560 1069 2552 1081!2552 1081[2548 1088 2544 1095!2544 1095[2525 1138 2501
+ 1181!2501 1181[2498 1188 2497 1195!2497 1195[2496 1206 2487 1209!2487 1209[2481 1229 2466 1242!2466 1242[2459 1266 2446 1270!2446 1270[2439 1283 2425 1295!2425 1295[2412 1316 2397 1328!2397 1328[2390 1343 2380 1343!2380 1343[2366 1366
+ 2342 1382!2342 1382[2336 1398 2326 1400!2326 1400[2289 1433 2259 1459!2259 1459[2254 1463 2245 1471!2245 1471[2233 1481 2217 1493!2217 1493[2203 1505 2199 1509!2199 1509[2185 1523 2171 1536!2171 1536[2162 1543 2155 1550!2155 1550[2147
+ 1560 2140 1565!2140 1565[2101 1593 2073 1624!2073 1624[2068 1630 2061 1636!2061 1636[2046 1650 2034 1658!2034 1658[2016 1670 2005 1685!2005 1685[2000 1692 1991 1696!1991 1696[1965 1721 1931 1736!1931 1736[1908 1743 1901 1753!1901 1753
+[1881 1759 1872 1768!1872 1768[1837 1784 1820 1800"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0386962890625" d="0.0386962890625" tx="112.7" ty="53.9"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1730 1435S4[1729 1421 1722 1416!1722 1416[1715 1405 1715 1400!1715 1400[1716 1386 1712 1379!1712 1379[1708 1370 1707 1360!1707 1360[1705 1335 1705 1310!1705 1310[1705 1295 1707 1280!1707 1280[1711 1261 1718 1253!1718 1253[1723 1243 1725
+ 1240!1725 1240[1735 1229 1744 1210!1744 1210[1754 1190 1761 1171!1761 1171[1783 1125 1809 1094!1809 1094[1825 1074 1836 1055!1836 1055[1848 1051 1850 1041!1850 1041[1863 1026 1867 1015!1867 1015[1883 1003 1886 996!1886 996[1911 959 1948
+ 933!1948 933[1960 923 1964 919!1964 919[1981 908 2000 894!2000 894[2019 880 2030 870!2030 870[2039 862 2053 856!2053 856[2077 841 2084 834!2084 834[2090 828 2100 824!2100 824[2114 818 2126 811!2126 811[2147 799 2170 785!2170 785[2181
+ 779 2195 778!2195 778[2212 770 2225 766!2225 766[2235 763 2245 762!2245 762[2259 761 2266 757!2266 757[2275 753 2284 749!2284 749[2308 739 2335 740!2335 740[2356 741 2368 734!2368 734[2375 730 2385 729!2385 729[2398 728 2410 727!2410
+ 727[2423 725 2435 723!2435 723[2487 720 2535 720!2535 720[2545 720 2555 721!2555 721[2565 723 2572 728!2572 728[2590 733 2600 736!2600 736[2618 740 2625 741!2625 741[2640 752 2650 756!2650 756[2668 763 2677 778!2677 778[2695 798 2705
+ 810!2705 810[2714 822 2723 828!2723 828[2738 845 2740 854!2740 854[2755 881 2764 891!2764 891[2776 906 2777 920!2777 920[2785 938 2788 942!2788 942[2789 964 2793 971!2793 971[2798 990 2798 1000!2798 1000[2800 1025 2802 1050!2802 1050
+[2803 1061 2797 1064!2797 1064[2792 1082 2787 1091!2787 1091[2783 1098 2779 1105!2779 1105[2763 1131 2751 1150!2751 1150[2734 1177 2716 1196!2716 1196[2705 1213 2699 1220!2699 1220[2694 1226 2693 1240!2693 1240[2677 1261 2672 1271!2672
+ 1271[2668 1283 2665 1284!2665 1284[2644 1298 2634 1330!2634 1330[2614 1349 2608 1370!2608 1370[2593 1382 2579 1399!2579 1399[2572 1407 2565 1415!2565 1415[2527 1420 2495 1420"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.04193115234375" d="0.04193115234375" tx="114.75" ty="52.5"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1740 1455S4[1744 1437 1757 1416!1757 1416[1768 1400 1771 1395!1771 1395[1781 1380 1792 1361!1792 1361[1805 1345 1809 1337!1809 1337[1813 1330 1818 1323!1818 1323[1836 1303 1848 1276!1848 1276[1863 1258 1867 1248!1867 1248[1878 1229 1893
+ 1217!1893 1217[1903 1203 1909 1194!1909 1194[1938 1153 1976 1111!1976 1111[1988 1100 1991 1096!1991 1096[2005 1076 2023 1063!2023 1063[2038 1048 2043 1043!2043 1043[2067 1020 2089 999!2089 999[2100 988 2105 985!2105 985[2120 976 2135
+ 960!2135 960[2154 942 2174 928!2174 928[2188 918 2206 901!2206 901[2220 887 2240 870!2240 870[2273 839 2314 809!2314 809[2331 799 2338 792!2338 792[2350 785 2354 779!2354 779[2372 761 2384 757!2384 757[2407 737 2425 724!2425 724[2441
+ 712 2465 700!2465 700[2484 691 2497 682!2497 682[2515 678 2525 677!2525 677[2539 676 2544 667!2544 667[2564 666 2571 662!2571 662[2603 652 2620 647!2620 647[2628 645 2635 645!2635 645[2667 645 2700 647!2700 647[2718 650 2730 649!2730
+ 649[2744 649 2751 653!2751 653[2770 663 2776 668!2776 668[2788 675 2791 680!2791 680[2795 687 2804 696!2804 696[2815 713 2818 721!2818 721[2826 739 2831 755!2831 755[2833 763 2838 776!2838 776[2844 799 2847 815!2847 815[2850 875 2850
+ 925!2850 925[2850 957 2848 990!2848 990[2848 998 2847 1005!2847 1005[2846 1019 2840 1025!2840 1025[2830 1048 2824 1064!2824 1064[2814 1085 2809 1095!2809 1095[2805 1105 2804 1110!2804 1110[2791 1121 2792 1140!2792 1140[2788 1155 2785
+ 1160"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.05242919921875" d="0.05242919921875" tx="118.8" ty="45.75"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1720 1470S4[1718 1433 1727 1400!1727 1400[1728 1371 1734 1350!1734 1350[1737 1317 1738 1295!1738 1295[1739 1262 1746 1230!1746 1230[1752 1200 1753 1165!1753 1165[1755 1138 1757 1115!1757 1115[1760 1100 1762 1090!1762 1090[1765 1060 1767
+ 1035!1767 1035[1768 1028 1769 1020!1769 1020[1778 975 1799 940!1799 940[1805 930 1810 920!1810 920[1830 880 1853 849!1853 849[1869 827 1880 810!1880 810[1889 794 1896 787!1896 787[1903 780 1908 772!1908 772[1934 736 1949 714!1949 714
+[1954 706 1959 703!1959 703[1967 697 1973 689!1973 689[1978 683 1982 677!1982 677[1998 671 2000 661!2000 661[2018 642 2028 627!2028 627[2043 606 2065 590!2065 590[2083 568 2098 558!2098 558[2110 550 2113 548!2113 548[2120 543 2126 536
+!2126 536[2139 522 2161 506!2161 506[2186 482 2205 470!2205 470[2245 443 2279 419!2279 419[2318 392 2360 378!2360 378[2376 376 2379 367!2379 367[2409 366 2430 362!2430 362[2440 360 2450 360!2450 360[2505 360 2560 362!2560 362[2583 370
+ 2605 369!2605 369[2635 369 2661 378!2661 378[2668 380 2675 382!2675 382[2688 384 2696 388!2696 388[2756 403 2796 418!2796 418[2808 425 2812 428!2812 428[2842 446 2860 456!2860 456[2881 476 2893 484!2893 484[2900 493 2904 496!2904 496
+[2931 536 2956 574!2956 574[2961 583 2968 596!2968 596[2973 605 2976 614!2976 614[2989 633 2993 641!2993 641[3000 653 3003 657!3003 657[3008 670 3008 675!3008 675[3008 699 3018 712!3018 712[3023 730 3025 740!3025 740[3028 750 3028 760
+!3028 760[3030 777 3032 795"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.06195068359375" d="0.06195068359375" tx="121.6" ty="36.15"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1745 1470S4[1742 1418 1748 1370!1748 1370[1750 1350 1748 1330!1748 1330[1747 1314 1751 1307!1751 1307[1758 1288 1758 1280!1758 1280[1759 1256 1763 1235!1763 1235[1768 1210 1770 1185!1770 1185[1773 1173 1774 1169!1774 1169[1782 1151 1782
+ 1130!1782 1130[1785 1118 1787 1110!1787 1110[1790 1085 1788 1070!1788 1070[1787 1054 1796 1042!1796 1042[1797 1019 1803 1016!1803 1016[1804 996 1808 989!1808 989[1807 969 1812 966!1812 966[1820 930 1828 914!1828 914[1837 889 1840 875
+!1840 875[1845 852 1853 839!1853 839[1860 825 1863 819!1863 819[1869 793 1881 776!1881 776[1890 764 1893 751!1893 751[1900 733 1902 725!1902 725[1924 683 1943 639!1943 639[1948 628 1950 625!1950 625[1966 603 1972 580!1972 580[1983 568
+ 1987 555!1987 555[1990 538 2000 530!2000 530[2006 524 2009 511!2009 511[2036 463 2050 425!2050 425[2054 416 2057 412!2057 412[2070 393 2075 385!2075 385[2079 369 2088 366!2088 366[2095 358 2098 353!2098 353[2103 343 2104 339!2104 339
+[2108 330 2115 325!2115 325[2125 310 2128 308!2128 308[2145 289 2149 280!2149 280[2154 268 2163 262!2163 262[2170 253 2173 249!2173 249[2198 220 2231 191!2231 191[2244 180 2256 166!2256 166[2291 140 2311 121!2311 121[2326 106 2344 93
+!2344 93[2355 85 2358 83!2358 83[2370 72 2375 70!2375 70[2382 64 2394 59!2394 59[2410 52 2419 49!2419 49[2464 26 2505 11!2505 11[2515 8 2525 5!2525 5[2552 0 2571 -8!2571 -8[2605 -12 2630 -16!2630 -16[2638 -17 2645 -20!2645 -20[2655 -22
+ 2665 -23!2665 -23[2715 -25 2765 -25!2765 -25[2773 -25 2780 -24!2780 -24[2803 -20 2815 -18!2815 -18[2834 -16 2841 -12!2841 -12[2859 -6 2863 -2!2863 -2[2907 13 2941 39!2941 39[2951 46 2960 55!2960 55[2978 72 2989 82!2989 82[3000 93 3003
+ 96!3003 96[3008 102 3013 108!3013 108[3023 125 3026 129!3026 129[3034 137 3044 151!3044 151[3062 178 3073 192!3073 192[3076 209 3083 213!3083 213[3092 238 3101 255!3101 255[3109 276 3120 285"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.07086181640625" d="0.07086181640625" tx="117.25" ty="26.3"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1690 1485S4[1698 1446 1702 1405!1702 1405[1712 1308 1714 1215!1714 1215[1715 1195 1717 1175!1717 1175[1720 1115 1720 1065!1720 1065[1720 1058 1722 1050!1722 1050[1725 1015 1724 985!1724 985[1723 945 1734 910!1734 910[1735 880 1737 860
+!1737 860[1746 834 1747 810!1747 810[1748 803 1748 795!1748 795[1749 771 1761 750!1761 750[1765 727 1767 710!1767 710[1781 654 1792 610!1792 610[1802 591 1804 575!1804 575[1805 568 1808 559!1808 559[1811 531 1821 515!1821 515[1829 503
+ 1831 486!1831 486[1833 478 1838 469!1838 469[1853 423 1866 395!1866 395[1882 363 1900 315!1900 315[1914 282 1924 269!1924 269[1948 211 1973 164!1973 164[1980 153 1984 149!1984 149[2009 114 2022 91!2022 91[2028 83 2034 74!2034 74[2090
+ 4 2144 -56!2144 -56[2196 -113 2255 -160!2255 -160[2266 -176 2279 -186!2279 -186[2314 -213 2340 -235!2340 -235[2350 -242 2361 -249!2361 -249[2406 -275 2452 -308!2452 -308[2463 -315 2466 -318!2466 -318[2474 -324 2485 -327!2485 -327[2506
+ -343 2523 -353!2523 -353[2535 -360 2540 -361!2540 -361[2549 -364 2561 -374!2561 -374[2585 -390 2605 -395!2605 -395[2611 -396 2618 -402!2618 -402[2634 -409 2638 -412!2638 -412[2658 -417 2666 -423!2666 -423[2678 -427 2680 -428!2680 -428
+[2726 -436 2775 -433!2775 -433[2787 -432 2799 -428!2799 -428[2827 -412 2839 -399!2839 -399[2850 -390 2853 -388!2853 -388[2860 -382 2867 -377!2867 -377[2887 -357 2900 -349!2900 -349[2913 -341 2926 -332!2926 -332[2938 -327 2941 -326!2941
+ -326[2960 -318 2972 -302!2972 -302[2990 -283 3000 -270"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0791015625" d="0.0791015625" tx="110.9" ty="12.05"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1725 1440S4[1725 1400 1722 1360!1722 1360[1720 1335 1717 1315!1717 1315[1715 1303 1712 1291!1712 1291[1710 1280 1707 1269!1707 1269[1704 1208 1691 1165!1691 1165[1674 1060 1661 965!1661 965[1658 943 1654 920!1654 920[1653 913 1651 905
+!1651 905[1650 895 1649 885!1649 885[1646 867 1643 850!1643 850[1640 835 1640 820!1640 820[1640 723 1640 625!1640 625[1640 580 1646 535!1646 535[1649 518 1651 500!1651 500[1657 448 1660 395!1660 395[1660 388 1663 379!1663 379[1668 370
+ 1668 360!1668 360[1677 267 1689 175!1689 175[1695 132 1702 90!1702 90[1709 51 1713 10!1713 10[1715 -7 1717 -25!1717 -25[1719 -39 1723 -51!1723 -51[1738 -89 1740 -130!1740 -130[1740 -137 1742 -146!1742 -146[1745 -155 1745 -165!1745 -165
+[1747 -194 1757 -221!1757 -221[1760 -250 1768 -266!1768 -266[1777 -284 1777 -305!1777 -305[1786 -340 1795 -370!1795 -370[1802 -392 1814 -420!1814 -420[1820 -435 1826 -455!1826 -455[1848 -510 1864 -546!1864 -546[1882 -587 1906 -625!1906
+ -625[1928 -673 1956 -715!1956 -715[1983 -746 2002 -773!2002 -773[2026 -800 2042 -819!2042 -819[2063 -844 2089 -862!2089 -862[2098 -867 2104 -876!2104 -876[2119 -894 2145 -910!2145 -910[2181 -931 2215 -944!2215 -944[2229 -949 2236 -953
+!2236 -953[2259 -954 2266 -958!2266 -958[2298 -960 2320 -958!2320 -958[2365 -934 2398 -916!2398 -916[2405 -907 2410 -904!2410 -904[2417 -900 2425 -890!2425 -890[2452 -861 2485 -830!2485 -830[2524 -801 2556 -781!2556 -781[2586 -761 2615
+ -753!2615 -753[2628 -747 2641 -741!2641 -741[2650 -738 2660 -735!2660 -735[2669 -734 2673 -727!2673 -727[2685 -723 2690 -722!2690 -722[2703 -720 2715 -718!2715 -718[2731 -715 2740 -711!2740 -711[2751 -706 2765 -703!2765 -703[2783 -692
+ 2795 -695"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.08428955078125" d="0.08428955078125" tx="102.95" ty="6.65"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1715 1470S4[1718 1372 1707 1275!1707 1275[1705 1253 1701 1230!1701 1230[1700 1223 1699 1215!1699 1215[1689 1124 1678 1035!1678 1035[1675 1013 1672 990!1672 990[1666 945 1656 900!1656 900[1648 860 1648 815!1648 815[1648 805 1646 795!1646
+ 795[1640 765 1636 735!1636 735[1635 725 1634 715!1634 715[1622 621 1612 525!1612 525[1610 510 1607 495!1607 495[1605 485 1604 475!1604 475[1600 384 1588 295!1588 295[1575 198 1578 100!1578 100[1580 3 1579 -95!1579 -95[1579 -113 1582
+ -131!1582 -131[1585 -150 1587 -170!1587 -170[1590 -205 1598 -236!1598 -236[1600 -245 1601 -255!1601 -255[1602 -288 1603 -320!1603 -320[1605 -358 1607 -395!1607 -395[1608 -405 1610 -415!1610 -415[1613 -427 1614 -440!1614 -440[1615 -470
+ 1617 -500!1617 -500[1620 -530 1622 -555!1622 -555[1623 -592 1630 -610!1630 -610[1637 -631 1637 -655!1637 -655[1638 -665 1639 -675!1639 -675[1643 -691 1648 -706!1648 -706[1650 -712 1652 -720!1652 -720[1669 -771 1687 -814!1687 -814[1692
+ -827 1695 -835!1695 -835[1713 -885 1741 -930!1741 -930[1758 -954 1770 -965!1770 -965[1782 -982 1787 -989!1787 -989[1795 -1000 1798 -1002!1798 -1002[1808 -1010 1811 -1014!1811 -1014[1825 -1029 1843 -1042!1843 -1042[1865 -1064 1885 -1076
+!1885 -1076[1911 -1096 1934 -1106!1934 -1106[1939 -1118 1950 -1118!1950 -1118[1975 -1129 1994 -1137!1994 -1137[2010 -1144 2026 -1154!2026 -1154[2033 -1157 2040 -1159!2040 -1159[2060 -1163 2072 -1173!2072 -1173[2097 -1178 2114 -1183!2114
+ -1183[2130 -1190 2135 -1191!2135 -1191[2152 -1197 2170 -1199!2170 -1199[2185 -1200 2200 -1202!2200 -1202[2255 -1205 2305 -1205!2305 -1205[2313 -1205 2320 -1204!2320 -1204[2355 -1200 2376 -1186!2376 -1186[2395 -1173 2416 -1162!2416 -1162
+[2425 -1157 2430 -1150!2430 -1150[2435 -1143 2444 -1139!2444 -1139[2462 -1122 2475 -1110!2475 -1110[2506 -1066 2540 -1035"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.08465576171875" d="0.08465576171875" tx="83.15" ty="4.65"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1725 1440S4[1728 1400 1711 1365!1711 1365[1689 1318 1674 1270!1674 1270[1660 1226 1643 1184!1643 1184[1635 1165 1633 1159!1633 1159[1625 1140 1623 1134!1623 1134[1615 1113 1609 1090!1609 1090[1578 1007 1548 934!1548 934[1545 925 1542
+ 916!1542 916[1540 908 1537 899!1537 899[1501 813 1470 725!1470 725[1457 690 1449 655!1449 655[1445 638 1440 620!1440 620[1426 568 1412 516!1412 516[1405 495 1406 485!1406 485[1408 458 1398 434!1398 434[1400 403 1394 397!1394 397[1393
+ 347 1386 320!1386 320[1379 294 1378 265!1378 265[1378 258 1376 250!1376 250[1369 198 1367 145!1367 145[1366 119 1362 95!1362 95[1360 83 1359 70!1359 70[1357 40 1353 10!1353 10[1350 -22 1348 -50!1348 -50[1347 -67 1347 -85!1347 -85[1345
+ -113 1343 -140!1343 -140[1340 -170 1338 -195!1338 -195[1335 -302 1335 -400!1335 -400[1335 -463 1337 -525!1337 -525[1338 -532 1338 -540!1338 -540[1340 -563 1346 -585!1346 -585[1348 -594 1348 -605!1348 -605[1347 -622 1356 -635!1356 -635
+[1363 -645 1363 -660!1363 -660[1372 -689 1372 -710!1372 -710[1385 -745 1392 -775!1392 -775[1404 -784 1403 -800!1403 -800[1415 -818 1417 -830!1417 -830[1430 -858 1443 -872!1443 -872[1450 -885 1455 -890!1455 -890[1483 -923 1505 -950!1505
+ -950[1525 -964 1529 -975!1529 -975[1535 -988 1550 -992!1550 -992[1577 -1024 1609 -1046!1609 -1046[1620 -1054 1635 -1065!1635 -1065[1673 -1091 1706 -1119!1706 -1119[1713 -1125 1720 -1130!1720 -1130[1756 -1158 1800 -1174!1800 -1174[1820
+ -1180 1831 -1188!1831 -1188[1845 -1193 1850 -1194!1850 -1194[1860 -1200 1863 -1202!1863 -1202[1885 -1202 1893 -1213!1893 -1213[1914 -1212 1919 -1223!1919 -1223[1951 -1229 1959 -1243!1959 -1243[1981 -1247 1990 -1255"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.08837890625" d="0.08837890625" tx="71.2" ty="2.15"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1745 1455S4[1738 1442 1735 1430!1735 1430[1734 1421 1722 1416!1722 1416[1723 1410 1718 1401!1718 1401[1710 1382 1702 1359!1702 1359[1693 1342 1688 1331!1688 1331[1677 1311 1666 1280!1666 1280[1662 1268 1651 1259!1651 1259[1620 1201 1590
+ 1160!1590 1160[1585 1153 1580 1145!1580 1145[1554 1101 1527 1062!1527 1062[1523 1055 1516 1049!1516 1049[1510 1043 1505 1035!1505 1035[1480 993 1451 950!1451 950[1427 918 1417 904!1417 904[1410 890 1405 885!1405 885[1385 866 1376 842
+!1376 842[1365 828 1359 815!1359 815[1350 797 1341 775!1341 775[1339 769 1333 762!1333 762[1320 740 1312 724!1312 724[1304 693 1292 678!1292 678[1287 654 1281 639!1281 639[1268 607 1256 561!1256 561[1250 543 1249 535!1249 535[1248 528
+ 1246 520!1246 520[1245 510 1243 501!1243 501[1240 490 1237 479!1237 479[1228 453 1223 425!1223 425[1212 389 1210 365!1210 365[1209 349 1202 334!1202 334[1198 325 1196 315!1196 315[1195 308 1194 300!1194 300[1192 290 1187 279!1187 279
+[1183 244 1177 220!1177 220[1175 213 1174 205!1174 205[1170 190 1169 185!1169 185[1163 167 1161 145!1161 145[1159 125 1155 105!1155 105[1152 88 1147 79!1147 79[1142 40 1137 20!1137 20[1135 13 1133 5!1133 5[1132 -3 1127 -16!1127 -16[1118
+ -76 1115 -125!1115 -125[1113 -153 1109 -180!1109 -180[1101 -226 1103 -275!1103 -275[1105 -338 1107 -400!1107 -400[1108 -438 1114 -470!1114 -470[1118 -482 1118 -485!1118 -485[1123 -509 1130 -530!1130 -530[1136 -551 1145 -570!1145 -570
+[1151 -584 1152 -600!1152 -600[1167 -623 1167 -640!1167 -640[1173 -663 1181 -680!1181 -680[1186 -690 1189 -705!1189 -705[1190 -713 1192 -720!1192 -720[1202 -739 1207 -760!1207 -760[1212 -787 1223 -802!1223 -802[1232 -822 1233 -830!1233
+ -830[1235 -840 1239 -848!1239 -848[1245 -857 1247 -865!1247 -865[1250 -880 1253 -895!1253 -895[1255 -903 1257 -909!1257 -909[1260 -917 1263 -926!1263 -926[1268 -948 1268 -955!1268 -955[1269 -969 1273 -976!1273 -976[1278 -1007 1288 -1022
+!1288 -1022[1293 -1035 1293 -1040!1293 -1040[1295 -1053 1297 -1065!1297 -1065[1300 -1078 1301 -1085!1301 -1085[1311 -1101 1313 -1115!1313 -1115[1321 -1160 1341 -1190!1341 -1190[1346 -1197 1351 -1209!1351 -1209[1355 -1218 1361 -1223!1361
+ -1223[1373 -1234 1376 -1245!1376 -1245[1379 -1254 1389 -1258!1389 -1258[1402 -1278 1410 -1285!1410 -1285[1423 -1298 1435 -1310!1435 -1310[1462 -1330 1477 -1349!1477 -1349[1494 -1364 1505 -1370"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.088623046875" d="0.088623046875" tx="63.55" ty="1.8"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1722 1416S4[1704 1403 1680 1365!1680 1365[1654 1322 1644 1296!1644 1296[1601 1213 1555 1140!1555 1140[1525 1093 1497 1049!1497 1049[1473 1010 1450 970!1450 970[1427 930 1407 889!1407 889[1393 861 1380 835!1380 835[1373 820 1364 800!1364
+ 800[1348 762 1327 724!1327 724[1304 684 1284 641!1284 641[1280 633 1275 625!1275 625[1226 544 1187 464!1187 464[1171 435 1160 405!1160 405[1149 374 1137 349!1137 349[1120 315 1104 275!1104 275[1100 265 1096 255!1096 255[1076 211 1062
+ 169!1062 169[1053 141 1043 110!1043 110[1042 90 1032 78!1032 78[1027 54 1022 39!1022 39[1017 24 1009 10!1009 10[999 -41 977 -81!977 -81[965 -114 959 -135!959 -135[946 -167 941 -189!941 -189[935 -205 933 -209!933 -209[924 -230 919 -250
+!919 -250[917 -258 910 -270!910 -270[898 -302 894 -325!894 -325[874 -372 866 -415!866 -415[857 -462 845 -510!845 -510[843 -518 842 -525!842 -525[840 -551 837 -575!837 -575[835 -588 837 -600!837 -600[838 -611 832 -614!832 -614[826 -640
+ 824 -660!824 -660[822 -677 822 -695!822 -695[820 -792 820 -890!820 -890[820 -915 822 -940!822 -940[829 -967 833 -981!833 -981[836 -1021 842 -1045!842 -1045[851 -1066 857 -1085!857 -1085[868 -1110 880 -1125!880 -1125[885 -1130 887 -1140
+!887 -1140[896 -1150 900 -1165!900 -1165[906 -1183 920 -1205!920 -1205[935 -1227 944 -1243!944 -1243[948 -1250 953 -1257!953 -1257[960 -1267 963 -1272!963 -1272[969 -1293 979 -1295!979 -1295[983 -1309 993 -1317!993 -1317[1001 -1322 1007
+ -1333!1007 -1333[1018 -1342 1020 -1345"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.08905029296875" d="0.08905029296875" tx="50" ty="10.75"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1735 1475S4[1711 1443 1681 1414!1681 1414[1669 1404 1663 1397!1663 1397[1655 1388 1646 1379!1646 1379[1633 1367 1627 1359!1627 1359[1618 1346 1601 1334!1601 1334[1590 1327 1585 1320!1585 1320[1571 1300 1549 1281!1549 1281[1527 1262 1503
+ 1231!1503 1231[1437 1162 1378 1107!1378 1107[1370 1100 1360 1095!1360 1095[1351 1089 1348 1080!1348 1080[1311 1050 1279 1021!1279 1021[1253 998 1235 980!1235 980[1192 936 1156 904!1156 904[1124 877 1094 851!1094 851[1072 832 1054 816
+!1054 816[1040 803 1026 793!1026 793[996 763 972 743!972 743[949 725 924 701!924 701[906 684 887 668!887 668[875 658 863 647!863 647[852 637 845 630!845 630[829 613 815 600!815 600[788 572 761 539!761 539[736 511 722 494!722 494[715 486
+ 709 481!709 481[688 464 673 446!673 446[660 430 646 414!646 414[611 367 582 334!582 334[573 323 561 309!561 309[553 298 543 287!543 287[529 270 511 244!511 244[503 233 493 221!493 221[483 209 479 200!479 200[468 178 455 160!455 160[442
+ 144 429 121!429 121[421 107 406 84!406 84[391 63 379 36!379 36[362 17 357 -4!357 -4[355 -12 350 -20!350 -20[342 -30 342 -45!342 -45[319 -95 307 -140!307 -140[303 -153 296 -166!296 -166[290 -177 288 -190!288 -190[282 -218 277 -236!277
+ -236[275 -245 275 -255!275 -255[276 -269 272 -276!272 -276[273 -322 267 -355!267 -355[265 -368 265 -380!265 -380[265 -448 267 -515!267 -515[274 -544 275 -570!275 -570[275 -583 278 -594!278 -594[285 -610 285 -615!285 -615[286 -635 293
+ -656!293 -656[307 -703 318 -739!318 -739[325 -757 326 -765!326 -765[345 -809 361 -830!361 -830[365 -835 367 -845!367 -845[369 -856 374 -861!374 -861[396 -882 411 -899!411 -899[435 -916 449 -931!449 -931[458 -940 469 -944!469 -944[488
+ -959 495 -965!495 -965[506 -974 520 -985!520 -985[537 -999 546 -1009!546 -1009[554 -1019 559 -1030!559 -1030[564 -1041 575 -1045"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.08099365234375" d="0.08099365234375" tx="44.75" ty="21.25"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1725 1460S4[1712 1458 1705 1450!1705 1450[1648 1396 1573 1332!1573 1332[1553 1315 1532 1298!1532 1298[1525 1293 1519 1287!1519 1287[1500 1269 1481 1259!1481 1259[1447 1239 1419 1211!1419 1211[1413 1205 1405 1200!1405 1200[1368 1171 1330
+ 1145!1330 1145[1309 1130 1290 1115!1290 1115[1243 1084 1214 1056!1214 1056[1208 1050 1200 1045!1200 1045[1154 1015 1114 987!1114 987[1067 954 1024 927!1024 927[1018 923 1010 919!1010 919[973 900 938 873!938 873[928 865 916 859!916 859
+[908 855 900 851!900 851[843 819 785 789!785 789[733 762 676 737!676 737[665 733 654 726!654 726[634 713 606 698!606 698[561 674 519 651!519 651[485 632 454 607!454 607[418 578 380 545!380 545[367 534 349 521!349 521[333 508 318 491!318
+ 491[282 458 245 425!245 425[224 405 205 380!205 380[195 373 192 368!192 368[184 344 172 339!172 339[158 315 149 301!149 301[125 270 118 246!118 246[115 235 109 225!109 225[96 202 89 185!89 185[85 176 84 165!84 165[80 141 73 119!73 119
+[70 110 72 100!72 100[74 83 71 77!71 77[65 68 65 55!65 55[65 -5 67 -65!67 -65[69 -101 76 -125!76 -125[86 -151 87 -175!87 -175[88 -199 96 -209!96 -209[101 -216 102 -230!102 -230[103 -240 106 -249!106 -249[121 -275 127 -294!127 -294[133
+ -313 146 -334!146 -334[151 -341 153 -355!153 -355[165 -367 168 -373!168 -373[179 -394 183 -398!183 -398[197 -426 203 -436!203 -436[208 -447 209 -450!209 -450[218 -467 226 -489!226 -489[235 -512 246 -530!246 -530[255 -548 263 -557!263
+ -557[274 -576 281 -590!281 -590[292 -600 295 -610"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0733642578125" d="0.0733642578125" tx="43.95" ty="31.65"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1760 1450S4[1733 1451 1717 1433!1717 1433[1710 1425 1701 1419!1701 1419[1667 1394 1631 1373!1631 1373[1606 1360 1590 1349!1590 1349[1515 1299 1431 1254!1431 1254[1394 1234 1356 1214!1356 1214[1318 1194 1279 1176!1279 1176[1192 1136 1109
+ 1086!1109 1086[1095 1078 1080 1071!1080 1071[1003 1037 931 993!931 993[907 979 881 971!881 971[868 968 856 959!856 959[844 950 832 945!832 945[800 933 769 916!769 916[758 910 746 903!746 903[684 869 621 839!621 839[613 835 605 830!605
+ 830[580 815 551 802!551 802[535 795 519 788!519 788[495 775 484 767!484 767[478 763 471 759!471 759[425 735 380 709!380 709[339 685 314 661!314 661[281 628 250 585!250 585[234 561 221 544!221 544[200 516 194 501!194 501[190 493 185 485
+!185 485[170 461 160 440!160 440[151 420 141 392!141 392[138 383 132 374!132 374[125 363 123 358!123 358[118 350 114 341!114 341[98 303 79 260!79 260[73 247 71 231!71 231[65 220 65 215!65 215[63 196 57 188!57 188[56 160 48 148!48 148
+[43 140 41 130!41 130[39 103 28 79!28 79[28 54 24 51!24 51[14 18 9 -5!9 -5[-2 -53 -1 -95!-1 -95[0 -123 2 -150!2 -150[5 -165 10 -170!10 -170[15 -175 15 -185"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.06280517578125" d="0.06280517578125" tx="44.9" ty="47.9"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1760 1490S4[1754 1479 1741 1473!1741 1473[1707 1453 1689 1442!1689 1442[1683 1438 1676 1434!1676 1434[1666 1418 1655 1418!1655 1418[1626 1395 1601 1384!1601 1384[1572 1364 1540 1354!1540 1354[1520 1340 1510 1334!1510 1334[1482 1318 1455
+ 1311!1455 1311[1434 1305 1422 1294!1422 1294[1413 1285 1400 1280!1400 1280[1352 1263 1309 1246!1309 1246[1292 1240 1275 1234!1275 1234[1250 1225 1228 1213!1228 1213[1218 1208 1206 1203!1206 1203[1169 1182 1140 1178!1140 1178[1125 1173
+ 1116 1169!1116 1169[1058 1144 1009 1116!1009 1116[997 1110 986 1104!986 1104[969 1095 950 1086!950 1086[935 1079 920 1070!920 1070[890 1052 846 1029!846 1029[814 1012 785 996!785 996[748 975 710 954!710 954[670 931 629 912!629 912[616
+ 906 605 900!605 900[552 871 499 847!499 847[488 842 478 832!478 832[473 828 465 825!465 825[448 818 434 806!434 806[420 800 417 798!417 798[403 788 396 784!396 784[387 780 375 770!375 770[339 743 299 712!299 712[268 688 241 663!241 663
+[215 639 180 610!180 610[147 583 115 555!115 555[82 514 56 484!56 484[41 448 35 425"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.05010986328125" d="0.05010986328125" tx="48.15" ty="58.75"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1715 1480S4[1699 1461 1665 1440!1665 1440[1642 1425 1615 1418!1615 1418[1602 1415 1591 1408!1591 1408[1540 1378 1486 1361!1486 1361[1468 1355 1449 1347!1449 1347[1435 1340 1420 1336!1420 1336[1405 1333 1390 1329!1390 1329[1350 1318 1313
+ 1300!1313 1300[1290 1290 1265 1284!1265 1284[1202 1269 1140 1249!1140 1249[1086 1233 1040 1227!1040 1227[1027 1226 1019 1221!1019 1221[998 1207 970 1207!970 1207[963 1208 955 1206!955 1206[918 1199 886 1198!886 1198[880 1190 870 1189
+!870 1189[853 1186 835 1182!835 1182[825 1180 815 1179!815 1179[808 1178 800 1176!800 1176[774 1170 755 1167!755 1167[732 1163 710 1159!710 1159[658 1150 610 1141!610 1141[595 1138 590 1137!590 1137[578 1135 565 1133!565 1133[534 1131
+ 518 1124!518 1124[510 1120 500 1118!500 1118[443 1105 405 1086!405 1086[398 1083 390 1079!390 1079[368 1070 350 1050!350 1050[336 1034 320 1020!320 1020[305 993 292 978!292 978[285 965 281 959!281 959[261 927 246 904!246 904[234 887
+ 220 883!220 883[213 870 210 870"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0379638671875" d="0.0379638671875" tx="56.15" ty="68.9"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1735 1485S4[1727 1475 1710 1469!1710 1469[1645 1440 1589 1422!1589 1422[1560 1413 1544 1407!1544 1407[1502 1391 1460 1380!1460 1380[1399 1363 1340 1350!1340 1350[1319 1346 1294 1337!1294 1337[1254 1329 1225 1324!1225 1324[1215 1323 1206
+ 1319!1206 1319[1176 1310 1150 1308!1150 1308[1135 1305 1125 1303!1125 1303[1071 1288 1020 1289!1020 1289[973 1291 930 1282!930 1282[923 1280 915 1279!915 1279[850 1271 795 1271!795 1271[697 1270 600 1270!600 1270[555 1270 510 1270"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.02545166015625" d="0.02545166015625" tx="65.65" ty="77.05"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1715 1475S4[1710 1465 1690 1470!1690 1470[1668 1476 1645 1479!1645 1479[1589 1492 1535 1501!1535 1501[1515 1505 1495 1509!1495 1509[1472 1514 1453 1526!1453 1526[1399 1535 1345 1546!1345 1546[1321 1549 1314 1553!1314 1553[1291 1554 1284
+ 1558!1284 1558[1253 1565 1224 1573!1224 1573[1193 1573 1184 1578!1184 1578[1162 1590 1135 1592!1135 1592[1122 1592 1110 1593!1110 1593[1090 1593 1079 1598!1079 1598[1056 1599 1049 1603!1049 1603[1023 1603 1014 1607!1014 1607[1008 1610
+ 1000 1611!1000 1611[965 1615 940 1613!940 1613[933 1613 925 1611!925 1611[913 1608 910 1607"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.01361083984375" d="0.01361083984375" tx="77.9" ty="79.5"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1730 1450S4[1721 1464 1712 1476!1712 1476[1707 1482 1700 1490!1700 1490[1683 1511 1672 1522!1672 1522[1665 1528 1659 1534!1659 1534[1643 1549 1619 1574!1619 1574[1601 1592 1586 1606!1586 1606[1578 1614 1566 1626!1566 1626[1560 1633 1551
+ 1635!1551 1635[1526 1650 1510 1665!1510 1665[1502 1673 1491 1674!1491 1674[1465 1684 1457 1693!1457 1693[1436 1706 1420 1716!1420 1716[1405 1726 1385 1730"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.01275634765625" d="0.01275634765625" tx="95.5" ty="79.25"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1755 1445S4[1767 1448 1781 1454!1781 1454[1790 1458 1800 1461!1800 1461[1818 1465 1825 1466!1825 1466[1848 1470 1860 1470!1860 1470[1888 1470 1906 1478!1906 1478[1920 1483 1925 1483!1925 1483[1948 1487 1959 1501!1959 1501[1965 1508 1991
+ 1520!1991 1520[1994 1524 2005 1531!2005 1531[2009 1546 2018 1549!2018 1549[2038 1566 2046 1580!2046 1580[2060 1600 2063 1620!2063 1620[2071 1658 2049 1679!2049 1679[2043 1685 2043 1695!2043 1695[2029 1714 2020 1725"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0213623046875" d="0.0213623046875" tx="104.55" ty="74.1"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1755 1480S4[1760 1457 1773 1443!1773 1443[1784 1432 1791 1420!1791 1420[1825 1390 1854 1354!1854 1354[1861 1346 1869 1342!1869 1342[1885 1325 1899 1321!1899 1321[1910 1315 1915 1314!1915 1314[1927 1302 1944 1296!1944 1296[1955 1290 1960
+ 1289!1960 1289[1978 1285 1991 1277!1991 1277[2008 1267 2035 1263!2035 1263[2057 1252 2080 1252!2080 1252[2132 1250 2180 1249!2180 1249[2213 1249 2236 1263!2236 1263[2250 1268 2255 1268!2255 1268[2269 1269 2274 1277!2274 1277[2309 1289
+ 2322 1304!2322 1304[2341 1316 2351 1324!2351 1324[2366 1337 2375 1355!2375 1355[2381 1367 2386 1373!2386 1373[2393 1388 2395 1390!2395 1390[2404 1403 2408 1419!2408 1419[2410 1430 2413 1441!2413 1441[2415 1448 2417 1455!2417 1455[2429
+ 1466 2427 1485!2427 1485[2425 1502 2419 1520!2419 1520[2425 1531 2421 1540!2421 1540[2416 1554 2413 1570!2413 1570[2395 1588 2383 1609!2383 1609[2369 1632 2354 1647!2354 1647[2340 1655 2340 1646!2340 1646[2333 1660 2332 1665!2332 1665
+[2318 1673 2315 1675!2315 1675[2294 1693 2270 1715"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.03363037109375" d="0.03363037109375" tx="113.15" ty="64.4"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1765 1490S4[1762 1460 1784 1439!1784 1439[1793 1417 1808 1403!1808 1403[1820 1393 1831 1381!1831 1381[1893 1314 1969 1258!1969 1258[1995 1239 2020 1219!2020 1219[2027 1213 2040 1205!2040 1205[2068 1185 2101 1156!2101 1156[2130 1133 2142
+ 1122!2142 1122[2173 1103 2195 1090!2195 1090[2210 1081 2225 1076!2225 1076[2248 1069 2270 1066!2270 1066[2289 1063 2297 1058!2297 1058[2336 1047 2365 1047!2365 1047[2420 1045 2470 1045!2470 1045[2487 1045 2505 1047!2505 1047[2518 1048
+ 2530 1056!2530 1056[2537 1061 2551 1068!2551 1068[2563 1075 2565 1080!2565 1080[2570 1088 2579 1090!2579 1090[2588 1093 2596 1098!2596 1098[2601 1101 2608 1108!2608 1108[2618 1115 2621 1120!2621 1120[2631 1134 2646 1149!2646 1149[2655
+ 1160 2657 1165!2657 1165[2677 1182 2682 1205!2682 1205[2683 1213 2689 1226!2689 1226[2693 1235 2694 1245!2694 1245[2697 1264 2704 1276!2704 1276[2713 1291 2716 1310!2716 1310[2730 1341 2738 1366!2738 1366[2753 1379 2753 1390!2753 1390
+[2763 1415 2762 1440!2762 1440[2760 1485 2758 1530"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.04736328125" d="0.04736328125" tx="120.25" ty="54.4"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1750 1505S4[1747 1465 1753 1430!1753 1430[1755 1415 1757 1400!1757 1400[1767 1374 1767 1355!1767 1355[1770 1339 1773 1329!1773 1329[1784 1293 1801 1251!1801 1251[1830 1199 1856 1156!1856 1156[1864 1141 1874 1130!1874 1130[1888 1114 1902
+ 1091!1902 1091[1936 1054 1956 1031!1956 1031[1968 1018 1972 1011!1972 1011[1978 1003 1983 998!1983 998[1990 993 1994 984!1994 984[1999 973 2010 973!2010 973[2027 951 2040 940!2040 940[2049 932 2059 928!2059 928[2076 912 2087 902!2087
+ 902[2093 898 2099 893!2099 893[2108 888 2115 880!2115 880[2153 845 2189 818!2189 818[2205 805 2215 799!2215 799[2227 784 2245 779!2245 779[2259 759 2275 755!2275 755[2281 754 2288 748!2288 748[2319 727 2345 709!2345 709[2368 700 2390
+ 693!2390 693[2411 682 2430 682!2430 682[2438 683 2445 682!2445 682[2470 680 2495 678!2495 678[2515 675 2530 674!2530 674[2547 672 2565 671!2565 671[2595 668 2614 676!2614 676[2630 683 2641 689!2641 689[2648 693 2655 696!2655 696[2663
+ 700 2669 706!2669 706[2675 712 2685 716!2685 716[2696 719 2702 728!2702 728[2725 744 2739 756!2739 756[2752 769 2769 781!2769 781[2783 791 2799 801!2799 801[2814 812 2826 819!2826 819[2855 836 2871 849!2871 849[2886 862 2904 881!2904
+ 881[2928 906 2946 924!2946 924[2952 930 2956 940!2956 940[2961 953 2971 964!2971 964[2977 970 2981 980!2981 980[2988 993 2988 995!2988 995[2990 1007 3000 1015!3000 1015[3006 1021 3007 1035!3007 1035[3017 1050 3020 1060!3020 1060[3023
+ 1070 3026 1079!3026 1079[3029 1099 3035 1105!3035 1105[3047 1118 3047 1145!3047 1145[3046 1165 3049 1185!3049 1185[3050 1195 3052 1205!3052 1205[3063 1230 3061 1255!3061 1255[3060 1270 3060 1285"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.05194091796875" d="0.05194091796875" tx="123.5" ty="50.75"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1745 1460S4[1743 1434 1759 1419!1759 1419[1773 1378 1793 1358!1793 1358[1800 1345 1804 1339!1804 1339[1820 1315 1836 1302!1836 1302[1850 1291 1855 1277!1855 1277[1860 1265 1867 1248!1867 1248[1876 1244 1887 1231!1887 1231[1900 1216 1904
+ 1209!1904 1209[1933 1163 1965 1120!1965 1120[1984 1102 1992 1086!1992 1086[2000 1071 2014 1055!2014 1055[2044 1022 2069 994!2069 994[2077 986 2081 981!2081 981[2105 953 2130 930!2130 930[2151 913 2160 900!2160 900[2170 886 2189 874!2189
+ 874[2208 856 2224 848!2224 848[2240 838 2245 835!2245 835[2256 831 2263 823!2263 823[2268 818 2275 814!2275 814[2289 796 2310 793!2310 793[2347 765 2385 750!2385 750[2413 728 2435 715!2435 715[2455 704 2475 690!2475 690[2483 685 2490
+ 680!2490 680[2494 667 2504 665!2504 665[2513 663 2521 657!2521 657[2544 651 2552 641!2552 641[2588 626 2607 612!2607 612[2637 597 2655 590!2655 590[2671 585 2690 583!2690 583[2702 583 2715 579!2715 579[2775 575 2825 573!2825 573[2853
+ 570 2875 570!2875 570[2890 570 2905 572!2905 572[2931 584 2954 593!2954 593[2982 609 2993 617!2993 617[3005 625 3008 627!3008 627[3015 633 3022 638!3022 638[3033 643 3035 645!3035 645[3043 655 3050 660!3050 660[3066 664 3069 674!3069
+ 674[3088 698 3098 711!3098 711[3103 718 3106 724!3106 724[3117 735 3122 744!3122 744[3128 758 3133 771!3133 771[3140 785 3148 797!3148 797[3170 808 3168 825!3168 825[3175 835 3180 840!3180 840[3195 854 3195 875"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.055908203125" d="0.055908203125" tx="121.3" ty="45.05"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1725 1480S4[1716 1474 1718 1455!1718 1455[1720 1428 1719 1400!1719 1400[1718 1347 1724 1295!1724 1295[1725 1283 1727 1270!1727 1270[1737 1225 1745 1190!1745 1190[1755 1140 1773 1099!1773 1099[1789 1062 1802 1034!1802 1034[1812 1005 1818
+ 998!1818 998[1821 978 1834 972!1834 972[1840 960 1842 956!1842 956[1848 945 1857 926!1857 926[1865 913 1872 899!1872 899[1880 878 1886 870!1886 870[1901 851 1907 831!1907 831[1910 823 1916 816!1916 816[1931 801 1940 780!1940 780[1946
+ 764 1958 753!1958 753[1968 743 1976 731!1976 731[1988 713 2001 696!2001 696[2031 655 2062 616!2062 616[2080 597 2095 580!2095 580[2124 550 2156 521!2156 521[2171 507 2180 500!2180 500[2193 491 2215 479!2215 479[2225 473 2230 469!2230
+ 469[2267 444 2310 425!2310 425[2319 421 2332 412!2332 412[2358 402 2371 396!2371 396[2391 387 2415 381!2415 381[2428 375 2432 372!2432 372[2465 368 2490 364!2490 364[2518 361 2545 356!2545 356[2553 355 2560 354!2560 354[2577 351 2586
+ 347!2586 347[2625 344 2645 336!2645 336[2655 333 2665 329!2665 329[2682 322 2710 325!2710 325[2724 326 2731 322!2731 322[2830 320 2920 322!2920 322[2938 325 2950 326!2950 326[2964 327 2974 336!2974 336[2980 342 2990 342!2990 342[3011
+ 356 3025 366!3025 366[3045 380 3056 394!3056 394[3079 416 3088 427!3088 427[3095 438 3099 441!3099 441[3119 475 3135 500"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.05682373046875" d="0.05682373046875" tx="115.4" ty="38.75"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1730 1505S4[1731 1471 1723 1440!1723 1440[1717 1417 1718 1390!1718 1390[1720 1340 1722 1290!1722 1290[1723 1263 1717 1239!1717 1239[1715 1230 1715 1220!1715 1220[1715 1167 1717 1115!1717 1115[1726 1082 1727 1055!1727 1055[1740 998 1753
+ 959!1753 959[1764 923 1775 900!1775 900[1788 869 1793 846!1793 846[1795 838 1798 829!1798 829[1817 786 1833 746!1833 746[1840 728 1842 720!1842 720[1857 704 1866 680!1866 680[1868 674 1873 664!1873 664[1881 643 1888 637!1888 637[1895
+ 621 1898 614!1898 614[1905 603 1908 598!1908 598[1922 571 1933 554!1933 554[1938 548 1941 541!1941 541[1953 533 1955 520!1955 520[1985 480 2006 445!2006 445[2021 425 2036 411!2036 411[2043 405 2048 397!2048 397[2068 374 2086 356!2086
+ 356[2094 346 2103 338!2103 338[2110 333 2115 325!2115 325[2120 318 2128 312!2128 312[2150 295 2155 285!2155 285[2161 276 2169 272!2169 272[2209 241 2240 221!2240 221[2271 200 2295 180!2295 180[2344 150 2380 131!2380 131[2396 122 2406
+ 117!2406 117[2424 109 2439 99!2439 99[2455 90 2460 89!2460 89[2475 87 2479 77!2479 77[2495 70 2506 67!2506 67[2513 65 2520 63!2520 63[2545 49 2570 48!2570 48[2631 42 2680 49!2680 49[2688 50 2695 52!2695 52[2710 60 2715 61!2715 61[2725
+ 63 2735 64!2735 64[2754 67 2771 74!2771 74[2780 78 2790 80!2790 80[2800 83 2809 86!2809 86[2820 90 2825 90!2825 90[2835 100 2840 101!2840 101[2850 103 2859 107!2859 107[2871 114 2886 118!2886 118[2895 120 2901 123"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.056884765625" d="0.056884765625" tx="106.8" ty="33.75"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1705 1490S4[1705 1395 1707 1300!1707 1300[1707 1273 1702 1254!1702 1254[1700 1142 1700 1045!1700 1045[1700 950 1698 855!1698 855[1697 817 1704 790!1704 790[1711 758 1712 725!1712 725[1713 718 1714 710!1714 710[1715 703 1717 695!1717
+ 695[1722 675 1724 645!1724 645[1725 635 1726 625!1726 625[1728 618 1728 610!1728 610[1729 597 1733 589!1733 589[1733 553 1741 531!1741 531[1748 511 1751 495!1751 495[1753 485 1757 476!1757 476[1762 465 1764 455!1764 455[1766 439 1772
+ 426!1772 426[1778 411 1788 389!1788 389[1796 371 1803 354!1803 354[1811 336 1821 320!1821 320[1832 289 1845 280!1845 280[1849 258 1858 252!1858 252[1891 205 1918 174!1918 174[1932 158 1942 146!1942 146[1953 135 1953 130!1953 130[1954
+ 122 1964 120!1964 120[1992 94 2010 80!2010 80[2045 51 2072 27!2072 27[2084 15 2100 0!2100 0[2110 -10 2120 -20!2120 -20[2127 -27 2135 -35!2135 -35[2139 -48 2149 -50!2149 -50[2160 -62 2170 -66!2170 -66[2181 -71 2194 -81!2194 -81[2201 -86
+ 2215 -87!2215 -87[2243 -101 2265 -102!2265 -102[2288 -105 2300 -107!2300 -107[2356 -116 2405 -117!2405 -117[2453 -130 2500 -130!2500 -130[2510 -130 2516 -133!2516 -133[2542 -133 2551 -138!2551 -138[2568 -140 2575 -140"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.05291748046875" d="0.05291748046875" tx="91.2" ty="30.95"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1725 1450S4[1717 1407 1716 1365!1716 1365[1715 1329 1707 1295!1707 1295[1705 1285 1704 1275!1704 1275[1697 1217 1686 1160!1686 1160[1675 1107 1672 1055!1672 1055[1670 1029 1664 1005!1664 1005[1655 969 1653 930!1653 930[1653 923 1650
+ 915!1650 915[1643 891 1638 865!1638 865[1637 837 1630 820!1630 820[1618 792 1619 765!1619 765[1620 748 1614 741!1614 741[1608 712 1606 695!1606 695[1603 672 1599 650!1599 650[1598 643 1597 635!1597 635[1596 606 1591 580!1591 580[1586
+ 553 1586 525!1586 525[1586 499 1582 480!1582 480[1580 473 1580 465!1580 465[1580 425 1582 385!1582 385[1583 363 1588 354!1588 354[1589 314 1603 289!1603 289[1608 256 1616 241!1616 241[1625 223 1633 201!1633 201[1640 185 1641 180!1641
+ 180[1644 169 1650 160!1650 160[1663 136 1672 116!1672 116[1685 96 1688 80!1688 80[1689 72 1699 70!1699 70[1703 60 1706 55!1706 55[1716 40 1728 24!1728 24[1733 17 1733 10!1733 10[1734 2 1744 0!1744 0[1755 -23 1766 -34!1766 -34[1778 -48
+ 1785 -65!1785 -65[1789 -74 1793 -78!1793 -78[1808 -87 1809 -90!1809 -90[1815 -100 1825 -104!1825 -104[1835 -107 1844 -112!1844 -112[1851 -116 1865 -121!1865 -121[1874 -124 1878 -128!1878 -128[1906 -136 1926 -148!1926 -148[1956 -162 1975
+ -171!1975 -171[1991 -178 2005 -182!2005 -182[2020 -197 2045 -201!2045 -201[2060 -204 2068 -213"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.05340576171875" d="0.05340576171875" tx="77.65" ty="31.15"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1730 1480S4[1725 1463 1716 1449!1716 1449[1710 1441 1707 1431!1707 1431[1705 1423 1701 1415!1701 1415[1681 1378 1663 1341!1663 1341[1652 1319 1642 1294!1642 1294[1624 1253 1602 1209!1602 1209[1578 1164 1564 1115!1564 1115[1539 1073 1532
+ 1036!1532 1036[1530 1028 1527 1019!1527 1019[1510 980 1499 950!1499 950[1496 941 1487 928!1487 928[1480 902 1472 889!1472 889[1458 863 1450 835!1450 835[1436 790 1418 749!1418 749[1415 743 1414 735!1414 735[1413 723 1407 709!1407 709
+[1402 687 1394 670!1394 670[1389 659 1391 645!1391 645[1385 628 1385 620!1385 620[1386 606 1382 599!1382 599[1380 564 1377 540!1377 540[1375 525 1375 510!1375 510[1375 477 1375 445!1375 445[1376 434 1378 425!1378 425[1380 418 1380 410
+!1380 410[1381 387 1385 365!1385 365[1388 355 1389 345!1389 345[1391 331 1398 323!1398 323[1402 303 1407 291!1407 291[1410 283 1413 274!1413 274[1417 263 1423 249!1423 249[1430 238 1433 233!1433 233[1440 208 1441 195!1441 195[1443 185
+ 1448 178!1448 178[1455 158 1458 145!1458 145[1462 130 1463 115!1463 115[1464 104 1473 101!1473 101[1483 73 1490 50!1490 50[1493 40 1498 33!1498 33[1498 5 1503 -6!1503 -6[1503 -32 1509 -41!1509 -41[1520 -55 1522 -80!1522 -80[1528 -95
+ 1531 -105!1531 -105[1542 -120 1545 -130!1545 -130[1548 -145 1560 -156!1560 -156[1565 -160 1567 -170!1567 -170[1586 -191 1606 -209!1606 -209[1625 -222 1636 -228!1636 -228[1648 -232 1650 -235"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.0513916015625" d="0.0513916015625" tx="66.9" ty="36.65"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1685 1500S4[1666 1482 1657 1462!1657 1462[1653 1453 1646 1444!1646 1444[1635 1430 1622 1413!1622 1413[1618 1408 1613 1401!1613 1401[1605 1390 1596 1379!1596 1379[1567 1347 1545 1310!1545 1310[1529 1283 1505 1260!1505 1260[1493 1248 1486
+ 1237!1486 1237[1478 1223 1467 1209!1467 1209[1437 1172 1401 1129!1401 1129[1375 1099 1350 1070!1350 1070[1322 1036 1299 1006!1299 1006[1262 953 1235 915!1235 915[1223 896 1217 884!1217 884[1199 847 1182 809!1182 809[1165 773 1145 730
+!1145 730[1126 686 1108 641!1108 641[1102 624 1096 605!1096 605[1090 586 1082 569!1082 569[1069 544 1062 515!1062 515[1059 506 1052 498!1052 498[1052 476 1042 471!1042 471[1038 460 1036 455!1036 455[1034 441 1027 433!1027 433[1025 405
+ 1017 394!1017 394[1013 383 1012 380!1012 380[1010 368 1008 355!1008 355[1000 330 1001 305!1001 305[1003 280 997 264!997 264[993 250 992 245!992 245[990 217 990 190!990 190[990 175 992 160!992 160[995 145 997 135!997 135[1000 105 1016
+ 86!1016 86[1021 79 1022 65!1022 65[1040 53 1047 36!1047 36[1072 9 1090 -10!1090 -10[1105 -26 1130 -35"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.04888916015625" d="0.04888916015625" tx="67.45" ty="38.4"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1715 1480[1698 1471 1687 1452!1687 1452[1678 1438 1674 1431!1674 1431[1660 1413 1645 1395!1645 1395[1636 1383 1629 1366!1629 1366[1601 1344 1589 1311!1589 1311[1559 1281 1544 1246!1544 1246[1514 1219 1498 1186!1498 1186[1493 1175 1485
+ 1165!1485 1165[1424 1088 1369 1021!1369 1021[1352 999 1336 984!1336 984[1307 954 1294 930!1294 930[1276 924 1273 911!1273 911[1268 894 1257 887!1257 887[1250 878 1245 874!1245 874[1235 867 1228 857!1228 857[1220 845 1218 842!1218 842
+[1210 830 1208 828!1208 828[1200 820 1198 816!1198 816[1178 791 1169 771!1169 771[1152 764 1151 750!1151 750[1122 705 1095 670!1095 670[1067 632 1047 589!1047 589[1043 580 1039 571!1039 571[1023 541 1012 514!1012 514[1008 505 1005 495
+!1005 495[1002 483 997 469!997 469[984 408 983 350!983 350[982 313 989 280!989 280[990 273 993 266!993 266[1006 249 1007 235!1007 235[1022 194 1052 161!1052 161[1076 140 1093 122!1093 122[1117 109 1128 97!1128 97[1151 81 1165 75!1165
+ 75[1180 68 1190 55"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.04852294921875" d="0.04852294921875" tx="67.95" ty="39.75"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1745 1490S4[1714 1494 1690 1480!1690 1480[1667 1477 1659 1465!1659 1465[1644 1462 1637 1452!1637 1452[1599 1422 1560 1394!1560 1394[1535 1376 1517 1357!1517 1357[1508 1350 1504 1347!1504 1347[1482 1327 1455 1300!1455 1300[1438 1283 1420
+ 1265!1420 1265[1402 1248 1381 1233!1381 1233[1373 1227 1367 1217!1367 1217[1354 1209 1349 1201!1349 1201[1341 1187 1332 1181!1332 1181[1310 1165 1302 1146!1302 1146[1286 1124 1279 1116!1279 1116[1268 1103 1256 1089!1256 1089[1250 1068
+ 1240 1060!1240 1060[1229 1039 1221 1029!1221 1029[1211 1017 1205 1010!1205 1010[1199 1004 1195 991!1195 991[1183 968 1180 960!1180 960[1175 947 1167 934!1167 934[1162 917 1156 905!1156 905[1146 886 1139 860!1139 860[1137 854 1131 844
+!1131 844[1125 835 1123 820!1123 820[1120 808 1117 802!1117 802[1110 790 1109 785!1109 785[1108 775 1103 766!1103 766[1097 755 1097 740!1097 740[1089 713 1084 695!1084 695[1080 678 1080 670!1080 670[1081 659 1071 656!1071 656[1066 633
+ 1059 620!1059 620[1047 611 1047 595!1047 595[1043 583 1041 579!1041 579[1038 570 1034 560!1034 560[1030 550 1025 540!1025 540[1021 516 1013 507!1013 507[1008 500 1004 491!1004 491[999 479 998 465!998 465[998 450 992 443!992 443[985 423
+ 982 410!982 410[980 398 978 385!978 385[975 325 973 275!973 275[973 255 978 244!978 244[987 223 988 215!988 215[989 201 993 194!993 194[998 185 1003 177!1003 177[1010 165 1011 160!1011 160[1028 135 1045 124!1045 124[1060 113 1080 113
+!1080 113[1107 107 1130 102!1130 102[1143 100 1155 100!1155 100[1198 100 1240 102!1240 102[1262 105 1280 105!1280 105[1293 105 1305 107"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="43" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="5">
+                        <fill>
+                          <RadialGradient>
+                            <matrix>
+                              <Matrix a="0.048095703125" d="0.048095703125" tx="67.2" ty="40.05"/>
+                            </matrix>
+                            <GradientEntry color="#825712" ratio="0"/>
+                            <GradientEntry color="#8C5D13" ratio="0.196078431372549"/>
+                            <GradientEntry color="#774F10" ratio="0.36078431372549"/>
+                            <GradientEntry color="#7E5310" ratio="0.505882352941176"/>
+                            <GradientEntry color="#704A0D" ratio="0.701960784313725"/>
+                            <GradientEntry color="#56380B" ratio="0.843137254901961"/>
+                            <GradientEntry color="#54370B" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="
+!1735 1485S4[1711 1456 1690 1440!1690 1440[1669 1424 1648 1402!1648 1402[1636 1381 1621 1376!1621 1376[1585 1343 1550 1319!1550 1319[1517 1287 1475 1260!1475 1260[1456 1248 1444 1236!1444 1236[1400 1204 1379 1181!1379 1181[1355 1163 1345
+ 1155!1345 1155[1326 1142 1318 1132!1318 1132[1305 1118 1299 1111!1299 1111[1267 1072 1238 1036!1238 1036[1223 1025 1223 1015!1223 1015[1204 1004 1197 986!1197 986[1181 968 1176 955!1176 955[1174 949 1166 943!1166 943[1159 919 1146 916
+!1146 916[1134 904 1133 890!1133 890[1119 874 1109 860!1109 860[1093 825 1075 800!1075 800[1063 783 1052 756!1052 756[1045 745 1044 741!1044 741[1025 713 1012 684!1012 684[1005 675 1001 674!1001 674[981 635 962 589!962 589[952 532 953
+ 480!953 480[955 418 957 355!957 355[960 320 961 295!961 295[962 269 970 245!970 245[973 235 974 225!974 225[980 210 985 205!985 205[991 199 992 185!992 185[1011 179 1014 166!1014 166[1023 155 1026 151!1026 151[1050 136 1075 129!1075
+ 129[1115 117 1160 118!1160 118[1204 119 1245 124!1245 124[1253 125 1260 127!1260 127[1288 133 1310 134!1310 134[1325 135 1335 138!1335 138[1343 140 1349 143!1349 143[1363 150 1370 151!1370 151[1388 153 1405 160!1405 160[1434 171 1465
+ 172!1465 172[1475 175 1480 176!1480 176[1498 180 1505 180"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="框架1" color="#4F80FF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="85.9" centerPoint3DY="105.65">
+                  <matrix>
+                    <Matrix tx="63.35" ty="98.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="85.9" centerPoint3DY="105.65">
+                  <matrix>
+                    <Matrix tx="63.35" ty="98.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="85.9" centerPoint3DY="105.65">
+                  <matrix>
+                    <Matrix tx="63.35" ty="98.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="核心" color="#4FFFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="86.1" centerPoint3DY="86.7">
+                  <matrix>
+                    <Matrix tx="61.95" ty="70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="86.1" centerPoint3DY="86.7">
+                  <matrix>
+                    <Matrix tx="61.95" ty="70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="86.1" centerPoint3DY="86.7">
+                  <matrix>
+                    <Matrix tx="61.95" ty="70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右前腿1" color="#FF4F4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="120.95" centerPoint3DY="92.95">
+                  <matrix>
+                    <Matrix a="-1" tx="142.35" ty="76"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="120.95" centerPoint3DY="92.95">
+                  <matrix>
+                    <Matrix a="-1" tx="142.35" ty="76"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="120.95" centerPoint3DY="92.95">
+                  <matrix>
+                    <Matrix a="-1" tx="142.35" ty="76"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右前腿2" color="#4FFF4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="149.55" centerPoint3DY="102.8">
+                  <matrix>
+                    <Matrix a="-1" tx="164.15" ty="80.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="149.55" centerPoint3DY="102.8">
+                  <matrix>
+                    <Matrix a="-1" tx="164.15" ty="80.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="149.55" centerPoint3DY="102.8">
+                  <matrix>
+                    <Matrix a="-1" tx="164.15" ty="80.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右前腿3" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="157" centerPoint3DY="129.15">
+                  <matrix>
+                    <Matrix a="-1" tx="169.8" ty="119.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="157" centerPoint3DY="129.15">
+                  <matrix>
+                    <Matrix a="-1" tx="169.8" ty="119.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="157" centerPoint3DY="129.15">
+                  <matrix>
+                    <Matrix a="-1" tx="169.8" ty="119.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左前腿1" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="51.25" centerPoint3DY="93.25">
+                  <matrix>
+                    <Matrix tx="29.85" ty="76.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="51.25" centerPoint3DY="93.25">
+                  <matrix>
+                    <Matrix tx="29.85" ty="76.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="51.25" centerPoint3DY="93.25">
+                  <matrix>
+                    <Matrix tx="29.85" ty="76.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左前腿2" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="22.65" centerPoint3DY="103.1">
+                  <matrix>
+                    <Matrix tx="8.05" ty="81.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="22.65" centerPoint3DY="103.1">
+                  <matrix>
+                    <Matrix tx="8.05" ty="81.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="22.65" centerPoint3DY="103.1">
+                  <matrix>
+                    <Matrix tx="8.05" ty="81.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左前腿3" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="15.2" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="28" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="15.2" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="28" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="15.2" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="28" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="框架2" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="86.3" centerPoint3DY="98.6">
+                  <matrix>
+                    <Matrix tx="65.75" ty="92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="86.3" centerPoint3DY="98.6">
+                  <matrix>
+                    <Matrix tx="65.75" ty="92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="86.3" centerPoint3DY="98.6">
+                  <matrix>
+                    <Matrix tx="65.75" ty="92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右后腿1" color="#808080" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="117.7" centerPoint3DY="82.35">
+                  <matrix>
+                    <Matrix a="-0.98895263671875" b="0.147491455078125" c="0.147491455078125" d="0.98895263671875" tx="135.7" ty="62.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="117.7" centerPoint3DY="82.35">
+                  <matrix>
+                    <Matrix a="-0.98895263671875" b="0.147491455078125" c="0.147491455078125" d="0.98895263671875" tx="135.7" ty="62.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="117.7" centerPoint3DY="82.35">
+                  <matrix>
+                    <Matrix a="-0.98895263671875" b="0.147491455078125" c="0.147491455078125" d="0.98895263671875" tx="135.7" ty="62.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右后腿2" color="#4F80FF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="149.1" centerPoint3DY="85.6">
+                  <matrix>
+                    <Matrix a="-0.96270751953125" b="0.270172119140625" c="0.270172119140625" d="0.96270751953125" tx="156.8" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="149.1" centerPoint3DY="85.6">
+                  <matrix>
+                    <Matrix a="-0.96270751953125" b="0.270172119140625" c="0.270172119140625" d="0.96270751953125" tx="156.8" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="149.1" centerPoint3DY="85.6">
+                  <matrix>
+                    <Matrix a="-0.96270751953125" b="0.270172119140625" c="0.270172119140625" d="0.96270751953125" tx="156.8" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右后腿3" color="#FF4F4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="160.65" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="174.4" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="160.65" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="174.4" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="160.65" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="174.4" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左后腿1" color="#4FFFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="55.25" centerPoint3DY="81.65">
+                  <matrix>
+                    <Matrix a="0.98895263671875" b="0.147491455078125" c="-0.147491455078125" d="0.98895263671875" tx="37.25" ty="61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="55.25" centerPoint3DY="81.65">
+                  <matrix>
+                    <Matrix a="0.98895263671875" b="0.147491455078125" c="-0.147491455078125" d="0.98895263671875" tx="37.25" ty="61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="55.25" centerPoint3DY="81.65">
+                  <matrix>
+                    <Matrix a="0.98895263671875" b="0.147491455078125" c="-0.147491455078125" d="0.98895263671875" tx="37.25" ty="61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左后腿2" color="#808080" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="23.85" centerPoint3DY="84.9">
+                  <matrix>
+                    <Matrix a="0.96270751953125" b="0.270172119140625" c="-0.270172119140625" d="0.96270751953125" tx="16.15" ty="59.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="23.85" centerPoint3DY="84.9">
+                  <matrix>
+                    <Matrix a="0.96270751953125" b="0.270172119140625" c="-0.270172119140625" d="0.96270751953125" tx="16.15" ty="59.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="23.85" centerPoint3DY="84.9">
+                  <matrix>
+                    <Matrix a="0.96270751953125" b="0.270172119140625" c="-0.270172119140625" d="0.96270751953125" tx="16.15" ty="59.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左后腿3" color="#4F80FF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="11.8" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="25.55" ty="98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="11.8" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="25.55" ty="98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="11.8" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="25.55" ty="98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="47" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

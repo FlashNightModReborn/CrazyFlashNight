@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-长枪-HSR10S" itemID="65f902fa-000002ac" linkageExportForAS="true" linkageIdentifier="枪-长枪-HSR10S" lastModified="1710818310" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="枪-长枪-HSR10S">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="228.55" centerPoint3DY="-26.45">
+                  <matrix>
+                    <Matrix tx="208.55" ty="-46.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="备用/hsr10s" selected="true" centerPoint3DX="53.25" centerPoint3DY="-4.3">
+                  <matrix>
+                    <Matrix a="2.509033203125" d="2.509033203125" tx="-103.75" ty="-64.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="62.55" y="23.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="0.05"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

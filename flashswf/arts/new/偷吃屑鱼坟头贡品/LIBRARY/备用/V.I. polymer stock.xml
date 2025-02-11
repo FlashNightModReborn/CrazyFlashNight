@@ -1,0 +1,122 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="备用/V.I. polymer stock" itemID="61651dd0-00000242" lastModified="1710818243">
+  <timeline>
+    <DOMTimeline name="V.I. polymer stock">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMGroup>
+                      <transformationPoint>
+                        <Point x="17.75" y="8.25"/>
+                      </transformationPoint>
+                      <members>
+                        <DOMShape>
+                          <transformationPoint>
+                            <Point x="17.75" y="8.25"/>
+                          </transformationPoint>
+                          <fills>
+                            <FillStyle index="1">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0" b="0.00103759765625" c="-0.0014190673828125" d="0" tx="18.45" ty="0.95"/>
+                                </matrix>
+                                <GradientEntry color="#191919" ratio="0.141176470588235"/>
+                                <GradientEntry color="#202020" ratio="1"/>
+                              </LinearGradient>
+                            </FillStyle>
+                            <FillStyle index="2">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0" b="-0.0028076171875" c="0.00152587890625" d="0" tx="18.6" ty="2.2"/>
+                                </matrix>
+                                <GradientEntry color="#191919" ratio="0.141176470588235"/>
+                                <GradientEntry color="#202020" ratio="0.509803921568627"/>
+                                <GradientEntry color="#171717" ratio="0.827450980392157"/>
+                              </LinearGradient>
+                            </FillStyle>
+                            <FillStyle index="3">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0.000946044921875" b="0.0034942626953125" c="-0.007171630859375" d="0.001922607421875" tx="18.3" ty="10.6"/>
+                                </matrix>
+                                <GradientEntry color="#191919" ratio="0.141176470588235"/>
+                                <GradientEntry color="#202020" ratio="0.509803921568627"/>
+                                <GradientEntry color="#171717" ratio="0.827450980392157"/>
+                              </LinearGradient>
+                            </FillStyle>
+                            <FillStyle index="4">
+                              <LinearGradient>
+                                <matrix>
+                                  <Matrix a="0.00140380859375" d="0.010101318359375" tx="1.2" ty="8.35"/>
+                                </matrix>
+                                <GradientEntry color="#252525" ratio="0"/>
+                                <GradientEntry color="#1C1C1C" ratio="1"/>
+                              </LinearGradient>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle1="1" strokeStyle="1" edges="!30 2|603 2!603 2[637 1 644 0!644 0|684 0!684 0|694 11!694 11|709 11!709 11|709 42"/>
+                            <Edge fillStyle1="2" strokeStyle="1" edges="!709 42|709 89"/>
+                            <Edge fillStyle1="3" strokeStyle="1" edges="!709 89|709 120!709 120|701 131!701 131|679 131!679 131[651 130 626 139!626 139|90 323!90 323[62 335 26 333"/>
+                            <Edge fillStyle1="4" strokeStyle="1" edges="!26 333|18 333!18 333[0 331 1 314!1 314[21 172 0 18!0 18[1 0 30 2"/>
+                            <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="!42 42|38 11!38 11|30 2"/>
+                            <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="!39 92[38 79 37 67!37 67[35 62 36 60!36 60[35 51 42 42"/>
+                            <Edge fillStyle0="4" fillStyle1="3" strokeStyle="1" edges="!26 333|37 321!37 321|41 279!41 279|40 278!40 278[33 272 36 266!36 266[36 264 37 262!37 262[45 175 39 92"/>
+                            <Edge fillStyle0="1" fillStyle1="2" edges="!42 42|709 42"/>
+                            <Edge fillStyle0="3" fillStyle1="2" edges="!709 89|39 92"/>
+                            <Edge cubics="!694 11(;694,11 709,11 709,11q694 11 709 11);"/>
+                            <Edge cubics="!709 120(;709,120 701,131 701,131q709 120 701 131)701,131;"/>
+                            <Edge cubics="!701 131(;701,131 679,131 679,131q701 131 679 131);"/>
+                            <Edge cubics="!36 60(;35,62 36,64 37,67q36 60Q35 62q37 67);"/>
+                            <Edge cubics="!36 266(;36,265 36,263 37,262q36 266Q36 264q37 262);"/>
+                            <Edge cubics="!30 2(30,2;11,1 1,6 0,18q30 2Q1 0q0 18)0,18;"/>
+                            <Edge cubics="!36 60(;35,54 37,48 42,42q36 60Q35 51q42 42);"/>
+                            <Edge cubics="!42 42(;42,42 38,11 38,11q42 42 38 11);"/>
+                            <Edge cubics="!38 11(;38,11 30,2 30,2q38 11 30 2);"/>
+                            <Edge cubics="!40 278(;35,274 34,270 36,266q40 278Q33 272q36 266);"/>
+                            <Edge cubics="!41 279(;41,279 40,278 40,278q41 279 40 278);"/>
+                            <Edge cubics="!37 262(;42,204 43,147 39,92q37 262Q45 175q39 92);"/>
+                            <Edge cubics="!39 92(;38,83 38,75 37,67q39 92Q38 79q37 67);"/>
+                            <Edge cubics="!0 18(;14,121 14,219 1,314q0 18Q21 172q1 314);"/>
+                            <Edge cubics="!709 42(;709,42 709,11 709,11q709 42 709 11);"/>
+                            <Edge cubics="!684 0(684,0;684,0 644,0 644,0q684 0 644 0)644,0;"/>
+                            <Edge cubics="!644 0(;639,1 626,1 603,2q644 0Q637 1q603 2);"/>
+                            <Edge cubics="!679 131(;660,130 643,133 626,139q679 131Q651 130q626 139);"/>
+                            <Edge cubics="!709 89(;709,89 709,120 709,120q709 89 709 120);"/>
+                            <Edge cubics="!694 11(;694,11 684,0 684,0q694 11 684 0);"/>
+                            <Edge cubics="!709 89(;709,89 709,42 709,42q709 89 709 42);"/>
+                            <Edge cubics="!603 2(;603,2 30,2 30,2q603 2 30 2);"/>
+                            <Edge cubics="!709 42(;709,42 42,42 42,42q709 42 42 42);"/>
+                            <Edge cubics="!709 89(;709,89 39,92 39,92q709 89 39 92);"/>
+                            <Edge cubics="!18 333(18,333;18,333 26,333 26,333q18 333 26 333)26,333;"/>
+                            <Edge cubics="!26 333(;26,333 37,321 37,321q26 333 37 321);"/>
+                            <Edge cubics="!90 323(;71,331 50,334 26,333q90 323Q62 335q26 333);"/>
+                            <Edge cubics="!626 139(;626,139 90,323 90,323q626 139 90 323);"/>
+                            <Edge cubics="!37 321(;37,321 41,279 41,279q37 321 41 279);"/>
+                            <Edge cubics="!1 314(;0,325 6,332 18,333q1 314Q0 331q18 333);"/>
+                          </edges>
+                        </DOMShape>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

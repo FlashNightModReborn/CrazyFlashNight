@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="未命名文件夹 1/周波剑" itemID="65f991ca-00002637" lastModified="1710854644" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="周波剑">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="未命名文件夹 1/Sonic hidden sword part1" centerPoint3DX="40.85" centerPoint3DY="5.65">
+                      <transformationPoint>
+                        <Point x="41.1" y="5.65"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="未命名文件夹 1/blade lock" centerPoint3DX="40.05" centerPoint3DY="5.25">
+                      <matrix>
+                        <Matrix tx="32.65" ty="3.15"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="7.4" y="2.1"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

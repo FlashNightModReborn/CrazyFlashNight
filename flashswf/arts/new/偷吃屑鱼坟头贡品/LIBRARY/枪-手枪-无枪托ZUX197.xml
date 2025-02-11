@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-手枪-无枪托ZUX197" itemID="666eee2b-0000126d" linkageExportForAS="true" linkageIdentifier="枪-手枪-无枪托ZUX197" lastModified="1718545963" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="枪-手枪-无枪托ZUX197">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="208.35" centerPoint3DY="-24.4">
+                  <matrix>
+                    <Matrix a="1.43426513671875" d="1.43426513671875" tx="179.55" ty="-52.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="0无枪托ZUX197" centerPoint3DX="62.55" centerPoint3DY="-11.5">
+                  <matrix>
+                    <Matrix a="3.26243591308594" d="3.26243591308594" tx="-59.95" ty="-45.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="37.55" y="10.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

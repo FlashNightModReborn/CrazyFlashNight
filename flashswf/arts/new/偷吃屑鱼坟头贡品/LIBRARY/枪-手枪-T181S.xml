@@ -1,0 +1,43 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-手枪-T181S" itemID="65f83eea-0000261e" linkageExportForAS="true" linkageIdentifier="枪-手枪-T181S" lastModified="1710814385" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="枪-手枪-T181S">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="137.6" centerPoint3DY="-33.65">
+                  <matrix>
+                    <Matrix a="2.43724060058594" d="2.43724060058594" tx="88.85" ty="-81.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/t181S" centerPoint3DX="21.4" centerPoint3DY="-11.35">
+                  <matrix>
+                    <Matrix tx="-54.45" ty="-46.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="75.85" y="35.45"/>
+                  </transformationPoint>
+                  <color>
+                    <Color brightness="0.05"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

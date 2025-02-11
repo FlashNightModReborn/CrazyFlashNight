@@ -1,0 +1,2205 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="旧型号机器人/起身" itemID="665c7946-0000036f" lastModified="1717346661" lastUniqueIdentifier="158">
+  <timeline>
+    <DOMTimeline name="起身" currentFrame="34">
+      <layers>
+        <DOMLayer name="代码层" color="#B93CFD" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(this.hp<=0){
+	gotoAndStop("血腥死");
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   stop();
+   if(_parent.已加经验值 != true)
+   {
+      if(_parent.是否为敌人 == true)
+      {
+         _root.敌人死亡计数 = _root.敌人死亡计数 + 1;
+         _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+         _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+         _parent.计算经验值();
+      }
+      _parent.人物文字信息._visible = 0;
+      _root.add2map(_parent,2);
+      _parent.removeMovieClip();
+   }
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="23" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.hp <= 0)
+{
+   stop();
+}
+if(_parent.hp <= 0)
+{
+   stop();
+}
+if(_parent.hp == 0)
+{
+   stop();
+}
+if(_parent.hp < 0)
+{
+   stop();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="死亡消失层" color="#9B42CE" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/死亡消失元件/Symbol 39" centerPoint3DX="-372.1" centerPoint3DY="-138.55">
+                  <matrix>
+                    <Matrix a="0.444442749023438" d="0.444442749023438" tx="-390.1" ty="-156.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="头部" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="85.5" centerPoint3DY="-42.5">
+                  <matrix>
+                    <Matrix a="-0.916961669921875" b="0.398910522460938" c="0.398910522460938" d="0.916976928710938" tx="117.6" ty="-72.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="127.15" centerPoint3DY="0.65">
+                  <matrix>
+                    <Matrix a="-0.97039794921875" b="0.238250732421875" c="0.238250732421875" d="0.97039794921875" tx="163.8" ty="-23.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="168.85" centerPoint3DY="43.65">
+                  <matrix>
+                    <Matrix a="-0.996734619140625" b="0.070587158203125" c="0.070587158203125" d="0.996734619140625" tx="209" ty="26.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.2" y="13.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="210.6" centerPoint3DY="86.7">
+                  <matrix>
+                    <Matrix a="-0.995040893554688" b="-0.0924224853515625" c="-0.0924224853515625" d="0.995040893554688" tx="253.05" ty="76.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.35" y="13.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="252.55" centerPoint3DY="129.35">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="295.9" ty="126.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="252.55" centerPoint3DY="129.35">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="295.9" ty="126.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="218.7" centerPoint3DY="102.7">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.255645751953125" c="-0.255645751953125" d="0.965927124023438" tx="262" ty="99.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="184.8" centerPoint3DY="76.05">
+                  <matrix>
+                    <Matrix a="-0.96551513671875" b="-0.255020141601563" c="-0.255020141601563" d="0.96551513671875" tx="228.05" ty="73.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.1" y="13.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="151" centerPoint3DY="49.35">
+                  <matrix>
+                    <Matrix a="-0.965347290039063" b="-0.255035400390625" c="-0.255035400390625" d="0.965347290039063" tx="194.25" ty="46.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.1" y="13.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPH1" centerPoint3DX="117.05" centerPoint3DY="22.75">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258804321289063" c="-0.258804321289063" d="0.965927124023438" tx="160.4" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="41.15" y="13.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="线缆" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.925857543945313" b="-0.37786865234375" c="0.37786865234375" d="0.925857543945313" tx="39.4" ty="1.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.50970458984375" b="-0.0146026611328125" c="-0.548797607421875" d="0.574371337890625" tx="63.45" ty="23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.81204223632813" b="0.120529174804688" c="-0.887893676757813" d="0.231979370117188" tx="80.75" ty="46.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.47720336914063" b="0.44610595703125" c="-1.7647705078125" d="-0.1451416015625" tx="122.4" ty="70.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.103622436523438" b="-0.911849975585938" c="-1.93247985839844" d="-0.219573974609375" tx="169.65" ty="121.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.3" y="32.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.103622436523438" b="-0.911849975585938" c="-1.93247985839844" d="-0.219573974609375" tx="169.65" ty="121.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.3" y="32.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0076751708984375" b="0.998794555664063" c="-1.47903442382813" d="0.0113677978515625" tx="148.1" ty="68.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.393524169921875" b="0.917572021484375" c="-0.917572021484375" d="0.393524169921875" tx="119.65" ty="53.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.41043090820313" b="0.180435180664063" c="-0.597702026367188" d="0.746978759765625" tx="80.7" ty="48.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="63.2" ty="38.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="框架1" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="81.7" centerPoint3DY="56.95">
+                  <matrix>
+                    <Matrix a="0.962631225585938" b="-0.270797729492188" c="0.270797729492188" d="0.962631225585938" tx="58.2" ty="56.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="84.8" centerPoint3DY="73.3">
+                  <matrix>
+                    <Matrix a="0.996963500976563" b="-0.0742340087890625" c="0.0742340087890625" d="0.996963500976563" tx="61.85" ty="68.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.5" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="87.95" centerPoint3DY="89.65">
+                  <matrix>
+                    <Matrix a="0.991867065429688" b="0.122528076171875" c="-0.122528076171875" d="0.991867065429688" tx="66.4" ty="80.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.5" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="91.15" centerPoint3DY="106.05">
+                  <matrix>
+                    <Matrix a="0.946975708007813" b="0.317291259765625" c="-0.317291259765625" d="0.946975708007813" tx="71.95" ty="92.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.5" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="93.85" centerPoint3DY="122.45">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="77.95" ty="105.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.6" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="93.85" centerPoint3DY="122.45">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="77.95" ty="105.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.6" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="91.8" centerPoint3DY="118.2">
+                  <matrix>
+                    <Matrix a="0.923858642578125" b="0.379653930664063" c="-0.379653930664063" d="0.923858642578125" tx="73.75" ty="103.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.65" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="89.7" centerPoint3DY="114">
+                  <matrix>
+                    <Matrix a="0.965286254882813" b="0.2550048828125" c="-0.2550048828125" d="0.965286254882813" tx="69.9" ty="101.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.65" y="7.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="87.65" centerPoint3DY="109.7">
+                  <matrix>
+                    <Matrix a="0.990707397460938" b="0.126739501953125" c="-0.126739501953125" d="0.990707397460938" tx="66.45" ty="99.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.6" y="7.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF1" centerPoint3DX="85.9" centerPoint3DY="105.65">
+                  <matrix>
+                    <Matrix tx="63.35" ty="98.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.55" y="7.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="核心" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="76.6" centerPoint3DY="39.1">
+                  <matrix>
+                    <Matrix a="0.962631225585938" b="-0.270797729492188" c="0.270797729492188" d="0.962631225585938" tx="49.3" ty="30.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="83.25" centerPoint3DY="55.9">
+                  <matrix>
+                    <Matrix a="0.996963500976563" b="-0.0742340087890625" c="0.0742340087890625" d="0.996963500976563" tx="58.25" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="89.95" centerPoint3DY="72.7">
+                  <matrix>
+                    <Matrix a="0.991867065429688" b="0.122528076171875" c="-0.122528076171875" d="0.991867065429688" tx="68.2" ty="54.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="96.75" centerPoint3DY="89.5">
+                  <matrix>
+                    <Matrix a="0.946975708007813" b="0.317291259765625" c="-0.317291259765625" d="0.946975708007813" tx="79.15" ty="66.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="103.15" centerPoint3DY="106.6">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="90.65" ty="80.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="103.15" centerPoint3DY="106.6">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="90.65" ty="80.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="98.85" centerPoint3DY="101.7">
+                  <matrix>
+                    <Matrix a="0.923858642578125" b="0.379653930664063" c="-0.379653930664063" d="0.923858642578125" tx="83" ty="77.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="94.55" centerPoint3DY="96.8">
+                  <matrix>
+                    <Matrix a="0.965286254882813" b="0.2550048828125" c="-0.2550048828125" d="0.965286254882813" tx="75.7" ty="74.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.1" y="16"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="90.2" centerPoint3DY="91.95">
+                  <matrix>
+                    <Matrix a="0.990707397460938" b="0.126739501953125" c="-0.126739501953125" d="0.990707397460938" tx="68.65" ty="72.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.05" y="16"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPCORE" centerPoint3DX="86.1" centerPoint3DY="86.7">
+                  <matrix>
+                    <Matrix tx="61.95" ty="70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.15" y="15.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右前腿1" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="117.15" centerPoint3DY="63.05">
+                  <matrix>
+                    <Matrix a="-0.5" b="-0.866012573242188" c="-0.866012573242188" d="0.5" tx="142.4" ty="72.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="120" centerPoint3DY="78.3">
+                  <matrix>
+                    <Matrix a="-0.656890869140625" b="-0.7518310546875" c="-0.7518310546875" d="0.656890869140625" tx="146.7" ty="83.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="122.85" centerPoint3DY="93.5">
+                  <matrix>
+                    <Matrix a="-0.790298461914063" b="-0.60833740234375" c="-0.60833740234375" d="0.790298461914063" tx="149.9" ty="92.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="125.8" centerPoint3DY="108.75">
+                  <matrix>
+                    <Matrix a="-0.894134521484375" b="-0.441864013671875" c="-0.441864013671875" d="0.894134521484375" tx="152.2" ty="102.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.35" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="128.5" centerPoint3DY="124.15">
+                  <matrix>
+                    <Matrix a="-0.965911865234375" b="-0.258819580078125" c="-0.258819580078125" d="0.965911865234375" tx="153.5" ty="113.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="128.5" centerPoint3DY="124.15">
+                  <matrix>
+                    <Matrix a="-0.965911865234375" b="-0.258819580078125" c="-0.258819580078125" d="0.965911865234375" tx="153.5" ty="113.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="126.65" centerPoint3DY="116.4">
+                  <matrix>
+                    <Matrix a="-0.98077392578125" b="-0.191879272460938" c="-0.191879272460938" d="0.98077392578125" tx="150.85" ty="103.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="124.85" centerPoint3DY="108.6">
+                  <matrix>
+                    <Matrix a="-0.9910888671875" b="-0.126708984375" c="-0.126708984375" d="0.9910888671875" tx="148.15" ty="94.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="122.95" centerPoint3DY="100.95">
+                  <matrix>
+                    <Matrix a="-0.997467041015625" b="-0.0616455078125" c="-0.0616455078125" d="0.997467041015625" tx="145.25" ty="85.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="120.95" centerPoint3DY="92.95">
+                  <matrix>
+                    <Matrix a="-1" tx="142.35" ty="76"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右前腿2" color="#4FFF4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="148.9" centerPoint3DY="82.8">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="157.3" ty="57.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="153.25" centerPoint3DY="90.95">
+                  <matrix>
+                    <Matrix a="-0.889129638671875" b="0.4547119140625" c="0.4547119140625" d="0.889129638671875" tx="156.25" ty="64.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="157.75" centerPoint3DY="99.2">
+                  <matrix>
+                    <Matrix a="-0.771484375" b="0.632308959960938" c="0.632308959960938" d="0.771484375" tx="155.1" ty="73"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="162.15" centerPoint3DY="107.45">
+                  <matrix>
+                    <Matrix a="-0.619049072265625" b="0.781723022460938" c="0.781723022460938" d="0.619049072265625" tx="154" ty="82.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="166.2" centerPoint3DY="116.55">
+                  <matrix>
+                    <Matrix a="-0.442413330078125" b="0.896804809570313" c="0.896804809570313" d="0.442413330078125" tx="153.3" ty="92.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.55" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="166.2" centerPoint3DY="116.55">
+                  <matrix>
+                    <Matrix a="-0.442413330078125" b="0.896804809570313" c="0.896804809570313" d="0.442413330078125" tx="153.3" ty="92.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.55" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="161.7" centerPoint3DY="113.25">
+                  <matrix>
+                    <Matrix a="-0.669754028320313" b="0.740386962890625" c="0.740386962890625" d="0.669754028320313" tx="155.8" ty="87"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.55" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="157.2" centerPoint3DY="109.8">
+                  <matrix>
+                    <Matrix a="-0.847320556640625" b="0.526229858398438" c="0.526229858398438" d="0.847320556640625" tx="158.8" ty="82.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="152.9" centerPoint3DY="106.35">
+                  <matrix>
+                    <Matrix a="-0.960113525390625" b="0.27178955078125" c="0.27178955078125" d="0.960113525390625" tx="161.9" ty="81"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.65" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="149.55" centerPoint3DY="102.8">
+                  <matrix>
+                    <Matrix a="-1" tx="164.15" ty="80.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右前腿3" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="159.75" centerPoint3DY="103.05">
+                  <matrix>
+                    <Matrix a="-0.965911865234375" b="-0.2587890625" c="-0.2587890625" d="0.965911865234375" tx="174.9" ty="97"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="167.5" centerPoint3DY="108.25">
+                  <matrix>
+                    <Matrix a="-0.999969482421875" d="0.999969482421875" tx="180.6" ty="98.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="9.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="175.3" centerPoint3DY="113.4">
+                  <matrix>
+                    <Matrix a="-0.965896606445313" b="0.255645751953125" c="0.255645751953125" d="0.965896606445313" tx="185.45" ty="100.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="9.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="183.15" centerPoint3DY="118.55">
+                  <matrix>
+                    <Matrix a="-0.865829467773438" b="0.496612548828125" c="0.496612548828125" d="0.865829467773438" tx="189.65" ty="103.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="9.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="191" centerPoint3DY="123.5">
+                  <matrix>
+                    <Matrix a="-0.707107543945313" b="0.70709228515625" c="0.70709228515625" d="0.707107543945313" tx="193.3" ty="107.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="191" centerPoint3DY="123.5">
+                  <matrix>
+                    <Matrix a="-0.707107543945313" b="0.70709228515625" c="0.70709228515625" d="0.707107543945313" tx="193.3" ty="107.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="182.45" centerPoint3DY="125.05">
+                  <matrix>
+                    <Matrix a="-0.831436157226563" b="0.552825927734375" c="0.552825927734375" d="0.831436157226563" tx="187.9" ty="109.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="173.9" centerPoint3DY="126.45">
+                  <matrix>
+                    <Matrix a="-0.923080444335938" b="0.378921508789063" c="0.378921508789063" d="0.923080444335938" tx="182.25" ty="112.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="165.3" centerPoint3DY="127.9">
+                  <matrix>
+                    <Matrix a="-0.97979736328125" b="0.191268920898438" c="0.191268920898438" d="0.97979736328125" tx="176.2" ty="115.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="9.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="157" centerPoint3DY="129.15">
+                  <matrix>
+                    <Matrix a="-1" tx="169.8" ty="119.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左前腿1" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="49.7" centerPoint3DY="74.9">
+                  <matrix>
+                    <Matrix a="0.25885009765625" b="-0.965896606445313" c="0.965911865234375" d="0.25885009765625" tx="28" ty="91.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="51.65" centerPoint3DY="82.55">
+                  <matrix>
+                    <Matrix a="0.5" b="-0.864364624023438" c="0.8643798828125" d="0.5" tx="26.4" ty="92.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="53.6" centerPoint3DY="90.2">
+                  <matrix>
+                    <Matrix a="0.706512451171875" b="-0.703994750976563" c="0.703994750976563" d="0.706497192382813" tx="26.55" ty="93.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.5" y="16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="55.55" centerPoint3DY="97.9">
+                  <matrix>
+                    <Matrix a="0.864990234375" b="-0.496307373046875" c="0.496322631835938" d="0.864990234375" tx="28.55" ty="94.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.5" y="16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="57.25" centerPoint3DY="105.7">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="32.25" ty="94.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="57.25" centerPoint3DY="105.7">
+                  <matrix>
+                    <Matrix a="0.965927124023438" b="-0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="32.25" ty="94.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="55.75" centerPoint3DY="102.55">
+                  <matrix>
+                    <Matrix a="0.980789184570313" b="-0.19189453125" c="0.19189453125" d="0.980789184570313" tx="31.55" ty="90.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="54.25" centerPoint3DY="99.5">
+                  <matrix>
+                    <Matrix a="0.991104125976563" b="-0.126708984375" c="0.126708984375" d="0.991104125976563" tx="30.9" ty="85.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="52.8" centerPoint3DY="96.3">
+                  <matrix>
+                    <Matrix a="0.997467041015625" b="-0.0616607666015625" c="0.0616607666015625" d="0.997467041015625" tx="30.4" ty="80.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.45" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="51.25" centerPoint3DY="93.25">
+                  <matrix>
+                    <Matrix tx="29.85" ty="76.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.4" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左前腿2" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="23.15" centerPoint3DY="103.15">
+                  <matrix>
+                    <Matrix tx="8.6" ty="81.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="22" centerPoint3DY="104.35">
+                  <matrix>
+                    <Matrix a="0.991439819335938" b="0.127273559570313" c="-0.127273559570313" d="0.991439819335938" tx="10.3" ty="81.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="20.85" centerPoint3DY="105.55">
+                  <matrix>
+                    <Matrix a="0.965789794921875" b="0.255050659179688" c="-0.255050659179688" d="0.965789794921875" tx="12.2" ty="81.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.7" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="19.85" centerPoint3DY="106.8">
+                  <matrix>
+                    <Matrix a="0.923538208007813" b="0.3790283203125" c="-0.3790283203125" d="0.923538208007813" tx="14.45" ty="81.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="18.35" centerPoint3DY="109.1">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="16.75" ty="82.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="18.35" centerPoint3DY="109.1">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="16.75" ty="82.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="19.4" centerPoint3DY="107.75">
+                  <matrix>
+                    <Matrix a="0.923858642578125" b="0.379653930664063" c="-0.379653930664063" d="0.923858642578125" tx="14.3" ty="81.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.55" y="22"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="20.6" centerPoint3DY="106.3">
+                  <matrix>
+                    <Matrix a="0.965286254882813" b="0.2550048828125" c="-0.2550048828125" d="0.965286254882813" tx="12.1" ty="80.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.55" y="22.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="21.75" centerPoint3DY="105">
+                  <matrix>
+                    <Matrix a="0.990707397460938" b="0.126739501953125" c="-0.126739501953125" d="0.990707397460938" tx="9.95" ty="80.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="22.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="22.65" centerPoint3DY="103.1">
+                  <matrix>
+                    <Matrix tx="8.05" ty="81.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.6" y="21.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左前腿3" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="15.5" centerPoint3DY="127.9">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="0.258804321289063" c="0.258804321289063" d="0.965927124023438" tx="25.65" ty="115.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="12.25" centerPoint3DY="128.2">
+                  <matrix>
+                    <Matrix a="-0.980789184570313" b="0.19189453125" c="0.19189453125" d="0.980789184570313" tx="23.2" ty="116.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.85" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="8.85" centerPoint3DY="128.55">
+                  <matrix>
+                    <Matrix a="-0.991104125976563" b="0.126708984375" c="0.126708984375" d="0.991104125976563" tx="20.55" ty="117.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="5.6" centerPoint3DY="128.95">
+                  <matrix>
+                    <Matrix a="-0.997467041015625" b="0.0616607666015625" c="0.0616607666015625" d="0.997467041015625" tx="17.95" ty="118.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.75" y="9.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="2.45" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="15.25" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="2.45" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="15.25" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="5.65" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="18.45" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="8.85" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="21.65" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="12.05" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="24.85" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="15.2" centerPoint3DY="129.45">
+                  <matrix>
+                    <Matrix a="-1" tx="28" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.8" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="框架2" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="80.1" centerPoint3DY="49.9">
+                  <matrix>
+                    <Matrix a="0.962631225585938" b="-0.270797729492188" c="0.270797729492188" d="0.962631225585938" tx="58.9" ty="50.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.45" y="6.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="84.65" centerPoint3DY="66.45">
+                  <matrix>
+                    <Matrix a="0.996963500976563" b="-0.0742340087890625" c="0.0742340087890625" d="0.996963500976563" tx="63.8" ty="62.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.5" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="89.2" centerPoint3DY="83.05">
+                  <matrix>
+                    <Matrix a="0.991867065429688" b="0.122528076171875" c="-0.122528076171875" d="0.991867065429688" tx="69.5" ty="75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.5" y="6.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="93.75" centerPoint3DY="99.7">
+                  <matrix>
+                    <Matrix a="0.946975708007813" b="0.317291259765625" c="-0.317291259765625" d="0.946975708007813" tx="76.05" ty="87.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.5" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="97.6" centerPoint3DY="117">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="83.15" ty="101.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="97.6" centerPoint3DY="117">
+                  <matrix>
+                    <Matrix a="0.86602783203125" b="0.499984741210938" c="-0.499984741210938" d="0.86602783203125" tx="83.15" ty="101.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="94.75" centerPoint3DY="112.45">
+                  <matrix>
+                    <Matrix a="0.923858642578125" b="0.379653930664063" c="-0.379653930664063" d="0.923858642578125" tx="78.3" ty="98.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="91.9" centerPoint3DY="107.95">
+                  <matrix>
+                    <Matrix a="0.965286254882813" b="0.2550048828125" c="-0.2550048828125" d="0.965286254882813" tx="73.8" ty="96.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="89.1" centerPoint3DY="103.4">
+                  <matrix>
+                    <Matrix a="0.990707397460938" b="0.126739501953125" c="-0.126739501953125" d="0.990707397460938" tx="69.65" ty="94.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPF2" centerPoint3DX="86.3" centerPoint3DY="98.6">
+                  <matrix>
+                    <Matrix tx="65.75" ty="92.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="6.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右后腿1" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="110.5" centerPoint3DY="37.55">
+                  <matrix>
+                    <Matrix a="-0.993438720703125" b="-0.113479614257813" c="-0.113479614257813" d="0.993438720703125" tx="132.75" ty="23.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="114.25" centerPoint3DY="54">
+                  <matrix>
+                    <Matrix a="-0.999755859375" b="-0.013641357421875" c="-0.013641357421875" d="0.999755859375" tx="135" ty="37.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="118" centerPoint3DY="70.5">
+                  <matrix>
+                    <Matrix a="-0.996109008789063" b="0.0831298828125" c="0.0831298828125" d="0.996109008789063" tx="137.1" ty="52.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.8" y="17"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="121.8" centerPoint3DY="86.95">
+                  <matrix>
+                    <Matrix a="-0.983062744140625" b="0.178558349609375" c="0.178558349609375" d="0.983062744140625" tx="139" ty="66.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.8" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="125.4" centerPoint3DY="104.15">
+                  <matrix>
+                    <Matrix a="-0.9609375" b="0.276321411132813" c="0.276321411132813" d="0.9609375" tx="140.6" ty="81.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="125.4" centerPoint3DY="104.15">
+                  <matrix>
+                    <Matrix a="-0.9609375" b="0.276321411132813" c="0.276321411132813" d="0.9609375" tx="140.6" ty="81.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="123.5" centerPoint3DY="98.8">
+                  <matrix>
+                    <Matrix a="-0.969207763671875" b="0.242538452148438" c="0.242538452148438" d="0.969207763671875" tx="139.4" ty="76.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="121.55" centerPoint3DY="93.4">
+                  <matrix>
+                    <Matrix a="-0.976638793945313" b="0.2086181640625" c="0.2086181640625" d="0.976638793945313" tx="138.25" ty="72.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="119.55" centerPoint3DY="88.05">
+                  <matrix>
+                    <Matrix a="-0.982742309570313" b="0.17791748046875" c="0.17791748046875" d="0.982742309570313" tx="136.95" ty="67.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="117.7" centerPoint3DY="82.35">
+                  <matrix>
+                    <Matrix a="-0.98895263671875" b="0.147491455078125" c="0.147491455078125" d="0.98895263671875" tx="135.7" ty="62.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右后腿2" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="141.1" centerPoint3DY="41.1">
+                  <matrix>
+                    <Matrix a="-0.96270751953125" b="0.270172119140625" c="0.270172119140625" d="0.96270751953125" tx="148.8" ty="16.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="145.55" centerPoint3DY="54.05">
+                  <matrix>
+                    <Matrix a="-0.918807983398438" b="0.39141845703125" c="0.39141845703125" d="0.918807983398438" tx="149.95" ty="28.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="150" centerPoint3DY="67">
+                  <matrix>
+                    <Matrix a="-0.858963012695313" b="0.507492065429688" c="0.507492065429688" d="0.858963012695313" tx="151" ty="40.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="154.4" centerPoint3DY="79.95">
+                  <matrix>
+                    <Matrix a="-0.784713745117188" b="0.6153564453125" c="0.6153564453125" d="0.784713745117188" tx="152" ty="54.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="158.9" centerPoint3DY="93.35">
+                  <matrix>
+                    <Matrix a="-0.698638916015625" b="0.715316772460938" c="0.715316772460938" d="0.698638916015625" tx="153.2" ty="67.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.25" y="22.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="158.9" centerPoint3DY="93.35">
+                  <matrix>
+                    <Matrix a="-0.698638916015625" b="0.715316772460938" c="0.715316772460938" d="0.698638916015625" tx="153.2" ty="67.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.25" y="22.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="156.35" centerPoint3DY="91.4">
+                  <matrix>
+                    <Matrix a="-0.785430908203125" b="0.616195678710938" c="0.616195678710938" d="0.785430908203125" tx="154.15" ty="65.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.35" y="22.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="153.9" centerPoint3DY="89.6">
+                  <matrix>
+                    <Matrix a="-0.858642578125" b="0.5074462890625" c="0.5074462890625" d="0.858642578125" tx="155.2" ty="63.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.35" y="22.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="151.4" centerPoint3DY="87.8">
+                  <matrix>
+                    <Matrix a="-0.917755126953125" b="0.390731811523438" c="0.390731811523438" d="0.917755126953125" tx="156.2" ty="61.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="22.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="149.1" centerPoint3DY="85.6">
+                  <matrix>
+                    <Matrix a="-0.96270751953125" b="0.270172119140625" c="0.270172119140625" d="0.96270751953125" tx="156.8" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右后腿3" color="#FF4F4F" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="150.6" centerPoint3DY="62.35">
+                  <matrix>
+                    <Matrix a="-0.965927124023438" b="-0.258377075195313" c="-0.258377075195313" d="0.965927124023438" tx="166.4" ty="56.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="157.1" centerPoint3DY="74">
+                  <matrix>
+                    <Matrix a="-0.980667114257813" b="-0.191757202148438" c="-0.191757202148438" d="0.980667114257813" tx="172.45" ty="67.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="163.8" centerPoint3DY="85.65">
+                  <matrix>
+                    <Matrix a="-0.990982055664063" b="-0.126663208007813" c="-0.126663208007813" d="0.990982055664063" tx="178.65" ty="78.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="170.35" centerPoint3DY="97.45">
+                  <matrix>
+                    <Matrix a="-0.997360229492188" b="-0.0615997314453125" c="-0.0615997314453125" d="0.997360229492188" tx="184.65" ty="88.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.45" y="9.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="176.9" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="190.65" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="176.9" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="190.65" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="172.85" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.9998779296875" b="0.0001068115234375" c="0.0001068115234375" d="0.9998779296875" tx="186.6" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="168.8" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.9998779296875" b="4.57763671875e-005" c="4.57763671875e-005" d="0.9998779296875" tx="182.55" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="164.75" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="6.103515625e-005" c="6.103515625e-005" d="0.999893188476563" tx="178.5" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="160.65" centerPoint3DY="109.2">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="174.4" ty="99.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左后腿1" color="#4FFFFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="44.9" centerPoint3DY="48.9">
+                  <matrix>
+                    <Matrix a="0.930206298828125" b="-0.366729736328125" c="0.366729736328125" d="0.930206298828125" tx="19.65" ty="40.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="51.5" centerPoint3DY="58.5">
+                  <matrix>
+                    <Matrix a="0.98333740234375" b="-0.177993774414063" c="0.177993774414063" d="0.98333740234375" tx="28.35" ty="45.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="58.1" centerPoint3DY="68.1">
+                  <matrix>
+                    <Matrix a="0.999343872070313" b="0.01409912109375" c="-0.01409912109375" d="0.999343872070313" tx="37.9" ty="50.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="64.8" centerPoint3DY="77.65">
+                  <matrix>
+                    <Matrix a="0.977005004882813" b="0.208465576171875" c="-0.208465576171875" d="0.977005004882813" tx="48.35" ty="56.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.7" y="16.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="71.55" centerPoint3DY="87.4">
+                  <matrix>
+                    <Matrix a="0.917083740234375" b="0.398422241210938" c="-0.398422241210938" d="0.917083740234375" tx="59.55" ty="63.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.6" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="71.55" centerPoint3DY="87.4">
+                  <matrix>
+                    <Matrix a="0.917083740234375" b="0.398422241210938" c="-0.398422241210938" d="0.917083740234375" tx="59.55" ty="63.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.6" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="67.4" centerPoint3DY="85.9">
+                  <matrix>
+                    <Matrix a="0.94110107421875" b="0.334732055664063" c="-0.334732055664063" d="0.94110107421875" tx="53.85" ty="63.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.6" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="63.2" centerPoint3DY="84.4">
+                  <matrix>
+                    <Matrix a="0.960662841796875" b="0.271774291992188" c="-0.271774291992188" d="0.960662841796875" tx="48.2" ty="62.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.6" y="17.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="59.05" centerPoint3DY="82.85">
+                  <matrix>
+                    <Matrix a="0.976486206054688" b="0.208343505859375" c="-0.208343505859375" d="0.976486206054688" tx="42.7" ty="62.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.6" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL1" centerPoint3DX="55.25" centerPoint3DY="81.65">
+                  <matrix>
+                    <Matrix a="0.98895263671875" b="0.147491455078125" c="-0.147491455078125" d="0.98895263671875" tx="37.25" ty="61.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.75" y="17.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左后腿2" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="19.5" centerPoint3DY="65.45">
+                  <matrix>
+                    <Matrix a="0.96881103515625" b="-0.247360229492188" c="0.247360229492188" d="0.96881103515625" tx="0.55" ty="47.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="27.4" centerPoint3DY="71.3">
+                  <matrix>
+                    <Matrix a="0.982498168945313" b="-0.182510375976563" c="0.182510375976563" d="0.982498168945313" tx="9.7" ty="52.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="35.4" centerPoint3DY="77.15">
+                  <matrix>
+                    <Matrix a="0.992156982421875" b="-0.117660522460938" c="0.117660522460938" d="0.992156982421875" tx="19" ty="56.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="43.35" centerPoint3DY="83">
+                  <matrix>
+                    <Matrix a="0.997955322265625" b="-0.0525054931640625" c="0.0525054931640625" d="0.997955322265625" tx="28.3" ty="61.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.15" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="51.45" centerPoint3DY="88.65">
+                  <matrix>
+                    <Matrix a="0.99981689453125" b="0.0118255615234375" c="-0.0118255615234375" d="0.99981689453125" tx="37.55" ty="66.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="51.45" centerPoint3DY="88.65">
+                  <matrix>
+                    <Matrix a="0.99981689453125" b="0.0118255615234375" c="-0.0118255615234375" d="0.99981689453125" tx="37.55" ty="66.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="44.55" centerPoint3DY="87.65">
+                  <matrix>
+                    <Matrix a="0.996841430664063" b="0.074859619140625" c="-0.074859619140625" d="0.996841430664063" tx="32.05" ty="64.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.25" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="37.55" centerPoint3DY="86.7">
+                  <matrix>
+                    <Matrix a="0.989486694335938" b="0.1395263671875" c="-0.1395263671875" d="0.989486694335938" tx="26.55" ty="62.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.3" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="30.6" centerPoint3DY="85.8">
+                  <matrix>
+                    <Matrix a="0.977890014648438" b="0.203994750976563" c="-0.203994750976563" d="0.977890014648438" tx="21.25" ty="61.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.25" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL2" centerPoint3DX="23.85" centerPoint3DY="84.9">
+                  <matrix>
+                    <Matrix a="0.96270751953125" b="0.270172119140625" c="-0.270172119140625" d="0.96270751953125" tx="16.15" ty="59.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.2" y="22.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左后腿3" color="#4F80FF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="16.95" centerPoint3DY="91.85">
+                  <matrix>
+                    <Matrix a="-0.965713500976563" b="0.259170532226563" c="0.259170532226563" d="0.965713500976563" tx="27.7" ty="78.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.55" y="9.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="23.25" centerPoint3DY="96.05">
+                  <matrix>
+                    <Matrix a="-0.980010986328125" b="0.1951904296875" c="0.1951904296875" d="0.980010986328125" tx="34.8" ty="83.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="29.55" centerPoint3DY="100.3">
+                  <matrix>
+                    <Matrix a="-0.990478515625" b="0.13055419921875" c="0.13055419921875" d="0.990478515625" tx="41.85" ty="88.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.45" y="9.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="35.85" centerPoint3DY="104.6">
+                  <matrix>
+                    <Matrix a="-0.997100830078125" b="0.0654296875" c="0.0654296875" d="0.997100830078125" tx="48.85" ty="93.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.45" y="9.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="42.05" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="55.8" ty="98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="42.05" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="55.8" ty="98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="34.5" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix a="-0.9998779296875" b="0.0001068115234375" c="0.0001068115234375" d="0.9998779296875" tx="48.25" ty="98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="26.95" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix a="-0.9998779296875" b="4.57763671875e-005" c="4.57763671875e-005" d="0.9998779296875" tx="40.7" ty="98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="19.4" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="6.103515625e-005" c="6.103515625e-005" d="0.999893188476563" tx="33.15" ty="98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="旧型号机器人/杂物/SPL3" centerPoint3DX="11.8" centerPoint3DY="108.5">
+                  <matrix>
+                    <Matrix a="-0.999893188476563" b="0.0004119873046875" c="0.0004119873046875" d="0.999893188476563" tx="25.55" ty="98.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.5" y="9.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

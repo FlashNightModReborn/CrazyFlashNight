@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="备用/Sonic blade" itemID="616559d5-00000458" lastModified="1634032085" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="Sonic blade">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="备用/knife blade" centerPoint3DX="15.8" centerPoint3DY="3.45">
+                  <matrix>
+                    <Matrix ty="0.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.8" y="2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="备用/knife handle" selected="true" centerPoint3DX="35.2" centerPoint3DY="3.45">
+                  <matrix>
+                    <Matrix tx="22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13" y="3.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

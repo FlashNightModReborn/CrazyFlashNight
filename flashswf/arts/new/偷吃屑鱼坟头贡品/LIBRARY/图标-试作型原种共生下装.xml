@@ -1,0 +1,108 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标-试作型原种共生下装" itemID="666b02a7-00000832" linkageExportForAS="true" linkageIdentifier="图标-试作型原种共生下装" lastModified="1718609010" lastUniqueIdentifier="9">
+  <timeline>
+    <DOMTimeline name="图标-试作型原种共生下装">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F707E4" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DE83DA" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E577EE" parentLayerIndex="1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-试作型原种共生下装右大腿" centerPoint3DX="5" centerPoint3DY="1.4">
+                  <matrix>
+                    <Matrix a="0.133941650390625" d="0.133941650390625" tx="4.8" ty="1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-试作型原种共生下装屁股" centerPoint3DX="0.85" centerPoint3DY="-4.05">
+                  <matrix>
+                    <Matrix a="0.133941650390625" d="0.133941650390625" tx="0.25" ty="-4.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-试作型原种共生下装左大腿" centerPoint3DX="-4.25" centerPoint3DY="1.7">
+                  <matrix>
+                    <Matrix a="0.133941650390625" d="0.133941650390625" tx="-3.55" ty="1.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="男变装-试作型原种共生下装右大腿" selected="true" centerPoint3DX="5" centerPoint3DY="1.4">
+                  <matrix>
+                    <Matrix a="0.133941650390625" d="0.133941650390625" tx="4.8" ty="1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-试作型原种共生下装屁股" selected="true" centerPoint3DX="0.85" centerPoint3DY="-4.05">
+                  <matrix>
+                    <Matrix a="0.133941650390625" d="0.133941650390625" tx="0.25" ty="-4.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="男变装-试作型原种共生下装左大腿" selected="true" centerPoint3DX="-4.25" centerPoint3DY="1.7">
+                  <matrix>
+                    <Matrix a="0.133941650390625" d="0.133941650390625" tx="-3.55" ty="1.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#C9BBDA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="借用/Symbol 16 副本 2" selected="true" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

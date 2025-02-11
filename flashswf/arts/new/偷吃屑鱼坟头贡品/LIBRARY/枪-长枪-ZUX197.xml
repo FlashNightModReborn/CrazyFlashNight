@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-长枪-ZUX197" itemID="666eed59-00001250" linkageExportForAS="true" linkageIdentifier="枪-长枪-ZUX197" lastModified="1718545854" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="枪-长枪-ZUX197">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" centerPoint3DX="208.35" centerPoint3DY="-24.4">
+                  <matrix>
+                    <Matrix a="1.43426513671875" d="1.43426513671875" tx="179.55" ty="-52.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="0ZUX197" centerPoint3DX="20" centerPoint3DY="-6">
+                  <matrix>
+                    <Matrix a="3.28607177734375" d="3.28607177734375" tx="-145.55" ty="-49.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.35" y="13.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

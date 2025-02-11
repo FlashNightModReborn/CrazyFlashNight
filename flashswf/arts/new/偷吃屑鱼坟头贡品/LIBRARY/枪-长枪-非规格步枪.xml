@@ -1,0 +1,39 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="枪-长枪-非规格步枪" itemID="6674546d-00000a5e" linkageExportForAS="true" linkageIdentifier="枪-长枪-非规格步枪" lastModified="1718899953" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="枪-长枪-非规格步枪">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/0.area" name="枪口位置" selected="true" centerPoint3DX="208.35" centerPoint3DY="-24.4">
+                  <matrix>
+                    <Matrix a="1.43426513671875" d="1.43426513671875" tx="179.55" ty="-52.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="非规格品" selected="true" centerPoint3DX="77.4" centerPoint3DY="-30">
+                  <matrix>
+                    <Matrix a="3.7742919921875" d="3.7742919921875" tx="-96.9" ty="-109.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="46.2" y="21.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

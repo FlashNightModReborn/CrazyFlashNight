@@ -1,0 +1,144 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="偷吃屑鱼坟头贡品" itemID="65f7dbbb-0000222e" linkageExportForAS="true" linkageIdentifier="偷吃屑鱼坟头贡品" lastModified="1714667557" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="偷吃屑鱼坟头贡品">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#919191"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#C9C9C9"/>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle0="2" edges="!132 575S1|0 703!0 703|485 703!485 703|342 575"/>
+                        <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!342 575S7|132 575"/>
+                        <Edge fillStyle0="1" strokeStyle="1" edges="!342 575S5|342 0!342 0|132 0!132 0|132 575"/>
+                      </edges>
+                    </DOMShape>
+                    <DOMStaticText width="6" height="15" isSelectable="false">
+                      <matrix>
+                        <Matrix tx="8.85" ty="6.65"/>
+                      </matrix>
+                      <textRuns>
+                        <DOMTextRun>
+                          <characters>偷吃屑鱼坟头贡品</characters>
+                          <textAttrs>
+                            <DOMTextAttrs aliasText="false" lineSpacing="1" size="3" bitmapSize="60" face="SimHei" fillColor="#990000"/>
+                          </textAttrs>
+                        </DOMTextRun>
+                        <DOMTextRun>
+                          <characters></characters>
+                          <textAttrs>
+                            <DOMTextAttrs aliasText="false" lineSpacing="1" size="3" bitmapSize="60" face="SimHei" fillColor="#990000"/>
+                          </textAttrs>
+                        </DOMTextRun>
+                      </textRuns>
+                    </DOMStaticText>
+                    <DOMGroup>
+                      <members>
+                        <DOMShape>
+                          <fills>
+                            <FillStyle index="1">
+                              <SolidColor color="#B8B8B8"/>
+                            </FillStyle>
+                            <FillStyle index="2">
+                              <SolidColor color="#CCCCCC"/>
+                            </FillStyle>
+                          </fills>
+                          <strokes>
+                            <StrokeStyle index="1">
+                              <SolidStroke scaleMode="normal" weight="0.25">
+                                <fill>
+                                  <SolidColor/>
+                                </fill>
+                              </SolidStroke>
+                            </StrokeStyle>
+                          </strokes>
+                          <edges>
+                            <Edge fillStyle0="2" strokeStyle="1" edges="!142 610|167 692!167 692[241 714 315 692!315 692|335 610"/>
+                            <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!335 610[239 630 142 610"/>
+                            <Edge fillStyle0="1" strokeStyle="1" edges="!335 610[239 592 142 610"/>
+                          </edges>
+                        </DOMShape>
+                        <DOMGroup>
+                          <transformationPoint>
+                            <Point x="11.95" y="29.55"/>
+                          </transformationPoint>
+                          <members>
+                            <DOMShape>
+                              <transformationPoint>
+                                <Point x="11.95" y="29.55"/>
+                              </transformationPoint>
+                              <fills>
+                                <FillStyle index="1">
+                                  <SolidColor color="#FFFFFF"/>
+                                </FillStyle>
+                              </fills>
+                              <strokes>
+                                <StrokeStyle index="1">
+                                  <SolidStroke scaleMode="normal" weight="0.25">
+                                    <fill>
+                                      <SolidColor/>
+                                    </fill>
+                                  </SolidStroke>
+                                </StrokeStyle>
+                              </strokes>
+                              <edges>
+                                <Edge fillStyle1="1" strokeStyle="1" edges="!149 605[235 541 331 605!331 605[232 628 149 605"/>
+                              </edges>
+                            </DOMShape>
+                          </members>
+                        </DOMGroup>
+                        <DOMGroup>
+                          <members>
+                            <DOMShape>
+                              <strokes>
+                                <StrokeStyle index="1">
+                                  <SolidStroke scaleMode="normal" weight="0.5">
+                                    <fill>
+                                      <SolidColor color="#CC6600"/>
+                                    </fill>
+                                  </SolidStroke>
+                                </StrokeStyle>
+                              </strokes>
+                              <edges>
+                                <Edge strokeStyle="1" edges="!138 263|199 578!242 205|242 578!351 240|274 580"/>
+                              </edges>
+                            </DOMShape>
+                          </members>
+                        </DOMGroup>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

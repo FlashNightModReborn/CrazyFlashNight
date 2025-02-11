@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="杂剑刃" itemID="6674418e-000002c8" lastModified="1718894990">
+  <timeline>
+    <DOMTimeline name="杂剑刃">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMShape>
+                      <fills>
+                        <FillStyle index="1">
+                          <SolidColor color="#C20000"/>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <SolidColor color="#FFFFFF"/>
+                        </FillStyle>
+                      </fills>
+                      <edges>
+                        <Edge fillStyle1="2" edges="!994 38|994 53"/>
+                        <Edge fillStyle1="1" edges="!994 53[991 81 977 92!977 92|0 46!0 46|974 0!974 0[994 17 994 38"/>
+                        <Edge fillStyle0="1" fillStyle1="2" edges="!994 53|249 46!249 46|994 38"/>
+                        <Edge cubics="!994 38(994,38;994,38 994,53 994,53q994 38 994 53);"/>
+                        <Edge cubics="!974 0(;987,11 994,24 994,38q974 0Q994 17q994 38);"/>
+                        <Edge cubics="!994 53(;992,72 986,85 977,92q994 53Q991 81q977 92);"/>
+                        <Edge cubics="!0 46(;0,46 974,0 974,0q0 46 974 0);"/>
+                        <Edge cubics="!977 92(;977,92 0,46 0,46q977 92 0 46);"/>
+                        <Edge cubics="!994 53(;994,53 249,46 249,46q994 53 249 46);"/>
+                        <Edge cubics="!249 46(;249,46 994,38 994,38q249 46 994 38);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

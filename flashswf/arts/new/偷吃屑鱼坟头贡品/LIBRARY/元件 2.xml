@@ -1,0 +1,152 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="元件 2" itemID="66541b57-000006cc" lastModified="1716790445" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="元件 2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="ARMS shoulder cannon" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.802810668945313" b="-0.596099853515625" c="0.596115112304688" d="-0.802825927734375" tx="75.25" ty="131.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.15" y="41.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="补间 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.785003662109375" b="-0.61944580078125" c="0.619461059570313" d="-0.785018920898438" tx="35.85" ty="33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS arm2back" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.829010009765625" b="0.5592041015625" c="-0.5592041015625" d="-0.829010009765625" tx="23.4" ty="28.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.95" y="2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="补间 11" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.991424560546875" b="0.130233764648438" c="-0.130233764648438" d="-0.991424560546875" tx="27.3" ty="40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.65" y="-12.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS footA2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.866043090820313" b="0.49713134765625" c="-0.49713134765625" d="0.866043090820313" tx="54.75" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.15" y="14.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS leg2A" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.839111328125" b="0.541183471679688" c="-0.541183471679688" d="0.839111328125" tx="89.5" ty="64.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.05" y="45.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS legbackB" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.504058837890625" b="-0.861968994140625" c="0.861968994140625" d="0.504058837890625" tx="55.75" ty="71.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.2" y="44.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS crotchA" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.458206176757813" b="-0.887283325195313" c="0.887283325195313" d="0.458206176757813" tx="49.5" ty="74.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.85" y="14.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS torsoAB" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.60919189453125" b="-0.790985107421875" c="0.790985107421875" d="0.60919189453125" tx="12.85" ty="63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.75" y="38.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS headB3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.419448852539063" b="-0.906402587890625" c="0.906402587890625" d="0.419448852539063" ty="42.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.8" y="17.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS footA2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.131439208984375" b="-0.990921020507813" c="0.990921020507813" d="0.131439208984375" tx="125.45" ty="74.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="26.1" y="14.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS leg2A" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.276077270507813" b="-0.960189819335938" c="0.960189819335938" d="-0.276077270507813" tx="96.2" ty="70"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.65" y="45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS legfrontB" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.688705444335938" b="-0.72271728515625" c="0.72271728515625" d="-0.688705444335938" tx="74.15" ty="95.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.95" y="9.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="补间 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.836669921875" b="-0.54766845703125" c="0.54766845703125" d="-0.836669921875" tx="12.9" ty="13.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-32.4" y="5.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="ARMS arm2front" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.915130615234375" b="0.4029541015625" c="-0.4029541015625" d="-0.915130615234375" tx="65.85" ty="52.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.6" y="1.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="补间 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.915924072265625" b="-0.401260375976563" c="0.401260375976563" d="-0.915924072265625" tx="44.4" ty="60.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.8" y="-9.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="MISSILE SHOULDER ARMOR" centerPoint3DX="47.6" centerPoint3DY="70.75">
+                  <matrix>
+                    <Matrix a="-0.949188232421875" b="-0.314620971679688" c="0.314620971679688" d="-0.949188232421875" tx="60.65" ty="111.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.95" y="28.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

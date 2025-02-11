@@ -1,0 +1,77 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="死者之手握柄2" itemID="66743f3e-00000255" lastModified="1718894398">
+  <timeline>
+    <DOMTimeline name="死者之手握柄2">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMShape selected="true">
+                      <fills>
+                        <FillStyle index="1">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="-0.0020751953125" c="0.00250244140625" d="0" tx="-34.8" ty="2.75"/>
+                            </matrix>
+                            <GradientEntry color="#2E2E2E" ratio="0"/>
+                            <GradientEntry color="#353535" ratio="0.372549019607843"/>
+                            <GradientEntry color="#232323" ratio="0.635294117647059"/>
+                            <GradientEntry color="#484848" ratio="0.858823529411765"/>
+                            <GradientEntry color="#383838" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                        <FillStyle index="2">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0" b="-0.0020751953125" c="0.00250244140625" d="0" tx="12.95" ty="2.75"/>
+                            </matrix>
+                            <GradientEntry color="#2E2E2E" ratio="0"/>
+                            <GradientEntry color="#353535" ratio="0.372549019607843"/>
+                            <GradientEntry color="#232323" ratio="0.635294117647059"/>
+                            <GradientEntry color="#484848" ratio="0.858823529411765"/>
+                            <GradientEntry color="#383838" ratio="1"/>
+                          </LinearGradient>
+                        </FillStyle>
+                      </fills>
+                      <strokes>
+                        <StrokeStyle index="1">
+                          <SolidStroke scaleMode="normal" weight="0.25">
+                            <fill>
+                              <SolidColor/>
+                            </fill>
+                          </SolidStroke>
+                        </StrokeStyle>
+                      </strokes>
+                      <edges>
+                        <Edge fillStyle1="1" strokeStyle="1" edges="!176 14S6|1144 14!1144 14|1156 0!1156 0|1231 0!1231 0[1248 64 1231 109!1231 109|1162 109!1162 109|1159 109!1159 109|1144 96!1144 96|176 96"/>
+                        <Edge fillStyle1="2" strokeStyle="1" edges="!176 96S6|0 96!0 96|0 14!0 14|176 14"/>
+                        <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!1144 14S7[1156 55 1144 96!1156 0[1176 46 1162 109"/>
+                        <Edge fillStyle0="2" fillStyle1="1" edges="!176 96S3|176 14"/>
+                        <Edge cubics="!176 96(176,96;176,96 0,96 0,96q176 96 0 96)0,96;"/>
+                        <Edge cubics="!0 14(0,14;0,14 176,14 176,14q0 14 176 14)176,14;"/>
+                        <Edge cubics="!1144 14(;1144,14 1156,0 1156,0q1144 14 1156 0);"/>
+                        <Edge cubics="!1156 0(1156,0;1156,0 1231,0 1231,0q1156 0 1231 0)1231,0;"/>
+                        <Edge cubics="!1231 0(;1242,43 1242,79 1231,109q1231 0Q1248 64q1231 109);"/>
+                        <Edge cubics="!1231 109(;1231,109 1162,109 1162,109q1231 109 1162 109);"/>
+                        <Edge cubics="!1162 109(;1162,109 1159,109 1159,109q1162 109 1159 109);"/>
+                        <Edge cubics="!1159 109(;1159,109 1144,96 1144,96q1159 109 1144 96);"/>
+                        <Edge cubics="!1144 14(;1152,41 1152,69 1144,96q1144 14Q1156 55q1144 96);"/>
+                        <Edge cubics="!1156 0(;1169,31 1171,67 1162,109q1156 0Q1176 46q1162 109);"/>
+                        <Edge cubics="!176 96(;176,96 176,14 176,14q176 96 176 14);"/>
+                        <Edge cubics="!0 96(;0,96 0,14 0,14q0 96 0 14);"/>
+                        <Edge cubics="!176 14(;176,14 1144,14 1144,14q176 14 1144 14);"/>
+                        <Edge cubics="!1144 96(1144,96;1144,96 176,96 176,96q1144 96 176 96);"/>
+                      </edges>
+                    </DOMShape>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
