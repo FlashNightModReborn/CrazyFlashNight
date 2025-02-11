@@ -1,90 +1,108 @@
 ﻿import org.flashNight.neur.Event.*;
 
 _root.加载后景 = function(环境信息){
-	var 禁用天空 = 环境信息.空间情况 == "室内" || 环境信息.禁用天空;
-	var gameWorld = _root.gameworld;
-	_root.天空盒.默认天空._visible = !禁用天空;
-	if(禁用天空 && !环境信息.后景){
-		_root.启用后景 = false;
-		return;
-	}
-	_root.启用后景 = true;
-	_root.天空盒.地平线高度 = 环境信息.地平线高度;
-
-	if(!环境信息.后景){
-		_root.卸载后景();
-		return;
-	}
-	if(!_root.天空盒.后景列表) {
-		_root.天空盒.后景列表 = [];
-		_root.天空盒.后景移动速度列表 = [];
-	}
-	//对后景进行排序
-	var maxSpeedRate = 32;
-	var gwx:Number = gameWorld._x;
-	var infoObj:Object;
-	for(var i = 0; i<环境信息.后景.length; i++){
-		var url = "flashswf/skybox/" + 环境信息.后景[i].url;
-		var speedrate = 环境信息.后景[i].SpeedRate;
-		if(speedrate > maxSpeedRate - 1) speedrate = maxSpeedRate - 1;
-		var depth = speedrate <= 0 ? 0 : maxSpeedRate - speedrate;
-		var bgMc = _root.天空盒.createEmptyMovieClip("后景"+i, depth);
-		bgMc.loadMovie(url);
-		bgMc._x = gwx / speedrate;
-		_root.天空盒.后景列表.push(bgMc);
-
-		if(speedrate > 0)
-		{
-			infoObj = {};
-			infoObj.speedrate = speedrate;
-			infoObj.mc = bgMc;
-			// ======================================================
-			// 分帧延迟计算公式说明
-			// ------------------------------------------------------
-			// 设计目标：在保持视觉连续性的前提下，通过分帧渲染优化性能
-			// 参数定义：
-			//   speedrate - 后景与主世界的移动速度比值（N:1）
-			//               示例：speedrate=4 表示后景移动速度是主世界的1/4
-			// 延迟策略：
-			//   speedrate ≤4 时：每帧渲染（delay=0）
-			//   speedrate >4 时：按指数阶梯增加渲染间隔
-			// ======================================================
-
-			infoObj.delay = (speedrate <= 4) ? 
-				0 : // 保持每帧渲染，确保快速移动元素的视觉流畅性
-				Math.floor( 
-					Math.log(speedrate / 2) / Math.LN2 // 核心计算公式说明：
-					// 1. speedrate/2：将基准值调整为2的幂次增长起点
-					//    （当speedrate=8时：8/2=4 → 2^2 → delay=2）
-					// 2. log计算：获取达到当前速度比所需的2的幂次数
-					// 3. floor：取整保证离散的阶梯变化
-				);
-
-			// ================= 数值映射示例 =================
-			// speedrate | 计算过程             | delay | 实际渲染间隔（帧）
-			// --------------------------------------------------
-			// 4        | 条件判断              | 0     | 1
-			// 5        | log₂(5/2)=1.32 →1    | 1     | 2
-			// 8        | log₂(8/2)=2 →2       | 2     | 3
-			// 12       | log₂(12/2)=2.58 →2   | 2     | 3
-			// 16       | log₂(16/2)=3 →3      | 3     | 4
-			// 32       | log₂(32/2)=4 →4      | 4     | 5
-
-			// ============= 公式特性说明 =============
-			// 视觉连续性保障：
-			//   - 人眼对慢速运动（speedrate>16）的帧率下降不敏感
-			//   - 人眼对信息变化的敏感度呈对数衰减
-			// 注意事项：
-			//   当speedrate从4提升到5，或者从7提升到8，15提升到16,31提升到32，渲染间隔都会增加
-			//   可通过将除数调整为3来调节阈值：Math.log(speedrate/3)
-
-			_root.天空盒.后景移动速度列表.push(infoObj);
-		}
-		
-	}
-	
-	_root.天空盒._y = _root.gameworld._y + 环境信息.地平线高度;
+    // 根据环境信息判断是否禁用天空效果：
+    // 当处于室内环境或明确设置禁用天空时，隐藏默认天空
+    var 禁用天空 = 环境信息.空间情况 == "室内" || 环境信息.禁用天空;
+    var gameWorld = _root.gameworld;
+    _root.天空盒.默认天空._visible = !禁用天空;
+    
+    // 如果禁用天空且没有后景配置，则关闭后景功能并退出
+    if(禁用天空 && !环境信息.后景){
+        _root.启用后景 = false;
+        return;
+    }
+    
+    _root.启用后景 = true;
+    // 设置天空盒的地平线高度，后续用于调整天空盒的垂直位置
+    _root.天空盒.地平线高度 = 环境信息.地平线高度;
+    
+    // 如果没有后景配置，则卸载当前后景并退出
+    if(!环境信息.后景){
+        _root.卸载后景();
+        return;
+    }
+    
+    // 初始化后景列表和后景移动速度列表（若尚未初始化）
+    if(!_root.天空盒.后景列表) {
+        _root.天空盒.后景列表 = [];
+        _root.天空盒.后景移动速度列表 = [];
+    }
+    
+    // 设置后景的最大速度比阈值（有效 speedrate 最大为 maxSpeedRate - 1）
+    var maxSpeedRate = 32;
+    var gwx:Number = gameWorld._x;  // 获取游戏世界的 x 坐标，用于计算后景的初始水平位置
+    
+    // 遍历每个后景配置，根据 speedrate 设置其深度和初始位置，实现视差效果
+    var infoObj:Object;
+    for(var i = 0; i < 环境信息.后景.length; i++){
+        // 构造后景 SWF 文件的 URL 路径
+        var url = "flashswf/skybox/" + 环境信息.后景[i].url;
+        var speedrate = 环境信息.后景[i].SpeedRate;
+        
+        // 限制 speedrate 的最大值，确保其不超过 (maxSpeedRate - 1)
+        if(speedrate > maxSpeedRate - 1) {
+            speedrate = maxSpeedRate - 1;
+        }
+        
+        // 计算 MovieClip 的深度：
+        //   - 当 speedrate ≤ 0 时，设定深度为 0（前景层）
+        //   - 当 speedrate > 0 时，深度设为 maxSpeedRate - speedrate，
+        //     使得 speedrate 越大（后景移动越慢）的图层越靠后
+        var depth = speedrate <= 0 ? 0 : maxSpeedRate - speedrate;
+        
+        // 创建一个空 MovieClip 承载后景，并加载指定的 SWF 文件
+        var bgMc = _root.天空盒.createEmptyMovieClip("后景" + i, depth);
+        bgMc.loadMovie(url);
+        
+        // 根据游戏世界的 x 坐标和 speedrate 计算后景的初始水平位置，实现视差效果
+        bgMc._x = gwx / speedrate;
+        _root.天空盒.后景列表.push(bgMc);
+        
+        // 对于有效的 speedrate（大于 0），计算并记录渲染延迟信息，用于分帧渲染以优化性能
+        if(speedrate > 0)
+        {
+            infoObj = {};
+            infoObj.speedrate = speedrate;
+            infoObj.mc = bgMc;
+            
+            // ======================================================
+            // 分帧渲染延迟计算公式说明
+            // ------------------------------------------------------
+            // 设计目标：在保证视觉连续性的前提下，通过降低更新频率来优化性能
+            //
+            // 参数说明：
+            //   speedrate - 后景与主世界的移动速度比例
+            //               例如：speedrate = 4 表示后景移动速度为主世界的 1/4
+            //
+            // 延迟策略：
+            //   当 speedrate ≤ 4 时，后景每帧渲染（delay = 1，表示无延迟）
+            //   当 speedrate > 4 时，延迟值按以下公式计算：
+            //     delay = Math.ceil( Math.log(speedrate / 2) / Math.LN2 )
+            //
+            // 计算示例：
+            //   speedrate = 4  -> delay = 1  （每帧渲染）
+            //   speedrate = 5  -> delay ≈ Math.ceil(Math.log(5/2)/Math.LN2) = 2
+            //   speedrate = 8  -> delay = Math.ceil(Math.log(8/2)/Math.LN2) = 2
+            //   speedrate = 12 -> delay ≈ 3
+            //   speedrate = 16 -> delay = 3
+            //   speedrate = 32 -> delay = 4
+            //
+            // 该策略确保高速后景保持流畅，而对于低速后景则通过增加渲染间隔来降低性能消耗
+            // ======================================================
+            
+            infoObj.delay = (speedrate <= 4) ? 
+                1 : // 当 speedrate ≤ 4 时，每帧渲染
+                Math.ceil( Math.log(speedrate / 2) / Math.LN2 );
+            
+            _root.天空盒.后景移动速度列表.push(infoObj);
+        }
+    }
+    
+    // 根据游戏世界的 y 坐标和地平线高度，调整天空盒的垂直位置
+    _root.天空盒._y = _root.gameworld._y + 环境信息.地平线高度;
 }
+
 
 EventBus.getInstance().subscribe("SceneChanged", function()
 {
