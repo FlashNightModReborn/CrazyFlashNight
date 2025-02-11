@@ -165,19 +165,16 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
     return bulletInstance;
 }
 
-// 在子弹创建函数中注入调试钩子，记录每个关卡的子弹创建统计信息
+// 改进后的子弹统计钩子
+// 增强报告生成代码
 _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
     var 游戏世界 = _root.gameworld;
     var 散射角度 = Obj.近战检测 ? 0 : 射击角度 + (Obj.联弹检测 ? 0 : _root.随机偏移(Obj.子弹散射度));
     var 形状偏角 = 0;
     if(Obj.ZY比例 && Obj.速度X && Obj.速度Y){
         形状偏角 = Math.atan2(Obj.速度Y, Obj.速度X) * (180 / Math.PI);
-        if (形状偏角 < 0) {
-            形状偏角 += 360;
-        }
-    } else {
-        形状偏角 = 散射角度;
-    }
+        if (形状偏角 < 0) { 形状偏角 += 360; }
+    } else { 形状偏角 = 散射角度; }
     Obj._rotation = 形状偏角;
     var angle = 散射角度 * (Math.PI / 180);
     var bulletInstance;
@@ -189,22 +186,32 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
         var b_name = Obj.发射者名 + Obj.子弹种类 + depth + 散射角度 + _root.子弹生成计数;
         bulletInstance = 游戏世界.子弹区域.attachMovie(Obj.baseAsset, b_name, depth, Obj);
     }
+
     bulletInstance.xmov = bulletInstance.子弹速度 * Math.cos(angle);
     bulletInstance.ymov = bulletInstance.子弹速度 * Math.sin(angle);
     bulletInstance.霰弹值 = Obj.联弹检测 ? Obj.霰弹值 : 1;
 
     /*
 
-    // 初始化子弹统计信息，如果没有则创建
+    var report_len = 16;
+
+    // 初始化统计信息（如果没有）
     if (!游戏世界.bulletStats) {
         游戏世界.bulletStats = {
             shooters: {},
             bulletTypes: {},
-            totalShots: 0
+            totalShots: 0,
+            timeStats: {},
+            unitShots: {},
+            lastSecondStats: {
+                shooters: {},
+                bulletTypes: {},
+                totalShots: 0
+            }
         };
     }
 
-    // 跟踪每个发射者的子弹数量
+    // 增加单位发射数量
     if (!游戏世界.bulletStats.shooters[shooter]) {
         游戏世界.bulletStats.shooters[shooter] = {
             shotCount: 0,
@@ -213,7 +220,7 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
     }
     游戏世界.bulletStats.shooters[shooter].shotCount++;
 
-    // 跟踪每种子弹类型的发射数量
+    // 增加子弹类型发射数量
     if (!游戏世界.bulletStats.bulletTypes[Obj.子弹种类]) {
         游戏世界.bulletStats.bulletTypes[Obj.子弹种类] = {
             shotCount: 0,
@@ -222,68 +229,122 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
     }
     游戏世界.bulletStats.bulletTypes[Obj.子弹种类].shotCount++;
 
-    // 记录每个发射者对应的子弹类型数量
-    if (!游戏世界.bulletStats.bulletTypes[Obj.子弹种类].shooters[shooter]) {
-        游戏世界.bulletStats.bulletTypes[Obj.子弹种类].shooters[shooter] = 0;
-    }
-    游戏世界.bulletStats.bulletTypes[Obj.子弹种类].shooters[shooter]++;
-
-    // 增加总发射的子弹数量
+    // 增加全局子弹统计
     游戏世界.bulletStats.totalShots++;
 
-    // 每秒汇总一次统计信息（30帧）
-    if (_root.帧计时器 && Math.floor(_root.帧计时器.当前帧数 / 30) % 1 == 0) {
-        var report = "子弹创建统计报告：\n";
+    // 时间统计：跟踪每一帧创建的子弹数量
+    var currentFrame = _root.帧计时器.当前帧数;
+    var currentSecond = Math.floor(currentFrame / 30);
+    if (!游戏世界.bulletStats.timeStats[currentSecond]) {
+        游戏世界.bulletStats.timeStats[currentSecond] = {
+            totalShots: 0,
+            shooters: {}
+        };
+    }
+    游戏世界.bulletStats.timeStats[currentSecond].totalShots++;
+    if (!游戏世界.bulletStats.timeStats[currentSecond].shooters[shooter]) {
+        游戏世界.bulletStats.timeStats[currentSecond].shooters[shooter] = 0;
+    }
+    游戏世界.bulletStats.timeStats[currentSecond].shooters[shooter]++;
 
-        // 按照发射数量对发射者进行排序
+    // 增加每个单位的子弹创建数量
+    if (!游戏世界.bulletStats.unitShots[shooter]) {
+        游戏世界.bulletStats.unitShots[shooter] = {
+            shotCount: 0,
+            bulletTypes: {}
+        };
+    }
+    游戏世界.bulletStats.unitShots[shooter].shotCount++;
+    if (!游戏世界.bulletStats.unitShots[shooter].bulletTypes[Obj.子弹种类]) {
+        游戏世界.bulletStats.unitShots[shooter].bulletTypes[Obj.子弹种类] = 0;
+    }
+    游戏世界.bulletStats.unitShots[shooter].bulletTypes[Obj.子弹种类]++;
+
+    // 每秒汇总一次统计信息
+    if (currentFrame % 30 == 0) {
+        var report = "子弹创建与发射频率分析报告：\n";
+
+        // 发射者排行（按发射数量）
         var sortedShooters = [];
         for (var shooterName in 游戏世界.bulletStats.shooters) {
             sortedShooters.push({ name: shooterName, count: 游戏世界.bulletStats.shooters[shooterName].shotCount });
         }
         sortedShooters.sort(function(a, b) { return b.count - a.count; });
 
-        // 发射者的发射数量统计
-        report += "发射者排行：\n";
-        for (var i = 0; i < Math.min(10, sortedShooters.length); i++) {
+        report += "发射者排行（按发射数量）：\n";
+        for (var i = 0; i < Math.min(report_len, sortedShooters.length); i++) {
             var shooterSummary = sortedShooters[i];
             report += shooterSummary.name + ": " + shooterSummary.count + " 发射\n";
-            
+
             // 每个发射者发射的子弹类型统计
-            var shooterBulletTypes = 游戏世界.bulletStats.shooters[shooterSummary.name].bulletTypes;
-            for (var bulletType in shooterBulletTypes) {
-                report += shooterSummary.name + " -> " + bulletType + ": " + shooterBulletTypes[bulletType] + " 发射\n";
+            for (var bulletType in 游戏世界.bulletStats.shooters[shooterSummary.name].bulletTypes) {
+                report += "  -> " + bulletType + ": " + 游戏世界.bulletStats.shooters[shooterSummary.name].bulletTypes[bulletType] + " 发射\n";
             }
         }
 
-        // 按照发射数量对子弹类型进行排序
+        // 子弹类型排行（按发射数量）
         var sortedBulletTypes = [];
         for (var bulletType in 游戏世界.bulletStats.bulletTypes) {
             sortedBulletTypes.push({ name: bulletType, count: 游戏世界.bulletStats.bulletTypes[bulletType].shotCount });
         }
         sortedBulletTypes.sort(function(a, b) { return b.count - a.count; });
 
-        // 子弹类型的发射数量统计
-        report += "子弹类型排行：\n";
-        for (var i = 0; i < Math.min(5, sortedBulletTypes.length); i++) {
+        report += "子弹类型排行（按发射数量）：\n";
+        for (var i = 0; i < Math.min(report_len, sortedBulletTypes.length); i++) {
             var bulletTypeSummary = sortedBulletTypes[i];
             report += bulletTypeSummary.name + ": " + bulletTypeSummary.count + " 发射\n";
-            
-            // 每种子弹类型对应的发射者统计
-            var bulletTypeShooters = 游戏世界.bulletStats.bulletTypes[bulletTypeSummary.name].shooters;
-            for (var shooterName in bulletTypeShooters) {
-                report += bulletTypeSummary.name + " -> " + shooterName + ": " + bulletTypeShooters[shooterName] + " 发射\n";
+        }
+
+        // 最多创建子弹的单位（按创建子弹数量）
+        var sortedUnitShots = [];
+        for (var unitName in 游戏世界.bulletStats.unitShots) {
+            sortedUnitShots.push({ name: unitName, count: 游戏世界.bulletStats.unitShots[unitName].shotCount });
+        }
+        sortedUnitShots.sort(function(a, b) { return b.count - a.count; });
+
+        report += "最多创建子弹的单位排行：\n";
+        for (var i = 0; i < Math.min(report_len, sortedUnitShots.length); i++) {
+            var unitSummary = sortedUnitShots[i];
+            report += unitSummary.name + ": " + unitSummary.count + " 次创建\n";
+
+            // 每个单位创建的子弹类型统计
+            for (var bulletType in 游戏世界.bulletStats.unitShots[unitSummary.name].bulletTypes) {
+                report += "  -> " + bulletType + ": " + 游戏世界.bulletStats.unitShots[unitSummary.name].bulletTypes[bulletType] + " 次创建\n";
             }
         }
 
-        // 总子弹数量统计
-        report += "总子弹数量: " + 游戏世界.bulletStats.totalShots + "\n";
+        // 每秒子弹创建频率分析
+        report += "\n每秒子弹创建频率分析：\n";
+        var sortedTimeStats = [];
+        for (var second in 游戏世界.bulletStats.timeStats) {
+            var timeData = 游戏世界.bulletStats.timeStats[second];
+            sortedTimeStats.push({ second: second, shotCount: timeData.totalShots });
+        }
+        sortedTimeStats.sort(function(a, b) { return b.shotCount - a.shotCount; });
 
-        // 统一发送汇总后的统计信息
+        for (var i = 0; i < Math.min(report_len, sortedTimeStats.length); i++) {
+            var timeSummary = sortedTimeStats[i];
+            report += "第 " + timeSummary.second + " 秒: " + timeSummary.shotCount + " 子弹创建\n";
+
+            // 每秒区间内的发射者发射情况
+            for (var shooterName in 游戏世界.bulletStats.timeStats[timeSummary.second].shooters) {
+                report += "  发射者 " + shooterName + ": " + 游戏世界.bulletStats.timeStats[timeSummary.second].shooters[shooterName] + " 发射\n";
+            }
+        }
+
+        // 总子弹数量（全局）
+        report += "总子弹数量（全局）: " + 游戏世界.bulletStats.totalShots + "\n";
+
+        // 发送汇总后的统计信息
         _root.服务器.发布服务器消息(report);
     }
+
     */
+
     return bulletInstance;
 };
+
+
 
 // --------------------子弹伤害结算核心--------------------
 // 专注于伤害与效果计算，并将计算结果打包返回
