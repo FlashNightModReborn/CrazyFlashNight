@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="混沌系列素材包/尾上世莉架/人物组件/上半身" itemID="654fa589-00000012" lastModified="1699718537">
+  <timeline>
+    <DOMTimeline name="上半身">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="混沌系列素材包/尾上世莉架/人物组件/连衣裙" centerPoint3DX="81.3" centerPoint3DY="151.9">
+                  <matrix>
+                    <Matrix ty="25.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.15" y="126.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="混沌系列素材包/尾上世莉架/人物组件/领口">
+                  <matrix>
+                    <Matrix tx="33.3" ty="24.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.95" y="23.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="混沌系列素材包/尾上世莉架/人物组件/脖子" selected="true" centerPoint3DX="73.15" centerPoint3DY="16.65">
+                  <matrix>
+                    <Matrix tx="63.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="10" y="16.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

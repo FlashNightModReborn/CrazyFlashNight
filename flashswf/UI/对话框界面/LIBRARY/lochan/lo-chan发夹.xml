@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="lochan/lo-chan发夹" itemID="66c0a115-000003f4" lastModified="1723901145" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="lo-chan发夹">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan发夹单体">
+                  <matrix>
+                    <Matrix ty="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.2" y="32.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan发夹发光体">
+                  <matrix>
+                    <Matrix a="0.956466674804688" d="0.956466674804688" tx="5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.6" y="35.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#C29BC7" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

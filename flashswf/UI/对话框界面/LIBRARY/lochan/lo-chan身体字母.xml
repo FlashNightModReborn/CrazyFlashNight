@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="lochan/lo-chan身体字母" itemID="66c0a613-00000430" lastModified="1723901531">
+  <timeline>
+    <DOMTimeline name="lo-chan身体字母">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E8B1E9"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!123 0|123 379!123 379|198 379!198 379|198 474!198 474|0 474!0 474|0 0!0 0|123 0"/>
+                    <Edge cubics="!123 0(;123,0 123,379 123,379q123 0 123 379);"/>
+                    <Edge cubics="!123 379(;123,379 198,379 198,379q123 379 198 379);"/>
+                    <Edge cubics="!198 379(;198,379 198,474 198,474q198 379 198 474);"/>
+                    <Edge cubics="!198 474(;198,474 0,474 0,474q198 474 0 474);"/>
+                    <Edge cubics="!0 474(;0,474 0,0 0,0q0 474 0 0);"/>
+                    <Edge cubics="!0 0(;0,0 123,0 123,0q0 0 123 0);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

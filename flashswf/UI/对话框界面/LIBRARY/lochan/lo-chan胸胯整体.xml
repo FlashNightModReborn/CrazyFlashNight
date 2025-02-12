@@ -1,0 +1,70 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="lochan/lo-chan胸胯整体" itemID="66c03e6b-000001f2" lastModified="1723874923" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="lo-chan胸胯整体">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan胸胯">
+                  <transformationPoint>
+                    <Point x="119.05" y="297.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan二维码" centerPoint3DX="26" centerPoint3DY="231.3">
+                  <matrix>
+                    <Matrix a="0.7274169921875" b="-0.130889892578125" c="-0.07464599609375" d="0.735321044921875" tx="20.1" ty="227.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.95" y="7.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan型号">
+                  <matrix>
+                    <Matrix a="0.085479736328125" b="-0.1253662109375" c="0.1253662109375" d="0.085479736328125" tx="170.35" ty="428.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="76.25" y="13"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan发光字母">
+                  <matrix>
+                    <Matrix a="0.634979248046875" c="0.191741943359375" tx="60.95" ty="446.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="13.25" y="10.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#C29BC7" quality="3" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan发光点">
+                  <matrix>
+                    <Matrix tx="197.75" ty="380.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.9" y="1.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#C29BC7" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan发光点">
+                  <matrix>
+                    <Matrix tx="170.35" ty="301.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.9" y="1.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="4" blurY="4" color="#C29BC7" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,29 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="lochan/lo-chan鞋" itemID="66c09e8c-0000023a" lastModified="1723899532" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="lo-chan鞋">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan鞋单体">
+                  <transformationPoint>
+                    <Point x="74.35" y="66.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="lochan/lo-chan发卡组件2" centerPoint3DX="55.25" centerPoint3DY="85.9">
+                  <matrix>
+                    <Matrix a="1.20162963867188" b="0.34454345703125" c="-0.900497436523438" d="0.869598388671875" tx="56.65" ty="72.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.25" y="12.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

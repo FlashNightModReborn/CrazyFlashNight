@@ -1,0 +1,64 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Itinerant/人物素材/头" itemID="664db44a-000001c5" lastModified="1717688268">
+  <timeline>
+    <DOMTimeline name="头">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Itinerant/人物素材/shape 481" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.65850830078125" d="0.636520385742188" tx="29.15" ty="24.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Itinerant/人物素材/脸">
+                  <matrix>
+                    <Matrix a="-0.163177490234375" d="0.15997314453125" tx="46.1" ty="13.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="82.45" y="107.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Itinerant/人物素材/shape 351" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.345855712890625" b="0.0926666259765625" c="0.0929718017578125" d="0.34698486328125" tx="84.2" ty="-16.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="141.85" y="90.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Itinerant/人物素材/眼睛">
+                  <matrix>
+                    <Matrix a="-0.0794525146484375" d="0.077484130859375" tx="38.15" ty="26.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="66.7" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Itinerant/人物素材/眉毛">
+                  <matrix>
+                    <Matrix a="0.555511474609375" b="0.036773681640625" c="-0.036773681640625" d="0.555511474609375" tx="29" ty="25.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="0.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

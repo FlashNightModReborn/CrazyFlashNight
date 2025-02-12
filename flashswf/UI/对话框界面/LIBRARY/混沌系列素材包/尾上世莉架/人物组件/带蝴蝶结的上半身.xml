@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="混沌系列素材包/尾上世莉架/人物组件/带蝴蝶结的上半身" itemID="65524335-0000006d" lastModified="1699889973">
+  <timeline>
+    <DOMTimeline name="带蝴蝶结的上半身">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true" heightLiteral="24">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="混沌系列素材包/尾上世莉架/人物组件/上半身" selected="true" centerPoint3DX="86.75" centerPoint3DY="145.45">
+                  <matrix>
+                    <Matrix a="0.996246337890625" b="0.0865631103515625" c="-0.0865631103515625" d="0.996246337890625" tx="17.8" ty="-0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="78.15" y="139.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="混沌系列素材包/尾上世莉架/人物组件/领结">
+                  <matrix>
+                    <Matrix a="0.4521484375" d="0.4521484375" tx="88.1" ty="67.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="57.85" y="41.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

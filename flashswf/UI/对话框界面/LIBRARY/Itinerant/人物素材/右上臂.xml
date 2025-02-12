@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Itinerant/人物素材/右上臂" itemID="664db483-000001cf" lastModified="1716368515">
+  <timeline>
+    <DOMTimeline name="右上臂">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Itinerant/人物素材/shape 525" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1556396484375" b="-0.14801025390625" c="0.14801025390625" d="1.1556396484375" tx="18.4" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="24.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Itinerant/人物素材/外套" selected="true">
+                  <matrix>
+                    <Matrix a="0.661834716796875" b="-0.17218017578125" c="0.17218017578125" d="0.661834716796875" tx="10.55" ty="27.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.55" y="25.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

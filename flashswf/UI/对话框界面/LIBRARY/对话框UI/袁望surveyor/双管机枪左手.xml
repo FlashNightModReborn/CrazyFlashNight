@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框UI/袁望surveyor/双管机枪左手" itemID="658e933c-000001d2" lastModified="1703842620" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="双管机枪左手">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="对话框UI/袁望surveyor/元件 1">
+                  <matrix>
+                    <Matrix a="-0.399887084960938" b="-0.73345947265625" c="-0.73345947265625" d="0.399887084960938" tx="172.75" ty="223.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="152.2" y="28"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="对话框UI/袁望surveyor/shape 195" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386260986328125" b="-0.694732666015625" c="-0.694732666015625" d="0.386260986328125" tx="249.3" ty="203.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="152.15" y="128.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
