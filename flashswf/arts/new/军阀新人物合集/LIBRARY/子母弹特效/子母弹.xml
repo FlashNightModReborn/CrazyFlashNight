@@ -1,0 +1,362 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子母弹特效/子母弹" itemID="671d1ceb-000005a5" lastModified="1730042119" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="子母弹" currentFrame="17" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;935&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="图层_3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/爆炸" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.2122802734375" d="2.2122802734375" tx="735.7" ty="-1471.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.15" y="-23.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_5" color="#009999" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸2" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="5.7474365234375" d="5.7474365234375" tx="-271.05" ty="860.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.1" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸2" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.487548828125" b="5.551513671875" c="-5.551513671875" d="1.487548828125" tx="1747.35" ty="900.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.1" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸2" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.925216674804688" b="-5.67245483398438" c="5.67245483398438" d="0.925216674804688" tx="724.25" ty="901.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.1" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子母弹特效/爆炸" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="3.96586608886719" d="3.96586608886719" tx="243.75" ty="1028.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.2" y="-23.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子母弹特效/爆炸" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-3.71234130859375" b="0.994659423828125" c="-0.994659423828125" d="-3.71234130859375" tx="1291.35" ty="795.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="-23.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/10.力大砖飞/空中爆炸1/MovieClip/空中爆炸2" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.925216674804688" b="-5.67245483398438" c="-5.67245483398438" d="0.925216674804688" tx="1101.05" ty="901.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.1" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="子母弹特效/爆炸" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-3.71234130859375" b="-0.994659423828125" c="-0.994659423828125" d="3.71234130859375" tx="401.25" ty="1025.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.1" y="-23.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹" color="#669900" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.257470460551836" y="0.510575666945842"/>
+                  <Point x="0.443236174692882" y="0.874140056904399"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="734.95" centerPoint3DY="-1527.15">
+                  <matrix>
+                    <Matrix a="1.9029541015625" b="1.903076171875" c="-1.903076171875" d="1.9029541015625" tx="734.9" ty="-1542.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="1051" centerPoint3DY="894.8">
+                  <matrix>
+                    <Matrix a="1.90281677246094" b="1.9029541015625" c="-1.9029541015625" d="1.90281677246094" tx="1050.95" ty="879.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.25" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹" color="#FF4F4F" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.257470460551836" y="0.510575666945842"/>
+                  <Point x="0.443236174692882" y="0.874140056904399"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="767.3" centerPoint3DY="-1534.45">
+                  <matrix>
+                    <Matrix a="2.59965515136719" b="-0.69647216796875" c="0.69647216796875" d="2.59965515136719" tx="753.9" ty="-1542.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="1706.35" centerPoint3DY="894.5">
+                  <matrix>
+                    <Matrix a="2.59954833984375" b="-0.696456909179688" c="0.696456909179688" d="2.59954833984375" tx="1692.9" ty="886.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.25" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹" color="#00FFFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.257470460551836" y="0.510575666945842"/>
+                  <Point x="0.443236174692882" y="0.874140056904399"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="746.95" centerPoint3DY="-1540.75">
+                  <matrix>
+                    <Matrix a="2.59965515136719" b="-0.696533203125" c="0.696533203125" d="2.59965515136719" tx="733.55" ty="-1548.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="1317.2" centerPoint3DY="892.45">
+                  <matrix>
+                    <Matrix a="2.5994873046875" b="-0.69647216796875" c="0.69647216796875" d="2.5994873046875" tx="1303.8" ty="884.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.257470460551836" y="0.510575666945842"/>
+                  <Point x="0.443236174692882" y="0.874140056904399"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="667.85" centerPoint3DY="-1505.9">
+                  <matrix>
+                    <Matrix a="0.397933959960938" b="2.66168212890625" c="-2.66168212890625" d="0.397933959960938" tx="677" ty="-1518.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="-295.3" centerPoint3DY="894.6">
+                  <matrix>
+                    <Matrix a="0.39794921875" b="2.66160583496094" c="-2.66160583496094" d="0.39794921875" tx="-286.15" ty="882.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹" color="#FF800A" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.257470460551836" y="0.510575666945842"/>
+                  <Point x="0.443236174692882" y="0.874140056904399"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="687.45" centerPoint3DY="-1517.45">
+                  <matrix>
+                    <Matrix a="0.397933959960938" b="2.66168212890625" c="-2.66168212890625" d="0.397933959960938" tx="696.6" ty="-1529.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="204.4" centerPoint3DY="894.1">
+                  <matrix>
+                    <Matrix a="0.39794921875" b="2.66160583496094" c="-2.66160583496094" d="0.39794921875" tx="213.5" ty="881.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹" color="#FF4FFF" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.257470460551836" y="0.510575666945842"/>
+                  <Point x="0.443236174692882" y="0.874140056904399"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="706.95" centerPoint3DY="-1526.6">
+                  <matrix>
+                    <Matrix a="1.67547607421875" b="2.10618591308594" c="-2.10618591308594" d="1.67547607421875" tx="708.65" ty="-1541.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="493.1" centerPoint3DY="904.05">
+                  <matrix>
+                    <Matrix a="1.67535400390625" b="2.10604858398438" c="-2.10604858398438" d="1.67535400390625" tx="494.8" ty="888.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="子弹" color="#009999" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.257470460551836" y="0.510575666945842"/>
+                  <Point x="0.443236174692882" y="0.874140056904399"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="726.65" centerPoint3DY="-1535.7">
+                  <matrix>
+                    <Matrix a="2.69134521484375" d="2.69134521484375" tx="715.75" ty="-1546.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="子母弹特效/子弹" centerPoint3DX="780.5" centerPoint3DY="894.95">
+                  <matrix>
+                    <Matrix a="2.69126892089844" d="2.69126892089844" tx="769.55" ty="884"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="4.2" y="3.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" duration="12" keyMode="9728" soundName="3.音效相关/sound407.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

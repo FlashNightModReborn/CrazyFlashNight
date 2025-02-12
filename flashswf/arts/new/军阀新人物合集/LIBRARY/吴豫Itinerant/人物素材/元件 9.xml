@@ -1,0 +1,55 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/人物素材/元件 9" itemID="665de629-0000022c" lastModified="1717492151">
+  <timeline>
+    <DOMTimeline name="元件 9">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.1865234375" c="-0.1275634765625" d="0" tx="278.9" ty="93.1"/>
+                        </matrix>
+                        <GradientEntry color="#666666" ratio="0.0862745098039216"/>
+                        <GradientEntry ratio="0.603921568627451"/>
+                        <GradientEntry color="#666666" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!580 0|11319 0!11319 0|11319 4180!11319 4180|1700 4180"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!1700 4180|1100 4180!1100 4180|0 0!0 0|580 0"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!580 0|1700 4180"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

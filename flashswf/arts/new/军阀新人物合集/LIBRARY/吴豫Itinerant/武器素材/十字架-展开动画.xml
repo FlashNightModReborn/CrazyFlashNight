@@ -1,0 +1,104 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/武器素材/十字架-展开动画" itemID="6661cce0-000003ac" lastModified="1717685472" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="十字架-展开动画">
+      <layers>
+        <DOMLayer name="主体结构" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-上部">
+                  <matrix>
+                    <Matrix tx="619.65" ty="15.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="94.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-上部" centerPoint3DX="780.55" centerPoint3DY="109.9">
+                  <matrix>
+                    <Matrix tx="665.7" ty="15.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="94.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-下部">
+                  <matrix>
+                    <Matrix tx="-43.25" ty="15.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="537.75" y="94.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-下部" centerPoint3DX="183" centerPoint3DY="109.9">
+                  <matrix>
+                    <Matrix tx="-85.85" ty="15.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="537.75" y="94.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="展开结构" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 10">
+                  <matrix>
+                    <Matrix tx="629.95" ty="22.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32" y="86.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/元件 11">
+                  <matrix>
+                    <Matrix tx="389.75" ty="40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.35" y="69.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="中央结构" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/十字架-中部" selected="true" centerPoint3DX="552.75" centerPoint3DY="109.9">
+                  <matrix>
+                    <Matrix tx="464.8" ty="-146.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.4" y="256.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

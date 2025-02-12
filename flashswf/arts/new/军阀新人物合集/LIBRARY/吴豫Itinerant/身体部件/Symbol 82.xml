@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/身体部件/Symbol 82" itemID="668195cf-0000015b" lastModified="1719768237">
+  <timeline>
+    <DOMTimeline name="Symbol 82">
+      <layers>
+        <DOMLayer name="Layer_1" color="#2BD7AD" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/身体部件/Symbol 81" centerPoint3DX="22.55" centerPoint3DY="78.5">
+                  <matrix>
+                    <Matrix a="0.334945678710938" b="-0.537322998046875" c="0.537322998046875" d="0.334945678710938" tx="4" ty="53.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_2" color="#50CACE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/身体部件/Symbol 79" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.04473876953125" b="0.269454956054688" c="0.2906494140625" d="1.126953125" tx="15.95" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

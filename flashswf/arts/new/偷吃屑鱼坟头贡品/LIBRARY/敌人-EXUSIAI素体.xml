@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-EXUSIAI素体" itemID="66586a62-000014a7" linkageExportForAS="true" linkageIdentifier="敌人-EXUSIAI素体" lastModified="1717080993" lastUniqueIdentifier="46">
   <timeline>
-    <DOMTimeline name="敌人-EXUSIAI素体" currentFrame="24">
+    <DOMTimeline name="敌人-EXUSIAI素体">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
@@ -575,7 +575,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="19" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹1/跑步动作" name="man" centerPoint3DX="0.6" centerPoint3DY="-108.95">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹1/跑步动作" name="man" selected="true" centerPoint3DX="0.6" centerPoint3DY="-108.95">
                   <matrix>
                     <Matrix tx="-73.45" ty="-185.7"/>
                   </matrix>

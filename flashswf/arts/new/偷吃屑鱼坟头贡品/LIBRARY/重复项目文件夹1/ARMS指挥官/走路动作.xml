@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="重复项目文件夹1/ARMS指挥官/走路动作" itemID="66588745-00005d06" lastModified="1717076507" lastUniqueIdentifier="15">
   <timeline>
-    <DOMTimeline name="走路动作">
+    <DOMTimeline name="走路动作" currentFrame="35">
       <layers>
-        <DOMLayer name="图层 4" color="#FF4FFF">
+        <DOMLayer name="图层 4" color="#FF4FFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -79,7 +79,7 @@
             </DOMFrame>
             <DOMFrame index="27" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹1/MISSILE SHOULDER ARMOR" centerPoint3DX="53.75" centerPoint3DY="53.4">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹1/MISSILE SHOULDER ARMOR" selected="true" centerPoint3DX="53.75" centerPoint3DY="53.4">
                   <matrix>
                     <Matrix tx="29.9" ty="18.1"/>
                   </matrix>
@@ -1011,7 +1011,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="上半身" color="#808080" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="上半身" color="#808080" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>

@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="袁望surveyor/动画/旋转火箭筒" itemID="665028b9-00000224" symbolType="graphic" lastModified="1716529346" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="旋转火箭筒" currentFrame="2">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-187.4" centerPoint3DY="-257.3">
+                  <matrix>
+                    <Matrix a="-0.018341064453125" b="-0.74810791015625" c="-0.74810791015625" d="0.018341064453125" tx="-12.3" ty="-0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.7" y="-16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-257.35" centerPoint3DY="188.15">
+                  <matrix>
+                    <Matrix a="-0.74810791015625" b="0.018341064453125" c="0.018341064453125" d="0.74810791015625" tx="-0.6" ty="13.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.7" y="-16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="188.1" centerPoint3DY="258.1">
+                  <matrix>
+                    <Matrix a="0.018341064453125" b="0.74810791015625" c="0.74810791015625" d="-0.018341064453125" tx="13" ty="1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.7" y="-16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" selected="true" centerPoint3DX="258.05" centerPoint3DY="-187.35">
+                  <matrix>
+                    <Matrix a="0.74810791015625" b="-0.018341064453125" c="-0.018341064453125" d="-0.74810791015625" tx="1.3" ty="-12.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.7" y="-16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="袁望surveyor/素材/火箭筒" centerPoint3DX="-187.4" centerPoint3DY="-257.3">
+                  <matrix>
+                    <Matrix a="-0.018341064453125" b="-0.74810791015625" c="-0.74810791015625" d="0.018341064453125" tx="-12.3" ty="-0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.7" y="-16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
