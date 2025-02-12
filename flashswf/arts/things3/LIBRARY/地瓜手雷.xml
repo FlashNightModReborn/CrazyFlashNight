@@ -1,0 +1,119 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地瓜手雷" itemID="6724e9b8-00003bf5" linkageExportForAS="true" linkageIdentifier="地瓜手雷" lastModified="1739341324">
+  <timeline>
+    <DOMTimeline name="地瓜手雷" currentFrame="6">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B00DF6">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#95C8F0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[子弹属性 = new Object();
+子弹属性.声音 = "";
+子弹属性.霰弹值 = 1;
+子弹属性.子弹散射度 = 0;
+子弹属性.发射效果 = "";
+子弹属性.子弹种类 = "普通爆炸";
+if(!子弹威力)
+{
+   子弹属性.子弹威力 = 100;
+}
+else
+{
+   子弹属性.子弹威力 = 子弹威力 * 0.9;
+}
+子弹属性.子弹速度 = 0;
+子弹属性.击中地图效果 = "";
+子弹属性.Z轴攻击范围 = 80;
+子弹属性.击倒率 = 1;
+子弹属性.击中后子弹的效果 = "";
+子弹属性.子弹敌我属性 = 子弹敌我属性值;
+子弹属性.shootX = this._x;
+子弹属性.shootY = this._y;
+_root.子弹区域shoot传递(子弹属性);
+stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#0FBACF" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 25" name="area">
+                  <matrix>
+                    <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   垂直速度 = -5;
+   起始Y = _parent.Z轴坐标;
+   this.onEnterFrame = function()
+   {
+      _parent._y += 垂直速度;
+      垂直速度 += _root.重力加速度;
+      if(_parent._y >= 起始Y)
+      {
+         _parent._y = 起始Y;
+         delete this.onEnterFrame;
+         _parent.gotoAndPlay("消失");
+      }
+   };
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#EBC1F0">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/旋转中的地瓜手雷" centerPoint3DX="32.35" centerPoint3DY="37.9">
+                  <matrix>
+                    <Matrix a="0.00738525390625" b="-0.354476928710938" c="-0.354476928710938" d="-0.00738525390625" tx="11.3" ty="5.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.4" y="32.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

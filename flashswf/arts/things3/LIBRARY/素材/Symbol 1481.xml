@@ -1,0 +1,3062 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 1481" itemID="6577faef-0000172a" lastModified="1701508661">
+  <timeline>
+    <DOMTimeline name="Symbol 1481">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#17F6E2">
+          <frames>
+            <DOMFrame index="0" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="86" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#DB59BF">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _parent.击倒呐喊();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#45F64D">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="-0.95" centerPoint3DY="-29.7">
+                  <matrix>
+                    <Matrix a="-0.110458374023438" b="0.21124267578125" c="0.21124267578125" d="0.110458374023438" tx="-30.9" ty="-89.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="-2" centerPoint3DY="-23">
+                  <matrix>
+                    <Matrix a="0.099822998046875" b="0.215805053710938" c="0.215805053710938" d="-0.099822998046875" tx="-31.95" ty="-82.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="6.5" centerPoint3DY="13.05">
+                  <matrix>
+                    <Matrix a="0.167648315429688" b="0.168228149414063" c="0.168228149414063" d="-0.167648315429688" tx="-23.45" ty="-46.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="-0.85" centerPoint3DY="22">
+                  <matrix>
+                    <Matrix a="0.1390380859375" b="0.192398071289063" c="0.192398071289063" d="-0.1390380859375" tx="-30.8" ty="-37.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="0.05" centerPoint3DY="68.1">
+                  <matrix>
+                    <Matrix a="0.176498413085938" b="0.158340454101563" c="0.158340454101563" d="-0.176498413085938" tx="-29.9" ty="8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="0.75" centerPoint3DY="62.6">
+                  <matrix>
+                    <Matrix a="0.157180786132813" b="0.177398681640625" c="0.177398681640625" d="-0.157180786132813" tx="-29.2" ty="2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="1.1" centerPoint3DY="78.55">
+                  <matrix>
+                    <Matrix a="0.07611083984375" b="0.224197387695313" c="0.224197387695313" d="-0.07611083984375" tx="-28.85" ty="18.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="-7.25" centerPoint3DY="70.85">
+                  <matrix>
+                    <Matrix a="-0.129898071289063" b="0.19720458984375" c="0.19720458984375" d="0.129898071289063" tx="-37.2" ty="11.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="-9.85" centerPoint3DY="58.6">
+                  <matrix>
+                    <Matrix a="-0.21661376953125" b="0.09210205078125" c="0.09210205078125" d="0.21661376953125" tx="-39.8" ty="-1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="-1" centerPoint3DY="46.4">
+                  <matrix>
+                    <Matrix a="-0.226104736328125" b="0.0637969970703125" c="0.0637969970703125" d="0.226104736328125" tx="-30.95" ty="-13.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="-2.1" centerPoint3DY="11.45">
+                  <matrix>
+                    <Matrix a="-0.233474731445313" b="-0.023651123046875" c="-0.023651123046875" d="0.233474731445313" tx="-32.05" ty="-48.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="11.35" centerPoint3DY="-0.4">
+                  <matrix>
+                    <Matrix a="-0.233291625976563" b="-0.0167388916015625" c="-0.0167388916015625" d="0.233291625976563" tx="-18.6" ty="-60.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="21.8" centerPoint3DY="-11.15">
+                  <matrix>
+                    <Matrix a="-0.228652954101563" b="-0.0461273193359375" c="-0.0461273193359375" d="0.228652954101563" tx="-8.15" ty="-70.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="23.9" centerPoint3DY="-15.9">
+                  <matrix>
+                    <Matrix a="-0.224761962890625" b="0.059600830078125" c="0.059600830078125" d="0.224761962890625" tx="-6.05" ty="-75.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1472" centerPoint3DX="21.25" centerPoint3DY="-21.65">
+                  <matrix>
+                    <Matrix a="-0.201629638671875" b="0.128890991210938" c="0.128890991210938" d="0.201629638671875" tx="-8.7" ty="-81.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F25B3F">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="7.5" centerPoint3DY="-32.05">
+                  <matrix>
+                    <Matrix a="-0.08270263671875" b="0.22314453125" c="0.22314453125" d="0.08270263671875" tx="-12.1" ty="-76.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="9" centerPoint3DY="-45.05">
+                  <matrix>
+                    <Matrix a="0.126113891601563" b="0.201095581054688" c="0.201095581054688" d="-0.126113891601563" tx="-10.6" ty="-89.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="13.7" centerPoint3DY="-15.9">
+                  <matrix>
+                    <Matrix a="0.187271118164063" b="0.145416259765625" c="0.145416259765625" d="-0.187271118164063" tx="-5.9" ty="-60.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="8.35" centerPoint3DY="-4">
+                  <matrix>
+                    <Matrix a="0.162002563476563" b="0.1729736328125" c="0.1729736328125" d="-0.162002563476563" tx="-11.25" ty="-48.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="6.45" centerPoint3DY="38.2">
+                  <matrix>
+                    <Matrix a="0.194793701171875" b="0.134506225585938" c="0.134506225585938" d="-0.194793701171875" tx="-13.15" ty="-6.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="8.75" centerPoint3DY="34.7">
+                  <matrix>
+                    <Matrix a="0.178070068359375" b="0.155838012695313" c="0.155838012695313" d="-0.178070068359375" tx="-10.85" ty="-10.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="13.25" centerPoint3DY="61.3">
+                  <matrix>
+                    <Matrix a="0.0234375" b="0.234939575195313" c="0.234939575195313" d="-0.0234375" tx="-6.35" ty="16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="-1.15" centerPoint3DY="64.5">
+                  <matrix>
+                    <Matrix a="0.0234375" b="0.234939575195313" c="0.234939575195313" d="-0.0234375" tx="-20.75" ty="19.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="-10.6" centerPoint3DY="58.5">
+                  <matrix>
+                    <Matrix a="-0.066497802734375" b="0.226272583007813" c="0.226272583007813" d="0.066497802734375" tx="-30.2" ty="13.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="-6.3" centerPoint3DY="50.7">
+                  <matrix>
+                    <Matrix a="-0.180023193359375" b="0.151168823242188" c="0.151168823242188" d="0.180023193359375" tx="-25.9" ty="5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="-14.8" centerPoint3DY="16.3">
+                  <matrix>
+                    <Matrix a="-0.222702026367188" b="0.074432373046875" c="0.074432373046875" d="0.222702026367188" tx="-34.4" ty="-28.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="-0.6" centerPoint3DY="4.45">
+                  <matrix>
+                    <Matrix a="-0.219680786132813" b="0.080657958984375" c="0.080657958984375" d="0.219680786132813" tx="-20.2" ty="-40.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="7.3" centerPoint3DY="-6.65">
+                  <matrix>
+                    <Matrix a="-0.227523803710938" b="0.0519561767578125" c="0.0519561767578125" d="0.227523803710938" tx="-12.3" ty="-51.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="17.8" centerPoint3DY="-10.7">
+                  <matrix>
+                    <Matrix a="-0.197097778320313" b="0.123489379882813" c="0.123489379882813" d="0.197097778320313" tx="-1.8" ty="-55.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="21" centerPoint3DY="-16.15">
+                  <matrix>
+                    <Matrix a="-0.183395385742188" b="0.153106689453125" c="0.153106689453125" d="0.183395385742188" tx="1.4" ty="-60.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#B787A3">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="21.05" centerPoint3DY="-43">
+                  <matrix>
+                    <Matrix a="-0.08270263671875" b="0.22314453125" c="0.22314453125" d="0.08270263671875" tx="1.2" ty="-72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="20.5" centerPoint3DY="-68.05">
+                  <matrix>
+                    <Matrix a="0.126113891601563" b="0.201095581054688" c="0.201095581054688" d="-0.126113891601563" tx="0.65" ty="-97.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="21.75" centerPoint3DY="-42.25">
+                  <matrix>
+                    <Matrix a="0.187271118164063" b="0.145416259765625" c="0.145416259765625" d="-0.187271118164063" tx="1.9" ty="-72.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="18.05" centerPoint3DY="-29.05">
+                  <matrix>
+                    <Matrix a="0.162002563476563" b="0.1729736328125" c="0.1729736328125" d="-0.162002563476563" tx="-1.8" ty="-58.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="13.8" centerPoint3DY="11.4">
+                  <matrix>
+                    <Matrix a="0.194793701171875" b="0.134506225585938" c="0.134506225585938" d="-0.194793701171875" tx="-6.05" ty="-18.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="17.35" centerPoint3DY="8.75">
+                  <matrix>
+                    <Matrix a="0.178070068359375" b="0.155838012695313" c="0.155838012695313" d="-0.178070068359375" tx="-2.5" ty="-21.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="27.25" centerPoint3DY="45.25">
+                  <matrix>
+                    <Matrix a="-0.033355712890625" b="0.233551025390625" c="0.233551025390625" d="0.033355712890625" tx="7.4" ty="15.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="12.85" centerPoint3DY="48.45">
+                  <matrix>
+                    <Matrix a="-0.033355712890625" b="0.233551025390625" c="0.233551025390625" d="0.033355712890625" tx="-7" ty="18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="2.8" centerPoint3DY="47.7">
+                  <matrix>
+                    <Matrix a="-0.118545532226563" b="0.203659057617188" c="0.203659057617188" d="0.118545532226563" tx="-17.05" ty="17.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="2.6" centerPoint3DY="46.35">
+                  <matrix>
+                    <Matrix a="-0.210769653320313" b="0.103683471679688" c="0.103683471679688" d="0.210769653320313" tx="-17.25" ty="16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="-10.4" centerPoint3DY="14.35">
+                  <matrix>
+                    <Matrix a="-0.233856201171875" b="0.0190277099609375" c="0.0190277099609375" d="0.233856201171875" tx="-30.25" ty="-15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="4.05" centerPoint3DY="2.3">
+                  <matrix>
+                    <Matrix a="-0.232376098632813" b="0.025787353515625" c="0.025787353515625" d="0.232376098632813" tx="-15.8" ty="-27.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="10.35" centerPoint3DY="-8.45">
+                  <matrix>
+                    <Matrix a="-0.233139038085938" b="-0.003936767578125" c="-0.003936767578125" d="0.233139038085938" tx="-9.5" ty="-38.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="25.05" centerPoint3DY="-14.2">
+                  <matrix>
+                    <Matrix a="-0.220703125" b="0.072723388671875" c="0.072723388671875" d="0.220703125" tx="5.2" ty="-44.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1470" centerPoint3DX="30.8" centerPoint3DY="-21.05">
+                  <matrix>
+                    <Matrix a="-0.183395385742188" b="0.153106689453125" c="0.153106689453125" d="0.183395385742188" tx="10.95" ty="-50.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#F3BBC0">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="-3.4" centerPoint3DY="-72.1">
+                  <matrix>
+                    <Matrix a="-0.130569458007813" b="0.199737548828125" c="0.199737548828125" d="0.130569458007813" tx="-40.8" ty="-121.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="-21.05" centerPoint3DY="-49.95">
+                  <matrix>
+                    <Matrix a="-0.00030517578125" b="0.23828125" c="0.23828125" d="0.00030517578125" tx="-58.45" ty="-99.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="-16.2" centerPoint3DY="-4.4">
+                  <matrix>
+                    <Matrix a="0.073394775390625" b="0.226455688476563" c="0.226455688476563" d="-0.073394775390625" tx="-53.6" ty="-53.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="-22" centerPoint3DY="-1.6">
+                  <matrix>
+                    <Matrix a="0.000579833984375" b="0.237808227539063" c="0.237808227539063" d="-0.000579833984375" tx="-59.4" ty="-51.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="-23.2" centerPoint3DY="50.9">
+                  <matrix>
+                    <Matrix a="0.0509796142578125" b="0.232009887695313" c="0.232009887695313" d="-0.0509796142578125" tx="-60.6" ty="1.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="-22.45" centerPoint3DY="46.45">
+                  <matrix>
+                    <Matrix a="0.115676879882813" b="0.207229614257813" c="0.207229614257813" d="-0.115676879882813" tx="-59.85" ty="-3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="-22" centerPoint3DY="60.7">
+                  <matrix>
+                    <Matrix a="0.131759643554688" b="0.19732666015625" c="0.19732666015625" d="-0.131759643554688" tx="-59.4" ty="11.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="-19.45" centerPoint3DY="35.45">
+                  <matrix>
+                    <Matrix a="0.032623291015625" b="0.234710693359375" c="0.234710693359375" d="-0.032623291015625" tx="-56.85" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="-8" centerPoint3DY="17.2">
+                  <matrix>
+                    <Matrix a="-0.061767578125" b="0.228485107421875" c="0.228485107421875" d="0.061767578125" tx="-45.4" ty="-32.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="12" centerPoint3DY="2.15">
+                  <matrix>
+                    <Matrix a="-0.200820922851563" b="0.124237060546875" c="0.124237060546875" d="0.200820922851563" tx="-25.4" ty="-47.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="22.95" centerPoint3DY="-28.3">
+                  <matrix>
+                    <Matrix a="-0.232147216796875" b="0.041778564453125" c="0.041778564453125" d="0.232147216796875" tx="-14.45" ty="-77.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="38.3" centerPoint3DY="-38.45">
+                  <matrix>
+                    <Matrix a="-0.235122680664063" b="0.0065155029296875" c="0.0065155029296875" d="0.235122680664063" tx="0.9" ty="-87.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="52.8" centerPoint3DY="-45.55">
+                  <matrix>
+                    <Matrix a="-0.231887817382813" b="-0.0355682373046875" c="-0.0355682373046875" d="0.231887817382813" tx="15.4" ty="-95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="48.75" centerPoint3DY="-53.1">
+                  <matrix>
+                    <Matrix a="-0.232879638671875" b="-0.026641845703125" c="-0.026641845703125" d="0.232879638671875" tx="11.35" ty="-102.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1468" centerPoint3DX="42.2" centerPoint3DY="-60.65">
+                  <matrix>
+                    <Matrix a="-0.237991333007813" b="0.02471923828125" c="0.02471923828125" d="0.237991333007813" tx="4.8" ty="-110.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#E8947B">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="325.6" centerPoint3DY="-44.35">
+                  <matrix>
+                    <Matrix a="-0.160659790039063" b="-0.021881103515625" c="-0.021881103515625" d="0.160659790039063" tx="11.2" ty="-70.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="320.05" centerPoint3DY="-79.45">
+                  <matrix>
+                    <Matrix a="-0.095123291015625" b="0.130691528320313" c="0.130691528320313" d="0.095123291015625" tx="5.65" ty="-105.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="317.25" centerPoint3DY="-54.5">
+                  <matrix>
+                    <Matrix a="-0.0215606689453125" b="0.159957885742188" c="0.159957885742188" d="0.0215606689453125" tx="2.85" ty="-80.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="314.8" centerPoint3DY="-41">
+                  <matrix>
+                    <Matrix a="-0.046417236328125" b="0.154495239257813" c="0.154495239257813" d="0.046417236328125" tx="0.4" ty="-66.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="308.85" centerPoint3DY="-0.85">
+                  <matrix>
+                    <Matrix a="-0.0125579833984375" b="0.160629272460938" c="0.160629272460938" d="0.0125579833984375" tx="-5.55" ty="-26.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="315.2" centerPoint3DY="-1.35">
+                  <matrix>
+                    <Matrix a="-0.0651092529296875" b="0.147186279296875" c="0.147186279296875" d="0.0651092529296875" tx="0.8" ty="-27.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="328.6" centerPoint3DY="40.9">
+                  <matrix>
+                    <Matrix a="-0.160064697265625" b="-0.0093994140625" c="-0.0093994140625" d="0.160064697265625" tx="14.2" ty="15.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="314.2" centerPoint3DY="44.1">
+                  <matrix>
+                    <Matrix a="-0.160064697265625" b="-0.0093994140625" c="-0.0093994140625" d="0.160064697265625" tx="-0.2" ty="18.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="306.25" centerPoint3DY="45.15">
+                  <matrix>
+                    <Matrix a="-0.160308837890625" b="-0.0001983642578125" c="-0.0001983642578125" d="0.160308837890625" tx="-8.15" ty="19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="306" centerPoint3DY="46.9">
+                  <matrix>
+                    <Matrix a="-0.156936645507813" b="-0.0321807861328125" c="-0.0321807861328125" d="0.156936645507813" tx="-8.4" ty="21.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="290.55" centerPoint3DY="15.1">
+                  <matrix>
+                    <Matrix a="-0.132843017578125" b="-0.089202880859375" c="-0.089202880859375" d="0.132843017578125" tx="-23.85" ty="-10.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="307.6" centerPoint3DY="3.6">
+                  <matrix>
+                    <Matrix a="-0.15008544921875" b="-0.054168701171875" c="-0.054168701171875" d="0.15008544921875" tx="-6.8" ty="-22.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="313.1" centerPoint3DY="-6.05">
+                  <matrix>
+                    <Matrix a="-0.141571044921875" b="-0.072601318359375" c="-0.072601318359375" d="0.141571044921875" tx="-1.3" ty="-31.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="329.4" centerPoint3DY="-14.95">
+                  <matrix>
+                    <Matrix a="-0.157028198242188" b="-0.0218963623046875" c="-0.0218963623046875" d="0.157028198242188" tx="15" ty="-40.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1466" centerPoint3DX="338.25" centerPoint3DY="-26.15">
+                  <matrix>
+                    <Matrix a="-0.153335571289063" b="0.0566864013671875" c="0.0566864013671875" d="0.153335571289063" tx="23.85" ty="-51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#DF8EF7">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="259.1" centerPoint3DY="9.3">
+                  <matrix>
+                    <Matrix a="-0.06695556640625" b="-0.149093627929688" c="-0.149093627929688" d="0.06695556640625" tx="15.85" ty="-16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="289.45" centerPoint3DY="-16.7">
+                  <matrix>
+                    <Matrix a="-0.137298583984375" b="-0.08819580078125" c="-0.08819580078125" d="0.137298583984375" tx="46.2" ty="-42.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="307.5" centerPoint3DY="-15.5">
+                  <matrix>
+                    <Matrix a="-0.161911010742188" b="-0.018157958984375" c="-0.018157958984375" d="0.161911010742188" tx="64.25" ty="-41.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="299.15" centerPoint3DY="-6.2">
+                  <matrix>
+                    <Matrix a="-0.162429809570313" b="-0.00958251953125" c="-0.00958251953125" d="0.162429809570313" tx="55.9" ty="-32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="299.15" centerPoint3DY="34.85">
+                  <matrix>
+                    <Matrix a="-0.162429809570313" b="-0.00958251953125" c="-0.00958251953125" d="0.162429809570313" tx="55.9" ty="9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="297.8" centerPoint3DY="42.3">
+                  <matrix>
+                    <Matrix a="-0.155776977539063" b="-0.046630859375" c="-0.046630859375" d="0.155776977539063" tx="54.55" ty="16.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="299" centerPoint3DY="42.9">
+                  <matrix>
+                    <Matrix a="-0.160888671875" b="-0.0230255126953125" c="-0.0230255126953125" d="0.160888671875" tx="55.75" ty="17.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="260.45" centerPoint3DY="62.1">
+                  <matrix>
+                    <Matrix a="-0.084075927734375" b="-0.138595581054688" c="-0.138595581054688" d="0.084075927734375" tx="17.2" ty="36.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="238.05" centerPoint3DY="62.75">
+                  <matrix>
+                    <Matrix a="-0.0052032470703125" b="-0.161407470703125" c="-0.161407470703125" d="0.0052032470703125" tx="-5.2" ty="36.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="205.05" centerPoint3DY="45.2">
+                  <matrix>
+                    <Matrix a="0.0865478515625" b="-0.135635375976563" c="-0.135635375976563" d="-0.0865478515625" tx="-38.2" ty="19.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="191.65" centerPoint3DY="28.15">
+                  <matrix>
+                    <Matrix a="0.108108520507813" b="-0.118606567382813" c="-0.118606567382813" d="-0.108108520507813" tx="-51.6" ty="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1464" centerPoint3DX="181.85" centerPoint3DY="13.2">
+                  <matrix>
+                    <Matrix a="0.122879028320313" b="-0.10870361328125" c="-0.10870361328125" d="-0.122879028320313" tx="-61.4" ty="-12.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#4DF86C">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="38.1" centerPoint3DY="32.55">
+                  <matrix>
+                    <Matrix a="-0.192672729492188" b="0.14129638671875" c="0.14129638671875" d="0.192672729492188" tx="-24.6" ty="-95.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="31.9" centerPoint3DY="41.55">
+                  <matrix>
+                    <Matrix a="-0.0841217041015625" b="0.223251342773438" c="0.223251342773438" d="0.0841217041015625" tx="-30.8" ty="-86.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="39.25" centerPoint3DY="77.95">
+                  <matrix>
+                    <Matrix a="-0.0108642578125" b="0.23809814453125" c="0.23809814453125" d="0.0108642578125" tx="-23.45" ty="-50.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="32.5" centerPoint3DY="86.9">
+                  <matrix>
+                    <Matrix a="-0.048126220703125" b="0.233306884765625" c="0.233306884765625" d="0.048126220703125" tx="-30.2" ty="-41.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="32.6" centerPoint3DY="132.95">
+                  <matrix>
+                    <Matrix a="0.0024566650390625" b="0.237930297851563" c="0.237930297851563" d="-0.0024566650390625" tx="-30.1" ty="4.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="32.6" centerPoint3DY="125.85">
+                  <matrix>
+                    <Matrix a="0.0024566650390625" b="0.237930297851563" c="0.237930297851563" d="-0.0024566650390625" tx="-30.1" ty="-2.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="33.05" centerPoint3DY="137.7">
+                  <matrix>
+                    <Matrix a="0.0213623046875" b="0.236923217773438" c="0.236923217773438" d="-0.0213623046875" tx="-29.65" ty="9.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="33.35" centerPoint3DY="125.55">
+                  <matrix>
+                    <Matrix a="-0.0838623046875" b="0.2222900390625" c="0.2222900390625" d="0.0838623046875" tx="-29.35" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="38.2" centerPoint3DY="117.2">
+                  <matrix>
+                    <Matrix a="-0.163970947265625" b="0.171524047851563" c="0.171524047851563" d="0.163970947265625" tx="-24.5" ty="-11.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="46.2" centerPoint3DY="110.35">
+                  <matrix>
+                    <Matrix a="-0.214431762695313" b="0.101028442382813" c="0.101028442382813" d="0.214431762695313" tx="-16.5" ty="-17.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="45.7" centerPoint3DY="81.05">
+                  <matrix>
+                    <Matrix a="-0.236282348632813" b="0.0152130126953125" c="0.0152130126953125" d="0.236282348632813" tx="-17" ty="-47.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="56.55" centerPoint3DY="70.05">
+                  <matrix>
+                    <Matrix a="-0.235214233398438" b="-0.0202789306640625" c="-0.0202789306640625" d="0.235214233398438" tx="-6.15" ty="-58.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="65.8" centerPoint3DY="61.2">
+                  <matrix>
+                    <Matrix a="-0.227218627929688" b="-0.0618743896484375" c="-0.0618743896484375" d="0.227218627929688" tx="3.1" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="62.75" centerPoint3DY="54.05">
+                  <matrix>
+                    <Matrix a="-0.229232788085938" b="-0.0530853271484375" c="-0.0530853271484375" d="0.229232788085938" tx="0.05" ty="-74.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1462" centerPoint3DX="57.7" centerPoint3DY="47.1">
+                  <matrix>
+                    <Matrix a="-0.231796264648438" b="-0.060546875" c="-0.060546875" d="0.231796264648438" tx="-5" ty="-81.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#D40EC0">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="45.8" centerPoint3DY="-42.15">
+                  <matrix>
+                    <Matrix a="-0.192672729492188" b="0.14129638671875" c="0.14129638671875" d="0.192672729492188" tx="-6.8" ty="-76.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="47.4" centerPoint3DY="-46">
+                  <matrix>
+                    <Matrix a="-0.0841217041015625" b="0.223251342773438" c="0.223251342773438" d="0.0841217041015625" tx="-5.2" ty="-79.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="55.55" centerPoint3DY="-17.9">
+                  <matrix>
+                    <Matrix a="-0.0108642578125" b="0.23809814453125" c="0.23809814453125" d="0.0108642578125" tx="2.95" ty="-51.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="48.65" centerPoint3DY="-4.75">
+                  <matrix>
+                    <Matrix a="-0.048126220703125" b="0.233306884765625" c="0.233306884765625" d="0.048126220703125" tx="-3.95" ty="-38.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="48.65" centerPoint3DY="36.25">
+                  <matrix>
+                    <Matrix a="-0.048126220703125" b="0.233306884765625" c="0.233306884765625" d="0.048126220703125" tx="-3.95" ty="2.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="48.65" centerPoint3DY="29.15">
+                  <matrix>
+                    <Matrix a="-0.048126220703125" b="0.233306884765625" c="0.233306884765625" d="0.048126220703125" tx="-3.95" ty="-4.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="48.65" centerPoint3DY="39.05">
+                  <matrix>
+                    <Matrix a="-0.048126220703125" b="0.233306884765625" c="0.233306884765625" d="0.048126220703125" tx="-3.95" ty="5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="38.9" centerPoint3DY="12.7">
+                  <matrix>
+                    <Matrix a="-0.130279541015625" b="0.199111938476563" c="0.199111938476563" d="0.130279541015625" tx="-13.7" ty="-21.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="46.35" centerPoint3DY="1.85">
+                  <matrix>
+                    <Matrix a="-0.13018798828125" b="0.19854736328125" c="0.19854736328125" d="0.13018798828125" tx="-6.25" ty="-32.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="51" centerPoint3DY="-7.55">
+                  <matrix>
+                    <Matrix a="-0.163192749023438" b="0.171600341796875" c="0.171600341796875" d="0.163192749023438" tx="-1.6" ty="-41.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="45.6" centerPoint3DY="-13.95">
+                  <matrix>
+                    <Matrix a="-0.233169555664063" b="0.037994384765625" c="0.037994384765625" d="0.233169555664063" tx="-7" ty="-47.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1460" centerPoint3DX="43.6" centerPoint3DY="-20.95">
+                  <matrix>
+                    <Matrix a="-0.231796264648438" b="-0.060546875" c="-0.060546875" d="0.231796264648438" tx="-9" ty="-54.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#B3F2EF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="44.1" centerPoint3DY="34.75">
+                  <matrix>
+                    <Matrix a="-0.1279296875" b="0.201492309570313" c="0.201492309570313" d="0.1279296875" tx="0.4" ty="-57.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="54.6" centerPoint3DY="23.95">
+                  <matrix>
+                    <Matrix a="0.00286865234375" b="0.238296508789063" c="0.238296508789063" d="-0.00286865234375" tx="10.9" ty="-68.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="65.55" centerPoint3DY="46.5">
+                  <matrix>
+                    <Matrix a="0.076416015625" b="0.225479125976563" c="0.225479125976563" d="-0.076416015625" tx="21.85" ty="-45.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="58.45" centerPoint3DY="57.1">
+                  <matrix>
+                    <Matrix a="0.100448608398438" b="0.215286254882813" c="0.215286254882813" d="-0.100448608398438" tx="14.75" ty="-35.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="58.95" centerPoint3DY="103.15">
+                  <matrix>
+                    <Matrix a="0.037994384765625" b="0.234298706054688" c="0.234298706054688" d="-0.037994384765625" tx="15.25" ty="10.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="58.85" centerPoint3DY="95.45">
+                  <matrix>
+                    <Matrix a="0.042083740234375" b="0.233413696289063" c="0.233413696289063" d="-0.042083740234375" tx="15.15" ty="3.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="58.85" centerPoint3DY="105.35">
+                  <matrix>
+                    <Matrix a="0.042083740234375" b="0.233413696289063" c="0.233413696289063" d="-0.042083740234375" tx="15.15" ty="13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="58.7" centerPoint3DY="103.35">
+                  <matrix>
+                    <Matrix a="0.0652313232421875" b="0.227951049804688" c="0.227951049804688" d="-0.0652313232421875" tx="15" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="57.4" centerPoint3DY="98.15">
+                  <matrix>
+                    <Matrix a="0.125564575195313" b="0.20086669921875" c="0.20086669921875" d="-0.125564575195313" tx="13.7" ty="5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="28.3" centerPoint3DY="85.35">
+                  <matrix>
+                    <Matrix a="-0.198074340820313" b="0.128921508789063" c="0.128921508789063" d="0.198074340820313" tx="-15.4" ty="-6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="37" centerPoint3DY="73.75">
+                  <matrix>
+                    <Matrix a="-0.177200317382813" b="0.1552734375" c="0.1552734375" d="0.177200317382813" tx="-6.7" ty="-18.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="39.3" centerPoint3DY="64.05">
+                  <matrix>
+                    <Matrix a="-0.201614379882813" b="0.120742797851563" c="0.120742797851563" d="0.201614379882813" tx="-4.4" ty="-28.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="35.5" centerPoint3DY="62.85">
+                  <matrix>
+                    <Matrix a="-0.214706420898438" b="0.094757080078125" c="0.094757080078125" d="0.214706420898438" tx="-8.2" ty="-29.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="28.95" centerPoint3DY="57.55">
+                  <matrix>
+                    <Matrix a="-0.227432250976563" b="0.0749969482421875" c="0.0749969482421875" d="0.227432250976563" tx="-14.75" ty="-34.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#CF449A">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="51.85" centerPoint3DY="35.9">
+                  <matrix>
+                    <Matrix a="-0.182449340820313" b="0.153701782226563" c="0.153701782226563" d="0.182449340820313" tx="20.7" ty="-34.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="71.85" centerPoint3DY="10.2">
+                  <matrix>
+                    <Matrix a="-0.068817138671875" b="0.228042602539063" c="0.228042602539063" d="0.068817138671875" tx="40.7" ty="-59.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="83.95" centerPoint3DY="23.1">
+                  <matrix>
+                    <Matrix a="0.005157470703125" b="0.2379150390625" c="0.2379150390625" d="-0.005157470703125" tx="52.8" ty="-46.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="75.3" centerPoint3DY="26.65">
+                  <matrix>
+                    <Matrix a="0.0975494384765625" b="0.21588134765625" c="0.21588134765625" d="-0.0975494384765625" tx="44.15" ty="-43.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="76.85" centerPoint3DY="81.05">
+                  <matrix>
+                    <Matrix a="0.0350341796875" b="0.234085083007813" c="0.234085083007813" d="-0.0350341796875" tx="45.7" ty="11.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="76.55" centerPoint3DY="74.85">
+                  <matrix>
+                    <Matrix a="0.00927734375" b="0.236221313476563" c="0.236221313476563" d="-0.00927734375" tx="45.4" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="76.6" centerPoint3DY="83.6">
+                  <matrix>
+                    <Matrix a="0.0298919677734375" b="0.234451293945313" c="0.234451293945313" d="-0.0298919677734375" tx="45.45" ty="13.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="76.2" centerPoint3DY="82.3">
+                  <matrix>
+                    <Matrix a="-0.0401763916015625" b="0.232681274414063" c="0.232681274414063" d="0.0401763916015625" tx="45.05" ty="12.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="71.65" centerPoint3DY="78.9">
+                  <matrix>
+                    <Matrix a="-0.113784790039063" b="0.206619262695313" c="0.206619262695313" d="0.113784790039063" tx="40.5" ty="8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="6.5" centerPoint3DY="76.05">
+                  <matrix>
+                    <Matrix a="0.01031494140625" b="-0.234695434570313" c="-0.234695434570313" d="-0.01031494140625" tx="-24.65" ty="6.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="17.35" centerPoint3DY="69.45">
+                  <matrix>
+                    <Matrix a="-0.083770751953125" b="-0.218475341796875" c="-0.218475341796875" d="0.083770751953125" tx="-13.8" ty="-0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="17.4" centerPoint3DY="63">
+                  <matrix>
+                    <Matrix a="-0.125244140625" b="-0.196640014648438" c="-0.196640014648438" d="0.125244140625" tx="-13.75" ty="-6.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="12.2" centerPoint3DY="62.7">
+                  <matrix>
+                    <Matrix a="-0.151077270507813" b="-0.177139282226563" c="-0.177139282226563" d="0.151077270507813" tx="-18.95" ty="-7.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="9.1" centerPoint3DY="64.25">
+                  <matrix>
+                    <Matrix a="-0.199676513671875" b="-0.132675170898438" c="-0.132675170898438" d="0.199676513671875" tx="-22.05" ty="-5.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#68CB8A">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="70.95" centerPoint3DY="17.85">
+                  <matrix>
+                    <Matrix a="-0.216140747070313" b="0.1002197265625" c="0.1002197265625" d="0.216140747070313" tx="32.2" ty="-18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="97.5" centerPoint3DY="-16.65">
+                  <matrix>
+                    <Matrix a="-0.126144409179688" b="0.201675415039063" c="0.201675415039063" d="0.126144409179688" tx="58.75" ty="-53.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="110.75" centerPoint3DY="-9.65">
+                  <matrix>
+                    <Matrix a="-0.057464599609375" b="0.230606079101563" c="0.230606079101563" d="0.057464599609375" tx="72" ty="-46.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="100.9" centerPoint3DY="-15.25">
+                  <matrix>
+                    <Matrix a="0.037322998046875" b="0.233627319335938" c="0.233627319335938" d="-0.037322998046875" tx="62.15" ty="-51.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="104.05" centerPoint3DY="44.4">
+                  <matrix>
+                    <Matrix a="-0.0276947021484375" b="0.234756469726563" c="0.234756469726563" d="0.0276947021484375" tx="65.3" ty="7.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="103.95" centerPoint3DY="40.45">
+                  <matrix>
+                    <Matrix a="-0.053070068359375" b="0.230072021484375" c="0.230072021484375" d="0.053070068359375" tx="65.2" ty="4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="102.95" centerPoint3DY="45.95">
+                  <matrix>
+                    <Matrix a="0.0207061767578125" b="0.23468017578125" c="0.23468017578125" d="-0.0207061767578125" tx="64.2" ty="9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="102.95" centerPoint3DY="50.4">
+                  <matrix>
+                    <Matrix a="-0.0490264892578125" b="0.230209350585938" c="0.230209350585938" d="0.0490264892578125" tx="64.2" ty="13.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="97.55" centerPoint3DY="54.75">
+                  <matrix>
+                    <Matrix a="-0.164398193359375" b="0.167938232421875" c="0.167938232421875" d="0.164398193359375" tx="58.8" ty="18.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="-6.45" centerPoint3DY="42.2">
+                  <matrix>
+                    <Matrix a="0.072601318359375" b="-0.222503662109375" c="-0.222503662109375" d="-0.072601318359375" tx="-45.2" ty="5.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="11.95" centerPoint3DY="43.65">
+                  <matrix>
+                    <Matrix a="-0.211181640625" b="-0.0979766845703125" c="-0.0979766845703125" d="0.211181640625" tx="-26.8" ty="7.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="10.55" centerPoint3DY="39.75">
+                  <matrix>
+                    <Matrix a="-0.178848266601563" b="-0.147247314453125" c="-0.147247314453125" d="0.178848266601563" tx="-28.2" ty="3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="10.35" centerPoint3DY="44">
+                  <matrix>
+                    <Matrix a="-0.222000122070313" b="-0.064544677734375" c="-0.064544677734375" d="0.222000122070313" tx="-28.4" ty="7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="11.2" centerPoint3DY="45.6">
+                  <matrix>
+                    <Matrix a="-0.239761352539063" b="-0.005096435546875" c="-0.005096435546875" d="0.239761352539063" tx="-27.55" ty="9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#F0308D">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="56.3" centerPoint3DY="23.75">
+                  <matrix>
+                    <Matrix a="-0.078521728515625" b="0.224685668945313" c="0.224685668945313" d="0.078521728515625" tx="12.6" ty="-68.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="58.3" centerPoint3DY="5.35">
+                  <matrix>
+                    <Matrix a="0.0903472900390625" b="0.219696044921875" c="0.219696044921875" d="-0.0903472900390625" tx="14.6" ty="-86.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="63.3" centerPoint3DY="27.7">
+                  <matrix>
+                    <Matrix a="0.153762817382813" b="0.180755615234375" c="0.180755615234375" d="-0.153762817382813" tx="19.6" ty="-64.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="54.2" centerPoint3DY="41.4">
+                  <matrix>
+                    <Matrix a="0.142822265625" b="0.188858032226563" c="0.188858032226563" d="-0.142822265625" tx="10.5" ty="-50.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="55.8" centerPoint3DY="89.8">
+                  <matrix>
+                    <Matrix a="0.0572052001953125" b="0.229476928710938" c="0.229476928710938" d="-0.0572052001953125" tx="12.1" ty="-2.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="55.8" centerPoint3DY="82.7">
+                  <matrix>
+                    <Matrix a="0.0572052001953125" b="0.229476928710938" c="0.229476928710938" d="-0.0572052001953125" tx="12.1" ty="-9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="55.9" centerPoint3DY="93.35">
+                  <matrix>
+                    <Matrix a="0.0440673828125" b="0.232315063476563" c="0.232315063476563" d="-0.0440673828125" tx="12.2" ty="1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="54" centerPoint3DY="89.2">
+                  <matrix>
+                    <Matrix a="0.104278564453125" b="0.211929321289063" c="0.211929321289063" d="-0.104278564453125" tx="10.3" ty="-3.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="57.65" centerPoint3DY="83.45">
+                  <matrix>
+                    <Matrix a="0.146987915039063" b="0.184677124023438" c="0.184677124023438" d="-0.146987915039063" tx="13.95" ty="-8.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="49.45" centerPoint3DY="66.85">
+                  <matrix>
+                    <Matrix a="0.107009887695313" b="0.209930419921875" c="0.209930419921875" d="-0.107009887695313" tx="5.75" ty="-25.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="53.9" centerPoint3DY="62.45">
+                  <matrix>
+                    <Matrix a="0.021148681640625" b="0.234390258789063" c="0.234390258789063" d="-0.021148681640625" tx="10.2" ty="-29.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="56.7" centerPoint3DY="57.5">
+                  <matrix>
+                    <Matrix a="-0.0665283203125" b="0.225479125976563" c="0.225479125976563" d="0.0665283203125" tx="13" ty="-34.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="55.45" centerPoint3DY="54.7">
+                  <matrix>
+                    <Matrix a="-0.084197998046875" b="0.219253540039063" c="0.219253540039063" d="0.084197998046875" tx="11.75" ty="-37.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1458" centerPoint3DX="53.3" centerPoint3DY="50.55">
+                  <matrix>
+                    <Matrix a="-0.112289428710938" b="0.211166381835938" c="0.211166381835938" d="0.112289428710938" tx="9.6" ty="-41.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#8FCBA5">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="64.4" centerPoint3DY="24.35">
+                  <matrix>
+                    <Matrix a="-0.180755615234375" b="0.154769897460938" c="0.154769897460938" d="0.180755615234375" tx="33.25" ty="-45.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="76.1" centerPoint3DY="-15.2">
+                  <matrix>
+                    <Matrix a="-0.0322723388671875" b="0.23529052734375" c="0.23529052734375" d="0.0322723388671875" tx="44.95" ty="-85.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="79.55" centerPoint3DY="-6.4">
+                  <matrix>
+                    <Matrix a="0.110427856445313" b="0.209747314453125" c="0.209747314453125" d="-0.110427856445313" tx="48.4" ty="-76.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="70.95" centerPoint3DY="7.9">
+                  <matrix>
+                    <Matrix a="0.097991943359375" b="0.215255737304688" c="0.215255737304688" d="-0.097991943359375" tx="39.8" ty="-62.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="74.5" centerPoint3DY="68.7">
+                  <matrix>
+                    <Matrix a="0.0056915283203125" b="0.236160278320313" c="0.236160278320313" d="-0.0056915283203125" tx="43.35" ty="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="74.1" centerPoint3DY="63.6">
+                  <matrix>
+                    <Matrix a="-0.0294952392578125" b="0.2342529296875" c="0.2342529296875" d="0.0294952392578125" tx="42.95" ty="-6.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="74.35" centerPoint3DY="76.05">
+                  <matrix>
+                    <Matrix a="-0.042755126953125" b="0.232147216796875" c="0.232147216796875" d="0.042755126953125" tx="43.2" ty="6.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="70.75" centerPoint3DY="70.65">
+                  <matrix>
+                    <Matrix a="-0.095123291015625" b="0.21539306640625" c="0.21539306640625" d="0.095123291015625" tx="39.6" ty="0.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="66.05" centerPoint3DY="65.05">
+                  <matrix>
+                    <Matrix a="-0.192947387695313" b="0.134353637695313" c="0.134353637695313" d="0.192947387695313" tx="34.9" ty="-4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="49.2" centerPoint3DY="54.75">
+                  <matrix>
+                    <Matrix a="-0.233306884765625" b="-0.022430419921875" c="-0.022430419921875" d="0.233306884765625" tx="18.05" ty="-15.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="52.15" centerPoint3DY="55.15">
+                  <matrix>
+                    <Matrix a="-0.229995727539063" b="-0.0448455810546875" c="-0.0448455810546875" d="0.229995727539063" tx="21" ty="-14.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="52.75" centerPoint3DY="55.4">
+                  <matrix>
+                    <Matrix a="-0.227767944335938" b="-0.05487060546875" c="-0.05487060546875" d="0.227767944335938" tx="21.6" ty="-14.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="51.4" centerPoint3DY="54.85">
+                  <matrix>
+                    <Matrix a="-0.231781005859375" b="-0.0335845947265625" c="-0.0335845947265625" d="0.231781005859375" tx="20.25" ty="-15.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1456" centerPoint3DX="50.15" centerPoint3DY="54.1">
+                  <matrix>
+                    <Matrix a="-0.238662719726563" b="-0.0199737548828125" c="-0.0199737548828125" d="0.238662719726563" tx="19" ty="-15.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#9DBD77">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="85.9" centerPoint3DY="3.9">
+                  <matrix>
+                    <Matrix a="-0.167556762695313" b="0.169647216796875" c="0.169647216796875" d="0.167556762695313" tx="47.15" ty="-32.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="102.65" centerPoint3DY="-48.15">
+                  <matrix>
+                    <Matrix a="-0.0125732421875" b="0.237640380859375" c="0.237640380859375" d="0.0125732421875" tx="63.9" ty="-84.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="102.85" centerPoint3DY="-50.45">
+                  <matrix>
+                    <Matrix a="0.1278076171875" b="0.200210571289063" c="0.200210571289063" d="-0.1278076171875" tx="64.1" ty="-86.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="94.85" centerPoint3DY="-35.25">
+                  <matrix>
+                    <Matrix a="0.1158447265625" b="0.206741333007813" c="0.206741333007813" d="-0.1158447265625" tx="56.1" ty="-71.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="100.95" centerPoint3DY="32.75">
+                  <matrix>
+                    <Matrix a="0.025421142578125" b="0.235336303710938" c="0.235336303710938" d="-0.025421142578125" tx="62.2" ty="-3.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="100.7" centerPoint3DY="30.45">
+                  <matrix>
+                    <Matrix a="-0.0098724365234375" b="0.23638916015625" c="0.23638916015625" d="0.0098724365234375" tx="61.95" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="102.45" centerPoint3DY="45.2">
+                  <matrix>
+                    <Matrix a="-0.143630981445313" b="0.187515258789063" c="0.187515258789063" d="0.143630981445313" tx="63.7" ty="8.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="97.6" centerPoint3DY="44.4">
+                  <matrix>
+                    <Matrix a="-0.182693481445313" b="0.148788452148438" c="0.148788452148438" d="0.182693481445313" tx="58.85" ty="7.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="88.4" centerPoint3DY="48.9">
+                  <matrix>
+                    <Matrix a="-0.196121215820313" b="0.130462646484375" c="0.130462646484375" d="0.196121215820313" tx="49.65" ty="12.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="57.55" centerPoint3DY="38.8">
+                  <matrix>
+                    <Matrix a="-0.229339599609375" b="0.049285888671875" c="0.049285888671875" d="0.229339599609375" tx="18.8" ty="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="58.15" centerPoint3DY="39.9">
+                  <matrix>
+                    <Matrix a="-0.234420776367188" b="0.0024871826171875" c="0.0024871826171875" d="0.234420776367188" tx="19.4" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="58.1" centerPoint3DY="39.9">
+                  <matrix>
+                    <Matrix a="-0.234420776367188" b="0.0024871826171875" c="0.0024871826171875" d="0.234420776367188" tx="19.35" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="58.1" centerPoint3DY="39.8">
+                  <matrix>
+                    <Matrix a="-0.234420776367188" b="0.0024871826171875" c="0.0024871826171875" d="0.234420776367188" tx="19.35" ty="3.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1454" centerPoint3DX="58.15" centerPoint3DY="39.75">
+                  <matrix>
+                    <Matrix a="-0.239990234375" d="0.239990234375" tx="19.4" ty="3.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#E5D92E">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="6.05" centerPoint3DY="-48.7">
+                  <matrix>
+                    <Matrix a="-0.143417358398438" b="0.19049072265625" c="0.19049072265625" d="0.143417358398438" tx="-18.5" ty="-106.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="-7.55" centerPoint3DY="-43.9">
+                  <matrix>
+                    <Matrix a="0.0429840087890625" b="0.233978271484375" c="0.233978271484375" d="-0.0429840087890625" tx="-32.1" ty="-101.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="-5.45" centerPoint3DY="-7.1">
+                  <matrix>
+                    <Matrix a="0.130111694335938" b="0.198806762695313" c="0.198806762695313" d="-0.130111694335938" tx="-30" ty="-64.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="-9.85" centerPoint3DY="1">
+                  <matrix>
+                    <Matrix a="0.097198486328125" b="0.2166748046875" c="0.2166748046875" d="-0.097198486328125" tx="-34.4" ty="-56.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="-12.85" centerPoint3DY="48.3">
+                  <matrix>
+                    <Matrix a="0.140792846679688" b="0.190902709960938" c="0.190902709960938" d="-0.140792846679688" tx="-37.4" ty="-9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="-11.25" centerPoint3DY="42.7">
+                  <matrix>
+                    <Matrix a="0.0997161865234375" b="0.215057373046875" c="0.215057373046875" d="-0.0997161865234375" tx="-35.8" ty="-15.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="-8.95" centerPoint3DY="60.25">
+                  <matrix>
+                    <Matrix a="-0.045989990234375" b="0.232177734375" c="0.232177734375" d="0.045989990234375" tx="-33.5" ty="2.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="-5.25" centerPoint3DY="47.15">
+                  <matrix>
+                    <Matrix a="-0.142333984375" b="0.188720703125" c="0.188720703125" d="0.142333984375" tx="-29.8" ty="-10.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="2.75" centerPoint3DY="39.3">
+                  <matrix>
+                    <Matrix a="-0.204605102539063" b="0.117813110351563" c="0.117813110351563" d="0.204605102539063" tx="-21.8" ty="-18.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="13.25" centerPoint3DY="33.9">
+                  <matrix>
+                    <Matrix a="-0.233016967773438" b="0.036376953125" c="0.036376953125" d="0.233016967773438" tx="-11.3" ty="-23.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="14.65" centerPoint3DY="6.95">
+                  <matrix>
+                    <Matrix a="-0.229843139648438" b="-0.051666259765625" c="-0.051666259765625" d="0.229843139648438" tx="-9.9" ty="-50.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="25.95" centerPoint3DY="-2.85">
+                  <matrix>
+                    <Matrix a="-0.218887329101563" b="-0.08526611328125" c="-0.08526611328125" d="0.218887329101563" tx="1.4" ty="-60.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="37.15" centerPoint3DY="-10">
+                  <matrix>
+                    <Matrix a="-0.213455200195313" b="-0.096435546875" c="-0.096435546875" d="0.213455200195313" tx="12.6" ty="-67.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="34.05" centerPoint3DY="-17.55">
+                  <matrix>
+                    <Matrix a="-0.216796875" b="-0.088104248046875" c="-0.088104248046875" d="0.216796875" tx="9.5" ty="-75.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1452" centerPoint3DX="31.8" centerPoint3DY="-25.45">
+                  <matrix>
+                    <Matrix a="-0.238922119140625" b="0.008880615234375" c="0.008880615234375" d="0.238922119140625" tx="7.25" ty="-83.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#A9F298">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="20.2" centerPoint3DY="-53">
+                  <matrix>
+                    <Matrix a="-0.076324462890625" b="0.224441528320313" c="0.224441528320313" d="0.076324462890625" tx="0.6" ty="-97.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="5" centerPoint3DY="-67.35">
+                  <matrix>
+                    <Matrix a="0.179458618164063" b="0.153671264648438" c="0.153671264648438" d="-0.179458618164063" tx="-14.6" ty="-112.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="1.7" centerPoint3DY="-36.45">
+                  <matrix>
+                    <Matrix a="0.224700927734375" b="0.072052001953125" c="0.072052001953125" d="-0.224700927734375" tx="-17.9" ty="-81.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="-0.3" centerPoint3DY="-26.25">
+                  <matrix>
+                    <Matrix a="0.210464477539063" b="0.106430053710938" c="0.106430053710938" d="-0.210464477539063" tx="-19.9" ty="-71.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="-6.65" centerPoint3DY="18.35">
+                  <matrix>
+                    <Matrix a="0.228012084960938" b="0.0592803955078125" c="0.0592803955078125" d="-0.228012084960938" tx="-26.25" ty="-26.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="-0.45" centerPoint3DY="16.5">
+                  <matrix>
+                    <Matrix a="0.186859130859375" b="0.142990112304688" c="0.142990112304688" d="-0.186859130859375" tx="-20.05" ty="-28.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="6.5" centerPoint3DY="45.9">
+                  <matrix>
+                    <Matrix a="0.0666961669921875" b="0.225250244140625" c="0.225250244140625" d="-0.0666961669921875" tx="-13.1" ty="1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="8.55" centerPoint3DY="43.6">
+                  <matrix>
+                    <Matrix a="-0.026763916015625" b="0.233108520507813" c="0.233108520507813" d="0.026763916015625" tx="-11.05" ty="-1.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="1.6" centerPoint3DY="15.1">
+                  <matrix>
+                    <Matrix a="-0.110366821289063" b="0.206771850585938" c="0.206771850585938" d="0.110366821289063" tx="-18" ty="-29.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="9" centerPoint3DY="4.3">
+                  <matrix>
+                    <Matrix a="-0.110305786132813" b="0.206161499023438" c="0.206161499023438" d="0.110305786132813" tx="-10.6" ty="-40.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="31.1" centerPoint3DY="-2.75">
+                  <matrix>
+                    <Matrix a="-0.223602294921875" b="0.06292724609375" c="0.06292724609375" d="0.223602294921875" tx="11.5" ty="-47.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="28.8" centerPoint3DY="-10.3">
+                  <matrix>
+                    <Matrix a="-0.220840454101563" b="0.071380615234375" c="0.071380615234375" d="0.220840454101563" tx="9.2" ty="-55.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1450" centerPoint3DX="34.8" centerPoint3DY="-19.3">
+                  <matrix>
+                    <Matrix a="-0.191116333007813" b="0.142242431640625" c="0.142242431640625" d="0.191116333007813" tx="15.2" ty="-64.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#BCEAF6" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="31.95" centerPoint3DY="-68">
+                  <matrix>
+                    <Matrix a="-0.115097045898438" b="0.20758056640625" c="0.20758056640625" d="0.115097045898438" tx="11.6" ty="-93.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="13.5" centerPoint3DY="-95.1">
+                  <matrix>
+                    <Matrix a="0.149505615234375" b="0.183303833007813" c="0.183303833007813" d="-0.149505615234375" tx="-6.85" ty="-120.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="6.2" centerPoint3DY="-66.5">
+                  <matrix>
+                    <Matrix a="0.208587646484375" b="0.110916137695313" c="0.110916137695313" d="-0.208587646484375" tx="-14.15" ty="-92.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="5.95" centerPoint3DY="-55.5">
+                  <matrix>
+                    <Matrix a="0.188461303710938" b="0.142257690429688" c="0.142257690429688" d="-0.188461303710938" tx="-14.4" ty="-81.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="-2.75" centerPoint3DY="-11.8">
+                  <matrix>
+                    <Matrix a="0.214126586914063" b="0.098907470703125" c="0.098907470703125" d="-0.214126586914063" tx="-23.1" ty="-37.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="7.55" centerPoint3DY="-11.5">
+                  <matrix>
+                    <Matrix a="0.158706665039063" b="0.174057006835938" c="0.174057006835938" d="-0.158706665039063" tx="-12.8" ty="-37.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="18.4" centerPoint3DY="23.9">
+                  <matrix>
+                    <Matrix a="0.025726318359375" b="0.233779907226563" c="0.233779907226563" d="-0.025726318359375" tx="-1.95" ty="-1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="11" centerPoint3DY="-1.15">
+                  <matrix>
+                    <Matrix a="-0.06182861328125" b="0.226638793945313" c="0.226638793945313" d="0.06182861328125" tx="-9.35" ty="-26.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="18.45" centerPoint3DY="-12">
+                  <matrix>
+                    <Matrix a="-0.0619049072265625" b="0.226028442382813" c="0.226028442382813" d="0.0619049072265625" tx="-1.9" ty="-37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="34.55" centerPoint3DY="-12.9">
+                  <matrix>
+                    <Matrix a="-0.232131958007813" b="0.0140380859375" c="0.0140380859375" d="0.232131958007813" tx="14.2" ty="-38.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="32.55" centerPoint3DY="-20.5">
+                  <matrix>
+                    <Matrix a="-0.231216430664063" b="0.02288818359375" c="0.02288818359375" d="0.231216430664063" tx="12.2" ty="-46.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" duration="71" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1448" centerPoint3DX="42.4" centerPoint3DY="-28.7">
+                  <matrix>
+                    <Matrix a="-0.213592529296875" b="0.106170654296875" c="0.106170654296875" d="0.213592529296875" tx="22.05" ty="-54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

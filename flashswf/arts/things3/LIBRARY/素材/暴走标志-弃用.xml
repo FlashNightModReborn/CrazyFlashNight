@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/暴走标志-弃用" itemID="67ac3bb9-000005fb" lastModified="1739340729">
+  <timeline>
+    <DOMTimeline name="暴走标志-弃用">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BE5373" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 1631" centerPoint3DX="34.75" centerPoint3DY="15.3">
+                  <matrix>
+                    <Matrix tx="-0.1" ty="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="8" blurY="8" color="#FFFF00"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

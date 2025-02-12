@@ -1,0 +1,693 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 685" itemID="6577faef-00001550" lastModified="1730123995">
+  <timeline>
+    <DOMTimeline name="Symbol 685">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#8A92B8">
+          <frames>
+            <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" name="a1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#BDA156" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[/*function 集体加血(加血距离X, 加血距离Y, 加血值)
+{
+   for(each in _root.gameworld)
+   {
+      if(_root.gameworld[each].是否为敌人 == _parent.是否为敌人)
+      {
+         if(Math.abs(_root.gameworld[each]._x - _parent._x) < 加血距离X and Math.abs(_root.gameworld[each]._y - _parent._y) < 加血距离Y)
+         {
+            if(_root.gameworld[each].hp > 0 and _root.gameworld[each].hp < _root.gameworld[each].hp满血值)
+            {
+               _root.gameworld[each].hp += _root.gameworld[each].hp满血值 * 0.03;
+               if(_root.gameworld[each].hp > _root.gameworld[each].hp满血值)
+               {
+                  _root.gameworld[each].hp = _root.gameworld[each].hp满血值;
+               }
+               _root.效果("猩红增幅",_root.gameworld[each]._x,_root.gameworld[each]._y,100);
+            }
+         }
+      }
+   }
+}
+集体加血(900,600,300);
+*/]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#E6ED9C">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 648" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.428543090820313" b="0.25885009765625" c="0.25885009765625" d="0.428543090820313" tx="-26.05" ty="-17.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 648" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.48687744140625" b="-0.11749267578125" c="-0.11749267578125" d="0.48687744140625" tx="-40.15" ty="-28.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#78E654">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 647" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.486373901367188" b="-0.138153076171875" c="-0.138153076171875" d="0.486373901367188" tx="4.8" ty="-25.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 647" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.248611450195313" b="-0.44049072265625" c="-0.44049072265625" d="0.248611450195313" tx="-12.6" ty="-12.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#2FF3F6">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 646" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.486373901367188" b="-0.138153076171875" c="-0.138153076171875" d="0.486373901367188" tx="-4.95" ty="-62.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 646" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.248611450195313" b="-0.44049072265625" c="-0.44049072265625" d="0.248611450195313" tx="6.7" ty="-45.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#52D0D0">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 645" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.421173095703125" b="0.269851684570313" c="0.269851684570313" d="0.421173095703125" tx="-40.85" ty="-32.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 645" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.489349365234375" b="-0.104476928710938" c="-0.104476928710938" d="0.489349365234375" tx="-40.25" ty="-49.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#C2EBEC">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 644" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.464218139648438" b="-0.186309814453125" c="-0.186309814453125" d="0.464218139648438" tx="-30.3" ty="-49.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 644" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.198974609375" b="-0.459152221679688" c="-0.459152221679688" d="0.198974609375" tx="-20.85" ty="-53.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#C45791">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 643" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.505584716796875" b="0.0195465087890625" c="0.0195465087890625" d="0.505584716796875" tx="-3.5" ty="-24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 643" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.493423461914063" b="-0.1123046875" c="-0.1123046875" d="0.493423461914063" tx="-19.05" ty="-22.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#23D3DA">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 642" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.486801147460938" b="0.131637573242188" c="0.131637573242188" d="0.486801147460938" tx="-14.1" ty="-40"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 642" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.438766479492188" b="-0.248947143554688" c="-0.248947143554688" d="0.438766479492188" tx="-15.75" ty="-35.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#9284F1">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 641" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.494659423828125" b="0.0988006591796875" c="0.0988006591796875" d="0.494659423828125" tx="-17.45" ty="-38.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 641" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.421249389648438" b="-0.277862548828125" c="-0.277862548828125" d="0.421249389648438" tx="-19.55" ty="-36.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#65E239">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 640" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388671875" b="0.31787109375" c="0.31787109375" d="0.388671875" tx="-32.6" ty="-86.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 640" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.424774169921875" b="-0.268096923828125" c="-0.268096923828125" d="0.424774169921875" tx="11.85" ty="-71.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#ED84BB">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 639" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.504104614257813" b="0.0596771240234375" c="0.0596771240234375" d="0.504104614257813" tx="7.1" ty="13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 639" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.481689453125" b="0.159561157226563" c="0.159561157226563" d="0.481689453125" tx="-14.9" ty="11.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#03A9DB">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.476318359375" b="0.071258544921875" c="0.071258544921875" d="0.476318359375" tx="16.15" ty="43.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.465606689453125" b="0.122955322265625" c="0.122955322265625" d="0.465606689453125" tx="0.65" ty="40.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#B8A3DA">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 638" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.507614135742188" b="0.0041656494140625" c="0.0041656494140625" d="0.507614135742188" tx="-14.35" ty="20.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 638" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.466506958007813" b="0.199188232421875" c="0.199188232421875" d="0.466506958007813" tx="-32.4" ty="17.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#9753F6">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.507980346679688" d="0.507980346679688" tx="-11.95" ty="52.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 637" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.507980346679688" d="0.507980346679688" tx="-16.15" ty="50.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#5ED8EB">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 636" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.496780395507813" b="0.08795166015625" c="0.08795166015625" d="0.496780395507813" tx="-11.2" ty="-37.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 636" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.41510009765625" b="-0.28704833984375" c="-0.28704833984375" d="0.41510009765625" tx="-15.4" ty="-32.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#93FE9A">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 635" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.48919677734375" b="0.1165771484375" c="0.1165771484375" d="0.48919677734375" tx="-18.05" ty="-66.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 635" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.429855346679688" b="-0.261337280273438" c="-0.261337280273438" d="0.429855346679688" tx="0.3" ty="-57.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#6785FF">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 634" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.48828125" b="0.138473510742188" c="0.138473510742188" d="0.48828125" tx="-11.9" ty="-21.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 634" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.485000610351563" b="0.14935302734375" c="0.14935302734375" d="0.485000610351563" tx="-31" ty="-23"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#83B973">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 633" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.499969482421875" b="0.0789947509765625" c="0.0789947509765625" d="0.499969482421875" tx="-6.5" ty="-27.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 633" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.503387451171875" b="-0.0534515380859375" c="-0.0534515380859375" d="0.503387451171875" tx="-21.05" ty="-26.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#A4549C">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 632" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.467376708984375" b="0.1966552734375" c="0.1966552734375" d="0.467376708984375" tx="-6.4" ty="-25.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 632" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.48016357421875" b="0.163558959960938" c="0.163558959960938" d="0.48016357421875" tx="-25" ty="-26.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 21" color="#89CB67">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 631" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.4119873046875" b="0.26922607421875" c="0.26922607421875" d="-0.4119873046875" tx="-16.6" ty="-51"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 631" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.103485107421875" b="0.481338500976563" c="0.481338500976563" d="-0.103485107421875" tx="-9.85" ty="-45.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 22" color="#738F95">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 630" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.442794799804688" b="0.217544555664063" c="0.217544555664063" d="-0.442794799804688" tx="-19.65" ty="-35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 630" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1617431640625" b="0.466278076171875" c="0.466278076171875" d="-0.1617431640625" tx="-23.2" ty="-36.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 23" color="#32F495">
+          <frames>
+            <DOMFrame index="0" duration="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 629" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.475814819335938" b="0.145050048828125" c="0.145050048828125" d="0.475814819335938" tx="-16.2" ty="-54.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 629" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.440383911132813" b="-0.231689453125" c="-0.231689453125" d="0.440383911132813" tx="-6.9" ty="-47.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 24" color="#7772F9">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/Symbol 2" centerPoint3DX="73.15" centerPoint3DY="145.6">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-13.5" ty="58.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

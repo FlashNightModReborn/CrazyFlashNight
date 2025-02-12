@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 523" itemID="6577faef-000014de" symbolType="graphic" lastModified="1701508661">
+  <timeline>
+    <DOMTimeline name="Symbol 523">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0427703857421875" d="0.0427703857421875" tx="43.3" ty="30.7"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FFFF99" alpha="0.8" ratio="0.411764705882353"/>
+                        <GradientEntry color="#FFFFCC" alpha="0.36078431372549" ratio="0.627450980392157"/>
+                        <GradientEntry color="#FFFF00" alpha="0.133333333333333" ratio="0.768627450980392"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1562 649[1562 927 1366 1123!1366 1123[1169 1320 891 1320!891 1320[613 1320 416 1123!416 1123[220 927 220 649!220 649[220 371 416 174!416 174[613 -23 891 -23!891 -23[1169 -23 1366 174!1366 174[1562 371 1562 649"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

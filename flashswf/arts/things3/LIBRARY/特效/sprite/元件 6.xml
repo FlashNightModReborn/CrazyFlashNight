@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效/sprite/元件 6" itemID="6648648b-000003c8" lastModified="1716020374">
+  <timeline>
+    <DOMTimeline name="元件 6">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.13311767578125" d="0.07171630859375" tx="4.6" ty="57.85"/>
+                        </matrix>
+                        <GradientEntry color="#FFCC00" ratio="0"/>
+                        <GradientEntry color="#990000" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2326 1163[2326 1645 1985 1985!1985 1985[1645 2326 1163 2326!1163 2326[681 2326 340 1985!340 1985[0 1645 0 1163!0 1163[0 681 340 340!340 340[681 0 1163 0!1163 0[1645 0 1985 340!1985 340[2326 681 2326 1163"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
