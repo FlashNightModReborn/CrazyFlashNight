@@ -191,6 +191,8 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
     bulletInstance.ymov = bulletInstance.子弹速度 * Math.sin(angle);
     bulletInstance.霰弹值 = Obj.联弹检测 ? Obj.霰弹值 : 1;
 
+    /*
+
     var report_len = 16;
 
     // 初始化统计信息（如果没有）
@@ -337,7 +339,7 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
         _root.服务器.发布服务器消息(report);
     }
 
-
+    */
 
     return bulletInstance;
 };
