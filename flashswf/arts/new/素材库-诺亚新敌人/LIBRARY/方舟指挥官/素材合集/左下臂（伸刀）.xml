@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/素材合集/左下臂（伸刀）" itemID="65a3f14b-00001085" lastModified="1705287129">
+  <timeline>
+    <DOMTimeline name="左下臂（伸刀）">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.495452880859375" b="-0.565032958984375" c="-0.480560302734375" d="0.421401977539063" tx="26.25" ty="23.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.9" y="1.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/左下臂（没刀）" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.334121704101563" b="-0.214874267578125" c="-0.214874267578125" d="0.334121704101563" tx="35.55" ty="15.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

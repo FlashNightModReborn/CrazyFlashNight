@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺亚克隆兽/部件/闪6遗留的神必影片剪辑" itemID="678d0371-000009d2" lastModified="1737294705">
+  <timeline>
+    <DOMTimeline name="闪6遗留的神必影片剪辑">
+      <layers>
+        <DOMLayer name="Script Layer" color="#96E555">
+          <frames>
+            <DOMFrame index="0" duration="619" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="619" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent._parent.产生源 != "无")
+{
+   _parent._parent.removeMovieClip();
+}
+stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#96B649" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FF0000" alpha="0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-1 -44[21 -42 34 -25!34 -25|43 1!43 1|37 20!37 20[25 42 -1 44!-1 44|-8 42!-8 42|-18 40!-18 40|-26 36!-26 36|-30 33!-30 33|-33 29!-33 29|-37 25!-37 25|-42 13!-42 13|-44 -5!-44 -5|-41 -20!-41 -20|-31 -31!-31 -31[-17 -43 -1 -44"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="619" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

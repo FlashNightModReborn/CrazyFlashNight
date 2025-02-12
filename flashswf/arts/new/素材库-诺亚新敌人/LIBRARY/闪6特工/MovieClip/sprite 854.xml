@@ -1,0 +1,1233 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="闪6特工/MovieClip/sprite 854" itemID="657350a5-0000001e" lastModified="1722264166" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="sprite 854" currentFrame="14">
+      <layers>
+        <DOMLayer name="图层 2" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(躲闪 == true)
+{
+   _parent.动画完毕();
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 853" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101119995117188" b="-0.211532592773438" c="0.211532592773438" d="-0.101119995117188" tx="-29.95" ty="-15.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 853" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101119995117188" b="-0.211532592773438" c="0.211532592773438" d="-0.101119995117188" tx="-29.95" ty="-15.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 853" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101119995117188" b="-0.211532592773438" c="0.211532592773438" d="-0.101119995117188" tx="-29.95" ty="-16.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 853" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101119995117188" b="-0.211532592773438" c="0.211532592773438" d="-0.101119995117188" tx="-29.95" ty="-16.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 853" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101119995117188" b="-0.211532592773438" c="0.211532592773438" d="-0.101119995117188" tx="-29.95" ty="-16.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 853" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101119995117188" b="-0.211532592773438" c="0.211532592773438" d="-0.101119995117188" tx="-29.95" ty="-16.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 853" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101119995117188" b="-0.211532592773438" c="0.211532592773438" d="-0.101119995117188" tx="-29.95" ty="-16.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170745849609375" b="-0.20428466796875" c="0.20428466796875" d="0.170745849609375" tx="-13.05" ty="-23.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170745849609375" b="-0.20428466796875" c="0.20428466796875" d="0.170745849609375" tx="-13.05" ty="-23.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170745849609375" b="-0.20428466796875" c="0.20428466796875" d="0.170745849609375" tx="-13.05" ty="-24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170745849609375" b="-0.20428466796875" c="0.20428466796875" d="0.170745849609375" tx="-13.05" ty="-24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170745849609375" b="-0.20428466796875" c="0.20428466796875" d="0.170745849609375" tx="-13.05" ty="-24.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170745849609375" b="-0.20428466796875" c="0.20428466796875" d="0.170745849609375" tx="-13.05" ty="-24.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170745849609375" b="-0.20428466796875" c="0.20428466796875" d="0.170745849609375" tx="-13.05" ty="-24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.116424560546875" b="0.119613647460938" c="0.119613647460938" d="0.116424560546875" tx="3.55" ty="-42.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.116424560546875" b="0.119613647460938" c="0.119613647460938" d="0.116424560546875" tx="3.55" ty="-42.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.116424560546875" b="0.119613647460938" c="0.119613647460938" d="0.116424560546875" tx="3.55" ty="-43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.116424560546875" b="0.119613647460938" c="0.119613647460938" d="0.116424560546875" tx="3.55" ty="-43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.116424560546875" b="0.119613647460938" c="0.119613647460938" d="0.116424560546875" tx="3.55" ty="-43.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.116424560546875" b="0.119613647460938" c="0.119613647460938" d="0.116424560546875" tx="3.55" ty="-43.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.116424560546875" b="0.119613647460938" c="0.119613647460938" d="0.116424560546875" tx="3.55" ty="-43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899291992188" b="-0.0658416748046875" c="0.0658416748046875" d="0.224899291992188" tx="-36.65" ty="-33.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899291992188" b="-0.0658416748046875" c="0.0658416748046875" d="0.224899291992188" tx="-36.65" ty="-33.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899291992188" b="-0.0658416748046875" c="0.0658416748046875" d="0.224899291992188" tx="-36.65" ty="-34.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899291992188" b="-0.0658416748046875" c="0.0658416748046875" d="0.224899291992188" tx="-36.65" ty="-34.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899291992188" b="-0.0658416748046875" c="0.0658416748046875" d="0.224899291992188" tx="-36.65" ty="-35.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899291992188" b="-0.0658416748046875" c="0.0658416748046875" d="0.224899291992188" tx="-36.65" ty="-35.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899291992188" b="-0.0658416748046875" c="0.0658416748046875" d="0.224899291992188" tx="-36.65" ty="-34.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.106109619140625" b="-0.21026611328125" c="0.21026611328125" d="-0.106109619140625" tx="-13.35" ty="-11.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.106109619140625" b="-0.21026611328125" c="0.21026611328125" d="-0.106109619140625" tx="-13.35" ty="-11.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.106109619140625" b="-0.21026611328125" c="0.21026611328125" d="-0.106109619140625" tx="-13.35" ty="-12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.106109619140625" b="-0.21026611328125" c="0.21026611328125" d="-0.106109619140625" tx="-13.35" ty="-12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.106109619140625" b="-0.21026611328125" c="0.21026611328125" d="-0.106109619140625" tx="-13.35" ty="-12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.106109619140625" b="-0.21026611328125" c="0.21026611328125" d="-0.106109619140625" tx="-13.35" ty="-12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.106109619140625" b="-0.21026611328125" c="0.21026611328125" d="-0.106109619140625" tx="-13.35" ty="-12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 850" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.217559814453125" b="-0.154556274414063" c="0.154556274414063" d="0.217559814453125" tx="4.65" ty="-21.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 850" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.217559814453125" b="-0.154556274414063" c="0.154556274414063" d="0.217559814453125" tx="4.65" ty="-21.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 850" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.217559814453125" b="-0.154556274414063" c="0.154556274414063" d="0.217559814453125" tx="4.65" ty="-21.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 850" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.217559814453125" b="-0.154556274414063" c="0.154556274414063" d="0.217559814453125" tx="4.65" ty="-21.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 850" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.217559814453125" b="-0.154556274414063" c="0.154556274414063" d="0.217559814453125" tx="4.65" ty="-22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 850" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.217559814453125" b="-0.154556274414063" c="0.154556274414063" d="0.217559814453125" tx="4.65" ty="-22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 850" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.217559814453125" b="-0.154556274414063" c="0.154556274414063" d="0.217559814453125" tx="4.65" ty="-21.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.138824462890625" b="0.0941009521484375" c="0.0941009521484375" d="0.138824462890625" tx="24.75" ty="-35.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.138824462890625" b="0.0941009521484375" c="0.0941009521484375" d="0.138824462890625" tx="24.75" ty="-35.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.138824462890625" b="0.0941009521484375" c="0.0941009521484375" d="0.138824462890625" tx="24.75" ty="-35.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.138824462890625" b="0.0941009521484375" c="0.0941009521484375" d="0.138824462890625" tx="24.75" ty="-35.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.138824462890625" b="0.0941009521484375" c="0.0941009521484375" d="0.138824462890625" tx="24.75" ty="-36.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.138824462890625" b="0.0941009521484375" c="0.0941009521484375" d="0.138824462890625" tx="24.75" ty="-36.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/MovieClip/sprite 849">
+                  <matrix>
+                    <Matrix a="-0.138824462890625" b="0.0941009521484375" c="0.0941009521484375" d="0.138824462890625" tx="24.75" ty="-35.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="15" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 843" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.138397216796875" b="0.1572265625" c="-0.1572265625" d="0.138397216796875" tx="-31.55" ty="36.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.204330444335938" b="-0.0471649169921875" c="0.0471649169921875" d="0.204330444335938" tx="-38.35" ty="9.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.204330444335938" b="-0.0471649169921875" c="0.0471649169921875" d="0.204330444335938" tx="-38.35" ty="9.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.204330444335938" b="-0.0471649169921875" c="0.0471649169921875" d="0.204330444335938" tx="-38.35" ty="9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.204330444335938" b="-0.0471649169921875" c="0.0471649169921875" d="0.204330444335938" tx="-38.35" ty="9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.204330444335938" b="-0.0471649169921875" c="0.0471649169921875" d="0.204330444335938" tx="-38.35" ty="9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.204330444335938" b="-0.0471649169921875" c="0.0471649169921875" d="0.204330444335938" tx="-38.35" ty="9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.204330444335938" b="-0.0471649169921875" c="0.0471649169921875" d="0.204330444335938" tx="-38.35" ty="9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="15" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 842" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.207138061523438" b="0.033843994140625" c="-0.033843994140625" d="0.207138061523438" tx="-52" ty="55.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507446289063" b="0.0417022705078125" c="-0.0417022705078125" d="0.229507446289063" tx="-25.05" ty="-40.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507446289063" b="0.0417022705078125" c="-0.0417022705078125" d="0.229507446289063" tx="-25.05" ty="-40.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507446289063" b="0.0417022705078125" c="-0.0417022705078125" d="0.229507446289063" tx="-25.05" ty="-41"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507446289063" b="0.0417022705078125" c="-0.0417022705078125" d="0.229507446289063" tx="-25.05" ty="-41"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507446289063" b="0.0417022705078125" c="-0.0417022705078125" d="0.229507446289063" tx="-25.05" ty="-41.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507446289063" b="0.0417022705078125" c="-0.0417022705078125" d="0.229507446289063" tx="-25.05" ty="-41.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507446289063" b="0.0417022705078125" c="-0.0417022705078125" d="0.229507446289063" tx="-25.05" ty="-41"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991455078125" d="0.209991455078125" tx="-32.8" ty="7.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991455078125" d="0.209991455078125" tx="-32.8" ty="7.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991455078125" d="0.209991455078125" tx="-32.8" ty="6.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991455078125" d="0.209991455078125" tx="-32.8" ty="6.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991455078125" d="0.209991455078125" tx="-32.8" ty="6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991455078125" d="0.209991455078125" tx="-32.8" ty="6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 845" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991455078125" d="0.209991455078125" tx="-32.8" ty="6.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="15" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 843" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.197052001953125" b="0.0719146728515625" c="-0.0719146728515625" d="0.197052001953125" tx="-7.8" ty="25.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658203125" b="-0.146240234375" c="0.146240234375" d="0.149658203125" tx="-27.3" ty="6.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658203125" b="-0.146240234375" c="0.146240234375" d="0.149658203125" tx="-27.3" ty="6.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658203125" b="-0.146240234375" c="0.146240234375" d="0.149658203125" tx="-27.3" ty="6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658203125" b="-0.146240234375" c="0.146240234375" d="0.149658203125" tx="-27.3" ty="6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658203125" b="-0.146240234375" c="0.146240234375" d="0.149658203125" tx="-27.3" ty="5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658203125" b="-0.146240234375" c="0.146240234375" d="0.149658203125" tx="-27.3" ty="5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 844" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658203125" b="-0.146240234375" c="0.146240234375" d="0.149658203125" tx="-27.3" ty="6.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="15" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 842" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20697021484375" b="0.03485107421875" c="-0.03485107421875" d="0.20697021484375" tx="-16.25" ty="51.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 841" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20648193359375" b="0.0375213623046875" c="-0.0375213623046875" d="0.20648193359375" tx="-33.65" ty="-6.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 841" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20648193359375" b="0.0375213623046875" c="-0.0375213623046875" d="0.20648193359375" tx="-33.65" ty="-6.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 841" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20648193359375" b="0.0375213623046875" c="-0.0375213623046875" d="0.20648193359375" tx="-33.65" ty="-7.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 841" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20648193359375" b="0.0375213623046875" c="-0.0375213623046875" d="0.20648193359375" tx="-33.65" ty="-7.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 841" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20648193359375" b="0.0375213623046875" c="-0.0375213623046875" d="0.20648193359375" tx="-33.65" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 841" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20648193359375" b="0.0375213623046875" c="-0.0375213623046875" d="0.20648193359375" tx="-33.65" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 841" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20648193359375" b="0.0375213623046875" c="-0.0375213623046875" d="0.20648193359375" tx="-33.65" ty="-7.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076416015625" b="-0.07952880859375" c="0.07952880859375" d="0.222076416015625" tx="-20.45" ty="-30.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076416015625" b="-0.07952880859375" c="0.07952880859375" d="0.222076416015625" tx="-20.45" ty="-30.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076416015625" b="-0.07952880859375" c="0.07952880859375" d="0.222076416015625" tx="-20.45" ty="-31.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076416015625" b="-0.07952880859375" c="0.07952880859375" d="0.222076416015625" tx="-20.45" ty="-31.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076416015625" b="-0.07952880859375" c="0.07952880859375" d="0.222076416015625" tx="-20.45" ty="-31.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076416015625" b="-0.07952880859375" c="0.07952880859375" d="0.222076416015625" tx="-20.45" ty="-31.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="闪6特工/人物服装/shape 840" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076416015625" b="-0.07952880859375" c="0.07952880859375" d="0.222076416015625" tx="-20.45" ty="-31.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

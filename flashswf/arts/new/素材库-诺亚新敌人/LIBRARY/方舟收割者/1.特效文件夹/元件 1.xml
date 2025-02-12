@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/1.特效文件夹/元件 1" itemID="664c539e-000003ec" lastModified="1716278174">
+  <timeline>
+    <DOMTimeline name="元件 1">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.15411376953125" d="0.15411376953125" tx="124.75" ty="124.7"/>
+                        </matrix>
+                        <GradientEntry color="#FFFF00" ratio="0"/>
+                        <GradientEntry color="#FF0000" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4990 2494S2[4990 3528 4259 4258!4259 4258[3529 4989 2495 4989!2495 4989[1461 4989 730 4258!730 4258[0 3528 0 2494!0 2494[0 1461 730 730!730 730[1461 0 2495 0!2495 0[3529 0 4259 730!4259 730[4990 1461 4990 2494"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

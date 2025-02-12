@@ -1,0 +1,332 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地狱三头/蛙型仿生僵尸/动画合集/击飞" itemID="673849ad-00002074" lastModified="1731762977">
+  <timeline>
+    <DOMTimeline name="击飞" currentFrame="5" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;114&lt;/guideline&gt;&lt;guideline direction="h"&gt;99&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Labels_Layer" color="#2E97BC">
+          <frames>
+            <DOMFrame index="0" duration="9" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="7" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="6" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="6" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="7" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="7" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="6" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="108" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码层" color="#14EEAE" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _root.播放音效("僵尸0" + (random(6) + 1) + ".wav");
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#FF0000" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 1">
+                  <matrix>
+                    <Matrix a="0.961517333984375" b="-0.263839721679688" c="0.263839721679688" d="0.961517333984375" tx="9.15" ty="71.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.9" y="12.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 3">
+                  <matrix>
+                    <Matrix a="0.984786987304688" b="0.160446166992188" c="-0.160446166992188" d="0.984786987304688" tx="18.15" ty="38.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.8" y="6.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/元件 29" symbolType="graphic" centerPoint3DX="16.45" centerPoint3DY="36.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.479949951171875" b="0.28631591796875" c="0.231231689453125" d="0.387680053710938" tx="15.45" ty="18.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/元件 38" symbolType="graphic" centerPoint3DX="15.25" centerPoint3DY="19.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.46392822265625" b="0.31097412109375" c="0.294601440429688" d="0.439483642578125" tx="11.45" ty="-7.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="21.5" y="25.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/元件 39" symbolType="graphic" centerPoint3DX="42.7" centerPoint3DY="17.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.187057495117188" b="0.473861694335938" c="0.470306396484375" d="-0.18560791015625" tx="14.25" ty="15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="48.45" y="12.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/绿" centerPoint3DX="49.65" centerPoint3DY="-16.35">
+                  <matrix>
+                    <Matrix a="-0.18597412109375" b="-0.252777099609375" c="-0.252777099609375" d="0.18597412109375" tx="68.5" ty="-11.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-25.15" y="66.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 14">
+                  <matrix>
+                    <Matrix a="0.856369018554688" b="0.514144897460938" c="-0.514144897460938" d="0.856369018554688" tx="-140.1" ty="-45.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="99.9" y="15.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 9">
+                  <matrix>
+                    <Matrix a="0.988815307617188" b="-0.1414794921875" c="0.1414794921875" d="0.988815307617188" tx="-55.2" ty="24"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.4" y="2.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 13">
+                  <matrix>
+                    <Matrix a="0.99420166015625" b="-0.082763671875" c="0.082763671875" d="0.99420166015625" tx="-77.25" ty="60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.55" y="4.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 10">
+                  <matrix>
+                    <Matrix a="0.99371337890625" b="-0.079376220703125" c="0.079376220703125" d="0.99371337890625" tx="-70.85" ty="46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36.45" y="10.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 7">
+                  <matrix>
+                    <Matrix a="0.997528076171875" b="0.0533599853515625" c="-0.0533599853515625" d="0.997528076171875" tx="-71.75" ty="-34.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35.3" y="36.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 6" hasAccessibleData="true">
+                  <matrix>
+                    <Matrix a="0.998382568359375" b="0.0566253662109375" c="-0.0566253662109375" d="0.998382568359375" tx="-34.3" ty="-26.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="35" y="36.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 8">
+                  <matrix>
+                    <Matrix a="0.9862060546875" b="-0.158737182617188" c="0.158737182617188" d="0.9862060546875" tx="-78.05" ty="18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.8" y="4.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 12">
+                  <matrix>
+                    <Matrix a="0.996429443359375" b="0.0097503662109375" c="-0.0097503662109375" d="0.996429443359375" tx="-116.85" ty="64.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.95" y="6.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 11">
+                  <matrix>
+                    <Matrix a="0.99639892578125" b="0.013214111328125" c="-0.013214111328125" d="0.99639892578125" tx="-106.75" ty="40.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="44.3" y="9.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 5">
+                  <matrix>
+                    <Matrix a="0.9244384765625" b="0.378341674804688" c="-0.378341674804688" d="0.9244384765625" tx="6.2" ty="-30.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="16.15" y="36.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/元件 38" symbolType="graphic" centerPoint3DX="-19.2" centerPoint3DY="34.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.53070068359375" b="-0.175048828125" c="-0.141357421875" d="0.428634643554688" tx="-1.45" ty="17.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.95" y="17.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 2">
+                  <matrix>
+                    <Matrix a="0.985641479492188" b="-0.12548828125" c="0.12548828125" d="0.985641479492188" tx="-11.5" ty="72.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.35" y="19.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 4">
+                  <matrix>
+                    <Matrix a="0.9869384765625" b="-0.1328125" c="0.1328125" d="0.9869384765625" tx="-31.3" ty="48.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="8.85" y="3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/元件 42" symbolType="graphic" centerPoint3DX="-29.6" centerPoint3DY="11.15" loop="loop">
+                  <matrix>
+                    <Matrix a="0.258697509765625" b="-0.593429565429688" c="-0.589706420898438" d="-0.294052124023438" tx="-13.7" ty="35.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="24.8" y="16.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 15">
+                  <matrix>
+                    <Matrix a="0.650146484375" b="0.7548828125" c="-0.7548828125" d="0.650146484375" tx="2.15" ty="-65.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="22.1" y="74.6"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/元件 3" centerPoint3DX="23.5" centerPoint3DY="-31.25">
+                  <matrix>
+                    <Matrix a="0.58984375" b="0.7325439453125" c="-0.7325439453125" d="0.58984375" tx="17.3" ty="-82.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="33.8" y="36.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

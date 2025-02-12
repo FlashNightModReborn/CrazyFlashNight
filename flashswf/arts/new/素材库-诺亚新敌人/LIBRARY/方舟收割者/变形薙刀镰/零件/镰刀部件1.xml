@@ -1,0 +1,48 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/变形薙刀镰/零件/镰刀部件1" itemID="662dd8fc-00000211" lastModified="1714291652" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="镰刀部件1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/刀刃" centerPoint3DX="26.95" centerPoint3DY="137.3">
+                  <matrix>
+                    <Matrix a="0.999984741210938" b="0.00341796875" c="-0.00341796875" d="0.999984741210938" tx="4.3" ty="44.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="17.55" y="15.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FFFF00"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/元件 5" centerPoint3DX="17.9" centerPoint3DY="40.65">
+                  <transformationPoint>
+                    <Point x="18.15" y="40.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/元件 3" selected="true" centerPoint3DX="16.85" centerPoint3DY="68.2">
+                  <matrix>
+                    <Matrix tx="2.9" ty="50.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.45" y="18.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/元件 4" centerPoint3DX="17.85" centerPoint3DY="37.55">
+                  <matrix>
+                    <Matrix tx="3.25" ty="2.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="14.8" y="36.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

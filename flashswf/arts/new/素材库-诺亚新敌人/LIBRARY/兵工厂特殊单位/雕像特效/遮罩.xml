@@ -1,0 +1,144 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/雕像特效/遮罩" itemID="66ba27fb-00000b27" symbolType="graphic" lastModified="1723478604">
+  <timeline>
+    <DOMTimeline name="遮罩" currentFrame="6">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/遮罩1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.38983154296875" d="2.71533203125" tx="-2.65" ty="0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.4" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/遮罩1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.427978515625" d="3.96405029296875" tx="-2.75" ty="38.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.35" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/遮罩1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.478851318359375" d="2.71533203125" tx="-2.9" ty="109.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.35" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="9" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.5"/>
+                  <Point x="0.666666666666667" y="0.833333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/遮罩1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix d="2.94853210449219" tx="-24.15" ty="-17.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.4" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="11" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.451612903225806"/>
+                  <Point x="0.666666666666667" y="0.78494623655914"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/遮罩1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.26998901367188" d="0.727218627929688" tx="-33" ty="58.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.4" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/遮罩1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.4705810546875" d="4.7552490234375" tx="-40.45" ty="85.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25.4" y="6.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-50">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.5"/>
+                  <Point x="0.666666666666667" y="0.833333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/遮罩2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.751998901367188" d="0.751998901367188" tx="-22.2" ty="-0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.25" y="16.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" duration="20" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/遮罩2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.924240112304688" b="-0.167236328125" d="1.86654663085938" tx="-72.15" ty="25.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.25" y="16.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="兵工厂特殊单位/雕像特效/遮罩2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.1395263671875" d="1.1395263671875" tx="-45.6" ty="102.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="31.25" y="16.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

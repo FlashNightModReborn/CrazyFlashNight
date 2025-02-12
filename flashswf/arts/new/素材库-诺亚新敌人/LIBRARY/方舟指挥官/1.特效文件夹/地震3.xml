@@ -1,0 +1,38 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/1.特效文件夹/地震3" itemID="65ab76d4-00000a17" lastModified="1705735892" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="地震3">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/Symbol 507" selected="true" centerPoint3DX="159.15" centerPoint3DY="64.1">
+                  <matrix>
+                    <Matrix a="1.16790771484375" d="1.16790771484375" tx="17.05" ty="36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#B10101"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/1.特效文件夹/Symbol 509" selected="true" centerPoint3DX="280.05" centerPoint3DY="1.2">
+                  <matrix>
+                    <Matrix a="0.967010498046875" d="1.31683349609375" tx="72.55" ty="-15.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#B10101"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

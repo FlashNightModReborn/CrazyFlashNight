@@ -1,0 +1,65 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="诺亚克隆兽/阴影" itemID="65ab9909-000003b3" lastModified="1705744649">
+  <timeline>
+    <DOMTimeline name="阴影">
+      <layers>
+        <DOMLayer name="Script Layer" color="#B93CFD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent._parent.shadow = this;
+if(_parent._parent.飞行浮空 == true)
+{
+   if(_parent._parent._rotation == 0)
+   {
+      this._y = 233.05 + (_parent._parent.起始Y - _parent._parent._y + _parent._parent.flySpeed) * 3.5;
+   }
+   else
+   {
+      flyShadowBaseY = 233.05 + (_parent._parent.起始Y - _parent._parent._y + _parent._parent.flySpeed) * 3.5;
+      if(_parent._parent._xscale > 0)
+      {
+         this._rotation = - _parent._parent._rotation;
+      }
+      else
+      {
+         this._rotation = _parent._parent._rotation;
+      }
+      var radians = this._rotation * Math.PI / 180;
+      this._y = flyShadowBaseY * Math.cos(radians);
+      this._x = (- flyShadowBaseY) * Math.sin(radians);
+   }
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#9B42CE" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.10662841796875" d="0.10662841796875" tx="-0.05" ty="-0.05"/>
+                        </matrix>
+                        <GradientEntry alpha="0.8" ratio="0"/>
+                        <GradientEntry alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-1 -1734[718 -1734 1225 -1227!1225 -1227[1733 -719 1733 0!1733 0[1733 719 1225 1226!1225 1226[718 1733 -1 1733!-1 1733[-719 1733 -1227 1226!-1227 1226[-1734 719 -1734 0!-1734 0[-1734 -719 -1227 -1227!-1227 -1227[-719 -1734 -1 -1734"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

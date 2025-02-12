@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟收割者/变形薙刀镰/零件/补间 3" itemID="662dfdcb-000005bd" symbolType="graphic" lastModified="1714290123">
+  <timeline>
+    <DOMTimeline name="补间 3">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/镰刀部件2" centerPoint3DX="8.05" centerPoint3DY="77.4">
+                  <matrix>
+                    <Matrix tx="-21.7" ty="13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.95" y="98"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="方舟收割者/变形薙刀镰/零件/镰刀部件1" selected="true" centerPoint3DX="-14" centerPoint3DY="-21.55">
+                  <matrix>
+                    <Matrix a="-1" d="-1" tx="12.05" ty="92"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.4" y="26.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

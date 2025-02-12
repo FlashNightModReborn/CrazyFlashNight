@@ -1,0 +1,980 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/回旋风刃" itemID="653dce6b-000011a9" linkageExportForAS="true" linkageIdentifier="回旋风刃" lastModified="1731818940" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="回旋风刃">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/area" name="area" selected="true" centerPoint3DX="47.35" centerPoint3DY="-79.65">
+                  <matrix>
+                    <Matrix a="1.9134521484375" b="-1.91339111328125" c="3.38278198242188" d="3.38284301757813" tx="-62.05" ty="-112.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.55" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/area" name="area" selected="true" centerPoint3DX="47.35" centerPoint3DY="-79.65">
+                  <matrix>
+                    <Matrix a="2.28215026855469" b="-2.28208923339844" c="3.38278198242188" d="3.38284301757813" tx="-69.25" ty="-105.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/area" name="area" selected="true" centerPoint3DX="52.35" centerPoint3DY="-80.65">
+                  <matrix>
+                    <Matrix a="2.88885498046875" b="-2.8887939453125" c="3.74017333984375" d="3.740234375" tx="-90.65" ty="-108.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.5" y="40.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/area" name="area" centerPoint3DX="52.35" centerPoint3DY="-80.65">
+                  <matrix>
+                    <Matrix a="2.91818237304688" b="-2.9180908203125" c="4.31289672851563" d="4.31298828125" tx="-109.95" ty="-136.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="36.55" y="39.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/area" name="area" centerPoint3DX="66.35" centerPoint3DY="-95.65">
+                  <matrix>
+                    <Matrix a="3.16128540039063" b="-3.16119384765625" c="4.72149658203125" d="4.72160339355469" tx="-127.3" ty="-152.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40.25" y="40.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#A8AD6C" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 387" centerPoint3DX="-243.35" centerPoint3DY="0.55">
+                  <matrix>
+                    <Matrix a="-0.624282836914063" b="0.0517425537109375" c="0.0517425537109375" d="0.624282836914063" tx="-187.9" ty="-94.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 393" centerPoint3DX="-266.4" centerPoint3DY="-45.45">
+                  <matrix>
+                    <Matrix a="-0.670059204101563" b="0.0533905029296875" c="0.0533905029296875" d="0.670059204101563" tx="-208.45" ty="-95.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.921875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 399" centerPoint3DX="-285.85" centerPoint3DY="-57.8">
+                  <matrix>
+                    <Matrix a="-0.7158203125" b="0.0569610595703125" c="0.0569610595703125" d="0.7158203125" tx="-228.85" ty="-94.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.83984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 405" centerPoint3DX="-300.9" centerPoint3DY="-47.2">
+                  <matrix>
+                    <Matrix a="-0.761581420898438" b="0.0605621337890625" c="0.0605621337890625" d="0.761581420898438" tx="-249.3" ty="-94.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.75"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 411" centerPoint3DX="-330" centerPoint3DY="-13.7">
+                  <matrix>
+                    <Matrix a="-0.807357788085938" b="0.064117431640625" c="0.064117431640625" d="0.807357788085938" tx="-269.7" ty="-94.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.671875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 417" centerPoint3DX="-349.1" centerPoint3DY="-29.45">
+                  <matrix>
+                    <Matrix a="-0.853103637695313" b="0.06768798828125" c="0.06768798828125" d="0.853103637695313" tx="-290.2" ty="-94.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.58984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 423" centerPoint3DX="-391.9" centerPoint3DY="-47.8">
+                  <matrix>
+                    <Matrix a="-0.898895263671875" b="0.07122802734375" c="0.07122802734375" d="0.898895263671875" tx="-310.6" ty="-94.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.51171875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#D8956F" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 429" centerPoint3DX="-415.2" centerPoint3DY="-19.5">
+                  <matrix>
+                    <Matrix a="-0.94464111328125" b="0.0747833251953125" c="0.0747833251953125" d="0.94464111328125" tx="-331.05" ty="-94.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.4296875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 387" centerPoint3DX="-407" centerPoint3DY="0.3">
+                  <matrix>
+                    <Matrix a="-0.99041748046875" b="0.0783233642578125" c="0.0783233642578125" d="0.99041748046875" tx="-351.55" ty="-94.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.33984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 417" centerPoint3DX="-431" centerPoint3DY="-28.85">
+                  <matrix>
+                    <Matrix a="-1.03640747070313" b="0.0826873779296875" c="0.0826873779296875" d="1.03640747070313" tx="-372.1" ty="-94.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.26171875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#3182ED" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 385" centerPoint3DX="18.5" centerPoint3DY="-83.95">
+                  <matrix>
+                    <Matrix a="-0.624282836914063" b="0.0517425537109375" c="0.0517425537109375" d="0.624282836914063" tx="113.55" ty="-169.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.51171875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 391" centerPoint3DX="25.25" centerPoint3DY="-92.15">
+                  <matrix>
+                    <Matrix a="-0.670059204101563" b="0.0533905029296875" c="0.0533905029296875" d="0.670059204101563" tx="115.6" ty="-182.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.46875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 397" centerPoint3DX="33.1" centerPoint3DY="-108.4">
+                  <matrix>
+                    <Matrix a="-0.7158203125" b="0.0569610595703125" c="0.0569610595703125" d="0.7158203125" tx="116.6" ty="-189.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.4296875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 403" centerPoint3DX="37.8" centerPoint3DY="-107.2">
+                  <matrix>
+                    <Matrix a="-0.761581420898438" b="0.0605621337890625" c="0.0605621337890625" d="0.761581420898438" tx="118.45" ty="-206.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.37890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 409" centerPoint3DX="34.1" centerPoint3DY="-111.3">
+                  <matrix>
+                    <Matrix a="-0.807357788085938" b="0.064117431640625" c="0.064117431640625" d="0.807357788085938" tx="120.8" ty="-208.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.33984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 415" centerPoint3DX="33.25" centerPoint3DY="-112.8">
+                  <matrix>
+                    <Matrix a="-0.853103637695313" b="0.06768798828125" c="0.06768798828125" d="0.853103637695313" tx="121.4" ty="-206.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 421" centerPoint3DX="27.55" centerPoint3DY="-116.2">
+                  <matrix>
+                    <Matrix a="-0.898895263671875" b="0.07122802734375" c="0.07122802734375" d="0.898895263671875" tx="122.15" ty="-212"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.26171875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#E0A2BA" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 427" centerPoint3DX="25.6" centerPoint3DY="-123.15">
+                  <matrix>
+                    <Matrix a="-0.94464111328125" b="0.0747833251953125" c="0.0747833251953125" d="0.94464111328125" tx="127.15" ty="-210.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.2109375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 385" centerPoint3DX="32" centerPoint3DY="-126.55">
+                  <matrix>
+                    <Matrix a="-0.99041748046875" b="0.0783233642578125" c="0.0783233642578125" d="0.99041748046875" tx="127.05" ty="-212.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.1796875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 415" centerPoint3DX="39.75" centerPoint3DY="-136.4">
+                  <matrix>
+                    <Matrix a="-1.03640747070313" b="0.0826873779296875" c="0.0826873779296875" d="1.03640747070313" tx="127.9" ty="-230"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.12890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#C5B0AA" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 385" centerPoint3DX="21.4" centerPoint3DY="-86.6">
+                  <matrix>
+                    <Matrix a="-0.655487060546875" b="0.0543365478515625" c="0.0543365478515625" d="0.655487060546875" tx="116.45" ty="-172.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.73828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 391" centerPoint3DX="28.45" centerPoint3DY="-95.35">
+                  <matrix>
+                    <Matrix a="-0.70355224609375" b="0.056060791015625" c="0.056060791015625" d="0.70355224609375" tx="118.8" ty="-185.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6796875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 397" centerPoint3DX="36.4" centerPoint3DY="-111.9">
+                  <matrix>
+                    <Matrix a="-0.751602172851563" b="0.059814453125" c="0.059814453125" d="0.751602172851563" tx="119.9" ty="-193.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.609375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 403" centerPoint3DX="41.35" centerPoint3DY="-111.5">
+                  <matrix>
+                    <Matrix a="-0.799652099609375" b="0.0635833740234375" c="0.0635833740234375" d="0.799652099609375" tx="122" ty="-211.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.55078125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 409" centerPoint3DX="37.95" centerPoint3DY="-115.5">
+                  <matrix>
+                    <Matrix a="-0.84771728515625" b="0.06732177734375" c="0.06732177734375" d="0.84771728515625" tx="124.65" ty="-212.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.48828125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 415" centerPoint3DX="37.2" centerPoint3DY="-116.9">
+                  <matrix>
+                    <Matrix a="-0.895751953125" b="0.071075439453125" c="0.071075439453125" d="0.895751953125" tx="125.35" ty="-210.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.4296875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 421" centerPoint3DX="31.7" centerPoint3DY="-120.55">
+                  <matrix>
+                    <Matrix a="-0.943832397460938" b="0.0747833251953125" c="0.0747833251953125" d="0.943832397460938" tx="126.3" ty="-216.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.37109375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#C7B059" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 427" centerPoint3DX="30.15" centerPoint3DY="-127.25">
+                  <matrix>
+                    <Matrix a="-0.99188232421875" b="0.078521728515625" c="0.078521728515625" d="0.99188232421875" tx="131.7" ty="-214.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.30859375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 385" centerPoint3DX="36.6" centerPoint3DY="-130.7">
+                  <matrix>
+                    <Matrix a="-1.03994750976563" b="0.082244873046875" c="0.082244873046875" d="1.03994750976563" tx="131.65" ty="-216.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.25"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 415" centerPoint3DX="44.55" centerPoint3DY="-141.35">
+                  <matrix>
+                    <Matrix a="-1.08819580078125" b="0.086822509765625" c="0.086822509765625" d="1.08819580078125" tx="132.7" ty="-234.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.19140625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#7FC9FF" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 375" centerPoint3DX="-394.75" centerPoint3DY="-69.85">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-404.05" y="46.4"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 377" centerPoint3DX="-432.45" centerPoint3DY="-42.35">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-395.95" y="45"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 379" centerPoint3DX="-435.3" centerPoint3DY="-40.4">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-397.95" y="42"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 381" centerPoint3DX="-450.05" centerPoint3DY="-38.3">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-387.35" y="29.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 383" centerPoint3DX="-449.95" centerPoint3DY="-13.7">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 389" centerPoint3DX="-476.25" centerPoint3DY="-21.5">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 395" centerPoint3DX="-474.5" centerPoint3DY="-7.25">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 401" centerPoint3DX="-474.25" centerPoint3DY="-3.25">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 407" centerPoint3DX="-481.75" centerPoint3DY="-5.55">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 413" centerPoint3DX="-501.65" centerPoint3DY="0.5">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 419" centerPoint3DX="-486.25" centerPoint3DY="-7.2">
+                  <matrix>
+                    <Matrix a="-1" tx="-346.65" ty="-117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 425" centerPoint3DX="85.55" centerPoint3DY="-121.6">
+                  <matrix>
+                    <Matrix a="-1" tx="153" ty="-228.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6796875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 431" centerPoint3DX="18.3" centerPoint3DY="-99.8">
+                  <matrix>
+                    <Matrix a="-1" tx="143.85" ty="-194.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6796875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 433" centerPoint3DX="-54.65" centerPoint3DY="-91.2">
+                  <matrix>
+                    <Matrix a="-1" tx="-1.95" ty="-180.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6796875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/1.特效文件夹/01.白净色系/回旋风刃/未命名文件夹 1/Symbol 436" centerPoint3DX="125.55" centerPoint3DY="-222.35">
+                  <matrix>
+                    <Matrix a="-2.02499389648438" d="2.02499389648438" tx="235.05" ty="-321.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF"/>
+                    <GlowFilter color="#FFFFFF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

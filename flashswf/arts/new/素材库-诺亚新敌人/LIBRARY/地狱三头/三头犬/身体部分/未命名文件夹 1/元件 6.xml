@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地狱三头/三头犬/身体部分/未命名文件夹 1/元件 6" itemID="673847e5-00001bd0" symbolType="graphic" lastModified="1726392297">
+  <timeline>
+    <DOMTimeline name="元件 6">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/元件 32" symbolType="graphic" centerPoint3DX="19.35" centerPoint3DY="41.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.559555053710938" d="0.45196533203125" tx="39.9" ty="28.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="地狱三头/三头犬/身体部分/元件 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.57183837890625" b="0.1396484375" c="0.151779174804688" d="0.62139892578125" tx="33.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.7" y="37"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

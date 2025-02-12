@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/素材合集/补间 3" itemID="65a7a252-00000447" symbolType="graphic" lastModified="1705484882">
+  <timeline>
+    <DOMTimeline name="补间 3">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <matrix>
+                    <Matrix tx="-149.15" ty="-86.05"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2653 883S2|3439 606!3439 606[2837 2399 1758 2836!1758 2836[#A28.77 #73A.E2 2653 883"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/补间 1" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="61.3" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
