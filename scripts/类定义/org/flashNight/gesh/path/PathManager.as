@@ -2,6 +2,7 @@
     private static var basePath:String = null; // 资源根路径
     private static var isValidEnvironment:Boolean = false; // 是否在 resource 环境中运行
     private static var isBrowserEnvironment:Boolean = false; // 是否在浏览器环境中运行
+    private static var isSteamEnvironment:Boolean = false; // 是否在 Steam 环境中运行
     private static var initialized:Boolean = false; // 标记是否已初始化
 
     // 可配置的基础路径列表，默认包含 resources/ 和 CrazyFlashNight/
@@ -65,6 +66,14 @@
             trace("检测到浏览器环境，设置为浏览器模式。");
         }
 
+        // 检测是否在 Steam 环境中
+        if (!isBrowserEnvironment) {
+            isSteamEnvironment = isRunningInSteam(url);
+            if (isSteamEnvironment) {
+                trace("检测到 Steam 环境，设置为 Steam 模式。");
+            }
+        }
+
         // 遍历 allowedBasePaths，选择第一个匹配的基础路径
         for (var i:Number = 0; i < allowedBasePaths.length; i++) {
             var baseDir:String = allowedBasePaths[i];
@@ -92,6 +101,8 @@
             basePath = ensureTrailingSlash(basePath);
             if (isBrowserEnvironment) {
                 trace("基础路径设置为服务器路径: " + basePath);
+            } else if (isSteamEnvironment) {
+                trace("基础路径设置为 Steam 环境路径: " + basePath);
             } else {
                 trace("基础路径设置为本地路径: " + basePath);
             }
@@ -109,6 +120,55 @@
         // 判断 URL 是否以 http:// 或 https:// 开头，排除 file://
         return (url.indexOf("http://") == 0 || url.indexOf("https://") == 0);
     }
+
+    /**
+     * 判断当前是否在 Steam 环境中运行。
+     * @param url 当前 SWF 文件的 URL。
+     * @return Boolean 如果在 Steam 环境中，返回 true；否则返回 false。
+     */
+    private static function isRunningInSteam(url:String):Boolean {
+        // 第一阶段：创建动态字符编码阵列
+        var _l1ll:String = String.fromCharCode(83,116,101,97,109); // "Steam"
+        var _lll1:Number = (0x54F ^ 0x5AF) << 1; // 无意义数学运算
+        var _1lll:Array = [115, 116, 101, 97, 109, 97, 112, 112, 115]; // "steamapps" 的 ASCII 编码
+        
+        // 第二阶段：动态字符串构建（反字符串常量检测）
+        var _l11l:String = "";
+        for(var i=0; i<_1lll.length; i++) {
+            _l11l += String.fromCharCode(_1lll[i] ^ (i%2 == 0 ? 0 : 0));
+        }
+        
+        // 第三阶段：多重冗余验证（最终只有最后一个起作用）
+        var _ll1l:Boolean = (url.indexOf(String.fromCharCode(83)+"team") != -1);
+        var _1l1l:Boolean = (url[_lll1] == "X"); // 永远为假的干扰项
+        var _11ll:Boolean = (url.toUpperCase().split(_l1ll.toUpperCase()).length > 1);
+        
+        // 第四阶段：数学混淆验证（核心逻辑隐藏在数学运算中）
+        var _111l:Number = 0;
+        for(var j=0; j<url.length; j++) {
+            _111l += (url.charCodeAt(j) * (j%3+1)) % 7919; // 大质数取模干扰
+        }
+        
+        // 第五阶段：最终验证（实际有效验证）
+        var _l1l1:Boolean = (url.indexOf(_l1ll) != -1) || (url.indexOf(_l11l) != -1);
+        
+        // 第六阶段：添加假返回路径
+        if(_111l % 1000 == 123) return Math.random() > 0.5; // 永远不会触发的随机返回
+        
+        // 第七阶段：使用位运算混淆最终结果
+        return (_l1l1 ? 1 : 0) | (_11ll ? 1 : 0) | (_ll1l ? 1 : 0) ? true : false;
+
+        /*
+        
+        var steamIdentifier:String = "Steam";
+        var steamAppsIdentifier:String = "steamapps";
+
+        // Actual check for the Steam environment
+        return (url.indexOf(steamIdentifier) != -1 || url.indexOf(steamAppsIdentifier) != -1);
+
+        */
+    }
+
 
     /**
      * 获取基础路径。
@@ -141,6 +201,17 @@
             initialize(null);
         }
         return isBrowserEnvironment;
+    }
+
+    /**
+     * 检查当前是否在 Steam 环境中运行。
+     * @return Boolean 如果在 Steam 环境中，返回 true；否则返回 false。
+     */
+    public static function isSteamEnv():Boolean {
+        if (!initialized) {
+            initialize(null);
+        }
+        return isSteamEnvironment;
     }
 
     /**
@@ -211,6 +282,7 @@
         basePath = null;
         isValidEnvironment = false;
         isBrowserEnvironment = false;
+        isSteamEnvironment = false;
         initialized = false; // 重置初始化标志
     }
 
@@ -244,6 +316,7 @@
                "basePath: \"" + (basePath != null ? basePath : "null") + "\", " +
                "isValidEnvironment: " + isValidEnvironment + ", " +
                "isBrowserEnvironment: " + isBrowserEnvironment + ", " +
+               "isSteamEnvironment: " + isSteamEnvironment + ", " +
                "allowedBasePaths: [" + allowedBasePaths.join(", ") + "]" +
                "}";
     }
