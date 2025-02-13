@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1721569165" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1739434415" lastUniqueIdentifier="6">
   <timeline>
     <DOMTimeline name="Symbol 1727">
       <layers>
@@ -25,7 +25,10 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 刷新键值设定显示()
+                <script><![CDATA[//检测全局音量
+volBtn._x = 40 + _root.soundEffectManager.getGlobalVolume() * 1.5;
+
+function 刷新键值设定显示()
 {
    _root.刷新键值设定();
    _root.gameworld[_root.控制目标].gotoAndStop("刷新装扮");
@@ -1249,7 +1252,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="3" keyMode="9728">
               <elements>
-                <DOMDynamicText selected="true" fontRenderingMode="device" width="154" height="15.55" isSelectable="false" variableName="键名28">
+                <DOMDynamicText fontRenderingMode="device" width="154" height="15.55" isSelectable="false" variableName="键名28">
                   <matrix>
                     <Matrix tx="6.5" ty="248.95"/>
                   </matrix>
@@ -1749,9 +1752,67 @@ onClipEvent(mouseUp){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 39" color="#3764FD">
+        <DOMLayer name="音量" color="#3764FD" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="4" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 938" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="112" ty="151.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="142.9" centerPoint3DY="187.6">
+                  <matrix>
+                    <Matrix a="0.73883056640625" tx="40" ty="186.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/volBtn" name="volBtn" symbolType="button">
+                  <matrix>
+                    <Matrix tx="190" ty="186.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.globalVolMC.onEnterFrame = function(){
+		var xmouse = this._xmouse;
+		var vol = (xmouse - 32.5) / 1.5;
+		vol -= vol % 10;
+		if(vol <= 0) vol = 0;
+		if(vol > 100) vol = 100;
+		volBtn._x = vol * 1.5 + 40;
+		_root.soundEffectManager.setGlobalVolume(vol);
+	}
+}
+on(release, releaseOutside){
+	delete this.globalVolMC.onEnterFrame;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="全局音量mc" name="globalVolMC" centerPoint3DX="37.75" centerPoint3DY="163.95">
+                  <matrix>
+                    <Matrix tx="9.5" ty="154.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="28.25" y="9.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="4" duration="5" keyMode="9728">
@@ -1870,9 +1931,9 @@ onClipEvent(mouseUp){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1654" name="askPwd_btn" centerPoint3DX="65.15" centerPoint3DY="269.3">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1654" name="askPwd_btn" centerPoint3DX="65.15" centerPoint3DY="286.3">
                   <matrix>
-                    <Matrix tx="26.15" ty="256.8"/>
+                    <Matrix tx="26.15" ty="273.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2022,6 +2083,20 @@ onClipEvent(mouseUp){
                 <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="106.55" centerPoint3DY="150.75">
                   <matrix>
                     <Matrix a="1.1195068359375" tx="4.05" ty="149.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="106.55" centerPoint3DY="206.75">
+                  <matrix>
+                    <Matrix a="1.1195068359375" tx="4.05" ty="205.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2345,9 +2420,9 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1652" centerPoint3DX="65.5" centerPoint3DY="230.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1652" centerPoint3DX="65.5" centerPoint3DY="247.45">
                   <matrix>
-                    <Matrix tx="26.5" ty="217.95"/>
+                    <Matrix tx="26.5" ty="234.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

@@ -25,10 +25,11 @@ class org.flashNight.arki.audio.SoundPreprocessor {
      */
     public function SoundPreprocessor(container:MovieClip) {
         PathManager.initialize();
+
+        // 创建 soundManager 空的 MovieClip，若为_root则深度设置为预留值65534，否则取当前最高深度
         if (container == null) container = _root;
-        
-        // 创建 soundManager 空的 MovieClip，深度取当前最高深度
-        this.soundManager = container.createEmptyMovieClip("soundManager", container.getNextHighestDepth());
+        var depth = container === _root ? 65534 : container.getNextHighestDepth();
+        this.soundManager = container.createEmptyMovieClip("soundManager", depth);
         
         // 初始化数据结构
         this.soundDict = new Object();
@@ -45,6 +46,8 @@ class org.flashNight.arki.audio.SoundPreprocessor {
         this.soundManager.武器.loadMovie(PathManager.resolvePath("sounds/音效-武器.swf"));
         this.soundManager.特效.loadMovie(PathManager.resolvePath("sounds/音效-特效.swf"));
         this.soundManager.人物.loadMovie(PathManager.resolvePath("sounds/音效-人物.swf"));
+
+        loadAllCategories();
     }
     
     /**

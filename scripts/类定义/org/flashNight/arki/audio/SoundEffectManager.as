@@ -12,14 +12,17 @@
 import org.flashNight.arki.audio.*;
 
 class org.flashNight.arki.audio.SoundEffectManager {
-    
+
     private var preprocessor:SoundPreprocessor;
-    public var bgmEngine:IMusicEngine;       // 全功能音乐引擎（背景）
-    public var karaokeEngine:IMusicEngine;   // 全功能音乐引擎（点歌）
+    public var bgmEngine:MusicEngine;       // 全功能音乐引擎（背景）
+    public var karaokeEngine:MusicEngine;   // 全功能音乐引擎（点歌）
     public var sfxEngine:IMusicEngine;       // 轻量音效引擎
+
+    private var globalSoundObj:Sound; // 全局音量控制器
     
     public function SoundEffectManager(preproc:SoundPreprocessor) {
         this.preprocessor = preproc;
+        globalSoundObj = new Sound(); 
         
         // 初始化三轨道
         bgmEngine = new MusicEngine(null, null, null); 
@@ -63,4 +66,16 @@ class org.flashNight.arki.audio.SoundEffectManager {
      * 其它针对背景音乐/点歌的操作，可直接调用 bgmEngine / karaokeEngine
      * 如：bgmEngine.handleCommand("play", {clip:"bgm_main", priority:5});
      */
+    
+    /**
+     * 调整全局音量
+     */
+    public function setGlobalVolume(value:Number):Void{
+        if(isNaN(value) || value > 100 || value < 0) return;
+        
+        globalSoundObj.setVolume(value);
+    }
+    public function getGlobalVolume():Number{
+        return globalSoundObj.getVolume();
+    }
 }

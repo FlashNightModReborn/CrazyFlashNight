@@ -90,7 +90,7 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
         
         var soundObj:Sound = this.preprocessor.soundDict[soundId];
         // 计算最终音量
-        var baseVolume:Number = (_root.音效音量 != undefined) ? _root.音效音量 : 100;
+        var baseVolume:Number = 100;
         var vol:Number = Math.floor(volumeMultiplier * baseVolume);
         vol = Math.max(vol, 1); // 不低于 1
         

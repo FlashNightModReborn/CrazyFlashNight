@@ -1,4 +1,15 @@
-﻿_root.createEmptyMovieClip("soundManager",_root.层级管理器.soundManager);
+﻿import org.flashNight.arki.audio.SoundPreprocessor;
+import org.flashNight.arki.audio.SoundEffectManager;
+
+var preproc = new SoundPreprocessor(null);
+_root.soundEffectManager = new SoundEffectManager(preproc);
+
+_root.播放音效 = function(音效id, 音量乘数, 声音源){
+	_root.soundEffectManager.playSound(音效id,音量乘数,声音源);
+}
+
+/*
+_root.createEmptyMovieClip("soundManager",_root.层级管理器.soundManager);
 _root.soundManager.soundDict = new Object();
 _root.soundManager.soundLastTime = new Object();
 _root.soundManager.soundSourceDict = new Object();
@@ -89,15 +100,4 @@ loader2.load(function(domdata:Object):Void {
 }, function():Void {
     onError();
 });
-
-/*
-function 随机基地音乐(){
-	_root.音乐播放界面.音乐跳转(基地音乐ID库[random(基地音乐ID库.length)]);
-}
-function 随机战斗音乐(){
-	_root.音乐播放界面.音乐跳转(战斗音乐ID库[random(战斗音乐ID库.length)]);
-}
-
-基地音乐ID库 = [11, 13, 14, 15, 16, 17, 15, 16, 17];
-战斗音乐ID库 = [1, 2, 4, 5, 6, 7, 8, 9, 10, 18, 19, 20, 21, 22, 23, 24, 25, 26];
 */
