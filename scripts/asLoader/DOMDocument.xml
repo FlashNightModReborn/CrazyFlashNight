@@ -8,6 +8,10 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[test = new org.flashNight.arki.audio.test.MusicEngineTest();
+test.main();]]></script>
+                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>

@@ -45,7 +45,7 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
     
     /**
      * 处理 "play" 命令
-     * params: { soundId: String, volumeMultiplier: Number, source: String (可选) }
+     * params: { soundId: String, source: String (可选) }
      *   - 若多次播放间隔 < minInterval，则拒绝播放
      *   - 根据 soundSourceDict 找到分类 MovieClip
      *   - attachSound 并 setVolume、start()
@@ -56,7 +56,7 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
             return;
         }
         var soundId:String = params.soundId;
-        var volumeMultiplier:Number = (params.volumeMultiplier != undefined) ? params.volumeMultiplier : 1;
+        // var volumeMultiplier:Number = (params.volumeMultiplier != undefined) ? params.volumeMultiplier : 1;
         var source:String = params.source; // 可选分类
         
         // 根据 preprocessor 决定分类
@@ -90,19 +90,19 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
         
         var soundObj:Sound = this.preprocessor.soundDict[soundId];
         // 计算最终音量
-        var baseVolume:Number = 100;
-        var vol:Number = Math.floor(volumeMultiplier * baseVolume);
-        vol = Math.max(vol, 1); // 不低于 1
+        // var baseVolume:Number = 100;
+        // var vol:Number = Math.floor(volumeMultiplier * baseVolume);
+        // vol = Math.max(vol, 1); // 不低于 1
         
         // 如果引擎本身有一个 currentVolume，也可在此叠加
         // 这里只是示范：vol * (this.currentVolume / 100)
-        var finalVolume:Number = Math.floor(vol * (this.currentVolume / 100));
+        // var finalVolume:Number = Math.floor(vol * (this.currentVolume / 100));
+        // soundObj.setVolume(finalVolume);
         
-        soundObj.setVolume(finalVolume);
         soundObj.start(0, 1); // 播放一次
         
         this.lastSoundId = soundId;
-        trace("[LightweightSoundEngine] Playing soundId=" + soundId + ", volume=" + finalVolume + ", category=" + category);
+        trace("[LightweightSoundEngine] Playing soundId=" + soundId + ", category=" + category);
     }
     
     /**

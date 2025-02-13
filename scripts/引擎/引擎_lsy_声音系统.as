@@ -4,8 +4,8 @@ import org.flashNight.arki.audio.SoundEffectManager;
 var preproc = new SoundPreprocessor(null);
 _root.soundEffectManager = new SoundEffectManager(preproc);
 
-_root.播放音效 = function(音效id, 音量乘数, 声音源){
-	_root.soundEffectManager.playSound(音效id,音量乘数,声音源);
+_root.播放音效 = function(音效id, 声音源){
+	_root.soundEffectManager.playSound(音效id, 声音源);
 }
 
 /*

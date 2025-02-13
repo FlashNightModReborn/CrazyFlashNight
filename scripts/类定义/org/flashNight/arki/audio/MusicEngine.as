@@ -93,6 +93,11 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
         
         switch (command) {
             case "play":
+                //只有idle状态下可以使用play指令
+                if(getActiveStateName() !== "idle"){
+                    trace("[MusicEngine] Error: 'play' command not in idle state.");
+                    return;
+                }
                 if (params == null || params.clip == undefined) {
                     trace("[MusicEngine] Error: 'play' command missing 'clip' parameter.");
                     return;
@@ -110,6 +115,11 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                 break;
             
             case "switch":
+                //只有playing状态下可以使用switch指令
+                if(getActiveStateName() !== "playing"){
+                    trace("[MusicEngine] Error: 'switch' command not in playing state.");
+                    return;
+                }
                 if (params == null || params.clip == undefined) {
                     trace("[MusicEngine] Error: 'switch' command missing 'clip' parameter.");
                     return;

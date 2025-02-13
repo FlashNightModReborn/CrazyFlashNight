@@ -19,6 +19,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
     public var sfxEngine:IMusicEngine;       // 轻量音效引擎
 
     private var globalSoundObj:Sound; // 全局音量控制器
+    private var globalVolume:Number; // 全局音量
     
     public function SoundEffectManager(preproc:SoundPreprocessor) {
         this.preprocessor = preproc;
@@ -41,14 +42,12 @@ class org.flashNight.arki.audio.SoundEffectManager {
     /**
      * 播放音效接口，对应原 _root.播放音效(...) 功能
      * @param soundId          音效标识
-     * @param volumeMultiplier 音量乘数（0~1之间）
      * @param source           分类（可选），否则从 soundSourceDict 查找
      */
-    public function playSound(soundId:String, volumeMultiplier:Number, source:String):Void {
+    public function playSound(soundId:String, source:String):Void {
         // 直接调用 sfxEngine.handleCommand("play", {...}) 
         sfxEngine.handleCommand("play", {
             soundId: soundId,
-            volumeMultiplier: volumeMultiplier,
             source: source
         });
     }
@@ -72,10 +71,10 @@ class org.flashNight.arki.audio.SoundEffectManager {
      */
     public function setGlobalVolume(value:Number):Void{
         if(isNaN(value) || value > 100 || value < 0) return;
-        
-        globalSoundObj.setVolume(value);
+        globalVolume = value;
+        globalSoundObj.setVolume(globalVolume);
     }
     public function getGlobalVolume():Number{
-        return globalSoundObj.getVolume();
+        return globalVolume;
     }
 }
