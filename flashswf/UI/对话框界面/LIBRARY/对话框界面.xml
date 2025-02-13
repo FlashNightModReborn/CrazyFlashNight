@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1739439102" lastUniqueIdentifier="23">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1739459202" lastUniqueIdentifier="23">
   <timeline>
     <DOMTimeline name="对话框界面">
       <layers>
-        <DOMLayer name="Symbol 1883" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Symbol 1883" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -179,7 +179,7 @@ if (结束对话后是否跳转帧)
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 1881" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 1881" symbolType="button">
                   <matrix>
                     <Matrix a="32.0397644042969" d="5.7252197265625" tx="364.9" ty="145.55"/>
                   </matrix>
@@ -272,9 +272,9 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="162" height="17.1" isSelectable="false" variableName="人物称号" renderAsHTML="true" lineType="multiline">
+                <DOMDynamicText fontRenderingMode="device" width="162" height="18.45" isSelectable="false" variableName="人物称号" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix a="1.155029296875" tx="214.85" ty="55.75"/>
+                    <Matrix a="1.155029296875" tx="214.85" ty="53.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="62.45" y="7.75"/>
@@ -283,7 +283,7 @@ on(rollOut){
                     <DOMTextRun>
                       <characters>1</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="15" bitmapSize="300" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="14" bitmapSize="280" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -299,9 +299,9 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="161.8" height="29.7" isSelectable="false" variableName="人物名字" lineType="multiline">
+                <DOMDynamicText fontRenderingMode="device" width="154.95" height="31.7" isSelectable="false" variableName="人物名字" lineType="multiline">
                   <matrix>
-                    <Matrix a="1.47080993652344" tx="-33.4" ty="44"/>
+                    <Matrix a="1.47080993652344" tx="-21.9" ty="41"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="80.9" y="13.5"/>
@@ -310,7 +310,7 @@ on(rollOut){
                     <DOMTextRun>
                       <characters>1</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="26" bitmapSize="520" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" size="24" bitmapSize="480" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -322,64 +322,28 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本" color="#87CEB8" autoNamed="false">
+        <DOMLayer name="文本" color="#87CEB8" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="573" height="72.65" isSelectable="false" variableName="打字内容" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix a="1.36569213867188" d="1.62921142578125" tx="-28.3" ty="78.3"/>
+                    <Matrix a="1.36569213867188" d="1.62921142578125" tx="-30.3" ty="78.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-2" y="-2"/>
                   </transformationPoint>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>我朝</characters>
+                      <characters>我朝你牢牢的我朝你牢牢的我朝你牢牢的</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>你</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>牢牢的我朝</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>你</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>牢牢的我朝</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>你</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>牢牢的</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei"/>
                       </textAttrs>
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters></characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
