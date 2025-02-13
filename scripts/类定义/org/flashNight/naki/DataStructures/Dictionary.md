@@ -207,3 +207,10 @@ trace(dict.getCount());         // 输出: 0
 
 ---
 
+
+
+
+import org.flashNight.naki.DataStructures.*;
+
+// 执行测试
+DictionaryTest.runAll();
