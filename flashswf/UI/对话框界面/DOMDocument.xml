@@ -27,7 +27,7 @@
           <DOMFolderItem name="ts-npc" itemID="66ad200c-00000fee"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="67331ffe-00000756"/>
           <DOMFolderItem name="动画" itemID="65f7e940-00000bc1"/>
-          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9"/>
+          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9" isExpanded="true"/>
           <DOMFolderItem name="对话框UI/Andy对话立绘" itemID="65f434da-000014a4"/>
           <DOMFolderItem name="对话框UI/Andy对话立绘/Andy五官-悲伤表情" itemID="65f53304-00002906"/>
           <DOMFolderItem name="对话框UI/Andy对话立绘/Andy五官-愤怒表情" itemID="65f532f9-00002901"/>
@@ -86,13 +86,13 @@
           <DOMFolderItem name="杂项" itemID="665b5cb2-00001fa1"/>
      </folders>
      <media>
-          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="./LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1716708655.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
-          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="./LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1716708655.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
-          <DOMBitmapItem name="king2.psd 资源 4/资源/悲伤" itemID="678f68fb-00000a6a" sourceExternalFilepath="./LIBRARY/king2.psd 资源 4/资源/悲伤" sourceLastImported="1737451771" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 4/资源/悲伤" bitmapDataHRef="M 6 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="king2.psd 资源 2/资源/坏笑" itemID="678f5ff1-00000a54" sourceExternalFilepath="./LIBRARY/king2.psd 资源 2/资源/坏笑" sourceLastImported="1737449457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 2/资源/坏笑" bitmapDataHRef="M 4 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="king2.psd 资源 2/资源/怒" itemID="678f5ff1-00000a59" sourceExternalFilepath="./LIBRARY/king2.psd 资源 2/资源/怒" sourceLastImported="1737449457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 2/资源/怒" bitmapDataHRef="M 5 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="king2.psd 资源/资源/图层 100" itemID="678f5bc5-00000578" sourceExternalFilepath="./LIBRARY/king2.psd 资源/资源/图层 100" sourceLastImported="1737448389" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源/资源/图层 100" bitmapDataHRef="M 7 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="king2.psd 资源 2/资源/正常" itemID="678f5ff1-00000a4a" sourceExternalFilepath="./LIBRARY/king2.psd 资源 2/资源/正常" sourceLastImported="1737449457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 2/资源/正常" bitmapDataHRef="M 3 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../对话框界面/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1716708655.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../对话框界面/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1716708655.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMBitmapItem name="king2.psd 资源 4/资源/悲伤" itemID="678f68fb-00000a6a" sourceExternalFilepath="../对话框界面/LIBRARY/king2.psd 资源 4/资源/悲伤" sourceLastImported="1737451771" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 4/资源/悲伤" bitmapDataHRef="M 6 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="king2.psd 资源 2/资源/坏笑" itemID="678f5ff1-00000a54" sourceExternalFilepath="../对话框界面/LIBRARY/king2.psd 资源 2/资源/坏笑" sourceLastImported="1737449457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 2/资源/坏笑" bitmapDataHRef="M 4 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="king2.psd 资源 2/资源/怒" itemID="678f5ff1-00000a59" sourceExternalFilepath="../对话框界面/LIBRARY/king2.psd 资源 2/资源/怒" sourceLastImported="1737449457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 2/资源/怒" bitmapDataHRef="M 5 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="king2.psd 资源/资源/图层 100" itemID="678f5bc5-00000578" sourceExternalFilepath="../对话框界面/LIBRARY/king2.psd 资源/资源/图层 100" sourceLastImported="1737448389" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源/资源/图层 100" bitmapDataHRef="M 7 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="king2.psd 资源 2/资源/正常" itemID="678f5ff1-00000a4a" sourceExternalFilepath="../对话框界面/LIBRARY/king2.psd 资源 2/资源/正常" sourceLastImported="1737449457" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 2/资源/正常" bitmapDataHRef="M 3 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
           <Include href="3.防具/10.军阀系列/未命名文件夹 1/director大腿素材.xml" itemIcon="1" loadImmediate="false" itemID="66f591ee-0000565d" lastModified="1727369710"/>
@@ -995,7 +995,7 @@
           <Include href="对话框UI/袁望surveyor/左上臂.xml" loadImmediate="false" itemID="658e9304-000001cc" lastModified="1703844269"/>
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
-          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1739368705"/>
+          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1739439102"/>
           <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1739356008"/>
           <Include href="歌留多/歌留多胯.xml" loadImmediate="false" itemID="67096725-00000045" lastModified="1728669954"/>
           <Include href="歌留多/歌留多身体.xml" loadImmediate="false" itemID="67095275-0000000f" lastModified="1728665563"/>
@@ -1486,6 +1486,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2224579" publishTime="1739439148"/>
+          <PublishItem publishSize="2224583" publishTime="1739438850"/>
           <PublishItem publishSize="2225918" publishTime="1739368637"/>
           <PublishItem publishSize="2225919" publishTime="1739368611"/>
           <PublishItem publishSize="2225924" publishTime="1739368481"/>
@@ -1504,7 +1506,5 @@
           <PublishItem publishSize="2225014" publishTime="1739365530"/>
           <PublishItem publishSize="2225019" publishTime="1739365476"/>
           <PublishItem publishSize="2225004" publishTime="1739365309"/>
-          <PublishItem publishSize="2225037" publishTime="1739365119"/>
-          <PublishItem publishSize="2223607" publishTime="1739364311"/>
      </publishHistory>
 </DOMDocument>

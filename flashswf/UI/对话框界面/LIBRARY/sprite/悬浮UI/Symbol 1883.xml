@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#6582CA">
+        <DOMLayer name="Script Layer" color="#6582CA" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
@@ -48,7 +48,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#464BF6" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 4" color="#464BF6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -72,7 +72,7 @@
             </DOMFrame>
             <DOMFrame index="9" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/透明控件" selected="true" centerPoint3DX="11.1" centerPoint3DY="11.1">
+                <DOMSymbolInstance libraryItemName="sprite/透明控件" centerPoint3DX="11.1" centerPoint3DY="11.1">
                   <matrix>
                     <Matrix a="0.11199951171875" d="0.11199951171875" tx="-1.4" ty="-1.4"/>
                   </matrix>

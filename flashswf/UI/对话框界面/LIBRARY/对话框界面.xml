@@ -1,7 +1,23 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1739368705" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1739439102" lastUniqueIdentifier="23">
   <timeline>
     <DOMTimeline name="对话框界面">
       <layers>
+        <DOMLayer name="Symbol 1883" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1883" centerPoint3DX="747.5" centerPoint3DY="17.5">
+                  <matrix>
+                    <Matrix tx="747.75" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="-3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="labels" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" name="open" labelType="name" keyMode="9728">
@@ -165,7 +181,7 @@ if (结束对话后是否跳转帧)
               <elements>
                 <DOMSymbolInstance libraryItemName="button/Symbol 1881" selected="true" symbolType="button">
                   <matrix>
-                    <Matrix a="32.0397644042969" d="5.72523498535156" tx="364.9" ty="145.55"/>
+                    <Matrix a="32.0397644042969" d="5.7252197265625" tx="364.9" ty="145.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="-12.45"/>
@@ -258,7 +274,7 @@ on(rollOut){
               <elements>
                 <DOMDynamicText fontRenderingMode="device" width="162" height="17.1" isSelectable="false" variableName="人物称号" renderAsHTML="true" lineType="multiline">
                   <matrix>
-                    <Matrix a="1.15504455566406" tx="214.85" ty="55.75"/>
+                    <Matrix a="1.155029296875" tx="214.85" ty="55.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="62.45" y="7.75"/>
@@ -319,7 +335,43 @@ on(rollOut){
                   </transformationPoint>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>我朝你牢牢的我朝你牢牢的我朝你牢牢的</characters>
+                      <characters>我朝</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>你</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>牢牢的我朝</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>你</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>牢牢的我朝</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>你</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>牢牢的</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" indent="6" lineSpacing="0" bitmapSize="240" face="FZRUIZH_JW--GB1-0"/>
                       </textAttrs>
@@ -380,7 +432,7 @@ on(rollOut){
               <elements>
                 <DOMSymbolInstance libraryItemName="对话框UI/Symbol 1875" centerPoint3DX="280.95" centerPoint3DY="51.25">
                   <matrix>
-                    <Matrix a="1.35366821289063" d="1.66499328613281" ty="1.25"/>
+                    <Matrix a="1.35366821289063" d="1.66497802734375" ty="1.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -397,7 +449,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头像" color="#6589A2" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="头像" color="#6589A2" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
