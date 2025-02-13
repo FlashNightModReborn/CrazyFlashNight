@@ -84,7 +84,7 @@ class org.flashNight.naki.DataStructures.DictionaryTest {
         // 测试UID映射清理
         dict.setItem(testObj, "test");
         dict.removeItem(testObj);
-        assert(testObj.__dictUID === undefined, "UID should be removed on deletion");
+        assert(testObj.__dictUID !== undefined, "UID should remain after deletion"); // Updated assertion
     }
 
     // 测试键列表缓存机制
@@ -125,7 +125,7 @@ class org.flashNight.naki.DataStructures.DictionaryTest {
         dict.clear();
         assert(dict.getCount() === 0, "Count after clear");
         assert(dict.getKeys().length === 0, "Keys after clear");
-        assert(objKey.__dictUID === undefined, "UID should be cleared after clear");
+        assert(objKey.__dictUID !== undefined, "UID should remain after clear"); // Updated assertion
         
         // 测试销毁
         dict.setItem("key", "value");

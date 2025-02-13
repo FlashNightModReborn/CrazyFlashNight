@@ -72,7 +72,6 @@
                 // 如果该对象没有 UID，则分配新的 UID 并存储在 uidMap 中
                 uid = key.__dictUID = uidCounter++;
                 uidMap[uid] = key;
-                count++;
                 isKeysCacheDirty = true;
             }
             var uidStr:String = String(uid);  // 将 UID 转换为字符串作为键
@@ -125,8 +124,8 @@
                 var uidStr:String = String(uid);
                 if (typeof(objectStorage[uidStr]) != "undefined") {
                     delete objectStorage[uidStr];
-                    delete uidMap[uid];  // 删除 UID 映射
-                    delete key.__dictUID;  // 删除对象上的 UID 属性
+                    // delete uidMap[uid];  // 删除 UID 映射
+                    // delete key.__dictUID;  // 删除对象上的 UID 属性
                     count--;
                     isKeysCacheDirty = true;
                 }
@@ -188,14 +187,16 @@
         // 清空对象存储和 UID 映射
         for (var uidStr:String in objectStorage) {
             var key = uidMap[Number(uidStr)];
+            /*
             if (key !== undefined) {
                 delete key.__dictUID;  // 删除对象上的 UID 属性
             }
+            */
             delete objectStorage[uidStr];
-            delete uidMap[Number(uidStr)];
+            // delete uidMap[Number(uidStr)];
         }
         
-        uidCounter = 1;  // 重置 UID 计数器
+        // uidCounter = 1;  // 重置 UID 计数器
         count = 0;       // 重置键值对数量
         isKeysCacheDirty = true;  // 标记键缓存为脏
         keysCache = null;         // 清空键缓存
@@ -244,7 +245,7 @@
     public static function destroyStatic():Void {
         // 直接清空静态引用
         uidMap = null;       // 清除 UID 映射表引用
-        // uidCounter = 1;      // 重置 UID 计数器
+        uidCounter = 1;      // 重置 UID 计数器
     }
 
 
