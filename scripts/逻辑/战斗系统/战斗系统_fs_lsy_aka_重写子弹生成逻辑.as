@@ -568,8 +568,6 @@ _root.子弹生命周期 = function()
             var overlapCenter;
 
             var unitArea:AABBCollider = hitTarget.aabbCollider;
-            unitArea.updateFromUnitArea(hitTarget);
-
             var result:CollisionResult = areaAABB.checkCollision(unitArea, zOffset);
 
             if(!result.isColliding)
