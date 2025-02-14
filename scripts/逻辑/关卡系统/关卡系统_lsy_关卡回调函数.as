@@ -38,6 +38,7 @@ _root.关卡回调函数.军阀据点_4 = function(name,path){
 	事件mc.onEnterFrame = function(){
 		var 目标 = _root.gameworld[name];
 		if(目标 && 目标.hp <= 0) {
+			_root.soundEffectManager.stopBGM();
 			_root.最上层加载外部动画(path);
 			_root.暂停 = true;
 			delete this.onEnterFrame;
@@ -51,6 +52,7 @@ _root.关卡回调函数.军阀前线基地_4 = function(name,path){
 	事件mc.onEnterFrame = function(){
 		var 目标 = _root.gameworld[name];
 		if(目标 && 目标.hp <= 0) {
+			_root.soundEffectManager.stopBGM();
 			_root.最上层加载外部动画(path);
 			_root.暂停 = true;
 			delete this.onEnterFrame;

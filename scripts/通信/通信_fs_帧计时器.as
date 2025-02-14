@@ -557,6 +557,11 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     }
 }, _root.帧计时器);
 
+//处理音乐状态机
+_root.帧计时器.eventBus.subscribe("frameUpdate", function() {
+    _root.soundEffectManager.bgmEngine.onAction();
+}, _root.帧计时器);
+
 _root.帧计时器.移除任务 = function(任务ID)
 {
     var 任务 = this.任务哈希表[任务ID];

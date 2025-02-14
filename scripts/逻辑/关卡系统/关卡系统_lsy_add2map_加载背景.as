@@ -134,6 +134,11 @@ _root.配置场景环境信息 = function(){
 		if(_root.门口佣兵刷新器 && !isNaN(环境信息.佣兵刷新数据.Entrance)){
 			_root.门口佣兵刷新器.几率 = 环境信息.佣兵刷新数据.Entrance;
 		}
+		//播放场景bgm
+		if(环境信息.BGM != null){
+			if(环境信息.BGM == "stop") _root.soundEffectManager.stopBGM();
+			else _root.soundEffectManager.playBGM(环境信息.BGM, true, null);
+		}
 	}else{
 		天气系统.空间情况 = "室外";
 		天气系统.视觉情况 = "光照";

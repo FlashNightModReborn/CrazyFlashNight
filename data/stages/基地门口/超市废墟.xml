@@ -17,6 +17,11 @@
             <Background>flashswf/backgrounds/gk2_1_BG.swf</Background>
             <PlayerX>153</PlayerX>
             <PlayerY>461</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Moan</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
@@ -62,6 +67,9 @@
             <Background>flashswf/backgrounds/gk2_2_BG.swf</Background>
             <PlayerX>100</PlayerX>
             <PlayerY>360</PlayerY>
+            <BGM>
+                <Command>stop</Command>
+            </BGM>
         </BasicInformation>
         <Instances>
             <Instance id="0">

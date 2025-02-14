@@ -94,6 +94,11 @@
             <Background>flashswf/backgrounds/gk22_4_BG.swf</Background>
             <PlayerX>493</PlayerX>
             <PlayerY>430</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Agnus Dei X</Title>
+                <Loop>false</Loop>
+            </BGM>
             <CallbackFunction>
                 <Name>军阀前线基地_4</Name>
                 <Parameter>神秘武士</Parameter>

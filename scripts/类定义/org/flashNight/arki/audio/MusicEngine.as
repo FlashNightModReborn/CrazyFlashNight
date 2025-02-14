@@ -22,7 +22,7 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
     // 当前全局参数（默认优先级 0）
     private var currentPriority:Number = 0;
     // 当前曲目名称（用于 play/switch 命令）
-    private var currentClip:String = "";
+    private var currentClip:String = null;
     // 循环标志
     private var currentLoop:Boolean = false;
     
@@ -52,6 +52,14 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
             return false;
         });
         
+        // 转换：淡出完成后尝试切换到下一首背景音乐
+        this.transitions.AddTransition("fadeout", "fadein", function():Boolean {
+            var state = this.getActiveState();
+            if (currentClip != null && currentClip !== "" && state.isComplete()) {
+                return true;
+            }
+            return false;
+        });
         // 转换：淡出完成后切换到空闲状态
         this.transitions.AddTransition("fadeout", "idle", function():Boolean {
             var state = this.getActiveState();
@@ -138,7 +146,13 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                 break;
             
             case "stop":
+                var stateName = getActiveStateName();
+                if(stateName !== "playing" && stateName !== "fadein"){
+                    trace("[MusicEngine] Error: 'switch' command not in playing or fadein state.");
+                    return;
+                }
                 trace("[MusicEngine] Processing 'stop' command");
+                currentClip = null;
                 currentPriority = 0; // 重置
                 this.ChangeState("fadeout");
                 break;
@@ -229,5 +243,10 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
             playingState.adjustParameters(volume, playingState.fadeDuration, playingState.loop);
         }
         trace("[MusicEngine] setVolume called: " + volume);
+    }
+
+    public function getCurrentClip():String{
+        if(getActiveStateName() != "idle") return currentClip;
+        return null;
     }
 }

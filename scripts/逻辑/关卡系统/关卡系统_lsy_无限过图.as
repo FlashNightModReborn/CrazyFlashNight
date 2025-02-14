@@ -222,6 +222,15 @@ _root.开启生存模式 = function(模式) {
         _root.SetDialogue(本轮对话);
     }
 
+	//播放场景bgm
+	if(基本配置.BGM){
+		if(基本配置.BGM.Command == "play"){
+			_root.soundEffectManager.playBGM(基本配置.BGM.Title, 基本配置.BGM.Loop, 基本配置.BGM.Volume);
+		}else if (基本配置.BGM.Command == "stop"){
+			_root.soundEffectManager.stopBGM();
+		}
+	}
+
 	//调用回调函数
 	if(基本配置.CallbackFunction.Name){
 		if(基本配置.CallbackFunction.Parameter){

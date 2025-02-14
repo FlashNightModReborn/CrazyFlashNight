@@ -138,7 +138,8 @@ _root.天气系统.默认环境配置 = {
     左侧出生线: null,
     右侧出生线: null,
     //基地场景额外数据
-    佣兵刷新数据: null
+    佣兵刷新数据: null,
+    BGM: null
 };
 
 //目前关卡和基地场景的环境配置没有太大区别。后续可将该函数拆成两个分别对关卡和基地场景应用
@@ -183,6 +184,7 @@ _root.配置环境信息 = function(当前配置, 默认配置):Object{
 	环境信息.右侧出生线 = 当前配置.RightSpawnLine ? 当前配置.RightSpawnLine : 默认配置.右侧出生线;
 	//基地场景额外数据
 	环境信息.佣兵刷新数据 = 当前配置.MercenaryRefresh ? 当前配置.MercenaryRefresh : 默认配置.佣兵刷新数据;
+    环境信息.BGM = 当前配置.BGM ? 当前配置.BGM : 默认配置.BGM;
 
 	return 环境信息;
 }

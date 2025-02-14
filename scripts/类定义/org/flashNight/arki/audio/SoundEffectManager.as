@@ -10,6 +10,7 @@
  */
  
 import org.flashNight.arki.audio.*;
+import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
 
 class org.flashNight.arki.audio.SoundEffectManager {
 
@@ -20,6 +21,9 @@ class org.flashNight.arki.audio.SoundEffectManager {
 
     private var globalSoundObj:Sound; // 全局音量控制器
     private var globalVolume:Number; // 全局音量
+
+    public var bgmList:Object;
+    private var bgmListPath:String = "sounds/bgm_list.xml";
     
     public function SoundEffectManager(preproc:SoundPreprocessor) {
         this.preprocessor = preproc;
@@ -29,7 +33,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         bgmEngine = new MusicEngine(null, null, null); 
         karaokeEngine = new MusicEngine(null, null, null);
 
-        bgmEngine.setMusicPlayer(new SimMusicPlayer());
+        bgmEngine.setMusicPlayer(new MusicPlayer());
         karaokeEngine.setMusicPlayer(new SimMusicPlayer());
         
         sfxEngine = new LightweightSoundEngine(this.preprocessor);
@@ -37,6 +41,30 @@ class org.flashNight.arki.audio.SoundEffectManager {
         // 如有需要，可设置 MusicPlayer 给两个全功能引擎
         //   bgmEngine.setMusicPlayer( ... );
         //   karaokeEngine.setMusicPlayer( ... );
+
+        // 导入bgm列表
+        loadBGMList();
+    }
+
+    public function loadBGMList(){
+        var loader:BaseXMLLoader = new BaseXMLLoader(bgmListPath);
+        // 为回调捕获 this
+        var self:SoundEffectManager = this;
+        loader.load(
+            function(data:Object):Void {
+                self.bgmList = new Object();
+                var musics:Object = data.music;
+                for (var i in musics) {
+                    var bgm = musics[i];
+                    if(isNaN(bgm.fadeDuration)) bgm.fadeDuration = 30;
+                    if(isNaN(bgm.baseVolume)) bgm.baseVolume = 100;
+                    self.bgmList[bgm.title] = bgm;
+                }
+            },
+            function():Void {
+                trace("[SoundEffectManager] Error loading bgmList XML");
+            }
+        );
     }
     
     /**
@@ -50,6 +78,39 @@ class org.flashNight.arki.audio.SoundEffectManager {
             soundId: soundId,
             source: source
         });
+    }
+
+    /**
+     * 播放背景音乐接口
+     * @param title          背景音乐名称
+     * @param loop           是否循环
+     * @param volume         音量
+     */
+    public function playBGM(title:String, loop:Boolean, volume:Number):Void {
+        var bgm = bgmList[title];
+        var url = bgm.url;
+        if(url == null) return;
+        if(url == "stop") {
+            stopBGM(); //若为预留关键字stop则停止当前音乐
+            return;
+        }
+        var command = null;
+        if(bgmEngine.getActiveStateName() == "idle"){
+            command = "play";
+        }else if(bgmEngine.getCurrentClip() == url){
+            return; //若调用的声音和当前播放的声音路径相同则阻止指令
+        }else if(bgmEngine.getActiveStateName() == "playing"){
+            command = "switch";
+        }
+        if(command != null){
+            if(loop !== true) loop = false;
+            if(isNaN(volume) || volume < 0 || volume > 100) volume = bgm.baseVolume;
+            _root.发布消息(command + " " + url);
+            bgmEngine.handleCommand(command, {clip:url, priority:0, loop:loop, volume:volume, fadeDuration:bgm.fadeDuration});
+        }
+    }
+    public function stopBGM():Void {
+        bgmEngine.handleCommand("stop", null);
     }
     
     /**

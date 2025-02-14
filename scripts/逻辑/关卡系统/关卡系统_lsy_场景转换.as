@@ -222,6 +222,8 @@ _root.返回基地 = function(){
 	}
 	//清空限制词条
 	_root.限制系统.clearEntries();
+	//停止背景音乐
+	_root.soundEffectManager.stopBGM();
 }
 
 

@@ -13,6 +13,7 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
+        <BGM>stop</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地下室1层</BackgroundURL>
@@ -64,6 +65,7 @@
         <MercenaryRefresh>
             <Entrance>20</Entrance>
         </MercenaryRefresh>
+        <BGM>stop</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>武器库</BackgroundURL>
@@ -98,6 +100,7 @@
             <AreaMultiplier>1.2</AreaMultiplier>
             <Entrance>10</Entrance>
         </MercenaryRefresh>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>佣兵酒吧</BackgroundURL>
@@ -112,10 +115,11 @@
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
         <MercenaryRefresh>
-            <AreaMultiplier>8</AreaMultiplier>
+            <AreaMultiplier>2</AreaMultiplier>
             <Initial>8</Initial>
             <Entrance>3</Entrance>
         </MercenaryRefresh>
+        <BGM>酒馆1</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>医务室</BackgroundURL>
