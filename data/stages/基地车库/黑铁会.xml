@@ -58,6 +58,11 @@
             <PlayerX>200</PlayerX>
             <PlayerY>442</PlayerY>
             <LoadingImage>黑铁众</LoadingImage>
+            <BGM>
+                <Command>play</Command>
+                <Title>By Peace Or By Power</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
