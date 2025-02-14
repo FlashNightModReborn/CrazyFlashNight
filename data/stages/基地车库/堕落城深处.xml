@@ -36,6 +36,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/gk15_2_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Belgradian Symphony</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">

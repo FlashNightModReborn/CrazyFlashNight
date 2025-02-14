@@ -37,6 +37,11 @@
             <Background>flashswf/backgrounds/gk15_2_BG.swf</Background>
             <PlayerX>100</PlayerX>
             <PlayerY>470</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Fearless Highway</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">

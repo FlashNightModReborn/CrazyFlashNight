@@ -52,6 +52,11 @@
             <Background>flashswf/backgrounds/gk12_1_BG.swf</Background>
             <PlayerX>450</PlayerX>
             <PlayerY>482</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>War, What Is It Good For</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">

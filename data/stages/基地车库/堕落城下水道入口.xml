@@ -52,6 +52,11 @@
             <Background>flashswf/backgrounds/堕落城下水道入口.swf</Background>
             <PlayerX>100</PlayerX>
             <PlayerY>660</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Make This Right</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">
