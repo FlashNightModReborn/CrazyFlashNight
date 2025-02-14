@@ -1,23 +1,7 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1739459202" lastUniqueIdentifier="23">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框界面" itemID="6652e908-000026b6" linkageExportForAS="true" linkageIdentifier="对话框界面" lastModified="1739526304" lastUniqueIdentifier="23">
   <timeline>
     <DOMTimeline name="对话框界面">
       <layers>
-        <DOMLayer name="Symbol 1883" color="#9933CC" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1883" centerPoint3DX="747.5" centerPoint3DY="17.5">
-                  <matrix>
-                    <Matrix tx="747.75" ty="20.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="-0.25" y="-3.2"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="labels" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" name="open" labelType="name" keyMode="9728">
@@ -268,6 +252,25 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="互动键扳机" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 1883" name="互动键扳机" blendMode="multiply" centerPoint3DX="747.5" centerPoint3DY="17.5">
+                  <matrix>
+                    <Matrix tx="747.75" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="-3.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="称号" color="#39C9FD" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -322,7 +325,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文本" color="#87CEB8" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文本" color="#87CEB8" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
