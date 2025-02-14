@@ -57,6 +57,11 @@
             <Background>flashswf/backgrounds/gk16_11_BG.swf</Background>
             <PlayerX>190</PlayerX>
             <PlayerY>475</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Bring Your Own Doggg</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">

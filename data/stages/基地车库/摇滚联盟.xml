@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<GameStage>
+    <StageInfo>
+        <Type>无限过图</Type>
+        <Name>摇滚联盟</Name>
+        <FadeTransitionFrame>bigmovie1</FadeTransitionFrame>
+        <UnlockCondition>179</UnlockCondition>
+        <Description>对抗神秘的敌人，需要联合所有的力量！</Description>
+    </StageInfo>
+    <Rewards>
+        <Reward>
+            <Name>抗生素</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp药剂</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通mp药剂</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>普通hp粉尘</Name>
+            <AcquisitionProbability>2</AcquisitionProbability>
+            <QuantityMax>4</QuantityMax>
+        </Reward>
+        <Reward>
+            <Name>资料</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>20</QuantityMax>
+        </Reward>
+    </Rewards>
+    <SubStage id="0">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/nyqxjdjzzd_1_BG.swf</Background>
+        </BasicInformation>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种80</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>1</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+</GameStage>
