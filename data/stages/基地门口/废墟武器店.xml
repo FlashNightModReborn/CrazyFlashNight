@@ -7,6 +7,11 @@
             <Background>flashswf/backgrounds/gk3_1_BG.swf</Background>
             <PlayerX>865</PlayerX>
             <PlayerY>599</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Moan</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -47,11 +52,6 @@
             <Background>flashswf/backgrounds/gk3_2_BG.swf</Background>
             <PlayerX>871</PlayerX>
             <PlayerY>620</PlayerY>
-            <BGM>
-                <Command>play</Command>
-                <Title>Moan</Title>
-                <Loop>true</Loop>
-            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
