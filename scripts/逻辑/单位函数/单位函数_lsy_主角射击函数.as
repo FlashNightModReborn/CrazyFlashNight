@@ -203,8 +203,7 @@ _root.主角函数.初始化长枪射击函数 = function(){
 	}
 	
 	var 暴击 =  _parent.长枪暴击;
-	if (暴击)
-	{
+	if (暴击){
 		if(!isNaN(Number(暴击))){
 			子弹属性.暴击 = function(当前子弹){
 				if(_root.成功率(Number(暴击))){
@@ -216,10 +215,8 @@ _root.主角函数.初始化长枪射击函数 = function(){
 			子弹属性.暴击 = function(当前子弹){
 				// _root.发布消息(当前子弹.hitTarget.hp + " " + 当前子弹.hitTarget.hp满血值);
 				if(当前子弹.hitTarget.hp >= 当前子弹.hitTarget.hp满血值){
-					// _root.发布消息("暴击");
 					return 1.5;
 				}
-				_root.发布消息("未暴击");
 				return 1;
 			}
 		}
