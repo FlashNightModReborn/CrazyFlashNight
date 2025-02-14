@@ -70,6 +70,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/Survival_mode_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>The Time Is Now</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
