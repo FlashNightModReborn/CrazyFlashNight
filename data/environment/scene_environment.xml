@@ -32,6 +32,7 @@
             <Initial>1</Initial>
             <Entrance>7</Entrance>
         </MercenaryRefresh>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>健身房</BackgroundURL>
@@ -49,6 +50,7 @@
             <Initial>8</Initial>
             <Entrance>10</Entrance>
         </MercenaryRefresh>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地下2层</BackgroundURL>
@@ -83,6 +85,7 @@
             <Initial>8</Initial>
             <Entrance>15</Entrance>
         </MercenaryRefresh>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>基地1层</BackgroundURL>
@@ -137,6 +140,7 @@
             <Initial>8</Initial>
             <Entrance>10</Entrance>
         </MercenaryRefresh>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>基地房顶</BackgroundURL>
@@ -155,6 +159,7 @@
             <Initial>8</Initial>
             <Entrance>7</Entrance>
         </MercenaryRefresh>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>基地车库</BackgroundURL>
@@ -168,6 +173,7 @@
         <Horizon>140</Horizon>
         <MaxIllumination>9</MaxIllumination>
         <MinIllumination>0</MinIllumination>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>基地门口</BackgroundURL>
@@ -186,6 +192,7 @@
             <Initial>8</Initial>
             <Entrance>7</Entrance>
         </MercenaryRefresh>
+        <BGM>Dialtone</BGM>
     </Environment>
     <!-- 外部地图-->
     <Environment>
@@ -210,6 +217,7 @@
         <Width>2368</Width>
         <Height>1012</Height>
         <Horizon>145</Horizon>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-摇滚公园</BackgroundURL>
@@ -221,6 +229,7 @@
         <Width>2230</Width>
         <Height>1012</Height>
         <Horizon>160</Horizon>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-幸存者营地</BackgroundURL>
@@ -233,6 +242,7 @@
         <Height>957</Height>
         <Horizon>100</Horizon>
         <DisableSky>true</DisableSky>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-彩蛋地图</BackgroundURL>
@@ -246,6 +256,7 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-靶场</BackgroundURL>
@@ -257,6 +268,7 @@
         <Width>2987</Width>
         <Height>1095</Height>
         <Horizon>270</Horizon>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-堕落城酒吧</BackgroundURL>
@@ -270,6 +282,7 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <BGM>酒吧2</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-联合大学</BackgroundURL>
@@ -289,6 +302,7 @@
             <url>大学远山天空.swf</url>
             <SpeedRate>8</SpeedRate>
         </Skybox>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-小马地图</BackgroundURL>
@@ -302,6 +316,7 @@
         <DisableSky>true</DisableSky>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-军阀帐篷</BackgroundURL>
@@ -315,6 +330,7 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-测试空间</BackgroundURL>
@@ -328,6 +344,7 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
+        <BGM>stop</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-走廊</BackgroundURL>
@@ -341,6 +358,7 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <BGM>Dialtone</BGM>
     </Environment>
     <Environment>
         <BackgroundURL>地图-食堂</BackgroundURL>
@@ -354,5 +372,6 @@
         <SpaceCondition>室内</SpaceCondition>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>5</MinIllumination>
+        <BGM>Dialtone</BGM>
     </Environment>
 </EnvironmentSettings>
