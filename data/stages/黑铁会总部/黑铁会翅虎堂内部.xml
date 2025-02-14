@@ -40,6 +40,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/hthcftnb_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Peace For The Price Of Life</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">

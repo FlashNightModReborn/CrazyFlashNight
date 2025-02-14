@@ -35,6 +35,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/hthzt_0_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Darkess</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -171,6 +176,11 @@
     <SubStage id="4">
         <BasicInformation>
             <Background>flashswf/backgrounds/hthzt_4_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Sun</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">

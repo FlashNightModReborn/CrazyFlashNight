@@ -40,6 +40,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/hthhftnb_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Omnicide</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
