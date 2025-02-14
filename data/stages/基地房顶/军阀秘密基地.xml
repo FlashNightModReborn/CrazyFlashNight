@@ -27,6 +27,11 @@
             <Background>flashswf/backgrounds/军阀秘密基地_1_BG.swf</Background>
             <PlayerX>100</PlayerX>
             <PlayerY>600</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Schwarzflammen</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">

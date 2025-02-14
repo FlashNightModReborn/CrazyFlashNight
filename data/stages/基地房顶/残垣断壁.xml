@@ -57,6 +57,11 @@
             <Background>flashswf/backgrounds/gk19_1_BG.swf</Background>
             <PlayerX>200</PlayerX>
             <PlayerY>484</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>The Prime Prime of Your Prime</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">

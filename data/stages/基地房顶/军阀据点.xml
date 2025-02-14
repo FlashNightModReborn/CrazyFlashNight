@@ -52,6 +52,11 @@
             <Background>flashswf/backgrounds/gk21_1_BG.swf</Background>
             <PlayerX>261</PlayerX>
             <PlayerY>483</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Schwarzflammen</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">

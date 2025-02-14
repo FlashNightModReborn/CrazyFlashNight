@@ -45,6 +45,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/gk19_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>March of Dominance</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -173,6 +178,11 @@
             <Background>flashswf/backgrounds/gk19_3_BG.swf</Background>
             <PlayerX>150</PlayerX>
             <PlayerY>450</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Schwarzflammen</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">

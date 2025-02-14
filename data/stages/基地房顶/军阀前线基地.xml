@@ -52,6 +52,11 @@
             <Background>flashswf/backgrounds/gk22_1_BG.swf</Background>
             <PlayerX>193</PlayerX>
             <PlayerY>489</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>The Time Is Now</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
