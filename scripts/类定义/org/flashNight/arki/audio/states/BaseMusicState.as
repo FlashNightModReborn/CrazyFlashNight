@@ -11,7 +11,7 @@ class org.flashNight.arki.audio.states.BaseMusicState extends FSM_Status {
     public var musicPlayer:IMusicPlayer;
     
     // 动态参数（各状态可按需使用）
-    public var fadeDuration:Number = 60; // 默认淡入淡出时长
+    public var fadeDuration:Number = 20; // 默认淡入淡出时长
     public var targetVolume:Number = 100;  // 正常音量
     public var loop:Boolean = false;       // 循环播放标志
     

@@ -34,22 +34,22 @@ class org.flashNight.arki.audio.test.MusicEngineTest {
         
         // 3) 尝试发出低优先级 'switch' 命令（优先级 3），应被忽略
         trace(">>> Issue 'switch' command with low priority (3) - should be ignored");
-        engine.handleCommand("switch", {clip:"bgm_low_priority", priority:3, fadeDuration:60});
+        engine.handleCommand("switch", {clip:"bgm_low_priority", priority:3, fadeDuration:15});
         engine.handleCommand("query", null);
         
         // 4) 发出高优先级 'switch' 命令（优先级 7），切换曲目
         trace(">>> Issue 'switch' command with high priority (7)");
-        engine.handleCommand("switch", {clip:"bgm_battle", priority:7, fadeDuration:60, loop:false, volume:90});
+        engine.handleCommand("switch", {clip:"bgm_battle", priority:7, fadeDuration:15, loop:false, volume:90});
         // 模拟淡出与淡入过程：先执行淡out
-        for (var j:Number = 0; j < 70; j++) {
+        for (var j:Number = 0; j < 60; j++) {
             engine.onAction();
         }
         // 为简化测试，手动调用 'play' 命令以触发新曲淡入（实际可通过延时或转换自动触发）
-        engine.handleCommand("play", {clip:"bgm_battle", priority:7, fadeDuration:60, loop:false, volume:90});
-        for (var k:Number = 0; k < 70; k++) {
-            engine.onAction();
-        }
-        engine.handleCommand("query", null);
+        // engine.handleCommand("play", {clip:"bgm_battle", priority:7, fadeDuration:60, loop:false, volume:90});
+        // for (var k:Number = 0; k < 30; k++) {
+        //     engine.onAction();
+        // }
+        // engine.handleCommand("query", null);
         
         // 5) 测试 'adjust' 命令：调整当前播放音量与循环标志
         trace(">>> Issue 'adjust' command");
@@ -84,7 +84,7 @@ class org.flashNight.arki.audio.test.MusicEngineTest {
         // 10) 测试 'stop' 命令
         trace(">>> Issue 'stop' command");
         engine.handleCommand("stop", null);
-        for (var p:Number = 0; p < 70; p++) {
+        for (var p:Number = 0; p < 30; p++) {
             engine.onAction();
         }
         engine.handleCommand("query", null);

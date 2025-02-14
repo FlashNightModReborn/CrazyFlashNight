@@ -10,6 +10,7 @@
  */
  
 import org.flashNight.arki.audio.*;
+import org.flashNight.neur.Event.EventBus;
 import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
 
 class org.flashNight.arki.audio.SoundEffectManager {
@@ -37,6 +38,11 @@ class org.flashNight.arki.audio.SoundEffectManager {
         karaokeEngine.setMusicPlayer(new SimMusicPlayer());
         
         sfxEngine = new LightweightSoundEngine(this.preprocessor);
+
+        //
+        EventBus.getInstance().subscribe("frameUpdate", function() {
+            this.bgmEngine.onAction();
+        }, this);
         
         // 如有需要，可设置 MusicPlayer 给两个全功能引擎
         //   bgmEngine.setMusicPlayer( ... );
@@ -52,12 +58,16 @@ class org.flashNight.arki.audio.SoundEffectManager {
         var self:SoundEffectManager = this;
         loader.load(
             function(data:Object):Void {
+                var BGMDefault = {
+                    baseVolume: 100,
+                    fadeDuration: 20
+                };
                 self.bgmList = new Object();
                 var musics:Object = data.music;
                 for (var i in musics) {
                     var bgm = musics[i];
-                    if(isNaN(bgm.fadeDuration)) bgm.fadeDuration = 30;
-                    if(isNaN(bgm.baseVolume)) bgm.baseVolume = 100;
+                    if(isNaN(bgm.fadeDuration)) bgm.fadeDuration = BGMDefault.fadeDuration;
+                    if(isNaN(bgm.baseVolume)) bgm.baseVolume = BGMDefault.baseVolume;
                     self.bgmList[bgm.title] = bgm;
                 }
             },
@@ -94,18 +104,18 @@ class org.flashNight.arki.audio.SoundEffectManager {
             stopBGM(); //若为预留关键字stop则停止当前音乐
             return;
         }
+        var stateName = bgmEngine.getActiveStateName();
         var command = null;
-        if(bgmEngine.getActiveStateName() == "idle"){
+        if(stateName == "idle"){
             command = "play";
         }else if(bgmEngine.getCurrentClip() == url){
             return; //若调用的声音和当前播放的声音路径相同则阻止指令
-        }else if(bgmEngine.getActiveStateName() == "playing"){
+        }else if(stateName == "playing"){
             command = "switch";
         }
         if(command != null){
             if(loop !== true) loop = false;
             if(isNaN(volume) || volume < 0 || volume > 100) volume = bgm.baseVolume;
-            _root.发布消息(command + " " + url);
             bgmEngine.handleCommand(command, {clip:url, priority:0, loop:loop, volume:volume, fadeDuration:bgm.fadeDuration});
         }
     }
