@@ -371,7 +371,7 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
     var damageVariance:Number = bullet.破坏力 * ((!_root.调试模式 || bullet.霰弹值 > 1) ? (0.85 + _root.basic_random() * 0.3) : 1);
     var percentageDamage:Number = isNaN(bullet.百分比伤害) ? 0 : hitTarget.hp * bullet.百分比伤害 / 100;
     bullet.破坏力 = damageVariance + bullet.固伤 + percentageDamage;
-    
+    bullet.附加层伤害计算 = 0; // 兼容性考虑，后续需要逐个移除
 
     /*
     manager.execute(bullet, shooter, hitTarget, damageResult);

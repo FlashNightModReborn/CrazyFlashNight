@@ -242,7 +242,7 @@ class org.flashNight.arki.audio.MusicPlayer implements IMusicPlayer {
         // 使用 enterFrame 事件处理渐入效果
         var self:MusicPlayer = this;
         _movieClip.onEnterFrame = function():Void {
-            trace("MusicPlayer.fadeIn.onEnterFrame: 处理渐入效果，当前帧数 = " + _fadeFrameCount);
+            trace("MusicPlayer.fadeIn.onEnterFrame: 处理渐入效果，当前帧数 = " + self._fadeFrameCount);
             self.handleFade();
         };
     }
@@ -270,7 +270,7 @@ class org.flashNight.arki.audio.MusicPlayer implements IMusicPlayer {
         // 使用 enterFrame 事件处理渐出效果
         var self:MusicPlayer = this;
         _movieClip.onEnterFrame = function():Void {
-            trace("MusicPlayer.fadeOut.onEnterFrame: 处理渐出效果，当前帧数 = " + _fadeFrameCount);
+            trace("MusicPlayer.fadeOut.onEnterFrame: 处理渐出效果，当前帧数 = " + self._fadeFrameCount);
             self.handleFade();
         };
     }

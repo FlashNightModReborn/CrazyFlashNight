@@ -104,11 +104,13 @@ class org.flashNight.arki.audio.test.MusicPlayerTest {
         trace("开始淡入效果测试");
         player.stop();
         var self:MusicPlayerTest = this;
+        var fade_player:MusicPlayer = player;
+        var selfUrl:String = testMusicUrl;
         setTimeout(function():Void {
-            trace("调用 fadeIn(30) 并播放音频");
-            player.play(testMusicUrl);
-            player.setVolume(100); // 恢复目标音量
-            player.fadeIn(30);
+            trace("调用 fadeIn(5) 并播放音频");
+            fade_player.play(selfUrl);
+            fade_player.setVolume(100); // 恢复目标音量
+            fade_player.fadeIn(5);
         }, 500);
     }
     
@@ -117,11 +119,12 @@ class org.flashNight.arki.audio.test.MusicPlayerTest {
      */
     private function testFadeOut():Void {
         trace("开始淡出效果测试");
-        player.play(testMusicUrl);
-        player.setVolume(100); // 恢复目标音量
+        var fade_player:MusicPlayer = player;
+        fade_player.play(testMusicUrl);
+        fade_player.setVolume(100); // 恢复目标音量
         setTimeout(function():Void {
-            trace("调用 fadeOut(30)");
-            player.fadeOut(30);
+            trace("调用 fadeOut(5)");
+            fade_player.fadeOut(5);
         }, 1000);
     }
     
