@@ -37,6 +37,11 @@
             <Background>flashswf/backgrounds/hthzt_1_BG.swf</Background>
             <PlayerX>100</PlayerX>
             <PlayerY>500</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Darkess</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">
