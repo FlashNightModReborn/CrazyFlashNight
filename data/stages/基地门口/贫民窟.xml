@@ -62,6 +62,11 @@
             <Background>flashswf/backgrounds/gk9_1_BG.swf</Background>
             <PlayerX>90</PlayerX>
             <PlayerY>577</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Moan</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -238,6 +243,11 @@
             <Background>flashswf/backgrounds/gk9_4_BG.swf</Background>
             <PlayerX>1016</PlayerX>
             <PlayerY>489</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>zapad</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">

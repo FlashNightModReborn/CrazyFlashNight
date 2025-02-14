@@ -57,6 +57,11 @@
             <Background>flashswf/backgrounds/gk10_1_BG.swf</Background>
             <PlayerX>84</PlayerX>
             <PlayerY>450</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>dyingsociety</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">

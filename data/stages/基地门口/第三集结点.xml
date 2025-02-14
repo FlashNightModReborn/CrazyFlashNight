@@ -72,6 +72,11 @@
             <Background>flashswf/backgrounds/gk8_1_BG.swf</Background>
             <PlayerX>90</PlayerX>
             <PlayerY>609</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Moan</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -141,6 +146,11 @@
                 <Pause>1</Pause>
                 <Load>1</Load>
             </Animation>
+            <BGM>
+                <Command>play</Command>
+                <Title>dyingsociety</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">

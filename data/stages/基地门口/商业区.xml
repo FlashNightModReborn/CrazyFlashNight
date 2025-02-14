@@ -57,6 +57,11 @@
             <Background>flashswf/backgrounds/gk7_1_BG.swf</Background>
             <PlayerX>122</PlayerX>
             <PlayerY>489</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>BloodRidge</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
