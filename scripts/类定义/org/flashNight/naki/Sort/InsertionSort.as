@@ -94,33 +94,36 @@ class org.flashNight.naki.Sort.InsertionSort {
      * @return 排序后的数组。
      */
     public static function sort(arr:Array, compareFunction:Function):Array {
-        var length:Number = arr.length;
-        if (length <= 1) {
-            return arr; // 数组无需排序
-        }
+        var a:Array = arr;
+        var length:Number = a.length;
+        if (length <= 1) return a;
+        
+        var compare:Function = compareFunction != undefined ? compareFunction : function(a, b):Number { return a - b; };
+        
+        var i:Number = 1; // 从第二个元素开始
+        var j:Number;   // 用于存储当前位置
+        var key:Object; // 用于存储当前元素
 
-        // 默认比较函数
-        var compare:Function;
-        if (compareFunction != undefined) {
-            compare = compareFunction; // 使用自定义比较函数
-        } else {
-            compare = function(a, b):Number {
-                return a - b;
-            };
-        }
-
-        var i:Number, j:Number, key;
-        for (i = 1; i < length; i++) {
-            key = arr[i]; // 当前元素
+        do {
+            key = arr[i];
             j = i - 1;
-
-            // 使用变量覆盖方式优化插入过程，并合并移动和递减操作
-            while (j >= 0 && compare(arr[j], key) > 0) arr[j + 1] = arr[j--]; // 移动元素并递减 j
-            arr[j + 1] = key; // 插入元素
-        }
-
-        return arr; // 返回排序后的数组
+            
+            do {
+                if (compare(a[j], key) > 0) {
+                    a[j + 1] = a[j--];
+                } else {
+                    break;
+                }
+            } while (j >= 0);
+            
+            a[j + 1] = key;
+        } while (++i < length);
+        
+        return a;
     }
+
+
+
 
 
     /**

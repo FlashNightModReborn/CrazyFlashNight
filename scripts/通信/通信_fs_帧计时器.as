@@ -893,129 +893,50 @@ _root.帧计时器.更新目标缓存 = function(自机:Object, 更新间隔:Num
     var SORT_KEY:String = "right";
     更新间隔 = isNaN(更新间隔) ? 1 : 更新间隔;
     
-    // 初始化缓存结构
     if (!this.目标缓存[自机状态键]) this.目标缓存[自机状态键] = {};
     var 状态缓存:Object = this.目标缓存[自机状态键];
     if (!状态缓存[请求类型]) 状态缓存[请求类型] = { 数据: [], nameIndex: {}, 最后更新帧数: 0 };
     
     var cache:Object = 状态缓存[请求类型];
-    var data:Array = cache.数据;
-    var nameIndex:Object = cache.nameIndex; // 现在存储结构为 { 名称: 数组索引 }
     var 当前帧数:Number = this.当前帧数;
     var isEnemyRequest:Boolean = (请求类型 == "敌人");
     var 游戏世界:Object = _root.gameworld;
     var 自机是敌人:Boolean = 自机.是否为敌人;
     
+    // 收集符合条件的存活目标
+    var tempList:Array = [];
     for (var 待选目标:String in 游戏世界) {
         var 目标:Object = 游戏世界[待选目标];
-        var 名称:String = 目标._name;
+        if (目标.hp <= 0) continue;
         
-        // 快速过滤死亡目标
-        if (目标.hp <= 0) {
-            if (nameIndex[名称] != undefined) {
-                var deadIndex:Number = nameIndex[名称];
-                data.splice(deadIndex, 1);
-                delete nameIndex[名称];
-                // 更新后续元素的索引
-                for (var i:Number = deadIndex; i < data.length; i++) {
-                    nameIndex[data[i]._name] = i;
-                }
-            }
-            continue;
-        }
-        
-        // 内联敌我判断
+        // 敌我判断
         var 目标敌我状态:Boolean = 目标.是否为敌人;
         var 需要处理:Boolean = isEnemyRequest ? 
             (自机是敌人 != 目标敌我状态) : 
             (自机是敌人 == 目标敌我状态);
-        
-        if (!需要处理) {
-            if (nameIndex[名称] != undefined) {
-                var removeIndex:Number = nameIndex[名称];
-                data.splice(removeIndex, 1);
-                delete nameIndex[名称];
-                for (var j:Number = removeIndex; j < data.length; j++) {
-                    nameIndex[data[j]._name] = j;
-                }
-            }
-            continue;
-        }
+        if (!需要处理) continue;
         
         // 更新碰撞体
         目标.aabbCollider.updateFromUnitArea(目标);
-        var newRight:Number = 目标.aabbCollider.right;
-        
-        if (nameIndex[名称] == undefined) {
-            // 二分查找插入位置
-            var low:Number = 0, high:Number = data.length;
-            while (low < high) {
-                var mid:Number = (low + high) >>> 1;
-                if (data[mid].aabbCollider.right < newRight) {
-                    low = mid + 1;
-                } else {
-                    high = mid;
-                }
-            }
-            data.splice(low, 0, 目标);
-            // 更新索引
-            nameIndex[名称] = low;
-            for (var k:Number = low + 1; k < data.length; k++) {
-                nameIndex[data[k]._name] = k;
-            }
-        } else {
-            var currentIndex:Number = nameIndex[名称];
-            var currentRight:Number = data[currentIndex].aabbCollider.right;
-            if (currentRight == newRight) continue;
-            
-            // 计算新位置
-            low = 0, high = data.length;
-            while (low < high) {
-                mid = (low + high) >>> 1;
-                if (data[mid].aabbCollider.right < newRight) {
-                    low = mid + 1;
-                } else {
-                    high = mid;
-                }
-            }
-            var newIndex:Number = (low >= currentIndex) ? low - 1 : low;
-            
-            // 直接交换元素位置（减少 splice 调用）
-            if (Math.abs(newIndex - currentIndex) <= 2) {
-                // 小范围移动：通过交换相邻元素调整位置
-                while (currentIndex < newIndex) {
-                    var nextIndex:Number = currentIndex + 1;
-                    var temp:Object = data[currentIndex];
-                    data[currentIndex] = data[nextIndex];
-                    data[nextIndex] = temp;
-                    nameIndex[data[currentIndex]._name] = currentIndex;
-                    nameIndex[data[nextIndex]._name] = nextIndex;
-                    currentIndex++;
-                }
-                while (currentIndex > newIndex) {
-                    var prevIndex:Number = currentIndex - 1;
-                    var temp:Object = data[currentIndex];
-                    data[currentIndex] = data[prevIndex];
-                    data[prevIndex] = temp;
-                    nameIndex[data[currentIndex]._name] = currentIndex;
-                    nameIndex[data[prevIndex]._name] = prevIndex;
-                    currentIndex--;
-                }
-            } else {
-                // 大范围移动：使用 splice
-                data.splice(currentIndex, 1);
-                data.splice(newIndex, 0, 目标);
-                // 更新索引
-                nameIndex[名称] = newIndex;
-                var start:Number = Math.min(currentIndex, newIndex);
-                var end:Number = Math.max(currentIndex, newIndex) + 1;
-                for (var m:Number = start; m < end; m++) {
-                    nameIndex[data[m]._name] = m;
-                }
-            }
-        }
+        tempList.push(目标);
     }
     
+    // 按right升序排序
+    InsertionSort.sort(tempList, function(a:Object, b:Object):Number {
+        return a.aabbCollider.right - b.aabbCollider.right;
+    });
+    
+    // 重建数据与索引
+    var newData:Array = [];
+    var newNameIndex:Object = {};
+    for (var i:Number = 0; i < tempList.length; i++) {
+        newData.push(tempList[i]);
+        newNameIndex[tempList[i]._name] = i;
+    }
+    
+    // 更新缓存
+    cache.数据 = newData;
+    cache.nameIndex = newNameIndex;
     cache.最后更新帧数 = 当前帧数;
 };
 

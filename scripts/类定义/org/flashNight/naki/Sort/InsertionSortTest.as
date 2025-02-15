@@ -1,5 +1,5 @@
 ﻿import org.flashNight.naki.Sort.*;
-
+import org.flashNight.naki.RandomNumberEngine.*;
 class org.flashNight.naki.Sort.InsertionSortTest {
 
     public static function runTests():Void {
