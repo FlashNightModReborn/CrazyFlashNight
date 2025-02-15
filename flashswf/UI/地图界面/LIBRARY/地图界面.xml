@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1737703672" lastUniqueIdentifier="154">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1739614789" lastUniqueIdentifier="154">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
-        <DOMLayer name="Script Layer" color="#D4FDCB">
+        <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -92,13 +92,27 @@ TweenManager.prototype.destroy = function() {
  */
 function Layer(name, components, npcs, selectableProperty) {
     this.name = name;
-    this.components = components; 
-    this.npcs = npcs; 
+    this.components = components;
+    this.npcs = npcs;
     this.selectableProperty = selectableProperty;
-    this.originalDepths = { components: [], npcs: [] };
+    this.originalDepths = { components: [], npcs: [], flashes: [] };
 }
 
+// 处理NPC，自动生成闪光提示引用
+Layer.prototype.processNpcs = function(npcs) {
+    var processed = [];
+    for (var i = 0; i < npcs.length; i++) {
+        var npc = npcs[i];
+        var flashHintName = npc.name.replace("头像", "_闪光提示");
+        npc.flashHint = _this[flashHintName]; // 绑定闪光提示
+        processed.push(npc);
+    }
+    return processed;
+};
+
+// 记录深度信息，包括闪光提示
 Layer.prototype.recordOriginalDepths = function() {
+    // 记录组件的深度
     for (var i = 0; i < this.components.length; i++) {
         var component = this.components[i];
         if (component.originalDepth == undefined) {
@@ -106,89 +120,131 @@ Layer.prototype.recordOriginalDepths = function() {
             this.originalDepths.components.push(component.originalDepth);
         }
     }
+
+    // 记录NPC和闪光提示的深度
     for (var j = 0; j < this.npcs.length; j++) {
-        var npcAvatar = this.npcs[j].avatar;
+        var npc = this.npcs[j];
+        
+        // NPC头像
+        var npcAvatar = npc.avatar;
         if (npcAvatar.originalDepth == undefined) {
             npcAvatar.originalDepth = npcAvatar.getDepth();
             this.originalDepths.npcs.push(npcAvatar.originalDepth);
         }
+        
+        // 闪光提示
+        var flashHint = npc.flashHint;
+        if (flashHint && flashHint.originalDepth == undefined) {
+            flashHint.originalDepth = flashHint.getDepth();
+            this.originalDepths.flashes.push(flashHint.originalDepth);
+        }
     }
 };
 
-/** Layer 初始化（半透明/可选状态 false） */
+// Layer 初始化：设置透明度，设置深度
 Layer.prototype.initialize = function(tweenManager) {
     LayerUtils.setTransparency(this.components, 50, 5, tweenManager);
 
+    // 初始化组件
     for (var i = 0; i < this.components.length; i++) {
         var component = this.components[i];
         component.gotoAndStop(1);
         component.swapDepths(component.originalDepth);
     }
     
+    // 初始化NPC
     var npcAvatars = [];
     for (var j = 0; j < this.npcs.length; j++) {
         var npcAvatar = this.npcs[j].avatar;
         npcAvatar.gotoAndStop(1);
         npcAvatars.push(npcAvatar);
         npcAvatar.swapDepths(npcAvatar.originalDepth);
+        
+        // 初始化闪光提示
+        var flashHint = this.npcs[j].flashHint;
+        if (flashHint) {
+            flashHint.gotoAndStop(1);
+            flashHint.swapDepths(flashHint.originalDepth);
+        }
     }
+    
+    // 设置透明度
     LayerUtils.setTransparency(npcAvatars, 80, 5, tweenManager);
     
     _this[this.selectableProperty] = false;
 };
 
-/** Layer 激活（全不透明/可选状态 true） */
+// 激活Layer时，调整深度，包含闪光提示
 Layer.prototype.activate = function(tweenManager, depthOffset, activeRoom) {
+    var adjustDepths = function(items, offset) {
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            if (item && item.swapDepths) {
+                item.swapDepths(item.originalDepth + offset);
+            }
+        }
+    };
+    
+    // 设置透明度
     LayerUtils.setTransparency(this.components, 100, 5, tweenManager);
     
+    // 处理NPC
     var npcAvatars = [];
     for (var j = 0; j < this.npcs.length; j++) {
-        var npcAvatar = this.npcs[j].avatar;
+        var npc = this.npcs[j];
+        
+        // 头像设置
+        var npcAvatar = npc.avatar;
         npcAvatar.gotoAndStop(2);
         npcAvatars.push(npcAvatar);
+        
+        // 调整头像和闪光提示的深度
+        adjustDepths([npcAvatar, npc.flashHint], depthOffset);
     }
+    
     LayerUtils.setTransparency(npcAvatars, 100, 5, tweenManager);
     
-    // 调整深度
-    for (var i = 0; i < this.components.length; i++) {
-        var component = this.components[i];
-        component.swapDepths(component.originalDepth + depthOffset);
-    }
-    for (var k = 0; k < this.npcs.length; k++) {
-        var npcAvatar2 = this.npcs[k].avatar;
-        npcAvatar2.swapDepths(npcAvatar2.originalDepth + depthOffset);
-    }
+    // 调整组件深度
+    adjustDepths(this.components, depthOffset);
     
     activeRoom.gotoAndStop(2);
-    
     _this[this.selectableProperty] = true;
 };
 
-/** Layer 取消激活（半透明/可选状态 false） */
+// 去激活时恢复所有元素的原始深度
 Layer.prototype.deactivate = function(tweenManager) {
+    var restoreDepths = function(items) {
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            if (item && item.swapDepths) {
+                item.swapDepths(item.originalDepth);
+            }
+        }
+    };
+    
+    // 设置透明度
     LayerUtils.setTransparency(this.components, 50, 5, tweenManager);
     
+    // 恢复NPC
     var npcAvatars = [];
     for (var j = 0; j < this.npcs.length; j++) {
-        var npcAvatar = this.npcs[j].avatar;
+        var npc = this.npcs[j];
+        var npcAvatar = npc.avatar;
         npcAvatar.gotoAndStop(1);
         npcAvatars.push(npcAvatar);
+        
+        // 恢复闪光提示的深度
+        restoreDepths([npcAvatar, npc.flashHint]);
     }
+    
     LayerUtils.setTransparency(npcAvatars, 80, 5, tweenManager);
     
-    for (var i = 0; i < this.components.length; i++) {
-        var component = this.components[i];
-        component.gotoAndStop(1);
-        component.swapDepths(component.originalDepth);
-    }
-    for (var k = 0; k < this.npcs.length; k++) {
-        var npcAvatar2 = this.npcs[k].avatar;
-        npcAvatar2.gotoAndStop(1);
-        npcAvatar2.swapDepths(npcAvatar2.originalDepth);
-    }
+    // 恢复组件深度
+    restoreDepths(this.components);
     
     _this[this.selectableProperty] = false;
 };
+
 
 function LayerManager(layers, tweenManager, parentClip) {
     this.layers = layers;
@@ -399,12 +455,14 @@ function setNpcFlashTips() {
     for (var i = 0; i < NPC闪光.length; i++) {
         if (_this[NPC闪光[i]]) {
             _this[NPC闪光[i]]._visible = false;
+			_this[NPC闪光[i]].swapDepths(_this[NPC闪光[i]].getDepth() + 99999);
         }
     }
     for (var npcName in NPC映射) {
         var specialKey = NPC映射[npcName].闪光提示;
         if (_this[specialKey]) {
             _this[specialKey]._visible = false;
+			_this[specialKey].swapDepths(_this[specialKey].getDepth() + 99999);
         }
     }
     if (_root.tasks_to_do && _root.taskFinished && _root.getTaskData) {
@@ -503,7 +561,7 @@ this.init = function() {
     this.onMouseMove = function() {
         this.layerManager.handleMouseMove();
     };
-
+	setNpcFlashTips();
     trace("[Main] init() -> Initialization complete.");
 };
 
@@ -618,13 +676,19 @@ this.onEnterFrame = function() {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="914.4" ty="115.65"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地屋顶</characters>
+                      <characters>基地屋</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>顶</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -637,13 +701,19 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="913.9" ty="158.55"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地一层</characters>
+                      <characters>基地一</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -656,13 +726,19 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="913.4" ty="202.2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下一层</characters>
+                      <characters>地下一</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -675,13 +751,19 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="913.4" ty="245.35"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下二层</characters>
+                      <characters>地下二</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -694,7 +776,7 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="66.2" height="31.6" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="66.2" height="24.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="926.9" ty="288.45"/>
                   </matrix>
@@ -713,7 +795,7 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="66.2" height="31.6" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="66.2" height="24.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="924.9" ty="333.25"/>
                   </matrix>
@@ -732,13 +814,19 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="916.4" ty="376.65"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>层级关系</characters>
+                      <characters>层级关</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>系</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1201,7 +1289,7 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="6" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="6" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2084,13 +2172,6 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point x="511.75" y="290.5"/>
                   </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter brightness="-10"/>
-                    <AdjustColorFilter contrast="-100"/>
-                  </filters>
-                  <color>
-                    <Color brightness="-0.49"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

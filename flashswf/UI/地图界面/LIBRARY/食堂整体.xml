@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="食堂整体" itemID="6748cdb3-0000018b" symbolType="graphic" lastModified="1735607222" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="食堂整体" currentFrame="1">
+    <DOMTimeline name="食堂整体">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC">
           <frames>
@@ -22,7 +22,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 12" centerPoint3DX="1610.6" centerPoint3DY="563.4" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="元件 12" selected="true" centerPoint3DX="1610.6" centerPoint3DY="563.4" exportAsBitmap="true">
                   <matrix>
                     <Matrix ty="-0.1"/>
                   </matrix>
@@ -34,7 +34,7 @@
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 12" selected="true" centerPoint3DX="1610.6" centerPoint3DY="563.4" exportAsBitmap="true">
+                <DOMSymbolInstance libraryItemName="元件 12" centerPoint3DX="1610.6" centerPoint3DY="563.4" exportAsBitmap="true">
                   <matrix>
                     <Matrix ty="-0.1"/>
                   </matrix>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="背景" itemID="674acfad-00001ecc" lastModified="1732956077">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="背景" itemID="674acfad-00001ecc" lastModified="1739613355">
   <timeline>
     <DOMTimeline name="背景">
       <layers>
@@ -6,14 +6,32 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMBitmapInstance selected="true" libraryItemName="官网壁纸/车库.jpg">
-                  <matrix>
-                    <Matrix a="0.499954223632813" d="0.504364013671875"/>
-                  </matrix>
+                <DOMSymbolInstance libraryItemName="图片容器" blendMode="multiply" centerPoint3DX="512" centerPoint3DY="288">
                   <transformationPoint>
-                    <Point x="-0.8" y="18.05"/>
+                    <Point x="512" y="288"/>
                   </transformationPoint>
-                </DOMBitmapInstance>
+                  <color>
+                    <Color/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#333333"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!20480 11519|-1 11519!-1 11519|-1 0!-1 0|20480 0!20480 0|20480 11519"/>
+                  </edges>
+                </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
