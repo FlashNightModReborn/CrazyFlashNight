@@ -267,7 +267,15 @@ class org.flashNight.arki.item.ItemUtil{
                 // 对于已有项，直接增加数量
                 if(背包.isEmpty(Number(key))){
                     // 如果该格子为空，添加新物品
-                    背包.add(Number(key), { name: req.name, value: req.value });
+                    var item = {name:req.name};
+                    var itemData = ItemUtil.getItemData(req.name);
+                    //检测是否为武器或防具，是则改写value的结构
+                    if(itemData.type == "武器" || itemData.type == "防具"){
+                        item.value = {level:req.value};
+                    }else{
+                        item.value = req.value;
+                    }
+                    背包.add(Number(key), item);
                 } else {
                     背包.addValue(key, req.value);
                 }
