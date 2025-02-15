@@ -50,6 +50,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/堕落城昏暗街道_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Schwarzflammen</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">
