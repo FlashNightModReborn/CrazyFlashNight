@@ -124,7 +124,7 @@ class org.flashNight.arki.audio.MusicPlayer implements IMusicPlayer {
         if (_isPreloaded && _preloadedUrl == fullPath && _preloadedSound != undefined) {
             trace("MusicPlayer.play: 直接播放已预加载音频: " + fullPath);
             _activeSound = _preloadedSound;
-            _activeSound.start(0, _loop ? -1 : 1);
+            _activeSound.start(0, _loop ? null : 1);
             _activeSound.setVolume(_volume);
             // 若非循环播放，设置播放完成后的回调
             if (!_loop) {
@@ -146,7 +146,7 @@ class org.flashNight.arki.audio.MusicPlayer implements IMusicPlayer {
             trace("MusicPlayer.play.onLoad: 回调触发，success = " + success + "，加载文件 = " + fullPath);
             if (success) {
                 self._activeSound = self._streamSound;
-                self._activeSound.start(0, self._loop ? -1 : 1);
+                self._activeSound.start(0, self._loop ? null : 1);
                 self._activeSound.setVolume(self._volume);
                 // 若非循环播放，设置播放完成后的回调
                 if (!self._loop) {
