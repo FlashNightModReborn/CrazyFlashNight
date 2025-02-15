@@ -1,5 +1,18 @@
 <?xml version='1.0' encoding='utf-8'?>
 <EnvironmentSettings>
+    <!-- 教学关卡-->
+    <Environment>
+        <BackgroundURL>jxgk_BG.swf</BackgroundURL>
+        <Alignment>false</Alignment>
+        <Xmin>50</Xmin>
+        <Xmax>1688</Xmax>
+        <Ymin>274</Ymin>
+        <Ymax>640</Ymax>
+        <Width>1688</Width>
+        <Height>640</Height>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+    </Environment>
     <!-- AVP-->
     <Environment>
         <BackgroundURL>avp1_1_BG.swf</BackgroundURL>

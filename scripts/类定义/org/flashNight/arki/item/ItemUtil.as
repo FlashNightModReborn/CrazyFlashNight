@@ -158,33 +158,19 @@ class org.flashNight.arki.item.ItemUtil{
             }
         }
 
-        // 对于剩余的可合并物品（在背包中尚无此类物品），用一个特殊的 key标记，让 ArrayInventory.add 识别为“新建合并项”
+        // 对于剩余的可合并物品（在背包中尚无此类物品），加入不可合并列表
         for (var key:String in mergables) {
-            var totalValue:Number = mergables[key];
-            // 查找背包中是否已有同名可堆叠物品
-            var existingIndex:Number = 背包.findByName(key);
-            if (existingIndex != -1) {
-                // 合并到现有格子
-                list.背包[existingIndex] = { name: key, value: totalValue };
-                delete mergables[key]; // 标记已处理
-            } else {
-                // 需要新格子，检查是否有空位
-                var requiredSlots:Number = 1; // 可堆叠物品只需 1 个新格子
-                var vacancies:Array = 背包.getVacancies(requiredSlots);
-                if (vacancies.length < requiredSlots) return null; // 空间不足
-                list.背包[vacancies[0]] = { name: key, value: totalValue };
-                delete mergables[key]; // 标记已处理
-            }
+            nonMergeableList.push({ name: key, value: mergables[key] });
         }
 
-        // 计算 mergeable items 的数量
-        var mergeableItemCount:Number = 0;
-        for (var key:String in mergables) {
-            mergeableItemCount++;
-        }
+        // 计算 mergeable items 的数量（不知道ds写这个干嘛）
+        // var mergeableItemCount:Number = 0;
+        // for (var key:String in mergables) {
+        //     mergeableItemCount++;
+        // }
 
         // 处理不可合并物品，要求必须有空位（依旧检查容量）
-        var vacancyList:Array = 背包.getVacancies(nonMergeableList.length + mergeableItemCount);
+        var vacancyList:Array = 背包.getVacancies(nonMergeableList.length);
         if(isNaN(vacancyList.length) || vacancyList.length < nonMergeableList.length) return null;
 
         // 处理非合并物品的插入
@@ -192,6 +178,7 @@ class org.flashNight.arki.item.ItemUtil{
             list.背包[vacancyList[i]] = nonMergeableList[i];
         }
 
+        // ServerManager.getInstance().sendServerMessage(ObjectUtil.toString(list));
         return list;
     }
 
