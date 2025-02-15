@@ -112,7 +112,7 @@ class org.flashNight.arki.item.ItemUtil{
      * 若背包空间不足，返回null
      */
     public static function require(itemArray:Array):Object {
-        var list = {金币:0, K点:0, 经验值:0, 技能点:0, 背包:{}, 材料:{}, 情报:{}};
+        var list = {金币:0, K点:0, 经验值:0, 技能点:0, 背包:{}, 药剂栏:{}, 材料:{}, 情报:{}};
         var mergables:Object = {}; // 用来累计可合并物品的需求：键为物品名，值为总需求数量
         var nonMergeableList:Array = []; // 不可合并物品（如武器、防具）—必须占用新格子
 
@@ -141,13 +141,28 @@ class org.flashNight.arki.item.ItemUtil{
                 nonMergeableList.push(itemArray[i]);
             }
         }
+
+        // 得到药剂栏对象
+        var 药剂栏:Object = _root.物品栏.药剂栏;
+        var drugindexArr:Array = 药剂栏.getIndexes();
+        var drugArr:Array = 药剂栏.getItemArray();
+        // 这里默认能装进药剂栏的物品均可合并，检查药剂栏中是否已存在相同物品
+        for(var i = 0; i < drugindexArr.length; i++){
+            var drugItem:Object = drugArr[i];
+            if(mergables[drugItem.name] != undefined && !isNaN(drugItem.value)){
+                // 记录：将原有合并堆增加新需求
+                list.药剂栏[drugindexArr[i]] = { name: drugItem.name, value: mergables[drugItem.name] };
+                // 标记该物品已处理
+                delete mergables[drugItem.name];
+            }
+        }
         
         // 得到背包对象
         var 背包:Object = _root.物品栏.背包;
         var indexArr:Array = 背包.getIndexes();
         var itemArr:Array = 背包.getItemArray();
 
-        // 对于可合并物品，先检查背包中是否已存在相同物品
+        // 对于剩余的可合并物品，先检查背包中是否已存在相同物品
         for(var i = 0; i < itemArr.length; i++){
             var bagItem:Object = itemArr[i];
             if(mergables[bagItem.name] != undefined && !isNaN(bagItem.value)){
@@ -218,6 +233,19 @@ class org.flashNight.arki.item.ItemUtil{
             var value = list.情报[name];
             if(情报.isEmpty(name)) 情报.add(name,value);
             else 情报.addValue(name,value);
+        }
+
+        // 药剂栏
+        var 药剂栏:Object = _root.物品栏.药剂栏; // DrugInventory 实例
+        for(var key:String in list.药剂栏){
+            var req:Object = list.药剂栏[key];
+            // 对于已有项，直接增加数量
+            if(药剂栏.isEmpty(Number(key))){
+                // 格子为空的情况原则上不会触发
+                药剂栏.add(Number(key), { name: req.name, value: req.value });
+            } else {
+                药剂栏.addValue(key, req.value);
+            }
         }
 
         // 处理背包部分
