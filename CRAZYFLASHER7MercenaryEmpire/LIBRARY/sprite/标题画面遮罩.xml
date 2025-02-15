@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/标题画面遮罩" itemID="678bbd6f-00000448" lastModified="1737211247">
   <timeline>
-    <DOMTimeline name="标题画面遮罩">
+    <DOMTimeline name="标题画面遮罩" currentFrame="30">
       <layers>
-        <DOMLayer name="Script Layer" color="#6287D4">
+        <DOMLayer name="Script Layer" color="#6287D4" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="30" keyMode="9728">
               <elements/>
@@ -16,7 +16,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#BDE03A" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#BDE03A">
           <frames>
             <DOMFrame index="0" duration="29" tweenType="shape" keyMode="17922">
               <MorphShape>

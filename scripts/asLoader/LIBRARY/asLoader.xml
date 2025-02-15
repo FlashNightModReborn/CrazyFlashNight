@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1738908656">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1739615377">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="16">
+    <DOMTimeline name="asLoader" currentFrame="98">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -66,13 +66,18 @@
                 <script><![CDATA[//所有_root字段指向主文件的_root
 this._lockroot = false;
 _root.stop();
-]]></script>
+
+function 打印加载内容(str){
+	_root.加载内容文本.text = str;
+}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[#include "../引擎/引擎_aka_作弊码.as"
+                <script><![CDATA[打印加载内容("加载游戏代码……");
+
+#include "../引擎/引擎_aka_作弊码.as"
 #include "../引擎/引擎_fs_eval解析器.as"
 #include "../引擎/引擎_fs_常用工具函数.as"
 #include "../引擎/引擎_fs_调试模式.as"
@@ -83,13 +88,16 @@ _root.stop();
 #include "../引擎/引擎_lsy_技能系统.as"
 #include "../引擎/引擎_lsy_战宠系统.as"
 #include "../引擎/引擎_鸡蛋_lsy_物品系统.as"
-#include "../引擎/引擎_lsy_声音系统.as"]]></script>
+#include "../引擎/引擎_lsy_声音系统.as"
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[#include "../通信/通信_fs_lsy_XML数据解析.as"
+                <script><![CDATA[打印加载内容("加载通信代码……");
+
+#include "../通信/通信_fs_lsy_XML数据解析.as"
 #include "../通信/通信_fs_本地服务器.as"
 #include "../通信/通信_fs_帧计时器.as"
 #include "../通信/通信_lsy_存档迁移.as"
@@ -104,7 +112,9 @@ _root.stop();
             </DOMFrame>
             <DOMFrame index="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[#include "../逻辑系统分区/系统文件/逻辑系统分区_初始化.as"]]></script>
+                <script><![CDATA[打印加载内容("加载任务数据……");
+
+#include "../逻辑系统分区/系统文件/逻辑系统分区_初始化.as"]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -158,13 +168,17 @@ _root.stop();
             </DOMFrame>
             <DOMFrame index="38" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[#include "../逻辑系统分区/系统文件/逻辑系统分区_最终化3.as"]]></script>
+                <script><![CDATA[打印加载内容("加载逻辑代码……");
+
+#include "../逻辑系统分区/系统文件/逻辑系统分区_最终化3.as"]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="42" duration="12" name="单位函数" labelType="comment" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[#include "../逻辑/单位函数/单位函数_aka_lsy_使用药剂.as"
+                <script><![CDATA[打印加载内容("加载逻辑代码……");
+
+#include "../逻辑/单位函数/单位函数_aka_lsy_使用药剂.as"
 #include "../逻辑/单位函数/单位函数_aka_升空函数.as"
 #include "../逻辑/单位函数/单位函数_fs_ai与特效通用函数.as"
 #include "../逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as"
@@ -187,18 +201,24 @@ _root.stop();
             </DOMFrame>
             <DOMFrame index="54" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.加载并配置战队信息("data/hybrid_mercenaries/teams.xml");
-]]></script>
+                <script><![CDATA[打印加载内容("加载杂项数据……");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="55" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.加载随机名称库("data/hybrid_mercenaries/name.xml");]]></script>
+                <script><![CDATA[_root.加载并配置战队信息("data/hybrid_mercenaries/teams.xml");
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="56" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.加载随机名称库("data/hybrid_mercenaries/name.xml");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.加载并配置佣兵随机对话("data/hybrid_mercenaries/dialogues.xml");
 _root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues.xml");
@@ -206,13 +226,10 @@ _root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="57" keyMode="9728">
+            <DOMFrame index="58" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.加载并配置NPC对话("data/dialogues/npc_dialogues.xml");]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="58" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="59" keyMode="9728">
@@ -259,8 +276,13 @@ _root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues
               <elements/>
             </DOMFrame>
             <DOMFrame index="67" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.ItemDataLoader;
+
+打印加载内容("加载物品数据……");
 
 // 获取 ItemDataLoader 实例
 var ItemDataLoader:ItemDataLoader = ItemDataLoader.getInstance();
@@ -303,7 +325,7 @@ ItemDataLoader.loadItemData(
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="68" keyMode="9728">
+            <DOMFrame index="69" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader;
 //import org.flashNight.gesh.object.ObjectUtil;
@@ -326,7 +348,7 @@ enemyPropertiesLoader.loadEnemyProperties(
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="69" keyMode="9728">
+            <DOMFrame index="70" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.MaterialDictionaryLoader;
 
@@ -345,7 +367,7 @@ var 材料大全loader:MaterialDictionaryLoader = MaterialDictionaryLoader.getIn
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="70" keyMode="9728">
+            <DOMFrame index="71" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.InformationDictionaryLoader;
 
@@ -374,7 +396,7 @@ var 情报信息loader:InformationDictionaryLoader = InformationDictionaryLoader
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="71" keyMode="9728">
+            <DOMFrame index="72" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.StageInfoLoader;
 import org.flashNight.gesh.object.ObjectUtil;
@@ -396,7 +418,7 @@ StageInfoLoader.loadStageInfo(
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="72" keyMode="9728">
+            <DOMFrame index="73" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.StageEnvironmentLoader;
 var stage_env_loader:StageEnvironmentLoader = StageEnvironmentLoader.getInstance();
@@ -414,7 +436,7 @@ stage_env_loader.loadStageEnvironment(
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="73" duration="24" keyMode="9728">
+            <DOMFrame index="74" duration="23" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.SceneEnvironmentLoader;
 var scene_env_loader:SceneEnvironmentLoader = SceneEnvironmentLoader.getInstance();

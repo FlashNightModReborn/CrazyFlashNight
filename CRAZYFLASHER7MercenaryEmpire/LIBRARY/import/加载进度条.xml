@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/加载进度条" itemID="659d4e6e-00003d5a" symbolType="graphic" lastModified="1714056180" lastUniqueIdentifier="91">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/加载进度条" itemID="659d4e6e-00003d5a" symbolType="graphic" lastModified="1739615413" lastUniqueIdentifier="91">
   <timeline>
-    <DOMTimeline name="加载进度条" currentFrame="32">
+    <DOMTimeline name="加载进度条" currentFrame="13">
       <layers>
         <DOMLayer name="图层 6" color="#808080">
           <frames>
@@ -116,39 +116,7 @@
               </elements>
             </DOMFrame>
             <DOMFrame index="12" keyMode="9728">
-              <elements>
-                <DOMStaticText fontRenderingMode="device" width="187.75" height="15.55" includeOutlines="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="590.15" ty="318.6"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>读取物品数据（</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>300K</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>左右）</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>……</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-              </elements>
+              <elements/>
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <elements>
@@ -158,7 +126,7 @@
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>读取物品数据成功！</characters>
+                      <characters>读取外部数据成功！</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>

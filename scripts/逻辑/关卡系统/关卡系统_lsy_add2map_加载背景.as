@@ -115,6 +115,10 @@ _root.贴背景图 = function(){
 _root.配置场景环境信息 = function(){
 	var 游戏世界 = _root.gameworld;
 	var 环境信息 = _root.天气系统.场景环境设置[_root.关卡标志];
+	//显示场景名称
+	var 场景名称 = _root.关卡标志;
+	场景名称 = 场景名称.split("地图-").join("");
+	_root.场景名称文本.text = 场景名称;
 	if(环境信息){
 		//配置地图尺寸
 		_root.Xmax = 环境信息.Xmax;
