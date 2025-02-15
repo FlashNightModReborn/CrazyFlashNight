@@ -19,6 +19,10 @@ function renderStageInfo() {
   const { StageInfo } = window.editorData;
   container.innerHTML = `
     <h2>关卡基本信息</h2>
+        <div class="help-wrapper">
+                    <button class="help-btn">?</button>
+                    <div class="help-tooltip">待开发</div>
+                </div>
     <div class="input-group">
       <label>关卡名称: 
         <input id="StageInfo_Name" value="${StageInfo.Name}" />
@@ -35,6 +39,7 @@ function renderStageInfo() {
       </label>
     </div>
 
+
     <!-- 固定参数: 仅做隐藏展示 -->
     <input type="hidden" id="StageInfo_Type" value="${StageInfo.Type}">
     <input type="hidden" id="StageInfo_FadeTransitionFrame" value="${StageInfo.FadeTransitionFrame}">
@@ -44,40 +49,53 @@ function renderStageInfo() {
 // -----------------------------
 // 2) 渲染 Rewards
 // -----------------------------
-function renderRewards() {
-  const container = document.getElementById('Rewards');
-  const { Rewards } = window.editorData;
-  
-  container.innerHTML = Rewards.map((reward, index) => `
-    <div class="array-item">
-      <label>物品名：
-        <input 
-          value="${reward.Name}" 
-          placeholder="名称" 
-          data-reward-index="${index}"
-          data-reward-field="Name"
-        >
-      </label>
-      <label>生成概率：1/
-        <input 
-          type="number" 
-          value="${reward.AcquisitionProbability}" 
-          data-reward-index="${index}"
-          data-reward-field="AcquisitionProbability"
-        >
-      </label>
-      <label>最大数量：
-        <input 
-          type="number" 
-          value="${reward.QuantityMax}" 
-          data-reward-index="${index}"
-          data-reward-field="QuantityMax"
-        >
-      </label>
-      <button data-reward-index="${index}" data-action="remove-reward">-</button>
-    </div>
-  `).join('');
-}
+
+        // 渲染奖励列表
+        function renderRewards() {
+            const container = document.getElementById('Rewards');
+            container.innerHTML = editorData.Rewards.map((reward, index) => {
+                const probValid = !isNaN(reward.AcquisitionProbability) && reward.AcquisitionProbability > 0;
+                const qtyValid = !isNaN(reward.QuantityMax) && reward.QuantityMax > 0;
+
+                return `<div class="array-item">
+                    <label>物品名：
+                        <input value="${reward.Name}" placeholder="名称"
+                            oninput="editorData.Rewards[${index}].Name = this.value">
+                    </label>
+                    <label class="validatable-field">
+                        生成概率：1/
+                        <input type="text" value="${reward.AcquisitionProbability}"
+                            oninput="validateNumberInput(this, ${index}, 'AcquisitionProbability')"
+                            class="${probValid ? '' : 'invalid'}">
+                        <span class="error-msg">${probValid ? '' : '概率填写错误'}</span>
+                    </label>
+                    <label class="validatable-field">
+                        最大数量：
+                        <input type="text" value="${reward.QuantityMax}"
+                            oninput="validateNumberInput(this, ${index}, 'QuantityMax')"
+                            class="${qtyValid ? '' : 'invalid'}">
+                        <span class="error-msg">${qtyValid ? '' : '数量填写错误'}</span>
+                    </label>
+                    <button onclick="editorData.Rewards.splice(${index},1); renderRewards()">-</button>
+                </div>`;
+            }).join('');
+        }
+// 新增验证函数
+        function validateNumberInput(input, index, field) {
+            const value = input.value.trim();
+            const numericValue = parseInt(value);
+            const isValid = !isNaN(numericValue) && numericValue > 0;
+
+            // 更新数据模型
+            editorData.Rewards[index][field] = isValid ? numericValue : value;
+
+            // 实时更新样式
+            input.classList.toggle('invalid', !isValid);
+            input.nextElementSibling.style.display = isValid ? 'none' : 'inline';
+
+            // 强制重新渲染以确保状态同步
+            renderRewards();
+        }
 
 // -----------------------------
 // 3) 渲染 SubStages（子关卡）

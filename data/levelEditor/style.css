@@ -13,6 +13,7 @@ body {
     margin-bottom: 20px;
     transition: transform 0.2s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
   }
   .section:hover {
     transform: translateY(-2px);
@@ -108,3 +109,68 @@ body {
     font-size: 0.9em;
     margin-left: 8px;
   }
+
+/* 帮助按钮容器 */
+        .help-wrapper {
+            position: absolute;
+            right: 15px;
+            top: 20px;
+        }
+
+        /* 问号按钮新样式 */
+        .help-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #666;
+            color: white;
+            border: none;
+            cursor: help;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+            .help-btn:hover {
+                background: #444;
+            }
+        /* 提示框样式 */
+        .help-tooltip {
+            visibility: hidden;
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            background: rgba(96, 96, 96, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none; /* 防止提示框干扰悬停状态 */
+        }
+
+
+        /* 悬停显示提示 */
+        .help-wrapper:hover .help-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+
+        /* 新增验证相关样式 */
+        .validatable-field {
+            position: relative;
+        }
+
+        .invalid {
+            border: 2px solid #ff4444 !important;
+        }
+
+        .error-msg {
+            color: #ff4444;
+            font-size: 12px;
+            position: absolute;
+            bottom: -18px;
+            left: 0;
+            white-space: nowrap;
+        }
