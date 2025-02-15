@@ -501,10 +501,7 @@ _root.无限过图模式过关 = function(){
 	}
 
 	if (_root.无限过图模式关卡计数 >= _root.无限过图总关卡.length - 1){
-		_root.关卡结束界面.mytext = "关卡结束！";
-		_root.关卡结束界面._visible = 1;
-		_root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
-		_root.FinishStage(_root.当前关卡名,_root.当前关卡难度);
+		_root.关卡结束();
 		//设置返回地图帧值
 		if(基本配置.EndFrame) _root.关卡地图帧值 = 基本配置.EndFrame;
 	}else{

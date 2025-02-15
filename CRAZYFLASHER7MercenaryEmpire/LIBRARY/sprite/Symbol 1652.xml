@@ -23,7 +23,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#FAC10F" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#FAC10F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -75,14 +75,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#DE0B9C">
+        <DOMLayer name="Sound Layer 0" color="#DE0B9C" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="2" keyMode="9728" soundEffect="custom" soundName="sound/sound18.wav">
+            <DOMFrame index="1" duration="2" keyMode="9728" soundName="sound/sound18.wav">
               <SoundEnvelope>
-                <SoundEnvelopePoint level0="32769" level1="32769"/>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
               </SoundEnvelope>
               <elements/>
             </DOMFrame>
@@ -93,9 +93,9 @@
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="9728" soundEffect="custom" soundName="sound/sound19.wav">
+            <DOMFrame index="2" keyMode="9728" soundName="sound/sound19.wav">
               <SoundEnvelope>
-                <SoundEnvelopePoint level0="32769" level1="32769"/>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
               </SoundEnvelope>
               <elements/>
             </DOMFrame>

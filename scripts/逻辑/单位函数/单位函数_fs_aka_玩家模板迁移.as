@@ -2227,9 +2227,7 @@ _root.主角函数.死亡检测 = function()
 		this.man.stop();
 		if (已加经验值 != true) 击倒呐喊();
 		if (this._name === _root.控制目标){
-			_root.复活币系统界面.是否复活初始化();
-			_root.关卡结束界面.mytext = "你受了重伤……";
-			_root.关卡结束界面._visible = true;
+			_root.关卡结束界面.询问复活();
 		}
 		if (用户ID != undefined && 已删除 != true){
 			var 是佣兵 = false;

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2055" itemID="6597607e-00000a89" lastModified="1737228135">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2055" itemID="6597607e-00000a89" lastModified="1739633802">
   <timeline>
-    <DOMTimeline name="Symbol 2055" currentFrame="13">
+    <DOMTimeline name="Symbol 2055" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#ADC239">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#B4A4D3">
+        <DOMLayer name="Script Layer" color="#B4A4D3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <Actionscript>
@@ -116,14 +116,14 @@ _root.全部翻译(_root.关卡结束界面);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#67819F" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#67819F">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="10" duration="50" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2039" selected="true" centerPoint3DX="123.45" centerPoint3DY="168.4">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 2039" centerPoint3DX="123.45" centerPoint3DY="168.4">
                   <matrix>
                     <Matrix tx="84.45" ty="155.9"/>
                   </matrix>

@@ -197,16 +197,18 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 
 
 //场景转换相关
+_root.关卡结束 = function(){
+	_root.关卡结束界面.关卡结束();
+	_root.画面效果("过关提示动画",Stage.width / 2,Stage.height / 2,100);
+	_root.FinishStage(_root.当前关卡名,_root.当前关卡难度);
+}
 
 _root.返回基地 = function(){
-	// if (_root.当前关卡名 == "突围")
-	// {
-	// 	_root.宠物信息 = _root.真实宠物信息;
-	// }
 	_root.新出生 = true;
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
-	if (_root.关卡结束界面._visible && _root.关卡结束界面.mytext == _root.获得翻译("关卡结束！")){
+	if (_root.关卡结束界面.关卡是否结束){
+		_root.关卡结束界面.关卡是否结束 = false;
 		_root.关卡结束界面._visible = false;
 		_root.奖励物品界面.标题 = _root.获得翻译("通关奖励");
 		_root.奖励物品界面.生成关卡随机奖励品();
