@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1739434415" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1739609449" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="Symbol 1727">
+    <DOMTimeline name="Symbol 1727" currentFrame="9">
       <layers>
         <DOMLayer name="Labels Layer" color="#C688B8">
           <frames>
@@ -21,7 +21,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#4B7DFD" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#4B7DFD">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1457,7 +1457,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1720" centerPoint3DX="33.4" centerPoint3DY="171.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="171.7">
                   <matrix>
                     <Matrix tx="20.95" ty="159.25"/>
                   </matrix>
@@ -1570,7 +1570,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1720" centerPoint3DX="33.4" centerPoint3DY="207.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="207.7">
                   <matrix>
                     <Matrix tx="20.95" ty="195.25"/>
                   </matrix>
@@ -1589,7 +1589,7 @@ onClipEvent(mouseUp){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1720" centerPoint3DX="33.4" centerPoint3DY="252.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="252.7">
                   <matrix>
                     <Matrix tx="20.95" ty="240.25"/>
                   </matrix>
@@ -1669,7 +1669,7 @@ onClipEvent(mouseUp){
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1720" centerPoint3DX="33.15" centerPoint3DY="283.55">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.15" centerPoint3DY="283.55">
                   <matrix>
                     <Matrix tx="20.7" ty="271.1"/>
                   </matrix>
@@ -1707,7 +1707,7 @@ onClipEvent(mouseUp){
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1720" centerPoint3DX="33.15" centerPoint3DY="316.8">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.15" centerPoint3DY="316.8">
                   <matrix>
                     <Matrix tx="20.7" ty="304.35"/>
                   </matrix>
@@ -1870,7 +1870,7 @@ on(release, releaseOutside){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1720" centerPoint3DX="134.4" centerPoint3DY="133.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="134.4" centerPoint3DY="133.7">
                   <matrix>
                     <Matrix tx="121.95" ty="121.25"/>
                   </matrix>
@@ -1989,7 +1989,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1720" centerPoint3DX="33.4" centerPoint3DY="133.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="33.4" centerPoint3DY="133.7">
                   <matrix>
                     <Matrix tx="20.95" ty="121.25"/>
                   </matrix>
@@ -2291,7 +2291,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1720" centerPoint3DX="131.4" centerPoint3DY="80.95">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="131.4" centerPoint3DY="80.95">
                   <matrix>
                     <Matrix tx="118.95" ty="68.5"/>
                   </matrix>
@@ -2600,7 +2600,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 51" color="#05E4A8">
+        <DOMLayer name="Layer 51" color="#05E4A8" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2680,7 +2680,7 @@ on (rollOut) {
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1720" centerPoint3DX="37.4" centerPoint3DY="81.7">
+                <DOMSymbolInstance libraryItemName="sprite/复选框" centerPoint3DX="37.4" centerPoint3DY="81.7">
                   <matrix>
                     <Matrix tx="24.95" ty="69.25"/>
                   </matrix>

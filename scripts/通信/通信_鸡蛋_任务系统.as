@@ -6,10 +6,12 @@
 	_root.task_chains_progress = _loc2_.data.task_chains_progress;
 	_root.task_history = _loc2_.data.task_history;
 	UpdateTaskProgress();
-	//检查并删除undefined任务
-	for (var index in tasks_to_do){
-		if(_root.getTaskData(tasks_to_do[index].id).title == undefined){
-			_root.DeleteTask(index);
+	//检查任务数据完整性，若完整则检查并删除undefined任务
+	if(_root.tasks != null){
+		for (var index in tasks_to_do){
+			if(_root.getTaskData(tasks_to_do[index].id).title == undefined){
+				_root.DeleteTask(index);
+			}
 		}
 	}
 }
@@ -333,6 +335,16 @@ _root.打印任务进度 = function(页数){
 			_root.任务栏界面.mc事件日志.mytext.text = _root.任务栏界面.mc事件日志.mytext.text + "\r" + _root.getTaskText(_root.getTaskData(task_history[_loc3_]).title) + _root.获得翻译(" 完成");
 			_loc3_ += 1;
 		}
+	}
+}
+
+_root.检测并添加初始任务 = function(){
+	//如果同时满足 任务栏全空 初始任务未完成 主线进度为0，则获取初始任务
+	var 是否获取初始任务 = _root.tasks_to_do.length == 0 && _root.tasks_finished[0] <= 0 && _root.主线任务进度 <= 0;
+	if(是否获取初始任务){
+		_root.新手引导界面._visible = 1;
+		_root.新手引导界面.gotoAndStop("任务面板");
+		_root.GetTask(_root.task_chains.主线[String(_root.task_in_chains_by_sequence.主线[0])]);
 	}
 }
 

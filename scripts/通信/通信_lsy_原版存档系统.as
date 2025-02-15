@@ -440,7 +440,6 @@ _root.是否存过盘 = function(){
 }
 
 _root.新建角色 = function(){
-    _root.最上层发布文字提示(_root.获得翻译("创建新人物，请稍候！"));
     _root.mydata数据组包();
     _root.金钱 = 0;
     _root.虚拟币 = 0;
@@ -451,7 +450,9 @@ _root.新建角色 = function(){
     _root.宠物信息.push([]);
     _root.宠物信息.push([]);
     _root.宠物领养限制 = 5;
-    _root.gotoAndPlay("开场片头动画");
+    _root.soundEffectManager.stopBGM();
+    // _root.gotoAndPlay("开场片头动画");
+    _root.淡出动画.淡出跳转帧("教学关卡");
     return true;
 }
 

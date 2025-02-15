@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1720" itemID="6597607e-000009dd" lastModified="1714361645">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/片头动画复选框" itemID="67b056ea-00000b0c" lastModified="1739609968">
   <timeline>
-    <DOMTimeline name="Symbol 1720">
+    <DOMTimeline name="片头动画复选框">
       <layers>
         <DOMLayer name="Script Layer" color="#8F02EF" current="true" isSelected="true">
           <frames>
@@ -8,19 +8,17 @@
               <Actionscript>
                 <script><![CDATA[function 刷新()
 {
-   var 参数值 = _root.eval解析器.解析属性值(_root ,控制参数);
-   if(参数值 == 打钩值)
-   {
-      gotoAndStop(2);
-   }
-   else if(参数值 == 无钩值)
-   {
-      gotoAndStop(1);
-   }
+	if (_root.加载片头动画)
+	{
+		gotoAndStop(2);
+	}
+	else
+	{
+		gotoAndStop(1);
+	}
 }
 刷新();
-stop();
-]]></script>
+stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -38,20 +36,10 @@ stop();
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(press){
-	var 参数 = _root.eval解析器.解析属性值(_root ,控制参数);
-   if(参数 == 打钩值)
-   {
-	  _root.eval解析器.设置属性值(_root,控制参数,无钩值);
-      刷新();
-   }
-   else if(参数 == 无钩值)
-   {
-	  _root.eval解析器.设置属性值(_root,控制参数,打钩值);
-      刷新();
-   }
-}
-]]></script>
+                    <script><![CDATA[on (press) {
+	_root.加载片头动画 = !_root.加载片头动画;
+	刷新();
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -125,6 +113,25 @@ stop();
 !-130 130|-130 -130!-130 -130|130 -130"/>
                   </edges>
                 </DOMShape>
+                <DOMStaticText fontRenderingMode="standard" width="82" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="21.5" ty="-10.05"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>加载片头动画</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
               </elements>
             </DOMFrame>
           </frames>

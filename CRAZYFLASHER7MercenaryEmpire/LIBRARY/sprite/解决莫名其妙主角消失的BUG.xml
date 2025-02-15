@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/解决莫名其妙主角消失的BUG" itemID="6787749b-0000206a" lastModified="1736932467">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/解决莫名其妙主角消失的BUG" itemID="6787749b-0000206a" lastModified="1739610507">
   <timeline>
-    <DOMTimeline name="解决莫名其妙主角消失的BUG" currentFrame="1">
+    <DOMTimeline name="解决莫名其妙主角消失的BUG">
       <layers>
         <DOMLayer name="Script Layer" color="#C441CD" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="44" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[stop();//暂时弃用]]></script>
+                <script><![CDATA[stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -21,8 +21,9 @@
             </DOMFrame>
             <DOMFrame index="58" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if (_root.gameworld != null && _root.gameworld[_root.控制目标]._x == undefined)
+                <script><![CDATA[if (_root.gameworld != null && _root.gameworld[_root.控制目标]._x == null)
 {
+	_root.发布消息("检测到主角加载异常，重新加载主角")
 	play();
 }
 else

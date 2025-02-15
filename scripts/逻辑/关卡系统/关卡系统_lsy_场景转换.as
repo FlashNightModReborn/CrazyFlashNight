@@ -214,11 +214,10 @@ _root.返回基地 = function(){
 	}
 	_root.场景进入位置名 = "出生地";
 	_root.关卡类型 = "";
-	if (_root.gameworld[_root.控制目标].hp > 0){
-		_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
-		// _root.联机2015发送传言("通关");
-	}else{
+	if (_root.gameworld[_root.控制目标].hp == 0){
 		_root.淡出动画.淡出跳转帧("医务室");
+	}else{
+		_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);
 	}
 	//清空限制词条
 	_root.限制系统.clearEntries();
@@ -325,6 +324,4 @@ _root.跳转地图 = function(跳转帧){
 _root.加载共享场景 = function(加载场景名){
 	var 游戏世界 = _root.attachMovie(加载场景名,"gameworld",_root.getNextHighestDepth());
 	游戏世界.swapDepths(_root.gameworld层级定位器);
-	// _root.淡出动画.gotoAndPlay("加载完毕");
-	// _root.贴背景图();
 }
