@@ -12,4 +12,5 @@ interface org.flashNight.arki.audio.IMusicPlayer {
     function setLoop(loop:Boolean):Void;    // 设置是否循环播放
     function mute():Void;                   // 静音处理（可内部做渐变）
     function unmute():Void;                 // 取消静音处理
+    function preLoad(clip:String):Void;     // 预载声音
 }

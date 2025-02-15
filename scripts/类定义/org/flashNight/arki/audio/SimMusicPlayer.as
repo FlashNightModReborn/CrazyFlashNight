@@ -60,4 +60,9 @@ class org.flashNight.arki.audio.SimMusicPlayer implements IMusicPlayer {
         isMuted = false;
         trace("[SimMusicPlayer] unmute");
     }
+
+    public function preLoad(clip:String):Void {
+        isMuted = false;
+        trace("[SimMusicPlayer] preLoad " + clip);
+    }
 }

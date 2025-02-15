@@ -141,7 +141,7 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                 playingState.loop = currentLoop;
                 
                 trace("[MusicEngine] Processing 'switch' command: switching to clip=" + currentClip + ", priority=" + cmdPriority);
-                // 先淡出，再由外部/后续命令重新 play
+                // 先淡出，再由外部/后续命令重新 play (x) 目前状态机逻辑改为淡出后自动回到淡入
                 this.ChangeState("fadeout");
                 break;
             

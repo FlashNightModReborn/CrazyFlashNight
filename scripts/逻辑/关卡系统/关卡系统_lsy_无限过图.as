@@ -225,7 +225,7 @@ _root.开启生存模式 = function(模式) {
 	//播放场景bgm
 	if(基本配置.BGM){
 		if(基本配置.BGM.Command == "play"){
-			_root.soundEffectManager.playBGM(基本配置.BGM.Title, 基本配置.BGM.Loop, 基本配置.BGM.Volume);
+			_root.soundEffectManager.playBGM(基本配置.BGM.Title, 基本配置.BGM.Loop, null);
 		}else if (基本配置.BGM.Command == "stop"){
 			_root.soundEffectManager.stopBGM();
 		}

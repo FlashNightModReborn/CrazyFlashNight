@@ -135,6 +135,10 @@ class org.flashNight.arki.audio.MusicPlayer implements IMusicPlayer {
             }
             return;
         }
+        if(!_isPreloaded && _preloadedUrl == fullPath && _preloadedSound != undefined){
+            _root.发布消息("背景音乐尚未完成预载！");
+            return;
+        }
         
         // 否则，使用流式加载方式播放
         if (_streamSound == undefined) {
@@ -146,14 +150,17 @@ class org.flashNight.arki.audio.MusicPlayer implements IMusicPlayer {
             trace("MusicPlayer.play.onLoad: 回调触发，success = " + success + "，加载文件 = " + fullPath);
             if (success) {
                 self._activeSound = self._streamSound;
-                self._activeSound.start(0, self._loop ? null : 1);
+                self._activeSound.start(0, null);
                 self._activeSound.setVolume(self._volume);
-                // 若非循环播放，设置播放完成后的回调
-                if (!self._loop) {
-                    self._activeSound.onSoundComplete = function():Void {
+                // 根据是否循环播放设置播放完成后的回调
+                self._activeSound.onSoundComplete = function():Void {
+                    if (self._loop) {
+                        trace("MusicPlayer._streamSound.onSoundComplete: 再次流式加载: " + fullPath);
+                        self._activeSound.loadSound(fullPath, true); // 再次流式加载
+                    }else{
                         self.resetSound(); // 自动重置音频
-                    };
-                }
+                    }
+                };
             } else {
                 trace("MusicPlayer.play.onLoad: 流式加载失败: " + fullPath);
             }
