@@ -25,9 +25,9 @@ class org.flashNight.arki.audio.states.MusicPlayingState extends BaseMusicState 
         trace("MusicPlayingState: Entering Playing State with clip: " + clip + " (priority:" + priority + ")");
         playFrames = 0;
         if (musicPlayer != null) {
-            musicPlayer.play(clip);
             musicPlayer.setVolume(targetVolume);
             musicPlayer.setLoop(loop);
+            musicPlayer.play(clip);
         }
     }
     
