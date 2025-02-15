@@ -15,6 +15,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/gk12_5_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>PEAK LEVEL</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">
