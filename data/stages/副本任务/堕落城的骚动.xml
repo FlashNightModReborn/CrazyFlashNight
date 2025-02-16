@@ -142,6 +142,11 @@
             <Background>flashswf/backgrounds/gk15_5_BG.swf</Background>
             <PlayerX>400</PlayerX>
             <PlayerY>500</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Fearless Highway</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">

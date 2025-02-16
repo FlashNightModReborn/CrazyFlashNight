@@ -65,6 +65,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/gk12_5_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>By Peace Or By Power</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
