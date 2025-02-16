@@ -37,6 +37,54 @@ class org.flashNight.gesh.string.EvalParserTest {
         };
     }
 
+    private static var complexTestObj:Object;
+
+    private static function initializeComplexTestObj():Void {
+        // 创建一个空对象作为 complexTestObj
+        complexTestObj = new Object();
+
+        // 初始化 users 数组
+        complexTestObj.users = new Array();
+
+        // 创建第一个用户
+        var user1: Object = new Object();
+        user1.name = "Alice";
+        user1["full.name"] = "Alice Smith";
+
+        // 创建 contacts 对象
+        var contacts1: Object = new Object();
+        contacts1.emails = new Array("alice@work.com", "alice@home.com");
+
+        // 定义 getPrimaryEmail 方法
+        contacts1.getPrimaryEmail = function():String {
+            return this.emails[0];
+        };
+
+        user1.contacts = contacts1;
+        complexTestObj.users.push(user1);
+
+        // 创建第二个用户
+        var user2: Object = new Object();
+        user2.name = "Bob";
+        user2["full.name"] = "Robert Johnson";
+
+        // 定义 getDisplayInfo 方法
+        user2.getDisplayInfo = function(format:String):String {
+            return (format == "short") ? this.name : this["full.name"];
+        };
+
+        complexTestObj.users.push(user2);
+
+        // 创建 factory 对象
+        complexTestObj.factory = new Object();
+
+        // 定义 factory.create 方法
+        complexTestObj.factory.create = function(className:String, params:Array):Object {
+            return {type: className, args: params};
+        };
+    }
+
+    
     private static function assertEquals(expected:Object, actual:Object, testName:String):Void {
         var condition:Boolean = (expected == actual) || (expected === actual);
         if (!condition) {
@@ -164,6 +212,102 @@ class org.flashNight.gesh.string.EvalParserTest {
         });
     }
 
+
+
+    // 新增测试用例
+    public static function test13_NestedFunctionCalls():Void {
+        initializeComplexTestObj();
+        var value:Object = EvalParser.getPropertyValue(
+            complexTestObj,
+            'users[0].contacts.getPrimaryEmail()'
+        );
+        assertEquals("alice@work.com", value, "测试13：嵌套函数调用");
+    }
+
+    public static function test14_QuotedPropertyNames():Void {
+        initializeComplexTestObj();
+        var result:Boolean = EvalParser.setPropertyValue(
+            complexTestObj,
+            'users[1]["full.name"]',
+            "Bob Marley"
+        );
+        var value:Object = EvalParser.getPropertyValue(
+            complexTestObj,
+            'users[1].getDisplayInfo("long")'
+        );
+        assertEquals(true, result && value == "Bob Marley", "测试14：带引号的属性名");
+    }
+
+    public static function test15_ComplexArgumentsParsing():Void {
+        initializeComplexTestObj();
+        var result:Boolean = EvalParser.setPropertyValue(
+            complexTestObj,
+            'factory.create("Employee", ["John", 30, {"dep": "IT"}])',
+            null
+        );
+        var createdObj:Object = EvalParser.getPropertyValue(
+            complexTestObj,
+            'factory.create("Employee", ["John", 30, {"dep": "IT"}])'
+        );
+        assertEquals(
+            true,
+            result && createdObj.type == "Employee" && createdObj.args[2].dep == "IT",
+            "测试15：复杂参数解析"
+        );
+    }
+
+    public static function test16_MixedSyntaxPath():Void {
+        initializeComplexTestObj();
+        var value:Object = EvalParser.getPropertyValue(
+            complexTestObj,
+            'users[1].getDisplayInfo("short").length'
+        );
+        assertEquals(3, value, "测试16：混合语法路径");
+    }
+
+    public static function test17_ErrorHandling_InvalidIndex():Void {
+        initializeComplexTestObj();
+        var value:Object = EvalParser.getPropertyValue(
+            complexTestObj,
+            'users[5].name' // 越界索引
+        );
+        assertEquals(undefined, value, "测试17：无效数组索引处理");
+    }
+
+    public static function test18_CacheValidation():Void {
+        var path1:String = "users[0].contacts.emails[1]";
+        var path2:String = "users[0].contacts.emails[1]";
+        var parsed1:Array = EvalParser.parsePath(path1);
+        var parsed2:Array = EvalParser.parsePath(path2);
+        
+        // 修改缓存路径的异常测试
+        parsed1.push("hack");
+        assertEquals(
+            4, 
+            parsed2.length, 
+            "测试18：缓存不可变性验证"
+        );
+    }
+
+    public static function test19_EdgeCase_EmptyPath():Void {
+        var value:Object = EvalParser.getPropertyValue(complexTestObj, "");
+        assertEquals(complexTestObj, value, "测试19：空路径处理");
+    }
+
+    public static function test20_EdgeCase_DeepNesting():Void {
+        var obj:Object = {a: {b: {c: {d: {e: {f: "deep"}}}}}};
+        var result:Boolean = EvalParser.setPropertyValue(
+            obj,
+            "a.b.c.d.e.f",
+            "deeper"
+        );
+        assertEquals(
+            "deeper",
+            EvalParser.getPropertyValue(obj, "a.b.c.d.e.f"),
+            "测试20：深度嵌套路径"
+        );
+    }
+
     // 运行所有测试
     public static function runAllTests():Void {
         trace("=== 开始单元测试 ===");
@@ -179,6 +323,17 @@ class org.flashNight.gesh.string.EvalParserTest {
         test10_ChainedFunctionGet();
         test11_FunctionCallWithParams();
         test12_ChainedMethodCall();
+
+        trace("\n=== 开始扩展测试 ===");
+        initializeComplexTestObj();
+        test13_NestedFunctionCalls();
+        test14_QuotedPropertyNames();
+        test15_ComplexArgumentsParsing();
+        test16_MixedSyntaxPath();
+        test17_ErrorHandling_InvalidIndex();
+        test18_CacheValidation();
+        test19_EdgeCase_EmptyPath();
+        test20_EdgeCase_DeepNesting();
         
         trace("\n=== 开始性能测试 ===");
         testParsePathPerformance();
