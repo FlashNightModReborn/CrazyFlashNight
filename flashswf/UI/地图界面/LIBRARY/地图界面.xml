@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1739674224" lastUniqueIdentifier="154">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1739797031" lastUniqueIdentifier="154">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
-        <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#D4FDCB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -680,19 +680,13 @@ this.onEnterFrame = function() {
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="914.4" ty="115.65"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地屋</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>顶</characters>
+                      <characters>基地屋顶</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -705,19 +699,13 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="913.9" ty="158.55"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地一</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>层</characters>
+                      <characters>基地一层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -730,19 +718,13 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="913.4" ty="202.2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下一</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>层</characters>
+                      <characters>地下一层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -755,19 +737,13 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="913.4" ty="245.35"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下二</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>层</characters>
+                      <characters>地下二层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -780,7 +756,7 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="66.2" height="24.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="66.2" height="31.6" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="926.9" ty="288.45"/>
                   </matrix>
@@ -799,7 +775,7 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="66.2" height="24.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="66.2" height="31.6" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="924.9" ty="333.25"/>
                   </matrix>
@@ -818,19 +794,13 @@ this.onEnterFrame = function() {
                     </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="24.55" autoExpand="true" isSelectable="false">
+                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="916.4" ty="376.65"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>层级关</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>系</characters>
+                      <characters>层级关系</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -847,7 +817,7 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="调整焦点按钮" color="#FF800A" autoNamed="false">
+        <DOMLayer name="调整焦点按钮" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2176,6 +2146,9 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point x="511.75" y="290.5"/>
                   </transformationPoint>
+                  <color>
+                    <Color brightness="-0.8"/>
+                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
