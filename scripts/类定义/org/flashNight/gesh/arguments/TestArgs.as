@@ -1,4 +1,5 @@
 ﻿import org.flashNight.gesh.arguments.*;
+import org.flashNight.naki.Sort.*;
 
 // 文件路径: org/flashNight/gesh/arguments/TestArgs.as
 class org.flashNight.gesh.arguments.TestArgs {
@@ -19,11 +20,18 @@ class org.flashNight.gesh.arguments.TestArgs {
         testTypeChecking();
         testArrayCompatibility();
         testEdgeCases();
+        testArraySorting();
+        testArrayReverse();
+        testArrayClear();
+        testArrayConcat();
+        testArrayWithOtherTypes();
+        testEmptyArrayOperations();
         
         // 性能测试
         testCreationPerformance();
         testMethodPerformance();
         testConversionPerformance();
+        testSortPerformance();
         
         trace("\n=== 测试结果 ===");
         trace("总断言数: " + assertions);
@@ -140,6 +148,87 @@ class org.flashNight.gesh.arguments.TestArgs {
         assert(typeof a3[1] == "boolean", "布尔类型保留");
         assert(typeof a3[2] == "object", "对象类型保留");
     }
+
+    private static function testArraySorting():Void {
+        trace("\n[测试数组排序]");
+        
+        var a = new args(5, 3, 8, 1, 4);
+        
+        // 排序前检查
+        assert(a.toString() == "[Arguments] 5, 3, 8, 1, 4", "排序前的内容检查");
+        
+        // 排序
+        a.sort();
+        assert(a.toString() == "[Arguments] 1, 3, 4, 5, 8", "排序后内容验证");
+    }
+
+
+    private static function testArrayReverse():Void {
+        trace("\n[测试数组反转]");
+        
+        var a = new args(1, 2, 3, 4, 5);
+        
+        // 反转前检查
+        assert(a.toString() == "[Arguments] 1, 2, 3, 4, 5", "反转前内容检查");
+        
+        // 反转
+        a.reverse();
+        assert(a.toString() == "[Arguments] 5, 4, 3, 2, 1", "反转后内容验证");
+    }
+
+    private static function testArrayClear():Void {
+        trace("\n[测试数组清空]");
+        
+        var a = new args(1, 2, 3, 4, 5);
+        
+        // 清空数组
+        a.length = 0;
+        assert(a.length == 0, "清空后的数组长度应为0");
+        assert(a.toString() == "[Arguments]", "清空后的数组内容应为空");
+    }
+
+    private static function testArrayConcat():Void {
+        trace("\n[测试数组合并]");
+        
+        var a = new args(1, 2, 3);
+        var b = new args(4, 5, 6);
+        
+        // 合并两个数组
+        var merged = a.concat(b);
+        assert(merged.toString() == "[Arguments] 1, 2, 3, 4, 5, 6", "数组合并结果验证");
+    }
+
+    private static function testArrayWithOtherTypes():Void {
+        trace("\n[测试数组与其他类型的混合操作]");
+        
+        var a = new args(1, 2, 3);
+        var b = [4, 5, 6];
+        
+        // 合并 args 与普通数组
+        var merged = a.concat(b);
+        assert(merged.toString() == "[Arguments] 1, 2, 3, 4, 5, 6", "混合操作合并结果验证");
+        
+        // 测试和非数组类型的合并
+        var mixed = a.concat("text", true, null);
+        assert(mixed.toString() == "[Arguments] 1, 2, 3, text, true, null", "和其他类型的合并结果验证");
+    }
+
+    private static function testEmptyArrayOperations():Void {
+        trace("\n[测试空数组操作]");
+        
+        var a = new args();
+        
+        // 测试空数组的push操作
+        a.push(1);
+        assert(a.toString() == "[Arguments] 1", "空数组push操作验证");
+        
+        // 测试空数组的pop操作
+        var removed = a.pop();
+        assert(removed == 1, "空数组pop操作验证");
+        assert(a.length == 0, "空数组pop后应为空");
+}
+
+
     
     // ================ 性能测试部分 ================
     private static function testCreationPerformance():Void {
@@ -188,6 +277,22 @@ class org.flashNight.gesh.arguments.TestArgs {
         
         trace(TEST_ITERATIONS + "次valueOf转换耗时: " + elapsed + "ms");
     }
+
+    private static function testSortPerformance():Void {
+        trace("\n[性能测试-排序操作]");
+        var start:Number = getTimer();
+        
+        var largeArray = new args();
+        for (var i:Number = 0; i < TEST_ITERATIONS; i++) {
+            largeArray.push(Math.random() * 1000);
+        }
+        
+        TimSort.sort(largeArray);
+        
+        var elapsed:Number = getTimer() - start;
+        trace(TEST_ITERATIONS + "次排序耗时: " + elapsed + "ms");
+    }
+
 }
 
 
