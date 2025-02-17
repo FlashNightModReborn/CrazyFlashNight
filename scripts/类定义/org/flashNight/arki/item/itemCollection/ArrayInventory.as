@@ -30,30 +30,20 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     public function add(key:Number, item:Object):Boolean {
         if (key == -1) {
             if (isNaN(item.value)) {
-                key = getFirstVacancy(); // 如果是没有值的物品，找到第一个空位
+                key = getFirstVacancy();
             } else {
-                // 使用迭代器来查找是否有相同的物品
-                var iterator:IIterator = new TreeSetMinimalIterator(this.indexes);
-                while (iterator.hasNext()) {
-                    var index:Number = Number(iterator.next().getValue());
-                    // 检查是否有相同名字的物品且 value 不为 NaN
-                    if (this.items[index].name == item.name && !isNaN(this.items[index].value)) {
-                        key = index;
-                        break; // 找到相同物品时，直接赋值并跳出循环
-                    }
-                }
-                // 如果没有找到匹配物品，找到第一个空位
-                if (key == -1) key = getFirstVacancy();
+                var self = this;
+                var iterator = new TreeSetMinimalIterator(this.indexes);
+                var foundValue = iterator.find(function(value):Boolean {
+                    var existingItem = self.items[value];
+                    return existingItem && existingItem.name == item.name && !isNaN(existingItem.value);
+                });
+                key = foundValue !== undefined ? foundValue : getFirstVacancy();
             }
         }
 
-        if (key == -1) return false; // 如果没有找到空位，则返回 false
+        if (key == -1 || !super.add(String(key), item)) return false;
 
-        // 调用父类的 add 方法
-        var result:Boolean = super.add(String(key), item);
-        if (!result) return false;
-
-        // 将新添加的 key 加入索引
         indexes.add(key);
         return true;
     }
@@ -81,16 +71,11 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
 
     // 覆写修改 searchFirstKey 方法以获得顺序支持
     public function searchFirstKey(name:String):String {
-        var iterator:IIterator = new TreeSetMinimalIterator(this.indexes);
-        while (iterator.hasNext()) {
-            var index:Number = Number(iterator.next().getValue());
-            var key:String = String(index);
-            var item:Object = this.items[key];
-            if (item && item.name == name) {
-                return key;
-            }
-        }
-        return undefined;
+        var self = this;
+        var foundValue = new TreeSetMinimalIterator(indexes).find(function(value):Boolean {
+            return self.items[value].name == name;
+        });
+        return foundValue != null ? String(foundValue) : undefined;
     }
 
 
@@ -158,22 +143,48 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     //寻找物品格
     //返回第一个满足条件的物品
     public function find(callback:Function) {
-        var iterator:IIterator = new TreeSetMinimalIterator(this.indexes);
-        while (iterator.hasNext()) {
-            var index:Number = Number(iterator.next().getValue());
-            var item:Object = this.items[index];
-            if (callback(item) == true) return item;
-        }
-        return null;
+        var self = this;
+        var foundValue = new TreeSetMinimalIterator(indexes).find(function(value):Boolean {
+            return callback(self.items[value]);
+        });
+        return foundValue != null ? self.items[foundValue] : null;
     }
 
     //返回第一个满足条件的物品索引
-    public function findIndex(callback:Function) {
-        var iterator:IIterator = new TreeSetMinimalIterator(this.indexes);
-        while (iterator.hasNext()) {
-            var index:Number = Number(iterator.next().getValue());
-            if (callback(this.items[index]) == true) return index;
+    public function findIndex(callback:Function):Number {
+        var foundValue = new TreeSetMinimalIterator(indexes).find(function(value):Boolean {
+            return callback(this.items[value]);
+        });
+        return foundValue != null ? foundValue : -1;
+    }
+
+
+
+    /**
+     * 根据提供的排序函数重新排列物品栏中的物品，确保致密排列（不留空格）。
+     * 如果排序函数为 null 或 undefined，则维持当前物品顺序，仅去除空格。
+     * 
+     * @param sortFunction 用于排序物品的比较函数，若为空则保持原顺序
+     */
+    public function rebuild(sortFunction:Function):Void {
+        // 获取当前所有有效物品（按索引顺序）
+        var itemArr:Array = this.getItemArray();
+        
+        // 如果提供了有效的排序函数，则对物品进行排序
+        if (sortFunction != null) {
+            itemArr.sort(sortFunction);
         }
-        return -1;
+        
+        // 清空当前的物品和索引
+        this.items = {};
+        this.indexes = new TreeSet(null);
+        
+        // 重新填充物品，确保不超过容量且连续排列
+        var maxIndex:Number = Math.min(itemArr.length, this.capacity);
+        for (var i:Number = 0; i < maxIndex; i++) {
+            var item:Object = itemArr[i];
+            this.items[i] = item;
+            this.indexes.add(i);
+        }
     }
 }
