@@ -107,6 +107,7 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         testEdgeCases();
         testSearchAndValueMethods();
         testMoveMergeSwap();
+        testRebuildOrder();
 
         trace("测试完成。通过: " + testPassed + " 个，失败: " + testFailed + " 个。");
     }
@@ -411,4 +412,89 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
             "swap 空格子或不存在物品应失败", 
             "尝试 swap(invA[1] 与 invB[0]) 应失败, invA[1]: " + ObjectUtil.toString(invA.getItem("1")) + ", invB[0]: " + ObjectUtil.toString(invB.getItem("0")));
     }
+
+    /**
+     * 测试排序重建方法
+     */
+
+    private function testRebuildOrder():Void {
+        trace("\n===> 测试 testRebuildOrder ...");
+        
+        // 场景1：空物品栏重建
+        var emptyInv = new ArrayInventory(null, 5);
+        emptyInv.rebuildOrder(null);
+        assert(emptyInv.getIndexes().length == 0, 
+            "空物品栏重建后应保持为空", 
+            "indexes: " + ObjectUtil.toString(emptyInv.getIndexes()));
+
+        // 场景2：无排序函数的致密化重建
+        var sparseInv = new ArrayInventory(null, 5);
+        sparseInv.add(2, {name:"A", value:1});
+        sparseInv.add(4, {name:"B", value:2});
+        sparseInv.rebuildOrder(null);
+        
+        var expectedIndexes:Array = [0,1];
+        var actualItems:Array = sparseInv.getItemArray();
+        assert(actualItems[0].name == "A" && actualItems[1].name == "B", 
+            "无排序重建应保持原序并压缩空格", 
+            "结果: " + ObjectUtil.toString(actualItems) + " 预期: [A,B]");
+        assert(sparseInv.getIndexes().toString() == "0,1", 
+            "索引应重新映射为连续", 
+            "实际索引: " + sparseInv.getIndexes());
+
+        // 场景3：带排序函数的重建（按名称倒序）
+        var sortFunc:Function = function(a, b):Number {
+            return a.name > b.name ? -1 : 1;
+        };
+        var sortedInv = new ArrayInventory(null, 5);
+        sortedInv.add(0, {name:"C", value:3});
+        sortedInv.add(1, {name:"A", value:1});
+        sortedInv.add(3, {name:"B", value:2});
+        sortedInv.rebuildOrder(sortFunc);
+        
+        var sortedItems:Array = sortedInv.getItemArray();
+        var sortedNames:Array = sortedItems.map(function(item) { return item.name; });
+        assert(sortedNames.toString() == "C,B,A", 
+            "应按名称倒序排列", 
+            "实际顺序: " + sortedNames);
+
+        // 场景4：容量溢出测试
+        var overflowInv = new ArrayInventory(null, 3);
+        overflowInv.add(0, {name:"X", value:1});
+        overflowInv.add(2, {name:"Y", value:2});
+        overflowInv.add(4, {name:"Z", value:3}); // 注意：原始容量为3，但添加索引4会失败
+        overflowInv.rebuildOrder(null);
+        assert(overflowInv.size() <= 3, 
+            "重建后物品数量不应超过容量", 
+            "实际数量: " + overflowInv.size());
+
+        // 场景5：混合类型排序（数值型value优先）
+        var mixedInv = new ArrayInventory(null, 5);
+        mixedInv.add(1, {name:"M", value: {type:"装备"}});
+        mixedInv.add(3, {name:"N", value: 15});
+        mixedInv.rebuildOrder(function(a, b):Number {
+            // 数值value优先
+            var aVal = typeof a.value == "number" ? 0 : 1;
+            var bVal = typeof b.value == "number" ? 0 : 1;
+            return aVal - bVal;
+        });
+        var mixedTypes:Array = mixedInv.getItemArray().map(function(item) {
+            return typeof item.value;
+        });
+        assert(mixedTypes.toString() == "number,object", 
+            "数值类型应排在前面", 
+            "实际类型顺序: " + mixedTypes);
+
+        // 场景6：完全填充后的顺序保持
+        var fullInv = new ArrayInventory(null, 3);
+        fullInv.add(0, {name:"1", value:1});
+        fullInv.add(1, {name:"2", value:2});
+        fullInv.add(2, {name:"3", value:3});
+        fullInv.rebuildOrder(function(a, b) { return b.value - a.value; }); // 降序
+        var descendingValues:Array = fullInv.getItemArray().map(function(item) { return item.value; });
+        assert(descendingValues.toString() == "3,2,1", 
+            "满容量应按value降序排列", 
+            "实际值: " + descendingValues);
+    }
+
 }

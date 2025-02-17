@@ -159,32 +159,51 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     }
 
 
-
     /**
-     * 根据提供的排序函数重新排列物品栏中的物品，确保致密排列（不留空格）。
-     * 如果排序函数为 null 或 undefined，则维持当前物品顺序，仅去除空格。
+     * 高性能排序重建方法
+     * 1. 使用批量数组操作代替逐个插入
+     * 2. 直接操作底层数据结构避免继承链开销
+     * 3. 利用TreeSet.buildFromArray创建平衡树结构
      * 
-     * @param sortFunction 用于排序物品的比较函数，若为空则保持原顺序
+     * @param sortFunction 排序函数(null则保持原序)
      */
-    public function rebuild(sortFunction:Function):Void {
-        // 获取当前所有有效物品（按索引顺序）
-        var itemArr:Array = this.getItemArray();
+    public function rebuildOrder(sortFunction:Function):Void {
+        // 阶段1：准备数据
+        var oldItems:Array = this.getItemArray(); // 获取当前有序物品数组
+        var maxItems:Number = Math.min(oldItems.length, this.capacity);
         
-        // 如果提供了有效的排序函数，则对物品进行排序
+        // 阶段2：排序处理（时间复杂度：O(n log n)）
         if (sortFunction != null) {
-            itemArr.sort(sortFunction);
+            // 使用原地排序避免内存分配
+            TimSort.sort(oldItems, sortFunction);
         }
         
-        // 清空当前的物品和索引
-        this.items = {};
-        this.indexes = new TreeSet(null);
+        // 阶段3：生成新索引（时间复杂度：O(n)）
+        var newIndexes:Array = [];
+        for (var i:Number = 0; i < maxItems; i++) {
+            newIndexes.push(i); // 生成0到capacity-1的连续索引
+        }
         
-        // 重新填充物品，确保不超过容量且连续排列
-        var maxIndex:Number = Math.min(itemArr.length, this.capacity);
-        for (var i:Number = 0; i < maxIndex; i++) {
-            var item:Object = itemArr[i];
-            this.items[i] = item;
-            this.indexes.add(i);
+        // 阶段4：批量重建数据结构（时间复杂度：O(n)）
+        // 4.1 直接替换索引树
+        this.indexes = TreeSet.buildFromArray(
+            newIndexes, 
+            this.indexes.getCompareFunction() // 保持原有比较函数
+        );
+        
+        // 4.2 直接替换物品存储
+        var newItems:Object = {};
+        for (i = 0; i < maxItems; i++) {
+            newItems[String(i)] = oldItems[i]; // 直接写入无需检查
+        }
+        this.items = newItems;
+        
+        // 阶段5：处理溢出物品（如果有?）
+        if (oldItems.length > this.capacity) {
+            // 发布消息？...
         }
     }
+
+
+
 }
