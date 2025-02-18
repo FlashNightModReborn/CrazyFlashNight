@@ -7,6 +7,10 @@ import org.flashNight.arki.item.itemCollection.*;
 
 class org.flashNight.arki.item.ItemSortUtil{
 
+    // 默认排序字段，不改变顺序
+    private static var basic = null;
+
+    
     /**
      * 封装后的排序方法
      * @param inventory 要排序的物品栏
@@ -19,31 +23,18 @@ class org.flashNight.arki.item.ItemSortUtil{
         callback:Function
     ):Void {
         // 参数验证和默认值处理
-
-        var sortMethods:Object = new Object;
-
-        sortMethods["default"] = function (a:Object, b:Object):Number
-        {
-            return 0;
-        };
-
-        _root.发布消息("开始排序");
         
-        if (methodName == null || !sortMethods[methodName]) {
+        if (methodName == null || !ItemSortUtil[methodName]) {
             methodName = "default";
         }
-        
+
+        //_root.发布消息("开始整理物品栏");
+
         // 获取对应的排序函数
-        var sortFunc:Function = sortMethods[methodName];
+        var sortFunc:Function = ItemSortUtil[methodName];
         
         // 执行排序
         inventory.rebuildOrder(sortFunc);
-        
-        // 自动刷新界面
-        if (_root.物品栏 && _root.物品栏.背包 == inventory) {
-            _root.物品UI函数.删除背包图标();
-		    _root.物品UI函数.创建背包图标();
-        }
         
         // 执行回调
         if (typeof callback === "function") {
@@ -52,5 +43,3 @@ class org.flashNight.arki.item.ItemSortUtil{
     }
 
 }
-
-//org.flashNight.arki.item.ItemUtil.acquire()

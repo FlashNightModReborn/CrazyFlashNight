@@ -10,9 +10,10 @@ _root.物品UI函数.装备栏 = new Object();
 _root.物品UI函数.药剂栏 = new Object();
 
 EventBus.getInstance().subscribe("物品栏排序图标点击",function(){
-	_root.服务器.发布服务器消息("物品栏排序图标点击");
-	_root.服务器.发布服务器消息(ObjectUtil.toString(_root.物品栏.背包));
-	ItemSortUtil.sortInventory(_root.物品栏.背包, "default");
+	ItemSortUtil.sortInventory(_root.物品栏.背包, "default", function(){
+		    _root.物品UI函数.删除背包图标();
+		    _root.物品UI函数.创建背包图标();
+	});
 },null);
 
 EventBus.getInstance().subscribe("物品栏排序图标长按",function(){
