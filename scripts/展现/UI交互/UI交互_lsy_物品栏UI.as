@@ -9,8 +9,8 @@ _root.物品UI函数.背包 = new Object();
 _root.物品UI函数.装备栏 = new Object();
 _root.物品UI函数.药剂栏 = new Object();
 
-EventBus.getInstance().subscribe("物品栏排序图标点击",function(){
-	ItemSortUtil.sortInventory(_root.物品栏.背包, "default", function(){
+EventBus.getInstance().subscribe("物品栏排序图标点击",function(methodName:String){
+	ItemSortUtil.sortInventory(_root.物品栏.背包, methodName, function(){
 		    _root.物品UI函数.删除背包图标();
 		    _root.物品UI函数.创建背包图标();
 	});

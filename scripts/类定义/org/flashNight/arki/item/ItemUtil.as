@@ -240,12 +240,23 @@ class org.flashNight.arki.item.ItemUtil{
         var 药剂栏:Object = _root.物品栏.药剂栏; // DrugInventory 实例
         for(var key:String in list.药剂栏){
             var req:Object = list.药剂栏[key];
+            var drugIndex:Number = Number(key);
+
             // 对于已有项，直接增加数量
-            if(药剂栏.isEmpty(Number(key))){
+            if(药剂栏.isEmpty(drugIndex)){
                 // 格子为空的情况原则上不会触发
-                药剂栏.add(Number(key), { name: req.name, value: req.value });
+                // 新物品添加时间戳
+                var newDrugItem = {
+                    name: req.name,
+                    value: req.value,
+                    lastUpdate: new Date().getTime() // 新增时间戳
+                };
+                药剂栏.add(drugIndex, newDrugItem);
             } else {
-                药剂栏.addValue(key, req.value);
+                // 已有物品更新数量和时间戳
+                药剂栏.addValue(drugIndex, req.value);
+                var existingDrug = 药剂栏.getItem(drugIndex);
+                existingDrug.lastUpdate = new Date().getTime(); // 更新时间戳
             }
         }
 
@@ -260,25 +271,36 @@ class org.flashNight.arki.item.ItemUtil{
                 var indexFound:Number = 背包.findByName(req.name);
                 if(indexFound != -1) {
                     背包.addValue(String(indexFound), req.value);
+                    背包.addValue(indexFound, req.value);
+                    var existingItem = 背包.getItem(indexFound);
+                    existingItem.lastUpdate = new Date().getTime(); // 更新时间戳
                 } else {
                     // 没有则添加新项，用 -1 表示新建堆
-                    背包.add(-1, { name: req.name, value: req.value });
+                    背包.addValue(indexFound, req.value);
+                    var existingItem = 背包.getItem(indexFound);
+                    existingItem.lastUpdate = new Date().getTime(); // 更新时间戳
                 }
             } else {
                 // 对于已有项，直接增加数量
-                if(背包.isEmpty(Number(key))){
+                var bagIndex:Number = Number(key);
+
+                if(背包.isEmpty(bagIndex)){
                     // 如果该格子为空，添加新物品
-                    var item = {name:req.name};
                     var itemData = ItemUtil.getItemData(req.name);
+                    var newItem = {name: req.name};
                     //检测是否为武器或防具，是则改写value的结构
-                    if(itemData.type == "武器" || itemData.type == "防具"){
-                        item.value = {level:req.value};
-                    }else{
-                        item.value = req.value;
+                    if(itemData.type == "武器" || itemData.type == "防具") {
+                        newItem.value = {level: req.value};
+                    } else {
+                        newItem.value = req.value;
                     }
-                    背包.add(Number(key), item);
+                    newItem.lastUpdate = new Date().getTime(); // 新增时间戳
+                    背包.add(bagIndex, newItem);
                 } else {
-                    背包.addValue(key, req.value);
+                    // 已有物品更新数量和时间戳
+                    背包.addValue(bagIndex, req.value);
+                    var existingItem = 背包.getItem(bagIndex);
+                    existingItem.lastUpdate = new Date().getTime(); // 更新时间戳
                 }
             }
         }
@@ -403,52 +425,6 @@ class org.flashNight.arki.item.ItemUtil{
         }
         return total;
     }
-
-
-    /**
-     * 封装后的排序方法
-     * @param inventory 要排序的物品栏
-     * @param methodName 排序方法名称（可选，默认为"default"）
-     * @param callback 完成后的回调（可选）
-     */
-    public static function sortInventory(
-        inventory:ArrayInventory, 
-        methodName:String, 
-        callback:Function
-    ):Void {
-        // 参数验证和默认值处理
-
-        var sortMethods:Object = new Object;
-
-        sortMethods["default"] = function (a:Object, b:Object):Number
-        {
-            return 0;
-        };
-
-        _root.发布消息("开始排序");
-        
-        if (methodName == null || !sortMethods[methodName]) {
-            methodName = "default";
-        }
-        
-        // 获取对应的排序函数
-        var sortFunc:Function = sortMethods[methodName];
-        
-        // 执行排序
-        inventory.rebuildOrder(sortFunc);
-        
-        // 自动刷新界面
-        if (_root.物品栏 && _root.物品栏.背包 == inventory) {
-            _root.物品UI函数.删除背包图标();
-		    _root.物品UI函数.创建背包图标();
-        }
-        
-        // 执行回调
-        if (typeof callback === "function") {
-            callback(inventory);
-        }
-    }
-
 }
 
 //org.flashNight.arki.item.ItemUtil.acquire()

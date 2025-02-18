@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1739865392" lastUniqueIdentifier="38">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1739870191" lastUniqueIdentifier="39">
   <timeline>
     <DOMTimeline name="新版物品栏界面">
       <layers>
@@ -906,7 +906,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="排序图标" name="排序图标" centerPoint3DX="252.5" centerPoint3DY="312.15">
+                <DOMSymbolInstance libraryItemName="排序图标" name="排序图标" selected="true" centerPoint3DX="252.5" centerPoint3DY="312.15">
                   <matrix>
                     <Matrix tx="252.5" ty="312.15"/>
                   </matrix>
@@ -915,7 +915,8 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (rollOver) {
-	_root.注释(100,_root.获得翻译("点击一键排序，长按自选方式（默认保持紧密原序）"));
+	_root.注释(100,_root.获得翻译("一键整理，保持紧密原序"));
+	//_root.注释(100,_root.获得翻译("点击一键排序，长按自选方式（默认保持紧密原序）"));
 }
 on (rollOut) {
 	_root.注释结束();
@@ -937,15 +938,17 @@ onClipEvent (load) {
 		pressFrames = 0;
 		checkLongPress = false;
 	};
+	
+	this.methodName = "default";
 
 	this.clickAction = function()
 	{
-		_root.帧计时器.eventBus.publish("物品栏排序图标点击");
+		_root.帧计时器.eventBus.publish("物品栏排序图标点击", this.methodName);
 	};
 
 	this.longPressAction = function()
 	{
-		_root.帧计时器.eventBus.publish("物品栏排序图标长按");
+		_root.帧计时器.eventBus.publish("物品栏排序图标长按", this.methodName);
 	};
 }
 
@@ -1047,7 +1050,7 @@ on(rollOut){
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>排序</characters>
+                      <characters>整理</characters>
                       <textAttrs>
                         <DOMTextAttrs alignment="right" aliasText="false" autoKern="false" rotation="true" size="11" bitmapSize="220" face="MicrosoftYaHei" fillColor="#999999"/>
                       </textAttrs>
