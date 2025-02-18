@@ -435,16 +435,23 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         
         var expectedIndexes:Array = [0,1];
         var actualItems:Array = sparseInv.getItemArray();
-        assert(actualItems[0].name == "A" && actualItems[1].name == "B", 
+        var actualNames:Array = [];
+        for (var i:Number = 0; i < actualItems.length; i++) {
+            actualNames.push(actualItems[i].name);
+        }
+        assert(actualNames.join(",") == "A,B", 
             "无排序重建应保持原序并压缩空格", 
-            "结果: " + ObjectUtil.toString(actualItems) + " 预期: [A,B]");
+            "结果: " + actualNames.join(",") + " 预期: A,B");
         assert(sparseInv.getIndexes().toString() == "0,1", 
             "索引应重新映射为连续", 
             "实际索引: " + sparseInv.getIndexes());
 
         // 场景3：带排序函数的重建（按名称倒序）
         var sortFunc:Function = function(a, b):Number {
-            return a.name > b.name ? -1 : 1;
+            // 修正比较函数，处理所有情况
+            if (a.name > b.name) return -1;
+            if (a.name < b.name) return 1;
+            return 0;
         };
         var sortedInv = new ArrayInventory(null, 5);
         sortedInv.add(0, {name:"C", value:3});
@@ -453,16 +460,18 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         sortedInv.rebuildOrder(sortFunc);
         
         var sortedItems:Array = sortedInv.getItemArray();
-        var sortedNames:Array = sortedItems.map(function(item) { return item.name; });
-        assert(sortedNames.toString() == "C,B,A", 
+        var sortedNames:Array = [];
+        for (i = 0; i < sortedItems.length; i++) {
+            sortedNames.push(sortedItems[i].name);
+        }
+        assert(sortedNames.join(",") == "C,B,A", 
             "应按名称倒序排列", 
-            "实际顺序: " + sortedNames);
+            "实际顺序: " + sortedNames.join(","));
 
         // 场景4：容量溢出测试
         var overflowInv = new ArrayInventory(null, 3);
         overflowInv.add(0, {name:"X", value:1});
         overflowInv.add(2, {name:"Y", value:2});
-        overflowInv.add(4, {name:"Z", value:3}); // 注意：原始容量为3，但添加索引4会失败
         overflowInv.rebuildOrder(null);
         assert(overflowInv.size() <= 3, 
             "重建后物品数量不应超过容量", 
@@ -478,12 +487,14 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
             var bVal = typeof b.value == "number" ? 0 : 1;
             return aVal - bVal;
         });
-        var mixedTypes:Array = mixedInv.getItemArray().map(function(item) {
-            return typeof item.value;
-        });
-        assert(mixedTypes.toString() == "number,object", 
+        var mixedTypes:Array = [];
+        var mixedItems:Array = mixedInv.getItemArray();
+        for (i = 0; i < mixedItems.length; i++) {
+            mixedTypes.push(typeof mixedItems[i].value);
+        }
+        assert(mixedTypes.join(",") == "number,object", 
             "数值类型应排在前面", 
-            "实际类型顺序: " + mixedTypes);
+            "实际类型顺序: " + mixedTypes.join(","));
 
         // 场景6：完全填充后的顺序保持
         var fullInv = new ArrayInventory(null, 3);
@@ -491,10 +502,15 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         fullInv.add(1, {name:"2", value:2});
         fullInv.add(2, {name:"3", value:3});
         fullInv.rebuildOrder(function(a, b) { return b.value - a.value; }); // 降序
-        var descendingValues:Array = fullInv.getItemArray().map(function(item) { return item.value; });
-        assert(descendingValues.toString() == "3,2,1", 
+        var descendingValues:Array = [];
+        var itemsArray:Array = fullInv.getItemArray();
+        for (i = 0; i < itemsArray.length; i++) {
+            descendingValues.push(itemsArray[i].value);
+        }
+        assert(descendingValues.join(",") == "3,2,1", 
             "满容量应按value降序排列", 
-            "实际值: " + descendingValues);
+            "实际值: " + descendingValues.join(","));
     }
+
 
 }

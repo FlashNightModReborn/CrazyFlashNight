@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.item.itemCollection.Inventory;
 import org.flashNight.naki.DataStructures.TreeSet;
 import org.flashNight.gesh.iterator.*;
+import org.flashNight.naki.Sort.*;
 /*
  * 只以数字作为键的定长物品栏，继承物品栏基类
 */
@@ -198,12 +199,11 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         }
         this.items = newItems;
         
+        /*
         // 阶段5：处理溢出物品（如果有?）
         if (oldItems.length > this.capacity) {
             // 发布消息？...
         }
+        */
     }
-
-
-
 }
