@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1739356008" lastUniqueIdentifier="153">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="78">
+    <DOMTimeline name="对话框肖像" currentFrame="86">
       <layers>
-        <DOMLayer name="Labels Layer" color="#FC2986">
+        <DOMLayer name="Labels Layer" color="#FC2986" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -259,14 +259,14 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!2721 1945[#A42.A7 #858.34 2421 2179!2421 2179|-1860 2179!-1860 2179|-1860 -5006!-1860 -5006|4734 -5006!4734 -5006|4734 1675!4734 1675|3051 1675!3051 1675[#AEC.E8 #67A.82 2721 1945"/>
+                    <Edge fillStyle1="1" edges="!4734 -5006|4734 1675!4734 1675|3051 1675!3051 1675[#AEC.E8 #67A.82 2721 1945!2721 1945[#A42.A7 #858.34 2421 2179!2421 2179|-1860 2179!-1860 2179|-1860 -5006!-1860 -5006|4734 -5006"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2" current="true" isSelected="true">
+        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -483,7 +483,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="75" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1275" name="肖像" selected="true" centerPoint3DX="501.95" centerPoint3DY="1175.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1275" name="肖像" centerPoint3DX="501.95" centerPoint3DY="1175.05">
                   <matrix>
                     <Matrix a="-0.3001708984375" d="0.3001708984375" tx="72" ty="192.95"/>
                   </matrix>

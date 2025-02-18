@@ -1,53 +1,53 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1287" itemID="6597607e-000008fa" lastModified="1739683910">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1287" itemID="6597607e-000008fa" lastModified="1739858087">
   <timeline>
-    <DOMTimeline name="Symbol 1287">
+    <DOMTimeline name="Symbol 1287" currentFrame="19">
       <layers>
         <DOMLayer name="表情" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" name="普通" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="king2.psd 资源 2/正常" selected="true" centerPoint3DX="-27.85" centerPoint3DY="16.1">
+                <DOMSymbolInstance libraryItemName="King表情普通" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.27801513671875" d="0.271163940429688" tx="-116.95" ty="-49.35"/>
+                    <Matrix tx="90.95" ty="-440.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="319.05" y="240.65"/>
+                    <Point x="93.7" y="72.15"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="5" duration="5" name="坏笑" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="king2.psd 资源 2/坏笑" centerPoint3DX="-28.15" centerPoint3DY="-5.9">
+                <DOMSymbolInstance libraryItemName="King表情坏笑" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.269577026367188" d="0.269577026367188" tx="-114.55" ty="-94.05"/>
+                    <Matrix tx="91.3" ty="-485.7"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="320.5" y="327"/>
+                    <Point x="93.7" y="96.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="10" duration="5" name="愤怒" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="king2.psd 资源 2/怒" centerPoint3DX="-27" centerPoint3DY="17.15">
+                <DOMSymbolInstance libraryItemName="King表情愤怒" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.2706298828125" d="0.27655029296875" tx="-111.95" ty="-52.4"/>
+                    <Matrix tx="1.35" ty="-510.3"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="313.55" y="251.3"/>
+                    <Point x="136.65" y="108.1"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="15" duration="5" name="悲伤" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="king2.psd 资源 4/悲伤" centerPoint3DX="-28.25" centerPoint3DY="14.15">
+                <DOMSymbolInstance libraryItemName="King表情悲伤" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.274169921875" d="0.274169921875" tx="-117.65" ty="-50.25"/>
+                    <Matrix tx="88.4" ty="-419.6"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="326.25" y="234.9"/>
+                    <Point x="95.8" y="59.2"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -58,12 +58,12 @@
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="king2.psd 资源/图层 100" selected="true" centerPoint3DX="-94.15" centerPoint3DY="440.85">
+                <DOMSymbolInstance libraryItemName="King身体" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.27117919921875" d="0.27117919921875" tx="-606.1" ty="-198.85"/>
+                    <Matrix tx="-442" ty="-598.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="1887.7" y="2358.75"/>
+                    <Point x="555" y="693.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
