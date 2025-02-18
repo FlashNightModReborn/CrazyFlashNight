@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面素材/购买按钮背景" itemID="677d31a7-0000103b" lastModified="1736258047">
+  <timeline>
+    <DOMTimeline name="购买按钮背景">
+      <layers>
+        <DOMLayer name="Layer 1" color="#666FF0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0146484375" c="-0.0718536376953125" d="0" tx="19.15" ty="12"/>
+                        </matrix>
+                        <GradientEntry color="#FFCC00" ratio="0"/>
+                        <GradientEntry color="#993300" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1560 480|0 480!0 480|0 0!0 0|1560 0!1560 0|1560 480"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

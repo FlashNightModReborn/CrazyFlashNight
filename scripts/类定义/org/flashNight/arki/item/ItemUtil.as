@@ -1,6 +1,7 @@
 ﻿// import org.flashNight.arki.item.itemCollection.DictCollection;
 import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.arki.item.itemCollection.*;
 /*
  * ItemUtil 静态类，存储物品数据与物品工具函数
  * 
@@ -402,6 +403,76 @@ class org.flashNight.arki.item.ItemUtil{
         }
         return total;
     }
+
+    // 静态排序方法库
+    public static var sortMethods:Object = {
+        // 按名称升序
+        "name_asc": function(a:Object, b:Object):Number {
+            var aName:String = ItemUtil.getItemData(a.name).displayname;
+            var bName:String = ItemUtil.getItemData(b.name).displayname;
+            return aName.localeCompare(bName);
+        },
+        
+        // 按类型升序
+        "type_asc": function(a:Object, b:Object):Number {
+            var aType:String = ItemUtil.getItemData(a.name).type;
+            var bType:String = ItemUtil.getItemData(b.name).type;
+            return aType.localeCompare(bType) || sortMethods.name_asc(a, b);
+        },
+        
+        // 按等级降序
+        "level_desc": function(a:Object, b:Object):Number {
+            var aLevel:Number = (a.value && a.value.level) || 0;
+            var bLevel:Number = (b.value && b.value.level) || 0;
+            return bLevel - aLevel;
+        },
+        
+        // 按堆叠数量升序
+        "stack_asc": function(a:Object, b:Object):Number {
+            var aVal:Number = isNaN(a.value) ? 1 : a.value;
+            var bVal:Number = isNaN(b.value) ? 1 : b.value;
+            return aVal - bVal;
+        },
+        
+        // 默认排序（原始顺序）
+        "default": function(a:Object, b:Object):Number {
+            return 0;
+        }
+    };
+
+    /**
+     * 封装后的排序方法
+     * @param inventory 要排序的物品栏
+     * @param methodName 排序方法名称（可选，默认为"default"）
+     * @param callback 完成后的回调（可选）
+     */
+    public static function sortInventory(
+        inventory:ArrayInventory, 
+        methodName:String, 
+        callback:Function
+    ):Void {
+        // 参数验证和默认值处理
+        if (methodName == null || !sortMethods.hasOwnProperty(methodName)) {
+            methodName = "default";
+        }
+        
+        // 获取对应的排序函数
+        var sortFunc:Function = sortMethods[methodName];
+        
+        // 执行排序
+        inventory.rebuildOrder(sortFunc);
+        
+        // 自动刷新界面
+        if (_root.物品栏 && _root.物品栏.背包 == inventory) {
+            _root.物品栏.刷新背包物品();
+        }
+        
+        // 执行回调
+        if (typeof callback === "function") {
+            callback(inventory);
+        }
+    }
+
 }
 
 //org.flashNight.arki.item.ItemUtil.acquire()
