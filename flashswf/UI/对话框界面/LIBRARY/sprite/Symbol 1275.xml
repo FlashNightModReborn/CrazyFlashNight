@@ -1,69 +1,69 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1275" itemID="6597607e-000008ee" lastModified="1739685844">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1275" itemID="6597607e-000008ee" lastModified="1739844542">
   <timeline>
-    <DOMTimeline name="Symbol 1275">
+    <DOMTimeline name="Symbol 1275" currentFrame="10">
       <layers>
-        <DOMLayer name="表情" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="表情" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" name="普通" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 2" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Pig表情普通" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="-0.2286376953125" d="0.220794677734375" tx="106.5" ty="-1152.85"/>
+                    <Matrix tx="94.65" ty="-1290.95"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="281.25" y="405.6"/>
+                    <Point x="77.95" y="102.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="5" duration="5" name="坏笑" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 3" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Pig表情坏笑" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="-22.6" ty="-1379.4"/>
+                    <Matrix tx="93.75" ty="-1291.2"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="68.4" y="98.1"/>
+                    <Point x="78.7" y="101"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="10" duration="5" name="愤怒" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 4" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Pig表情愤怒" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="-23.8" ty="-1367.3"/>
+                    <Matrix tx="92.1" ty="-1291.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="68.05" y="94.95"/>
+                    <Point x="78.9" y="99.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="15" duration="5" name="悲伤" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 5" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Pig表情悲伤" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.03010559082031" tx="-23.3" ty="-1379.9"/>
+                    <Matrix tx="95.2" ty="-1290.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="65.2" y="99.45"/>
+                    <Point x="78" y="98.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 100" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="图层 100" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 1" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Pig身体" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.9986572265625" d="0.9986572265625" tx="-733.45" ty="-1282.35"/>
+                    <Matrix tx="-541.55" ty="-1387.4"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="642.05" y="676.5"/>
+                    <Point x="576.15" y="607.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
