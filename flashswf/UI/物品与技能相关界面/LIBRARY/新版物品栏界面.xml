@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1739852732" lastUniqueIdentifier="38">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1739865392" lastUniqueIdentifier="38">
   <timeline>
     <DOMTimeline name="新版物品栏界面">
       <layers>
@@ -906,14 +906,6 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="52" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/排序图标" symbolType="graphic" loop="loop">
-                  <matrix>
-                    <Matrix tx="309.95" ty="285.75"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="排序图标" name="排序图标" centerPoint3DX="252.5" centerPoint3DY="312.15">
                   <matrix>
                     <Matrix tx="252.5" ty="312.15"/>
@@ -922,76 +914,87 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(rollOver){
-   _root.注释(100,_root.获得翻译("将物品拖入垃圾箱，永久丢弃物品！无法恢复！"));
+                    <script><![CDATA[on (rollOver) {
+	_root.注释(100,_root.获得翻译("点击一键排序，长按自选方式（默认保持紧密原序）"));
 }
-on(rollOut){
-   _root.注释结束();
+on (rollOut) {
+	_root.注释结束();
 }
+
 onClipEvent (load) {
-    // 初始化长按参数
-    var pressFrames = 0;
-    var isPressing = false;
-    var checkLongPress = false; // 控制enterFrame检测开关
-    
-    // 帧数阈值（30帧≈1秒）
-    var LONG_PRESS_FRAMES = 30;
-    
-    // 定义处理函数
-    this.resetPressState = function() {
-        isPressing = false;
-        pressFrames = 0;
-        checkLongPress = false;
-    };
-    
-    this.clickAction = function() {
-        _root.发布消息("触发点击排序");
-    };
-    
-    this.longPressAction = function() {
-        _root.发布消息("触发长按排序设置");
-    };
+	// 初始化长按参数
+	var pressFrames = 0;
+	var isPressing = false;
+	var checkLongPress = false;// 控制enterFrame检测开关
+
+	// 帧数阈值
+	var LONG_PRESS_FRAMES = 30;
+
+	// 定义处理函数
+	this.resetPressState = function()
+	{
+		isPressing = false;
+		pressFrames = 0;
+		checkLongPress = false;
+	};
+
+	this.clickAction = function()
+	{
+		_root.帧计时器.eventBus.publish("物品栏排序图标点击");
+	};
+
+	this.longPressAction = function()
+	{
+		_root.帧计时器.eventBus.publish("物品栏排序图标长按");
+	};
 }
 
 onClipEvent (mouseDown) {
-    if (this.area.hitTest(_root._xmouse, _root._ymouse, true)) {
-        isPressing = true;
-        pressFrames = 0;
-        checkLongPress = true; // 激活enterFrame检测
-    }
+	if (this.area.hitTest(_root._xmouse, _root._ymouse, true))
+	{
+		isPressing = true;
+		pressFrames = 0;
+		checkLongPress = true;// 激活enterFrame检测
+	}
 }
 
 onClipEvent (mouseUp) {
-    if (isPressing) {
-        // 短按触发判断
-        if (pressFrames < LONG_PRESS_FRAMES) {
-            this.clickAction();
-        }
-        this.resetPressState();
-    }
+	if (isPressing)
+	{
+		// 短按触发判断
+		if (pressFrames < LONG_PRESS_FRAMES)
+		{
+			this.clickAction();
+		}
+		this.resetPressState();
+	}
 }
 
 onClipEvent (enterFrame) {
-    if (!checkLongPress) return; // 非检测状态直接退出
-    
-    if (isPressing) {
-        // 持续区域检测
-        if (!this.area.hitTest(_root._xmouse, _root._ymouse, true)) {
-            this.resetPressState();
-            return;
-        }
-        
-        // 帧数累加
-        pressFrames++;
-        
-        // 长按触发
-        if (pressFrames >= LONG_PRESS_FRAMES) {
-            this.longPressAction();
-            this.resetPressState(); // 完成后立即关闭检测
-        }
-    }
-}
-]]></script>
+	if (!checkLongPress)
+	{
+		return;
+	}
+	// 非检测状态直接退出 
+	if (isPressing)
+	{
+		// 持续区域检测
+		if (!this.area.hitTest(_root._xmouse, _root._ymouse, true))
+		{
+			this.resetPressState();
+			return;
+		}
+		// 帧数累加 
+		pressFrames++;
+
+		// 长按触发
+		if (pressFrames >= LONG_PRESS_FRAMES)
+		{
+			this.longPressAction();
+			this.resetPressState();// 完成后立即关闭检测
+		}
+	}
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

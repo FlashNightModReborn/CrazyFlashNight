@@ -14,10 +14,10 @@
           <DOMFolderItem name="物品栏" itemID="659d3927-00003122" isExpanded="true"/>
      </folders>
      <media>
-          <DOMBitmapItem name="image/bitmap1950.png" itemID="6597607b-00000410" sourceExternalFilepath="./LIBRARY/image/bitmap1950.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1950.png" bitmapDataHRef="M 4 1734973517.dat" frameRight="140" frameBottom="220"/>
-          <DOMBitmapItem name="image/bitmap845.png" itemID="6597607a-000003bf" sourceExternalFilepath="./LIBRARY/image/bitmap845.png" sourceLastImported="1704419450" originalCompressionType="lossless" quality="50" href="image/bitmap845.png" bitmapDataHRef="M 3 1734973517.dat" frameRight="6740" frameBottom="5420"/>
-          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="./LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1734973517.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
-          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="./LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1734973517.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
+          <DOMBitmapItem name="image/bitmap1950.png" itemID="6597607b-00000410" sourceExternalFilepath="../物品与技能相关界面/LIBRARY/image/bitmap1950.png" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1950.png" bitmapDataHRef="M 4 1734973517.dat" frameRight="140" frameBottom="220"/>
+          <DOMBitmapItem name="image/bitmap845.png" itemID="6597607a-000003bf" sourceExternalFilepath="../物品与技能相关界面/LIBRARY/image/bitmap845.png" sourceLastImported="1704419450" originalCompressionType="lossless" quality="50" href="image/bitmap845.png" bitmapDataHRef="M 3 1734973517.dat" frameRight="6740" frameBottom="5420"/>
+          <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../物品与技能相关界面/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1734973517.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
+          <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../物品与技能相关界面/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1734973517.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
      </media>
      <symbols>
           <Include href="button/Symbol 536.xml" itemIcon="0" loadImmediate="false" itemID="6597607e-000007c1" lastModified="1704196122"/>
@@ -126,11 +126,11 @@
           <Include href="物品栏/排序图标.xml" itemIcon="1" loadImmediate="false" itemID="67b3f748-00000709" lastModified="1739849831"/>
           <Include href="物品栏/物品满级框.xml" loadImmediate="false" itemID="659d3902-0000310e" lastModified="1704802562"/>
           <Include href="物品栏/物品已装备图标.xml" loadImmediate="false" itemID="659d38ed-0000310d" lastModified="1704802541"/>
-          <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1736868241"/>
-          <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1735664797"/>
+          <Include href="物品栏/新版物品图标.xml" itemID="676a60d0-00000262" lastModified="1739864805"/>
+          <Include href="新版仓库界面.xml" itemID="676f9b88-0000028e" lastModified="1739864791"/>
           <Include href="新版商店界面.xml" itemID="676cf8b9-00000359" lastModified="1736267857"/>
           <Include href="新版通用勾选框.xml" loadImmediate="false" itemID="677d58e7-00000cb8" lastModified="1736268332"/>
-          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1739852732"/>
+          <Include href="新版物品栏界面.xml" itemID="67699dcd-00000abf" lastModified="1739865392"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -546,6 +546,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="51999" publishTime="1739865402"/>
+          <PublishItem publishSize="52014" publishTime="1739864702"/>
+          <PublishItem publishSize="52003" publishTime="1739861105"/>
           <PublishItem publishSize="51968" publishTime="1739852736"/>
           <PublishItem publishSize="51589" publishTime="1739850776"/>
           <PublishItem publishSize="51660" publishTime="1739849847"/>
@@ -563,8 +566,5 @@
           <PublishItem publishSize="50981" publishTime="1736920858"/>
           <PublishItem publishSize="51013" publishTime="1736868234"/>
           <PublishItem publishSize="50956" publishTime="1736323070"/>
-          <PublishItem publishSize="50959" publishTime="1736322784"/>
-          <PublishItem publishSize="50958" publishTime="1736322629"/>
-          <PublishItem publishSize="50774" publishTime="1736321887"/>
      </publishHistory>
 </DOMDocument>
