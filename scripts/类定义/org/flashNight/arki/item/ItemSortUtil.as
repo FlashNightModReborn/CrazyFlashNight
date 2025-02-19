@@ -10,15 +10,16 @@ import org.flashNight.arki.item.*;
  * 2. 数据安全：内置元数据和属性安全访问机制，防止空值导致的排序异常
  * 3. 类型感知：自动区分数值型和字符串型数据的比较逻辑
  * 4. 策略显式配置：每个排序策略的优先级链清晰可见，便于维护扩展
+ * 5. 模块化设计：对特殊属性value进行独立处理模块封装
  * 
  * 排序策略清单：
- * - byType   : 物品类型 -> 用途 -> 价格 -> 等级 -> ID
- * - byUse    : 物品用途 -> 类型 -> 价格 -> 等级 -> ID 
- * - byPrice  : 物品价格 -> 类型 -> 用途 -> 等级 -> ID
- * - byLevel  : 需求等级 -> 类型 -> 用途 -> 价格 -> ID
+ * - byType   : 物品类型 -> 用途 -> 总价 -> 等级 -> ID
+ * - byUse    : 物品用途 -> 类型 -> 总价 -> 等级 -> ID 
+ * - byPrice  : 总价（单价×数量）-> 类型 -> 用途 -> 等级 -> ID
+ * - byLevel  : 需求等级 -> 类型 -> 用途 -> 总价 -> ID
  * - byID     : 物品ID直接排序
  * - byName   : 物品名称字母序排序
- * - byValue  : 物品价值数值排序
+ * - byValue  : 物品数量数值排序（特殊安全处理）
  * - byTime   : 最后更新时间戳排序
  */
 class org.flashNight.arki.item.ItemSortUtil {
@@ -42,14 +43,43 @@ class org.flashNight.arki.item.ItemSortUtil {
         if (typeof callback === "function") callback(inventory);
     }
 
-    /*------------------------- 核心比较逻辑 ----------------------*/
+    /*------------------------- 核心比较模块 ----------------------*/
     
+    // ----------------- 总价比较模块 -----------------
+    /**
+     * 生成总价比较器（单价×数量）
+     * 
+     * 实现特性：
+     * - 使用安全数值获取模块处理数量值
+     * - 自动处理非数值类型的数量值
+     */
+    private static function totalPriceComparator():Function {
+        return function(a:Object, b:Object):Number {
+            return compareNumbers(
+                calculateTotalValue(a),
+                calculateTotalValue(b)
+            );
+        };
+    }
+
+    /**
+     * 计算物品总价值
+     * 
+     * @param item 物品对象
+     * @return Number 总价值（单价×安全数量）
+     */
+    private static function calculateTotalValue(item:Object):Number {
+        var price:Number = safeGetMeta(item.name, "price", true);
+        var count:Number = safeGetNumber(item, "value", true);
+        return price * count;
+    }
+
+    // ----------------- 元数据比较模块 -----------------
     /**
      * 生成元数据比较器
      * 
      * @param field    要比较的元数据字段名
      * @param numeric  是否按数值类型比较
-     * @return Function 生成的具体比较函数
      */
     private static function metaComparator(field:String, numeric:Boolean):Function {
         return function(a:Object, b:Object):Number {
@@ -59,23 +89,46 @@ class org.flashNight.arki.item.ItemSortUtil {
         };
     }
 
+    // ----------------- 属性比较模块 -----------------
     /**
-     * 生成物品属性比较器
+     * 生成通用属性比较器
      * 
-     * @param prop     要比较的物品属性名
-     * @param numeric  是否按数值类型比较
-     * @return Function 生成的具体比较函数
+     * 特殊处理：
+     * - 自动识别value属性并切换专用获取方法
      */
     private static function propComparator(prop:String, numeric:Boolean):Function {
         return function(a:Object, b:Object):Number {
-            var aVal = safeGetProp(a, prop, numeric);
-            var bVal = safeGetProp(b, prop, numeric);
+            // 属性名称标准化处理
+            var normalizedProp:String = prop.toLowerCase();
+            
+            // 选择获取方法
+            var getMethod:Function = (normalizedProp == "value") ? 
+                safeGetNumber : 
+                safeGetProp;
+
+            var aVal = getMethod(a, prop, numeric);
+            var bVal = getMethod(b, prop, numeric);
+            
             return numeric ? compareNumbers(aVal, bVal) : compareStrings(aVal, bVal);
         };
     }
 
-    /*------------------------- 工具方法 -------------------------*/
+    // ----------------- 专用数值比较模块 -----------------
+    /**
+     * 生成安全数值比较器（专用于value属性）
+     */
+    private static function valueComparator():Function {
+        return function(a:Object, b:Object):Number {
+            return compareNumbers(
+                safeGetNumber(a, "value", true),
+                safeGetNumber(b, "value", true)
+            );
+        };
+    }
+
+    /*------------------------- 安全访问模块 ----------------------*/
     
+    // ----------------- 元数据安全访问 -----------------
     /**
      * 安全获取物品元数据
      * 
@@ -90,8 +143,9 @@ class org.flashNight.arki.item.ItemSortUtil {
         return itemData[field] != undefined ? itemData[field] : (numeric ? 0 : "");
     }
 
+    // ----------------- 通用属性安全访问 -----------------
     /**
-     * 安全获取物品属性值
+     * 安全获取普通属性值
      * 
      * @param item    物品对象
      * @param prop    属性名称
@@ -102,50 +156,87 @@ class org.flashNight.arki.item.ItemSortUtil {
         return item[prop] != undefined ? item[prop] : (numeric ? 0 : "");
     }
 
+    // ----------------- 专用数值安全访问 -----------------
+    /**
+     * 安全获取物品数量值（value属性专用）
+     * 
+     * 实现特性：
+     * 1. 自动转换机制：非数值类型强制转换为1
+     * 2. 空值保护：属性不存在时返回1
+     * 3. 类型安全：确保返回值符合预期类型
+     * 
+     * @param item    物品对象
+     * @param prop    属性名称（自动识别value属性）
+     * @param numeric 是否返回数值类型
+     * @return 安全处理后的数值
+     */
+    private static function safeGetNumber(item:Object, prop:String, numeric:Boolean) {
+        // 属性名称标准化
+        var normalizedProp:String = prop.toLowerCase();
+        
+        // 仅对value属性特殊处理
+        if (normalizedProp == "value") {
+            var val = item[prop];
+            
+            // 类型检测与转换
+            if (typeof val != "number") {
+                logInvalidValue(item, val); // 记录非常规数值
+                return numeric ? 1 : "1";
+            }
+            return val;
+        }
+        
+        // 其他属性走标准流程
+        return safeGetProp(item, prop, numeric);
+    }
+
+    /*------------------------- 工具模块 -------------------------*/
+    
+    // ----------------- 核心比较工具 -----------------
     /**
      * 数值比较核心方法
-     * 
-     * @param a 第一个数值
-     * @param b 第二个数值
-     * @return Number 比较结果：1(a>b), -1(a<b), 0(相等)
      */
     private static function compareNumbers(a:Number, b:Number):Number {
-        if (a > b) return 1;
-        if (a < b) return -1;
-        return 0;
+        return a > b ? 1 : (a < b ? -1 : 0);
     }
 
     /**
      * 字符串比较核心方法（不区分大小写）
-     * 
-     * @param a 第一个字符串
-     * @param b 第二个字符串
-     * @return Number 比较结果：1(a>b), -1(a<b), 0(相等)
      */
     private static function compareStrings(a:String, b:String):Number {
-        a = a != null ? a.toUpperCase() : "";
-        b = b != null ? b.toUpperCase() : "";
-        if (a > b) return 1;
-        if (a < b) return -1;
-        return 0;
+        var strA:String = a != null ? a.toUpperCase() : "";
+        var strB:String = b != null ? b.toUpperCase() : "";
+        return strA > strB ? 1 : (strA < strB ? -1 : 0);
     }
 
-    /*------------------------- 策略配置 -------------------------*/
+    // ----------------- 调试工具 -----------------
+    /**
+     * 记录无效value值
+     */
+    private static function logInvalidValue(item:Object, value):Void {
+        trace("[ItemSortUtil] 检测到非数值value属性 -" +
+              "物品名称:" + item.name +
+              "当前值:" + value +
+              "已自动转换为1");
+    }
+
+    /*------------------------- 策略配置模块 ----------------------*/
     
     /**
      * 排序策略链配置中心
-     * - 每个键值对表示一个排序策略
+     * 配置说明：
+     * - 每个键对应一种排序策略
      * - 数组顺序表示比较优先级（从主到次）
      */
     private static var STRATEGY_CHAINS:Object = initChain();
 
     private static function initChain():Object{
-        var obj:Object = {
+        return {
             // 类型优先策略链
             byType: [
                 metaComparator("type", false),
                 metaComparator("use", false),
-                metaComparator("price", true),
+                totalPriceComparator(),
                 metaComparator("level", true),
                 metaComparator("id", true)
             ],
@@ -154,14 +245,14 @@ class org.flashNight.arki.item.ItemSortUtil {
             byUse: [
                 metaComparator("use", false),
                 metaComparator("type", false),
-                metaComparator("price", true),
+                totalPriceComparator(),
                 metaComparator("level", true),
                 metaComparator("id", true)
             ],
             
-            // 价格优先策略链
+            // 总价优先策略链
             byPrice: [
-                metaComparator("price", true),
+                totalPriceComparator(),
                 metaComparator("type", false),
                 metaComparator("use", false),
                 metaComparator("level", true),
@@ -173,27 +264,22 @@ class org.flashNight.arki.item.ItemSortUtil {
                 metaComparator("level", true),
                 metaComparator("type", false),
                 metaComparator("use", false),
-                metaComparator("price", true),
+                totalPriceComparator(),
                 metaComparator("id", true)
             ],
             
-            // 简单策略（单条件排序）
+            // 简单策略
             byID:    [metaComparator("id", true)],
             byName:  [propComparator("name", false)],
-            byValue: [propComparator("value", true)],
+            byValue: [valueComparator()], // 使用专用比较器
             byTime:  [propComparator("lastUpdate", true)]
         };
-
-        return obj;
     }
 
-    /*------------------------- 策略选择 -------------------------*/
+    /*------------------------- 策略选择模块 ----------------------*/
     
     /**
      * 获取指定策略的比较链
-     * 
-     * @param method 策略名称
-     * @return Function 组装好的比较链函数
      */
     private static function getComparatorChain(method:String):Function {
         return createComparatorChain(STRATEGY_CHAINS[method]);
@@ -201,9 +287,6 @@ class org.flashNight.arki.item.ItemSortUtil {
 
     /**
      * 创建链式比较器
-     * 
-     * @param chain 比较器数组（按优先级排序）
-     * @return Function 可执行链式比较的函数
      */
     private static function createComparatorChain(chain:Array):Function {
         return function(a:Object, b:Object):Number {
@@ -217,9 +300,6 @@ class org.flashNight.arki.item.ItemSortUtil {
 
     /**
      * 验证排序策略有效性
-     * 
-     * @param method 输入的策略名称
-     * @return String 有效的策略名称（无效时返回默认策略）
      */
     private static function validateSortMethod(method:String):String {
         var DEFAULT_METHOD:String = "byType";
