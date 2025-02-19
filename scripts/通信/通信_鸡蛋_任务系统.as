@@ -348,6 +348,30 @@ _root.检测并添加初始任务 = function(){
 	}
 }
 
+//游戏难度检测
+_root.isHardMode = function():Boolean{
+	return _root.difficultyMode == 0;
+}
+_root.isEasyMode = function():Boolean{
+	return _root.difficultyMode == 1;
+}
+_root.isChallengeMode = function():Boolean{
+	return _root.difficultyMode == 2;
+}
+/*
+function ArrInclude(parentArr, arr){
+	i = 0;
+	while (i < parentArr.length){
+		if (parentArr[i] == arr){
+			return true;
+		}
+		i++;
+	}
+	return false;
+}
+*/
+
+
 _root.tasks_to_do = [];
 _root.tasks_finished = {};
 _root.task_chains_progress = {};

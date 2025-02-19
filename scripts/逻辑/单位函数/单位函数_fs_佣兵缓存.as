@@ -56,3 +56,8 @@
 		_loc2_ = _loc2_ + 1;
 	}
 };
+
+_root.玩家装备缓存 = [];
+_root.同伴装备缓存 = [[],[],[],[]];
+_root.玩家缓存状态 = false;
+_root.同伴缓存状态 = [false,false,false,false];

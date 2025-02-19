@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1739615377">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1739978329">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="98">
+    <DOMTimeline name="asLoader" currentFrame="68">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -317,6 +317,7 @@ ItemDataLoader.loadItemData(
 		_root.物品属性数组 = itemDataArray;
 		_root.id物品名对应表 = itemNamesByID;
 		_root.物品最大id = maxID;
+		_root.物品总数 = _root.itemDataDict.length;
     },
     function():Void {
         trace("主程序：物品数据加载失败！");

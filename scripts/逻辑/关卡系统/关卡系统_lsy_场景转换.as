@@ -1,10 +1,12 @@
 ﻿//加载人物相关
 
+_root.操控目标表 = [_root.控制目标];
+
 _root.转场景记录数据 = function(){
 	转场景记录数据第一次记录 = true;
 	var i = 0;
 	while (i < 4){
-		if (_root.操控目标表[i] != ""){
+		if (_root.操控目标表[i] != null && _root.操控目标表[i] != ""){
 			var 操控对象 = _root.gameworld[_root.操控目标表[i]];
 			_root.转场景数据[i][0] = 操控对象.hp;
 			_root.转场景数据[i][1] = 操控对象.mp;
@@ -49,7 +51,7 @@ _root.转场景数据传递 = function(){
 	}
 	var i = 0;
 	while (i < 4){
-		if (_root.操控目标表[i] != ""){
+		if (_root.操控目标表[i] != null && _root.操控目标表[i] != ""){
 			var 操控对象 = _root.gameworld[_root.操控目标表[i]];
 			if (_root.转场景数据[i][0] > 0){
 				操控对象.hp = _root.转场景数据[i][0];
