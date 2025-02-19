@@ -24,8 +24,14 @@ class org.flashNight.arki.item.ItemUtil{
         if (index.__proto__ == Number.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[itemNamesByID[index]]);
     }
 
-
-
+    /*
+     * 获取物品数据（返回原始数据，不进行拷贝）
+     * as2不支持protected，原则上只能在高性能需求时谨慎使用
+     */
+    public static function getRawItemData(index){
+        if (index.__proto__ == String.prototype) return ItemUtil.itemDataDict[index];
+        if (index.__proto__ == Number.prototype) return ItemUtil.itemDataDict[itemNamesByID[index]];
+    }
 
     /*
      * 玩家的物品移动操作

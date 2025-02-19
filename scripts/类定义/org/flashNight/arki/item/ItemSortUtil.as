@@ -1,4 +1,4 @@
-﻿import org.flashNight.gesh.object.ObjectUtil;
+﻿import org.flashNight.gesh.object.*;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.naki.DataStructures.*;
@@ -263,7 +263,10 @@ class org.flashNight.arki.item.ItemSortUtil {
      * @return 获取到的数据或默认值（数值返回0，字符串返回空）
      */
     private static function safeGetMeta(itemName:String, field:String, numeric:Boolean) {
-        var itemData = ItemUtil.itemDataDict[itemName];
+        var itemData:Object = ItemUtil.itemDataDict[itemName];
+
+        // 使用物品工具的方法无法正常工作，未查明原因，不影响业务暂且搁置
+        // var itemData:Object = ItemUtil.getRawItemData(itemName);
         if (!itemData) return numeric ? 0 : "";
         return itemData[field] != undefined ? itemData[field] : (numeric ? 0 : "");
     }
