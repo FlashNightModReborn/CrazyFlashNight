@@ -39,6 +39,12 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
         return items;
     }
 
+    // 设置物品集合数据
+    public function setItems(items:Object):Void
+    {
+        this.items = items;
+    }
+
     //判断某个键是否为空
     public function isEmpty(key:String):Boolean{
         return items[key] == null;

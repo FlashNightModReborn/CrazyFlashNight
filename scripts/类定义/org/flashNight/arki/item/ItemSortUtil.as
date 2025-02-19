@@ -1,6 +1,7 @@
 ﻿import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.item.*;
+import org.flashNight.naki.DataStructures.*;
 
 /**
  * ItemSortUtil 物品栏排序工具类（AS2优化版）
@@ -11,6 +12,7 @@ import org.flashNight.arki.item.*;
  * 3. 类型感知：自动区分数值型和字符串型数据的比较逻辑
  * 4. 策略显式配置：每个排序策略的优先级链清晰可见，便于维护扩展
  * 5. 模块化设计：对特殊属性value进行独立处理模块封装
+ * 6. 自动堆叠: 自动检查物品栏内的情况，将可堆叠的物品合并处理，以尽可能压缩空间
  * 
  * 排序策略清单：
  * - byType   : 物品类型 -> 用途 -> 总价 -> 等级 -> ID
@@ -27,20 +29,143 @@ class org.flashNight.arki.item.ItemSortUtil {
     /*------------------------- 公共接口 -------------------------*/
     
     /**
-     * 执行物品栏排序操作
-     * 
-     * @param inventory  需要排序的物品栏实例（ArrayInventory类型）
+     * 执行物品栏排序与合并操作
+     * @param inventory 需要排序的物品栏实例（ArrayInventory类型）
      * @param methodName 排序策略名称（可选，默认"byType"）
-     * @param callback   排序完成后的回调函数（可选）
+     * @param callback 排序完成后的回调函数（可选）
      */
     public static function sortInventory(
         inventory:ArrayInventory, 
         methodName:String, 
         callback:Function
     ):Void {
+        // 验证并获取有效的排序策略
         methodName = validateSortMethod(methodName);
+        
+        // 阶段1：执行标准排序流程
         inventory.rebuildOrder(getComparatorChain(methodName));
+        
+        // 阶段2：执行智能合并操作
+        mergeStackables(inventory);
+        
+        // 执行回调函数
         if (typeof callback === "function") callback(inventory);
+    }
+
+    /**************************** 智能合并模块 ****************************/
+    
+    /**
+     * 合并可堆叠物品核心方法
+     * @param inventory 需要处理的物品栏实例
+     */
+    private static function mergeStackables(inventory:ArrayInventory):Void {
+        // 获取当前有序物品数组
+        var oldItems:Array = inventory.getItemArray();
+        var capacity:Number = inventory.capacity;
+        
+        // 创建合并存储结构
+        var stackables:Object = {};  // 可堆叠物品 {name: {total: N, lastUpdate: Date}}
+        var nonStackables:Array = []; // 不可堆叠物品
+        var itemCount:Number = 0;
+        
+        // 遍历所有物品进行分类
+        for (var i:Number = 0; i < oldItems.length; i++) {
+            var item:Object = oldItems[i];
+            var itemData:Object = ItemUtil.getItemData(item.name);
+            
+            if (isStackable(item, itemData)) {
+                // 处理可堆叠物品
+                if (!stackables[item.name]) {
+                    stackables[item.name] = {
+                        total: 0,
+                        lastUpdate: 0
+                    };
+                }
+                stackables[item.name].total += item.value;
+                stackables[item.name].lastUpdate = Math.max(
+                    stackables[item.name].lastUpdate, 
+                    item.lastUpdate || 0
+                );
+            } else {
+                // 处理不可堆叠物品
+                if (itemCount < capacity) {
+                    nonStackables.push(item);
+                    itemCount++;
+                }
+            }
+        }
+
+        // 构建新物品数组
+        var newItems:Array = [];
+        
+        // 添加可堆叠物品（按原始排序顺序）
+        for (i = 0; i < oldItems.length; i++) {
+            item = oldItems[i];
+            itemData = ItemUtil.getItemData(item.name);
+            
+            if (isStackable(item, itemData) && stackables[item.name]) {
+                var mergedItem:Object = {
+                    name: item.name,
+                    value: stackables[item.name].total,
+                    lastUpdate: stackables[item.name].lastUpdate
+                };
+                newItems.push(mergedItem);
+                delete stackables[item.name]; // 防止重复添加
+                itemCount++;
+            }
+            if (itemCount >= capacity) break;
+        }
+
+        // 添加不可堆叠物品
+        newItems = newItems.concat(nonStackables);
+        
+        // 截断到容量限制
+        newItems = newItems.slice(0, capacity);
+
+        // 重建物品栏数据结构
+        rebuildInventory(inventory, newItems);
+    }
+
+    /**
+     * 判断物品是否可堆叠
+     * @param item 物品实例
+     * @param itemData 物品元数据
+     */
+    private static function isStackable(item:Object, itemData:Object):Boolean {
+        if (!itemData) return false;
+        // 排除非数值型value物品（如装备）
+        if (typeof item.value != "number") return false;
+        // 根据类型判断可堆叠性
+        return ["消耗品", "材料"].indexOf(itemData.type) != -1;
+    }
+
+    /**
+     * 重建物品栏数据结构
+     * @param inventory 目标物品栏
+     * @param items 新物品数组
+     */
+    private static function rebuildInventory(
+        inventory:ArrayInventory, 
+        items:Array
+    ):Void {
+        // 生成连续索引
+        var indexes:Array = [];
+        var itemMap:Object = {};
+        
+        for (var i:Number = 0; i < items.length; i++) {
+            var key:String = String(i);
+            itemMap[key] = items[i];
+            indexes.push(i);
+        }
+        
+        // 更新核心数据
+
+        inventory.setItems(itemMap);
+        var avlTree:TreeSet = inventory.getTreeSet();
+        inventory.setIndexes(TreeSet.buildFromArray(
+            indexes, 
+            avlTree.getCompareFunction()
+        ));
     }
 
     /*------------------------- 核心比较模块 ----------------------*/

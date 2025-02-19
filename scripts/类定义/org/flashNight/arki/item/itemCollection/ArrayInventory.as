@@ -62,6 +62,19 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         return indexes.toArray();
     }
 
+    //返回索引TreeSet
+    public function getTreeSet():TreeSet{
+        return indexes;
+    }
+
+    
+
+    // 外部直接设置TreeSet
+    public function setIndexes(indexes:TreeSet):Void
+    {
+        this.indexes = indexes;
+    }
+
     //以数字索引顺序返回物品数组
     public function getItemArray():Array{
         var indexArr = this.indexes.toArray();
