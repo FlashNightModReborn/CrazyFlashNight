@@ -2,6 +2,8 @@
 import org.flashNight.naki.DataStructures.TreeSet;
 import org.flashNight.gesh.iterator.*;
 import org.flashNight.naki.Sort.*;
+import org.flashNight.gesh.object.ObjectUtil;
+
 /*
  * 只以数字作为键的定长物品栏，继承物品栏基类
 */
@@ -172,6 +174,8 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         // 阶段1：准备数据
         var oldItems:Array = this.getItemArray(); // 获取当前有序物品数组
         var maxItems:Number = Math.min(oldItems.length, this.capacity);
+
+        _root.服务器.发布服务器消息(ObjectUtil.toString(oldItems))
         
         // 阶段2：排序处理（时间复杂度：O(n log n)）
         if (sortFunction != null) {
@@ -186,6 +190,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         }
         
         // 阶段4：批量重建数据结构（时间复杂度：O(n)）
+        // timsort 对有序数组效率极高，因此额外排序的成本可以忽略
         // 4.1 直接替换索引树
         this.indexes = TreeSet.buildFromArray(
             newIndexes, 
