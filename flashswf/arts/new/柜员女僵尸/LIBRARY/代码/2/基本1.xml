@@ -1,0 +1,279 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/2/基本1" itemID="673790e7-0000031c" symbolType="graphic" lastModified="1731726517">
+  <timeline>
+    <DOMTimeline name="基本1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;154&lt;/guideline&gt;&lt;guideline direction="v"&gt;9&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="文件夹_1" color="#FF4FFF" open="false" layerType="folder"/>
+        <DOMLayer name="右臂上" color="#FF4F4F" parentLayerIndex="0" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/Symbol 1428" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.370849609375" b="-0.0968017578125" c="-0.0968017578125" d="0.370849609375" tx="27.55" ty="34.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.85" y="-0.6"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":14,"parent":"3","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_52_14_806"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右臂下" color="#00FFFF" parentLayerIndex="0" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/元件 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.985443115234375" b="0.147918701171875" c="-0.147918701171875" d="0.985443115234375" tx="17.6" ty="60.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.4" y="-0.4"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"15","parent":14,"rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_52_16_7"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右手" color="#9933CC" parentLayerIndex="0" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/Symbol 1429" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.350753784179688" b="0.1549072265625" c="0.1549072265625" d="0.350753784179688" tx="19.1" ty="83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="-1.05"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"16","parent":"15","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_52_16_940"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文件夹_3" color="#FF0000" open="false" layerType="folder"/>
+        <DOMLayer name="头" color="#FF800A" parentLayerIndex="4" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/头1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384002685546875" b="0.0010528564453125" c="0.0010528564453125" d="0.384002685546875" tx="36.45" ty="30.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.15"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"4","parent":"3","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_52_7_334"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体" color="#FF4FFF" parentLayerIndex="4" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/Symbol 1427" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3780517578125" b="0.0718994140625" c="0.0718994140625" d="0.3780517578125" tx="31.1" ty="70.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.4" y="-0.05"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"3","parent":"R1731725580153","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_54_29_759"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文件夹_3" color="#FF4F4F" open="false" layerType="folder"/>
+        <DOMLayer name="右鞋" color="#009999" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.378448486328125" b="0.05609130859375" c="0.05609130859375" d="0.378448486328125" tx="17.4" ty="138.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.9"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"7","parent":"6","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_53_40_418"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右腿上" color="#FF0000" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/元件 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.99725341796875" b="-0.0527191162109375" c="0.0527191162109375" d="0.99725341796875" tx="22.05" ty="76.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="-0.3"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"5","parent":"3","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_54_45_554"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="右腿下" color="#669900" parentLayerIndex="7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/Symbol 1431" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.40704345703125" b="-0.118881225585938" c="-0.1075439453125" d="0.36822509765625" tx="27.3" ty="110.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.05" y="0.2"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"6","parent":"5","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_53_39_655"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文件夹_4" color="#00FFFF" open="false" layerType="folder"/>
+        <DOMLayer name="左鞋" color="#FF4F4F" parentLayerIndex="11" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/鞋子" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.300750732421875" b="-0.004486083984375" c="-0.005218505859375" d="0.34954833984375" tx="13.4" ty="129.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-0.85"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"10","parent":"9","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_53_51_742"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左腿上" color="#00FFFF" parentLayerIndex="11" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/元件 1 复制" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.959869384765625" b="0.15594482421875" c="-0.16009521484375" d="0.9857177734375" tx="28.05" ty="74.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-1.7" y="1.9"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"8","parent":"3","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_54_56_64"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左腿下" color="#9933CC" parentLayerIndex="11" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/Symbol 1423" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.386398315429688" b="-0.235504150390625" c="-0.225997924804688" d="0.370773315429688" tx="30.95" ty="103"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.5" y="-1.55"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"9","parent":"8","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_53_51_90"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文件夹_5" color="#9933CC" open="false" layerType="folder"/>
+        <DOMLayer name="左臂上" color="#FF800A" parentLayerIndex="15" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/Symbol 1426" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.375411987304688" b="0.0820770263671875" c="0.0820770263671875" d="0.375411987304688" tx="40.55" ty="36.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.65" y="0.15"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"11","parent":"3","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_55_2_295"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左臂下" color="#FF4FFF" parentLayerIndex="15" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/Symbol 1433" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.380859375" b="0.0472564697265625" c="0.0472564697265625" d="0.380859375" tx="44.85" ty="57"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35" y="-1.25"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"12","parent":"11","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_54_4_638"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="左手" color="#009999" parentLayerIndex="15" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="代码/2/身体/Symbol 1432" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.35186767578125" b="0.151412963867188" c="0.151412963867188" d="0.35186767578125" tx="46.75" ty="78.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.65" y="-1.15"/>
+                  </transformationPoint>
+                  <persistentData>
+                    <PD n="rigData" v='{"id":"13","parent":"12","rig":"R1731725580153","version":6,"snapTo":"2024_10_16_2_54_5_391"}'/>
+                  </persistentData>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

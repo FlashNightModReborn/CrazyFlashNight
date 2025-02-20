@@ -1,0 +1,285 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="代码/Symbol 1471" itemID="6577f78a-00001224" lastModified="1731780932">
+  <timeline>
+    <DOMTimeline name="Symbol 1471" currentFrame="90">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#22E181">
+          <frames>
+            <DOMFrame index="0" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="86" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="103" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#DD9A82">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _root.播放音效("僵尸0" + (random(6) + 1) + ".wav");
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="MergedLayer_1" color="#32BDEF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1/Symbol 1470" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.384994506835938" d="0.384994506835938" tx="57.75" ty="-125.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3/Symbol 1424" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.340179443359375" b="-0.0352020263671875" c="-0.0376129150390625" d="0.363250732421875" tx="28.95" ty="-67.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 1423" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.396484375" b="0.05230712890625" c="0.05230712890625" d="0.396484375" tx="25.8" ty="-39.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3/Symbol 1422" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.301849365234375" b="-0.027618408203125" c="-0.032073974609375" d="0.350830078125" tx="15.05" ty="-11.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3/Symbol 1425" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.335845947265625" b="0.18695068359375" c="0.18695068359375" d="0.335845947265625" tx="15.5" ty="-72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 1426" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0063018798828125" b="0.3834228515625" c="0.3834228515625" d="0.0063018798828125" tx="0.3" ty="-101.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 1431" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.381515502929688" b="0.0503387451171875" c="0.0503387451171875" d="0.381515502929688" tx="32.25" ty="-39.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3/Symbol 1424" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.376968383789063" b="0.076904296875" c="0.076904296875" d="0.376968383789063" tx="28.4" ty="-67.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 1427" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.289077758789063" b="0.2529296875" c="0.2529296875" d="0.289077758789063" tx="-2" ty="-111.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3/Symbol 1422" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.381515502929688" b="0.0503387451171875" c="0.0503387451171875" d="0.381515502929688" tx="31.55" ty="-5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 1432" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0190887451171875" b="0.383026123046875" c="0.383026123046875" d="-0.0190887451171875" tx="44.5" ty="-107.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 1433" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0190887451171875" b="0.383026123046875" c="0.383026123046875" d="-0.0190887451171875" tx="24.25" ty="-104.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 1429" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.339584350585938" b="0.178634643554688" c="0.178634643554688" d="-0.339584350585938" tx="20.35" ty="-97.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3/Symbol 1430" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.339584350585938" b="0.178634643554688" c="0.178634643554688" d="-0.339584350585938" tx="4.05" ty="-79.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3/Symbol 1434" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.21612548828125" b="0.317169189453125" c="0.317169189453125" d="0.21612548828125" tx="-6.5" ty="-131.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="3/Symbol 1435" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.289077758789063" b="0.2529296875" c="0.2529296875" d="0.289077758789063" tx="-7.2" ty="-104.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="未命名文件夹 1/Symbol 1428" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0126953125" b="0.383544921875" c="0.383544921875" d="-0.0126953125" tx="-13" ty="-95.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
