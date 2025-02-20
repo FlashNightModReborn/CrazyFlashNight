@@ -208,3 +208,7 @@ trace(map.keys()); // 输出 ["z","m","a"]
 - **键设计**：使用不可变类型（如字符串）作为键。
 - **比较函数**：确保比较函数与键类型兼容。
 - **批量加载**：初始化时优先使用 `putAll` 提升性能。
+
+
+var a = new org.flashNight.naki.DataStructures.OrderedMapTest()
+a. runTests();

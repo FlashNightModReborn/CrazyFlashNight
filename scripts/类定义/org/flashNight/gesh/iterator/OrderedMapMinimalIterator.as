@@ -21,8 +21,9 @@ class org.flashNight.gesh.iterator.OrderedMapMinimalIterator extends BaseIterato
      */
     public function OrderedMapMinimalIterator(map:OrderedMap) {
         this._map = map;
-        this._keyIterator = new TreeSetMinimalIterator(map.getKeySet());
         this._initialVersion = map.getVersion();
+        // 延迟初始化键迭代器
+        reset(); // 调用 reset() 初始化 _keyIterator
     }
 
     /**
@@ -56,9 +57,12 @@ class org.flashNight.gesh.iterator.OrderedMapMinimalIterator extends BaseIterato
      * 重置迭代器到初始状态
      */
     public function reset():Void {
-        checkConcurrentModification();
+        // 强制刷新键集合迭代器和版本号
+        this._keyIterator = new TreeSetMinimalIterator(_map.getKeySet());
+        this._initialVersion = _map.getVersion(); // 同步最新版本号
         _keyIterator.reset();
     }
+
 
     /**
      * 释放资源
@@ -77,4 +81,5 @@ class org.flashNight.gesh.iterator.OrderedMapMinimalIterator extends BaseIterato
             throw new Error("ConcurrentModificationError: OrderedMap在迭代期间被修改");
         }
     }
+
 }
