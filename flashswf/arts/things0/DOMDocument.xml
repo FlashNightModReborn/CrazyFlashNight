@@ -9,10 +9,6 @@
           <DOMFolderItem name="1.冷兵器/长柄" itemID="66f2d400-00001016"/>
           <DOMFolderItem name="1.冷兵器/长柄/5.黑铁重剑枪" itemID="66f2d400-00001017"/>
           <DOMFolderItem name="1.冷兵器/长柄/7.硬木长矛" itemID="66f76b32-000004f8"/>
-          <DOMFolderItem name="1.特效文件夹" itemID="66fc24d5-000017a3"/>
-          <DOMFolderItem name="1.特效文件夹/08.力大砖飞" itemID="66fc24d5-000017a4"/>
-          <DOMFolderItem name="1.特效文件夹/08.力大砖飞/碎石飞扬" itemID="66fc24d5-000017a5"/>
-          <DOMFolderItem name="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic" itemID="66fc24d5-000017a6"/>
           <DOMFolderItem name="Graphic" itemID="669baccc-0000152d"/>
           <DOMFolderItem name="image" itemID="65a6bb64-00001381"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
@@ -27,7 +23,7 @@
           <DOMFolderItem name="冷兵/锐器/短刀" itemID="66f97324-0000047e"/>
           <DOMFolderItem name="冷兵/锐器/短刀/匕首" itemID="66f97324-0000047f"/>
           <DOMFolderItem name="临时武器" itemID="65deedc8-00000e19"/>
-          <DOMFolderItem name="神秘文件夹" itemID="66530522-00000d7c"/>
+          <DOMFolderItem name="神秘文件夹" itemID="66530522-00000d7c" isExpanded="true"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
           <DOMFolderItem name="特效与子弹" itemID="6634d11f-000008c2"/>
           <DOMFolderItem name="特效与子弹/01.白净色系" itemID="6634d11f-000008c3"/>
@@ -39,8 +35,11 @@
           <DOMFolderItem name="特效与子弹/01.白净色系/圆状气爆" itemID="6634d11f-000008c4"/>
           <DOMFolderItem name="特效与子弹/01.白净色系/圆状气爆/未命名文件夹 1" itemID="6634d11f-000008c5" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/01.白净色系/重力用特效" itemID="66660762-00001512"/>
+          <DOMFolderItem name="特效与子弹/08.力大砖飞" itemID="66fc24d5-000017a4"/>
+          <DOMFolderItem name="特效与子弹/08.力大砖飞/碎石飞扬" itemID="66fc24d5-000017a5"/>
+          <DOMFolderItem name="特效与子弹/08.力大砖飞/碎石飞扬/Graphic" itemID="66fc24d5-000017a6"/>
           <DOMFolderItem name="特效与子弹/裂地拳特效" itemID="668be6aa-00000635"/>
-          <DOMFolderItem name="无AS链接" itemID="673f5879-00000b0e"/>
+          <DOMFolderItem name="无AS链接" itemID="673f5879-00000b0e" isExpanded="true"/>
           <DOMFolderItem name="无AS链接/气功弹（和爆炸）素材" itemID="673f5879-00000b0f"/>
           <DOMFolderItem name="新霸体特效" itemID="66c19db5-000017a9"/>
           <DOMFolderItem name="移动射击动画层" itemID="66577cc3-00002e4e"/>
@@ -51,11 +50,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
           <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
      </fonts>
      <media>
           <DOMBitmapItem name="image/bitmap1263.png" itemID="67764730-00002060" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/image/bitmap1263.png" sourceLastImported="1736862750" externalFileCRC32="1229271075" externalFileSize="302" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1263.png" bitmapDataHRef="M 109 1702343951.dat" frameRight="4800" frameBottom="4800"/>
@@ -164,16 +163,6 @@
           <DOMSoundItem name="sound/重武器.wav" itemID="65b9f98c-000005f0" sourceExternalFilepath="./LIBRARY/sound/重武器.wav" sourceLastImported="1736862781" externalFileCRC32="2943343212" externalFileSize="27420" href="sound/重武器.wav" soundDataHRef="M 112 1706686860.dat" format="44kHz 16bit Mono" sampleCount="13688" exportFormat="5"/>
      </media>
      <symbols>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 865.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000361" lastModified="1477651513"/>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 868.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000364" lastModified="1477651513"/>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 869.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000365" lastModified="1477651513"/>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 870.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000366" lastModified="1477651513"/>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 871.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000367" lastModified="1477651513"/>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 872.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000368" lastModified="1477651513"/>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 873.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000369" lastModified="1477651513"/>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 1156.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000484" lastModified="1477651515"/>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 1157.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000485" lastModified="1477651515"/>
-          <Include href="1.特效文件夹/08.力大砖飞/碎石飞扬/Graphic/shape 1158.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000486" lastModified="1477651515"/>
           <Include href="Graphic/shape 595.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000254" lastModified="1477651486"/>
           <Include href="Graphic/shape 596.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000255" lastModified="1477651486"/>
           <Include href="Graphic/shape 597.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000256" lastModified="1477651486"/>
@@ -794,7 +783,7 @@
           <Include href="sprite/Symbol 559.xml" loadImmediate="false" itemID="6577b699-00000ac3" lastModified="1702343951"/>
           <Include href="sprite/Symbol 561.xml" loadImmediate="false" itemID="6577b699-00000ac4" lastModified="1702343951"/>
           <Include href="sprite/Symbol 563.xml" loadImmediate="false" itemID="6577b699-00000ac5" lastModified="1702343951"/>
-          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1738340697"/>
+          <Include href="sprite/Symbol 617.xml" loadImmediate="false" itemID="6577b699-00000adc" lastModified="1740072442"/>
           <Include href="sprite/Symbol 618.xml" loadImmediate="false" itemID="6577b699-00000add" lastModified="1720908276"/>
           <Include href="sprite/Symbol 619.xml" loadImmediate="false" itemID="6577b699-00000ade" lastModified="1720908276"/>
           <Include href="sprite/Symbol 620.xml" loadImmediate="false" itemID="6577b699-00000adf" lastModified="1702343951"/>
@@ -1229,6 +1218,16 @@
           <Include href="特效与子弹/01.白净色系/重力用特效/b311.xml" loadImmediate="false" itemID="4f7e582e-0000179d" lastModified="1333680174"/>
           <Include href="特效与子弹/01.白净色系/重力用特效/b312.xml" itemIcon="1" loadImmediate="false" itemID="4f7e582e-0000179e" lastModified="1333680174"/>
           <Include href="特效与子弹/01.白净色系/重力用特效/b313.xml" itemIcon="1" loadImmediate="false" itemID="4f7e582e-0000179f" lastModified="1717962775"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 865.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000361" lastModified="1477651513"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 868.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000364" lastModified="1477651513"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 869.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000365" lastModified="1477651513"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 870.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000366" lastModified="1477651513"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 871.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000367" lastModified="1477651513"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 872.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000368" lastModified="1477651513"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 873.xml" itemIcon="1" loadImmediate="false" itemID="58132c39-00000369" lastModified="1477651513"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 1156.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000484" lastModified="1477651515"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 1157.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000485" lastModified="1477651515"/>
+          <Include href="特效与子弹/08.力大砖飞/碎石飞扬/Graphic/shape 1158.xml" itemIcon="1" loadImmediate="false" itemID="58132c3b-00000486" lastModified="1477651515"/>
           <Include href="特效与子弹/裂地拳特效/shape 2022.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e6" lastModified="1477651346"/>
           <Include href="特效与子弹/裂地拳特效/shape 2023.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e7" lastModified="1477651346"/>
           <Include href="特效与子弹/裂地拳特效/shape 2024.xml" itemIcon="1" loadImmediate="false" itemID="58132b92-000007e8" lastModified="1477651346"/>
@@ -1328,7 +1327,7 @@
           <Include href="组合拳幻影4‘.xml" loadImmediate="false" itemID="674dba4f-00000597" lastModified="1733147216"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="5" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Layer 1" color="#DEEE3E" current="true" isSelected="true">
                          <frames>
@@ -1389,7 +1388,7 @@
                               </DOMFrame>
                               <DOMFrame index="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 617" centerPoint3DX="114.75" centerPoint3DY="184.65">
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 617" selected="true" centerPoint3DX="114.75" centerPoint3DY="184.65">
                                              <matrix>
                                                   <Matrix tx="50.25" ty="147.95"/>
                                              </matrix>
