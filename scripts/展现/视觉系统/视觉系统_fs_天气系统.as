@@ -272,6 +272,7 @@ _root.天气系统.设置当前天气 = function()
 EventBus.getInstance().subscribe("WeatherUpdated", _root.天气系统.设置当前天气, _root.天气系统);
 
 EventBus.getInstance().subscribe("WeatherTimeRateUpdated", function(光照等级) {
+    // _root.发布消息("WeatherTimeRateUpdated:" + 光照等级)
     this.金币时间倍率 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.金币时间最大倍率, 1);
     this.经验时间倍率 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, this.经验时间最大倍率, 1);
     this.人物信息透明度 = Interpolatior.linear(光照等级, 0, this.时间倍率启动等级, 0, 100);
