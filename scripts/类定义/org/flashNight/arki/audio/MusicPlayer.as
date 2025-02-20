@@ -58,9 +58,10 @@ class org.flashNight.arki.audio.MusicPlayer implements IMusicPlayer {
      */
     public function MusicPlayer() {
         trace("MusicPlayer: 构造函数调用，创建 MusicPlayer 实例");
-        // 在根影片剪辑中创建一个独立的空影片剪辑，用于音频播放和动画控制
-        _movieClip = _root.createEmptyMovieClip("musicPlayer_" + MusicPlayer.uid++, _root.getNextHighestDepth());
-        trace("创建影片剪辑: " + _movieClip)
+        // 创建一个独立的空影片剪辑，用于音频播放和动画控制。默认在_root.musicManager中创建，若未找到则在根影片剪辑中创建
+        var parentclip = _root.musicManager != null ? _root.musicManager : _root;
+        _movieClip = parentclip.createEmptyMovieClip("musicPlayer_" + MusicPlayer.uid++, parentclip.getNextHighestDepth());
+        // trace("创建影片剪辑: " + _movieClip)
     }
 
     // #endregion
@@ -87,7 +88,7 @@ class org.flashNight.arki.audio.MusicPlayer implements IMusicPlayer {
         }
         _preloadedUrl = fullPath;
         if (_preloadedSound == undefined) {
-            _preloadedSound = new Sound(_movieClip); // 使用独立的影片剪辑控制
+            _preloadedSound = new Sound();
             trace("MusicPlayer.preLoad: 创建新的 _preloadedSound 实例");
         }
         
@@ -142,7 +143,7 @@ class org.flashNight.arki.audio.MusicPlayer implements IMusicPlayer {
         
         // 否则，使用流式加载方式播放
         if (_streamSound == undefined) {
-            _streamSound = new Sound(_movieClip); // 使用独立的影片剪辑控制
+            _streamSound = new Sound();
             trace("MusicPlayer.play: 创建新的 _streamSound 实例");
         }
         var self:MusicPlayer = this;

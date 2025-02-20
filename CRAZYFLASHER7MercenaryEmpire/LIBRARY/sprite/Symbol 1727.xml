@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1739609449" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1740073034" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="Symbol 1727" currentFrame="9">
+    <DOMTimeline name="Symbol 1727">
       <layers>
         <DOMLayer name="Labels Layer" color="#C688B8">
           <frames>
@@ -26,7 +26,8 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[//检测全局音量
-volBtn._x = 40 + _root.soundEffectManager.getGlobalVolume() * 1.5;
+globalVolBtn._x = 40 + _root.soundEffectManager.getGlobalVolume() * 1.5;
+bgmVolBtn._x = 40 + _root.soundEffectManager.getBGMVolume() * 1.5;
 
 function 刷新键值设定显示()
 {
@@ -1758,7 +1759,7 @@ onClipEvent(mouseUp){
               <elements>
                 <DOMSymbolInstance libraryItemName="shape/Symbol 938" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="112" ty="151.15"/>
+                    <Matrix tx="15" ty="180"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1778,7 +1779,7 @@ onClipEvent(mouseUp){
                     <Color alphaMultiplier="0.6015625"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/volBtn" name="volBtn" symbolType="button">
+                <DOMSymbolInstance libraryItemName="sprite/volBtn" name="globalVolBtn" symbolType="button">
                   <matrix>
                     <Matrix tx="190" ty="186.65"/>
                   </matrix>
@@ -1787,29 +1788,94 @@ onClipEvent(mouseUp){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(press){
-	this.globalVolMC.onEnterFrame = function(){
+	this.volMC.onEnterFrame = function(){
 		var xmouse = this._xmouse;
 		var vol = (xmouse - 32.5) / 1.5;
 		vol -= vol % 10;
 		if(vol <= 0) vol = 0;
 		if(vol > 100) vol = 100;
-		volBtn._x = vol * 1.5 + 40;
+		globalVolBtn._x = vol * 1.5 + 40;
 		_root.soundEffectManager.setGlobalVolume(vol);
 	}
 }
 on(release, releaseOutside){
-	delete this.globalVolMC.onEnterFrame;
+	delete this.volMC.onEnterFrame;
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="全局音量mc" name="globalVolMC" centerPoint3DX="37.75" centerPoint3DY="163.95">
+                <DOMSymbolInstance libraryItemName="全局音量mc" name="volMC" centerPoint3DX="38.25" centerPoint3DY="164.75">
                   <matrix>
-                    <Matrix tx="9.5" ty="154.2"/>
+                    <Matrix tx="10" ty="155"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="28.25" y="9.75"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="shape/Symbol 938" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="15" ty="235"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="142.9" centerPoint3DY="240.1">
+                  <matrix>
+                    <Matrix a="0.73883056640625" tx="40" ty="239.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BevelFilter blurX="0" blurY="0" angle="44.9992520943067" distance="1" highlightColor="#000000" shadowColor="#666666"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="sprite/volBtn" name="bgmVolBtn" symbolType="button">
+                  <matrix>
+                    <Matrix tx="190" ty="241.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+	this.volMC.onEnterFrame = function(){
+		var xmouse = this._xmouse;
+		var vol = (xmouse - 32.5) / 1.5;
+		vol -= vol % 10;
+		if(vol <= 0) vol = 0;
+		if(vol > 100) vol = 100;
+		bgmVolBtn._x = vol * 1.5 + 40;
+		_root.soundEffectManager.setBGMVolume(vol);
+	}
+}
+on(release, releaseOutside){
+	delete this.volMC.onEnterFrame;
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="52" height="15.55" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="11.5" ty="210"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>音乐音量</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
               </elements>
             </DOMFrame>
             <DOMFrame index="1" duration="3" keyMode="9728">
@@ -1927,13 +1993,13 @@ onClipEvent(mouseUp){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 43" color="#62F3F6">
+        <DOMLayer name="Layer 43" color="#62F3F6" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1654" name="askPwd_btn" centerPoint3DX="65.15" centerPoint3DY="286.3">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1654" name="askPwd_btn" centerPoint3DX="164.7" centerPoint3DY="292.5">
                   <matrix>
-                    <Matrix tx="26.15" ty="273.8"/>
+                    <Matrix tx="125.7" ty="280"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2094,9 +2160,9 @@ onClipEvent(mouseUp){
                     <Color alphaMultiplier="0.6015625"/>
                   </color>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="106.55" centerPoint3DY="206.75">
+                <DOMSymbolInstance libraryItemName="sprite/悬浮UI/Symbol 880" centerPoint3DX="106.55" centerPoint3DY="266">
                   <matrix>
-                    <Matrix a="1.1195068359375" tx="4.05" ty="205.75"/>
+                    <Matrix a="1.1195068359375" tx="4.05" ty="265"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2420,9 +2486,9 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1652" centerPoint3DX="65.5" centerPoint3DY="247.45">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1652" centerPoint3DX="65.5" centerPoint3DY="292.5">
                   <matrix>
-                    <Matrix tx="26.5" ty="234.95"/>
+                    <Matrix tx="26.5" ty="280"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -2600,7 +2666,7 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 51" color="#05E4A8" current="true" isSelected="true">
+        <DOMLayer name="Layer 51" color="#05E4A8">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

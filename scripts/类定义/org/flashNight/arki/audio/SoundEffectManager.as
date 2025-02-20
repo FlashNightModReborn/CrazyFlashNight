@@ -22,13 +22,17 @@ class org.flashNight.arki.audio.SoundEffectManager {
 
     private var globalSoundObj:Sound; // 全局音量控制器
     private var globalVolume:Number; // 全局音量
+    private var bgmVolume:Number; // BGM音量
+    private var currentBGMBaseVolume:Number; // 记录当前音乐的基础音量
 
     public var bgmList:Object;
     private var bgmListPath:String = "sounds/bgm_list.xml";
     
     public function SoundEffectManager(preproc:SoundPreprocessor) {
         this.preprocessor = preproc;
-        globalSoundObj = new Sound(); 
+        globalSoundObj = new Sound();
+        globalVolume = 100;
+        bgmVolume = 100;
         
         // 初始化三轨道
         bgmEngine = new MusicEngine(null, null, null); 
@@ -83,6 +87,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
      * @param source           分类（可选），否则从 soundSourceDict 查找
      */
     public function playSound(soundId:String, source:String):Void {
+        if(globalVolume == 0) return; //音量为0时不调用声音
         // 直接调用 sfxEngine.handleCommand("play", {...}) 
         sfxEngine.handleCommand("play", {
             soundId: soundId,
@@ -116,7 +121,9 @@ class org.flashNight.arki.audio.SoundEffectManager {
         if(command != null){
             if(loop !== true) loop = false;
             if(isNaN(volume) || volume < 0 || volume > 100) volume = bgm.baseVolume;
-            bgmEngine.handleCommand(command, {clip:url, priority:0, loop:loop, volume:volume, fadeDuration:bgm.fadeDuration});
+            var finalVolume = volume * bgmVolume / 100; // 应用设置的音乐音量
+            var result = bgmEngine.handleCommand(command, {clip:url, priority:0, loop:loop, volume:finalVolume, fadeDuration:bgm.fadeDuration});
+            if(result) currentBGMBaseVolume = volume; // 成功播放音乐后记录基础音量
         }
     }
     public function stopBGM():Void {
@@ -147,5 +154,17 @@ class org.flashNight.arki.audio.SoundEffectManager {
     }
     public function getGlobalVolume():Number{
         return globalVolume;
+    }
+    /**
+     * 调整BGM音量
+     */
+    public function setBGMVolume(value:Number):Void{
+        if(isNaN(value) || value > 100 || value < 0) return;
+        bgmVolume = value;
+        var finalVolume = currentBGMBaseVolume * bgmVolume / 100; // 应用设置的音乐音量
+        bgmEngine.handleCommand("adjust",{volume: finalVolume});
+    }
+    public function getBGMVolume():Number{
+        return bgmVolume;
     }
 }

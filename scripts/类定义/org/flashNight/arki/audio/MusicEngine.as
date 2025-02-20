@@ -87,14 +87,14 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
      * 对外接口：处理命令
      *   - "play", "switch", "stop", "mute", "unmute", "adjust", "jump", "query", "complete" 等
      */
-    public function handleCommand(command:String, params:Object):Void {
+    public function handleCommand(command:String, params:Object):Boolean {
         var cmdPriority:Number = (params != null && params.priority != undefined) ? params.priority : 0;
         
         // 对于需要优先级的命令
         if (command == "play" || command == "switch" || command == "mute" || command == "unmute" || command == "adjust") {
             if (cmdPriority < currentPriority) {
                 trace("[MusicEngine] Command '" + command + "' ignored due to low priority (" + cmdPriority + " < " + currentPriority + ")");
-                return;
+                return false;
             }
             currentPriority = cmdPriority;
         }
@@ -104,11 +104,11 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                 //只有idle状态下可以使用play指令
                 if(getActiveStateName() !== "idle"){
                     trace("[MusicEngine] Error: 'play' command not in idle state.");
-                    return;
+                    return false;
                 }
                 if (params == null || params.clip == undefined) {
                     trace("[MusicEngine] Error: 'play' command missing 'clip' parameter.");
-                    return;
+                    return false;
                 }
                 currentClip = params.clip;
                 currentLoop = (params.loop != undefined) ? params.loop : false;
@@ -120,17 +120,17 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                 
                 trace("[MusicEngine] Processing 'play' command: clip=" + currentClip + ", priority=" + cmdPriority);
                 this.ChangeState("fadein");
-                break;
+                return true;
             
             case "switch":
                 //只有playing状态下可以使用switch指令
                 if(getActiveStateName() !== "playing"){
                     trace("[MusicEngine] Error: 'switch' command not in playing state.");
-                    return;
+                    return false;
                 }
                 if (params == null || params.clip == undefined) {
                     trace("[MusicEngine] Error: 'switch' command missing 'clip' parameter.");
-                    return;
+                    return false;
                 }
                 currentClip = params.clip;
                 currentLoop = (params.loop != undefined) ? params.loop : currentLoop;
@@ -143,35 +143,35 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                 trace("[MusicEngine] Processing 'switch' command: switching to clip=" + currentClip + ", priority=" + cmdPriority);
                 // 先淡出，再由外部/后续命令重新 play (x) 目前状态机逻辑改为淡出后自动回到淡入
                 this.ChangeState("fadeout");
-                break;
+                return true;
             
             case "stop":
                 var stateName = getActiveStateName();
                 if(stateName !== "playing" && stateName !== "fadein"){
                     trace("[MusicEngine] Error: 'switch' command not in playing or fadein state.");
-                    return;
+                    return false;
                 }
                 trace("[MusicEngine] Processing 'stop' command");
                 currentClip = null;
                 currentPriority = 0; // 重置
                 this.ChangeState("fadeout");
-                break;
+                return true;
             
             case "mute":
                 trace("[MusicEngine] Processing 'mute' command with priority " + cmdPriority);
                 fadeInState.fadeDuration = (params.fadeDuration != undefined) ? params.fadeDuration : fadeInState.fadeDuration;
                 this.ChangeState("mute");
-                break;
+                return true;
             
             case "unmute":
                 trace("[MusicEngine] Processing 'unmute' command with priority " + cmdPriority);
                 this.ChangeState("fadein");
-                break;
+                return true;
             
             case "adjust":
                 if (params == null) {
                     trace("[MusicEngine] Error: 'adjust' command missing parameters.");
-                    return;
+                    return false;
                 }
                 if (getActiveStateName() == "playing") {
                     var newVolume:Number = (params.volume != undefined) ? params.volume : playingState.targetVolume;
@@ -180,19 +180,20 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                     playingState.adjustParameters(newVolume, newFadeDuration, newLoop);
                 } else {
                     trace("[MusicEngine] 'adjust' command ignored: not in playing state.");
+                    return false;
                 }
-                break;
+                return true;
             
             case "jump":
                 if (params == null || params.position == undefined) {
                     trace("[MusicEngine] Error: 'jump' command missing 'position'.");
-                    return;
+                    return false;
                 }
                 trace("[MusicEngine] Processing 'jump' to position " + params.position);
                 if (musicPlayer != null) {
                     musicPlayer.jumpTo(params.position);
                 }
-                break;
+                return true;
             
             case "query":
                 trace("[MusicEngine] Current State: " + getActiveStateName());
@@ -202,7 +203,7 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                           ", loop: " + playingState.loop + 
                           ", priority: " + playingState.priority);
                 }
-                break;
+                return true;
             
             case "complete":
                 if (getActiveStateName() == "playing") {
@@ -216,12 +217,13 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
                     }
                 } else {
                     trace("[MusicEngine] 'complete' ignored: not in playing state.");
+                    return false;
                 }
-                break;
+                return true;
             
             default:
                 trace("[MusicEngine] Unknown command: " + command);
-                break;
+                return false;
         }
     }
     

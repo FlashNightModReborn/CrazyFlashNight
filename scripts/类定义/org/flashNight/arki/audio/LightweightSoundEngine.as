@@ -28,18 +28,17 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
      *   - "stop": 无参数
      * 其余命令可根据需要扩展或忽略
      */
-    public function handleCommand(command:String, params:Object):Void {
+    public function handleCommand(command:String, params:Object):Boolean {
         switch(command) {
             case "play":
-                this.handlePlayCommand(params);
-                break;
+                return this.handlePlayCommand(params);
             case "stop":
                 this.stop();
-                break;
+                return true;
             // 可根据需求扩展 "mute", "unmute", "adjust" 等
             default:
                 trace("[LightweightSoundEngine] Unknown command: " + command);
-                break;
+                return false;
         }
     }
     
@@ -50,10 +49,10 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
      *   - 根据 soundSourceDict 找到分类 MovieClip
      *   - attachSound 并 setVolume、start()
      */
-    private function handlePlayCommand(params:Object):Void {
+    private function handlePlayCommand(params:Object):Boolean {
         if (params == null || params.soundId == undefined) {
             trace("[LightweightSoundEngine] Error: 'play' requires 'soundId' parameter.");
-            return;
+            return false;
         }
         var soundId:String = params.soundId;
         // var volumeMultiplier:Number = (params.volumeMultiplier != undefined) ? params.volumeMultiplier : 1;
@@ -63,14 +62,14 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
         var category:String = (source != undefined) ? source : this.preprocessor.soundSourceDict[soundId];
         if (category == undefined) {
             trace("[LightweightSoundEngine] Error: No category found for soundId: " + soundId);
-            return;
+            return false;
         }
         
         // 获取对应轨道 MovieClip
         var target_mc:MovieClip = this.getCategoryMovieClip(category);
         if (!target_mc) {
             trace("[LightweightSoundEngine] Error: Could not get target MovieClip for category: " + category);
-            return;
+            return false;
         }
         
         // 检查最小播放间隔
@@ -78,7 +77,7 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
         var lastTime:Number = this.preprocessor.soundLastTime[soundId];
         if (!isNaN(lastTime) && time - lastTime < this.preprocessor.minInterval) {
             trace("[LightweightSoundEngine] Play ignored due to min interval for soundId: " + soundId);
-            return;
+            return false;
         }
         this.preprocessor.soundLastTime[soundId] = time;
         
@@ -103,6 +102,7 @@ class org.flashNight.arki.audio.LightweightSoundEngine implements IMusicEngine {
         
         this.lastSoundId = soundId;
         trace("[LightweightSoundEngine] Playing soundId=" + soundId + ", category=" + category);
+        return true;
     }
     
     /**

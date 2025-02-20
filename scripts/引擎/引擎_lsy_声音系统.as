@@ -1,6 +1,8 @@
 ﻿import org.flashNight.arki.audio.SoundPreprocessor;
 import org.flashNight.arki.audio.SoundEffectManager;
 
+_root.createEmptyMovieClip("musicManager", 65532); // BGM总影片剪辑
+
 var preproc = new SoundPreprocessor(null);
 _root.soundEffectManager = new SoundEffectManager(preproc);
 
