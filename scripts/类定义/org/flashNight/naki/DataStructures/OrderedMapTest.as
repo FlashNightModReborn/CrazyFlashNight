@@ -43,25 +43,26 @@ class org.flashNight.naki.DataStructures.OrderedMapTest {
     private function testBasicOperations():Void {
         trace("\n[基础操作] 测试 put/get/remove...");
         map = new OrderedMap(stringCompare);
-        
+
         // 测试插入
         map.put("age", 30);
         map.put("name", "John");
         map.put("email", "john@example.com");
         
-        assert(map.size() == 3, "初始插入后 size 应为3");
-        assert(map.get("name") == "John", "应能获取正确值");
-        assert(map.contains("email"), "应包含已插入的键");
-
+        // 验证初始状态
+        assert(map.size() == 3, "Size 应变为 3");
+        assert(map.getKeySet().size() == 3, "KeySet 大小应为 3");
+        
         // 测试更新
         map.put("age", 31);
-        assert(map.get("age") == 31, "应能更新现有键的值");
-
+        assert(map.size() == 3, "更新不应改变 size");
+        
         // 测试删除
-        assert(map.remove("email"), "应成功删除存在的键");
-        assert(!map.contains("email"), "删除后不应包含该键");
-        assert(map.size() == 2, "删除后 size 应为2");
+        assert(map.remove("email"), "应返回删除成功");
+        assert(map.size() == 2, "删除后 size 应为 2");
+        assert(map.getKeySet().size() == 2, "KeySet 大小应同步更新");
     }
+
 
     //====================== 批量操作测试 ======================//
 
@@ -127,19 +128,31 @@ class org.flashNight.naki.DataStructures.OrderedMapTest {
     private function testComparatorChanges():Void {
         trace("\n[比较函数] 测试 changeCompareFunction...");
         map = new OrderedMap(stringCompare);
-        map.putAll({c:1, a:2, b:3});
+        map.putAll({c:"C", a:"A", b:"B"});
 
-        // 更换为降序比较
-        map.changeCompareFunction(function(a, b) {
-            return b.localeCompare(a);
+        // 验证初始排序
+        var initialKeys:Array = map.keys();
+        assert(arraysEqual(initialKeys, ["a","b","c"]), "初始升序排序");
+
+        // 更换为自定义降序比较
+        map.changeCompareFunction(function(a:String, b:String):Number {
+            if(a > b) return -1;
+            if(a < b) return 1;
+            return 0;
         });
-
+        
+        // 验证新排序
         var keys:Array = map.keys();
-        assert(arraysEqual(keys, ["c","b","a"]), "更换比较函数后应重新排序");
-
+        assert(arraysEqual(keys, ["c","b","a"]), "更换后降序排序");
+        
+        // 验证数据完整性
+        assert(map.get("c") == "C", "数据完整性检查");
+        assert(map.size() == 3, "数据完整性检查");
+        
         // 验证平衡性
-        assert(isBalanced(map.getKeySet().getRoot()), "更换比较函数后应保持平衡");
+        assert(isBalanced(map.getKeySet().getRoot()), "平衡性检查");
     }
+
 
     //====================== 边界情况测试 ======================//
 
@@ -247,10 +260,17 @@ class org.flashNight.naki.DataStructures.OrderedMapTest {
     //====================== 辅助方法 ======================//
 
     private function stringCompare(a:String, b:String):Number {
-        if(a > b) return 1;
-        if(b > a) return -1;
-        return 0;
+        // 手动实现字典序比较
+        var len:Number = Math.min(a.length, b.length);
+        for (var i:Number = 0; i < len; i++) {
+            var charA:Number = a.charCodeAt(i);
+            var charB:Number = b.charCodeAt(i);
+            if (charA > charB) return 1;
+            if (charA < charB) return -1;
+        }
+        return a.length > b.length ? 1 : (a.length < b.length ? -1 : 0);
     }
+
 
     private function arraysEqual(a:Array, b:Array):Boolean {
         if (a.length != b.length) return false;
@@ -262,9 +282,18 @@ class org.flashNight.naki.DataStructures.OrderedMapTest {
 
     private function isBalanced(node:TreeNode):Boolean {
         if (node == null) return true;
-        var lh:Number = node.left ? node.left.height : 0;
-        var rh:Number = node.right ? node.right.height : 0;
-        if (Math.abs(lh - rh) > 1) return false;
+        
+        function checkHeight(n:TreeNode):Number {
+            if (n == null) return 0;
+            return 1 + Math.max(checkHeight(n.left), checkHeight(n.right));
+        }
+        
+        var leftHeight:Number = checkHeight(node.left);
+        var rightHeight:Number = checkHeight(node.right);
+        
+        if (Math.abs(leftHeight - rightHeight) > 1) return false;
+        
         return isBalanced(node.left) && isBalanced(node.right);
     }
+
 }

@@ -32,9 +32,10 @@ class org.flashNight.naki.DataStructures.OrderedMap {
      * @param value 值
      */
     public function put(key:String, value:Object):Void {
-        if (!keySet.contains(key)) {
+        var existed:Boolean = keySet.contains(key);
+        if (!existed) {
             keySet.add(key);
-            version++;
+            version++; // 仅当添加新键时增加版本号
         }
         valueMap[key] = value;
     }
@@ -179,13 +180,20 @@ class org.flashNight.naki.DataStructures.OrderedMap {
      * @param newCompare 新的键比较函数
      */
     public function changeCompareFunction(newCompare:Function):Void {
-        var entries:Array = this.entries();
-        var keys:Array = [];
-        for (var i:Number = 0; i < entries.length; i++) {
-            keys.push(entries[i].key);
+        // 保存原始数据
+        var oldEntries:Array = this.entries();
+        
+        // 创建新数据结构
+        this.keySet = new TreeSet(newCompare);
+        this.valueMap = {}; // 清空原有数据
+        
+        // 重新插入所有条目
+        for (var i:Number = 0; i < oldEntries.length; i++) {
+            var entry:Object = oldEntries[i];
+            this.put(entry.key, entry.value); // 使用put方法保证版本号更新
         }
-        TimSort.sort(keys, newCompare);
-        this.keySet = TreeSet.buildFromArray(keys, newCompare);
+        
+        // 强制版本号更新
         version++;
     }
     

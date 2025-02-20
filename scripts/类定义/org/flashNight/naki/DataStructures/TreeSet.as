@@ -276,19 +276,17 @@ class org.flashNight.naki.DataStructures.TreeSet {
             node.right = deleteNode(node.right, element);
         } else {
             // 找到要删除的节点
-            this.treeSize--;
-            // 1. 无子节点或只有一个子节点
             if (node.left == null || node.right == null) {
+                // 处理无子节点或单子节点情况
+                this.treeSize--;
                 node = (node.left != null) ? node.left : node.right;
             } else {
-                // 2. 有两个子节点：寻找中序后继（右子树最左侧节点）
+                // 处理双子节点情况
                 var temp:TreeNode = node.right;
                 while (temp.left != null) {
                     temp = temp.left;
                 }
-                // 用后继节点的值覆盖当前节点
                 node.value = temp.value;
-                // 删除后继节点
                 node.right = deleteNode(node.right, temp.value);
             }
         }
