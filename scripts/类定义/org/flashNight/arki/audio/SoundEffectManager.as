@@ -105,10 +105,13 @@ class org.flashNight.arki.audio.SoundEffectManager {
         var bgm = bgmList[title];
         var url = bgm.url;
         if(url == null) return;
+        //若为预留关键字stop则停止当前音乐
         if(url == "stop") {
-            stopBGM(); //若为预留关键字stop则停止当前音乐
+            stopBGM();
             return;
         }
+        if(globalVolume == 0 || bgmVolume == 0) return; //全局音量和音乐音量任一为0时不加载音乐
+
         var stateName = bgmEngine.getActiveStateName();
         var command = null;
         if(stateName == "idle"){
