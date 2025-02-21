@@ -1,0 +1,1 @@
+org.flashNight.naki.Sort.TimSortTest.runTests();

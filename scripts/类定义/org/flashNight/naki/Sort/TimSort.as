@@ -9,9 +9,6 @@
      * @param compareFunction 若为 null, 则使用默认的比较函数
      * @return 排好序的原数组 (就地修改)
      */
-
-    public static var mergeCount:Number = 0;
-    public static var gallopingCount:Number = 0;
     
     public static function sort(arr:Array, compareFunction:Function):Array {
         var length:Number = arr.length;
