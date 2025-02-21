@@ -216,7 +216,7 @@ stop();
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" selected="true" centerPoint3DX="-2.05" centerPoint3DY="2.2">
+                <DOMSymbolInstance libraryItemName="无AS链接/Symbol 13" name="area" centerPoint3DX="-2.05" centerPoint3DY="2.2">
                   <matrix>
                     <Matrix a="1.20001220703125" d="0.960556030273438" tx="-15" ty="-12"/>
                   </matrix>
@@ -377,7 +377,7 @@ onClipEvent (mouseUp) {
               <elements>
                 <DOMSymbolInstance libraryItemName="互动提示/互动提示-高亮" name="焦点高亮框" selected="true" centerPoint3DX="-1.4" centerPoint3DY="5.3">
                   <matrix>
-                    <Matrix a="1.03327941894531" c="-0.462936401367188" d="0.639389038085938" tx="-1.4" ty="5.3"/>
+                    <Matrix a="1.03326416015625" c="-0.462936401367188" d="0.639389038085938" tx="-1.4" ty="5.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-0.1" y="-0.15"/>
