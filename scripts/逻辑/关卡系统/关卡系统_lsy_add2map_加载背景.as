@@ -227,6 +227,9 @@ _root.横版卷屏 = function(scrollTarget, bgWidth, bgHeight, easeFactor)
     // 3) 获取游戏世界与要跟踪的目标
     var gameWorld = _root.gameworld;
     var scrollObj = gameWorld[scrollTarget];
+
+	// _root.发布消息("x: " + scrollObj._x + " | " + _root.Xmin + " | " + _root.Xmax);
+	// _root.发布消息("y: " + scrollObj._y + " | " + _root.Ymin + " | " + _root.Ymax);
     
     // 如果目标还没准备好（可能是 null 或尚未初始化 _x），就不进行处理
     if (!scrollObj || scrollObj._x == undefined) {
