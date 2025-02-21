@@ -1,29 +1,29 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1275" itemID="6597607e-000008ee" lastModified="1739844542">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1275" itemID="6597607e-000008ee" lastModified="1740115388">
   <timeline>
-    <DOMTimeline name="Symbol 1275" currentFrame="10">
+    <DOMTimeline name="Symbol 1275">
       <layers>
-        <DOMLayer name="表情" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="表情" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" name="普通" labelType="name" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Pig表情普通" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="94.65" ty="-1290.95"/>
+                    <Matrix a="1.10398864746094" d="1.10398864746094" tx="41" ty="-1187.65"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="77.95" y="102.3"/>
+                    <Point x="77.95" y="102.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="5" duration="5" name="坏笑" labelType="name" keyMode="9728">
+            <DOMFrame index="5" duration="5" name="微笑" labelType="name" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Pig表情坏笑" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="93.75" ty="-1291.2"/>
+                    <Matrix a="1.09370422363281" d="1.09353637695313" tx="41" ty="-1191.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="78.7" y="101"/>
+                    <Point x="78.7" y="100.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -32,10 +32,10 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Pig表情愤怒" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="92.1" ty="-1291.15"/>
+                    <Matrix a="1.0909423828125" d="1.09078979492188" tx="41" ty="-1189.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="78.9" y="99.65"/>
+                    <Point x="78.9" y="99.6"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -44,7 +44,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Pig表情悲伤" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="95.2" ty="-1290.8"/>
+                    <Matrix a="1.10316467285156" d="1.10305786132813" tx="41" ty="-1194.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="78" y="98.95"/>
@@ -54,16 +54,16 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 100" color="#FF800A" autoNamed="false">
+        <DOMLayer name="图层 100" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Pig身体" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Pig身体" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix tx="-541.55" ty="-1387.4"/>
+                    <Matrix a="1.10398864746094" d="1.10398864746094" tx="-661.4" ty="-1294.15"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="576.15" y="607.25"/>
+                    <Point x="576.2" y="607.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
