@@ -8,5 +8,10 @@
 
         if (isNaN(target.remainingImpactForce)) target.remainingImpactForce = 0;
         if (isNaN(target.lastHitTime)) target.lastHitTime = _root.帧计时器.当前帧数;
+
+        // 主角专用
+        if(target._name === _root.控制目标) {
+            if(isNaN(target.version)) target.version = 0; // 用于记录换装版本号
+        }
     }
 }

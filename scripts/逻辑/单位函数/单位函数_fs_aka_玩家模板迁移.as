@@ -186,6 +186,8 @@ _root.佣兵装备位映射数组[16] = "手雷";
 _root.刷新人物装扮 = function(目标){
 	var 目标人物 = _root.gameworld[目标];
 
+	StaticInitializer.initializeUnit(目标人物);
+
 	var 是主角:Boolean = false;
 	var 头部装备:String;
 	var 上装装备:String;
@@ -923,6 +925,11 @@ _root.刷新人物装扮 = function(目标){
 	//_root.服务器.发布服务器消息(目标人物.生命周期函数列表.length);
 	目标人物.生命周期函数列表.length = 0;
 
+
+	目标人物.version++; // 刷新版本号，用于多次换装时的兜底校验
+
+	
+
 	目标人物.装载生命周期函数(头部装备数据.lifecycle, "头部装备");
 	目标人物.装载生命周期函数(上装装备数据.lifecycle, "上装装备");
 	目标人物.装载生命周期函数(下装装备数据.lifecycle, "下装装备");
@@ -969,7 +976,7 @@ _root.刷新人物装扮 = function(目标){
 	目标人物.gotoAndPlay("刷新装扮");
 
 
-	StaticInitializer.initializeUnit(目标人物);
+	
 	//_root.发布调试消息(目标人物.名字 + " hp:" + 目标人物.hp满血值 + "/" + 目标人物.hp + " mp:" + 目标人物.mp满血值 + "/" + 目标人物.mp);
 };
 
