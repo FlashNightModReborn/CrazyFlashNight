@@ -105,26 +105,24 @@
             // 扩展小 run 到 MIN_RUN 使用插入排序
             if (currentRunSize < MIN_RUN) {
                 var endBound:Number = (runStart + MIN_RUN -1 < length -1) ? (runStart + MIN_RUN -1) : (length -1);
-                for (var iIns:Number = runStart + 1; iIns <= endBound; iIns++) {
+                
+                // 使用紧凑型插入排序 (性能优化关键点)
+                var iIns:Number = runStart + 1;
+                do {
                     var keyVal:Object = arr[iIns];
-                    var left:Number = runStart;
-                    var right:Number = iIns;
-                    while (left < right) {
-                        var mid:Number = (left + right) >> 1;
-                        if (compare(arr[mid], keyVal) > 0) {
-                            right = mid;
-                        } else {
-                            left = mid + 1;
-                        }
+                    var j:Number = iIns;
+                    
+                    // 合并比较和移动操作的单层循环
+                    while (--j >= runStart && compare(arr[j], keyVal) > 0) {
+                        arr[j + 1] = arr[j];
                     }
-                    for (var k:Number = iIns; k > left; k--) {
-                        arr[k] = arr[k-1];
-                    }
-                    arr[left] = keyVal;
-                }
+                    arr[j + 1] = keyVal;
+                } while (++iIns <= endBound);
+                
                 runEnd = endBound;
                 currentRunSize = runEnd - runStart + 1;
             }
+
 
             // 将该 run 入栈
             stackRuns[sp++] = runStart;
