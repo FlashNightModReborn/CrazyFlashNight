@@ -146,15 +146,7 @@
                         if (sizeX < sizeZ) {
                             // 合并 runX 和 runY
                             sp -= 4;
-                            // 内联 doMerge
-                            if (runYStart < runXStart) {
-                                var tmpStart:Number = runXStart;
-                                var tmpEnd:Number = runXEnd;
-                                runXStart = runYStart;
-                                runXEnd = runYEnd;
-                                runYStart = tmpStart;
-                                runYEnd = tmpEnd;
-                            }
+
                             var sizeA:Number = runXEnd - runXStart + 1;
                             var sizeB:Number = runYEnd - runYStart + 1;
                             for (var i:Number = 0; i < sizeA; i++) {
@@ -180,15 +172,7 @@
                         } else {
                             // 合并 runY 和 runZ
                             sp -= 4;
-                            // 内联 doMerge
-                            if (runZStart < runYStart) {
-                                var tmpStart2:Number = runYStart;
-                                var tmpEnd2:Number = runYEnd;
-                                runYStart = runZStart;
-                                runYEnd = runZEnd;
-                                runZStart = tmpStart2;
-                                runZEnd = tmpEnd2;
-                            }
+
                             var sizeA2:Number = runYEnd - runYStart + 1;
                             var sizeB2:Number = runZEnd - runZStart + 1;
                             for (var j:Number = 0; j < sizeA2; j++) {
@@ -229,15 +213,7 @@
                     if (sizeY2 <= sizeZ2) {
                         // 合并 runY 和 runZ
                         sp -= 4;
-                        // 内联 doMerge
-                        if (runZStart2 < runYStart2) {
-                            var tmpStart3:Number = runYStart2;
-                            var tmpEnd3:Number = runYEnd2;
-                            runYStart2 = runZStart2;
-                            runYEnd2 = runZEnd2;
-                            runZStart2 = tmpStart3;
-                            runZEnd2 = tmpEnd3;
-                        }
+
                         var sizeA3:Number = runYEnd2 - runYStart2 + 1;
                         var sizeB3:Number = runZEnd2 - runZStart2 + 1;
                         for (var m:Number = 0; m < sizeA3; m++) {
@@ -290,15 +266,7 @@
                         if (sizeX < sizeZ) {
                             // 合并 runX 和 runY
                             sp -= 4;
-                            // 内联 doMerge
-                            if (runYStart < runXStart) {
-                                var tmpStart4:Number = runXStart;
-                                var tmpEnd4:Number = runXEnd;
-                                runXStart = runYStart;
-                                runXEnd = runYEnd;
-                                runYStart = tmpStart4;
-                                runYEnd = tmpEnd4;
-                            }
+
                             var sizeA4:Number = runXEnd - runXStart + 1;
                             var sizeB4:Number = runYEnd - runYStart + 1;
                             for (var n:Number = 0; n < sizeA4; n++) {
@@ -324,15 +292,7 @@
                         } else {
                             // 合并 runY 和 runZ
                             sp -= 4;
-                            // 内联 doMerge
-                            if (runZStart < runYStart) {
-                                var tmpStart5:Number = runYStart;
-                                var tmpEnd5:Number = runYEnd;
-                                runYStart = runZStart;
-                                runYEnd = runZEnd;
-                                runZStart = tmpStart5;
-                                runZEnd = tmpEnd5;
-                            }
+
                             var sizeA5:Number = runYEnd - runYStart + 1;
                             var sizeB5:Number = runZEnd - runZStart + 1;
                             for (var p:Number = 0; p < sizeA5; p++) {
@@ -373,15 +333,7 @@
                     if (sizeY6 <= sizeZ6) {
                         // 合并 runY 和 runZ
                         sp -= 4;
-                        // 内联 doMerge
-                        if (runZStart6 < runYStart6) {
-                            var tmpStart6:Number = runYStart6;
-                            var tmpEnd6:Number = runYEnd6;
-                            runYStart6 = runZStart6;
-                            runYEnd6 = runZEnd6;
-                            runZStart6 = tmpStart6;
-                            runZEnd6 = tmpEnd6;
-                        }
+
                         var sizeA6:Number = runYEnd6 - runYStart6 + 1;
                         var sizeB6:Number = runZEnd6 - runZStart6 + 1;
                         for (var q:Number = 0; q < sizeA6; q++) {
@@ -418,15 +370,7 @@
                 var run1End:Number = stackRuns[sp - 3];
                 var run1Start:Number = stackRuns[sp - 4];
                 sp -= 4;
-                // 内联 doMerge
-                if (run2Start < run1Start) {
-                    var tmpStart7:Number = run1Start;
-                    var tmpEnd7:Number = run1End;
-                    run1Start = run2Start;
-                    run1End = run2End;
-                    run2Start = tmpStart7;
-                    run2End = tmpEnd7;
-                }
+
                 var sizeA7:Number = run1End - run1Start + 1;
                 var sizeB7:Number = run2End - run2Start + 1;
                 for (var n2:Number = 0; n2 < sizeA7; n2++) {
