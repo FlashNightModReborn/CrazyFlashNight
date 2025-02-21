@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="理发店界面" itemID="67876ebc-00001c69" linkageExportForAS="true" linkageIdentifier="理发店界面" lastModified="1736955491" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="理发店界面" itemID="67876ebc-00001c69" linkageExportForAS="true" linkageIdentifier="理发店界面" lastModified="1740163196" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="理发店界面">
+    <DOMTimeline name="理发店界面" currentFrame="1">
       <layers>
         <DOMLayer name="Script Layer" color="#DBFB99" current="true" isSelected="true">
           <frames>
@@ -24,7 +24,8 @@ function 虚拟币支付(amount, 商品编号)
 		_root.发布消息(_root.获得翻译("支付成功！"));
 		_root.播放音效("收银机.mp3");
 		_root.改变发型(_root.gameworld[_root.控制目标],发型库编号);
-		_root.获取虚拟币值();
+		this.gotoAndStop(1);
+		this._visible = false;
 	}
 	else
 	{

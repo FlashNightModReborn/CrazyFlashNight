@@ -413,7 +413,7 @@ _root.帧计时器.定期异常检查 = function()
 _root.帧计时器.定期更新天气 = function()
 {
     var 游戏世界 = _root.gameworld;
-    if (--this.天气待更新时间 === 0 or !游戏世界.已更新天气) 
+    if (--this.天气待更新时间 === 0 || !游戏世界.已更新天气) 
     {
         this.eventBus.publish("WeatherUpdated");
         if(!游戏世界.已更新天气)
@@ -504,8 +504,7 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
 // 监听面板是否初始化，初始化完成后自动取消订阅
 _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     var 系统 = _root.UI系统;
-    if(系统.虚拟币刷新() or 系统.金钱刷新())
-    {
+    if(系统.虚拟币刷新() or 系统.金钱刷新()){
         _root.帧计时器.eventBus.unsubscribe("frameUpdate");
     }
 
@@ -943,46 +942,57 @@ _root.帧计时器.更新目标缓存 = function(自机:Object, 更新间隔:Num
 
 
 
-_root.帧计时器.获取目标缓存 = function(自机:Object, 更新间隔:Number, 请求类型:String) 
-{
+_root.帧计时器.获取目标缓存 = function(自机:Object, 更新间隔:Number, 请求类型:String) {
     var 自机状态键 = 自机.是否为敌人.toString();
     var 目标缓存对象 = this.目标缓存[自机状态键][请求类型];
 
-    if (isNaN(目标缓存对象.最后更新帧数) or this.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) 
-    {
+    if (isNaN(目标缓存对象.最后更新帧数) || this.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) {
         this.更新目标缓存(自机, 更新间隔, 请求类型, 自机状态键);
     }
 
     return 目标缓存对象.数据;
 };
 
-_root.帧计时器.获取敌人缓存 = function(自机:Object, 更新间隔:Number) 
-{
+_root.帧计时器.获取敌人缓存 = function(自机:Object, 更新间隔:Number) {
     var 自机状态键 = 自机.是否为敌人.toString();
     var 目标缓存对象 = this.目标缓存[自机状态键]["敌人"];
 
-    if (isNaN(目标缓存对象.最后更新帧数) or this.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) 
-    {
+    if (isNaN(目标缓存对象.最后更新帧数) || this.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) {
         this.更新目标缓存(自机, 更新间隔, "敌人", 自机状态键);
     }
 
     return 目标缓存对象.数据;
 };
 
-_root.帧计时器.获取友军缓存 = function(自机:Object, 更新间隔:Number) 
-{
+_root.帧计时器.获取友军缓存 = function(自机:Object, 更新间隔:Number) {
     var 自机状态键 = 自机.是否为敌人.toString();
     var 目标缓存对象 = this.目标缓存[自机状态键]["友军"];
 
-    if (isNaN(目标缓存对象.最后更新帧数) or this.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) 
-    {
+    if (isNaN(目标缓存对象.最后更新帧数) || this.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) {
         this.更新目标缓存(自机, 更新间隔, "友军", 自机状态键);
     }
 
     return 目标缓存对象.数据;
 };
 
-_root.帧计时器.添加主动战技cd = function(动作, 间隔时间)
- {
+_root.帧计时器.添加主动战技cd = function(动作, 间隔时间){
     return _root.帧计时器.添加单次任务(动作, 间隔时间); // 返回任务ID
 };
+
+
+
+
+
+//开始对在线奖励计时
+var 检测在线奖励 = function(){
+    _root.在线时间计数++;
+    if(_root.主线任务进度 > 28){
+        if (_root.在线时间计数 == 2) _root.奖励10分钟._visible = true;
+        else if (_root.在线时间计数 == 4) _root.奖励20分钟._visible = true;
+        else if (_root.在线时间计数 == 8) _root.奖励40分钟._visible = true;
+        else if (_root.在线时间计数 == 12) _root.奖励60分钟._visible = true;
+        else if (_root.在线时间计数 == 24) _root.奖励120分钟._visible = true;
+    }
+}
+_root.在线时间计数 = 0;
+_root.帧计时器.添加任务(检测在线奖励, 300000, 24); // 每5分钟检测一次，共24次

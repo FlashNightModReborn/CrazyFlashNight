@@ -80,9 +80,9 @@
           <Include href="sprite/通用背景mc.xml" loadImmediate="false" itemID="659d46f5-000039c6" lastModified="1704806133"/>
           <Include href="sprite/悬浮UI/Symbol 880.xml" loadImmediate="false" itemID="6597607e-00000806" lastModified="1704196122"/>
           <Include href="挂机功能菜单.xml" itemID="67876ec7-00001c6a" lastModified="1737284892"/>
-          <Include href="理发店界面.xml" itemID="67876ebc-00001c69" lastModified="1736955491"/>
+          <Include href="理发店界面.xml" itemID="67876ebc-00001c69" lastModified="1740163196"/>
           <Include href="素材库-基地特殊UI.xml" itemID="67876f87-00001cfc" lastModified="1736953166"/>
-          <Include href="整容整形界面.xml" itemID="67876f5e-00001cbe" lastModified="1736955475"/>
+          <Include href="整容整形界面.xml" itemID="67876f5e-00001cbe" lastModified="1740163260"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -99,7 +99,7 @@
                                                   <Point/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="挂机功能菜单" name="挂机功能菜单" selected="true" centerPoint3DX="640.2" centerPoint3DY="268.45">
+                                        <DOMSymbolInstance libraryItemName="挂机功能菜单" name="挂机功能菜单" centerPoint3DX="640.2" centerPoint3DY="268.45">
                                              <matrix>
                                                   <Matrix tx="413.2" ty="174.75"/>
                                              </matrix>
@@ -111,7 +111,7 @@
                                                   <BevelFilter blurX="1" blurY="1" angle="44.9992520943067" distance="1" strength="0.3"/>
                                              </filters>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="整容整形界面" centerPoint3DX="-143.5" centerPoint3DY="198.45">
+                                        <DOMSymbolInstance libraryItemName="整容整形界面" selected="true" centerPoint3DX="-143.5" centerPoint3DY="198.45">
                                              <matrix>
                                                   <Matrix tx="-261.45" ty="0.45"/>
                                              </matrix>

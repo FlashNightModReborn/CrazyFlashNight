@@ -342,7 +342,7 @@ _root.检测并添加初始任务 = function(){
 	//如果同时满足 任务栏全空 初始任务未完成 主线进度为0，则获取初始任务
 	var 是否获取初始任务 = _root.tasks_to_do.length == 0 && _root.tasks_finished[0] <= 0 && _root.主线任务进度 <= 0;
 	if(是否获取初始任务){
-		_root.新手引导界面._visible = 1;
+		_root.新手引导界面._visible = true;
 		_root.新手引导界面.gotoAndStop("任务面板");
 		_root.GetTask(_root.task_chains.主线[String(_root.task_in_chains_by_sequence.主线[0])]);
 	}
