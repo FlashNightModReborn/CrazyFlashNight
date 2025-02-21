@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1739870191" lastUniqueIdentifier="39">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新版物品栏界面" itemID="67699dcd-00000abf" linkageExportForAS="true" linkageIdentifier="物品栏界面" lastModified="1740105754" lastUniqueIdentifier="39">
   <timeline>
-    <DOMTimeline name="新版物品栏界面">
+    <DOMTimeline name="新版物品栏界面" currentFrame="14">
       <layers>
-        <DOMLayer name="Labels Layer" color="#23D4A1">
+        <DOMLayer name="Labels Layer" color="#23D4A1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -431,7 +431,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="5" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="物品图标" selected="true" centerPoint3DX="28.15" centerPoint3DY="185.15">
+                <DOMSymbolInstance libraryItemName="物品栏/新版物品图标" name="物品图标" centerPoint3DX="28.15" centerPoint3DY="185.15">
                   <matrix>
                     <Matrix tx="14.85" ty="171"/>
                   </matrix>
@@ -902,11 +902,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="排序图标" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="排序图标" color="#9933CC" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="52" keyMode="9728">
+            <DOMFrame index="0" duration="23" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="排序图标" name="排序图标" selected="true" centerPoint3DX="252.5" centerPoint3DY="312.15">
+                <DOMSymbolInstance libraryItemName="排序图标" name="排序图标" centerPoint3DX="252.5" centerPoint3DY="312.15">
                   <matrix>
                     <Matrix tx="252.5" ty="312.15"/>
                   </matrix>
@@ -1001,6 +1001,9 @@ onClipEvent (enterFrame) {
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
+            </DOMFrame>
+            <DOMFrame index="23" duration="29" keyMode="9728">
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -1140,7 +1143,7 @@ on(rollOut){
             </DOMFrame>
             <DOMFrame index="45" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="情报信息界面" name="情报信息界面" selected="true" centerPoint3DX="-506.95" centerPoint3DY="33.9">
+                <DOMSymbolInstance libraryItemName="情报信息界面" name="情报信息界面" centerPoint3DX="-506.95" centerPoint3DY="33.9">
                   <matrix>
                     <Matrix tx="-520" ty="20"/>
                   </matrix>
