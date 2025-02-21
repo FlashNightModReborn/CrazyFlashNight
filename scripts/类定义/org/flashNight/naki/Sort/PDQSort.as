@@ -27,54 +27,55 @@ class org.flashNight.naki.Sort.PDQSort {
             function(a:Number, b:Number):Number { return a - b; } :
             compareFunction;
 
-        // 检查数组是否整体有序
-        var isSorted:Boolean = true; // 标记是否整体有序
-        for (var iChk:Number = 1; iChk < length; iChk++) {
-            // 如果前一个元素大于后一个元素，说明数组不是整体有序
-            if (cmpPre(arr[iChk - 1], arr[iChk]) > 0) {
-                isSorted = false;
-                break; // 退出循环，数组不整体有序
-            }
-        }
-        if (isSorted) {
-            return arr; // 数组已经整体有序，直接返回
+        var isSorted:Boolean = true;    // 升序标记
+        var isReversed:Boolean = true;  // 降序标记
+        var lastCmp:Number = 0;         // 缓存最后一次比较结果
+
+        // 单次遍历同时检测两种状态
+        for (var i:Number = 1; i < length; i++) {
+            lastCmp = cmpPre(arr[i-1], arr[i]);
+            
+            // 动态更新状态标记
+            isSorted = isSorted && (lastCmp <= 0);  // 需要所有元素 <= 0
+            isReversed = isReversed && (lastCmp >= 0); // 需要所有元素 >= 0
+            
+            // 提前终止条件：当两个标记都为false时
+            if (!isSorted && !isReversed) break;
         }
 
-        // 检查数组是否整体逆序
-        var isReverse:Boolean = true; // 标记是否整体逆序
-        for (var iRev:Number = 1; iRev < length; iRev++) {
-            // 如果前一个元素小于后一个元素，说明数组不是整体逆序
-            if (cmpPre(arr[iRev - 1], arr[iRev]) < 0) {
-                isReverse = false;
-                break; // 退出循环，数组不整体逆序
-            }
-        }
-        if (isReverse) {
-            // 如果数组整体逆序，则直接反转数组
-            var l:Number = 0; // 左指针，起始位置
-            var r:Number = length - 1; // 右指针，结束位置
+        if (isSorted) return arr; // 整体有序直接返回
+
+        if (isReversed) {
+            // 整体逆序时反转数组
+            var l:Number = 0;
+            var r:Number = length - 1;
             while (l < r) {
-                // 使用链式赋值交换 arr[l] 和 arr[r]
-                arr[l] = arr[r] + (arr[r] = arr[l]) - arr[r];
-                l++; // 左指针右移
-                r--; // 右指针左移
+                // 安全交换：使用临时变量替代链式赋值
+                var tmp:Object = arr[l];
+                arr[l] = arr[r];
+                arr[r] = tmp;
+                l++;
+                r--;
             }
-            return arr; // 反转完成，返回数组
+            return arr;
         }
 
         //----------------------------------------------------------
         // 2) 确定比较函数（defaultCompare）
         //----------------------------------------------------------
         // 再次确认比较函数，用于后续排序操作
+
+        /*
         var compare:Function = (compareFunction == null) ?
             function(a:Number, b:Number):Number { return a - b; } :
             compareFunction;
+        */
 
         //----------------------------------------------------------
         // 3) 内省排序：设置最大允许深度
         //----------------------------------------------------------
         // 使用位运算替换 Math.floor(2 * Math.log(length))，以减少函数调用开销
-        var maxDepth:Number = (2 * Math.log(length)) | 0; // 最大递归深度限制
+        var maxDepth:Number = (2 * (Math.log(length) / Math.LN2)) | 0;  // 最大递归深度限制
 
         //----------------------------------------------------------
         // 4) 准备栈模拟递归
@@ -93,26 +94,28 @@ class org.flashNight.naki.Sort.PDQSort {
         //----------------------------------------------------------
         while (sp > 0) { // 当栈非空时，继续处理
             // 从栈中弹出当前需要处理的区间 [left, right]
-            right = Number(stack[--sp]);
-            left  = Number(stack[--sp]);
+            right = stack[--sp];
+            left  = stack[--sp];
 
             var size:Number = right - left + 1; // 当前区间的大小
 
             //------------------------------------------------------
             // (a) 小区间 -> 直接插入排序 (内联展开)
             //------------------------------------------------------
-            if (size <= 32) { // 如果区间大小小于等于10，使用插入排序
-                for (var iIns:Number = left + 1; iIns <= right; iIns++) { // 从第二个元素开始
-                    var keyVal:Number = arr[iIns]; // 当前元素作为插入的关键值
-                    var jIns:Number = iIns - 1; // 插入位置的前一个索引
-                    // 合并自减操作到循环条件中，减少指令数
-                    while (jIns >= left && compare(arr[jIns], keyVal) > 0) { // 比较并移动元素
-                        arr[jIns + 1] = arr[jIns]; // 将较大的元素向右移动
-                        jIns--; // 指针左移
+            if (size <= 32) {
+                var iIns:Number = left + 1;
+                do {
+                    var keyVal:Number = arr[iIns];
+                    var j:Number = iIns;
+                    
+                    // 合并比较和移动的单层循环
+                    while (--j >= left && cmpPre(arr[j], keyVal) > 0) {
+                        arr[j + 1] = arr[j];
                     }
-                    arr[jIns + 1] = keyVal; // 将关键值插入到正确位置
-                }
-                continue; // 处理下一个区间
+                    arr[j + 1] = keyVal;
+                } while (++iIns <= right);
+                
+                continue;
             }
 
             //------------------------------------------------------
@@ -121,121 +124,150 @@ class org.flashNight.naki.Sort.PDQSort {
             var orderedCount:Number = 0; // 记录有序的相邻元素对数
             for (var iOrd:Number = left + 1; iOrd <= right; iOrd++) {
                 // 如果前一个元素小于等于后一个元素，则认为这一对是有序的
-                if (compare(arr[iOrd - 1], arr[iOrd]) <= 0) {
+                if (cmpPre(arr[iOrd - 1], arr[iOrd]) <= 0) {
                     orderedCount++;
                 }
             }
-            if (orderedCount >= (0.9 * (size - 1))) { // 如果有序度达到90%以上
-                // 再次进行插入排序，确保排序的稳定性
-                for (var iIns2:Number = left + 1; iIns2 <= right; iIns2++) { // 从第二个元素开始
-                    var keyVal2:Number = arr[iIns2]; // 当前元素作为插入的关键值
-                    var jIns2:Number = iIns2 - 1; // 插入位置的前一个索引
-                    // 合并自减操作到循环条件中，减少指令数
-                    while (jIns2 >= left && compare(arr[jIns2], keyVal2) > 0) { // 比较并移动元素
-                        arr[jIns2 + 1] = arr[jIns2]; // 将较大的元素向右移动
-                        jIns2--; // 指针左移
+
+            if (orderedCount >= (0.9 * (size - 1))) {
+                var iOrd:Number = left + 1;
+                do {
+                    var key:Number = arr[iOrd];
+                    var k:Number = iOrd;
+                    
+                    // 逆序检测优化：最多触发一次逆序移动
+                    while (--k >= left && cmpPre(arr[k], key) > 0) {
+                        arr[k + 1] = arr[k];
                     }
-                    arr[jIns2 + 1] = keyVal2; // 将关键值插入到正确位置
-                }
-                continue; // 处理下一个区间
+                    arr[k + 1] = key;
+                } while (++iOrd <= right);
+                
+                continue;
             }
 
             //------------------------------------------------------
             // (c) 深度超限 -> 堆排序 (内联展开)
             //------------------------------------------------------
             if (maxDepth-- <= 0) { // 如果递归深度超限，切换到堆排序
-                // === heapSort 开始 ===
-                // 建立最大堆
-                var startHeap:Number = left; // 堆的起始位置
-                var endHeap:Number   = right; // 堆的结束位置
-                // 使用位运算替换 Math.floor((endHeap - startHeap) / 2) + startHeap，减少函数调用开销
-                for (var iHeap:Number = ((endHeap - startHeap) >> 1) + startHeap; iHeap >= startHeap; iHeap--) { // 从最后一个非叶子节点开始
-                    // 内联 heapify 操作，调整堆以满足最大堆性质
-                    var hi:Number = iHeap; // 当前节点索引
-                    while (true) {
-                        var largest:Number = hi; // 假设当前节点是最大的
-                        // 计算左子节点索引，使用位运算替代乘法
-                        var lch:Number = ( (hi - startHeap) << 1 ) + 1 + startHeap; // 2*(hi - startHeap) +1
-                        // 计算右子节点索引，使用位运算替代乘法
-                        var rch:Number = ( (hi - startHeap) << 1 ) + 2 + startHeap; // 2*(hi - startHeap) +2
-                        // 比较左子节点与当前最大值
-                        if (lch <= endHeap && compare(arr[lch], arr[largest]) > 0) {
+            // === heapSort 开始 ===
+            var startHeap:Number = left;
+            var endHeap:Number = right;
+            var endH:Number = endHeap;
+            var sizeHeap:Number = endH - startHeap + 1;
+            for (var iHeap:Number = startHeap + ((sizeHeap - 2) >> 1); iHeap >= startHeap; iHeap--) {
+                var hi:Number = iHeap;
+                while (true) {
+                    var largest:Number = hi;
+                    var lch:Number = (hi << 1) - startHeap + 1;
+                    if (lch <= endH) {
+                        if (cmpPre(arr[lch], arr[largest]) > 0) {
                             largest = lch;
                         }
-                        // 比较右子节点与当前最大值
-                        if (rch <= endHeap && compare(arr[rch], arr[largest]) > 0) {
+                        var rch:Number = lch + 1;
+                        if (rch <= endH && cmpPre(arr[rch], arr[largest]) > 0) {
                             largest = rch;
                         }
-                        if (largest != hi) { // 如果子节点中有比当前节点大的
-                            // 链式赋值交换 arr[hi] <-> arr[largest]
-                            arr[hi] = arr[largest] + (arr[largest] = arr[hi]) - arr[largest];
-                            hi = largest; // 继续向下调整
-                        } else {
-                            break; // 当前节点已经是最大的，结束调整
-                        }
+                    }
+                    if (largest != hi) {
+                        arr[hi] = arr[largest] + (arr[largest] = arr[hi]) - arr[largest];
+                        hi = largest;
+                    } else {
+                        break;
                     }
                 }
-                // 提取堆顶元素，将其放到正确的位置
-                for (var jHeap:Number = endHeap; jHeap > startHeap; jHeap--) {
-                    // 链式赋值交换 arr[startHeap] <-> arr[jHeap]
-                    arr[startHeap] = arr[jHeap] + (arr[jHeap] = arr[startHeap]) - arr[jHeap];
-
-                    // siftDown 操作，重新调整堆以维持最大堆性质
-                    var root:Number = startHeap; // 根节点索引
-                    var boundary:Number = jHeap - 1; // 堆的边界
-                    while (true) {
-                        var largestH:Number = root; // 假设根节点是最大的
-                        // 计算左子节点索引，使用位运算替代乘法
-                        var leftC:Number  = ( (root - startHeap) << 1 ) + 1 + startHeap; // 2*(root - startHeap) +1
-                        // 计算右子节点索引，使用位运算替代乘法
-                        var rightC:Number = ( (root - startHeap) << 1 ) + 2 + startHeap; // 2*(root - startHeap) +2
-                        // 比较左子节点与当前最大值
-                        if (leftC <= boundary && compare(arr[leftC], arr[largestH]) > 0) {
+            }
+            for (var jHeap:Number = endH; jHeap > startHeap; jHeap--) {
+                arr[startHeap] = arr[jHeap] + (arr[jHeap] = arr[startHeap]) - arr[jHeap];
+                var boundary:Number = jHeap - 1;
+                var root:Number = startHeap;
+                while (true) {
+                    var largestH:Number = root;
+                    var leftC:Number = (root << 1) - startHeap + 1;
+                    if (leftC <= boundary) {
+                        if (cmpPre(arr[leftC], arr[largestH]) > 0) {
                             largestH = leftC;
                         }
-                        // 比较右子节点与当前最大值
-                        if (rightC <= boundary && compare(arr[rightC], arr[largestH]) > 0) {
+                        var rightC:Number = leftC + 1;
+                        if (rightC <= boundary && cmpPre(arr[rightC], arr[largestH]) > 0) {
                             largestH = rightC;
                         }
-                        if (largestH != root) { // 如果子节点中有比当前节点大的
-                            // 链式赋值交换 arr[root] <-> arr[largestH]
-                            arr[root] = arr[largestH] + (arr[largestH] = arr[root]) - arr[largestH];
-                            root = largestH; // 继续向下调整
-                        } else {
-                            break; // 当前节点已经是最大的，结束调整
-                        }
+                    }
+                    if (largestH != root) {
+                        arr[root] = arr[largestH] + (arr[largestH] = arr[root]) - arr[largestH];
+                        root = largestH;
+                    } else {
+                        break;
                     }
                 }
+            }
                 // === heapSort 结束 ===
                 continue; // 处理下一个区间
             }
 
             //------------------------------------------------------
-            // (d) 五点取样选 pivot (Median-of-Five) 内联展开
+            // (d) 五点取样选 pivot (Median-of-Five) 优化版
             //------------------------------------------------------
             var sizeMed:Number = size; // 当前区间的大小
-            // 使用位运算替代 Math.floor((sizeMed - 1) / 4)，减少函数调用开销
-            var step:Number = (sizeMed - 1) >> 2; // 计算步长，等同于 floor((sizeMed -1)/4)
-            var idx1:Number = left;  
-            var idx2:Number = left + step; 
-            var idx3:Number = left + ( (sizeMed - 1) >> 1 ); // 中间点索引
-            var idx4:Number = right - step; 
-            var idx5:Number = right; 
 
-            // 对选取的5个点进行微型插入排序，以找到中位数
-            var indices:Array = [idx1, idx2, idx3, idx4, idx5]; // 存储选取的索引
-            for (var si:Number = 1; si < 5; si++) { // 从第二个索引开始
-                var kIndex:Number = indices[si]; // 当前索引
-                var keyV:Number = arr[kIndex]; // 当前索引对应的值
-                var sj:Number = si - 1; // 前一个索引
-                while (sj >= 0 && compare(arr[indices[sj]], keyV) > 0) { // 比较并寻找插入位置
-                    indices[sj + 1] = indices[sj]; // 将较大的索引向后移动
-                    sj--; // 指针左移
-                }
-                indices[sj + 1] = kIndex; // 将当前索引插入到正确位置
+            // 优化1：展开 Math.max(1, (sizeMed-1)>>2)
+            var stepRaw:Number = (sizeMed - 1) >> 2; // 直接位运算计算原始步长
+            var step:Number = (stepRaw < 1) ? 1 : stepRaw; // 手动实现 max(1, stepRaw)
+
+            // 优化2：直接计算五个取样点索引，避免中间数组操作
+            var idx1:Number = left;
+            var idx2:Number = left + step;
+            var idx3:Number = left + ((sizeMed - 1) >> 1); // 中间点
+            var idx4:Number = right - step;
+            var idx5:Number = right;
+
+            // 优化3：手动展开插入排序循环（针对5个元素）
+            // --- 初始化索引数组 ---
+            var indices:Array = [idx1, idx2, idx3, idx4, idx5];
+
+            // --- 手动插入排序（5元素展开） ---
+            // 第1轮插入：处理 indices[1] (原 si=1)
+            var kIndex:Number = indices[1];
+            var keyV:Number = arr[kIndex];
+            var sj:Number = 0;
+            while (sj >= 0 && cmpPre(arr[indices[sj]], keyV) > 0) {
+                indices[sj + 1] = indices[sj];
+                sj--;
             }
-            // 选取中间位置的索引作为 pivot 索引
+            indices[sj + 1] = kIndex;
+
+            // 第2轮插入：处理 indices[2] (原 si=2)
+            kIndex = indices[2];
+            keyV = arr[kIndex];
+            sj = 1;
+            while (sj >= 0 && cmpPre(arr[indices[sj]], keyV) > 0) {
+                indices[sj + 1] = indices[sj];
+                sj--;
+            }
+            indices[sj + 1] = kIndex;
+
+            // 第3轮插入：处理 indices[3] (原 si=3)
+            kIndex = indices[3];
+            keyV = arr[kIndex];
+            sj = 2;
+            while (sj >= 0 && cmpPre(arr[indices[sj]], keyV) > 0) {
+                indices[sj + 1] = indices[sj];
+                sj--;
+            }
+            indices[sj + 1] = kIndex;
+
+            // 第4轮插入：处理 indices[4] (原 si=4)
+            kIndex = indices[4];
+            keyV = arr[kIndex];
+            sj = 3;
+            while (sj >= 0 && cmpPre(arr[indices[sj]], keyV) > 0) {
+                indices[sj + 1] = indices[sj];
+                sj--;
+            }
+            indices[sj + 1] = kIndex;
+
+            // 选取中位数索引
             var pivotIndex:Number = indices[2];
+
             // 链式赋值交换 arr[left] <-> arr[pivotIndex]，将 pivot 移动到左边界
             arr[left] = arr[pivotIndex] + (arr[pivotIndex] = arr[left]) - arr[pivotIndex];
 
@@ -248,10 +280,10 @@ class org.flashNight.naki.Sort.PDQSort {
             var idxLoop:Number = left + 1; // 当前扫描索引
 
             while (idxLoop <= greatIndex) { // 当扫描索引未超过大于区域的结束索引时
-                var cPart:Number = compare(arr[idxLoop], pivotValue); // 比较当前元素与 pivot
+                var cPart:Number = cmpPre(arr[idxLoop], pivotValue); // 比较当前元素与 pivot
                 if (cPart < 0) { // 当前元素小于 pivot
                     // 链式赋值交换 arr[idxLoop] <-> arr[lessIndex]
-                    arr[idxLoop] = arr[lessIndex] + (arr[lessIndex] = arr[idxLoop]) - arr[lessIndex];
+                    arr[idxLoop] = arr[lessIndex] + (arr[lessIndex] = arr[idxLoop]) - arr[lessIndex];cmpPre
                     lessIndex++; // 小于区域右扩
                     idxLoop++; // 扫描索引右移
                 } else if (cPart > 0) { // 当前元素大于 pivot
@@ -260,7 +292,7 @@ class org.flashNight.naki.Sort.PDQSort {
                     greatIndex--; // 大于区域左收缩
                     // 不增加 idxLoop，因为交换过来的元素需要重新比较
                 } else { // 当前元素等于 pivot
-                    // 此处可以实现批量跳过重复元素的优化，但当前仅简单跳过
+                    // 理论应该实现批量跳过重复元素的优化，但as2环境下暂时未找到性能更好的解决方法
                     idxLoop++; // 扫描索引右移
                 }
             }
@@ -272,6 +304,18 @@ class org.flashNight.naki.Sort.PDQSort {
             //------------------------------------------------------
             // (f) 子区间入栈 (优先处理更小的子区间)
             //------------------------------------------------------
+            // 坏分区检测逻辑
+            var totalLen:Number = right - left + 1;
+            var leftLen:Number  = (lessIndex - 1) - left;
+            var rightLen:Number = right - greatIndex;
+
+            if ((leftLen > 0 && leftLen < (totalLen >> 3)) || 
+                (rightLen > 0 && rightLen < (totalLen >> 3))) 
+            {
+                maxDepth--;
+            }
+
+
             var leftLen:Number  = (lessIndex - 1) - left; // 左子区间长度
             var rightLen:Number = right - greatIndex; // 右子区间长度
             if (leftLen < rightLen) { // 如果左子区间更小
