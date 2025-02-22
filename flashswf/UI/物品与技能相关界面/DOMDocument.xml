@@ -108,7 +108,7 @@
           <Include href="个人信息界面.xml" loadImmediate="false" itemID="66dd624f-000008f4" lastModified="1735536679"/>
           <Include href="个人信息界面素材/滑块.xml" loadImmediate="false" itemID="66dd6a74-0000091b" lastModified="1725786931"/>
           <Include href="个人信息界面素材/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="66dd691c-0000090f" lastModified="1726169905"/>
-          <Include href="购买执行界面.xml" loadImmediate="false" itemID="677cd804-00000291" lastModified="1736271580"/>
+          <Include href="购买执行界面.xml" loadImmediate="false" itemID="677cd804-00000291" lastModified="1740247712"/>
           <Include href="购买执行界面素材/返回按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d30cc-0000101c" lastModified="1736262061"/>
           <Include href="购买执行界面素材/购买按钮.xml" itemIcon="0" loadImmediate="false" itemID="677d3180-0000102d" lastModified="1736261986"/>
           <Include href="购买执行界面素材/购买按钮背景.xml" loadImmediate="false" itemID="677d31a7-0000103b" lastModified="1736258047"/>
@@ -251,7 +251,7 @@
 ]]></script>
                                              </Actionscript>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" selected="true" centerPoint3DX="133.05" centerPoint3DY="165.95">
+                                        <DOMSymbolInstance libraryItemName="新版物品栏界面" name="物品栏界面" centerPoint3DX="133.05" centerPoint3DY="165.95">
                                              <matrix>
                                                   <Matrix a="0.999984741210938" d="0.999984741210938" tx="15.05"/>
                                              </matrix>
@@ -259,7 +259,7 @@
                                                   <Point/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="新版商店界面" name="购买物品界面" centerPoint3DX="447" centerPoint3DY="165.95">
+                                        <DOMSymbolInstance libraryItemName="新版商店界面" name="购买物品界面" selected="true" centerPoint3DX="447" centerPoint3DY="165.95">
                                              <matrix>
                                                   <Matrix tx="329"/>
                                              </matrix>
@@ -546,6 +546,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="52128" publishTime="1740247561"/>
           <PublishItem publishSize="52072" publishTime="1740105869"/>
           <PublishItem publishSize="52057" publishTime="1739870197"/>
           <PublishItem publishSize="52061" publishTime="1739870072"/>
@@ -565,6 +566,5 @@
           <PublishItem publishSize="51602" publishTime="1739848522"/>
           <PublishItem publishSize="51139" publishTime="1739847671"/>
           <PublishItem publishSize="51210" publishTime="1739847579"/>
-          <PublishItem publishSize="51210" publishTime="1739847528"/>
      </publishHistory>
 </DOMDocument>

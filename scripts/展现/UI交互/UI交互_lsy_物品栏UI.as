@@ -44,23 +44,24 @@ _root.物品UI函数.购买物品 = function(){
 }
 
 _root.物品UI函数.出售物品 = function(){
-	var item = this.sellCollection.getItem(this.sellIndex)
+	var item = this.sellCollection.getItem(this.sellIndex);
 	if(item !== this.sellItem) {
 		this.gotoAndStop("空");
 		this.showtext.text = "出售失败：物品已不在原位"
 		return false;
 	}
 	if(isNaN(this.物品强化度)){
-		if(item.value < this.数量){
+		var totalValue = this.sellCollection.isDict ? item : item.value;
+		if(totalValue < this.数量){
 			this.gotoAndStop("空");
 			this.showtext.text = "出售失败：物品数量不足"
 			return false;
 		}
-		if(item.value > this.数量) this.sellCollection.addValue(this.sellIndex,-this.数量);
+		if(totalValue > this.数量) this.sellCollection.addValue(this.sellIndex,-this.数量);
 		else this.sellCollection.remove(this.sellIndex);
 	}else{
 		if(item.value.level != this.物品强化度) {
-			this.showtext.text = "出售失败：物品强化度错误"
+			this.showtext.text = "出售失败：物品强化度改变"
 			return false;
 		}
 		this.sellCollection.remove(this.sellIndex);
@@ -143,8 +144,6 @@ _root.物品UI函数.删除背包图标 = function(){
 		背包图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.背包图标列表 = null;
-	// _root.物品栏.背包.clearIcon();
-	// _root.物品栏.装备栏.clearIcon();
 }
 
 
@@ -319,7 +318,6 @@ _root.物品UI函数.删除仓库图标 = function(){
 		图标列表[i].removeMovieClip();
 	}
 	仓库界面.图标列表 = null;
-	// 仓库界面.inventory.clearIcon();
 	仓库界面.inventory = null;
 	仓库界面.page = -1;
 	仓库界面.maxpage = 0;
@@ -383,6 +381,26 @@ _root.物品UI函数.创建材料图标 = function(){
 		}
 		物品栏界面.材料图标列表[i] = 物品图标;
 		物品图标.itemIcon = new CollectionIcon(物品图标,材料,材料列表[i]);
+		物品图标.itemIcon.Press = function(){
+			if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle){
+				this.icon.originalDepth = this.icon.getDepth();
+				this.icon.swapDepths(1023);
+				this.icon.图标壳.图标.gotoAndStop(2);
+				this.icon.startDrag(true);
+				_root.鼠标.gotoAndStop("手型抓取");
+			}
+		}
+		物品图标.itemIcon.Release = function(){
+			this.icon.图标壳.图标.gotoAndStop(1);
+			this.icon.swapDepths(this.icon.originalDepth);
+			this.icon.stopDrag();
+			this.icon._x = this.x;
+			this.icon._y = this.y;
+			if (_root.购买物品界面._visible && _root.购买物品界面.购买执行界面.idle && _root.购买物品界面.购买执行界面.hitTest(_root._xmouse, _root._ymouse)){
+				_root.购买物品界面.购买执行界面.售卖确认(this.collection,this.index);
+				return;
+			}
+		}
 	}
 }
 
@@ -392,7 +410,6 @@ _root.物品UI函数.删除材料图标 = function(){
 		材料图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.材料图标列表 = null;
-	// _root.收集品栏.材料.clearIcon();
 }
 
 _root.物品UI函数.创建情报图标 = function(){
@@ -454,7 +471,6 @@ _root.物品UI函数.删除情报图标 = function(){
 		情报图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.情报图标列表 = null;
-	// _root.收集品栏.情报.clearIcon();
 }
 
 _root.物品UI函数.初始化情报信息界面 = function(){
