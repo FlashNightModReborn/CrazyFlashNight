@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.itemCollection.ICollection;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
 
 /*
  * 物品集合基类
@@ -12,6 +13,8 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     public var iconMovieClips:Object; //物品图标影片剪辑的引用
 
     public var isDict:Boolean; //是否为字典集合
+
+    private var dispatcher:LifecycleEventDispatcher; //事件分发器实例
 
     public function ItemCollection(_items:Object) {
         if(!_items) this.items = new Object();
@@ -59,7 +62,8 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     public function add(key:String,item):Boolean{
         if(isEmpty(key) && isAddable(key,item)){
             items[key] = item;
-            if(icons[key]) icons[key].refresh();
+            //if(icons[key]) icons[key].refresh();
+            if(hasDispatcher()) dispatcher.publish("ItemAdded", this, key); // 发布ItemAdded事件
             return true;
         }
         return false;
@@ -68,7 +72,8 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     //移除物品
     public function remove(key:String):Void{
         delete items[key];
-        if(icons[key]) icons[key].refresh();
+        //if(icons[key]) icons[key].refresh();
+        if(hasDispatcher()) dispatcher.publish("ItemRemoved", this, key); // 发布ItemRemoved事件
     }
 
     //物品图标相关函数
@@ -88,5 +93,25 @@ class org.flashNight.arki.item.itemCollection.ItemCollection implements ICollect
     public function clearIcon():Void{
         this.icons = new Object();
         this.iconMovieClips = new Object();
+    }
+
+    //设置事件分发器
+    public function setDispatcher(_dispatcher:LifecycleEventDispatcher):Void{
+        if(this.hasDispatcher()) this.dispatcher.destroy();
+        this.dispatcher = _dispatcher;
+    }
+    //获取事件分发器实例
+    public function getDispatcher():LifecycleEventDispatcher{
+        if(hasDispatcher()) return this.dispatcher;
+        return null;
+    }
+    //检查事件分发器是否存在
+    private function hasDispatcher():Boolean{
+        if(this.dispatcher == null) return false;
+        if(this.dispatcher.isDestroyed()){
+            this.dispatcher = null;
+            return false;
+        }
+        return true;
     }
 }

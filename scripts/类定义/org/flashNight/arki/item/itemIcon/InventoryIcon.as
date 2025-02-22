@@ -34,8 +34,8 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
 
         //高亮对应装备栏
         if(itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷"){
-            if(itemData.use == "手枪"){//对手枪2进行额外判定
-                icon.highlights = [_root.物品栏界面.手枪,_root.物品栏界面.手枪2];
+            if(itemData.use == "手枪"){
+                icon.highlights = [_root.物品栏界面.手枪,_root.物品栏界面.手枪2];//对手枪2进行额外判定
             }else{
                 icon.highlights = [_root.物品栏界面[itemData.use]];
             }
@@ -73,25 +73,27 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
 
             if(itemData.type == "武器" || itemData.type == "防具" || itemData.use == "手雷"){
                 var 装备栏 = _root.物品栏.装备栏;
-                var targetIcon = 装备栏.icons[itemData.use];
-                var iconMovieClip = targetIcon.icon;
-                if(targetIcon.icon.area.hitTest(xmouse, ymouse)){
+                var iconMovieClip = _root.物品栏界面[itemData.use];
+                var targetIcon = iconMovieClip.itemIcon;
+                if(iconMovieClip.area.hitTest(xmouse, ymouse)){
                     ItemUtil.moveItemToEquipment(this,targetIcon,itemData.use);
                     return;
                 }
                 //对手枪2进行额外硬代码判定
-                var targetIcon = 装备栏.icons["手枪2"];
-                if(itemData.use == "手枪" && targetIcon.icon.area.hitTest(xmouse, ymouse)){
-                    ItemUtil.moveItemToEquipment(this,targetIcon,"手枪2");
+                iconMovieClip = _root.物品栏界面["手枪2"];
+                targetIcon = iconMovieClip.itemIcon;
+                if(itemData.use == "手枪" && iconMovieClip.area.hitTest(xmouse, ymouse)){
+                    ItemUtil.moveItemToEquipment(this, targetIcon, "手枪2");
                     return;
                 }
             }
             
-            var icons = _root.物品栏.背包.icons;
-            for (var i in icons){
-                var iconMovieClip = icons[i].icon;
+            //检索背包
+            var 图标列表 = _root.物品栏界面.背包图标列表;
+            for (var i=0; i<图标列表.length; i++){
+                var iconMovieClip = 图标列表[i];
                 if(iconMovieClip.area.hitTest(xmouse, ymouse)){
-                    ItemUtil.moveItemToInventory(this,icons[i]);
+                    ItemUtil.moveItemToInventory(this,iconMovieClip.itemIcon);
                     return;
                 }
             }
@@ -106,7 +108,7 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
             }
 
             var 图标列表 = _root.仓库界面.图标列表;
-            for(var i=0; i<图标列表.length;i++){
+            for(var i=0; i<图标列表.length; i++){
                 var iconMovieClip = 图标列表[i];
                 if(iconMovieClip.area.hitTest(xmouse, ymouse)){
                     ItemUtil.moveItemToInventory(this,iconMovieClip.itemIcon);
@@ -117,11 +119,11 @@ class org.flashNight.arki.item.itemIcon.InventoryIcon extends CollectionIcon{
         }
 
         if (itemData.use == "药剂" && _root.玩家信息界面.快捷药剂界面.hitTest(xmouse, ymouse)){
-            var icons = _root.物品栏.药剂栏.icons;
+            var 图标列表 = _root.玩家信息界面.快捷药剂界面.药剂图标列表;
             for (var i = 0; i < 4; i++){
-                var iconMovieClip = icons[i].icon;
+                var iconMovieClip = 图标列表[i];
                 if(iconMovieClip.area.hitTest(xmouse, ymouse)){
-                    ItemUtil.moveItemToDrug(this,icons[i]);
+                    ItemUtil.moveItemToDrug(this,iconMovieClip.itemIcon);
                     return;
                 }
             }

@@ -1,5 +1,6 @@
 ﻿// import org.flashNight.arki.item.itemCollection.ItemCollection;
 import org.flashNight.arki.item.itemIcon.ItemIcon;
+import org.flashNight.neur.Event.LifecycleEventDispatcher;
 /*
  * 属于物品集合的物品图标，继承物品图标基类
 */
@@ -11,6 +12,10 @@ class org.flashNight.arki.item.itemIcon.CollectionIcon extends ItemIcon{
 
     private var locked:Boolean = false;
 
+    private var dispatcher:LifecycleEventDispatcher; //
+    private var refreshCallback:Function;
+    private var refreshValueCallback:Function;
+
     public function CollectionIcon(_icon:MovieClip, _collection, _index) {
         this.icon = _icon;
         this.x = icon._x;
@@ -20,7 +25,8 @@ class org.flashNight.arki.item.itemIcon.CollectionIcon extends ItemIcon{
         //
         this.collection = _collection;
         this.index = _index;
-        this.collection.setIcon(this,index)
+        // this.collection.setIcon(this,index)
+        setDispatcher();
         init();
     }
 
@@ -39,7 +45,35 @@ class org.flashNight.arki.item.itemIcon.CollectionIcon extends ItemIcon{
         this.collection.removeIcon(index);
         this.collection = _collection;
         this.index = _index;
-        this.collection.setIcon(this,this.index);
+        // this.collection.setIcon(this,this.index);
+        setDispatcher();
         init();
+    }
+
+    public function refreshValue():Void{
+        //检测是否来自集合，若来自集合则手动刷新一次value
+        if(!isNaN(item)) this.item = collection.getValue(String(index));
+        super.refreshValue();
+    }
+
+    private function setDispatcher():Void{
+        //卸载之前的事件监听
+        if(this.dispatcher){
+            this.dispatcher.unsubscribe("ItemAdded", this.refreshCallback);
+            this.dispatcher.unsubscribe("ItemRemoved", this.refreshCallback);
+            this.dispatcher.unsubscribe("ItemValueChanged", this.refreshValueCallback);
+        }
+        if(!this.collection.hasDispatcher()) return;
+        this.dispatcher = this.collection.getDispatcher();
+        this.refreshCallback = function(_collection, _key){
+            if(_collection === this.collection && _key == this.index) this.refresh();
+        }
+        this.refreshValueCallback = function(_collection, _key){
+            if(_collection === this.collection && _key == this.index) this.refreshValue();
+        }
+        //注册对应的事件监听
+        this.dispatcher.subscribe("ItemAdded", this.refreshCallback, this);
+        this.dispatcher.subscribe("ItemRemoved", this.refreshCallback, this);
+        this.dispatcher.subscribe("ItemValueChanged", this.refreshValueCallback, this);
     }
 }
