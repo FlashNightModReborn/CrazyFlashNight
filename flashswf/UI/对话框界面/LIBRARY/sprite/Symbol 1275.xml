@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1275" itemID="6597607e-000008ee" lastModified="1740115388">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1275" itemID="6597607e-000008ee" lastModified="1740230471">
   <timeline>
     <DOMTimeline name="Symbol 1275">
       <layers>
-        <DOMLayer name="表情" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="表情" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" name="普通" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Pig表情普通" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Pig表情普通" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.10398864746094" d="1.10398864746094" tx="41" ty="-1187.65"/>
                   </matrix>
@@ -20,7 +20,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Pig表情坏笑" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.09370422363281" d="1.09353637695313" tx="41" ty="-1191.25"/>
+                    <Matrix a="1.09368896484375" d="1.09353637695313" tx="41" ty="-1191.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="78.7" y="100.95"/>
@@ -44,7 +44,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Pig表情悲伤" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="1.10316467285156" d="1.10305786132813" tx="41" ty="-1194.15"/>
+                    <Matrix a="1.1031494140625" d="1.10305786132813" tx="41" ty="-1194.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="78" y="98.95"/>
@@ -54,7 +54,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 100" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="图层 100" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
