@@ -243,18 +243,28 @@
                     <Enemy id="0">
                         <Type>兵种296</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <Parameters>
+                            <可变身概率>5</可变身概率>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种296</Type>
+                        <Interval>800</Interval>
+                        <Quantity>2</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
-                    <Enemy id="1">
+                    <Enemy id="2">
                         <Type>兵种296</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
-                    <Enemy id="2">
+                    <Enemy id="3">
                         <Type>兵种297</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
