@@ -74,9 +74,9 @@
                         <SpawnIndex>front</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种47</Type>
+                        <Type>兵种409</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>5</Quantity>
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="3">
@@ -88,7 +88,7 @@
                     <Enemy id="4">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>33</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -118,9 +118,9 @@
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种270</Type>
+                        <Type>兵种409</Type>
                         <Interval>500</Interval>
-                        <Quantity>6</Quantity>
+                        <Quantity>8</Quantity>
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="3">
@@ -191,11 +191,16 @@
                         <Quantity>2</Quantity>
                         <Level>33</Level>
                     </Enemy>
-                    
                     <Enemy id="3">
                         <Type>兵种270</Type>
                         <Interval>500</Interval>
-                        <Quantity>8</Quantity>
+                        <Quantity>6</Quantity>
+                        <Level>33</Level>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种409</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
                         <Level>33</Level>
                     </Enemy>
                 </EnemyGroup>
@@ -239,7 +244,7 @@
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种64</Type>
+                        <Type>兵种409</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>33</Level>
