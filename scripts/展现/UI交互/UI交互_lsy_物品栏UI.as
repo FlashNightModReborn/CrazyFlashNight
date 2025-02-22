@@ -11,8 +11,8 @@ _root.物品UI函数.药剂栏 = new Object();
 
 EventBus.getInstance().subscribe("物品栏排序图标点击",function(methodName:String){
 	ItemSortUtil.sortInventory(_root.物品栏.背包, methodName, function(){
-		    _root.物品UI函数.删除背包图标();
-		    _root.物品UI函数.创建背包图标();
+		_root.物品UI函数.删除背包图标();
+		_root.物品UI函数.创建背包图标();
 	});
 },null);
 
@@ -92,6 +92,9 @@ _root.物品UI函数.创建背包图标 = function(){
 
 	var 物品栏界面 = _root.物品栏界面;
 	var 背包 = _root.物品栏.背包;
+	//设置背包事件分发器
+	var bagDispatcher = new LifecycleEventDispatcher(物品栏界面.物品图标);
+	背包.setDispatcher(bagDispatcher);
 	
 	var 起始x = 物品栏界面.物品图标._x;
 	var 起始y = 物品栏界面.物品图标._y;
@@ -123,6 +126,9 @@ _root.物品UI函数.创建背包图标 = function(){
 
 	var 装备栏 = _root.物品栏.装备栏;
 	var 装备栏位列表 = ["头部装备","上装装备","下装装备","手部装备","脚部装备","颈部装备","长枪","手枪","手枪2","刀","手雷"];
+	//设置装备栏事件分发器
+	var equipmentDispatcher = new LifecycleEventDispatcher(物品栏界面.物品图标);
+	装备栏.setDispatcher(equipmentDispatcher);
 
 	for (var i = 0; i < 装备栏位列表.length; i++){
 		var 装备类型 = 装备栏位列表[i];
@@ -137,8 +143,8 @@ _root.物品UI函数.删除背包图标 = function(){
 		背包图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.背包图标列表 = null;
-	_root.物品栏.背包.clearIcon();
-	_root.物品栏.装备栏.clearIcon();
+	// _root.物品栏.背包.clearIcon();
+	// _root.物品栏.装备栏.clearIcon();
 }
 
 
@@ -151,6 +157,9 @@ _root.物品UI函数.初始化药剂栏图标 = function(){
 	快捷药剂界面.药剂图标列表 = [];
 	var 控制器列表 = [快捷药剂界面.控制器0,快捷药剂界面.控制器1,快捷药剂界面.控制器2,快捷药剂界面.控制器3];
 	var 进度条列表 = [快捷药剂界面.进度条0,快捷药剂界面.进度条1,快捷药剂界面.进度条2,快捷药剂界面.进度条3];
+	//设置事件分发器
+	var dispatcher = new LifecycleEventDispatcher(快捷药剂界面);
+	_root.物品栏.药剂栏.setDispatcher(dispatcher);
 
 	for (var i = 0; i < 4; i++){
 		var depth = list[i].getDepth();
@@ -243,15 +252,25 @@ _root.物品UI函数.刷新仓库图标 = function(inventory,page){
 	if(_root.仓库名称 == "后勤战备箱") maxpage = _root.物品UI函数.计算战备箱总页数();
 	if(page < 0 || page >= maxpage) return;
 
+	//销毁之前的事件分发器
+	if(仓库界面.inventory.hasDispatcher()){
+		仓库界面.inventory.getDispatcher().destroy();
+	}
 	仓库界面.inventory = inventory;
 	仓库界面.page = page;
 	仓库界面.maxpage = maxpage;
 	仓库界面.仓库页数显示 = String(page + 1)+" / "+String(maxpage);
 
+	//设置新的事件分发器
+	var dispatcher = new LifecycleEventDispatcher(仓库界面.物品图标);
+	inventory.setDispatcher(dispatcher);
+
 	if(!仓库界面.图标列表) {
 		_root.物品UI函数.创建仓库图标(inventory,page);
 		return;
 	}
+
+	//重置物品图标
 	for (var i = 0; i < 仓库界面.图标列表.length; i++){
 		var index = i + 40 * page;
 		var 物品图标 = 仓库界面.图标列表[i];
@@ -300,7 +319,7 @@ _root.物品UI函数.删除仓库图标 = function(){
 		图标列表[i].removeMovieClip();
 	}
 	仓库界面.图标列表 = null;
-	仓库界面.inventory.clearIcon();
+	// 仓库界面.inventory.clearIcon();
 	仓库界面.inventory = null;
 	仓库界面.page = -1;
 	仓库界面.maxpage = 0;
@@ -327,7 +346,10 @@ _root.物品UI函数.创建材料图标 = function(){
 
 	var 物品栏界面 = _root.物品栏界面;
 	var 材料 = _root.收集品栏.材料;
-	// var 情报 = _root.收集品栏.情报;
+
+	//设置新的事件分发器
+	var dispatcher = new LifecycleEventDispatcher(物品栏界面.材料图标);
+	材料.setDispatcher(dispatcher);
 	
 	var 起始x = 物品栏界面.材料图标._x;
 	var 起始y = 物品栏界面.材料图标._y;
@@ -370,7 +392,7 @@ _root.物品UI函数.删除材料图标 = function(){
 		材料图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.材料图标列表 = null;
-	_root.收集品栏.材料.clearIcon();
+	// _root.收集品栏.材料.clearIcon();
 }
 
 _root.物品UI函数.创建情报图标 = function(){
@@ -378,6 +400,10 @@ _root.物品UI函数.创建情报图标 = function(){
 
 	var 物品栏界面 = _root.物品栏界面;
 	var 情报 = _root.收集品栏.情报;
+
+	//设置新的事件分发器
+	var dispatcher = new LifecycleEventDispatcher(物品栏界面.情报物品图标);
+	情报.setDispatcher(dispatcher);
 	
 	var 起始x = 物品栏界面.情报物品图标._x;
 	var 起始y = 物品栏界面.情报物品图标._y;
@@ -415,7 +441,7 @@ _root.物品UI函数.创建情报图标 = function(){
 			起始y += 图标高度;
 		}
 		物品栏界面.情报图标列表[i] = 物品图标;
-		物品图标.itemIcon = new CollectionIcon(物品图标,情报,情报名);
+		物品图标.itemIcon = new CollectionIcon(物品图标, 情报, 情报名);
 		物品图标.itemIcon.Press = function(){
 			_root.物品栏界面.情报信息界面.显示情报信息(this.name,this.item);
 		}
@@ -428,7 +454,7 @@ _root.物品UI函数.删除情报图标 = function(){
 		情报图标列表[i].removeMovieClip();
 	}
 	_root.物品栏界面.情报图标列表 = null;
-	_root.收集品栏.情报.clearIcon();
+	// _root.收集品栏.情报.clearIcon();
 }
 
 _root.物品UI函数.初始化情报信息界面 = function(){

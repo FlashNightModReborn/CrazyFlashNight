@@ -416,8 +416,7 @@ _root.帧计时器.定期更新天气 = function()
     if (--this.天气待更新时间 === 0 || !游戏世界.已更新天气) 
     {
         this.eventBus.publish("WeatherUpdated");
-        if(!游戏世界.已更新天气)
-        {                                                                                                                                                                                                                                                                                                                                                                                           
+        if(!游戏世界.已更新天气){            
             游戏世界.已更新天气 = true;//保证换场景可切换
             _global.ASSetPropFlags(游戏世界, ["已更新天气"], 1, true);
 

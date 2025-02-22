@@ -18,7 +18,8 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
         if(isNaN(value)) return false;
         if(isEmpty(key) && isAddable(key,value)){
             items[key] = value;
-            if(icons[key]) icons[key].refresh();
+            // if(icons[key]) icons[key].refresh();
+            if(this.hasDispatcher()) dispatcher.publish("ItemAdded", this, key); // 发布ItemAdded事件
             return true;
         }
         return false;
@@ -35,9 +36,8 @@ class org.flashNight.arki.item.itemCollection.DictCollection extends ItemCollect
     public function addValue(key:String,value:Number):Void{
         if(isNaN(value)) return;
         items[key] += value;
-        if(icons[key]) icons[key].refreshValue();
-        if(items[key] <= 0){
-            remove(key);
-        }
+        // if(icons[key]) icons[key].refreshValue();
+        if(items[key] <= 0) remove(key);
+        else if(this.hasDispatcher()) dispatcher.publish("ItemValueChanged", this, key); // 发布ItemValueChanged事件
     }
 }
