@@ -32,7 +32,7 @@ class org.flashNight.arki.audio.SoundEffectManager {
         this.preprocessor = preproc;
         globalSoundObj = new Sound();
         globalVolume = 100;
-        bgmVolume = 100;
+        bgmVolume = 70; // 默认bgm音量为70
         
         // 初始化三轨道
         bgmEngine = new MusicEngine(null, null, null); 
