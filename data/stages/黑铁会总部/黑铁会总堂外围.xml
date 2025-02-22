@@ -93,7 +93,7 @@
                     <Enemy id="0">
                         <Type>兵种64</Type>
                         <Interval>500</Interval>
-                        <Quantity>6</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>36</Level>
                     </Enemy>
                     <Enemy id="1">
@@ -114,6 +114,12 @@
                         <Quantity>2</Quantity>
                         <Level>30</Level>
                     </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种410</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>36</Level>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
         </Wave>
@@ -131,7 +137,7 @@
                     <Enemy id="0">
                         <Type>兵种65</Type>
                         <Interval>500</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>36</Level>
                     </Enemy>
                     <Enemy id="1">
@@ -165,6 +171,12 @@
                                 <最大数量>1</最大数量>
                             </掉落物>
                         </Parameters>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种410</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>36</Level>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
