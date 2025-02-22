@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1736271580" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1740247712" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="购买执行界面">
       <layers>
@@ -62,19 +62,26 @@ function 售卖确认(物品集合, 物品index)
 	this.交易类型 = "售卖";
 	this.sellCollection = 物品集合;
 	this.sellIndex = 物品index;
-	this.sellItem = sellCollection.getItem(sellIndex);
+	if(this.sellCollection.isDict){
+		this.sellItem = this.totalValue = sellCollection.getValue(sellIndex);
+		this.物品名 = sellIndex;
+	}else{
+		this.sellItem = sellCollection.getItem(sellIndex);
+		this.totalValue = sellItem.value;
 	this.物品名 = sellItem.name;
+	}
+	
 	var itemData = _root.getItemData(物品名);
 	this.displayname = itemData.displayname;
 	this.单价 = itemData.price;
-	if (isNaN(sellItem.value))
+	if (isNaN(totalValue))
 	{
 		this.最大数量 = 1;
-		this.物品强化度 = sellItem.value.level;
+		this.物品强化度 = totalValue.level;
 	}
 	else
 	{
-		this.最大数量 = sellItem.value;
+		this.最大数量 = totalValue;
 		this.物品强化度 = null;
 	}
 	//应用快速售卖功能

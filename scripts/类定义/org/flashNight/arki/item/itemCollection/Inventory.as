@@ -36,7 +36,6 @@ class org.flashNight.arki.item.itemCollection.Inventory extends ItemCollection{
         if(isNaN(value)) return;
         var item = items[key];
         item.value += value;
-        //if(icons[key]) icons[key].refreshValue();
         if(item.value <= 0) remove(key);
         else if(hasDispatcher()) dispatcher.publish("ItemValueChanged", this, key); // 发布ItemValueChanged事件
     }
