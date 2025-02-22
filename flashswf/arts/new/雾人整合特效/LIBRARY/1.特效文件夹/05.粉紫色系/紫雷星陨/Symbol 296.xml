@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/05.粉紫色系/紫雷星陨/Symbol 296" itemID="653d1959-000006c5" lastModified="1693389033">
+  <timeline>
+    <DOMTimeline name="Symbol 296">
+      <layers>
+        <DOMLayer name="Layer 1" color="#6BCDB3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.15576171875" d="0.11553955078125" tx="-0.6" ty="51.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.631372549019608"/>
+                        <GradientEntry color="#FF00FF" ratio="0.733333333333333"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.890196078431373"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1299 -195[1783 113 1833 537!1833 537|-1832 537!-1832 537[-1783 113 -1300 -195!-1300 -195[-761 -538 0 -538!0 -538[761 -538 1299 -195"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

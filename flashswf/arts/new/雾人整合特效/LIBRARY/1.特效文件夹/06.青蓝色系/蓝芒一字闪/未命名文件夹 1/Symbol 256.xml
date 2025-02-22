@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 256" itemID="653cd862-000002bc" symbolType="graphic" lastModified="1690082192">
+  <timeline>
+    <DOMTimeline name="Symbol 256">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.108016967773438" d="0.108016967773438" tx="105.2" ty="108.35"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.152941176470588"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3456 3518[2896 4078 2104 4078!2104 4078[1312 4078 752 3518!752 3518[193 2959 193 2166!193 2166[193 1375 752 815!752 815[1312 256 2104 256!2104 256[2896 256 3456 815!3456 815[4015 1375 4015 2167!4015 2167[4015 2959 3456 3518"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2107 2377|-507 3410!-507 3410|1984 2108!1984 2108|952 -507!952 -507|2253 1985!2253 1985|4867 953!4867 953|2376 2254!2376 2254|3407 4868!3407 4868|2107 2377"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

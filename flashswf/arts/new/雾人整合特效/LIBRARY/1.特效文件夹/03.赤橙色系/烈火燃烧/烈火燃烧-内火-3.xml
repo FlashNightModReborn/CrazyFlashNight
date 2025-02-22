@@ -1,0 +1,42 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-3" itemID="66d71f67-000050c7" lastModified="1725374311">
+  <timeline>
+    <DOMTimeline name="烈火燃烧-内火-3">
+      <layers>
+        <DOMLayer name="图层_1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="50" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-2" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="0.42547607421875" d="0.25762939453125" tx="140.9" ty="54.65"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point/>
+                      </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.71" tintColor="#FF6633"/>
+                      </color>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/烈火燃烧/烈火燃烧-内火-2" symbolType="graphic" firstFrame="4" loop="loop">
+                      <matrix>
+                        <Matrix a="0.236801147460938" d="0.14337158203125" tx="122.95" ty="75.45"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point/>
+                      </transformationPoint>
+                      <color>
+                        <Color tintMultiplier="0.55" tintColor="#FFFF33"/>
+                      </color>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

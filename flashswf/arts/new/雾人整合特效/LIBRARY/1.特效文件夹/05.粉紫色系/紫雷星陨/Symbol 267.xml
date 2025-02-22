@@ -1,0 +1,51 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/05.粉紫色系/紫雷星陨/Symbol 267" itemID="653d1959-000006b0" lastModified="1693389033">
+  <timeline>
+    <DOMTimeline name="Symbol 267">
+      <layers>
+        <DOMLayer name="Layer 1" color="#96D336">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="1.特效文件夹/05.粉紫色系/紫雷星陨/bitmap265.png" bitmapIsClipped="true">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-64.05" ty="-63.75"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-1281 -1275|1179 -1275!1179 -1275|1179 1125!1179 1125|-1281 1125!-1281 1125|-1281 -1275"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#52EAC0" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/紫雷星陨/Symbol 264" centerPoint3DX="613.55" centerPoint3DY="587.25">
+                  <matrix>
+                    <Matrix a="-0.186065673828125" d="0.186065673828125" tx="85.35" ty="-78.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="24" blurY="24" color="#FF00FF" quality="2" strength="1.34"/>
+                    <GlowFilter blurX="24" blurY="24" color="#FF0099"/>
+                    <BlurFilter blurX="10" blurY="10"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

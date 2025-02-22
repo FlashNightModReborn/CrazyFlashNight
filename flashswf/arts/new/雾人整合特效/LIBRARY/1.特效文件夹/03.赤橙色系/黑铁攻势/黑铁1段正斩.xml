@@ -1,0 +1,144 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/黑铁攻势/黑铁1段正斩" itemID="65473446-00000e22" linkageExportForAS="true" linkageIdentifier="黑铁1段正斩" lastModified="1730486916" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="黑铁1段正斩">
+      <layers>
+        <DOMLayer name="Script Layer" color="#BDD3F1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+   if(_parent.方向 == "右")
+   {
+      _parent.移动("右",慢速度);
+   }
+   else if(_parent.方向 == "左")
+   {
+      _parent.移动("左",慢速度);
+   }
+}
+gotoAndPlay(_parent.近战招式);
+if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="140" centerPoint3DY="-5.6">
+                  <matrix>
+                    <Matrix a="1.34471130371094" b="1.0482177734375" c="-0.614791870117188" d="0.788681030273438" tx="125.65" ty="-41.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="19.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 66" color="#8787CA" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/黑铁攻势/Symbol 854" centerPoint3DX="131.15" centerPoint3DY="-67.15">
+                  <matrix>
+                    <Matrix a="-0.327621459960938" b="-0.0067291259765625" c="-0.0134429931640625" d="-0.253082275390625" tx="105.35" ty="-90.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="20"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix tx="3" ty="7"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0432281494140625" b="-0.0434112548828125" c="0.255508422851563" d="-0.1458740234375" tx="157.95" ty="-21.6"/>
+                        </matrix>
+                        <GradientEntry color="#FFAD00" ratio="0"/>
+                        <GradientEntry color="#FFAD00" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!1861 -386S1|3051 526!3051 526[3772 -142 3720 -1083!3720 -1083[3685 -1762 3264 -2313!3264 -2313[3731 -1249 3340 -461!3340 -461[3382 -870 3285 -1283!3285 -1283[3240 -849 3013 -631!3013 -631[3027 -913 2937 -1150!2937 -1150[2843 -776 2646
+ -690!2646 -690[2705 -902 2616 -1099!2616 -1099[2450 -824 2327 -792!2327 -792[2321 -917 2207 -1101!2207 -1101[2124 -709 1871 -399!1871 -399|1861 -386"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix tx="3" ty="7"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.010894775390625" b="-0.0367279052734375" c="0.3199462890625" d="0.0721893310546875" tx="152.3" ty="-1"/>
+                        </matrix>
+                        <GradientEntry color="#FFAD00" ratio="0"/>
+                        <GradientEntry color="#FFAD00" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!1846 -400S1|1835 -387!1835 -387|3026 525!3026 525[3610 -16 3687 -738!3687 -738[3508 -109 3136 181!3136 181[3207 -57 3211 -185!3211 -185[2960 -15 2726 29!2726 29[2864 -119 2811 -253!2811 -253[2649 -159 2484 -162!2484 -162|2475 -304!2475
+ -304[2356 -230 2226 -310!2226 -310[2008 -456 2014 -651!2014 -651[1942 -520 1846 -400"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix tx="3" ty="7"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0075836181640625" b="-0.0108184814453125" c="0.290634155273438" d="0.131759643554688" tx="148.15" ty="19.5"/>
+                        </matrix>
+                        <GradientEntry color="#FFAD00" ratio="0"/>
+                        <GradientEntry color="#FFAD00" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="
+!2981 398S1|2141 -148!2141 -148|3022 526!3022 526[3147 411 3246 286!3246 286[3104 397 2981 398"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

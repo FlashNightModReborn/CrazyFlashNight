@@ -1,0 +1,257 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/00.增幅系列/蓝紫增幅/蓝紫增幅" itemID="6554ca27-00002ffe" linkageExportForAS="true" linkageIdentifier="蓝紫增幅" lastModified="1700055688">
+  <timeline>
+    <DOMTimeline name="蓝紫增幅" currentFrame="19">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#0397E6">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/00.增幅系列/蓝紫增幅/Symbol 44" centerPoint3DX="-9.5" centerPoint3DY="-116.6">
+                  <matrix>
+                    <Matrix tx="-52" ty="-151.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="8" color="#6600FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#DFCB41">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/00.增幅系列/蓝紫增幅/Symbol 37" centerPoint3DX="7.55" centerPoint3DY="-202.8">
+                  <matrix>
+                    <Matrix tx="-158.5" ty="-285.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="8" color="#6600FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/00.增幅系列/蓝紫增幅/Symbol 39" centerPoint3DX="12.15" centerPoint3DY="-175.7">
+                  <matrix>
+                    <Matrix tx="-113.7" ty="-251.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="8" color="#6600FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/00.增幅系列/蓝紫增幅/Symbol 41" centerPoint3DX="-1.8" centerPoint3DY="-145.15">
+                  <matrix>
+                    <Matrix tx="-94.65" ty="-209.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="8" color="#6600FF"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0505523681640625" d="0.0505523681640625" tx="-1.5" ty="-87.7"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.270588235294118"/>
+                        <GradientEntry color="#6600FF" alpha="0" ratio="0.627450980392157"/>
+                        <GradientEntry color="#FFFFFF" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!549 -1174[310 -934 -30 -934!-30 -934[-370 -934 -611 -1174!-611 -1174[-850 -1414 -850 -1754!-850 -1754[-850 -2094 -611 -2334!-611 -2334[-370 -2574 -30 -2574!-30 -2574[310 -2574 549 -2334!549 -2334[790 -2094 790 -1754!790 -1754[790 -1414
+ 549 -1174"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.081390380859375" d="0.081390380859375" tx="-1.55" ty="-87.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.701960784313725" ratio="0.349019607843137"/>
+                        <GradientEntry color="#6600FF" alpha="0" ratio="0.627450980392157"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.701960784313725" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!901 -2689[1289 -2303 1289 -1755!1289 -1755[1289 -1208 901 -821!901 -821|799 -727!799 -727[446 -435 -31 -435!-31 -435[-579 -435 -966 -821!-966 -821[-1351 -1208 -1351 -1755!-1351 -1755[-1351 -2303 -966 -2689!-966 -2689[-579 -3075 -31 -3075
+!-31 -3075[446 -3075 799 -2782!799 -2782|901 -2689"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="6" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFF9.8D, #FFFFF9.25" startPointB="-4.5625, -6.8515625" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#FFFFF9.8D, #FFFFF6.85" anchorPointA="-4.6015625, #FFFFF4.AB" controlPointB="-4.5625, #FFFFF7.4F" anchorPointB="-3.265625, -9.9921875"/>
+                    <MorphCurves controlPointA="#FFFFFD.41, #FFFFF2.D1" anchorPointA="#FFFFFF.E1, #FFFFF2.D1" controlPointB="-1.9609375, #FFFFF4.B5" anchorPointB="#FFFFFF.E1, #FFFFF4.B5"/>
+                    <MorphCurves controlPointA="#2.2B, #FFFFF2.D1" anchorPointA="#3.DC, #FFFFF4.39" controlPointB="#1.7B, #FFFFF4.B5" anchorPointB="#2.AB, #FFFFF5.B2"/>
+                    <MorphCurves controlPointA="#4.1B, #FFFFF4.72" anchorPointA="#4.59, #FFFFF4.AB" controlPointB="#2.D7, #FFFFF5.DA" anchorPointB="#3.02, -9.9921875" isLine="true"/>
+                    <MorphCurves controlPointA="#6.35, #FFFFF6.85" anchorPointA="#6.35, #FFFFF9.25" controlPointB="#4.51, #FFFFF7.4F" anchorPointB="#4.51, -6.8515625"/>
+                    <MorphCurves controlPointA="#6.35, #FFFFFB.C5" anchorPointA="#4.59, -2.375" controlPointB="#4.51, #FFFFFA.FD" anchorPointB="#3.02, -3.7109375"/>
+                    <MorphCurves controlPointA="#4.1B, -2.1484375" anchorPointA="#3.DC, #FFFFFE.13" controlPointB="#2.D7, #FFFFFC.73" anchorPointB="#2.AB, #FFFFFC.9B" isLine="true"/>
+                    <MorphCurves controlPointA="#2.2B, #FFFFFF.79" anchorPointA="#FFFFFF.E1, #FFFFFF.79" controlPointB="#1.7B, -2.4140625" anchorPointB="#FFFFFF.E1, -2.4140625"/>
+                    <MorphCurves controlPointA="#FFFFFD.41, #FFFFFF.79" anchorPointA="-4.6015625, -2.375" controlPointB="-1.9609375, -2.4140625" anchorPointB="-3.265625, -3.7109375"/>
+                    <MorphCurves controlPointA="#FFFFF9.8D, #FFFFFB.C5" anchorPointA="#FFFFF9.8D, #FFFFF9.25" controlPointB="-4.5625, #FFFFFA.FD" anchorPointB="-4.5625, -6.8515625"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.099884033203125" d="0.099884033203125" tx="-1.55" ty="-87.75"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0.498039215686275" ratio="0.392156862745098"/>
+                        <GradientEntry color="#6600FF" alpha="0" ratio="0.627450980392157"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.498039215686275" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.498039215686275" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.498039215686275" ratio="1"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.498039215686275" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!1113 -2901[1589 -2427 1589 -1755!1589 -1755[1589 -1083 1113 -608!1113 -608|988 -493!988 -493[555 -135 -31 -135!-31 -135[-703 -135 -1178 -608!-1178 -608[-1651 -1083 -1651 -1755!-1651 -1755[-1651 -2427 -1178 -2901!-1178 -2901[-703 -3375
+ -31 -3375!-31 -3375[555 -3375 988 -3015!988 -3015|1113 -2901"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.070037841796875" d="0.070037841796875" tx="-1.55" ty="-87.7"/>
+                        </matrix>
+                        <GradientEntry color="#7C24FF" alpha="0.0705882352941176" ratio="0.392156862745098"/>
+                        <GradientEntry color="#92DB25" alpha="0" ratio="0.427450980392157"/>
+                        <GradientEntry color="#A8FF25" alpha="0.0705882352941176" ratio="0.482352941176471"/>
+                        <GradientEntry color="#A8FF25" alpha="0.0705882352941176" ratio="0.482352941176471"/>
+                        <GradientEntry color="#7C24FF" alpha="0.0705882352941176" ratio="0.682352941176471"/>
+                        <GradientEntry color="#7C24FF" alpha="0.0705882352941176" ratio="0.992156862745098"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!770 -2558[1105 -2225 1105 -1754!1105 -1754[1105 -1283 770 -950!770 -950|683 -869!683 -869[379 -618 -31 -618!-31 -618[-502 -618 -836 -950!-836 -950[-1168 -1283 -1168 -1754!-1168 -1754[-1168 -2225 -836 -2558!-836 -2558[-502 -2891 -31 -2891
+!-31 -2891[379 -2891 683 -2638!683 -2638|770 -2558"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0650634765625" d="0.0650634765625" tx="-1.55" ty="-87.7"/>
+                        </matrix>
+                        <GradientEntry color="#6600FF" alpha="0" ratio="0.392156862745098"/>
+                        <GradientEntry color="#99FF00" alpha="0" ratio="0.392156862745098"/>
+                        <GradientEntry color="#99FF00" alpha="0" ratio="0.392156862745098"/>
+                        <GradientEntry color="#99FF00" alpha="0" ratio="0.392156862745098"/>
+                        <GradientEntry color="#6600FF" alpha="0" ratio="0.627450980392157"/>
+                        <GradientEntry color="#6600FF" alpha="0" ratio="0.988235294117647"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!713 -2501[1024 -2192 1024 -1754!1024 -1754[1024 -1316 713 -1007!713 -1007|632 -932!632 -932[350 -699 -31 -699!-31 -699[-469 -699 -779 -1007!-779 -1007[-1087 -1316 -1087 -1754!-1087 -1754[-1087 -2192 -779 -2501!-779 -2501[-469 -2810 -31
+ -2810!-31 -2810[350 -2810 632 -2575!632 -2575|713 -2501"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/00.增幅系列/蓝紫增幅/Symbol 48" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.456512451171875" d="0.456512451171875" tx="-93.05" ty="-175.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

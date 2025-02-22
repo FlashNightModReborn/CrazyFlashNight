@@ -1,0 +1,140 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/金起/金起" itemID="653e0272-0000182d" linkageExportForAS="true" linkageIdentifier="金起" lastModified="1701609306" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="金起" currentFrame="8">
+      <layers>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="105.5" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix a="1.25425720214844" b="0.3360595703125" c="-0.403274536132813" d="1.50511169433594" tx="90.15" ty="-60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.9" y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="105.5" centerPoint3DY="-17.5">
+                  <matrix>
+                    <Matrix a="2.5372314453125" b="0.6798095703125" c="-0.90936279296875" d="3.39404296875" tx="94.1" ty="-140.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="40" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#B68555" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金起/Symbol 98" centerPoint3DX="129.55" centerPoint3DY="-48.9">
+                  <matrix>
+                    <Matrix a="-1.25425720214844" b="-0.3360595703125" c="-0.3360595703125" d="1.25425720214844" tx="191.1" ty="-96"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <AdjustColorFilter brightness="88"/>
+                    <BlurFilter blurX="0" blurY="12"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金起/Symbol 100" centerPoint3DX="127.05" centerPoint3DY="-61">
+                  <matrix>
+                    <Matrix a="-1.25425720214844" b="-0.3360595703125" c="-0.3360595703125" d="1.25425720214844" tx="195.55" ty="-112.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="20"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <AdjustColorFilter brightness="88"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金起/Symbol 102" centerPoint3DX="154.85" centerPoint3DY="-111.55">
+                  <matrix>
+                    <Matrix a="-1.25425720214844" b="-0.3360595703125" c="-0.3360595703125" d="1.25425720214844" tx="257.1" ty="-173.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <AdjustColorFilter brightness="88"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金起/Symbol 104" centerPoint3DX="170.45" centerPoint3DY="-139.9">
+                  <matrix>
+                    <Matrix a="-1.25425720214844" b="-0.3360595703125" c="-0.3360595703125" d="1.25425720214844" tx="287.7" ty="-196"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <AdjustColorFilter brightness="88"/>
+                    <BlurFilter blurX="10" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/金起/Symbol 106" centerPoint3DX="173.15" centerPoint3DY="-143.2">
+                  <matrix>
+                    <Matrix a="-1.25425720214844" b="-0.3360595703125" c="-0.3360595703125" d="1.25425720214844" tx="291.45" ty="-199.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                    <AdjustColorFilter brightness="88"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

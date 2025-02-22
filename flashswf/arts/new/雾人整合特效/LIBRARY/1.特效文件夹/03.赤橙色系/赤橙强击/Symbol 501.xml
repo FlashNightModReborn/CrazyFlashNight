@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/赤橙强击/Symbol 501" itemID="653debbc-00001400" lastModified="1698428733">
+  <timeline>
+    <DOMTimeline name="Symbol 501">
+      <layers>
+        <DOMLayer name="Layer 1" color="#F58F75" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.14044189453125" d="0.14044189453125" tx="88.2" ty="86.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#00CCFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3120 3580|1767 1946!1767 1946|0 3120!0 3120|1633 1767!1633 1767|460 0!460 0|1813 1633!1813 1633|3578 460!3578 460|1946 1813!1946 1813|3120 3580"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

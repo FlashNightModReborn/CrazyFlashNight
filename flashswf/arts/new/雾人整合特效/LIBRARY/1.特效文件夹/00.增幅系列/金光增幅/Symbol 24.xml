@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/00.增幅系列/金光增幅/Symbol 24" itemID="653e3c9d-00001c67" lastModified="1690083265">
+  <timeline>
+    <DOMTimeline name="Symbol 24">
+      <layers>
+        <DOMLayer name="Layer 1" color="#C2D25C" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0003509521484375" b="0.0637664794921875" c="-0.015289306640625" d="0.0002288818359375" tx="12.6" ty="52.3"/>
+                        </matrix>
+                        <GradientEntry color="#FF9900" alpha="0" ratio="0.0196078431372549"/>
+                        <GradientEntry color="#FFFF00" ratio="0.662745098039216"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.2" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!501 0|501 2070!501 2070|0 2070!0 2070|0 0!0 0|501 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

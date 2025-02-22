@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/05.粉紫色系/花瓣飘散/Symbol 5545" itemID="653d26b8-00000797" lastModified="1698481640">
+  <timeline>
+    <DOMTimeline name="Symbol 5545">
+      <layers>
+        <DOMLayer name="Layer 1" color="#9FE08C" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/花瓣飘散/Symbol 5544" centerPoint3DX="-61.45" centerPoint3DY="18.85">
+                  <matrix>
+                    <Matrix a="0.868820190429688" b="0.526565551757813" c="1.12680053710938" d="-0.406005859375" tx="-82.45" ty="2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="16" blurY="16" color="#FF3399"/>
+                  </filters>
+                  <color>
+                    <Color alphaOffset="-20" redOffset="150" greenOffset="-30"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

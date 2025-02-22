@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/滑动光斩/Symbol 26" itemID="653cd862-00000231" lastModified="1690082192">
+  <timeline>
+    <DOMTimeline name="Symbol 26">
+      <layers>
+        <DOMLayer name="Layer 1" color="#F89698" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.01739501953125" d="0.025390625" tx="13.35" ty="28.2"/>
+                        </matrix>
+                        <GradientEntry color="#00D2FC" alpha="0" ratio="0"/>
+                        <GradientEntry color="#1E5FF7" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.000244140625" d="0.000244140625" tx="36.35" ty="24.5"/>
+                        </matrix>
+                        <GradientEntry color="#00D2FC" alpha="0" ratio="0"/>
+                        <GradientEntry color="#1E5FF7" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!495 421[477 410 469 387!469 387|464 344!464 344|464 340!464 340|439 300!439 300|439 304!439 304[435 325 412 325!412 325[386 325 338 269!338 269[291 213 279 169!279 169|258 93!258 93[249 53 249 17!249 17|249 11!249 11|239 0!239 0|239
+ 10!239 10[217 213 119 366!119 366|62 443!62 443[0 544 0 615!0 615[0 666 54 747!54 747|93 747!93 747|153 771!153 771|185 783!185 783[185 766 220 738!220 738[260 705 313 691!313 691|400 661!400 661[447 643 465 643!465 643|483 644!483 644
+[492 646 505 655!505 655|527 655!527 655|534 645!534 645|540 622!540 622|534 529!534 529[533 495 508 448!508 448|495 421"/>
+                    <Edge fillStyle1="2" edges="
+!731 489|724 492!724 492|725 490!725 490|731 489"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

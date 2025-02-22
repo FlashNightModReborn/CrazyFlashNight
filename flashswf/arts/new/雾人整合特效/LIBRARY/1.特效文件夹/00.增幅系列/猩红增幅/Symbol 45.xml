@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/00.增幅系列/猩红增幅/Symbol 45" itemID="653dff55-000016eb" lastModified="1698427802">
+  <timeline>
+    <DOMTimeline name="Symbol 45">
+      <layers>
+        <DOMLayer name="Layer 1" color="#5591E7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0921630859375" d="0.006103515625" tx="75.5" ty="5"/>
+                        </matrix>
+                        <GradientEntry color="#FF0000" alpha="0" ratio="0"/>
+                        <GradientEntry color="#FF3300" ratio="0.537254901960784"/>
+                        <GradientEntry color="#FF3300" alpha="0" ratio="0.980392156862745"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!3020 200|0 200!0 200|0 0!0 0|3020 0!3020 0|3020 200"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

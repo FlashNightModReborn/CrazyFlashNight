@@ -1,0 +1,192 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/中火燃/中火燃" itemID="654fb05d-000058a1" linkageExportForAS="true" linkageIdentifier="中火燃" sourceFlashFilepath="../../../../../../../../BaiduNetdiskDownload/FLASH/FLA特效/FLA特效/手游特效 (11).fla" sourceLibraryItemHRef="特效6.fla_1_273_2014-02-24 17:12:0490697" sourceLastModified="1393233133" lastModified="1699727854" sourceItemID="4e698324-00000040">
+  <timeline>
+    <DOMTimeline name="中火燃">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/中火燃/Graphic/特效6.fla_1_265_2014-02-24 17:12:0420557" centerPoint3DX="1.45" centerPoint3DY="-43.15">
+                  <matrix>
+                    <Matrix tx="-14.75" ty="-46.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="50" hue="20"/>
+                    <BlurFilter blurX="0" blurY="10"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/中火燃/Graphic/特效6.fla_1_266_2014-02-24 17:12:0431263" centerPoint3DX="0.45" centerPoint3DY="-38.95">
+                  <matrix>
+                    <Matrix tx="-14.75" ty="-53.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="50" hue="20"/>
+                    <BlurFilter blurX="0" blurY="10"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/中火燃/Graphic/特效6.fla_1_267_2014-02-24 17:12:0438899" centerPoint3DX="0.3" centerPoint3DY="-47.2">
+                  <matrix>
+                    <Matrix tx="-14.75" ty="-61.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="50" hue="20"/>
+                    <BlurFilter blurX="0" blurY="10"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/中火燃/Graphic/特效6.fla_1_268_2014-02-24 17:12:0488772" selected="true" centerPoint3DX="-0.1" centerPoint3DY="-55.5">
+                  <matrix>
+                    <Matrix tx="-14.75" ty="-66.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="50" hue="20"/>
+                    <BlurFilter blurX="0" blurY="10"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/中火燃/Graphic/特效6.fla_1_269_2014-02-24 17:12:0449826" centerPoint3DY="-63.85">
+                  <matrix>
+                    <Matrix tx="-14.75" ty="-71.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="50" hue="20"/>
+                    <BlurFilter blurX="0" blurY="10"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/中火燃/Graphic/特效6.fla_1_270_2014-02-24 17:12:0499464" centerPoint3DX="4.9" centerPoint3DY="-69.35">
+                  <matrix>
+                    <Matrix tx="-14.75" ty="-76.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="50" hue="20"/>
+                    <BlurFilter blurX="0" blurY="10"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/中火燃/Graphic/特效6.fla_1_271_2014-02-24 17:12:0451445" selected="true" centerPoint3DX="3.75" centerPoint3DY="-75.65">
+                  <matrix>
+                    <Matrix tx="-14.75" ty="-81.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="50" hue="20"/>
+                    <BlurFilter blurX="0" blurY="10"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/中火燃/Graphic/特效6.fla_1_272_2014-02-24 17:12:0491425" centerPoint3DX="2.55" centerPoint3DY="-82.3">
+                  <matrix>
+                    <Matrix tx="-14.75" ty="-86.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="50" hue="20"/>
+                    <BlurFilter blurX="0" blurY="10"/>
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600"/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

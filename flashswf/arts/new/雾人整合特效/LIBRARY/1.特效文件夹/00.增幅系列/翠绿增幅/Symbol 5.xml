@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/00.增幅系列/翠绿增幅/Symbol 5" itemID="653dff55-000016c9" lastModified="1698427802">
+  <timeline>
+    <DOMTimeline name="Symbol 5">
+      <layers>
+        <DOMLayer name="Layer 1" color="#943EE8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.370101928710938" b="-0.189743041992188" c="-0.245880126953125" d="0.524139404296875" tx="-2.05" ty="2.4"/>
+                        </matrix>
+                        <GradientEntry color="#FFEEFF" ratio="0.243137254901961"/>
+                        <GradientEntry color="#FF0047" alpha="0.101960784313725" ratio="0.815686274509804"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4042 -4436|-4041 5208!-4041 5208|2602 -5156!2602 -5156[7136 -9864 4042 -4436"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

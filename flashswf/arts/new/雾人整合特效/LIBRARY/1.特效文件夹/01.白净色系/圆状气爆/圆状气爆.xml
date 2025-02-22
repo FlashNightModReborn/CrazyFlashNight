@@ -1,0 +1,312 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/01.白净色系/圆状气爆/圆状气爆" itemID="65536c67-000029e4" linkageExportForAS="true" linkageIdentifier="圆状气爆" lastModified="1704518982" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="圆状气爆">
+      <layers>
+        <DOMLayer name="Script Layer" color="#55A3DA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = 0;
+]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="0.35" centerPoint3DY="-76.65">
+                  <matrix>
+                    <Matrix a="1.83000183105469" d="1.78500366210938" tx="-36.25" ty="-112.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="0.35" centerPoint3DY="-76.65">
+                  <matrix>
+                    <Matrix a="2.964599609375" d="2.78460693359375" tx="-58.95" ty="-132.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="0.35" centerPoint3DY="-76.65">
+                  <matrix>
+                    <Matrix a="2.964599609375" d="2.78460693359375" tx="-58.95" ty="-132.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#C874BE" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5031" blendMode="add" centerPoint3DX="-12" centerPoint3DY="-75.75">
+                  <matrix>
+                    <Matrix tx="-54.5" ty="-120.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5035" blendMode="add" centerPoint3DX="-22.5" centerPoint3DY="-74.25">
+                  <matrix>
+                    <Matrix tx="-94" ty="-149.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5039" blendMode="add" centerPoint3DX="-22.75" centerPoint3DY="-76">
+                  <matrix>
+                    <Matrix tx="-123.5" ty="-178.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5043" blendMode="add" centerPoint3DX="-21" centerPoint3DY="-78">
+                  <matrix>
+                    <Matrix tx="-145" ty="-202"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#C49130" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="49.45" centerPoint3DY="-101.6">
+                  <matrix>
+                    <Matrix a="-2.9971923828125" d="3.04551696777344" tx="36.95" ty="-114.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="72.2" centerPoint3DY="-120.65">
+                  <matrix>
+                    <Matrix a="-4.73320007324219" d="4.48648071289063" tx="59.7" ty="-133.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="81.5" centerPoint3DY="-129.45">
+                  <matrix>
+                    <Matrix a="-5.479248046875" d="5.19364929199219" tx="69" ty="-141.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#61EEC4" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5029" centerPoint3DX="-156" centerPoint3DY="-250">
+                  <matrix>
+                    <Matrix tx="-198" ty="-292"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5033" centerPoint3DX="-130" centerPoint3DY="-224">
+                  <matrix>
+                    <Matrix tx="-198" ty="-292"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5037" centerPoint3DX="-120.2" centerPoint3DY="-214">
+                  <matrix>
+                    <Matrix tx="-198" ty="-292"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5041" blendMode="add" centerPoint3DX="-0.15" centerPoint3DY="-78.65">
+                  <matrix>
+                    <Matrix tx="-82.5" ty="-160.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5045" blendMode="add" centerPoint3DY="-77.5">
+                  <matrix>
+                    <Matrix tx="-87" ty="-164.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5047" blendMode="add" centerPoint3DY="-77.8">
+                  <matrix>
+                    <Matrix tx="-91.5" ty="-169.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5049" blendMode="add" centerPoint3DY="-77.85">
+                  <matrix>
+                    <Matrix tx="-96" ty="-173.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1/Symbol 5051" blendMode="add" centerPoint3DY="-77.95">
+                  <matrix>
+                    <Matrix tx="-101" ty="-178.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter hue="71"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

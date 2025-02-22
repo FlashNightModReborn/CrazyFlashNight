@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/05.粉紫色系/粉色旋风/Symbol 152" itemID="653dff55-00001732" lastModified="1698427802">
+  <timeline>
+    <DOMTimeline name="Symbol 152">
+      <layers>
+        <DOMLayer name="Layer 1" color="#AAFD02" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.01739501953125" d="0.01739501953125" tx="10.9" ty="2.9"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FF66CC" alpha="0.788235294117647" ratio="0.396078431372549"/>
+                        <GradientEntry color="#FF66FF" alpha="0.584313725490196" ratio="0.717647058823529"/>
+                        <GradientEntry color="#FFCCFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.0070037841796875" d="0.0070037841796875" tx="2.4" ty="2.2"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0"/>
+                        <GradientEntry color="#FF66CC" alpha="0.788235294117647" ratio="0.396078431372549"/>
+                        <GradientEntry color="#FF66FF" alpha="0.584313725490196" ratio="0.717647058823529"/>
+                        <GradientEntry color="#FFCCFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!0 142[6 109 18 83!18 83[48 17 111 2!111 2|117 0!117 0[68 20 25 91!25 91[9 118 0 142"/>
+                    <Edge fillStyle0="2" edges="!25 7|32 2!32 2|29 3!29 3|25 7"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,153 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/赤橙横斩/赤橙横斩" itemID="653d64c8-00000dad" linkageExportForAS="true" linkageIdentifier="赤橙横斩" lastModified="1699286842" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="赤橙横斩">
+      <layers>
+        <DOMLayer name="判定&amp;代码" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = random(60);
+this._y -= 100;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="133.25" centerPoint3DY="-62.8">
+                  <matrix>
+                    <Matrix a="3.76388549804688" b="-3.0506591796875" c="0.629653930664063" d="0.77685546875" tx="44.95" ty="-17.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="19.95"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="135.2" centerPoint3DY="-119.75">
+                  <matrix>
+                    <Matrix a="2.5045166015625" b="-2.02993774414063" c="1.90731811523438" d="2.35321044921875" tx="67.4" ty="-151.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.45" y="-0.55"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="86.55" centerPoint3DY="-93.5">
+                  <matrix>
+                    <Matrix a="2.0775146484375" b="-1.683837890625" c="0.523956298828125" d="0.646438598632813" tx="26.75" ty="-133.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.55" y="-0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="47.25" centerPoint3DY="-68.2">
+                  <matrix>
+                    <Matrix a="1.5921630859375" b="-1.38694763183594" c="0.54656982421875" d="0.627410888671875" tx="-4.95" ty="-113.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.6" y="-0.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#DB3BE9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 287" centerPoint3DX="229.65" centerPoint3DY="-95.8">
+                  <matrix>
+                    <Matrix a="0.874008178710938" b="-0.504608154296875" c="0.5" d="0.86602783203125" tx="110.85" ty="-56"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="12" blurY="10" strength="1.28"/>
+                  </filters>
+                  <color>
+                    <Color redOffset="169" blueOffset="-40" greenOffset="66"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 289" centerPoint3DX="245.05" centerPoint3DY="-113">
+                  <matrix>
+                    <Matrix a="0.881256103515625" b="-0.5087890625" c="0.606857299804688" d="0.8797607421875" tx="100.8" ty="-100.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="12" blurY="10" strength="1.28"/>
+                  </filters>
+                  <color>
+                    <Color redOffset="169" blueOffset="-40" greenOffset="66"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 291" centerPoint3DX="257.05" centerPoint3DY="-129.45">
+                  <matrix>
+                    <Matrix a="1.00462341308594" b="-0.58001708984375" c="0.5" d="0.86602783203125" tx="148.5" ty="-140.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="12" blurY="10" strength="1.28"/>
+                  </filters>
+                  <color>
+                    <Color redOffset="169" blueOffset="-40" greenOffset="66"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 293" centerPoint3DX="242.4" centerPoint3DY="-126.75">
+                  <matrix>
+                    <Matrix a="1.00714111328125" b="-0.581466674804688" c="0.5" d="0.86602783203125" tx="120.45" ty="-133.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="12" blurY="10" strength="1.28"/>
+                  </filters>
+                  <color>
+                    <Color redOffset="169" blueOffset="-40" greenOffset="66"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

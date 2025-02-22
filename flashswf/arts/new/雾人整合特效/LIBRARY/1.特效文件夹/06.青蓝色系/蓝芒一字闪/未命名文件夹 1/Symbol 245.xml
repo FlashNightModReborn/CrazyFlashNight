@@ -1,0 +1,50 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/蓝芒一字闪/未命名文件夹 1/Symbol 245" itemID="653cd862-000002b1" symbolType="graphic" lastModified="1690082192">
+  <timeline>
+    <DOMTimeline name="Symbol 245">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.154312133789063" d="0.154312133789063" tx="105.2" ty="108.35"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.152941176470588"/>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4834 2167[4834 3298 4035 4097!4035 4097[3236 4897 2104 4897!2104 4897[973 4897 173 4097!173 4097[-626 3298 -626 2166!-626 2166[-626 1035 173 236!173 236[973 -563 2104 -563!2104 -563[3236 -563 4035 236!4035 236[4834 1035 4834 2167"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2222 2005|4360 841!4360 841|2356 2223!2356 2223|3520 4361!3520 4361|2138 2357!2138 2357|0 3521!0 3521|2004 2139!2004 2139|840 0!840 0|2222 2005"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

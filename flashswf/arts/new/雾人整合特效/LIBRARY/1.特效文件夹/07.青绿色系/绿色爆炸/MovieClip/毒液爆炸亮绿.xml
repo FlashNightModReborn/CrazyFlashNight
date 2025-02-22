@@ -1,0 +1,579 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/07.青绿色系/绿色爆炸/MovieClip/毒液爆炸亮绿" itemID="66687227-0000211d" linkageExportForAS="true" linkageIdentifier="毒液爆炸亮绿" lastModified="1731041501">
+  <timeline>
+    <DOMTimeline name="毒液爆炸亮绿">
+      <layers>
+        <DOMLayer name="Label Layer" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="10" name="Ready" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" name="Recover" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Label Layer" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="10" name="Loop" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" name="Free" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Label Layer" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="10" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" name="End" labelType="name" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 2" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 6" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 7" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 11" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 18" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 22" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.3" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.01953125" blueMultiplier="0.01953125" greenMultiplier="0.01953125" redOffset="6" blueOffset="10" greenOffset="231"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 5" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.0390625" blueMultiplier="0.0390625" greenMultiplier="0.0390625" redOffset="12" blueOffset="19" greenOffset="208"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 10" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.05859375" blueMultiplier="0.05859375" greenMultiplier="0.05859375" redOffset="18" blueOffset="28" greenOffset="186"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 14" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.0703125" blueMultiplier="0.0703125" greenMultiplier="0.0703125" redOffset="23" blueOffset="38" greenOffset="166"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 17" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.08984375" blueMultiplier="0.08984375" greenMultiplier="0.08984375" redOffset="29" blueOffset="46" greenOffset="146"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.109375" blueMultiplier="0.109375" greenMultiplier="0.109375" redOffset="34" blueOffset="54" greenOffset="125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 21" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.12109375" blueMultiplier="0.12109375" greenMultiplier="0.12109375" redOffset="39" blueOffset="63" greenOffset="107"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.140625" blueMultiplier="0.140625" greenMultiplier="0.140625" redOffset="44" blueOffset="71" greenOffset="89"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 25" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.16015625" blueMultiplier="0.16015625" greenMultiplier="0.16015625" redOffset="48" blueOffset="77" greenOffset="71"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 28" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.171875" blueMultiplier="0.171875" greenMultiplier="0.171875" redOffset="53" blueOffset="85" greenOffset="54"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.0390625" blueMultiplier="0.0390625" greenMultiplier="0.0390625" redOffset="6" blueOffset="8" greenOffset="228"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 4" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.0703125" blueMultiplier="0.0703125" greenMultiplier="0.0703125" redOffset="12" blueOffset="16" greenOffset="204"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 9" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.1015625" blueMultiplier="0.1015625" greenMultiplier="0.1015625" redOffset="18" blueOffset="23" greenOffset="181"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 13" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.140625" blueMultiplier="0.140625" greenMultiplier="0.140625" redOffset="23" blueOffset="30" greenOffset="157"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 16" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.171875" blueMultiplier="0.171875" greenMultiplier="0.171875" redOffset="28" blueOffset="37" greenOffset="137"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.19921875" blueMultiplier="0.19921875" greenMultiplier="0.19921875" redOffset="33" blueOffset="42" greenOffset="118"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 20" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.23828125" blueMultiplier="0.23828125" greenMultiplier="0.23828125" redOffset="36" blueOffset="46" greenOffset="99"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 24" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.26953125" blueMultiplier="0.26953125" greenMultiplier="0.26953125" redOffset="40" blueOffset="51" greenOffset="81"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 24" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.30078125" blueMultiplier="0.30078125" greenMultiplier="0.30078125" redOffset="43" blueOffset="55" greenOffset="65"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 27" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.328125" blueMultiplier="0.328125" greenMultiplier="0.328125" redOffset="46" blueOffset="59" greenOffset="50"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.01953125" blueMultiplier="0.01953125" greenMultiplier="0.01953125" redOffset="4" blueOffset="9" greenOffset="230"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 3" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.0390625" blueMultiplier="0.0390625" greenMultiplier="0.0390625" redOffset="9" blueOffset="17" greenOffset="206"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 8" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.05859375" blueMultiplier="0.05859375" greenMultiplier="0.05859375" redOffset="12" blueOffset="25" greenOffset="183"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 12" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.0703125" blueMultiplier="0.0703125" greenMultiplier="0.0703125" redOffset="17" blueOffset="33" greenOffset="163"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 15" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.08984375" blueMultiplier="0.08984375" greenMultiplier="0.08984375" redOffset="20" blueOffset="42" greenOffset="141"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.109375" blueMultiplier="0.109375" greenMultiplier="0.109375" redOffset="24" blueOffset="49" greenOffset="120"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 19" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.12109375" blueMultiplier="0.12109375" greenMultiplier="0.12109375" redOffset="27" blueOffset="56" greenOffset="101"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.140625" blueMultiplier="0.140625" greenMultiplier="0.140625" redOffset="31" blueOffset="63" greenOffset="82"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 23" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.16015625" blueMultiplier="0.16015625" greenMultiplier="0.16015625" redOffset="34" blueOffset="69" greenOffset="63"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/07.青绿色系/绿色爆炸/Graphic/shape 26" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="4" d="4" tx="4.2" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.171875" blueMultiplier="0.171875" greenMultiplier="0.171875" redOffset="37" blueOffset="76" greenOffset="46"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

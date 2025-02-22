@@ -1,0 +1,134 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/黑铁攻势/黑铁3段突刺" itemID="654734e5-00000e24" linkageExportForAS="true" linkageIdentifier="黑铁3段突刺" lastModified="1730486919" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="黑铁3段突刺">
+      <layers>
+        <DOMLayer name="Script Layer" color="#BDD3F1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 攻击时移动(慢速度, 快速度)
+{
+   if(_parent.方向 == "右")
+   {
+      _parent.移动("右",慢速度);
+   }
+   else if(_parent.方向 == "左")
+   {
+      _parent.移动("左",慢速度);
+   }
+}
+gotoAndPlay(_parent.近战招式);
+if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="205.95" centerPoint3DY="-78.55">
+                  <matrix>
+                    <Matrix a="2.10931396484375" b="0.007293701171875" c="-0.0037689208984375" d="1.09001159667969" tx="158.7" ty="-101.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="17.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="235.15" centerPoint3DY="-78.55">
+                  <matrix>
+                    <Matrix a="2.10931396484375" b="0.007293701171875" c="-0.0037689208984375" d="1.09001159667969" tx="187.9" ty="-101.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="17.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="251.25" centerPoint3DY="-78.55">
+                  <matrix>
+                    <Matrix a="2.10931396484375" b="0.007293701171875" c="-0.0037689208984375" d="1.09001159667969" tx="204" ty="-101.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.2" y="17.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 66" color="#8787CA">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/黑铁攻势/Symbol 844" centerPoint3DX="190.75" centerPoint3DY="-77.75">
+                  <matrix>
+                    <Matrix a="-0.388214111328125" d="0.388214111328125" tx="136.35" ty="-43.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="15" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0863494873046875" b="-0.00238037109375" c="-0.0127410888671875" d="0.54736328125" tx="193.75" ty="-17.25"/>
+                        </matrix>
+                        <GradientEntry color="#FFAD00" ratio="0"/>
+                        <GradientEntry color="#FFAD00" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!2455 -1271|3806 -1362!3806 -1362|2628 -1041!2628 -1041[4227 -1077 5077 -1554!5077 -1554[4202 -2111 2668 -2193!2668 -2193|4130 -1823!4130 -1823|2541 -2045!2541 -2045|3243 -1745!3243 -1745|2029 -1664!2029 -1664|3182 -1482!3182 -1482|2455
+ -1271"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/黑铁攻势/Symbol 849" symbolType="graphic" centerPoint3DX="206.3" centerPoint3DY="-76.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388214111328125" d="0.388214111328125" tx="73.45" ty="-24.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/03.赤橙色系/黑铁攻势/Symbol 851" symbolType="graphic" centerPoint3DX="222.3" centerPoint3DY="-77" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.388214111328125" d="0.388214111328125" tx="136.5" ty="-99.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

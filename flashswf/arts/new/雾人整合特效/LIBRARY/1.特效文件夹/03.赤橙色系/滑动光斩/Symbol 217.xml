@@ -1,0 +1,44 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/滑动光斩/Symbol 217" itemID="653cd862-0000029e" lastModified="1690082192">
+  <timeline>
+    <DOMTimeline name="Symbol 217">
+      <layers>
+        <DOMLayer name="Layer 1" color="#6D6EC7" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient focalPointRatio="0.0117647058823529">
+                        <matrix>
+                          <Matrix a="0.22216796875" d="0.07440185546875" tx="180.95" ty="25.4"/>
+                        </matrix>
+                        <GradientEntry color="#00D2FC" alpha="0" ratio="0.411764705882353"/>
+                        <GradientEntry color="#09ADFB" alpha="0.580392156862745" ratio="0.541176470588235"/>
+                        <GradientEntry color="#1E5FF7" ratio="0.631372549019608"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient focalPointRatio="0.0117647058823529">
+                        <matrix>
+                          <Matrix a="0.22216796875" d="0.07440185546875" tx="122.45" ty="35.9"/>
+                        </matrix>
+                        <GradientEntry color="#00D2FC" alpha="0" ratio="0.411764705882353"/>
+                        <GradientEntry color="#09ADFB" alpha="0.580392156862745" ratio="0.52156862745098"/>
+                        <GradientEntry color="#1E5FF7" ratio="0.631372549019608"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!4903 290|4052 197!4052 197|3493 140!3493 140|3483 140!3483 140|3729 115!3729 115|3953 99!3953 99[4180 122 4370 162!4370 162|4903 280!4903 280|4903 290"/>
+                    <Edge fillStyle1="2" edges="!1666 95|1861 61!1861 61[2321 -14 2873 -50!2873 -50|2161 117!2161 117|1848 201!1848 201|1666 95!2183 220|2913 260!2913 260[2447 284 2088 342!2088 342|1880 220!1880 220|2183 220"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

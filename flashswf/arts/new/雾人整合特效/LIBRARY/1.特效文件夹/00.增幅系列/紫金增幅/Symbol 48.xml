@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/00.增幅系列/紫金增幅/Symbol 48" itemID="653dff55-000016ed" lastModified="1698427802">
+  <timeline>
+    <DOMTimeline name="Symbol 48">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A551B9" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.15380859375" c="0.04144287109375" d="0" tx="36.05" ty="128"/>
+                        </matrix>
+                        <GradientEntry color="#66FFFF" alpha="0" ratio="0"/>
+                        <GradientEntry color="#FFFF00" ratio="0.23921568627451"/>
+                        <GradientEntry color="#FF00FF" alpha="0" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1359 0|1359 5140!1359 5140|0 5140!0 5140|0 0!0 0|1359 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

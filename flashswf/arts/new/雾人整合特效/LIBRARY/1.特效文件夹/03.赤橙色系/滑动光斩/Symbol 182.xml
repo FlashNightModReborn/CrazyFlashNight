@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/03.赤橙色系/滑动光斩/Symbol 182" itemID="653cd862-0000028b" symbolType="graphic" lastModified="1690082192">
+  <timeline>
+    <DOMTimeline name="Symbol 182">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.287216186523438" b="-0.0648956298828125" c="0.0240478515625" d="0.1064453125" tx="102.05" ty="66.5"/>
+                        </matrix>
+                        <GradientEntry color="#00D2FC" alpha="0" ratio="0.403921568627451"/>
+                        <GradientEntry color="#0AACFB" alpha="0.337254901960784" ratio="0.509803921568627"/>
+                        <GradientEntry color="#1E5FF7" ratio="0.647058823529412"/>
+                        <GradientEntry color="#FFFFFF" ratio="0.694117647058824"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1950 98[2422 18 2957 5!2957 5[3585 -10 3981 18!3981 18|2823 131!2823 131|2234 239!2234 239|1950 98"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.460311889648438" d="0.154159545898438" tx="206.7" ty="83.5"/>
+                        </matrix>
+                        <GradientEntry color="#00D2FC" alpha="0" ratio="0.411764705882353"/>
+                        <GradientEntry color="#09ADFB" alpha="0.580392156862745" ratio="0.525490196078431"/>
+                        <GradientEntry color="#1E5FF7" ratio="0.631372549019608"/>
+                      </RadialGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.3631591796875" d="0.1387939453125" tx="246.45" ty="112.35"/>
+                        </matrix>
+                        <GradientEntry color="#00D2FC" alpha="0" ratio="0.411764705882353"/>
+                        <GradientEntry color="#09ADFB" alpha="0.580392156862745" ratio="0.509803921568627"/>
+                        <GradientEntry color="#1E5FF7" ratio="0.631372549019608"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!6646 635[6347 471 5866 332!5866 332[5386 192 5206 163!5206 163|4752 95!4752 95[4478 57 4057 22!4057 22[3635 -13 2880 7!2880 7[2406 19 1939 100!1939 100|3600 866!3600 866|3677 836!3677 836[3893 752 4351 643!4351 643|4797 618!4797 618
+|4839 628!4839 628|5078 628!5078 628[5431 667 5970 828!5970 828|5992 835!5992 835[6069 867 6159 911!6159 911[6330 917 6535 992!6535 992[6629 1027 6711 1069!6711 1069[6823 1104 6960 1202!6960 1202[7154 1340 7280 1525!7280 1525[7425 1740
+ 7425 1949!7425 1949[7425 2143 7382 2230!7382 2230|7370 2284!7370 2284|7369 2288!7369 2288[7445 2157 7485 1980!7485 1980[7547 1697 7455 1422!7455 1422[7361 1148 7164 992!7164 992|6993 853!6993 853|6940 812!6940 812|6902 780!6902 780[6826
+ 734 6646 635"/>
+                    <Edge fillStyle0="2" edges="
+!6845 1999[6714 2226 6395 2438!6395 2438|6395 2469!6395 2469[6701 2269 6855 1999!6855 1999|6845 1999"/>
+                    <Edge fillStyle0="1" edges="
+!4059 788[3890 807 3610 870!3610 870|3735 928!3735 928[4114 811 4443 769!4443 769|4059 788"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

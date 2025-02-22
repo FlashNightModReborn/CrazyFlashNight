@@ -39,6 +39,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
             target.击中地图 = true;
         }
 
+        // _root.发布消息("[BulletLifecycle] Bullet should be destroyed: " + isOutOfRange + ", " + isCollidedWithMap);
+
         return isOutOfRange || isCollidedWithMap;
     }
 
