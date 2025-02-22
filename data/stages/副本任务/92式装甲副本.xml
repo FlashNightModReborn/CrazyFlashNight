@@ -7,6 +7,11 @@
             <Background>flashswf/backgrounds/gk24_2_BG.swf</Background>
             <PlayerX>200</PlayerX>
             <PlayerY>450</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>The Time Is Now</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
@@ -171,14 +176,6 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/gk24_4_BG.swf</Background>
         </BasicInformation>
-        <Dialogue>
-            <SubDialogue id="0">
-                <Name>Lsy</Name>
-                <Title> </Title>
-                <Char>无头像</Char>
-                <Text>后面的图在做了.jpg</Text>
-            </SubDialogue>
-        </Dialogue>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
@@ -227,5 +224,10 @@
                 </EnemyGroup>
             </SubWave>
         </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/92副本内部.swf</Background>
+        </BasicInformation>
     </SubStage>
 </GameStage>

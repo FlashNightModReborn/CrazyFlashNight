@@ -1189,10 +1189,10 @@
         <BackgroundURL>gk19_5_BG.swf</BackgroundURL>
         <Alignment>false</Alignment>
         <Xmin>50</Xmin>
-        <Xmax>1650</Xmax>
+        <Xmax>2000</Xmax>
         <Ymin>300</Ymin>
         <Ymax>850</Ymax>
-        <Width>1650</Width>
+        <Width>2000</Width>
         <Height>850</Height>
     </Environment>
     <!-- 基地-->
@@ -2244,6 +2244,19 @@
         <Ymax>1000</Ymax>
         <Width>1900</Width>
         <Height>1000</Height>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+    </Environment>
+    <!-- 92-->
+    <Environment>
+        <BackgroundURL>92副本内部.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>10</Xmin>
+        <Xmax>1800</Xmax>
+        <Ymin>400</Ymin>
+        <Ymax>795</Ymax>
+        <Width>1800</Width>
+        <Height>795</Height>
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
