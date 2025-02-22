@@ -161,13 +161,15 @@ _root.宠物升级加载 = function(i)
 			当前宠物信息[5] = {};
 			宠物属性 = 当前宠物信息[5];
 		}
+		var 称号 = "";
 		if (宠物属性.基础训练 && 宠物属性.基础训练.次数)
 		{
-			宠物名字 = 宠物数据.Name + "（精锐" + 宠物属性.基础训练.次数 + "）";
+			// 宠物名字 = 宠物数据.Name + "（精锐" + 宠物属性.基础训练.次数 + "）";
+			称号 =  "精锐" + 宠物属性.基础训练.次数;
 		}
 		宠物属性.宠物库数组号 = 当前宠物信息[0];
 		宠物属性.宠物信息数组号 = temp_petid;
-		var 新宠物对象 = _root.gameworld.attachMovie(宠物标识符,宠物僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{等级:宠物等级, 名字:宠物名字, 宠物属性:this.宠物属性, 是否为敌人:宠物是否为敌人, 身高:宠物身高, _x:temppet_x, _y:temppet_y});
+		var 新宠物对象 = _root.gameworld.attachMovie(宠物标识符,宠物僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{等级:宠物等级, 名字:宠物名字, 宠物属性:this.宠物属性, 是否为敌人:宠物是否为敌人, 身高:宠物身高, _x:temppet_x, _y:temppet_y,称号:称号});
 		_root.宠物mc库[i] = 新宠物对象;
 	}
 }
