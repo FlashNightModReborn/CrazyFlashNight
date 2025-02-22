@@ -459,14 +459,14 @@
     },
     {
       "id": 20039,
-      "title": "制霸黑铁会获强化石",
+      "title": "制霸黑铁会",
       "description": "参加黑铁会强者称霸赛",
 
       "get_requirements": [-1],
       "get_conversation": "$GEM_HUNT_BLACKIRON_GET",
       "get_npc": "黑铁会外交部长",
 
-      "finish_requirements": ["制霸黑铁会获强化石#简单"],
+      "finish_requirements": ["制霸黑铁会#简单"],
       "finish_conversation": "$GEM_HUNT_BLACKIRON_FINISH",
       "finish_npc": "黑铁会外交部长",
       "recommended_level": "30-35",
