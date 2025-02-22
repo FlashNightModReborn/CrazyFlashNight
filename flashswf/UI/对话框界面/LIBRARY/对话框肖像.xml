@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1740115479" lastUniqueIdentifier="153">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1740233238" lastUniqueIdentifier="153">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="72">
+    <DOMTimeline name="对话框肖像" currentFrame="75">
       <layers>
-        <DOMLayer name="Labels Layer" color="#FC2986" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -259,14 +259,14 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
+                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2">
+        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -464,9 +464,9 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="68" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1265" name="肖像" centerPoint3DX="479.85" centerPoint3DY="1323.8">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1265" name="肖像" centerPoint3DX="479.85" centerPoint3DY="1298.8">
                   <matrix>
-                    <Matrix a="0.23516845703125" d="0.23516845703125" tx="26.65" ty="-51.15"/>
+                    <Matrix a="0.269790649414063" d="0.269790649414063" tx="26.65" ty="-76.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -483,9 +483,9 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="75" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1275" name="肖像" centerPoint3DX="501.95" centerPoint3DY="1175.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1275" name="肖像" selected="true" centerPoint3DX="501.95" centerPoint3DY="1175.05">
                   <matrix>
-                    <Matrix a="-0.3001708984375" d="0.3001708984375" tx="72" ty="192.95"/>
+                    <Matrix a="-0.319839477539063" d="0.319839477539063" tx="72" ty="192.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

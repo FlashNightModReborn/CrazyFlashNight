@@ -1,12 +1,12 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1275" itemID="6597607e-000008ee" lastModified="1740230471">
   <timeline>
-    <DOMTimeline name="Symbol 1275">
+    <DOMTimeline name="Symbol 1275" currentFrame="19">
       <layers>
         <DOMLayer name="表情" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" name="普通" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Pig表情普通" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Pig表情普通" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.10398864746094" d="1.10398864746094" tx="41" ty="-1187.65"/>
                   </matrix>
@@ -58,7 +58,7 @@
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Pig身体" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Pig身体" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="1.10398864746094" d="1.10398864746094" tx="-661.4" ty="-1294.15"/>
                   </matrix>

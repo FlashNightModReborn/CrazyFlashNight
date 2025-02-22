@@ -34,11 +34,10 @@
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="!1065 326S6[978 597 1100 931"/>
                     <Edge fillStyle1="1" edges="!1100 931S2[909 1246 707 1251"/>
-                    <Edge fillStyle1="2" edges="!707 1251S2[552 1254 390 1076"/>
-                    <Edge fillStyle1="2" strokeStyle="1" edges="!390 1076S6[328 772 40 506"/>
-                    <Edge fillStyle1="2" edges="!40 506S2[-62 301 98 153!98 153[188 71 315 28"/>
-                    <Edge fillStyle1="1" edges="!315 28S2[335 21 355 15!355 15[569 -23 754 34!754 34[991 102 1065 326"/>
                     <Edge fillStyle0="2" fillStyle1="1" edges="!707 1251S3|315 28"/>
+                    <Edge fillStyle1="1" edges="!315 28S2[335 21 355 15!355 15[569 -23 754 34!754 34[991 102 1065 326"/>
+                    <Edge fillStyle1="2" edges="!40 506S2[-62 301 98 153!98 153[188 71 315 28!707 1251[552 1254 390 1076"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!390 1076S6[328 772 40 506"/>
                   </edges>
                 </DOMShape>
               </elements>
