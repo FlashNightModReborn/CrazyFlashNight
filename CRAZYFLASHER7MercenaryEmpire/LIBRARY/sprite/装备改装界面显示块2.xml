@@ -1,7 +1,17 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2565" itemID="6597607e-00000bdc" linkageExportForAS="true" linkageIdentifier="装备改装界面显示块2" lastModified="1735392891">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/装备改装界面显示块2" itemID="67bb1f93-00000458" linkageExportForAS="true" linkageIdentifier="装备改装界面显示块2" lastModified="1740316928">
   <timeline>
-    <DOMTimeline name="Symbol 2565">
+    <DOMTimeline name="装备改装界面显示块2">
       <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.图标.itemIcon = new org.flashNight.arki.item.itemIcon.ItemIcon(this.图标, this.标题, 1);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Layer 1" color="#D01FE3">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -23,22 +33,17 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#25C1B0" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#25C1B0">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="import/UI组件/物品图标" name="图标" selected="true" centerPoint3DX="30.3" centerPoint3DY="30.15">
+                <DOMSymbolInstance libraryItemName="import/UI组件/物品图标" name="图标" centerPoint3DX="30.3" centerPoint3DY="30.15">
                   <matrix>
                     <Matrix tx="17" ty="16"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-	itemIcon = new org.flashNight.arki.item.itemIcon.ItemIcon(this,_parent.改装信息.Name, 1);
-}]]></script>
-                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>

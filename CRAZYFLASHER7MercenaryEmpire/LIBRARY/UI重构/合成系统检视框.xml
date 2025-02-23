@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/合成系统检视框" itemID="6622136b-00002024" linkageExportForAS="true" linkageIdentifier="合成系统检视框" lastModified="1736929236" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/合成系统检视框" itemID="6622136b-00002024" linkageExportForAS="true" linkageIdentifier="合成系统检视框" lastModified="1740316500" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="合成系统检视框">
+    <DOMTimeline name="合成系统检视框" currentFrame="4">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
@@ -19,108 +19,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 装备槽对应物品类别(类别, 强化等级)
-{
-   if(_parent._name == "物品栏界面")
-   {
-      if(_root.物品栏界面[eval("each")].装备槽类别 == 类别)
-      {
-         if(_root.根据物品名查找属性(_root.物品栏[this.对应数组号][0],9) > _root.等级)
-         {
-            _root.发布消息("等级低于装备限制，无法装备！");
-         }
-         else
-         {
-            temp类别 = _root.根据物品名查找属性(_root.物品栏[this.对应数组号][0],3);
-            if(temp类别 == 类别)
-            {
-               if(_root.物品栏界面[eval("each")].是否装备 == 0)
-               {
-                  _root.物品栏界面[eval("each")].是否装备 = 1;
-                  _root.物品栏[this.对应数组号][2] = 1;
-               }
-               else if(_root.物品栏界面[eval("each")].是否装备 == 1)
-               {
-                  _root.物品栏[_root.物品栏界面[eval("each")].对应数组号][2] = 0;
-                  _root.物品栏[this.对应数组号][2] = 1;
-               }
-               _root[_root.物品栏界面[eval("each")].对应装备] = _root.物品栏[this.对应数组号][0];
-               对应装备 = _root.物品栏界面[eval("each")].对应装备;
-               _root[_root.物品栏界面[eval("each")].数量] = _root.物品栏[this.对应数组号][1];
-               _root.物品栏界面[eval("each")].对应数组号 = this.对应数组号;
-               _root.物品栏界面[eval("each")].数量 = 强化等级;
-               _root.物品栏界面[eval("each")].mytext2 = 强化等级;
-               if(_root.物品栏[this.对应数组号][0] == "空")
-               {
-                  _root.物品栏界面[eval("each")].gotoAndStop(_root.物品栏[this.对应数组号][0]);
-               }
-               else
-               {
-                  _root.物品栏界面[eval("each")].图标 = "图标-" + _root.getItemData(_root.物品栏[this.对应数组号][0]).icon;
-                  _root.物品栏界面[eval("each")].gotoAndStop("默认图标");
-               }
-               _root.发布消息(_root.获得翻译("成功装备") + "[" + _root.获得翻译(类别) + "][" + _root.获得翻译(_root.getItemData(_root.物品栏[this.对应数组号][0]).displayname) + "]");
-               if(类别 == "长枪")
-               {
-                  _root.长枪强化等级 = _root.物品栏[this.对应数组号][1];
-                  _root.长枪配置(_root.控制目标,_root.物品栏[this.对应数组号][0],_root.物品栏[this.对应数组号][1]);
-                  _root.播放音效("9mmclip2.wav");
-                  _root.client.sendData(DataPackage.换装备(类别,_root.物品栏[this.对应数组号][0]));
-               }
-               else if(类别 == "手枪")
-               {
-                  _root.播放音效("9mmclip2.wav");
-                  if(对应装备 == "手枪")
-                  {
-                     _root.手枪强化等级 = _root.物品栏[this.对应数组号][1];
-                     _root.手枪配置(_root.控制目标,_root.物品栏[this.对应数组号][0],_root.物品栏[this.对应数组号][1]);
-                     _root.client.sendData(DataPackage.换装备("手枪",_root.物品栏[this.对应数组号][0]));
-                  }
-                  else if(对应装备 == "手枪2")
-                  {
-                     _root.手枪2强化等级 = _root.物品栏[this.对应数组号][1];
-                     _root.手枪2配置(_root.控制目标,_root.物品栏[this.对应数组号][0],_root.物品栏[this.对应数组号][1]);
-                     _root.client.sendData(DataPackage.换装备("手枪2",_root.物品栏[this.对应数组号][0]));
-                  }
-               }
-               else if(类别 == "手雷")
-               {
-                  _root.手雷配置(_root.控制目标,_root.物品栏[this.对应数组号][0]);
-                  _root.播放音效("9mmclip2.wav");
-                  _root.client.sendData(DataPackage.换装备(类别,_root.物品栏[this.对应数组号][0]));
-               }
-               else if(类别 == "刀")
-               {
-                  _root.刀强化等级 = _root.物品栏[this.对应数组号][1];
-                  _root.刀配置(_root.控制目标,_root.物品栏[this.对应数组号][0],_root.物品栏[this.对应数组号][1]);
-                  _root.播放音效("9mmclip2.wav");
-                  _root.client.sendData(DataPackage.换装备(类别,_root.物品栏[this.对应数组号][0]));
-               }
-               else if(类别 == "颈部装备")
-               {
-                  _root.gameworld[_root.控制目标].称号 = _root.根据物品名查找属性(_root.物品栏[this.对应数组号][0],14);
-                  _root.gameworld[_root.控制目标].称号 = _root.gameworld[_root.控制目标].称号[0];
-                  _root.玩家称号 = _root.gameworld[_root.控制目标].称号;
-                  _root.播放音效("9mmclip2.wav");
-                  _root.client.sendData(DataPackage.换装备(类别,_root.物品栏[this.对应数组号][0]));
-               }
-               else
-               {
-                  _root.播放音效("ammopickup1.wav");
-                  _root.client.sendData(DataPackage.换装备(类别,_root.物品栏[this.对应数组号][0]));
-               }
-               _root.刷新人物装扮(_root.控制目标);
-            }
-         }
-      }
-   }
-   else if(_parent._name == "购买物品界面")
-   {
-   }
-}
-
-stop();
-]]></script>
+                <script><![CDATA[stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

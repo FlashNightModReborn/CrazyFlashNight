@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1736953113" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1740316845" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="物品改装界面">
       <layers>
-        <DOMLayer name="Labels Layer" color="#F2BEC5" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#F2BEC5">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>
@@ -199,7 +199,7 @@ stop();
 	for (var i = 0; i < 材料列表.length; i++)
 	{
 		var 材料信息 = 材料列表[i];
-		this.attachMovie("装备改装界面显示块2","材料" + i,this.getNextHighestDepth(),{
+		var 材料块 = this.attachMovie("装备改装界面显示块2","材料" + i,this.getNextHighestDepth(),{
 			_x:8, 
 			_y:i * 30 + 45, 
 			标题:材料信息.Name, 
@@ -288,11 +288,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#37FB65">
+        <DOMLayer name="Layer 4" color="#37FB65" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2565" centerPoint3DX="125.85" centerPoint3DY="411.15">
+                <DOMSymbolInstance libraryItemName="sprite/装备改装界面显示块2" selected="true" centerPoint3DX="125.85" centerPoint3DY="411.15">
                   <matrix>
                     <Matrix tx="6" ty="397"/>
                   </matrix>
@@ -438,7 +438,7 @@ on (rollOut) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2560" centerPoint3DX="130.1" centerPoint3DY="390.65">
+                <DOMSymbolInstance libraryItemName="sprite/装备改装界面显示块" centerPoint3DX="130.1" centerPoint3DY="390.65">
                   <matrix>
                     <Matrix tx="9" ty="376"/>
                   </matrix>
@@ -476,7 +476,7 @@ onClipEvent (unload) {
    gotoAndStop("默认图标");
 }
 on(rollOver){
-   _root.物品图标注释(tmp_sx,1);
+   _root.物品图标注释(_parent.改装信息.Name,1);
 }
 on(rollOut){
    _root.注释结束();
