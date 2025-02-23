@@ -12,6 +12,11 @@
             <Background>flashswf/backgrounds/ciyuanta_魔神图专用.swf</Background>
             <PlayerX>100</PlayerX>
             <PlayerY>600</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Fate (斎祀)</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
