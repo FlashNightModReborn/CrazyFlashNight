@@ -5,6 +5,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/gk5_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>gk-9</Title>
+                <Loop>true</Loop>
+            </BGM>
             <Environment>
 				<Xmax>1770</Xmax>
 				<Xmin>50</Xmin>
