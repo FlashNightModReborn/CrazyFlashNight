@@ -248,7 +248,7 @@ class org.flashNight.gesh.object.ObjectUtil {
      * @param key 键名
      * @return Boolean 是否为内部键
      */
-    private static function isInternalKey(key:String):Boolean {
+    public static function isInternalKey(key:String):Boolean {
         return key.substr(0, 2) == "__";  // 忽略以双下划线开头的键
     }
 

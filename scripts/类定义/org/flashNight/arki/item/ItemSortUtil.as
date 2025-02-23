@@ -67,14 +67,20 @@ class org.flashNight.arki.item.ItemSortUtil {
     ):Array {
         // 将对象转换为标准物品数组格式
         var itemsArray:Array = [];
+
         for (var itemName:String in itemsObject) {
-            itemsArray.push({
-                name: itemName,
-                value: itemsObject[itemName]
-                // 如果原始数据需要其他字段可以在此扩展
-                // lastUpdate: ... 
-                // 后面等lsy抽象物品基类
-            });
+
+            // 排除内建键的干扰
+            if(!ObjectUtil.isInternalKey(itemName)) 
+            {
+                itemsArray.push({
+                    name: itemName,
+                    value: itemsObject[itemName]
+                    // 如果原始数据需要其他字段可以在此扩展
+                    // lastUpdate: ... 
+                    // 后面等lsy抽象物品基类
+                });
+            }
         }
 
         // 验证并获取有效的排序策略
