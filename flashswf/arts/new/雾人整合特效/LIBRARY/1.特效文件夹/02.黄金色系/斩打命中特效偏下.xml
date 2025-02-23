@@ -1,0 +1,2974 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/02.黄金色系/斩打命中特效偏下" itemID="67bb137b-00003b1b" linkageExportForAS="true" linkageIdentifier="斩打命中特效偏下" lastModified="1740316696" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="斩打命中特效偏下" currentFrame="24">
+      <layers>
+        <DOMLayer name="Script Layer" color="#A59B65">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="11" name="a1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" name="a2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#B2728A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[gotoAndPlay("a" + random(2));]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = random(360);
+this._x += random(100);
+this._y += 30;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = random(360);
+this._x += random(100);
+this._y += 30;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this._rotation = random(360);
+this._x += random(100);
+this._y += 30;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#09A0F2">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4977" selected="true" symbolType="graphic" centerPoint3DX="-10.05" centerPoint3DY="6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.454483032226563" b="-0.158218383789063" c="0.552261352539063" d="0.109512329101563" tx="-29.75" ty="6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4977" selected="true" symbolType="graphic" centerPoint3DX="-13.3" centerPoint3DY="-5.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.257537841796875" b="0.204421997070313" c="0.548568725585938" d="0.004058837890625" tx="-29.1" ty="-9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4980" selected="true" symbolType="graphic" centerPoint3DX="-22.6" centerPoint3DY="-8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.257537841796875" b="0.204421997070313" c="0.548568725585938" d="0.004058837890625" tx="-29.1" ty="-9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4982" selected="true" symbolType="graphic" centerPoint3DX="-21.25" centerPoint3DY="-7.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.257537841796875" b="0.204421997070313" c="0.548568725585938" d="0.004058837890625" tx="-29.1" ty="-9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4985" selected="true" symbolType="graphic" centerPoint3DX="-22.7" centerPoint3DY="-8.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.257537841796875" b="0.204421997070313" c="0.548568725585938" d="0.004058837890625" tx="-29.1" ty="-9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4988" selected="true" symbolType="graphic" centerPoint3DX="-24.3" centerPoint3DY="-8.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.257537841796875" b="0.204421997070313" c="0.548568725585938" d="0.004058837890625" tx="-29.1" ty="-9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4976" selected="true" symbolType="graphic" centerPoint3DX="15.75" centerPoint3DY="12.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31317138671875" b="0.343246459960938" c="0.112258911132813" d="0.532455444335938" tx="28" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="7.95" centerPoint3DY="14.9">
+                  <matrix>
+                    <Matrix a="1.26397705078125" d="1.3243408203125" tx="-17.35" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="7.75" centerPoint3DY="7.1">
+                  <matrix>
+                    <Matrix a="1.22091674804688" b="0.252166748046875" c="-0.890350341796875" d="2.5616455078125" tx="1.4" ty="-49.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="19.95" y="20"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" blendMode="add" centerPoint3DX="293.85" centerPoint3DY="-11.85">
+                  <matrix>
+                    <Matrix a="0.07000732421875" b="-0.0927886962890625" c="0.855316162109375" d="0.5528564453125" tx="6.3" ty="-13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-11.95" centerPoint3DY="7.95">
+                  <matrix>
+                    <Matrix a="0.6607666015625" b="0.353042602539063" c="-0.689163208007813" d="1.10472106933594" tx="-3.95" ty="-32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="15.8" y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="15.75" centerPoint3DY="-15.6">
+                  <matrix>
+                    <Matrix a="0.6607666015625" b="0.353042602539063" c="-1.00955200195313" d="1.61833190917969" tx="23.25" ty="-54.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="20.1" y="20.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A5D8F2">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4976" selected="true" symbolType="graphic" centerPoint3DX="16.75" centerPoint3DY="2.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.257537841796875" b="0.204421997070313" c="0.548568725585938" d="0.004058837890625" tx="-29.1" ty="-9.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4982" selected="true" symbolType="graphic" centerPoint3DX="5.7" centerPoint3DY="12.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.256607055664063" b="-0.205581665039063" c="0.548568725585938" d="-0.0065460205078125" tx="-2.15" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4982" selected="true" symbolType="graphic" centerPoint3DX="5.7" centerPoint3DY="12.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.256607055664063" b="-0.205581665039063" c="0.548568725585938" d="-0.0065460205078125" tx="-2.15" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4985" selected="true" symbolType="graphic" centerPoint3DX="4.25" centerPoint3DY="13.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.256607055664063" b="-0.205581665039063" c="0.548568725585938" d="-0.0065460205078125" tx="-2.15" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4985" selected="true" symbolType="graphic" centerPoint3DX="4.25" centerPoint3DY="13.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.256607055664063" b="-0.205581665039063" c="0.548568725585938" d="-0.0065460205078125" tx="-2.15" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4988" selected="true" symbolType="graphic" centerPoint3DX="2.65" centerPoint3DY="13.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.256607055664063" b="-0.205581665039063" c="0.548568725585938" d="-0.0065460205078125" tx="-2.15" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4988" selected="true" symbolType="graphic" centerPoint3DX="2.65" centerPoint3DY="13.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.256607055664063" b="-0.205581665039063" c="0.548568725585938" d="-0.0065460205078125" tx="-2.15" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4989" selected="true" symbolType="graphic" centerPoint3DX="6.65" centerPoint3DY="15.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.256607055664063" b="-0.205581665039063" c="0.548568725585938" d="-0.0065460205078125" tx="-2.15" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4993" selected="true" centerPoint3DX="60.85" centerPoint3DY="45.85">
+                  <matrix>
+                    <Matrix a="-0.046783447265625" b="-0.0862884521484375" c="-0.10430908203125" d="0.0347137451171875" tx="11.25" ty="29.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4995" selected="true" centerPoint3DX="102.5" centerPoint3DY="78.1">
+                  <matrix>
+                    <Matrix a="-0.046783447265625" b="-0.0862884521484375" c="-0.10430908203125" d="0.0347137451171875" tx="22.85" ty="34.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4977" selected="true" symbolType="graphic" centerPoint3DX="24.15" centerPoint3DY="-19.8" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31317138671875" b="0.343246459960938" c="0.112258911132813" d="0.532455444335938" tx="28" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4980" selected="true" symbolType="graphic" centerPoint3DX="26.65" centerPoint3DY="-29.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31317138671875" b="0.343246459960938" c="0.112258911132813" d="0.532455444335938" tx="28" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4982" selected="true" symbolType="graphic" centerPoint3DX="26" centerPoint3DY="-28.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31317138671875" b="0.343246459960938" c="0.112258911132813" d="0.532455444335938" tx="28" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4985" selected="true" symbolType="graphic" centerPoint3DX="27.3" centerPoint3DY="-30.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31317138671875" b="0.343246459960938" c="0.112258911132813" d="0.532455444335938" tx="28" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="291.35" centerPoint3DY="-15.6">
+                  <matrix>
+                    <Matrix a="0.103744506835938" b="-0.137481689453125" c="1.91679382324219" d="1.23898315429688" tx="5.4" ty="-17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="301" centerPoint3DY="-15.65">
+                  <matrix>
+                    <Matrix a="0.16339111328125" b="-0.216537475585938" c="1.77481079101563" d="1.14715576171875" tx="15.1" ty="-17.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="138"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="301" centerPoint3DY="-14.2">
+                  <matrix>
+                    <Matrix a="0.16339111328125" b="-0.216537475585938" c="0.779739379882813" d="0.504013061523438" tx="15.05" ty="-16.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="293.95" centerPoint3DY="-6.15">
+                  <matrix>
+                    <Matrix a="0.187103271484375" b="-0.247955322265625" c="0.494613647460938" d="0.319717407226563" tx="8" ty="-7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="287.9" centerPoint3DY="3.2">
+                  <matrix>
+                    <Matrix a="0.210845947265625" b="-0.279388427734375" c="0.209503173828125" d="0.135406494140625" tx="1.1" ty="1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#D25A5A">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4980" selected="true" symbolType="graphic" centerPoint3DX="4.35" centerPoint3DY="13.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.256607055664063" b="-0.205581665039063" c="0.548568725585938" d="-0.0065460205078125" tx="-2.15" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4980" selected="true" symbolType="graphic" centerPoint3DX="-21.75" centerPoint3DY="6.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.454483032226563" b="-0.158218383789063" c="0.552261352539063" d="0.109512329101563" tx="-29.75" ty="6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4982" selected="true" symbolType="graphic" centerPoint3DX="-19.9" centerPoint3DY="6.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.454483032226563" b="-0.158218383789063" c="0.552261352539063" d="0.109512329101563" tx="-29.75" ty="6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4985" selected="true" symbolType="graphic" centerPoint3DX="-22.25" centerPoint3DY="7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.454483032226563" b="-0.158218383789063" c="0.552261352539063" d="0.109512329101563" tx="-29.75" ty="6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4988" selected="true" symbolType="graphic" centerPoint3DX="-23.9" centerPoint3DY="6.75" loop="loop">
+                  <matrix>
+                    <Matrix a="0.454483032226563" b="-0.158218383789063" c="0.552261352539063" d="0.109512329101563" tx="-29.75" ty="6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4993" selected="true" centerPoint3DX="65.95" centerPoint3DY="28.2">
+                  <matrix>
+                    <Matrix a="-0.065948486328125" b="0.149139404296875" c="-0.150955200195313" d="-0.048309326171875" tx="16.35" ty="11.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4995" selected="true" centerPoint3DX="112.7" centerPoint3DY="46.7">
+                  <matrix>
+                    <Matrix a="-0.065948486328125" b="0.149139404296875" c="-0.150955200195313" d="-0.048309326171875" tx="33.05" ty="2.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4997" selected="true" centerPoint3DX="125.6" centerPoint3DY="108.4">
+                  <matrix>
+                    <Matrix a="-0.046783447265625" b="-0.0862884521484375" c="-0.10430908203125" d="0.0347137451171875" tx="34.1" ty="34.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4999" selected="true" centerPoint3DX="144.25" centerPoint3DY="123.25">
+                  <matrix>
+                    <Matrix a="-0.046783447265625" b="-0.0862884521484375" c="-0.10430908203125" d="0.0347137451171875" tx="40.45" ty="36.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 5001" selected="true" centerPoint3DX="133.25" centerPoint3DY="124">
+                  <matrix>
+                    <Matrix a="-0.046783447265625" b="-0.0862884521484375" c="-0.10430908203125" d="0.0347137451171875" tx="40.8" ty="36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 5003" selected="true" centerPoint3DX="131.2" centerPoint3DY="126.4">
+                  <matrix>
+                    <Matrix a="-0.046783447265625" b="-0.0862884521484375" c="-0.10430908203125" d="0.0347137451171875" tx="41.4" ty="36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 5005" selected="true" centerPoint3DX="129.15" centerPoint3DY="59.15">
+                  <matrix>
+                    <Matrix a="-0.046783447265625" b="-0.0862884521484375" c="-0.10430908203125" d="0.0347137451171875" tx="41.45" ty="36.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="281.05" centerPoint3DY="8.85">
+                  <matrix>
+                    <Matrix a="0.0598602294921875" b="-0.0534210205078125" c="-0.462921142578125" d="-0.444381713867188" tx="-4.75" ty="7.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5007" selected="true" blendMode="add" centerPoint3DX="18.55" centerPoint3DY="14.5">
+                  <matrix>
+                    <Matrix a="-0.143508911132813" b="0.13299560546875" c="-0.085296630859375" d="-0.0740966796875" tx="8.15" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5008" selected="true" blendMode="add" centerPoint3DX="59.75" centerPoint3DY="31.4">
+                  <matrix>
+                    <Matrix a="-0.143508911132813" b="0.13299560546875" c="-0.085296630859375" d="-0.0740966796875" tx="22.7" ty="-0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5009" selected="true" blendMode="add" centerPoint3DX="94.4" centerPoint3DY="49.65">
+                  <matrix>
+                    <Matrix a="-0.143508911132813" b="0.13299560546875" c="-0.085296630859375" d="-0.0740966796875" tx="37.2" ty="-3.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5010" selected="true" blendMode="add" centerPoint3DX="95.7" centerPoint3DY="47.8">
+                  <matrix>
+                    <Matrix a="-0.143508911132813" b="0.13299560546875" c="-0.085296630859375" d="-0.0740966796875" tx="44" ty="-5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5011" selected="true" blendMode="add" centerPoint3DX="89" centerPoint3DY="38.45">
+                  <matrix>
+                    <Matrix a="-0.143508911132813" b="0.13299560546875" c="-0.085296630859375" d="-0.0740966796875" tx="44.3" ty="-5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#FB6A4D">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4978" selected="true" symbolType="graphic" centerPoint3DX="20.55" centerPoint3DY="-5.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.115432739257813" b="0.168655395507813" c="-0.095855712890625" d="0.068359375" tx="20.3" ty="-8.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4979" selected="true" symbolType="graphic" centerPoint3DX="19.05" centerPoint3DY="-12.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.115432739257813" b="0.168655395507813" c="-0.095855712890625" d="0.068359375" tx="17.7" ty="-24.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4981" selected="true" symbolType="graphic" centerPoint3DX="18.25" centerPoint3DY="-21.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.115432739257813" b="0.168655395507813" c="-0.095855712890625" d="0.068359375" tx="16.8" ty="-39.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4983" selected="true" symbolType="graphic" centerPoint3DX="17.1" centerPoint3DY="-29.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.115432739257813" b="0.168655395507813" c="-0.095855712890625" d="0.068359375" tx="16.5" ty="-46.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4984" selected="true" symbolType="graphic" centerPoint3DX="17.35" centerPoint3DY="-32.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.115432739257813" b="0.168655395507813" c="-0.095855712890625" d="0.068359375" tx="16.5" ty="-46.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4986" selected="true" symbolType="graphic" centerPoint3DX="16.15" centerPoint3DY="-36.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.115432739257813" b="0.168655395507813" c="-0.095855712890625" d="0.068359375" tx="16.7" ty="-46.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4993" selected="true" centerPoint3DX="44.3" centerPoint3DY="26.5">
+                  <matrix>
+                    <Matrix a="0.171524047851563" b="0.136154174804688" c="-0.140396118164063" d="0.110626220703125" tx="-5.3" ty="9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4995" selected="true" centerPoint3DX="70.45" centerPoint3DY="34.3">
+                  <matrix>
+                    <Matrix a="0.171524047851563" b="0.136154174804688" c="-0.140396118164063" d="0.110626220703125" tx="-9.2" ty="-9.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4997" selected="true" centerPoint3DX="140.8" centerPoint3DY="74.65">
+                  <matrix>
+                    <Matrix a="-0.065948486328125" b="0.149139404296875" c="-0.150955200195313" d="-0.048309326171875" tx="49.3" ty="1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4999" selected="true" centerPoint3DX="162.25" centerPoint3DY="84.4">
+                  <matrix>
+                    <Matrix a="-0.065948486328125" b="0.149139404296875" c="-0.150955200195313" d="-0.048309326171875" tx="58.45" ty="-2.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 5001" selected="true" centerPoint3DX="151.35" centerPoint3DY="84.9">
+                  <matrix>
+                    <Matrix a="-0.065948486328125" b="0.149139404296875" c="-0.150955200195313" d="-0.048309326171875" tx="58.9" ty="-2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 5003" selected="true" centerPoint3DX="149.5" centerPoint3DY="87.15">
+                  <matrix>
+                    <Matrix a="-0.065948486328125" b="0.149139404296875" c="-0.150955200195313" d="-0.048309326171875" tx="59.7" ty="-2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 5005" selected="true" centerPoint3DX="147.5" centerPoint3DY="20.6">
+                  <matrix>
+                    <Matrix a="-0.065948486328125" b="0.149139404296875" c="-0.150955200195313" d="-0.048309326171875" tx="59.8" ty="-2.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4977" selected="true" symbolType="graphic" centerPoint3DX="-19" centerPoint3DY="19.25" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="-11.2" ty="7.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5008" selected="true" blendMode="add" centerPoint3DX="36.2" centerPoint3DY="19.25">
+                  <matrix>
+                    <Matrix a="-0.079254150390625" b="0.192459106445313" c="0.132080078125" d="0.0363006591796875" tx="-1.2" ty="-11.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5009" selected="true" blendMode="add" centerPoint3DX="50.9" centerPoint3DY="26.8">
+                  <matrix>
+                    <Matrix a="-0.079254150390625" b="0.192459106445313" c="0.132080078125" d="0.0363006591796875" tx="-4.9" ty="-26.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5010" selected="true" blendMode="add" centerPoint3DX="44.15" centerPoint3DY="20.15">
+                  <matrix>
+                    <Matrix a="-0.079254150390625" b="0.192459106445313" c="0.132080078125" d="0.0363006591796875" tx="-6.75" ty="-32.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5011" selected="true" blendMode="add" centerPoint3DX="37.5" centerPoint3DY="10.2">
+                  <matrix>
+                    <Matrix a="-0.079254150390625" b="0.192459106445313" c="0.132080078125" d="0.0363006591796875" tx="-6.9" ty="-33.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5012" selected="true" blendMode="add" centerPoint3DX="22.25" centerPoint3DY="2.8">
+                  <matrix>
+                    <Matrix a="-0.079254150390625" b="0.192459106445313" c="0.132080078125" d="0.0363006591796875" tx="-7.3" ty="-33.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5012" selected="true" blendMode="add" centerPoint3DX="73.8" centerPoint3DY="31.4">
+                  <matrix>
+                    <Matrix a="-0.143508911132813" b="0.13299560546875" c="-0.085296630859375" d="-0.0740966796875" tx="44.8" ty="-5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#F54BF5">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4977" symbolType="graphic" centerPoint3DX="13.65" centerPoint3DY="10.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.256607055664063" b="-0.205581665039063" c="0.548568725585938" d="-0.0065460205078125" tx="-2.15" ty="14.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4979" selected="true" symbolType="graphic" centerPoint3DX="12.7" centerPoint3DY="-2.8" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191558837890625" b="0.117919921875" c="0.064208984375" d="-0.1221923828125" tx="0.5" ty="-3.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4981" selected="true" symbolType="graphic" centerPoint3DX="3.5" centerPoint3DY="-2.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191558837890625" b="0.117919921875" c="0.064208984375" d="-0.1221923828125" tx="-15.65" ty="-2.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4983" selected="true" symbolType="graphic" centerPoint3DX="-5.4" centerPoint3DY="-3.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191558837890625" b="0.117919921875" c="0.064208984375" d="-0.1221923828125" tx="-23.2" ty="-2.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4984" selected="true" symbolType="graphic" centerPoint3DX="-8.4" centerPoint3DY="-2.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191558837890625" b="0.117919921875" c="0.064208984375" d="-0.1221923828125" tx="-23.5" ty="-1.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4986" selected="true" symbolType="graphic" centerPoint3DX="-13.25" centerPoint3DY="-3.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191558837890625" b="0.117919921875" c="0.064208984375" d="-0.1221923828125" tx="-23.9" ty="-1.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4987" selected="true" symbolType="graphic" centerPoint3DX="-15.95" centerPoint3DY="-3.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191558837890625" b="0.117919921875" c="0.064208984375" d="-0.1221923828125" tx="-23.75" ty="-1.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" blendMode="add" centerPoint3DX="296.6" centerPoint3DY="22.95">
+                  <matrix>
+                    <Matrix a="0.009552001953125" b="0.0923004150390625" c="-1.24929809570313" d="0.0768585205078125" tx="-3.8" ty="21.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="295.05" centerPoint3DY="25.2">
+                  <matrix>
+                    <Matrix a="0.0141754150390625" b="0.136734008789063" c="-2.79974365234375" d="0.172256469726563" tx="-5.35" ty="23.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="294.6" centerPoint3DY="30.35">
+                  <matrix>
+                    <Matrix a="-0.01068115234375" b="0.1075439453125" c="-1.9892578125" d="-0.1173095703125" tx="-5.8" ty="28.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4997" selected="true" centerPoint3DX="88.35" centerPoint3DY="49.15">
+                  <matrix>
+                    <Matrix a="0.171524047851563" b="0.136154174804688" c="-0.140396118164063" d="0.110626220703125" tx="-3.15" ty="-25.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4999" selected="true" centerPoint3DX="100.05" centerPoint3DY="52.3">
+                  <matrix>
+                    <Matrix a="0.171524047851563" b="0.136154174804688" c="-0.140396118164063" d="0.110626220703125" tx="-3.75" ty="-35.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 5001" selected="true" centerPoint3DX="88.75" centerPoint3DY="52.4">
+                  <matrix>
+                    <Matrix a="0.171524047851563" b="0.136154174804688" c="-0.140396118164063" d="0.110626220703125" tx="-3.7" ty="-35.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 5003" selected="true" centerPoint3DX="86.45" centerPoint3DY="53.45">
+                  <matrix>
+                    <Matrix a="0.171524047851563" b="0.136154174804688" c="-0.140396118164063" d="0.110626220703125" tx="-3.35" ty="-36.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 5005" selected="true" centerPoint3DX="84.8" centerPoint3DY="-12.85">
+                  <matrix>
+                    <Matrix a="0.171524047851563" b="0.136154174804688" c="-0.140396118164063" d="0.110626220703125" tx="-2.95" ty="-36.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4976" selected="true" symbolType="graphic" centerPoint3DX="-31.5" centerPoint3DY="27.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.282974243164063" b="0.316909790039063" c="0.171142578125" d="0.422653198242188" tx="-23.6" ty="-13.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5007" selected="true" blendMode="add" centerPoint3DX="15.6" centerPoint3DY="12.7">
+                  <matrix>
+                    <Matrix a="0.009918212890625" b="0.172866821289063" c="-0.218231201171875" d="0.017364501953125" tx="5.3" ty="2.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5008" selected="true" blendMode="add" centerPoint3DX="54.2" centerPoint3DY="20.2">
+                  <matrix>
+                    <Matrix a="0.009918212890625" b="0.172866821289063" c="-0.218231201171875" d="0.017364501953125" tx="16.55" ty="-10.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5009" selected="true" blendMode="add" centerPoint3DX="87.7" centerPoint3DY="30.8">
+                  <matrix>
+                    <Matrix a="0.009918212890625" b="0.172866821289063" c="-0.218231201171875" d="0.017364501953125" tx="30.3" ty="-22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5010" selected="true" blendMode="add" centerPoint3DX="87.9" centerPoint3DY="25.3">
+                  <matrix>
+                    <Matrix a="0.009918212890625" b="0.172866821289063" c="-0.218231201171875" d="0.017364501953125" tx="36.8" ty="-27.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5011" selected="true" blendMode="add" centerPoint3DX="80.9" centerPoint3DY="14.5">
+                  <matrix>
+                    <Matrix a="0.009918212890625" b="0.172866821289063" c="-0.218231201171875" d="0.017364501953125" tx="37.15" ty="-27.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5013" selected="true" blendMode="add" centerPoint3DX="13.2" centerPoint3DY="-4.85">
+                  <matrix>
+                    <Matrix a="-0.079254150390625" b="0.192459106445313" c="0.132080078125" d="0.0363006591796875" tx="-7.45" ty="-33.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5013" selected="true" blendMode="add" centerPoint3DX="64.75" centerPoint3DY="23.85">
+                  <matrix>
+                    <Matrix a="-0.143508911132813" b="0.13299560546875" c="-0.085296630859375" d="-0.0740966796875" tx="44.65" ty="-4.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#9EB2E5">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4976" symbolType="graphic" centerPoint3DX="27.95" centerPoint3DY="3.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.454483032226563" b="-0.158218383789063" c="0.552261352539063" d="0.109512329101563" tx="-29.75" ty="6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4978" selected="true" symbolType="graphic" centerPoint3DX="19.6" centerPoint3DY="-2.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.187545776367188" b="0.026214599609375" c="-0.0230255126953125" d="0.217987060546875" tx="17.25" ty="-6.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4979" selected="true" symbolType="graphic" centerPoint3DX="13.7" centerPoint3DY="-9.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.187545776367188" b="0.026214599609375" c="-0.0230255126953125" d="0.217987060546875" tx="5.6" ty="-20.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4981" selected="true" symbolType="graphic" centerPoint3DX="7.75" centerPoint3DY="-17.85" loop="loop">
+                  <matrix>
+                    <Matrix a="0.187545776367188" b="0.026214599609375" c="-0.0230255126953125" d="0.217987060546875" tx="-4.55" ty="-36.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4983" selected="true" symbolType="graphic" centerPoint3DX="1.8" centerPoint3DY="-25.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.187545776367188" b="0.026214599609375" c="-0.0230255126953125" d="0.217987060546875" tx="-9.2" ty="-43.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4984" selected="true" symbolType="graphic" centerPoint3DX="0.15" centerPoint3DY="-29.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.187545776367188" b="0.026214599609375" c="-0.0230255126953125" d="0.217987060546875" tx="-9.35" ty="-44.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4986" selected="true" symbolType="graphic" centerPoint3DX="-3.5" centerPoint3DY="-32.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.187545776367188" b="0.026214599609375" c="-0.0230255126953125" d="0.217987060546875" tx="-9.5" ty="-44.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4987" selected="true" symbolType="graphic" centerPoint3DX="16" centerPoint3DY="-39.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.115432739257813" b="0.168655395507813" c="-0.095855712890625" d="0.068359375" tx="16.85" ty="-46.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="293.6" centerPoint3DY="2.65">
+                  <matrix>
+                    <Matrix a="0.022308349609375" b="0.21539306640625" c="-2.59234619140625" d="0.15948486328125" tx="-6.8" ty="0.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="138"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="297.15" centerPoint3DY="9.75">
+                  <matrix>
+                    <Matrix a="-0.0158233642578125" b="0.15936279296875" c="-4.4580078125" d="-0.262863159179688" tx="-3.25" ty="7.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="301.25" centerPoint3DY="-16.35">
+                  <matrix>
+                    <Matrix a="-0.0249176025390625" b="0.250991821289063" c="-4.12774658203125" d="-0.243392944335938" tx="0.85" ty="-18.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="138"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="300.7" centerPoint3DY="-17.25">
+                  <matrix>
+                    <Matrix a="-0.0249176025390625" b="0.250991821289063" c="-1.8134765625" d="-0.10693359375" tx="0.3" ty="-18.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="301.95" centerPoint3DY="-27.6">
+                  <matrix>
+                    <Matrix a="-0.028533935546875" b="0.28741455078125" c="-1.15037536621094" d="-0.0678253173828125" tx="1.55" ty="-29.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="303.2" centerPoint3DY="-38.3">
+                  <matrix>
+                    <Matrix a="-0.0321502685546875" b="0.323867797851563" c="-0.487228393554688" d="-0.0287322998046875" tx="2.8" ty="-40.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4989" selected="true" symbolType="graphic" centerPoint3DX="31.75" centerPoint3DY="-29.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31317138671875" b="0.343246459960938" c="0.112258911132813" d="0.532455444335938" tx="28" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5007" selected="true" blendMode="add" centerPoint3DX="2.9" centerPoint3DY="12.7">
+                  <matrix>
+                    <Matrix a="0.136642456054688" b="-0.014068603515625" c="0.00439453125" d="0.08917236328125" tx="-8.05" ty="3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5008" selected="true" blendMode="add" centerPoint3DX="19" centerPoint3DY="29.55">
+                  <matrix>
+                    <Matrix a="0.136642456054688" b="-0.014068603515625" c="0.00439453125" d="0.08917236328125" tx="-17.65" ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5009" selected="true" blendMode="add" centerPoint3DX="30.3" centerPoint3DY="46.45">
+                  <matrix>
+                    <Matrix a="0.136642456054688" b="-0.014068603515625" c="0.00439453125" d="0.08917236328125" tx="-26.45" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5010" selected="true" blendMode="add" centerPoint3DX="20" centerPoint3DY="44.6">
+                  <matrix>
+                    <Matrix a="0.136642456054688" b="-0.014068603515625" c="0.00439453125" d="0.08917236328125" tx="-30.6" ty="-8.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5011" selected="true" blendMode="add" centerPoint3DX="13.2" centerPoint3DY="34.6">
+                  <matrix>
+                    <Matrix a="0.136642456054688" b="-0.014068603515625" c="0.00439453125" d="0.08917236328125" tx="-30.7" ty="-8.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5012" selected="true" blendMode="add" centerPoint3DX="67.1" centerPoint3DY="8.25">
+                  <matrix>
+                    <Matrix a="0.009918212890625" b="0.172866821289063" c="-0.218231201171875" d="0.017364501953125" tx="37.9" ty="-28.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5013" selected="true" blendMode="add" centerPoint3DX="59.35" centerPoint3DY="1.1">
+                  <matrix>
+                    <Matrix a="0.009918212890625" b="0.172866821289063" c="-0.218231201171875" d="0.017364501953125" tx="38" ty="-28"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#CEC8B2">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" centerPoint3DX="265.25" centerPoint3DY="-13.1">
+                  <matrix>
+                    <Matrix a="0.168701171875" b="0.0396728515625" c="-0.2401123046875" d="1.02117919921875" tx="-35.1" ty="-15.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4978" selected="true" symbolType="graphic" centerPoint3DX="25.5" centerPoint3DY="6.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0991363525390625" b="-0.101516723632813" c="0.066558837890625" d="-0.06707763671875" tx="25.95" ty="9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4979" selected="true" symbolType="graphic" centerPoint3DX="27.2" centerPoint3DY="11.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0991363525390625" b="-0.101516723632813" c="0.066558837890625" d="-0.06707763671875" tx="29.1" ty="19.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4981" selected="true" symbolType="graphic" centerPoint3DX="28.45" centerPoint3DY="17.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0991363525390625" b="-0.101516723632813" c="0.066558837890625" d="-0.06707763671875" tx="30.9" ty="30.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4983" selected="true" symbolType="graphic" centerPoint3DX="29.9" centerPoint3DY="23.6" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0991363525390625" b="-0.101516723632813" c="0.066558837890625" d="-0.06707763671875" tx="31.65" ty="35.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4984" selected="true" symbolType="graphic" centerPoint3DX="29.9" centerPoint3DY="25.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0991363525390625" b="-0.101516723632813" c="0.066558837890625" d="-0.06707763671875" tx="31.65" ty="35.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4986" selected="true" symbolType="graphic" centerPoint3DX="31.15" centerPoint3DY="28.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0991363525390625" b="-0.101516723632813" c="0.066558837890625" d="-0.06707763671875" tx="31.55" ty="36.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4987" selected="true" symbolType="graphic" centerPoint3DX="-5.2" centerPoint3DY="-35.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.187545776367188" b="0.026214599609375" c="-0.0230255126953125" d="0.217987060546875" tx="-9.3" ty="-44.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="293.15" centerPoint3DY="1.7">
+                  <matrix>
+                    <Matrix a="0.022308349609375" b="0.21539306640625" c="-1.138916015625" d="0.070068359375" tx="-7.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="292.4" centerPoint3DY="-7.35">
+                  <matrix>
+                    <Matrix a="0.025543212890625" b="0.24664306640625" c="-0.722442626953125" d="0.04443359375" tx="-8" ty="-9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="291.6" centerPoint3DY="-16.05">
+                  <matrix>
+                    <Matrix a="0.0287933349609375" b="0.277923583984375" c="-0.305984497070313" d="0.018829345703125" tx="-8.8" ty="-18.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命二(代码空缺)/未命名文件夹 1/Symbol 4988" selected="true" symbolType="graphic" centerPoint3DX="27.15" centerPoint3DY="-31.55" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.31317138671875" b="0.343246459960938" c="0.112258911132813" d="0.532455444335938" tx="28" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5008" selected="true" blendMode="add" centerPoint3DX="25.9" centerPoint3DY="49.65">
+                  <matrix>
+                    <Matrix a="0.135177612304688" b="-0.083587646484375" c="-0.0461273193359375" d="-0.088134765625" tx="-11.9" ty="18.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5009" selected="true" blendMode="add" centerPoint3DX="39.15" centerPoint3DY="82.2">
+                  <matrix>
+                    <Matrix a="0.135177612304688" b="-0.083587646484375" c="-0.0461273193359375" d="-0.088134765625" tx="-17.3" ty="29.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5010" selected="true" blendMode="add" centerPoint3DX="32.3" centerPoint3DY="87.3">
+                  <matrix>
+                    <Matrix a="0.135177612304688" b="-0.083587646484375" c="-0.0461273193359375" d="-0.088134765625" tx="-19.75" ty="34.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5011" selected="true" blendMode="add" centerPoint3DX="23.5" centerPoint3DY="77.95">
+                  <matrix>
+                    <Matrix a="0.135177612304688" b="-0.083587646484375" c="-0.0461273193359375" d="-0.088134765625" tx="-19.85" ty="34.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5012" selected="true" blendMode="add" centerPoint3DX="8.7" centerPoint3DY="70.9">
+                  <matrix>
+                    <Matrix a="0.135177612304688" b="-0.083587646484375" c="-0.0461273193359375" d="-0.088134765625" tx="-19.9" ty="35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5012" selected="true" blendMode="add" centerPoint3DX="-1.75" centerPoint3DY="27.45">
+                  <matrix>
+                    <Matrix a="0.136642456054688" b="-0.014068603515625" c="0.00439453125" d="0.08917236328125" tx="-30.8" ty="-8.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5013" selected="true" blendMode="add" centerPoint3DX="-10.9" centerPoint3DY="20.15">
+                  <matrix>
+                    <Matrix a="0.136642456054688" b="-0.014068603515625" c="0.00439453125" d="0.08917236328125" tx="-30.7" ty="-8.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#888BCD">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 13" name="area" centerPoint3DX="64.75" centerPoint3DY="-0.7">
+                  <matrix>
+                    <Matrix a="-3.9368896484375" d="1.2139892578125" tx="55" ty="-11"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4979" selected="true" symbolType="graphic" centerPoint3DX="31.25" centerPoint3DY="3.4" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.152267456054688" b="-0.050811767578125" c="-0.0388031005859375" d="0.100418090820313" tx="40.4" ty="1.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4981" selected="true" symbolType="graphic" centerPoint3DX="38.1" centerPoint3DY="1.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.152267456054688" b="-0.050811767578125" c="-0.0388031005859375" d="0.100418090820313" tx="52.4" ty="-2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4983" selected="true" symbolType="graphic" centerPoint3DX="44.75" centerPoint3DY="0.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.152267456054688" b="-0.050811767578125" c="-0.0388031005859375" d="0.100418090820313" tx="58" ty="-3.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4984" selected="true" symbolType="graphic" centerPoint3DX="46.95" centerPoint3DY="-0.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.152267456054688" b="-0.050811767578125" c="-0.0388031005859375" d="0.100418090820313" tx="58.2" ty="-3.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4986" selected="true" symbolType="graphic" centerPoint3DX="50.65" centerPoint3DY="-0.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.152267456054688" b="-0.050811767578125" c="-0.0388031005859375" d="0.100418090820313" tx="58.5" ty="-4.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4987" selected="true" symbolType="graphic" centerPoint3DX="52.7" centerPoint3DY="-1.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.152267456054688" b="-0.050811767578125" c="-0.0388031005859375" d="0.100418090820313" tx="58.4" ty="-4.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4987" selected="true" symbolType="graphic" centerPoint3DX="31.45" centerPoint3DY="30.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0991363525390625" b="-0.101516723632813" c="0.066558837890625" d="-0.06707763671875" tx="31.4" ty="36"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5007" selected="true" blendMode="add" centerPoint3DX="2.9" centerPoint3DY="15.95">
+                  <matrix>
+                    <Matrix a="0.081878662109375" b="-0.114974975585938" c="0.11505126953125" d="0.0963592529296875" tx="-7.85" ty="5.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5008" selected="true" blendMode="add" centerPoint3DX="18.15" centerPoint3DY="39.95">
+                  <matrix>
+                    <Matrix a="0.081878662109375" b="-0.114974975585938" c="0.11505126953125" d="0.0963592529296875" tx="-19.8" ty="8.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5009" selected="true" blendMode="add" centerPoint3DX="23.5" centerPoint3DY="62.85">
+                  <matrix>
+                    <Matrix a="0.081878662109375" b="-0.114974975585938" c="0.11505126953125" d="0.0963592529296875" tx="-32.4" ty="9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5010" selected="true" blendMode="add" centerPoint3DX="13.2" centerPoint3DY="62.85">
+                  <matrix>
+                    <Matrix a="0.081878662109375" b="-0.114974975585938" c="0.11505126953125" d="0.0963592529296875" tx="-38.4" ty="9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5011" selected="true" blendMode="add" centerPoint3DX="5.3" centerPoint3DY="52.15">
+                  <matrix>
+                    <Matrix a="0.081878662109375" b="-0.114974975585938" c="0.11505126953125" d="0.0963592529296875" tx="-38.65" ty="9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5013" selected="true" blendMode="add" centerPoint3DX="-0.6" centerPoint3DY="63.35">
+                  <matrix>
+                    <Matrix a="0.135177612304688" b="-0.083587646484375" c="-0.0461273193359375" d="-0.088134765625" tx="-19.7" ty="35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5013" selected="true" blendMode="add" centerPoint3DX="-19" centerPoint3DY="38.45">
+                  <matrix>
+                    <Matrix a="0.081878662109375" b="-0.114974975585938" c="0.11505126953125" d="0.0963592529296875" tx="-39.1" ty="9.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4989" selected="true" symbolType="graphic" centerPoint3DX="18.15" centerPoint3DY="-8.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="16.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#D5C17F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" centerPoint3DX="349.65" centerPoint3DY="7">
+                  <matrix>
+                    <Matrix a="-0.113845825195313" b="-0.0032196044921875" c="0.0300750732421875" d="-1.06340026855469" tx="49.5" ty="4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" centerPoint3DX="372.35" centerPoint3DY="13.9">
+                  <matrix>
+                    <Matrix a="-0.168701171875" b="-0.0047760009765625" c="0.067413330078125" d="-2.38311767578125" tx="72.2" ty="11.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4978" selected="true" symbolType="graphic" centerPoint3DX="26.05" centerPoint3DY="4.7" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.142333984375" b="0.0150604248046875" c="0.0007476806640625" d="-0.162521362304688" tx="28.1" ty="6.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4979" selected="true" symbolType="graphic" centerPoint3DX="30.9" centerPoint3DY="8.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.142333984375" b="0.0150604248046875" c="0.0007476806640625" d="-0.162521362304688" tx="37.8" ty="14.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4981" selected="true" symbolType="graphic" centerPoint3DX="36" centerPoint3DY="13.45" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.142333984375" b="0.0150604248046875" c="0.0007476806640625" d="-0.162521362304688" tx="46.6" ty="24.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4983" selected="true" symbolType="graphic" centerPoint3DX="41.1" centerPoint3DY="18.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.142333984375" b="0.0150604248046875" c="0.0007476806640625" d="-0.162521362304688" tx="50.7" ty="29.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4984" selected="true" symbolType="graphic" centerPoint3DX="42.6" centerPoint3DY="20.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.142333984375" b="0.0150604248046875" c="0.0007476806640625" d="-0.162521362304688" tx="50.9" ty="29.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4986" selected="true" symbolType="graphic" centerPoint3DX="45.6" centerPoint3DY="22.1" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.142333984375" b="0.0150604248046875" c="0.0007476806640625" d="-0.162521362304688" tx="51.05" ty="29.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4987" selected="true" symbolType="graphic" centerPoint3DX="47.05" centerPoint3DY="23.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.142333984375" b="0.0150604248046875" c="0.0007476806640625" d="-0.162521362304688" tx="50.9" ty="30.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="296.95" centerPoint3DY="-3">
+                  <matrix>
+                    <Matrix a="0.08868408203125" b="-0.079132080078125" c="-1.03746032714844" d="-0.99591064453125" tx="11.15" ty="-4.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="255" blueOffset="255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" centerPoint3DX="283.55" centerPoint3DY="10.7">
+                  <matrix>
+                    <Matrix a="0.139694213867188" b="-0.124664306640625" c="-0.960586547851563" d="-0.922119140625" tx="-3.15" ty="8.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="138"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="283.55" centerPoint3DY="10.7">
+                  <matrix>
+                    <Matrix a="0.139694213867188" b="-0.124664306640625" c="-0.422027587890625" d="-0.405120849609375" tx="-3.6" ty="8.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="276.7" centerPoint3DY="15.95">
+                  <matrix>
+                    <Matrix a="0.15997314453125" b="-0.142730712890625" c="-0.267715454101563" d="-0.256988525390625" tx="-9.4" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4991" selected="true" blendMode="add" centerPoint3DX="270.75" centerPoint3DY="21.45">
+                  <matrix>
+                    <Matrix a="0.18023681640625" b="-0.160812377929688" c="-0.113388061523438" d="-0.108840942382813" tx="-15.25" ty="19.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 5012" selected="true" blendMode="add" centerPoint3DX="-10.9" centerPoint3DY="45.6">
+                  <matrix>
+                    <Matrix a="0.081878662109375" b="-0.114974975585938" c="0.11505126953125" d="0.0963592529296875" tx="-39.1" ty="9.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FF3300"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4988" selected="true" symbolType="graphic" centerPoint3DX="13.2" centerPoint3DY="-11.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="16.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4989" selected="true" symbolType="graphic" centerPoint3DX="18.15" centerPoint3DY="-8.05" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="16.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4989" selected="true" symbolType="graphic" centerPoint3DX="8.25" centerPoint3DY="-30.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.282974243164063" b="0.316909790039063" c="0.171142578125" d="0.422653198242188" tx="3.85" ty="-36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="35" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#29F9D9">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="235.95" centerPoint3DY="-23.75">
+                  <matrix>
+                    <Matrix a="0.249954223632813" b="0.0587921142578125" c="-0.5380859375" d="2.28849792480469" tx="-64.3" ty="-26.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="182.8" centerPoint3DY="-36.1">
+                  <matrix>
+                    <Matrix a="0.393707275390625" b="0.09259033203125" c="-0.49822998046875" d="2.11895751953125" tx="-117.65" ty="-38.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="138"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="181.9" centerPoint3DY="-32.45">
+                  <matrix>
+                    <Matrix a="0.393707275390625" b="0.09259033203125" c="-0.218887329101563" d="0.930938720703125" tx="-118.5" ty="-34.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="160.5" centerPoint3DY="-36.2">
+                  <matrix>
+                    <Matrix a="0.45086669921875" b="0.106033325195313" c="-0.13885498046875" d="0.590530395507813" tx="-139.9" ty="-38.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="139.1" centerPoint3DY="-39.75">
+                  <matrix>
+                    <Matrix a="0.508010864257813" b="0.119476318359375" c="-0.058807373046875" d="0.2501220703125" tx="-161.3" ty="-42.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4980" selected="true" symbolType="graphic" centerPoint3DX="13.2" centerPoint3DY="-9.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="16.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4982" selected="true" symbolType="graphic" centerPoint3DX="11.9" centerPoint3DY="-9.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="16.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4982" selected="true" symbolType="graphic" centerPoint3DX="11.9" centerPoint3DY="-9.95" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="16.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4985" selected="true" symbolType="graphic" centerPoint3DX="13.2" centerPoint3DY="-10.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="16.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4985" selected="true" symbolType="graphic" centerPoint3DX="13.2" centerPoint3DY="-10.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="16.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4988" selected="true" symbolType="graphic" centerPoint3DX="13.2" centerPoint3DY="-11.85" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.358123779296875" b="0.164474487304688" c="-0.02679443359375" d="0.405471801757813" tx="16.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4988" selected="true" symbolType="graphic" centerPoint3DX="2.9" centerPoint3DY="-32.5" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.282974243164063" b="0.316909790039063" c="0.171142578125" d="0.422653198242188" tx="3.85" ty="-36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#99E2A2">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 13" name="area" selected="true" centerPoint3DX="65.55" centerPoint3DY="-0.7">
+                  <matrix>
+                    <Matrix a="-3.9368896484375" d="1.2139892578125" tx="55.8" ty="-11"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 13" name="area" selected="true" centerPoint3DX="108.85" centerPoint3DY="-0.7">
+                  <matrix>
+                    <Matrix a="-7.392822265625" d="1.2139892578125" tx="99" ty="-11"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="422.65" centerPoint3DY="10">
+                  <matrix>
+                    <Matrix a="-0.304290771484375" b="-0.0085906982421875" c="0.01739501953125" d="-0.614959716796875" tx="122.6" ty="7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="437.25" centerPoint3DY="10">
+                  <matrix>
+                    <Matrix a="-0.342849731445313" b="-0.0096893310546875" c="0.0073699951171875" d="-0.260452270507813" tx="136.9" ty="7.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4977" selected="true" symbolType="graphic" centerPoint3DX="1.6" centerPoint3DY="-21.9" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.282974243164063" b="0.316909790039063" c="0.171142578125" d="0.422653198242188" tx="3.85" ty="-36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4980" selected="true" symbolType="graphic" centerPoint3DX="2.9" centerPoint3DY="-30.65" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.282974243164063" b="0.316909790039063" c="0.171142578125" d="0.422653198242188" tx="3.85" ty="-36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4982" selected="true" symbolType="graphic" centerPoint3DX="2.9" centerPoint3DY="-29.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.282974243164063" b="0.316909790039063" c="0.171142578125" d="0.422653198242188" tx="3.85" ty="-36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1/Symbol 4985" selected="true" symbolType="graphic" centerPoint3DX="2.9" centerPoint3DY="-30.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.282974243164063" b="0.316909790039063" c="0.171142578125" d="0.422653198242188" tx="3.85" ty="-36.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#DA89AB">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="408.45" centerPoint3DY="14.2">
+                  <matrix>
+                    <Matrix a="-0.265716552734375" b="-0.00750732421875" c="0.062408447265625" d="-2.20658874511719" tx="108.15" ty="12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="138"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4975" selected="true" centerPoint3DX="408.45" centerPoint3DY="10.5">
+                  <matrix>
+                    <Matrix a="-0.265716552734375" b="-0.00750732421875" c="0.0274200439453125" d="-0.969436645507813" tx="108.3" ty="8.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

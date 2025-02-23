@@ -21,7 +21,7 @@
           <DOMFolderItem name="1.特效文件夹/01.白净色系/一瞬千击/未命名文件夹 1" itemID="65539f86-00002e41"/>
           <DOMFolderItem name="1.特效文件夹/01.白净色系/圆状气爆" itemID="65536c30-000029cb"/>
           <DOMFolderItem name="1.特效文件夹/01.白净色系/圆状气爆/未命名文件夹 1" itemID="65536c5e-000029e2"/>
-          <DOMFolderItem name="1.特效文件夹/02.黄金色系" itemID="65503f7e-000059f4"/>
+          <DOMFolderItem name="1.特效文件夹/02.黄金色系" itemID="65503f7e-000059f4" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/大大火花" itemID="65539c34-00002d2f"/>
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/大大火花/未命名文件夹 1" itemID="65539c39-00002d40"/>
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/黄金集气" itemID="6554c89c-00002fef"/>
@@ -43,7 +43,7 @@
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/斩打命三(代码空缺)/未命名文件夹 1" itemID="6553944a-00002b83"/>
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/斩打命一" itemID="6553948a-00002bcd"/>
           <DOMFolderItem name="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1" itemID="655391d5-00002a0f"/>
-          <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="65503f83-000059f5"/>
+          <DOMFolderItem name="1.特效文件夹/03.赤橙色系" itemID="65503f83-000059f5" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/赤橙横斩" itemID="653d64bd-00000da4"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/赤橙雷光" itemID="653dec60-00001585"/>
           <DOMFolderItem name="1.特效文件夹/03.赤橙色系/赤橙强击" itemID="653df339-0000162d"/>
@@ -126,7 +126,7 @@
           <DOMFolderItem name="1.特效文件夹/08.音符特效/00.前置内容" itemID="654592a2-00000506"/>
           <DOMFolderItem name="1.特效文件夹/08.音符特效/01.特效内容" itemID="6545929e-00000505" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/09.黑铁书法" itemID="6553a7d6-00002f43"/>
-          <DOMFolderItem name="1.特效文件夹/10.力大砖飞" itemID="66686d61-00001fd4"/>
+          <DOMFolderItem name="1.特效文件夹/10.力大砖飞" itemID="66686d61-00001fd4" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹" itemID="65503fa4-000059fe" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹/b07" itemID="4f7e582c-0000166d"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹/b08" itemID="65503fa9-00005a01"/>
@@ -562,6 +562,7 @@
           <Include href="1.特效文件夹/02.黄金色系/斩打命一/未命名文件夹 1/Symbol 4989.xml" itemIcon="1" loadImmediate="false" itemID="65536bc5-00002969" lastModified="1698481640"/>
           <Include href="1.特效文件夹/02.黄金色系/斩打命一/斩打命一.xml" itemID="655391dd-00002a11" lastModified="1715776822"/>
           <Include href="1.特效文件夹/02.黄金色系/斩打命中特效.xml" itemID="6644ad2e-00001659" lastModified="1740144373"/>
+          <Include href="1.特效文件夹/02.黄金色系/斩打命中特效偏下.xml" itemID="67bb137b-00003b1b" lastModified="1740316696"/>
           <Include href="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 287.xml" loadImmediate="false" itemID="653d644e-00000cb9" lastModified="1698427550"/>
           <Include href="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 289.xml" loadImmediate="false" itemID="653d644e-00000cba" lastModified="1698427550"/>
           <Include href="1.特效文件夹/03.赤橙色系/赤橙横斩/Symbol 291.xml" loadImmediate="false" itemID="653d644e-00000cbb" lastModified="1698427550"/>
@@ -1937,6 +1938,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3966424" publishTime="1740315922"/>
+          <PublishItem publishSize="3966573" publishTime="1740315084"/>
+          <PublishItem publishSize="3966536" publishTime="1740314802"/>
+          <PublishItem publishSize="3966415" publishTime="1740314636"/>
+          <PublishItem publishSize="3966415" publishTime="1740314269"/>
+          <PublishItem publishSize="3966367" publishTime="1740313896"/>
+          <PublishItem publishSize="3966344" publishTime="1740313556"/>
           <PublishItem publishSize="3725770" publishTime="1740223056"/>
           <PublishItem publishSize="3725769" publishTime="1740222974"/>
           <PublishItem publishSize="3725804" publishTime="1740222409"/>
@@ -1950,12 +1958,5 @@
           <PublishItem publishSize="3732845" publishTime="1725374726"/>
           <PublishItem publishSize="3656953" publishTime="1723477315"/>
           <PublishItem publishSize="3656478" publishTime="1723304772"/>
-          <PublishItem publishSize="3656478" publishTime="1723304709"/>
-          <PublishItem publishSize="3656465" publishTime="1723304626"/>
-          <PublishItem publishSize="3650404" publishTime="1723304496"/>
-          <PublishItem publishSize="3650404" publishTime="1723303867"/>
-          <PublishItem publishSize="3648211" publishTime="1722242298"/>
-          <PublishItem publishSize="3638587" publishTime="1718200350"/>
-          <PublishItem publishSize="3638562" publishTime="1718124595"/>
      </publishHistory>
 </DOMDocument>
