@@ -1,6 +1,31 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
     <Rewards>
+        <Reward id="0">
+            <Name>92式头部装甲</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="1">
+            <Name>92式胸甲</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="2">
+            <Name>92式手甲</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="3">
+            <Name>92式腿甲</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
+        <Reward id="4">
+            <Name>92式装甲鞋</Name>
+            <AcquisitionProbability>1</AcquisitionProbability>
+            <QuantityMax>1</QuantityMax>
+        </Reward>
     </Rewards>
     <SubStage id="0">
         <BasicInformation>
@@ -174,7 +199,7 @@
     </SubStage>
     <SubStage id="3">
         <BasicInformation>
-            <Background>flashswf/backgrounds/gk24_4_BG.swf</Background>
+            <Background>flashswf/backgrounds/92副本内部.swf</Background>
         </BasicInformation>
         <Wave>
             <SubWave id="0">
@@ -183,38 +208,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种349</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>30</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                        <Parameters>不掉装备:true</Parameters>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种350</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>30</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                        <Parameters>不掉装备:true</Parameters>
-                    </Enemy>
-                </EnemyGroup>
-            </SubWave>
-            <SubWave id="1">
-                <WaveInformation>
-                    <Duration>0</Duration>
-                </WaveInformation>
-                <EnemyGroup>
-                    <Enemy id="0">
-                        <Type>兵种351</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>30</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                        <Parameters>不掉装备:true</Parameters>
-                    </Enemy>
-                    <Enemy id="1">
-                        <Type>兵种352</Type>
+                        <Type>兵种412</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -224,10 +218,5 @@
                 </EnemyGroup>
             </SubWave>
         </Wave>
-    </SubStage>
-    <SubStage id="4">
-        <BasicInformation>
-            <Background>flashswf/backgrounds/92副本内部.swf</Background>
-        </BasicInformation>
     </SubStage>
 </GameStage>
