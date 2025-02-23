@@ -79,6 +79,8 @@ class org.flashNight.arki.item.ItemSortUtil {
 
         // 验证并获取有效的排序策略
         methodName = validateSortMethod(methodName);
+
+        // _root.发布消息("methodName:" + methodName)
         
         // 获取排序策略链的比较函数
         var comparator:Function = getComparatorChain(methodName);

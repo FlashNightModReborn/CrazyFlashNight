@@ -18,9 +18,12 @@ EventBus.getInstance().subscribe("物品栏排序图标点击",function(methodNa
 	});
 },null);
 
-EventBus.getInstance().subscribe("物品栏排序图标长按",function(){
-	_root.服务器.发布服务器消息("物品栏排序图标长按");
+EventBus.getInstance().subscribe("材料栏排序图标点击",function(methodName:String){
+	_root.物品UI函数.删除材料图标();
+	// _root.发布消息(methodName)
+	_root.物品UI函数.创建材料图标(methodName);
 },null);
+
 
 //商店购买售卖函数
 
@@ -341,7 +344,7 @@ _root.物品UI函数.计算战备箱总页数 = function():Number{
 
 
 //收集品栏相关（临时）
-_root.物品UI函数.创建材料图标 = function(){
+_root.物品UI函数.创建材料图标 = function(methodName:String){
 	if(_root.物品栏界面.界面 != "材料") return;
 
 	var 物品栏界面 = _root.物品栏界面;
@@ -377,7 +380,9 @@ _root.物品UI函数.创建材料图标 = function(){
 
 	// _root.服务器.发布服务器消息(ObjectUtil.toString(材料列表));
 
-	var sortedArray:Array = ItemSortUtil.sortObject(材料数据, null);
+	// methodName = methodName || "byPrice";
+
+	var sortedArray:Array = ItemSortUtil.sortObject(材料数据, methodName);
 
 	// _root.服务器.发布服务器消息(ObjectUtil.toString(sortedArray));
 
