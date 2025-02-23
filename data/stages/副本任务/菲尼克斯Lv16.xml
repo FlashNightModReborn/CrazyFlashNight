@@ -10,6 +10,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/ciyuanta_魔神图专用.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Each Promise (エリザベートチーム)</Title>
+                <Loop>true</Loop>
+            </BGM>
             <PlayerX>100</PlayerX>
             <PlayerY>600</PlayerY>
         </BasicInformation>

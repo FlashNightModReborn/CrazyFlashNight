@@ -175,6 +175,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/中秋场景01.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Tengen vs Gyutaro Theme</Title>
+                <Loop>true</Loop>
+            </BGM>
             <PlayerX>50</PlayerX>
             <PlayerY>800</PlayerY>
         </BasicInformation>
