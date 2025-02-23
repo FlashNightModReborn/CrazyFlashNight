@@ -389,8 +389,6 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 	for (var i:Number = 0; i < sortedArray.length; ++i) {
 		材料列表.push(sortedArray[i].name);
 	}
-
-
 	
 	for (var i = 0; i < 100; i++){
 		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i + 层级错位);
@@ -427,6 +425,12 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 			}
 		}
 	}
+	//若出现添加物品行为则刷新整个材料栏
+	dispatcher.subscribe("ItemAdded", function(){
+		dispatcher.destroy();
+		_root.物品UI函数.删除材料图标();
+		_root.物品UI函数.创建材料图标();
+	}, 物品栏界面.材料图标);
 }
 
 _root.物品UI函数.删除材料图标 = function(){
