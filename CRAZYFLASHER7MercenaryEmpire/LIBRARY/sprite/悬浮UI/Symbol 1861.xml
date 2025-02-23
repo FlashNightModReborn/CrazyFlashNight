@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1861" itemID="6597607e-00000a2d" lastModified="1739634063" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="Symbol 1861" currentFrame="9">
+    <DOMTimeline name="Symbol 1861">
       <layers>
         <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#5770CC">
+        <DOMLayer name="Script Layer" color="#5770CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -68,7 +68,7 @@ this._visible = false;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -264,12 +264,6 @@ on (rollOut) {
                     </DOMTextRun>
                     <DOMTextRun>
                       <characters>……</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" rotation="true" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" rotation="true" face="MicrosoftYaHei" fillColor="#CCCCCC"/>
                       </textAttrs>

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/淡出动画" itemID="663d9237-0000167b" lastModified="1737284525" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/淡出动画" itemID="663d9237-0000167b" lastModified="1740331682" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="淡出动画" currentFrame="5">
+    <DOMTimeline name="淡出动画" currentFrame="12">
       <layers>
         <DOMLayer name="Labels Layer" color="#71CDB3" locked="true">
           <frames>
@@ -24,7 +24,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#6F7B9E" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#6F7B9E" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -99,8 +99,8 @@ _root.gameworld.removeMovieClip();
 _root.购买物品界面.关闭();
 _root.仓库界面.关闭();
 _root.关卡结束界面._visible = false;
+_root.关卡结束界面.关卡是否结束 = false;
 _root.新手引导界面.关闭指引();
-_root.复活币系统界面.gotoAndStop("消失");
 ]]></script>
               </Actionscript>
               <elements/>
@@ -141,7 +141,7 @@ _root.跳转地图(跳转帧);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="跳转中标签" color="#D74EA1" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="跳转中标签" color="#D74EA1" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>

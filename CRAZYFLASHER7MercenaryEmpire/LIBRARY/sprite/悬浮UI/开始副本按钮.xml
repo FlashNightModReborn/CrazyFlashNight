@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/开始副本按钮" itemID="6664a82d-0000091d" lastModified="1717872685">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/开始副本按钮" itemID="6664a82d-0000091d" lastModified="1740332150">
   <timeline>
-    <DOMTimeline name="开始副本按钮">
+    <DOMTimeline name="开始副本按钮" currentFrame="2">
       <layers>
         <DOMLayer name="Layer 1" color="#D29A1E">
           <frames>
@@ -102,10 +102,10 @@
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="2" keyMode="9728" soundName="sound/sound18.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("DefaultButtonRollover");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -115,10 +115,10 @@
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="9728" soundName="sound/sound19.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("DefaultButtonPress");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

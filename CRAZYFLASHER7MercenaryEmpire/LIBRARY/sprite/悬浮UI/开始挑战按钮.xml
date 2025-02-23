@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/开始挑战按钮" itemID="6664a87c-00000946" lastModified="1718527225">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/开始挑战按钮" itemID="6664a87c-00000946" lastModified="1740332182">
   <timeline>
-    <DOMTimeline name="开始挑战按钮">
+    <DOMTimeline name="开始挑战按钮" currentFrame="2">
       <layers>
         <DOMLayer name="Layer 1" color="#D29A1E">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#C0D290" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#C0D290">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements>
@@ -97,28 +97,21 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Sound Layer 0" color="#5C97E6">
+        <DOMLayer name="sound as" color="#5C97E6" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="2" keyMode="9728" soundName="sound/sound18.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("DefaultButtonRollover");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#0DB1C9">
-          <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" keyMode="9728" soundName="sound/sound19.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("DefaultButtonPress");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>

@@ -1,15 +1,15 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="button/Symbol 20" itemID="6597607e-00000706" symbolType="button" lastModified="1704196122">
   <timeline>
-    <DOMTimeline name="Symbol 20">
+    <DOMTimeline name="Symbol 20" currentFrame="1">
       <layers>
-        <DOMLayer name="Layer 1" color="#4F4FFF">
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728" soundEffect="custom" soundName="sound/sound18.wav">
+            <DOMFrame index="1" keyMode="9728" soundName="sound/sound18.wav">
               <SoundEnvelope>
-                <SoundEnvelopePoint level0="32769" level1="32769"/>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
               </SoundEnvelope>
               <elements/>
             </DOMFrame>
@@ -163,7 +163,7 @@
         <DOMLayer name="Layer 4" color="#BDD3F1">
           <frames/>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#D3D352" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#D3D352">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

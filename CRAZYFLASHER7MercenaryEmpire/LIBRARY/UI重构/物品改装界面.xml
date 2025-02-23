@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1740316845" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1740332469" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="物品改装界面">
       <layers>
@@ -288,11 +288,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#37FB65" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#37FB65">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/装备改装界面显示块2" selected="true" centerPoint3DX="125.85" centerPoint3DY="411.15">
+                <DOMSymbolInstance libraryItemName="sprite/装备改装界面显示块2" centerPoint3DX="125.85" centerPoint3DY="411.15">
                   <matrix>
                     <Matrix tx="6" ty="397"/>
                   </matrix>
@@ -597,11 +597,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#EE80AB">
+        <DOMLayer name="Layer 10" color="#EE80AB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 729" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/关闭按钮" selected="true" symbolType="button">
                   <matrix>
                     <Matrix tx="484" ty="15.5"/>
                   </matrix>
@@ -609,11 +609,9 @@ on(rollOut){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(release){
-   _root.自动存盘();
-   this._visible = 0;
-}
-]]></script>
+                    <script><![CDATA[on (release) {
+	this._visible = 0;
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

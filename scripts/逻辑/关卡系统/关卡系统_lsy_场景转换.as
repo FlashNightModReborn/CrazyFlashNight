@@ -209,7 +209,7 @@ _root.返回基地 = function(){
 	_root.新出生 = true;
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
-	if (_root.关卡结束界面.关卡是否结束){
+	if (_root.关卡结束界面.关卡是否结束 == true){
 		_root.关卡结束界面.关卡是否结束 = false;
 		_root.关卡结束界面._visible = false;
 		_root.奖励物品界面.标题 = _root.获得翻译("通关奖励");

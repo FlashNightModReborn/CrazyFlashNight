@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/确认按钮" itemID="659d4707-000039c7" lastModified="1736923630">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/确认按钮" itemID="659d4707-000039c7" lastModified="1740332618">
   <timeline>
-    <DOMTimeline name="确认按钮" currentFrame="1">
+    <DOMTimeline name="确认按钮" currentFrame="2">
       <layers>
         <DOMLayer name="Layer 1" color="#C616CE">
           <frames>
@@ -96,23 +96,16 @@
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" duration="2" keyMode="9728" soundName="sound/sound18.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("DefaultButtonRollover");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Sound Layer 1" color="#89CFF2">
-          <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="2" keyMode="9728" soundEffect="custom" soundName="sound/sound19.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32769" level1="32769"/>
-              </SoundEnvelope>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("DefaultButtonPress");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
