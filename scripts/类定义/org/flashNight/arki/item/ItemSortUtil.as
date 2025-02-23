@@ -52,6 +52,48 @@ class org.flashNight.arki.item.ItemSortUtil {
         if (typeof callback === "function") callback(inventory);
     }
 
+
+    /**
+    * 新增功能：对普通物品对象进行排序
+    * @param itemsObject 需要排序的物品对象（格式如：{"物品名":数量,...}）
+    * @param methodName 使用的排序策略名称（可选，默认"byType"）
+    * @param callback 排序完成后的回调函数（可选）
+    * @return Array 排序后的物品数组（格式：[{name:String, value:Number},...]）
+    */
+    public static function sortObject(
+        itemsObject:Object, 
+        methodName:String, 
+        callback:Function
+    ):Array {
+        // 将对象转换为标准物品数组格式
+        var itemsArray:Array = [];
+        for (var itemName:String in itemsObject) {
+            itemsArray.push({
+                name: itemName,
+                value: itemsObject[itemName]
+                // 如果原始数据需要其他字段可以在此扩展
+                // lastUpdate: ... 
+                // 后面等lsy抽象物品基类
+            });
+        }
+
+        // 验证并获取有效的排序策略
+        methodName = validateSortMethod(methodName);
+        
+        // 获取排序策略链的比较函数
+        var comparator:Function = getComparatorChain(methodName);
+        
+        // 执行标准排序流程（不改变原始对象）
+        var sortedArray:Array = itemsArray.concat();
+        sortedArray.sort(comparator);
+
+        // 执行回调
+        if (typeof callback === "function") callback(sortedArray);
+        
+        return sortedArray;
+    }
+
+
     /**************************** 智能合并模块 ****************************/
     
     /**

@@ -2,6 +2,8 @@
 import org.flashNight.neur.Event.*;
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.item.*;
+import org.flashNight.arki.item.itemCollection.*;
+
 //新版物品栏
 _root.物品UI函数 = new Object();
 
@@ -362,10 +364,28 @@ _root.物品UI函数.创建材料图标 = function(){
 
 	物品栏界面.材料图标列表 = new Array(总格数);
 
+	var 材料数据:Object = 材料.getItems();
+	_root.服务器.发布服务器消息(ObjectUtil.toString(材料数据))
+
 	var 材料列表 = [];
+
+	/*
 	for(var key in 材料.getItems()){
 		材料列表.push(key);
 	}
+	*/
+
+	// _root.服务器.发布服务器消息(ObjectUtil.toString(材料列表));
+
+	var sortedArray:Array = ItemSortUtil.sortObject(材料数据, null);
+
+	// _root.服务器.发布服务器消息(ObjectUtil.toString(sortedArray));
+
+	for (var i:Number = 0; i < sortedArray.length; ++i) {
+		材料列表.push(sortedArray[i].name);
+	}
+
+
 	
 	for (var i = 0; i < 100; i++){
 		var 物品图标 = 物品栏界面.attachMovie("物品图标","物品图标" + i,i + 层级错位);
