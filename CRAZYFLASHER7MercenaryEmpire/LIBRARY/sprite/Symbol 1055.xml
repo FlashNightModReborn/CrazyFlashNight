@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1055" itemID="6597607e-00000847" lastModified="1735480147">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1055" itemID="6597607e-00000847" lastModified="1740326665">
   <timeline>
     <DOMTimeline name="Symbol 1055">
       <layers>
@@ -30,7 +30,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#B30ACE">
+        <DOMLayer name="Layer 3" color="#B30ACE" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -42,27 +42,27 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(release){
-   if(数组编号 > 0)
-   {
-      数组编号 -= 1;
-      _root[控制值] = 库[数组编号];
-      _root.刷新人物装扮(_root.控制目标);
-      文字 = _root[控制值];
-   }
-}
-]]></script>
+                    <script><![CDATA[on (release) {
+	if (数组编号 > 0)
+	{
+		数组编号 -= 1;
+		_root[控制值] = 库[数组编号];
+		_root.gameworld.主角[控制值] = 库[数组编号];
+		_root.刷新人物装扮("主角");
+		文字 = _root[控制值];
+	}
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#8D0CE8" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#8D0CE8">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 1053" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 1053" symbolType="button">
                   <matrix>
                     <Matrix tx="40.85" ty="34.5"/>
                   </matrix>
@@ -70,17 +70,16 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(release){
-   if(数组编号 < 库.length - 1)
-   {
-      数组编号 += 1;
-	  _root[控制值] = 库[数组编号];
-      _root.gameworld.主角[控制值] = 库[数组编号];
-      _root.刷新人物装扮("主角");
-      文字 = _root[控制值];
-   }
-}
-]]></script>
+                    <script><![CDATA[on (release) {
+	if (数组编号 < 库.length - 1)
+	{
+		数组编号 += 1;
+		_root[控制值] = 库[数组编号];
+		_root.gameworld.主角[控制值] = 库[数组编号];
+		_root.刷新人物装扮("主角");
+		文字 = _root[控制值];
+	}
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
