@@ -1,0 +1,270 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/05.粉紫色系/未命名文件夹 1/连环爆炸光波-红" itemID="67bae4b3-00002547" linkageExportForAS="true" linkageIdentifier="连环爆炸光波-红" lastModified="1740301586" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="连环爆炸光波-红" currentFrame="3">
+      <layers>
+        <DOMLayer name="代码" color="#666FF0" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = random(0);
+//this._y -= 100;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="判定框" color="#83C998" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="25.8" centerPoint3DY="-47.05">
+                  <matrix>
+                    <Matrix a="2.34959411621094" d="5.17723083496094" tx="-73.65" ty="-208.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="25.8" centerPoint3DY="-47.05">
+                  <matrix>
+                    <Matrix a="2.6051025390625" d="5.17723083496094" tx="-73.65" ty="-208.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="25.8" centerPoint3DY="-47.05">
+                  <matrix>
+                    <Matrix a="2.6051025390625" d="5.17723083496094" tx="-73.65" ty="-208.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="25.8" centerPoint3DY="-47.05">
+                  <matrix>
+                    <Matrix a="3.35406494140625" d="5.17723083496094" tx="-73.65" ty="-208.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="94.4" centerPoint3DY="-48.65">
+                  <matrix>
+                    <Matrix a="1.98727416992188" d="5.17723083496094" tx="-5.05" ty="-210.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="76.5" centerPoint3DY="-46.35">
+                  <matrix>
+                    <Matrix a="3.35406494140625" d="5.17723083496094" tx="-22.95" ty="-207.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="124.4" centerPoint3DY="-48.65">
+                  <matrix>
+                    <Matrix a="1.98727416992188" d="5.17723083496094" tx="24.95" ty="-210.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="122" centerPoint3DY="-45.2">
+                  <matrix>
+                    <Matrix a="3.35406494140625" d="5.17723083496094" tx="22.55" ty="-206.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="163.4" centerPoint3DY="-48.65">
+                  <matrix>
+                    <Matrix a="1.98727416992188" d="5.17723083496094" tx="63.95" ty="-210.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="152" centerPoint3DY="-45.2">
+                  <matrix>
+                    <Matrix a="3.35406494140625" d="5.17723083496094" tx="52.55" ty="-206.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="203.4" centerPoint3DY="-48.65">
+                  <matrix>
+                    <Matrix a="1.98727416992188" d="5.17723083496094" tx="103.95" ty="-210.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="197.35" centerPoint3DY="-44.9">
+                  <matrix>
+                    <Matrix a="3.35406494140625" d="5.17723083496094" tx="97.9" ty="-206.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="227.4" centerPoint3DY="-48.65">
+                  <matrix>
+                    <Matrix a="1.98727416992188" d="5.17723083496094" tx="127.95" ty="-210.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="227.4" centerPoint3DY="-48.65">
+                  <matrix>
+                    <Matrix a="1.98727416992188" d="5.17723083496094" tx="127.95" ty="-210.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="40"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/05.粉紫色系/未命名文件夹 1/连环爆炸光波" selected="true" centerPoint3DX="-50.65" centerPoint3DY="-67">
+                  <matrix>
+                    <Matrix tx="-0.55" ty="1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-50.1" y="-68.9"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15" quality="3"/>
+                    <AdjustColorFilter contrast="20" saturation="100" hue="120"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

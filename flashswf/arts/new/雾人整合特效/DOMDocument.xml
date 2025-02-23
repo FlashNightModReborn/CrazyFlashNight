@@ -81,15 +81,16 @@
           <DOMFolderItem name="1.特效文件夹/04.猩红色系/血箭" itemID="6553a7be-00002f3e" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/04.猩红色系/血箭/b01" itemID="4f7e582c-00001667" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/04.猩红色系/血箭/b02" itemID="6553a813-00002f4c" isExpanded="true"/>
-          <DOMFolderItem name="1.特效文件夹/05.粉紫色系" itemID="6553a7c4-00002f3f"/>
+          <DOMFolderItem name="1.特效文件夹/05.粉紫色系" itemID="6553a7c4-00002f3f" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/粉乱" itemID="653d655d-00000dbd"/>
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/粉色光环" itemID="6554cb56-0000301a"/>
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/粉色旋风" itemID="653e0010-000017f4"/>
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/花瓣飘散" itemID="653d26df-000007a1"/>
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/落英缤纷" itemID="653e6f4b-00001f35"/>
-          <DOMFolderItem name="1.特效文件夹/05.粉紫色系/樱爆" itemID="653e0d47-00001ab5" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/05.粉紫色系/未命名文件夹 1" itemID="67bae2c9-00002501" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/05.粉紫色系/樱爆" itemID="653e0d47-00001ab5"/>
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1" itemID="65674015-0000079b"/>
-          <DOMFolderItem name="1.特效文件夹/05.粉紫色系/樱刺" itemID="653d5609-00000806"/>
+          <DOMFolderItem name="1.特效文件夹/05.粉紫色系/樱刺" itemID="653d5609-00000806" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1" itemID="656c77bd-000007bc"/>
           <DOMFolderItem name="1.特效文件夹/05.粉紫色系/紫雷星陨" itemID="653d5d08-00000904"/>
           <DOMFolderItem name="1.特效文件夹/06.青蓝色系" itemID="6553a7c8-00002f40"/>
@@ -125,7 +126,7 @@
           <DOMFolderItem name="1.特效文件夹/08.音符特效/00.前置内容" itemID="654592a2-00000506"/>
           <DOMFolderItem name="1.特效文件夹/08.音符特效/01.特效内容" itemID="6545929e-00000505" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/09.黑铁书法" itemID="6553a7d6-00002f43"/>
-          <DOMFolderItem name="1.特效文件夹/10.力大砖飞" itemID="66686d61-00001fd4" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/10.力大砖飞" itemID="66686d61-00001fd4"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹" itemID="65503fa4-000059fe" isExpanded="true"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹/b07" itemID="4f7e582c-0000166d"/>
           <DOMFolderItem name="1.特效文件夹/10.力大砖飞/大地裂纹/b08" itemID="65503fa9-00005a01"/>
@@ -171,7 +172,7 @@
           <DOMFolderItem name="1.特效文件夹/14.远程子弹/能量火花/Graphic" itemID="6666daa5-0000248d"/>
           <DOMFolderItem name="1.特效文件夹/14.远程子弹/声波" itemID="657b039f-00002ec6"/>
           <DOMFolderItem name="1.特效文件夹/14.远程子弹/新能量子弹" itemID="6666d699-00001f99" isExpanded="true"/>
-          <DOMFolderItem name="1.特效文件夹/子弹化水晶" itemID="67b87f25-00001d15" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/子弹化水晶" itemID="67b87f25-00001d15"/>
           <DOMFolderItem name="1.特效文件夹/子弹化水晶/图形" itemID="67b87ece-000015f7"/>
           <DOMFolderItem name="1.特效文件夹/子弹化水晶/音效" itemID="67b87d4b-000013fa"/>
           <DOMFolderItem name="2.音效文件夹" itemID="656c28f2-00000fe5" isExpanded="true"/>
@@ -1063,6 +1064,9 @@
           <Include href="1.特效文件夹/05.粉紫色系/落英缤纷/Symbol 15.xml" loadImmediate="false" itemID="653e3c9d-00001c60" lastModified="1698590697"/>
           <Include href="1.特效文件夹/05.粉紫色系/落英缤纷/Symbol 16.xml" loadImmediate="false" itemID="653e3c9d-00001c61" lastModified="1698590681"/>
           <Include href="1.特效文件夹/05.粉紫色系/落英缤纷/落英缤纷.xml" itemID="653eed86-000004a9" lastModified="1698623753"/>
+          <Include href="1.特效文件夹/05.粉紫色系/未命名文件夹 1/连环爆炸光波.xml" loadImmediate="false" itemID="67bae47d-0000253a" lastModified="1740301502"/>
+          <Include href="1.特效文件夹/05.粉紫色系/未命名文件夹 1/连环爆炸光波-红.xml" itemID="67bae4b3-00002547" lastModified="1740301586"/>
+          <Include href="1.特效文件夹/05.粉紫色系/未命名文件夹 1/连环爆炸光波-紫.xml" itemID="67bae2a3-00001dcb" lastModified="1740301437"/>
           <Include href="1.特效文件夹/05.粉紫色系/樱爆/苍紫爆炸.xml" itemID="65674035-000007c3" lastModified="1702141810"/>
           <Include href="1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 70.xml" itemIcon="1" loadImmediate="false" itemID="653e0ad5-000019b2" lastModified="1698427367"/>
           <Include href="1.特效文件夹/05.粉紫色系/樱爆/未命名文件夹 1/Symbol 71.xml" loadImmediate="false" itemID="653e0ad5-000019b3" lastModified="1698427367"/>
@@ -1116,7 +1120,7 @@
           <Include href="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5569.xml" itemIcon="1" loadImmediate="false" itemID="653d55f2-000007e6" lastModified="1698481640"/>
           <Include href="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5570.xml" loadImmediate="false" itemID="653d55f2-000007e7" lastModified="1698481640"/>
           <Include href="1.特效文件夹/05.粉紫色系/樱刺/未命名文件夹 1/Symbol 5572.xml" loadImmediate="false" itemID="653d55f2-000007e8" lastModified="1698481640"/>
-          <Include href="1.特效文件夹/05.粉紫色系/樱刺/樱刺.xml" itemID="653d5638-00000824" lastModified="1698678663"/>
+          <Include href="1.特效文件夹/05.粉紫色系/樱刺/樱刺.xml" itemID="653d5638-00000824" lastModified="1740301049"/>
           <Include href="1.特效文件夹/05.粉紫色系/紫雷星陨/Symbol 256.xml" itemIcon="1" loadImmediate="false" itemID="653d1959-000006ad" lastModified="1693389033"/>
           <Include href="1.特效文件夹/05.粉紫色系/紫雷星陨/Symbol 263.xml" loadImmediate="false" itemID="653d1959-000006ae" lastModified="1693389033"/>
           <Include href="1.特效文件夹/05.粉紫色系/紫雷星陨/Symbol 264.xml" loadImmediate="false" itemID="653d1959-000006af" lastModified="1693389033"/>
@@ -1854,7 +1858,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="0.总元件-雾人整合特效" selected="true" centerPoint3DX="270" centerPoint3DY="173">
+                                        <DOMSymbolInstance libraryItemName="0.总元件-雾人整合特效" centerPoint3DX="270" centerPoint3DY="173">
                                              <matrix>
                                                   <Matrix tx="130.5" ty="76.5"/>
                                              </matrix>
