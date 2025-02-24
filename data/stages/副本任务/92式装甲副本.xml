@@ -212,8 +212,11 @@
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
-                        <SpawnIndex>right</SpawnIndex>
-                        <Parameters>不掉装备:true</Parameters>
+                        <x>700</x>
+                        <y>400</y>
+                        <Parameters>
+                            <方向>左</方向>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
