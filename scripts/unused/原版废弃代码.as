@@ -81,6 +81,50 @@ function 多人玩家注销(玩家编号)
 	}
 	_root.多玩家登录与设置界面.gotoAndPlay("刷新");
 }
+_root.读取数据库存盘 = function()
+{
+    var _loc2_ = [];
+    var _loc3_ = "http://" + address + "/crazyflashercom/k5_readplaydata.action?k=" + random(100);
+    var userDatarecieve = new LoadVars();
+    userDatarecieve.userName = _root.游戏ID组[_root.服务器大区代号];
+    userDatarecieve.sendAndLoad(_loc3_,userDatarecieve,"POST");
+    userDatarecieve.onLoad = function(b)
+    {
+        if(b)
+        {
+            _root.游戏服务器无存盘 = false;
+            if(userDatarecieve.content + "" == "1")
+            {
+            _root.游戏服务器无存盘 = true;
+            _root.codesigninfo = userDatarecieve.newsign.split(unescape("%20")).join("+");
+            _root.gotoAndPlay("读取数据成功");
+            }
+            else if(userDatarecieve.content + "" == "-1")
+            {
+            _root.gotoAndStop("读失败");
+            }
+            else if(userDatarecieve.contentlength == userDatarecieve.content.length)
+            {
+            _root.游戏服务器无存盘 = false;
+            s = Encrypt.解密(_root.生成key(),userDatarecieve.content.split(unescape("%20")).join("+"));
+            本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
+            _root.mydata = 本地loadgame.data[存盘名];
+            falgs = true;
+            _root.codesigninfo = userDatarecieve.newsign.split(unescape("%20")).join("+");
+            _root.gotoAndPlay("读取数据成功");
+            }
+            else
+            {
+            _root.gotoAndStop("读失败");
+            }
+        }
+        else
+        {
+            _root.gotoAndStop("读失败");
+        }
+        starts = true;
+    };
+}
 function 读取数据库存盘2(id, pass, dataStore)
 {
 	var _loc4_ = 0;

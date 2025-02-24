@@ -57,14 +57,11 @@ _root.mydata数据组包 = function(){
     _root.playerData[_root.playerCurrent] = mydata;
 }
 
-_root.自动存盘 = function()
-{
-   if(_root.存盘中 == false)
-    {
+_root.自动存盘 = function(){
+   if(_root.存盘中 == false){
         _root.存盘动画._visible = 1;
         _root.存盘动画.gotoAndStop("储存中");
-        if(_root.身价 < 1000 * _root.等级)
-        {
+        if(_root.身价 < 1000 * _root.等级){
             _root.身价 = 1000 * _root.等级;
         }
         _root.mydata数据组包();
@@ -79,8 +76,6 @@ _root.自动存盘 = function()
             存盘重连次数 = 0;
             _root.存盘动画.gotoAndPlay("存储成功");
             _root.发布消息(_root.获得翻译("游戏服务器储存成功！"));
-            _root.仓库标志 = 0;
-            _root.仓库界面.gotoAndStop("完毕");
         }
         else
         {
@@ -91,9 +86,6 @@ _root.自动存盘 = function()
     }
 }
 
-_root.储存数据库存盘 = function()
-{
-}
 
 _root.将中文数据数字化 = function(中文数据, 对比数据){
     var _loc4_ = "";
@@ -185,50 +177,6 @@ _root.将中文数据数字化 = function(中文数据, 对比数据){
     return _loc4_;
 }
 
-_root.读取数据库存盘 = function()
-{
-    var _loc2_ = [];
-    var _loc3_ = "http://" + address + "/crazyflashercom/k5_readplaydata.action?k=" + random(100);
-    var userDatarecieve = new LoadVars();
-    userDatarecieve.userName = _root.游戏ID组[_root.服务器大区代号];
-    userDatarecieve.sendAndLoad(_loc3_,userDatarecieve,"POST");
-    userDatarecieve.onLoad = function(b)
-    {
-        if(b)
-        {
-            _root.游戏服务器无存盘 = false;
-            if(userDatarecieve.content + "" == "1")
-            {
-            _root.游戏服务器无存盘 = true;
-            _root.codesigninfo = userDatarecieve.newsign.split(unescape("%20")).join("+");
-            _root.gotoAndPlay("读取数据成功");
-            }
-            else if(userDatarecieve.content + "" == "-1")
-            {
-            _root.gotoAndStop("读失败");
-            }
-            else if(userDatarecieve.contentlength == userDatarecieve.content.length)
-            {
-            _root.游戏服务器无存盘 = false;
-            s = Encrypt.解密(_root.生成key(),userDatarecieve.content.split(unescape("%20")).join("+"));
-            本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
-            _root.mydata = 本地loadgame.data[存盘名];
-            falgs = true;
-            _root.codesigninfo = userDatarecieve.newsign.split(unescape("%20")).join("+");
-            _root.gotoAndPlay("读取数据成功");
-            }
-            else
-            {
-            _root.gotoAndStop("读失败");
-            }
-        }
-        else
-        {
-            _root.gotoAndStop("读失败");
-        }
-        starts = true;
-    };
-}
 
 _root.本地存盘 = function() {
     var mysave = SharedObject.getLocal("crazyflasher7_saves");
@@ -355,7 +303,7 @@ _root.读取存盘 = function()
         _root.天气系统.开启昼夜系统 = 主角储存数据[14];
     }
     
-    tmp经验值 = 根据等级得升级所需经验(_root.等级);
+    var tmp经验值 = 根据等级得升级所需经验(_root.等级);
     if(tmp经验值 < _root.经验值)
     {
         _root.经验值 = tmp经验值;
@@ -386,9 +334,9 @@ _root.读取存盘 = function()
     // _root.手枪2 = 装备储存数据[10];
     // _root.刀 = 装备储存数据[11];
     // _root.手雷 = 装备储存数据[12];
-    _root.快捷物品栏1 = 装备储存数据[13];
-    _root.快捷物品栏2 = 装备储存数据[14];
-    _root.快捷物品栏3 = 装备储存数据[15];
+    // _root.快捷物品栏1 = 装备储存数据[13];
+    // _root.快捷物品栏2 = 装备储存数据[14];
+    // _root.快捷物品栏3 = 装备储存数据[15];
     _root.快捷技能栏1 = 装备储存数据[16];
     _root.快捷技能栏2 = 装备储存数据[17];
     _root.快捷技能栏3 = 装备储存数据[18];
@@ -401,7 +349,7 @@ _root.读取存盘 = function()
     _root.快捷技能栏10 = 装备储存数据[25];
     _root.快捷技能栏11 = 装备储存数据[26];
     _root.快捷技能栏12 = 装备储存数据[27];
-    _root.快捷物品栏4 = 装备储存数据[28];
+    // _root.快捷物品栏4 = 装备储存数据[28];
     // _root.物品栏 = 物品储存数据;
 
     _root.物品栏 = {
@@ -418,8 +366,7 @@ _root.读取存盘 = function()
 
     _root.主线任务进度 = Math.floor(Number(任务储存数据));
     _root.LoadPCTasks();
-    if(_root.角色名 == undefined)
-    {
+    if(_root.角色名 == undefined){
         _root.发布消息(_root.获得翻译("游戏本地无存盘！"));
         return false;
     }
@@ -432,10 +379,7 @@ _root.是否存过盘 = function(){
     var 本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
     var tmp主角储存数据 = 本地loadgame.data[存盘名][0];
     var tmp角色名 = tmp主角储存数据[0];
-    if(tmp角色名 == undefined)
-    {
-        return false;
-    }
+    if(tmp角色名 == undefined) return false;
     return true;
 }
 
@@ -451,13 +395,11 @@ _root.新建角色 = function(){
     _root.宠物信息.push([]);
     _root.宠物领养限制 = 5;
     _root.soundEffectManager.stopBGM();
-    // _root.gotoAndPlay("开场片头动画");
     _root.淡出动画.淡出跳转帧("教学关卡");
     return true;
 }
 
-_root.删除存盘 = function()
-{
+_root.删除存盘 = function(){
     var mysave = SharedObject.getLocal("crazyflasher7_saves");
     mysave.clear();
 }

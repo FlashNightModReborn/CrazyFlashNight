@@ -3,38 +3,6 @@
 	_root.宠物信息.push([]);
 }
 
-/*
-_root.读取宠物信息233 = function()
-{
-	var _loc2_ = "http://" + _root.address + "/crazyflashercom/k5_readpetinfo.action?k=" + random(100);
-	var petgetdata = new LoadVars();
-	petgetdata.accId = _root.accId;
-	petgetdata.sendAndLoad(_loc2_,petgetdata,"POST");
-	petgetdata.onLoad = function(b){
-		if (b){
-			if (petgetdata.content + "" == "-1"){
-				_root.发布消息("获取战宠信息失败");
-			}else if (petgetdata.content + "" == "0"){
-				_root.发布消息("获取战宠信息成功");
-				_root.宠物领养限制 = Number(petgetdata.boxnum);
-				var _loc3_ = petgetdata.petinfo.split("_");
-				var _loc4_ = 0;
-				while (_loc4_ < _loc3_.length){
-					var _loc5_ = [];
-					if (_loc3_[_loc4_] != "-1"){
-						_loc5_ = _loc3_[_loc4_].substr(1, _loc3_[_loc4_].length - 1).substr(0, _loc3_[_loc4_].length - 2).split(",");
-						_root.宠物信息.push([Number(_loc5_[0]), Number(_loc5_[1]), Number(_loc5_[2]), 500, 0]);
-					}else{
-						_root.宠物信息.push([]);
-					}
-					_loc4_ += 1;
-				}
-			}
-		}
-	};
-}
-*/
-
 _root.加载宠物 = function(地点X, 地点Y){
 	if(_root.限制系统.DisableCompanion) return;
 	_root.宠物mc库 = [];
@@ -101,7 +69,7 @@ _root.删除场景宠物 = function(){
 _root.读取本地存盘战宠 = function(){
 	var 本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
 	if (本地loadgame.data.战宠 == undefined){
-		_root.宠物信息 = new Array(5);
+		_root.宠物信息 = new Array();
 		_root.宠物信息.push([]);
 		_root.宠物信息.push([]);
 		_root.宠物信息.push([]);

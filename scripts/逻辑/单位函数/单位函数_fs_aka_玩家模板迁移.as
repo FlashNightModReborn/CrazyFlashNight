@@ -1219,8 +1219,7 @@ _root.主角函数.行走 = function()
 	}
 };
 
-_root.主角函数.人物暂停 = function()
-{
+_root.主角函数.人物暂停 = function(){
 	this.上键 = 0;
 	this.下键 = 0;
 	this.左键 = 0;
@@ -1235,50 +1234,27 @@ _root.主角函数.人物暂停 = function()
 	this.菜单键 = 0;
 };
 
-_root.主角函数.获取键值 = function()
-{
-	if (_root.当前玩家总数 > 1)
-	{
-		var 操控编号下设定 = _root.按键设定表[操控编号];
-		
-		this.上键 = 游戏世界[0];
-		this.下键 = 游戏世界[1];
-		this.左键 = 游戏世界[2];
-		this.右键 = 游戏世界[3];
-		this.A键 = 游戏世界[4];
-		this.B键 = 游戏世界[5];
-		this.C键 = 游戏世界[6];
-		this.切换武器键 = 游戏世界[7];
-		this.技能键 = 游戏世界[8];
-		this.物品键 = 游戏世界[9];
-		this.闪避键 = 游戏世界[10];
-		this.菜单键 = 游戏世界[11];
-	}
-	else if (_root.当前玩家总数 == 1)
-	{
-		this.上键 = _root.上键;
-		this.下键 = _root.下键;
-		this.左键 = _root.左键;
-		this.右键 = _root.右键;
-		this.A键 = _root.A键;
-		this.B键 = _root.B键;
-		this.C键 = _root.C键;
-		this.切换武器键 = _root.切换武器键;
-		this.技能键 = null;
-		this.物品键 = null;
-		this.闪避键 = null;
-		this.菜单键 = null;
-	}
+_root.主角函数.获取键值 = function(){
+	this.上键 = _root.上键;
+	this.下键 = _root.下键;
+	this.左键 = _root.左键;
+	this.右键 = _root.右键;
+	this.A键 = _root.A键;
+	this.B键 = _root.B键;
+	this.C键 = _root.C键;
+	this.切换武器键 = _root.切换武器键;
+	this.技能键 = null;
+	this.物品键 = null;
+	this.闪避键 = null;
+	this.菜单键 = null;
 };
 
-_root.主角函数.根据等级初始数值 = function(等级值)
-{
+_root.主角函数.根据等级初始数值 = function(等级值){
 	hp基本满血值 = _root.根据等级计算值(hp_min, hp_max, 等级值);
 	mp基本满血值 = _root.根据等级计算值(mp_min, mp_max, 等级值);
 	hp满血值 = hp基本满血值 + this.hp满血值装备加层;
 	mp满血值 = mp基本满血值 + mp满血值装备加层;
-	if (是否为敌人 == false && _root.控制目标 != this._name)
-	{
+	if (是否为敌人 == false && _root.控制目标 != this._name){
 		hp满血值 *= 3;
 		mp满血值 /= 10;
 	}
@@ -1289,8 +1265,7 @@ _root.主角函数.根据等级初始数值 = function(等级值)
 	防御力 = 基本防御力 + this.装备防御力;
 	躲闪率 = _root.根据等级计算值(躲闪率_min, 躲闪率_max, 等级值);
 	防御上限 = _root.根据等级计算值(防御上限_min, 防御上限_max, 等级值);
-	if (isNaN(hp))
-	{
+	if (isNaN(hp)){
 		hp = hp满血值;
 		this.changehp = 1;
 	}
@@ -1303,8 +1278,7 @@ _root.主角函数.非主角外观刷新 = function(){
 };
 
 
-_root.主角函数.移动 = function(移动方向, 速度)
-{
+_root.主角函数.移动 = function(移动方向, 速度){
 	//加上飞行浮空的判断
 	if (this.飞行浮空) return;
 	if (this.浮空 && (移动方向 === "上" || 移动方向 === "下")){
