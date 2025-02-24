@@ -279,6 +279,97 @@ class org.flashNight.neur.Event.EventBus {
         }
     }
 
+
+    /**
+     * 发布事件（显式参数数组版本）
+     * 
+     * 通过显式参数数组传递事件参数，其余逻辑与publish()保持一致
+     * 
+     * @param eventName 事件名称
+     * @param params 参数数组（可选）
+     */
+    public function publishWithParam(eventName:String, params:Array):Void { 
+        var listenersForEvent:Object = this.listeners[eventName]; 
+        if (!listenersForEvent) return;
+
+        var cache:Array = listenersForEvent.callbackCache; 
+        var cacheVersion:Number = listenersForEvent.cacheVersion;
+
+        // 缓存有效性检查（与原方法完全一致）
+        if (!cache || cacheVersion !== cache._version) { 
+            var callbacks:Object = listenersForEvent.callbacks; 
+            var localTempCallbacks:Array = this.tempCallbacks; 
+            var tempCount:Number = 0; 
+            var poolRef:Array = this.pool; 
+            var cbID:String; 
+            var index:Number; 
+            var cb:Function;
+
+            for (cbID in callbacks) { 
+                index = callbacks[cbID]; 
+                cb = poolRef[index]; 
+                if (cb != null) { 
+                    localTempCallbacks[tempCount++] = cb; 
+                } 
+            }
+
+            cache = listenersForEvent.callbackCache = localTempCallbacks.slice(0, tempCount); 
+            cache._version = cacheVersion;
+        }
+
+        var cacheLen:Number = cache.length; 
+        if (cacheLen === 0) return;
+
+        // 参数处理修改点（使用显式参数数组）
+        var localTempArgs:Array = this.tempArgs; 
+        var argsLen:Number = (params != null) ? params.length : 0; 
+        var hasArgs:Boolean = argsLen > 0;
+
+        if (hasArgs) { 
+            // 直接拷贝参数数组内容
+            for (var i:Number = 0; i < argsLen; i++) { 
+                localTempArgs[i] = params[i]; 
+            } 
+        }
+
+        // 回调执行逻辑（保持完全一致）
+        var j:Number = cacheLen; 
+        while (j--) { 
+            var cb:Function = cache[j]; 
+            try { 
+                if (hasArgs) { 
+                    if (argsLen == 0) { 
+                        cb(); 
+                    } else if (argsLen == 1) { 
+                        cb(localTempArgs[0]); 
+                    } else if (argsLen == 2) { 
+                        cb(localTempArgs[0], localTempArgs[1]); 
+                    } else if (argsLen == 3) { 
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2]); 
+                    } else if (argsLen == 4) { 
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3]); 
+                    } else if (argsLen == 5) { 
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4]); 
+                    } else if (argsLen == 6) { 
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5]); 
+                    } else if (argsLen == 7) { 
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6]); 
+                    } else if (argsLen == 8) { 
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7]); 
+                    } else if (argsLen == 9) { 
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8]); 
+                    } else { 
+                        cb.apply(null, localTempArgs.slice(0, argsLen)); 
+                    } 
+                } else { 
+                    cb(); 
+                } 
+            } catch (e:Error) { 
+                trace("EventBus Error:" + e.message); 
+            } 
+        }
+    }
+
     /**
      * 一次性订阅（继承版本号机制）
      * 
@@ -292,6 +383,7 @@ class org.flashNight.neur.Event.EventBus {
         var self:EventBus = this; 
         var originalID:String = String(Dictionary.getStaticUID(callback));
 
+        // 利用Delegate的缓存机制确保匿名函数的唯一性，使其可以被正确取消订阅
         // 包装回调函数 
         var onceCallback:Function = function():Void { 
             callback.apply(scope, arguments); 
