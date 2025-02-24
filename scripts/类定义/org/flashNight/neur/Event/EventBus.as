@@ -13,7 +13,6 @@ class org.flashNight.neur.Event.EventBus {
     private var availSpaceTop:Number;      // 可用索引列表的栈顶指针
     private var tempArgs:Array;            // 参数缓存区，重用避免频繁创建
     private var tempCallbacks:Array;       // 重用的回调函数存储数组
-    private var tempCallbacksCount:Number; // tempCallbacks 数组中的有效元素计数
 
     // 静态实例，类加载时初始化，采用饿汉式单例模式
     // 脚本调用时可直接调用 instance 以避免一层函数调用开销
@@ -33,7 +32,6 @@ class org.flashNight.neur.Event.EventBus {
         this.availSpaceTop = initialCapacity;
         this.tempArgs = new Array(10);          // 假设最大参数数量为 10，可根据需要调整
         this.tempCallbacks = new Array(initialCapacity);
-        this.tempCallbacksCount = 0;
 
         // 使用循环展开初始化 pool 和 availSpace 数组
         var unrollFactor:Number = 8;
@@ -167,46 +165,82 @@ class org.flashNight.neur.Event.EventBus {
         var poolRef:Array = this.pool;
 
         // 重置 tempCallbacksCount
-        this.tempCallbacksCount = 0;
+        var tempCallbacksCount:Number = 0;
+        var localTempCallbacks:Array = this.tempCallbacks;
 
         // 收集回调函数，使用索引方式
         for (var cbID:String in callbacks) {
             var index:Number = callbacks[cbID];
             var callback:Function = poolRef[index];
             if (callback != null) {
-                this.tempCallbacks[this.tempCallbacksCount++] = callback;
+                localTempCallbacks[tempCallbacksCount++] = callback;
             }
         }
 
-        var hasArguments:Boolean = arguments.length >= 2;
-        var argsLength:Number = arguments.length - 1;
+        var len:Number = arguments.length;
+        var hasArguments:Boolean = len >= 2;
+        var argsLength:Number = len - 1;
 
-        // 如果有参数，使用索引方式复制参数到 tempArgs
+        // 如果有参数，使用索引方式复制参数到 tempArgs，避免数组gc开销
+        var localTempArgs:Array = this.tempArgs;
         if (hasArguments) {
             for (var i:Number = 0; i < argsLength; i++) {
-                this.tempArgs[i] = arguments[i + 1];
+                localTempArgs[i] = arguments[i + 1];
             }
         }
 
         // 倒序执行回调函数
-        for (var j:Number = this.tempCallbacksCount - 1; j >= 0; j--) {
-            var cb:Function = this.tempCallbacks[j];
+        for (var j:Number = tempCallbacksCount - 1; j >= 0; j--) {
+            var cb:Function = localTempCallbacks[j];
             try {
+                // 如果存在参数
                 if (hasArguments) {
-                    switch (argsLength) {
-                        case 0: cb(); break;
-                        case 1: cb(this.tempArgs[0]); break;
-                        case 2: cb(this.tempArgs[0], this.tempArgs[1]); break;
-                        case 3: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2]); break;
-                        case 4: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3]); break;
-                        case 5: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4]); break;
-                        case 6: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4], this.tempArgs[5]); break;
-                        case 7: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4], this.tempArgs[5], this.tempArgs[6]); break;
-                        case 8: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4], this.tempArgs[5], this.tempArgs[6], this.tempArgs[7]); break;
-                        case 9: cb(this.tempArgs[0], this.tempArgs[1], this.tempArgs[2], this.tempArgs[3], this.tempArgs[4], this.tempArgs[5], this.tempArgs[6], this.tempArgs[7], this.tempArgs[8]); break;
-                        default: cb.apply(null, this.tempArgs.slice(0, argsLength));
+                    // 参数长度为 0
+                    if (argsLength == 0) {
+                        cb();
+                    }
+                    // 参数长度为 1
+                    else if (argsLength == 1) {
+                        cb(localTempArgs[0]);
+                    }
+                    // 参数长度为 2
+                    else if (argsLength == 2) {
+                        cb(localTempArgs[0], localTempArgs[1]);
+                    }
+                    // 参数长度为 3
+                    else if (argsLength == 3) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2]);
+                    }
+                    // 参数长度为 4
+                    else if (argsLength == 4) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3]);
+                    }
+                    // 参数长度为 5
+                    else if (argsLength == 5) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4]);
+                    }
+                    // 参数长度为 6
+                    else if (argsLength == 6) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5]);
+                    }
+                    // 参数长度为 7
+                    else if (argsLength == 7) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6]);
+                    }
+                    // 参数长度为 8
+                    else if (argsLength == 8) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7]);
+                    }
+                    // 参数长度为 9
+                    else if (argsLength == 9) {
+                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8]);
+                    }
+                    // 参数长度超过 9
+                    else {
+                        cb.apply(null, localTempArgs.slice(0, argsLength));
                     }
                 } else {
+                    // 如果没有参数
                     cb();
                 }
             } catch (error:Error) {
@@ -294,7 +328,6 @@ class org.flashNight.neur.Event.EventBus {
         Delegate.clearCache();
         this.tempArgs = [];
         this.tempCallbacks = [];
-        this.tempCallbacksCount = 0;
     }
 
     /**
