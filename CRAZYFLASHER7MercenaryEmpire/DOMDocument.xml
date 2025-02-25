@@ -1,18 +1,18 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#000000" width="1024" height="576" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" timelineLabelWidth="253" viewAngle3D="67.3530907632092" sharedLibraryURL="Font" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="button" itemID="659760e3-00000e95" isExpanded="true"/>
+          <DOMFolderItem name="button" itemID="659760e3-00000e95"/>
           <DOMFolderItem name="font" itemID="65977cd0-00001d33"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
-          <DOMFolderItem name="import" itemID="65977cdc-00001d38"/>
-          <DOMFolderItem name="import/arts" itemID="65981594-00000b2f"/>
+          <DOMFolderItem name="import" itemID="65977cdc-00001d38" isExpanded="true"/>
+          <DOMFolderItem name="import/arts" itemID="65981594-00000b2f" isExpanded="true"/>
           <DOMFolderItem name="import/scripts" itemID="65996a47-00000b1c"/>
           <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13"/>
-          <DOMFolderItem name="import/关卡地图" itemID="65c78d54-00000eac" isExpanded="true"/>
+          <DOMFolderItem name="import/关卡地图" itemID="65c78d54-00000eac"/>
           <DOMFolderItem name="import/弃用关卡地图" itemID="664a1e04-00000cbd"/>
           <DOMFolderItem name="import/外部地图" itemID="65d313c5-00000b63" isExpanded="true"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="6597612c-00000e9d"/>
-          <DOMFolderItem name="sprite" itemID="65976153-00000ea6" isExpanded="true"/>
+          <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
           <DOMFolderItem name="sprite/标题画面" itemID="659bbce9-00001519"/>
           <DOMFolderItem name="sprite/加载UI" itemID="659bbb5f-000014bc"/>
           <DOMFolderItem name="sprite/物品栏" itemID="659d3927-00003122"/>
@@ -544,6 +544,7 @@
           <Include href="import/arts/加载mc库-通缉任务.xml" itemID="65978221-000035e6" lastModified="1704467261"/>
           <Include href="import/arts/加载MC库0.xml" itemID="65977da2-00002dcf" lastModified="1704467265"/>
           <Include href="import/arts/加载mc库1.xml" itemID="65977e4e-000035d6" lastModified="1704467270"/>
+          <Include href="import/arts/素材库-物品技能图标.xml" itemID="67bdd016-00001d33" lastModified="1740492929"/>
           <Include href="import/arts/原版素材库-子弹.xml" itemID="668ba6d6-00000931" lastModified="1720428941"/>
           <Include href="import/scripts/asLoader.xml" itemID="65996a6b-00000b1f" lastModified="1714731149"/>
           <Include href="import/UI组件/shopMainMC.xml" itemID="667957ef-000009b0" lastModified="1719228445"/>
@@ -918,7 +919,7 @@
           <Include href="外部导入UI界面.xml" loadImmediate="false" itemID="67162590-0000093d" lastModified="1736954576"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="40" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="48" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -1053,7 +1054,7 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="as" color="#7B84C3" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="as" color="#7B84C3" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="5" keyMode="9728">
                                    <Actionscript>
@@ -1996,12 +1997,12 @@ _root.无限过图模式 = true;
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="7" autoNamed="false">
+                    <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="41" keyMode="9728">
+                              <DOMFrame index="0" duration="40" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="41" keyMode="9728">
+                              <DOMFrame index="40" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/地图库-废城" centerPoint3DX="11.6" centerPoint3DY="611.65">
                                              <matrix>
@@ -2013,10 +2014,10 @@ _root.无限过图模式 = true;
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="42" keyMode="9728">
+                              <DOMFrame index="41" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
-                              <DOMFrame index="43" keyMode="9728">
+                              <DOMFrame index="42" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/地图库-荒漠" centerPoint3DX="11.6" centerPoint3DY="611.65">
                                              <matrix>
@@ -2028,7 +2029,7 @@ _root.无限过图模式 = true;
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="44" keyMode="9728">
+                              <DOMFrame index="43" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/地图库-禁区" centerPoint3DX="11.6" centerPoint3DY="611.65">
                                              <matrix>
@@ -2040,7 +2041,7 @@ _root.无限过图模式 = true;
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="45" keyMode="9728">
+                              <DOMFrame index="44" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/库-UI" centerPoint3DX="7.65" centerPoint3DY="606.9">
                                              <matrix>
@@ -2052,7 +2053,7 @@ _root.无限过图模式 = true;
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="46" keyMode="9728">
+                              <DOMFrame index="45" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/素材库-基地场景" centerPoint3DX="51.5" centerPoint3DY="606.85">
                                              <matrix>
@@ -2064,7 +2065,7 @@ _root.无限过图模式 = true;
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="47" keyMode="9728">
+                              <DOMFrame index="46" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/地图库-外部地图" centerPoint3DX="35.3" centerPoint3DY="608.7">
                                              <matrix>
@@ -2076,11 +2077,23 @@ _root.无限过图模式 = true;
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="48" keyMode="9728">
+                              <DOMFrame index="47" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/原版外部资源库" centerPoint3DX="11.6" centerPoint3DY="511.65">
                                              <transformationPoint>
                                                   <Point x="11.6" y="511.65"/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                              <DOMFrame index="48" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="import/arts/素材库-物品技能图标" centerPoint3DX="84.55" centerPoint3DY="708.85">
+                                             <matrix>
+                                                  <Matrix ty="700"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="84.55" y="8.85"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -2313,7 +2326,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="35" duration="6" keyMode="9728">
+                              <DOMFrame index="35" duration="5" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/加载进度条" symbolType="graphic" firstFrame="13" loop="single frame">
                                              <matrix>
@@ -2325,7 +2338,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="41" keyMode="9728">
+                              <DOMFrame index="40" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/加载进度条" symbolType="graphic" firstFrame="14" loop="single frame">
                                              <matrix>
@@ -2337,7 +2350,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="42" keyMode="9728">
+                              <DOMFrame index="41" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/加载进度条" symbolType="graphic" firstFrame="15" loop="single frame">
                                              <matrix>
@@ -2349,7 +2362,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="43" keyMode="9728">
+                              <DOMFrame index="42" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/加载进度条" symbolType="graphic" firstFrame="16" loop="single frame">
                                              <matrix>
@@ -2361,7 +2374,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="44" keyMode="9728">
+                              <DOMFrame index="43" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/加载进度条" symbolType="graphic" firstFrame="17" loop="single frame">
                                              <matrix>
@@ -2373,7 +2386,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="45" keyMode="9728">
+                              <DOMFrame index="44" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/加载进度条" symbolType="graphic" firstFrame="20" loop="single frame">
                                              <matrix>
@@ -2385,7 +2398,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="46" duration="2" keyMode="9728">
+                              <DOMFrame index="45" duration="2" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/加载进度条" symbolType="graphic" firstFrame="21" loop="single frame">
                                              <matrix>
@@ -2397,7 +2410,7 @@ onClipEvent (mouseMove) {
                                         </DOMSymbolInstance>
                                    </elements>
                               </DOMFrame>
-                              <DOMFrame index="48" duration="2" keyMode="9728">
+                              <DOMFrame index="47" duration="3" keyMode="9728">
                                    <elements>
                                         <DOMSymbolInstance libraryItemName="import/加载进度条" symbolType="graphic" firstFrame="24" loop="single frame">
                                              <matrix>
@@ -5048,15 +5061,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!9395 4546|9092 4546!9092 4546|8789 4546!8789 4546|8485 4546!8485 4546|8182 4546!8182 4546|8472 4727!8472 4727|8762 4908!8762 4908|9052 5089!9052 5089|9342 5270!9342 5270|9633 5451!9633 5451|9935 5451!9935 5451|10239 5451!10239 5451|10542
- 5451!10542 5451|10845 5451!10845 5451|11149 5451!11149 5451|11452 5451!11452 5451|11755 5451!11755 5451|12059 5451!12059 5451|11769 5270!11769 5270|11479 5089!11479 5089|11189 4908!11189 4908|10899 4727!10899 4727|10609 4546!10609 4546
-|10305 4546!10305 4546|10002 4546!10002 4546|9699 4546!9699 4546|9395 4546!9395 4546|9685 4727!9685 4727|9382 4727!9382 4727|9672 4908!9672 4908|9369 4908!9369 4908|9659 5089!9659 5089|9355 5089!9355 5089|9645 5270!9645 5270|9935 5451
-!9092 4546|9382 4727!9382 4727|9079 4727!9079 4727|8789 4546!9369 4908|9065 4908!9065 4908|8775 4727!8775 4727|9079 4727!9079 4727|9369 4908!8485 4546|8775 4727!8775 4727|8472 4727!8762 4908|9065 4908!9065 4908|9355 5089!9355 5089|9052
- 5089!9342 5270|9645 5270!9645 5270|9949 5270!9949 5270|10239 5451!11452 5451|11162 5270!11162 5270|11465 5270!11465 5270|11755 5451!11769 5270|11465 5270!11465 5270|11175 5089!11175 5089|10872 5089!10872 5089|10582 4908!10582 4908|10279
- 4908!10279 4908|9989 4727!9989 4727|10292 4727!10292 4727|10002 4546!10582 4908|10885 4908!10885 4908|11189 4908!10582 4908|10292 4727!10292 4727|10595 4727!10595 4727|10885 4908!10885 4908|11175 5089!10899 4727|10595 4727!10595 4727
-|10305 4546!10279 4908|9975 4908!9975 4908|10265 5089!10265 5089|10555 5270!10555 5270|10252 5270!10252 5270|9962 5089!9962 5089|10265 5089!10265 5089|10569 5089!10569 5089|10872 5089!10252 5270|9949 5270!9949 5270|9659 5089!9659 5089
-|9962 5089!10845 5451|10555 5270!10555 5270|10859 5270!10859 5270|11162 5270!11149 5451|10859 5270!10859 5270|10569 5089!10569 5089|10279 4908!10872 5089|11162 5270!10542 5451|10252 5270!11175 5089|11479 5089!9962 5089|9672 4908!9672
- 4908|9975 4908!9975 4908|9685 4727!9685 4727|9989 4727!9989 4727|9699 4546"/>
+!10859 5270|11162 5270!11162 5270|11465 5270!11465 5270|11175 5089!11175 5089|11479 5089!11479 5089|11189 4908!11189 4908|10885 4908!10885 4908|10582 4908!10582 4908|10279 4908!10279 4908|10569 5089!10569 5089|10859 5270!10859 5270|11149
+ 5451!11149 5451|11452 5451!11452 5451|11162 5270!11162 5270|10872 5089!10872 5089|10569 5089!10569 5089|10265 5089!10265 5089|9962 5089!9962 5089|10252 5270!10252 5270|10555 5270!10555 5270|10265 5089!10265 5089|9975 4908!9975 4908|10279
+ 4908!10279 4908|9989 4727!9989 4727|9699 4546!9699 4546|9395 4546!9395 4546|9092 4546!9092 4546|9382 4727!9382 4727|9672 4908!9672 4908|9975 4908!9395 4546|9685 4727!9685 4727|9989 4727!9989 4727|10292 4727!10292 4727|10595 4727!10595
+ 4727|10305 4546!10305 4546|10002 4546!10002 4546|10292 4727!9975 4908|9685 4727!9685 4727|9382 4727!9382 4727|9079 4727!9079 4727|9369 4908!9369 4908|9065 4908!9065 4908|9355 5089!9355 5089|9645 5270!9645 5270|9949 5270!9949 5270|9659
+ 5089!9659 5089|9355 5089!9355 5089|9052 5089!9052 5089|9342 5270!9342 5270|9645 5270!9645 5270|9935 5451!9935 5451|10239 5451!10239 5451|9949 5270!9962 5089|9672 4908!9672 4908|9369 4908!8472 4727|8762 4908!8762 4908|9065 4908!9065 4908
+|8775 4727!8775 4727|8472 4727!8775 4727|9079 4727!9079 4727|8789 4546!8789 4546|8485 4546!8485 4546|8775 4727!8485 4546|8182 4546!8182 4546|8472 4727!9342 5270|9633 5451!9633 5451|9935 5451!9369 4908|9659 5089!9659 5089|9962 5089!8762
+ 4908|9052 5089!9092 4546|8789 4546!11465 5270|11755 5451!11755 5451|12059 5451!12059 5451|11769 5270!11769 5270|11465 5270!11769 5270|11479 5089!11452 5451|11755 5451!11189 4908|10899 4727!10899 4727|10595 4727!10595 4727|10885 4908
+!10899 4727|10609 4546!10609 4546|10305 4546!10239 5451|10542 5451!10542 5451|10252 5270!10252 5270|9949 5270!10555 5270|10859 5270!10542 5451|10845 5451!10845 5451|10555 5270!10845 5451|11149 5451!10885 4908|11175 5089!11175 5089|10872
+ 5089!10872 5089|10582 4908!10582 4908|10292 4727!10002 4546|9699 4546"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5499,15 +5512,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!10242 5257|10545 5257!10545 5257|10835 5438!10835 5438|10532 5438!10532 5438|10242 5257!10242 5257|9939 5257!9939 5257|9649 5076!9649 5076|9345 5076!9345 5076|9055 4895!9055 4895|9359 4895!9359 4895|9069 4714!9069 4714|9372 4714!9372
- 4714|9082 4533!9082 4533|9385 4533!9385 4533|9675 4714!9675 4714|9372 4714!9372 4714|9662 4895!9662 4895|9359 4895!9359 4895|9649 5076!9385 4533|9689 4533!9689 4533|9979 4714!9979 4714|9675 4714!8765 4714|8475 4533!8475 4533|8779 4533
-!8779 4533|9069 4714!9069 4714|8765 4714!8765 4714|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8765 4714|9055 4895!9055 4895|8752 4895!8752 4895|8462 4714!9345 5076|9042 5076!9042 5076|8752 4895!9939 5257|9635 5257!9635 5257|9345
- 5076!9635 5257|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9635 5257!9332 5257|9042 5076!8779 4533|9082 4533!10849 5257|10545 5257!10545 5257|10255 5076!10255 5076|10559 5076!10559 5076|10849 5257!10849 5257|11152 5257
-!11152 5257|11455 5257!11455 5257|11745 5438!11745 5438|11442 5438!11442 5438|11152 5257!11152 5257|10862 5076!10862 5076|11165 5076!11165 5076|11455 5257!11165 5076|11469 5076!11469 5076|11759 5257!11759 5257|11455 5257!11759 5257|12049
- 5438!12049 5438|11745 5438!11165 5076|10875 4895!10875 4895|11179 4895!11179 4895|11469 5076!10282 4714|10572 4895!10572 4895|10269 4895!10269 4895|9979 4714!9979 4714|10282 4714!10282 4714|10585 4714!10585 4714|10875 4895!10875 4895
-|10572 4895!10572 4895|10862 5076!10862 5076|10559 5076!10559 5076|10269 4895!10585 4714|10295 4533!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|10585 4714!10889 4714|11179 4895!10282 4714|9992 4533!9992 4533|10295 4533!10255
- 5076|9965 4895!9965 4895|10269 4895!10532 5438|10229 5438!10229 5438|9939 5257!10255 5076|9952 5076!9952 5076|10242 5257!10229 5438|9925 5438!10849 5257|11139 5438!11139 5438|10835 5438!11442 5438|11139 5438!9689 4533|9992 4533!9952
- 5076|9662 4895!9662 4895|9965 4895!9649 5076|9952 5076!9965 4895|9675 4714"/>
+!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599 4533!10599 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|12049 5438!12049 5438|11745 5438!11745 5438|11442 5438!11442 5438|11139
+ 5438!11139 5438|10835 5438!10835 5438|10532 5438!10532 5438|10229 5438!10229 5438|9925 5438!9925 5438|9623 5438!9623 5438|9332 5257!9332 5257|9042 5076!9042 5076|8752 4895!8752 4895|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475
+ 4533|8779 4533!8779 4533|9082 4533!9082 4533|9385 4533!9385 4533|9689 4533!9385 4533|9675 4714!9675 4714|9965 4895!9965 4895|9662 4895!9662 4895|9952 5076!9952 5076|10242 5257!10242 5257|9939 5257!9939 5257|10229 5438!9689 4533|9979
+ 4714!9979 4714|10282 4714!10282 4714|10572 4895!10572 4895|10862 5076!10862 5076|11165 5076!11165 5076|10875 4895!10875 4895|10572 4895!10572 4895|10269 4895!10269 4895|9965 4895!9965 4895|10255 5076!10255 5076|10559 5076!10559 5076
+|10269 4895!10269 4895|9979 4714!9979 4714|9675 4714!9675 4714|9372 4714!9372 4714|9082 4533!8779 4533|9069 4714!9069 4714|9372 4714!9372 4714|9662 4895!9662 4895|9359 4895!9359 4895|9069 4714!9069 4714|8765 4714!8765 4714|8475 4533!8765
+ 4714|9055 4895!9055 4895|9359 4895!9359 4895|9649 5076!9649 5076|9345 5076!9345 5076|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076!9649 5076|9952 5076!8765 4714|8462 4714!9332 5257|9635 5257!9635 5257|9925 5438!9345 5076|9042 5076
+!9345 5076|9055 4895!9055 4895|8752 4895!11759 5257|11455 5257!11455 5257|11165 5076!11455 5257|11745 5438!10889 4714|10585 4714!10585 4714|10295 4533!10585 4714|10875 4895!10875 4895|11179 4895!10282 4714|9992 4533!10532 5438|10242 5257
+!10242 5257|10545 5257!10545 5257|10255 5076!10255 5076|9952 5076!11139 5438|10849 5257!10849 5257|11152 5257!11152 5257|10862 5076!10862 5076|10559 5076!10559 5076|10849 5257!10849 5257|10545 5257!10545 5257|10835 5438!10282 4714|10585
+ 4714!11165 5076|11469 5076!11442 5438|11152 5257!11152 5257|11455 5257"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -6022,10 +6035,10 @@ on (rollOut) {
                                              <edges>
                                                   <Edge fillStyle0="2" edges="
 !17466 11519.5|17440 11520!17440 11520|20104 11520!20104 11520[20480 11520 20480 11241!20480 11241|20480 278!20480 278[20480 0 20104 0!20104 0|17571 0"/>
-                                                  <Edge fillStyle0="1" edges="
-!17571 0|376 0!376 0[0 0 0 278!0 278|0 11241!0 11241[0 11520 376 11520!376 11520|17466 11519.5"/>
-                                                  <Edge fillStyle0="1" fillStyle1="2" edges="
-!17466 11519.5|17571 11519!17571 11519|17571 0"/>
+                                                  <Edge fillStyle0="2" fillStyle1="1" edges="
+!17571 0|17571 11519!17571 11519|17466 11519.5"/>
+                                                  <Edge fillStyle1="1" edges="
+!17466 11519.5|376 11520!376 11520[0 11520 0 11241!0 11241|0 278!0 278[0 0 376 0!376 0|17571 0"/>
                                              </edges>
                                         </DOMShape>
                                    </elements>

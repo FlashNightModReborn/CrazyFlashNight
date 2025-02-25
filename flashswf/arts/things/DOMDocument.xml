@@ -49,8 +49,6 @@
           <DOMFolderItem name="3.音效相关" itemID="6690f591-00003200"/>
           <DOMFolderItem name="4.发型相关" itemID="6690f59e-00003201"/>
           <DOMFolderItem name="shape" itemID="6751eae0-00001373"/>
-          <DOMFolderItem name="材料相关" itemID="6690f5aa-00003203"/>
-          <DOMFolderItem name="材料相关/材料元件" itemID="66e97f71-00001436"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="6690f7ce-000036b2"/>
           <DOMFolderItem name="方舟指挥官" itemID="6692cad4-000036bf"/>
           <DOMFolderItem name="方舟指挥官/1.特效文件夹" itemID="6692cad4-000036c0" isExpanded="true"/>
@@ -60,15 +58,11 @@
           <DOMFolderItem name="方舟指挥官/1.特效文件夹/1.特效文件夹/08.力大砖飞/陨星坠地/未命名文件夹 1" itemID="654f0342-00002948"/>
           <DOMFolderItem name="废弃NPC套装" itemID="6690eed6-0000234c"/>
           <DOMFolderItem name="互动提示" itemID="67959358-00000dc0"/>
-          <DOMFolderItem name="技能相关" itemID="668e87dc-0000135b"/>
           <DOMFolderItem name="可拾取物相关" itemID="67bc22f3-0000136a"/>
           <DOMFolderItem name="特效与子弹相关" itemID="6690f52b-00003159"/>
-          <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
-          <DOMFolderItem name="项链相关" itemID="668e8818-00001370"/>
+          <DOMFolderItem name="无AS链接" itemID="6690f257-00002761" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关" itemID="668e8827-0000137c"/>
-          <DOMFolderItem name="消耗道具相关/0.回复增益类相关" itemID="66a5e904-00001777"/>
-          <DOMFolderItem name="消耗道具相关/1.弹药相关" itemID="66a5e90a-00001778"/>
-          <DOMFolderItem name="消耗道具相关/2.压缩胶囊" itemID="66a5e90f-00001779" isExpanded="true"/>
+          <DOMFolderItem name="消耗道具相关/2.压缩胶囊" itemID="66a5e90f-00001779"/>
           <DOMFolderItem name="消耗道具相关/3.伤害性相关" itemID="66a5e9d6-0000178a"/>
           <DOMFolderItem name="消耗道具相关/3.伤害性相关/BBPLAYER炸弹" itemID="66d5f180-00001b06" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关/3.伤害性相关/鞭炮" itemID="66a5e01d-000014f1" isExpanded="true"/>
@@ -76,7 +70,7 @@
           <DOMFolderItem name="消耗道具相关/3.伤害性相关/燃烧弹" itemID="66d71372-0000192e" isExpanded="true"/>
           <DOMFolderItem name="消耗道具相关/4.礼包类" itemID="66a5ea18-000017d2"/>
           <DOMFolderItem name="消耗道具相关/4.礼包类/红包" itemID="66a5eaa9-000017dc"/>
-          <DOMFolderItem name="消耗道具相关/4.礼包类/强化石" itemID="66a5eace-000017e3" isExpanded="true"/>
+          <DOMFolderItem name="消耗道具相关/4.礼包类/强化石" itemID="66a5eace-000017e3"/>
           <DOMFolderItem name="主角身体元件副本" itemID="67bc22a2-00001315"/>
      </folders>
      <fonts>
@@ -90,39 +84,15 @@
           <DOMFontItem name="Font 28" itemID="668e7c19-000001d1" font="MicrosoftYaHei" size="0" id="28" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
      </fonts>
      <media>
-          <DOMBitmapItem name="3.位图相关/bitmap2.png" itemID="678d1911-00000d2e" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap2.png" sourceLastImported="1737536156" externalFileCRC32="3270516248" externalFileSize="5808" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap2.png" bitmapDataHRef="M 2 1720533000.dat" frameRight="860" frameBottom="860"/>
           <DOMBitmapItem name="3.位图相关/bitmap2934.png" itemID="678d1911-00000d2f" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap2934.png" sourceLastImported="1737536156" externalFileCRC32="1586711525" externalFileSize="4706" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap2934.png" bitmapDataHRef="M 118 1720533000.dat" frameRight="640" frameBottom="1020"/>
           <DOMBitmapItem name="3.位图相关/bitmap2953.png" itemID="678d1911-00000d30" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap2953.png" sourceLastImported="1737536156" externalFileCRC32="2026473939" externalFileSize="12614" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap2953.png" bitmapDataHRef="M 119 1720533000.dat" frameRight="2020" frameBottom="1780"/>
           <DOMBitmapItem name="3.位图相关/bitmap2956.png" itemID="678d1911-00000d31" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap2956.png" sourceLastImported="1737536156" externalFileCRC32="3263625950" externalFileSize="2093" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap2956.png" bitmapDataHRef="M 120 1720533000.dat" frameRight="440" frameBottom="620"/>
           <DOMBitmapItem name="3.位图相关/bitmap3001.png" itemID="678d1911-00000d32" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap3001.png" sourceLastImported="1737536156" externalFileCRC32="1725399845" externalFileSize="138774" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap3001.png" bitmapDataHRef="M 121 1720533000.dat" frameRight="2920" frameBottom="12060"/>
           <DOMBitmapItem name="3.位图相关/bitmap3005.png" itemID="678d1911-00000d33" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap3005.png" sourceLastImported="1737536156" externalFileCRC32="3765668676" externalFileSize="131831" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap3005.png" bitmapDataHRef="M 122 1720533000.dat" frameRight="10020" frameBottom="3160"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4638.png" itemID="678d1911-00000d34" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4638.png" sourceLastImported="1737536156" externalFileCRC32="483234465" externalFileSize="271" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4638.png" bitmapDataHRef="M 146 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4641.png" itemID="678d1911-00000d35" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4641.png" sourceLastImported="1737536156" externalFileCRC32="526776732" externalFileSize="351" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4641.png" bitmapDataHRef="M 147 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4644.png" itemID="678d1911-00000d36" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4644.png" sourceLastImported="1737536156" externalFileCRC32="34072778" externalFileSize="225" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4644.png" bitmapDataHRef="M 148 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4647.png" itemID="678d1911-00000d37" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4647.png" sourceLastImported="1737536156" externalFileCRC32="2537696727" externalFileSize="195" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4647.png" bitmapDataHRef="M 149 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4650.png" itemID="678d1911-00000d38" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4650.png" sourceLastImported="1737536156" externalFileCRC32="4227887335" externalFileSize="248" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4650.png" bitmapDataHRef="M 150 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4653.png" itemID="678d1911-00000d39" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4653.png" sourceLastImported="1737536156" externalFileCRC32="1390037963" externalFileSize="266" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4653.png" bitmapDataHRef="M 151 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4656.png" itemID="678d1911-00000d3a" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4656.png" sourceLastImported="1737536156" externalFileCRC32="4216043634" externalFileSize="271" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4656.png" bitmapDataHRef="M 152 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4659.png" itemID="678d1911-00000d3b" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4659.png" sourceLastImported="1737536156" externalFileCRC32="2419705788" externalFileSize="270" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4659.png" bitmapDataHRef="M 153 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4662.png" itemID="678d1911-00000d3c" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4662.png" sourceLastImported="1737536156" externalFileCRC32="1777384832" externalFileSize="266" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4662.png" bitmapDataHRef="M 154 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4665.png" itemID="678d1911-00000d3d" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4665.png" sourceLastImported="1737536156" externalFileCRC32="934324430" externalFileSize="283" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4665.png" bitmapDataHRef="M 155 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4668.png" itemID="678d1911-00000d3e" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4668.png" sourceLastImported="1737536156" externalFileCRC32="4009898544" externalFileSize="266" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4668.png" bitmapDataHRef="M 156 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4671.png" itemID="678d1911-00000d3f" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4671.png" sourceLastImported="1737536156" externalFileCRC32="456778006" externalFileSize="261" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4671.png" bitmapDataHRef="M 157 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4674.png" itemID="678d1911-00000d40" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4674.png" sourceLastImported="1737536156" externalFileCRC32="4210087750" externalFileSize="260" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4674.png" bitmapDataHRef="M 158 1720533000.dat" frameRight="500" frameBottom="500"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4677.png" itemID="678d1911-00000d41" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4677.png" sourceLastImported="1737536156" externalFileCRC32="211932226" externalFileSize="660" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4677.png" bitmapDataHRef="M 159 1720533000.dat" frameRight="520" frameBottom="520"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4681.png" itemID="678d1911-00000d42" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4681.png" sourceLastImported="1737536156" externalFileCRC32="1472666752" externalFileSize="917" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4681.png" bitmapDataHRef="M 160 1720533000.dat" frameRight="520" frameBottom="520"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4685.png" itemID="678d1911-00000d43" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4685.png" sourceLastImported="1737536156" externalFileCRC32="3676423468" externalFileSize="718" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4685.png" bitmapDataHRef="M 161 1720533000.dat" frameRight="520" frameBottom="520"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4689.png" itemID="678d1911-00000d44" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4689.png" sourceLastImported="1737536156" externalFileCRC32="195410849" externalFileSize="755" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4689.png" bitmapDataHRef="M 162 1720533000.dat" frameRight="520" frameBottom="520"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4693.png" itemID="678d1911-00000d45" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4693.png" sourceLastImported="1737536156" externalFileCRC32="1611172265" externalFileSize="670" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4693.png" bitmapDataHRef="M 163 1720533000.dat" frameRight="520" frameBottom="520"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4697.png" itemID="678d1911-00000d46" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4697.png" sourceLastImported="1737536156" externalFileCRC32="4050309273" externalFileSize="761" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4697.png" bitmapDataHRef="M 164 1720533000.dat" frameRight="520" frameBottom="520"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4701.jpg" itemID="678d1911-00000d47" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4701.jpg" sourceLastImported="1737536156" externalFileCRC32="3823667498" externalFileSize="2146" quality="50" href="3.位图相关/bitmap4701.jpg" bitmapDataHRef="M 165 1720533000.dat" frameRight="840" frameBottom="840" isJPEG="true"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4704.jpg" itemID="678d1911-00000d48" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4704.jpg" sourceLastImported="1737536156" externalFileCRC32="316662680" externalFileSize="2202" quality="50" href="3.位图相关/bitmap4704.jpg" bitmapDataHRef="M 166 1720533000.dat" frameRight="840" frameBottom="840" isJPEG="true"/>
           <DOMBitmapItem name="3.位图相关/bitmap4718.png" itemID="678d1911-00000d49" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4718.png" sourceLastImported="1737536156" externalFileCRC32="539602247" externalFileSize="476641" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4718.png" bitmapDataHRef="M 173 1720533000.dat" frameRight="9340" frameBottom="9560"/>
           <DOMBitmapItem name="3.位图相关/bitmap4719.png" itemID="678d1911-00000d4a" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4719.png" sourceLastImported="1737536156" externalFileCRC32="2125865175" externalFileSize="35928" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4719.png" bitmapDataHRef="M 174 1720533000.dat" frameRight="6460" frameBottom="4620"/>
           <DOMBitmapItem name="3.位图相关/bitmap4728.png" itemID="678d1911-00000d4b" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4728.png" sourceLastImported="1737536156" externalFileCRC32="365946419" externalFileSize="11610" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4728.png" bitmapDataHRef="M 175 1720533000.dat" frameRight="1260" frameBottom="2900"/>
           <DOMBitmapItem name="3.位图相关/bitmap4729.png" itemID="678d1911-00000d4c" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4729.png" sourceLastImported="1737536156" externalFileCRC32="3425454559" externalFileSize="17987" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4729.png" bitmapDataHRef="M 176 1720533000.dat" frameRight="2040" frameBottom="2780"/>
-          <DOMBitmapItem name="3.位图相关/bitmap4857.png" itemID="678d1911-00000d4d" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4857.png" sourceLastImported="1737536156" externalFileCRC32="3082011512" externalFileSize="4926" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4857.png" bitmapDataHRef="M 199 1720533000.dat" frameRight="960" frameBottom="960"/>
-          <DOMBitmapItem name="3.位图相关/bitmap5342.png" itemID="678d1911-00000d4e" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap5342.png" sourceLastImported="1737536156" externalFileCRC32="4050309273" externalFileSize="761" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap5342.png" bitmapDataHRef="M 203 1720533000.dat" frameRight="520" frameBottom="520"/>
           <DOMSoundItem name="3.音效相关/sound4112.mp3" itemID="678d1912-00000d4f" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.音效相关/sound4112.wav" sourceLastImported="1737536156" externalFileCRC32="3528256149" externalFileSize="292176" href="3.音效相关/sound4112.wav" soundDataHRef="M 125 1720613915.dat" format="44kHz 16bit Stereo" sampleCount="71773" exportFormat="5"/>
           <DOMSoundItem name="3.音效相关/sound4274.mp3" itemID="66942786-00000e86" sourceExternalFilepath="../things/LIBRARY/3.音效相关/sound4274.wav" sourceLastImported="1737536156" externalFileCRC32="3801195410" externalFileSize="108952" href="3.音效相关/sound4274.wav" soundDataHRef="M 144 1720613916.dat" format="44kHz 16bit Stereo" sampleCount="27227" exportFormat="5"/>
           <DOMSoundItem name="3.音效相关/sound4764.mp3" itemID="668e7c1e-00000594" sourceExternalFilepath="../things/LIBRARY/3.音效相关/sound4764.mp3" sourceLastImported="1737536156" externalFileCRC32="708882135" externalFileSize="6247" href="3.音效相关/sound4764.mp3" soundDataHRef="M 197 1720613918.dat" format="22kHz 16bit Mono" sampleCount="34560" exportFormat="5" exportBits="7" dataLength="6247" exportNative="true" cachedSampleCount="8640"/>
@@ -911,203 +881,6 @@
           <Include href="4.发型相关/Symbol 2223.xml" itemID="668e7c1e-00000b7c" lastModified="1720533000"/>
           <Include href="shape/Symbol 860.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ba4" lastModified="1722444119"/>
           <Include href="Symbol 533.xml" itemID="668e7c1e-000006ff" lastModified="1720614519"/>
-          <Include href="材料相关/材料元件/玻璃.xml" loadImmediate="false" itemID="66eab4b4-00000178" lastModified="1726657716"/>
-          <Include href="材料相关/材料元件/玻璃符号图标.xml" loadImmediate="false" itemID="66eab508-00000188" lastModified="1726657800"/>
-          <Include href="材料相关/材料元件/玻璃片.xml" loadImmediate="false" itemID="66eab490-00000168" lastModified="1726657882"/>
-          <Include href="材料相关/材料元件/玻璃图标.xml" loadImmediate="false" itemID="66eab51c-0000018c" lastModified="1726657828"/>
-          <Include href="材料相关/材料元件/醋.xml" loadImmediate="false" itemID="66e99f7b-0000004f" lastModified="1726586747"/>
-          <Include href="材料相关/材料元件/醋符号图标.xml" loadImmediate="false" itemID="66e99fc0-00000057" lastModified="1726586816"/>
-          <Include href="材料相关/材料元件/醋图标.xml" loadImmediate="false" itemID="66e99fcd-0000005b" lastModified="1726586836"/>
-          <Include href="材料相关/材料元件/单独锌棒.xml" loadImmediate="false" itemID="66e97450-000000a2" lastModified="1726575696"/>
-          <Include href="材料相关/材料元件/汞合金2.xml" loadImmediate="false" itemID="66ea7e08-00000083" lastModified="1726643720"/>
-          <Include href="材料相关/材料元件/汞合金符号图标.xml" loadImmediate="false" itemID="66ea7d1e-00000079" lastModified="1726643486"/>
-          <Include href="材料相关/材料元件/汞合金图标.xml" loadImmediate="false" itemID="66ea7d36-0000007d" lastModified="1726644943"/>
-          <Include href="材料相关/材料元件/汞齐.xml" loadImmediate="false" itemID="66ea7c4d-0000005d" lastModified="1726643277"/>
-          <Include href="材料相关/材料元件/划痕1.xml" loadImmediate="false" itemID="66e973c1-00000094" lastModified="1726575553"/>
-          <Include href="材料相关/材料元件/划痕2.xml" loadImmediate="false" itemID="66e9740e-0000009b" lastModified="1726575630"/>
-          <Include href="材料相关/材料元件/黄铜.xml" loadImmediate="false" itemID="66ea84cf-000000ff" lastModified="1726645455"/>
-          <Include href="材料相关/材料元件/黄铜符号图标.xml" loadImmediate="false" itemID="66ea85c0-00000110" lastModified="1726645696"/>
-          <Include href="材料相关/材料元件/黄铜划痕.xml" loadImmediate="false" itemID="66ea8480-000000f2" lastModified="1726645377"/>
-          <Include href="材料相关/材料元件/黄铜块.xml" loadImmediate="false" itemID="66ea8458-000000ee" lastModified="1726645337"/>
-          <Include href="材料相关/材料元件/黄铜图标.xml" loadImmediate="false" itemID="66ea85da-00000114" lastModified="1726645727"/>
-          <Include href="材料相关/材料元件/碱液.xml" loadImmediate="false" itemID="66ebc8a7-000000bf" lastModified="1726728359"/>
-          <Include href="材料相关/材料元件/碱液符号图标.xml" loadImmediate="false" itemID="66ebc934-000000d0" lastModified="1726728500"/>
-          <Include href="材料相关/材料元件/碱液图标.xml" loadImmediate="false" itemID="66ebc946-000000d4" lastModified="1726728523"/>
-          <Include href="材料相关/材料元件/精油.xml" loadImmediate="false" itemID="66ebb8c2-000001be" lastModified="1726724290"/>
-          <Include href="材料相关/材料元件/精油滴管.xml" loadImmediate="false" itemID="66ebb77c-000001ae" lastModified="1726723964"/>
-          <Include href="材料相关/材料元件/精油滴管玻璃.xml" loadImmediate="false" itemID="66ebb75b-000001a6" lastModified="1726723931"/>
-          <Include href="材料相关/材料元件/精油滴管主体.xml" loadImmediate="false" itemID="66ebb76d-000001aa" lastModified="1726724039"/>
-          <Include href="材料相关/材料元件/精油符号图标.xml" loadImmediate="false" itemID="66ebb950-000001d8" lastModified="1726724432"/>
-          <Include href="材料相关/材料元件/精油瓶.xml" loadImmediate="false" itemID="66ebb894-000001ba" lastModified="1726724247"/>
-          <Include href="材料相关/材料元件/精油贴纸.xml" loadImmediate="false" itemID="66ebb87c-000001b6" lastModified="1726724220"/>
-          <Include href="材料相关/材料元件/精油图标.xml" loadImmediate="false" itemID="66ebb964-000001dc" lastModified="1726724476"/>
-          <Include href="材料相关/材料元件/蜡.xml" loadImmediate="false" itemID="66e98b81-0000012c" lastModified="1726581633"/>
-          <Include href="材料相关/材料元件/蜡符号图标.xml" loadImmediate="false" itemID="66e98ba1-00000133" lastModified="1726581665"/>
-          <Include href="材料相关/材料元件/蜡图标.xml" loadImmediate="false" itemID="66e98bac-00000137" lastModified="1726581700"/>
-          <Include href="材料相关/材料元件/硫磺.xml" loadImmediate="false" itemID="66ebd06f-0000010b" lastModified="1726730351"/>
-          <Include href="材料相关/材料元件/硫磺符号图标.xml" loadImmediate="false" itemID="66ebd102-0000011c" lastModified="1726730499"/>
-          <Include href="材料相关/材料元件/硫磺图标.xml" loadImmediate="false" itemID="66ebd112-00000120" lastModified="1726730528"/>
-          <Include href="材料相关/材料元件/硫酸盐.xml" loadImmediate="false" itemID="66e9aa2a-00000067" lastModified="1726589482"/>
-          <Include href="材料相关/材料元件/硫酸盐符号图标.xml" loadImmediate="false" itemID="66e9aa45-0000006f" lastModified="1726589509"/>
-          <Include href="材料相关/材料元件/硫酸盐图标.xml" loadImmediate="false" itemID="66e9aa5a-00000076" lastModified="1726589541"/>
-          <Include href="材料相关/材料元件/硫酸盐文字.xml" loadImmediate="false" itemID="66e9a956-00000063" lastModified="1726589466"/>
-          <Include href="材料相关/材料元件/铝粉.xml" loadImmediate="false" itemID="66e97c63-00000105" lastModified="1726577763"/>
-          <Include href="材料相关/材料元件/铝粉符号图标.xml" loadImmediate="false" itemID="66e97c83-0000010e" lastModified="1726577799"/>
-          <Include href="材料相关/材料元件/铝粉颗粒.xml" loadImmediate="false" itemID="66e97c46-000000fe" lastModified="1726577734"/>
-          <Include href="材料相关/材料元件/铝粉盘子.xml" loadImmediate="false" itemID="66e97ba3-000000f4" lastModified="1726577571"/>
-          <Include href="材料相关/材料元件/铝粉图标.xml" loadImmediate="false" itemID="66e97c97-00000112" lastModified="1726577843"/>
-          <Include href="材料相关/材料元件/明矾点.xml" loadImmediate="false" itemID="66ea5b3f-0000006d" lastModified="1726634828"/>
-          <Include href="材料相关/材料元件/明矾符号图标.xml" loadImmediate="false" itemID="66ea5be7-00000084" lastModified="1726634983"/>
-          <Include href="材料相关/材料元件/明矾块1.xml" loadImmediate="false" itemID="66ea5a90-00000062" lastModified="1726634849"/>
-          <Include href="材料相关/材料元件/明矾块2.xml" loadImmediate="false" itemID="66ea5b77-00000074" lastModified="1726634915"/>
-          <Include href="材料相关/材料元件/明矾块透明&amp;#038&amp;#035032.xml" loadImmediate="false" itemID="66ea5c82-00000d0c" lastModified="1726635138"/>
-          <Include href="材料相关/材料元件/明矾图标.xml" loadImmediate="false" itemID="66ea5bf2-00000088" lastModified="1726634994"/>
-          <Include href="材料相关/材料元件/硼砂.xml" loadImmediate="false" itemID="66ea8153-000000cb" lastModified="1726644564"/>
-          <Include href="材料相关/材料元件/硼砂符号图标.xml" loadImmediate="false" itemID="66ea81e1-000000de" lastModified="1726644705"/>
-          <Include href="材料相关/材料元件/硼砂颗粒.xml" loadImmediate="false" itemID="66ea811d-00000096" lastModified="1726644509"/>
-          <Include href="材料相关/材料元件/硼砂图标.xml" loadImmediate="false" itemID="66ea81fa-000000e2" lastModified="1726644954"/>
-          <Include href="材料相关/材料元件/砒霜.xml" loadImmediate="false" itemID="66e97961-000000d9" lastModified="1726577328"/>
-          <Include href="材料相关/材料元件/砒霜符号图标.xml" loadImmediate="false" itemID="66e9799d-000000e2" lastModified="1726577053"/>
-          <Include href="材料相关/材料元件/砒霜图标.xml" loadImmediate="false" itemID="66e979a3-000000e6" lastModified="1726577236"/>
-          <Include href="材料相关/材料元件/铅.xml" loadImmediate="false" itemID="66ebc4a3-000000a3" lastModified="1726727332"/>
-          <Include href="材料相关/材料元件/铅符号图标.xml" loadImmediate="false" itemID="66ebc52a-000000b1" lastModified="1726727466"/>
-          <Include href="材料相关/材料元件/铅图标.xml" loadImmediate="false" itemID="66ebc533-000000b5" lastModified="1726727492"/>
-          <Include href="材料相关/材料元件/铅珠.xml" loadImmediate="false" itemID="66ebc47e-0000008f" lastModified="1726727294"/>
-          <Include href="材料相关/材料元件/石灰.xml" loadImmediate="false" itemID="66ebcded-000000e3" lastModified="1726729709"/>
-          <Include href="材料相关/材料元件/石灰符号图标.xml" loadImmediate="false" itemID="66ebce9a-000000f2" lastModified="1726729882"/>
-          <Include href="材料相关/材料元件/石灰图标.xml" loadImmediate="false" itemID="66ebcea5-000000f6" lastModified="1726729897"/>
-          <Include href="材料相关/材料元件/王水.xml" loadImmediate="false" itemID="66eab159-00000140" lastModified="1726656857"/>
-          <Include href="材料相关/材料元件/王水玻璃.xml" loadImmediate="false" itemID="66eab085-00000134" lastModified="1726656645"/>
-          <Include href="材料相关/材料元件/王水符号图标.xml" loadImmediate="false" itemID="66eab1f2-00000150" lastModified="1726657010"/>
-          <Include href="材料相关/材料元件/王水瓶塞.xml" loadImmediate="false" itemID="66eab11e-00000138" lastModified="1726656798"/>
-          <Include href="材料相关/材料元件/王水瓶线.xml" loadImmediate="false" itemID="66eab150-0000013c" lastModified="1726656848"/>
-          <Include href="材料相关/材料元件/王水图标.xml" loadImmediate="false" itemID="66eab20a-00000155" lastModified="1726658039"/>
-          <Include href="材料相关/材料元件/王水液体1.xml" loadImmediate="false" itemID="66eab021-00000127" lastModified="1726656545"/>
-          <Include href="材料相关/材料元件/王水液体2.xml" loadImmediate="false" itemID="66eab032-0000012e" lastModified="1726656596"/>
-          <Include href="材料相关/材料元件/锌棒.xml" loadImmediate="false" itemID="66e9746d-000000b2" lastModified="1726576124"/>
-          <Include href="材料相关/材料元件/锌棒图标.xml" loadImmediate="false" itemID="66e974c8-000000bb" lastModified="1726577214"/>
-          <Include href="材料相关/材料元件/锌图标符号.xml" loadImmediate="false" itemID="66e97576-000000c3" lastModified="1726576022"/>
-          <Include href="材料相关/材料元件/粘土.xml" loadImmediate="false" itemID="66ebbfb4-00000d52" lastModified="1726726068"/>
-          <Include href="材料相关/材料元件/粘土符号图标.xml" loadImmediate="false" itemID="66ebbfb8-00000d54" lastModified="1726726072"/>
-          <Include href="材料相关/材料元件/粘土图标.xml" loadImmediate="false" itemID="66ebbfb6-00000d53" lastModified="1726726070"/>
-          <Include href="材料相关/图标-Andy套装碎片.xml" itemID="66adbcd2-0000184e" lastModified="1722662100"/>
-          <Include href="材料相关/图标-A兵团精致项链制作图纸.xml" itemID="66adbc83-00001843" lastModified="1722662019"/>
-          <Include href="材料相关/图标-A兵团精致战术背心制作图纸.xml" itemID="66adbc80-00001842" lastModified="1722662016"/>
-          <Include href="材料相关/图标-A兵团精致战术裤制作图纸.xml" itemID="66adbc7d-00001841" lastModified="1722662013"/>
-          <Include href="材料相关/图标-A兵团精致战术皮鞋制作图纸.xml" itemID="66adbc7b-00001840" lastModified="1722662011"/>
-          <Include href="材料相关/图标-A兵团精致战术手套制作图纸.xml" itemID="66adbc77-0000183f" lastModified="1722662007"/>
-          <Include href="材料相关/图标-KM型消声器.xml" itemID="66adbcde-00001853" lastModified="1722662118"/>
-          <Include href="材料相关/图标-爆炸僵尸样本.xml" itemID="66adbcba-00001849" lastModified="1722662086"/>
-          <Include href="材料相关/图标-冰魄矿石.xml" itemID="66adbcf7-0000185b" lastModified="1722662142"/>
-          <Include href="材料相关/图标-冰雪之心线索文件.xml" itemID="66adbc70-0000183e" lastModified="1722662000"/>
-          <Include href="材料相关/图标-兵工厂备份硬盘.xml" itemID="66adbc68-0000183d" lastModified="1722662026"/>
-          <Include href="材料相关/图标-玻璃.xml" itemID="66eab635-00000d38" lastModified="1726658105"/>
-          <Include href="材料相关/图标-不锈钢材.xml" itemID="66adbd1f-00001860" lastModified="1722662181"/>
-          <Include href="材料相关/图标-残破的枪械.xml" itemID="66adbc32-00001837" lastModified="1722661994"/>
-          <Include href="材料相关/图标-翅虎令.xml" itemID="66adbc2c-00001836" lastModified="1722661932"/>
-          <Include href="材料相关/图标-翅虎堂徽章.xml" itemID="66adbc27-00001835" lastModified="1722661927"/>
-          <Include href="材料相关/图标-传动装置.xml" itemID="66adbd37-00001865" lastModified="1722662202"/>
-          <Include href="材料相关/图标-传感器.xml" itemID="66adbd49-0000186a" lastModified="1722662220"/>
-          <Include href="材料相关/图标-醋.xml" itemID="66e9a0d4-00000d03" lastModified="1726587095"/>
-          <Include href="材料相关/图标-弹簧.xml" itemID="66adbd9f-0000186f" lastModified="1722662313"/>
-          <Include href="材料相关/图标-地铁站通关证明.xml" itemID="66adbc20-00001834" lastModified="1722661920"/>
-          <Include href="材料相关/图标-电脑芯片.xml" itemID="66adbdbf-00001874" lastModified="1722662338"/>
-          <Include href="材料相关/图标-动力液压杆.xml" itemID="66adbdd2-00001879" lastModified="1722662361"/>
-          <Include href="材料相关/图标-毒素样本.xml" itemID="66adbc1b-00001833" lastModified="1722661915"/>
-          <Include href="材料相关/图标-方舟秘钥.xml" itemID="66adbc17-00001832" lastModified="1722661911"/>
-          <Include href="材料相关/图标-方舟碎片.xml" itemID="66adbe1b-0000187e" lastModified="1722662433"/>
-          <Include href="材料相关/图标-方舟卫士样本.xml" itemID="66adbc04-00001831" lastModified="1722661892"/>
-          <Include href="材料相关/图标-防沙皮革.xml" itemID="66adbe3a-00001883" lastModified="1722662563"/>
-          <Include href="材料相关/图标-非栓式机构.xml" itemID="66adbe9b-0000188e" lastModified="1722662560"/>
-          <Include href="材料相关/图标-浮士德的情报书.xml" itemID="66adbbfc-00001830" lastModified="1722661884"/>
-          <Include href="材料相关/图标-复合式军用塑料.xml" itemID="66adbeb0-00001893" lastModified="1722662579"/>
-          <Include href="材料相关/图标-高级木料.xml" itemID="66adbed9-00001898" lastModified="1722662621"/>
-          <Include href="材料相关/图标-高耐力橡胶.xml" itemID="66adbeff-0000189d" lastModified="1722662670"/>
-          <Include href="材料相关/图标-高强度合金.xml" itemID="66adbf1d-000018a2" lastModified="1726578423"/>
-          <Include href="材料相关/图标-汞合金.xml" itemID="66ea86a5-00000d08" lastModified="1726645929"/>
-          <Include href="材料相关/图标-狗年碎片.xml" itemID="66adbf33-000018a7" lastModified="1722662712"/>
-          <Include href="材料相关/图标-国庆纪念币.xml" itemID="66adbf49-000018ac" lastModified="1722662742"/>
-          <Include href="材料相关/图标-黑龙令.xml" itemID="66adbba0-0000182f" lastModified="1722661792"/>
-          <Include href="材料相关/图标-黑龙堂徽章.xml" itemID="66adbb9c-0000182e" lastModified="1722661788"/>
-          <Include href="材料相关/图标-黑铁会的秘密情报书.xml" itemID="66adbb99-0000182d" lastModified="1722661785"/>
-          <Include href="材料相关/图标-黑铁会信物.xml" itemID="66adbb74-00001822" lastModified="1722661748"/>
-          <Include href="材料相关/图标-猴年新年碎片.xml" itemID="66adbb7f-00001825" lastModified="1722661805"/>
-          <Include href="材料相关/图标-护手.xml" itemID="66adbf6e-000018b1" lastModified="1722662801"/>
-          <Include href="材料相关/图标-黄铜.xml" itemID="66ea871f-00000d41" lastModified="1726646054"/>
-          <Include href="材料相关/图标-火凤令.xml" itemID="66adbb7c-00001824" lastModified="1722661756"/>
-          <Include href="材料相关/图标-火凤堂徽章.xml" itemID="66adbb77-00001823" lastModified="1722661751"/>
-          <Include href="材料相关/图标-鸡年碎片.xml" itemID="66adbf87-000018b6" lastModified="1722662804"/>
-          <Include href="材料相关/图标-加强版MP7制作图纸.xml" itemID="66adbb5e-00001821" lastModified="1722661726"/>
-          <Include href="材料相关/图标-加长弹匣.xml" itemID="66adbfb3-000018bd" lastModified="1722662840"/>
-          <Include href="材料相关/图标-碱液.xml" itemID="66ebcb33-00000d45" lastModified="1726729012"/>
-          <Include href="材料相关/图标-剑圣碎片.xml" itemID="66adbfe0-000018c2" lastModified="1722662884"/>
-          <Include href="材料相关/图标-僵尸血液样本.xml" itemID="66adbb48-00001820" lastModified="1722661704"/>
-          <Include href="材料相关/图标-觉醒晶体.xml" itemID="66adc044-000018cd" lastModified="1722662991"/>
-          <Include href="材料相关/图标-精油.xml" itemID="66ebbd8e-00000d28" lastModified="1726725520"/>
-          <Include href="材料相关/图标-精致战术猪鼻式防毒面具制作图纸.xml" itemID="66adbb3f-0000181f" lastModified="1722661695"/>
-          <Include href="材料相关/图标-镜之虎彻制作图纸.xml" itemID="66adbb3b-0000181e" lastModified="1722661691"/>
-          <Include href="材料相关/图标-军阀前线基地通关证明.xml" itemID="66adbb38-0000181d" lastModified="1722661688"/>
-          <Include href="材料相关/图标-军用帆布.xml" itemID="66adbb32-0000181c" lastModified="1722663078"/>
-          <Include href="材料相关/图标-可充锂电池.xml" itemID="66adc19d-00001900" lastModified="1722663333"/>
-          <Include href="材料相关/图标-可塑式钢板.xml" itemID="66adc183-000018fb" lastModified="1722663304"/>
-          <Include href="材料相关/图标-蜡.xml" itemID="66e9a08c-00000cec" lastModified="1726587023"/>
-          <Include href="材料相关/图标-蓝晶.xml" itemID="66adc155-000018f4" lastModified="1723123964"/>
-          <Include href="材料相关/图标-镭射瞄准具.xml" itemID="66adc128-000018ec" lastModified="1723270128"/>
-          <Include href="材料相关/图标-烈性火药.xml" itemID="66adc096-000018db" lastModified="1722663064"/>
-          <Include href="材料相关/图标-烈炎矿石.xml" itemID="66adbae9-00001817" lastModified="1723293956"/>
-          <Include href="材料相关/图标-硫磺.xml" itemID="66ebd183-00000d74" lastModified="1726730629"/>
-          <Include href="材料相关/图标-硫酸盐.xml" itemID="66ea5c5b-00000cf6" lastModified="1726635104"/>
-          <Include href="材料相关/图标-螺丝套件.xml" itemID="66adc06b-000018d4" lastModified="1722663027"/>
-          <Include href="材料相关/图标-铝粉.xml" itemID="66e9819a-00001456" lastModified="1726579530"/>
-          <Include href="材料相关/图标-秘钥A.xml" itemID="66adbade-00001816" lastModified="1722661598"/>
-          <Include href="材料相关/图标-秘钥B.xml" itemID="66adbadb-00001815" lastModified="1722661595"/>
-          <Include href="材料相关/图标-秘钥C.xml" itemID="66adbad7-00001814" lastModified="1722661591"/>
-          <Include href="材料相关/图标-明矾.xml" itemID="66ea5c99-00000d15" lastModified="1726635169"/>
-          <Include href="材料相关/图标-牛仔的情报书.xml" itemID="66adbad4-00001813" lastModified="1722661588"/>
-          <Include href="材料相关/图标-诺亚机枪.xml" itemID="66adbad0-00001812" lastModified="1723123426"/>
-          <Include href="材料相关/图标-诺亚僵尸证明.xml" itemID="66adba84-00001807" lastModified="1722661546"/>
-          <Include href="材料相关/图标-诺亚枪械碎片.xml" itemID="66adba7f-00001806" lastModified="1722661503"/>
-          <Include href="材料相关/图标-诺亚雪山山顶情报.xml" itemID="66adba7b-00001805" lastModified="1722661499"/>
-          <Include href="材料相关/图标-诺亚医疗器械.xml" itemID="66adba77-00001804" lastModified="1722661495"/>
-          <Include href="材料相关/图标-硼砂.xml" itemID="66ea86ed-00000d24" lastModified="1726646003"/>
-          <Include href="材料相关/图标-砒霜.xml" itemID="66e980ea-0000143c" lastModified="1726579524"/>
-          <Include href="材料相关/图标-铅.xml" itemID="66ebcb09-00000d2d" lastModified="1726728971"/>
-          <Include href="材料相关/图标-枪械内构强化套件.xml" itemID="66adc3fe-00001933" lastModified="1722663951"/>
-          <Include href="材料相关/图标-强化金属管.xml" itemID="66adc3dd-0000192a" lastModified="1722663904"/>
-          <Include href="材料相关/图标-强力胶.xml" itemID="66adc2da-00001925" lastModified="1722663647"/>
-          <Include href="材料相关/图标-上色涂料.xml" itemID="66adc294-00001920" lastModified="1722663653"/>
-          <Include href="材料相关/图标-生物催化剂.xml" itemID="66adc256-00001919" lastModified="1722663516"/>
-          <Include href="材料相关/图标-圣诞糖果.xml" itemID="66adc237-00001914" lastModified="1722663484"/>
-          <Include href="材料相关/图标-尸母标本.xml" itemID="66adba66-00001803" lastModified="1722661509"/>
-          <Include href="材料相关/图标-石灰.xml" itemID="66ebd155-00000d5c" lastModified="1732027775"/>
-          <Include href="材料相关/图标-石英磨刀石.xml" itemID="66adc0e7-000018e5" lastModified="1732027777"/>
-          <Include href="材料相关/图标-试验材料.xml" itemID="66adba27-000017fd" lastModified="1723122395"/>
-          <Include href="材料相关/图标-兽王碎片.xml" itemID="66adc21d-0000190f" lastModified="1722663459"/>
-          <Include href="材料相关/图标-鼠年碎片.xml" itemID="66adc1c6-00001905" lastModified="1722663380"/>
-          <Include href="材料相关/图标-双管白火铳制作图纸.xml" itemID="66adba09-000017fc" lastModified="1723270112"/>
-          <Include href="材料相关/图标-水冷机构.xml" itemID="66adba05-000017fb" lastModified="1722661381"/>
-          <Include href="材料相关/图标-碳纤维布料.xml" itemID="66adb9ff-000017fa" lastModified="1731932552"/>
-          <Include href="材料相关/图标-透镜.xml" itemID="66adb9f3-000017f9" lastModified="1731932562"/>
-          <Include href="材料相关/图标-突击型光学瞄具.xml" itemID="66adb9c2-000017f8" lastModified="1726726053"/>
-          <Include href="材料相关/图标-王水.xml" itemID="66eab60b-00000d19" lastModified="1731932548"/>
-          <Include href="材料相关/图标-未知金属.xml" itemID="66adb910-000017e5" lastModified="1723123406"/>
-          <Include href="材料相关/图标-无人机残骸.xml" itemID="66adb90b-000017e4" lastModified="1722661131"/>
-          <Include href="材料相关/图标-小型液晶屏.xml" itemID="66adb8fa-000017e3" lastModified="1722663958"/>
-          <Include href="材料相关/图标-辛火草.xml" itemID="66adb8f6-000017e2" lastModified="1723124640"/>
-          <Include href="材料相关/图标-锌棒.xml" itemID="66e97e3e-000012cb" lastModified="1731932533"/>
-          <Include href="材料相关/图标-研究文件.xml" itemID="66adb8f2-000017e1" lastModified="1722661106"/>
-          <Include href="材料相关/图标-羊年新年碎片.xml" itemID="66adb8ef-000017e0" lastModified="1722661103"/>
-          <Include href="材料相关/图标-摇滚公园通关证明.xml" itemID="66adb8ec-000017df" lastModified="1722661100"/>
-          <Include href="材料相关/图标-异形龙骨碎片.xml" itemID="66adb8ab-000017d6" lastModified="1722661045"/>
-          <Include href="材料相关/图标-远古碎片.xml" itemID="66adb8a9-000017d5" lastModified="1723122015"/>
-          <Include href="材料相关/图标-月之碎片.xml" itemID="66adb8a7-000017d4" lastModified="1722661031"/>
-          <Include href="材料相关/图标-增效剂.xml" itemID="66adb84d-000017be" lastModified="1722660956"/>
-          <Include href="材料相关/图标-粘土.xml" itemID="66ebbfa4-00000d51" lastModified="1726726059"/>
-          <Include href="材料相关/图标-战术背带.xml" itemID="66adb846-000017bd" lastModified="1722660934"/>
-          <Include href="材料相关/图标-战术导轨.xml" itemID="66adb844-000017bc" lastModified="1722660938"/>
-          <Include href="材料相关/图标-战术握把.xml" itemID="66adb83e-000017bb" lastModified="1722660926"/>
-          <Include href="材料相关/图标-战术鱼骨零件.xml" itemID="66adb83b-000017ba" lastModified="1722660923"/>
-          <Include href="材料相关/图标-猪年碎片.xml" itemID="66adb838-000017b9" lastModified="1722660920"/>
           <Include href="待整理防具相关汇总/Symbol 84.xml" itemID="668e7c1e-000005f7" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/Symbol 97.xml" itemID="668e7c1e-000005fe" lastModified="1720533000"/>
           <Include href="待整理防具相关汇总/Symbol 246.xml" itemID="668e7c1e-0000067d" lastModified="1720533000"/>
@@ -1791,41 +1564,7 @@
           <Include href="废弃NPC套装/Symbol 3590.xml" itemID="668e7c1e-00000ed9" lastModified="1720533000"/>
           <Include href="废弃NPC套装/Symbol 3591.xml" itemID="668e7c1e-00000eda" lastModified="1720533000"/>
           <Include href="互动提示/互动提示-高亮.xml" itemIcon="1" loadImmediate="false" itemID="676c09fa-00000f73" lastModified="1737857518"/>
-          <Include href="技能相关/Symbol 6.xml" itemID="668e7c1e-000005b9" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4640.xml" itemID="668e7c1e-00001150" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4643.xml" itemID="668e7c1e-00001151" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4646.xml" itemID="668e7c1e-00001152" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4649.xml" itemID="668e7c1e-00001153" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4652.xml" itemID="668e7c1e-00001154" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4655.xml" itemID="668e7c1e-00001155" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4658.xml" itemID="668e7c1e-00001156" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4661.xml" itemID="668e7c1e-00001157" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4664.xml" itemID="668e7c1e-00001158" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4667.xml" itemID="668e7c1e-00001159" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4669.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000115a" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4670.xml" itemID="668e7c1e-0000115b" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4673.xml" itemID="668e7c1e-0000115c" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4676.xml" itemID="668e7c1e-0000115d" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4679.xml" loadImmediate="false" itemID="668e7c1e-0000115e" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4680.xml" itemID="668e7c1e-0000115f" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4683.xml" loadImmediate="false" itemID="668e7c1e-00001160" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4684.xml" itemID="668e7c1e-00001161" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4687.xml" loadImmediate="false" itemID="668e7c1e-00001162" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4688.xml" itemID="668e7c1e-00001163" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4691.xml" loadImmediate="false" itemID="668e7c1e-00001164" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4692.xml" itemID="668e7c1e-00001165" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4695.xml" loadImmediate="false" itemID="668e7c1e-00001166" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4696.xml" itemID="668e7c1e-00001167" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4699.xml" loadImmediate="false" itemID="668e7c1e-00001168" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4700.xml" itemID="668e7c1e-00001169" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4703.xml" itemID="668e7c1e-0000116a" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4706.xml" itemID="668e7c1e-0000116b" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4854.xml" loadImmediate="false" itemID="668e7c1e-000011b0" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 4855.xml" itemID="668e7c1e-000011b1" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 5344.xml" loadImmediate="false" itemID="668e7c1e-00001212" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 5345.xml" itemID="668e7c1e-00001213" lastModified="1720533000"/>
-          <Include href="技能相关/Symbol 5914.xml" itemID="668e7c1e-0000131c" lastModified="1720533000"/>
-          <Include href="加载MC库0.xml" itemID="66aca1fb-00000e15" lastModified="1740383075"/>
+          <Include href="加载MC库0.xml" itemID="66aca1fb-00000e15" lastModified="1740491927"/>
           <Include href="可拾取物相关/可拾取物2.xml" itemID="66adb4fd-00000cac" lastModified="1737857497"/>
           <Include href="可拾取物相关/可拾取物动态文字.xml" loadImmediate="false" itemID="678d1c0c-00000d64" lastModified="1737854945"/>
           <Include href="可拾取物相关/可拾取物文字.xml" loadImmediate="false" itemID="678d1c21-00000d66" lastModified="1737301130"/>
@@ -1849,7 +1588,6 @@
           <Include href="无AS链接/Symbol 19.xml" loadImmediate="false" itemID="668e7c1e-000005c4" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 20.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005c5" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 21.xml" loadImmediate="false" itemID="668e7c1e-000005c6" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 31.xml" itemIcon="0" loadImmediate="false" itemID="668e7c1e-000005c9" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 32.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005ca" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 33.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005cb" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 34.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005cc" lastModified="1720533000"/>
@@ -2347,7 +2085,6 @@
           <Include href="无AS链接/Symbol 3011.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000d71" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 3014.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000d74" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 3146.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000db3" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 3169.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000dc2" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 3205.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000dd5" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 3206.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000dd6" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 3272.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000df7" lastModified="1720777153"/>
@@ -2464,22 +2201,7 @@
           <Include href="无AS链接/Symbol 4270.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001073" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4271.xml" loadImmediate="false" itemID="668e7c1e-00001074" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4300.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000108c" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4308.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001094" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4310.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001095" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4325.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000109d" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4360.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010af" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4439.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010c8" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4441.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010ca" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4443.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010cc" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4450.xml" loadImmediate="false" itemID="668e7c1e-000010d0" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4455.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010d3" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4457.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010d5" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4459.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010d7" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4481.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010e3" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4483.xml" loadImmediate="false" itemID="668e7c1e-000010e4" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4528.xml" loadImmediate="false" itemID="668e7c1e-000010fe" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4569.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001116" lastModified="1720533000"/>
-          <Include href="无AS链接/Symbol 4580.xml" loadImmediate="false" itemID="668e7c1e-0000111d" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4714.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000116d" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4715.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000116e" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 4716.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000116f" lastModified="1720533000"/>
@@ -2528,105 +2250,7 @@
           <Include href="无AS链接/Symbol 5322.xml" loadImmediate="false" itemID="668e7c1e-0000120d" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 5323.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000120e" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 5815.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000012ea" lastModified="1720533000"/>
-          <Include href="无AS链接/材料黑底.xml" itemIcon="1" loadImmediate="false" itemID="66e97f3b-00001421" lastModified="1726578491"/>
-          <Include href="无AS链接/材料灰框.xml" itemIcon="1" loadImmediate="false" itemID="66e97f41-00001422" lastModified="1726578497"/>
           <Include href="物品图标（旧版）.xml" loadImmediate="false" itemID="67bc2130-00000dca" lastModified="1740382512"/>
-          <Include href="项链相关/Symbol 4584.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001121" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4585.xml" itemID="668e7c1e-00001122" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4586.xml" itemID="668e7c1e-00001123" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4587.xml" itemID="668e7c1e-00001124" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4588.xml" itemID="668e7c1e-00001125" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4589.xml" itemID="668e7c1e-00001126" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4590.xml" itemID="668e7c1e-00001127" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4591.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001128" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4592.xml" itemID="668e7c1e-00001129" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4593.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000112a" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4594.xml" itemID="668e7c1e-0000112b" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4595.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000112c" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4596.xml" itemID="668e7c1e-0000112d" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4597.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000112e" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4598.xml" itemID="668e7c1e-0000112f" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4600.xml" itemID="668e7c1e-00001130" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4601.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001131" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4602.xml" itemID="668e7c1e-00001132" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4603.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001133" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4604.xml" itemID="668e7c1e-00001134" lastModified="1720773830"/>
-          <Include href="项链相关/Symbol 4606.xml" loadImmediate="false" itemID="668e7c1e-00001135" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4607.xml" itemID="668e7c1e-00001136" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4608.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001137" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4610.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001139" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4612.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000113b" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4614.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000113d" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4616.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000113f" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4617.xml" itemID="668e7c1e-00001140" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4618.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001141" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4619.xml" itemID="668e7c1e-00001142" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4620.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001143" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4621.xml" itemID="668e7c1e-00001144" lastModified="1720776618"/>
-          <Include href="项链相关/Symbol 4628.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001148" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4632.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000114b" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4636.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000114e" lastModified="1720533000"/>
-          <Include href="项链相关/Symbol 4637.xml" itemID="668e7c1e-0000114f" lastModified="1720789439"/>
-          <Include href="项链相关/图标-Andy之心项圈.xml" itemID="66912a3e-00000e3b" lastModified="1720789566"/>
-          <Include href="项链相关/图标-K5项链.xml" itemID="66912a3b-00000e3a" lastModified="1720789563"/>
-          <Include href="项链相关/图标-亥猪项链.xml" itemID="669129fe-00000e36" lastModified="1720789502"/>
-          <Include href="项链相关/图标-戌狗项链.xml" itemID="669129fa-00000e35" lastModified="1720789505"/>
-          <Include href="项链相关/图标-酉鸡项链.xml" itemID="66912a14-00000e37" lastModified="1720789536"/>
-          <Include href="项链相关/图标-战斗狂人军牌.xml" itemID="66912a34-00000e39" lastModified="1720789615"/>
-          <Include href="项链相关/图标-战斗专家军牌.xml" itemID="66912a32-00000e38" lastModified="1720789554"/>
-          <Include href="项链相关/图标-诛神项链.xml" itemID="66912a46-00000e3c" lastModified="1720789574"/>
-          <Include href="消耗道具相关/0.回复增益类相关/Symbol 4277.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001078" lastModified="1720533000"/>
-          <Include href="消耗道具相关/0.回复增益类相关/Symbol 4281.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000107c" lastModified="1720533000"/>
-          <Include href="消耗道具相关/0.回复增益类相关/Symbol 4372.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010b6" lastModified="1720533000"/>
-          <Include href="消耗道具相关/0.回复增益类相关/Symbol 4374.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010b8" lastModified="1720533000"/>
-          <Include href="消耗道具相关/0.回复增益类相关/Symbol 4504.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000010f0" lastModified="1720533000"/>
-          <Include href="消耗道具相关/0.回复增益类相关/Symbol 4853.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000011af" lastModified="1720533000"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-加强MP药剂.xml" itemID="66a5e915-0000177b" lastModified="1722149141"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-加强抗生素药剂.xml" itemID="66a5e918-0000177c" lastModified="1722149144"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-抗生素.xml" itemID="66a5e91b-0000177d" lastModified="1722149147"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-牛肉罐头.xml" itemID="66a5e91e-0000177e" lastModified="1722149150"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-普通hp粉尘.xml" itemID="66a5e920-0000177f" lastModified="1722149152"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-普通hp药剂.xml" itemID="66a5e924-00001780" lastModified="1722149156"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-普通mp粉尘.xml" itemID="66a5e926-00001781" lastModified="1722149158"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-普通mp药剂.xml" itemID="66a5e929-00001782" lastModified="1722149161"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-月饼.xml" itemID="66a5e92c-00001783" lastModified="1722149164"/>
-          <Include href="消耗道具相关/0.回复增益类相关/图标-战队药箱.xml" itemID="66913c2c-00004045" lastModified="1720794159"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4191.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000104a" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4193.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000104c" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4279.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000107a" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4286.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000107f" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4288.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001081" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4290.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001083" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4302.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000108e" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4304.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001090" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4306.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001092" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4542.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001106" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4544.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001108" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4546.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000110a" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4548.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000110c" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4550.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000110e" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4552.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001110" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4554.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001112" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4778.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000118b" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/Symbol 4780.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000118c" lastModified="1720533000"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-00号鹿弹.xml" itemID="66a5e81b-00001720" lastModified="1722148891"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-12号霰弹弹药.xml" itemID="66a5e81e-00001721" lastModified="1722148894"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-冲锋枪达姆弹弹药.xml" itemID="66a5e820-00001722" lastModified="1722148896"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-冲锋枪钢芯穿甲弹.xml" itemID="66a5e823-00001723" lastModified="1722148899"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-冲锋枪通用弹药.xml" itemID="66a5e826-00001724" lastModified="1722148902"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-导弹弹药.xml" itemID="66a5e828-00001725" lastModified="1722148904"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-火箭弹弹药.xml" itemID="66a5e82b-00001726" lastModified="1722148907"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-火焰喷射器燃料罐.xml" itemID="66a5e82e-00001727" lastModified="1722148910"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-机枪贫铀穿甲弹.xml" itemID="66a5e830-00001728" lastModified="1722148912"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-机枪通用弹药.xml" itemID="66a5e833-00001729" lastModified="1722148915"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-箭矢.xml" itemID="66a5e835-0000172a" lastModified="1722148917"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-狙击步枪通用弹药.xml" itemID="66a5e837-0000172b" lastModified="1722148919"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-榴弹弹药.xml" itemID="66a5e839-0000172c" lastModified="1722148921"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-马格南手枪弹药.xml" itemID="66a5e83e-0000172d" lastModified="1722148926"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-能量电池.xml" itemID="66a5e840-0000172e" lastModified="1722148928"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-手枪通用弹药.xml" itemID="66a5e843-0000172f" lastModified="1722148931"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-突击步枪通用弹药.xml" itemID="66a5e847-00001730" lastModified="1722148935"/>
-          <Include href="消耗道具相关/1.弹药相关/图标-突击步枪钨芯穿甲弹.xml" itemID="66a5e84a-00001731" lastModified="1722148938"/>
           <Include href="消耗道具相关/2.压缩胶囊/Symbol 3902.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f97" lastModified="1720533000"/>
           <Include href="消耗道具相关/2.压缩胶囊/Symbol 3903.xml" itemID="668e7c1e-00000f98" lastModified="1734948388"/>
           <Include href="消耗道具相关/2.压缩胶囊/Symbol 3904.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f99" lastModified="1720533000"/>
@@ -2740,14 +2364,6 @@
           <Include href="消耗道具相关/Symbol 4294.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001087" lastModified="1720533000"/>
           <Include href="消耗道具相关/Symbol 4295.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001088" lastModified="1720533000"/>
           <Include href="消耗道具相关/Symbol 4296.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001089" lastModified="1720533000"/>
-          <Include href="消耗道具相关/Symbol 4297.xml" loadImmediate="false" itemID="668e7c1e-0000108a" lastModified="1720533000"/>
-          <Include href="消耗道具相关/Symbol 4507.xml" loadImmediate="false" itemID="668e7c1e-000010f2" lastModified="1720533000"/>
-          <Include href="消耗道具相关/Symbol 4582.xml" loadImmediate="false" itemID="668e7c1e-0000111f" lastModified="1720533000"/>
-          <Include href="消耗道具相关/图标-K点.xml" itemID="66a5ea6a-000017d7" lastModified="1722149482"/>
-          <Include href="消耗道具相关/图标-复活币.xml" itemID="66a5ea64-000017d5" lastModified="1722149476"/>
-          <Include href="消耗道具相关/图标-金钱.xml" itemID="66a5ea66-000017d6" lastModified="1722149478"/>
-          <Include href="消耗道具相关/图标-强化石.xml" itemID="66a5ea60-000017d4" lastModified="1722664029"/>
-          <Include href="消耗道具相关/图标-战宠灵石.xml" itemID="66a5ea58-000017d3" lastModified="1722663970"/>
           <Include href="主角身体元件副本/男变装-裸体脚.xml" loadImmediate="false" itemID="67bc215a-00000de0" lastModified="1740382920"/>
           <Include href="主角身体元件副本/男变装-裸体屁股.xml" loadImmediate="false" itemID="67bc2158-00000ddf" lastModified="1740382918"/>
           <Include href="主角身体元件副本/男变装-裸体上臂.xml" loadImmediate="false" itemID="67bc2157-00000dde" lastModified="1740382918"/>
