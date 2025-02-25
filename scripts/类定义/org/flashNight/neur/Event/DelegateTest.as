@@ -316,8 +316,8 @@ class org.flashNight.neur.Event.DelegateTest {
         }
         
         // 创建委托并确保缓存中有记录
-        var sampleDelegate1:Function = org.flashNight.neur.Event.Delegate.create(null, sampleFunction);
-        var sampleDelegate2:Function = org.flashNight.neur.Event.Delegate.create(null, sampleFunction);
+        var sampleDelegate1:Function = org.flashNight.neur.Event.Delegate.create(org.flashNight.neur.Event.Delegate, sampleFunction);
+        var sampleDelegate2:Function = org.flashNight.neur.Event.Delegate.create(org.flashNight.neur.Event.Delegate, sampleFunction);
         this.assertTrue(sampleDelegate1 === sampleDelegate2, "测试用例 21.1：相同函数创建前委托缓存");
         
         // 清理缓存
@@ -325,11 +325,11 @@ class org.flashNight.neur.Event.DelegateTest {
         trace("已清理缓存");
         
         // 创建委托后，缓存应该被清理，新的委托函数应不同
-        var sampleDelegate3:Function = org.flashNight.neur.Event.Delegate.create(null, sampleFunction);
+        var sampleDelegate3:Function = org.flashNight.neur.Event.Delegate.create(org.flashNight.neur.Event.Delegate, sampleFunction);
         this.assertTrue(sampleDelegate1 !== sampleDelegate3, "测试用例 21.2：清理缓存后创建的新委托不同");
         
         // 验证缓存机制仍然有效
-        var sampleDelegate4:Function = org.flashNight.neur.Event.Delegate.create(null, sampleFunction);
+        var sampleDelegate4:Function = org.flashNight.neur.Event.Delegate.create(org.flashNight.neur.Event.Delegate, sampleFunction);
         this.assertTrue(sampleDelegate3 === sampleDelegate4, "测试用例 21.3：清理缓存后相同函数再次创建委托");
     }
     
