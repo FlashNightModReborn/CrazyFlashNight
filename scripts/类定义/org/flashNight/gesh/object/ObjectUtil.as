@@ -154,6 +154,20 @@ class org.flashNight.gesh.object.ObjectUtil {
     }
 
     /**
+     * 检查是否有对应属性
+     * 
+     * @param obj 要检查的对象。
+     * @return Boolean 检查结果，true代表有，false代表无
+     */
+
+    public static function hasProperties(obj:Object):Boolean {
+        for (var prop:String in obj) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 检查对象是否为简单数据类型（Number, String, Boolean）。
      * @param obj 要检查的对象。
      * @return Boolean true 表示简单类型，false 表示复杂对象。

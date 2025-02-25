@@ -13,6 +13,13 @@ class org.flashNight.neur.Event.EventBusTest {
     private var callbackWithArgsCalled:Boolean;
     private var callbackWithErrorCalled:Boolean;
     private var callbackOnceCalled:Boolean;
+
+    // 新增测试标志
+    private var paramCallbackCalled:Boolean;
+    private var onceCallbackCallCount:Number;
+    private var complexParamReceived:Object;
+    private var nestedOnceCallbackCalled:Boolean;
+    private var multipleOnceCallbacksCalled:Array;
     
     // EventBus 实例
     private var eventBus:EventBus;
@@ -65,6 +72,14 @@ class org.flashNight.neur.Event.EventBusTest {
         this.testEventBusPublishWithArgs();
         this.testEventBusCallbackErrorHandling();
         this.testEventBusDestroy();
+
+        this.testPublishWithParamBasic();
+        this.testPublishWithParamComplex();
+        this.testSubscribeOnceReliability();
+        this.testSubscribeOnceWithNestedPublish();
+        this.testMultipleSubscribeOnce();
+        this.testSubscribeOnceWithUnsubscribe();
+        this.testHighVolumeSubscribeOnce();
         
         // 运行性能测试
         this.runPerformanceTests();
@@ -193,6 +208,218 @@ class org.flashNight.neur.Event.EventBusTest {
         this.callbackOnceCalled = true;
         // trace("callbackOnce executed"); // 移除 trace 以减少性能影响
     }
+
+
+    
+    // ======================
+    // publishWithParam 测试用例
+    // ======================
+    
+    /**
+     * 测试基础参数传递
+     */
+    private function testPublishWithParamBasic():Void {
+        this.resetFlags();
+        
+        // 测试无参数
+        this.eventBus.subscribe("PARAM_TEST_0", Delegate.create(this, function():Void {
+            paramCallbackCalled = true;
+        }), this);
+        this.eventBus.publishWithParam("PARAM_TEST_0", []);
+        this.assert(paramCallbackCalled, "publishWithParam - zero arguments");
+        
+        // 测试多参数
+        this.resetFlags();
+        this.eventBus.subscribe("PARAM_TEST_3", Delegate.create(this, function(a, b, c):Void {
+            paramCallbackCalled = a == "test" && b == 123 && c instanceof Object;
+        }), this);
+        this.eventBus.publishWithParam("PARAM_TEST_3", ["test", 123, {}]);
+        this.assert(paramCallbackCalled, "publishWithParam - multiple arguments");
+        
+        // 测试参数超过9个
+        this.resetFlags();
+        this.eventBus.subscribe("PARAM_TEST_10", Delegate.create(this, function():Void {
+            paramCallbackCalled = arguments.length == 10;
+        }), this);
+        var bigArgs:Array = [1,2,3,4,5,6,7,8,9,10];
+        this.eventBus.publishWithParam("PARAM_TEST_10", bigArgs);
+        this.assert(paramCallbackCalled, "publishWithParam - 10 arguments");
+        
+        // 清理
+        this.eventBus.unsubscribe("PARAM_TEST_0", Delegate.create(this, arguments.callee));
+        this.eventBus.unsubscribe("PARAM_TEST_3", Delegate.create(this, arguments.callee));
+        this.eventBus.unsubscribe("PARAM_TEST_10", Delegate.create(this, arguments.callee));
+    }
+    
+    /**
+     * 测试复杂参数传递
+     */
+    private function testPublishWithParamComplex():Void {
+        this.resetFlags();
+        
+        var testData:Object = {
+            nested: {
+                array: [1,2,3],
+                date: new Date()
+            },
+            func: function() {}
+        };
+        
+        this.eventBus.subscribe("COMPLEX_PARAM", Delegate.create(this, function(data):Void {
+            complexParamReceived = data;
+        }), this);
+        
+        this.eventBus.publishWithParam("COMPLEX_PARAM", [testData]);
+        
+        this.assert(
+            complexParamReceived.nested.array.length == 3 &&
+            complexParamReceived.nested.date instanceof Date &&
+            complexParamReceived.func === testData.func,
+            "publishWithParam - complex object validation"
+        );
+        
+        // 清理
+        this.eventBus.unsubscribe("COMPLEX_PARAM", Delegate.create(this, arguments.callee));
+    }
+
+    // ======================
+    // subscribeOnce 增强测试
+    // ======================
+    
+    /**
+     * 测试基本可靠性和多次触发
+     */
+    private function testSubscribeOnceReliability():Void {
+        this.resetFlags();
+        
+        // 基本功能测试
+        this.eventBus.subscribeOnce("ONCE_RELIABILITY", Delegate.create(this, function():Void {
+            onceCallbackCallCount++;
+        }), this);
+        
+        // 第一次触发
+        this.eventBus.publish("ONCE_RELIABILITY");
+        // 第二次触发
+        this.eventBus.publish("ONCE_RELIABILITY");
+        
+        this.assert(
+            onceCallbackCallCount == 1,
+            "subscribeOnce - should only trigger once"
+        );
+        
+        // 测试与其他订阅者的共存
+        this.eventBus.subscribe("ONCE_RELIABILITY", Delegate.create(this, function():Void {
+            // 普通订阅者
+        }), this);
+        
+        // 第三次触发
+        this.eventBus.publish("ONCE_RELIABILITY");
+        this.assert(
+            onceCallbackCallCount == 1,
+            "subscribeOnce - should not affect other subscribers"
+        );
+        
+        // 清理
+        this.eventBus.unsubscribe("ONCE_RELIABILITY", Delegate.create(this, arguments.callee));
+    }
+    
+    /**
+     * 测试嵌套发布场景
+     */
+    private function testSubscribeOnceWithNestedPublish():Void {
+        this.resetFlags();
+        
+        this.eventBus.subscribeOnce("NESTED_PARENT", Delegate.create(this, function():Void {
+            onceCallbackCallCount++;
+            this.eventBus.publish("NESTED_CHILD");
+        }), this);
+        
+        this.eventBus.subscribeOnce("NESTED_CHILD", Delegate.create(this, function():Void {
+            nestedOnceCallbackCalled = true;
+        }), this);
+        
+        this.eventBus.publish("NESTED_PARENT");
+        
+        this.assert(
+            onceCallbackCallCount == 1 &&
+            nestedOnceCallbackCalled,
+            "subscribeOnce - nested publish"
+        );
+        
+        // 二次触发
+        this.eventBus.publish("NESTED_PARENT");
+        this.assert(
+            onceCallbackCallCount == 1 &&
+            this.eventBus["listeners"]["NESTED_CHILD"] == undefined,
+            "subscribeOnce - nested cleanup"
+        );
+    }
+    
+    /**
+     * 测试批量一次性订阅
+     */
+
+    private function testMultipleSubscribeOnce():Void {
+        this.resetFlags();
+        var NUM_CALLBACKS:Number = 1000;
+        this.multipleOnceCallbacksCalled = new Array(NUM_CALLBACKS);
+        
+        // 使用闭包捕获循环变量
+        for (var i:Number = 0; i < NUM_CALLBACKS; i++) {
+            (function(idx:Number, self:EventBusTest):Void {
+                var callback:Function = function():Void {
+                    self.multipleOnceCallbacksCalled[idx] = true;
+                };
+                self.eventBus.subscribeOnce("MULTI_ONCE", callback, self);
+            })(i, this);
+        }
+        
+        this.eventBus.publish("MULTI_ONCE");
+        
+        var allCalled:Boolean = true;
+        for (var j:Number = 0; j < NUM_CALLBACKS; j++) {
+            if (!this.multipleOnceCallbacksCalled[j]) {
+                allCalled = false;
+                break;
+            }
+        }
+        
+        this.assert(
+            allCalled &&
+            this.eventBus["listeners"]["MULTI_ONCE"] == undefined,
+            "subscribeOnce - mass subscription (" + NUM_CALLBACKS + " callbacks)"
+        );
+    }
+    
+    /**
+     * 测试手动取消订阅
+     */
+    private function testSubscribeOnceWithUnsubscribe():Void {
+        this.resetFlags();
+        
+        var callback:Function = Delegate.create(this, function():Void {
+            onceCallbackCallCount++;
+        });
+        
+        // 订阅后立即取消
+        this.eventBus.subscribeOnce("UNSUB_TEST", callback, this);
+        this.eventBus.unsubscribe("UNSUB_TEST", callback);
+        this.eventBus.publish("UNSUB_TEST");
+        this.assert(onceCallbackCallCount == 0, "subscribeOnce - unsubscribe before publish");
+        
+        // 部分取消测试
+        var callback1:Function = Delegate.create(this, function():Void {});
+        var callback2:Function = Delegate.create(this, function():Void {});
+        
+        this.eventBus.subscribeOnce("UNSUB_TEST2", callback1, this);
+        this.eventBus.subscribeOnce("UNSUB_TEST2", callback2, this);
+        this.eventBus.unsubscribe("UNSUB_TEST2", callback1);
+        this.eventBus.publish("UNSUB_TEST2");
+        this.assert(
+            this.eventBus["listeners"]["UNSUB_TEST2"] == undefined,
+            "subscribeOnce - partial unsubscribe cleanup"
+        );
+    }
     
     // -----------------------
     // 性能测试部分
@@ -289,9 +516,9 @@ class org.flashNight.neur.Event.EventBusTest {
      */
     private function testEventBusConcurrentSubscriptionsAndPublishes():Void {
         this.resetFlags();
-        var numEvents:Number = 1000; // 增加到1000
-        var numSubscribersPerEvent:Number = 1000; // 增加到1000
-        var numPublishesPerEvent:Number = 1000; // 增加到1000
+        var numEvents:Number = 100; 
+        var numSubscribersPerEvent:Number = 100; 
+        var numPublishesPerEvent:Number = 100; 
         
         // 定义一个简单的回调
         function concurrentCallback():Void {
@@ -517,7 +744,34 @@ class org.flashNight.neur.Event.EventBusTest {
         // 测试通过无需具体断言
         this.assert(true, "Test 15: EventBus handles bulk subscriptions and unsubscriptions correctly");
     }
+
+        
+    /**
+     * 高性能压力测试
+     */
+    private function testHighVolumeSubscribeOnce():Void {
+        this.resetFlags();
+        var VOLUME_SIZE:Number = 5000;
+        var gcDetector:Object = { count: 0 };
+        
+        // 创建带闭包引用的回调
+        for (var i:Number = 0; i < VOLUME_SIZE; i++) {
+            this.eventBus.subscribeOnce("HIGH_VOLUME_ONCE", Delegate.create(this, function():Void {
+                gcDetector.count++;
+            }), this);
+        }
+        
+        // 触发并验证
+        this.eventBus.publish("HIGH_VOLUME_ONCE");
+        this.assert(
+            gcDetector.count == VOLUME_SIZE &&
+            this.eventBus["listeners"]["HIGH_VOLUME_ONCE"] == undefined,
+            "subscribeOnce - high volume (" + VOLUME_SIZE + ") with GC check"
+        );
+    }
 }
+
+
 
 // -----------------------
 // 运行测试

@@ -1,5 +1,6 @@
 ﻿import org.flashNight.neur.Event.Delegate; 
 import org.flashNight.naki.DataStructures.Dictionary;
+import org.flashNight.gesh.object.*;
 
 /**
  * EventBus 类用于事件的订阅、发布和管理。
@@ -32,6 +33,9 @@ class org.flashNight.neur.Event.EventBus {
     // 回调缓存区（重用避免GC）
     private var tempCallbacks:Array;
 
+    // 修改 onceWrappedCallbacks 结构为嵌套数组
+    private var onceWrappedCallbacks:Object; // eventName -> { originalUID: [wrappedFunc1, wrappedFunc2, ...] }
+
     // 饿汉式单例直接初始化（节省首次调用开销）
     public static var instance:EventBus = new EventBus();
 
@@ -52,6 +56,7 @@ class org.flashNight.neur.Event.EventBus {
         this.availSpaceTop = initialCapacity; 
         this.tempArgs = new Array(10); // 假设最大参数数量为10 
         this.tempCallbacks = new Array(initialCapacity);
+        this.onceWrappedCallbacks = {}; // 初始化映射
 
         // 使用循环展开初始化内存池（提升初始化速度）
         var unrollFactor:Number = 8; 
@@ -153,35 +158,56 @@ class org.flashNight.neur.Event.EventBus {
      * @param eventName 事件名称
      * @param callback 回调函数
      */
-    public function unsubscribe(eventName:String, callback:Function):Void { 
-        var listenersForEvent:Object = this.listeners[eventName]; 
+    public function unsubscribe(eventName:String, callback:Function):Void {
+        var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) return;
 
-        var funcToID:Object = listenersForEvent.funcToID; 
-        var funcID:String = String(Dictionary.getStaticUID(callback)); 
-        var callbackID:Number = funcToID[funcID];
+        // 处理包装函数取消
+        var isWrapper:Boolean = callback.hasOwnProperty("__isOnceWrapper");
+        var originalUID:String = isWrapper ? callback.__originalUID : String(Dictionary.getStaticUID(callback));
 
+        // 处理原始回调取消（清除所有相关包装函数）
+        if (!isWrapper && this.onceWrappedCallbacks[eventName]) {
+            var wrappedList:Array = this.onceWrappedCallbacks[eventName][originalUID];
+            if (wrappedList) {
+                // 取消所有关联的包装函数
+                for (var i:Number = 0; i < wrappedList.length; i++) {
+                    var wrappedFunc:Function = wrappedList[i];
+                    this.performUnsubscribe(eventName, wrappedFunc, listenersForEvent);
+                }
+                delete this.onceWrappedCallbacks[eventName][originalUID];
+            }
+        }
+        
+        // 正常取消流程
+        this.performUnsubscribe(eventName, callback, listenersForEvent);
+    }
+
+    /**
+     * 执行实际取消操作
+     */
+    private function performUnsubscribe(eventName:String, callback:Function, listenersForEvent:Object):Void {
+        var funcID:String = String(Dictionary.getStaticUID(callback));
+        var callbackID:Number = listenersForEvent.funcToID[funcID];
         if (callbackID == undefined) return;
 
-        // 回收对象池索引
-        var allocIndex:Number = listenersForEvent.callbacks[callbackID]; 
-        if (allocIndex != undefined) { 
-            this.pool[allocIndex] = null; 
-            this.availSpace[this.availSpaceTop++] = allocIndex; 
-            delete listenersForEvent.callbacks[callbackID]; 
-            delete funcToID[funcID]; 
+        var allocIndex:Number = listenersForEvent.callbacks[callbackID];
+        if (allocIndex != undefined) {
+            this.pool[allocIndex] = null;
+            this.availSpace[this.availSpaceTop++] = allocIndex;
+            delete listenersForEvent.callbacks[callbackID];
+            delete listenersForEvent.funcToID[funcID];
         }
 
-        // 更新状态并标记版本
-        listenersForEvent.count--; 
-        listenersForEvent.cacheVersion++; // 递增缓存版本 
-        listenersForEvent.callbackCache = null; // 使旧缓存失效
+        listenersForEvent.count--;
+        listenersForEvent.cacheVersion++;
+        listenersForEvent.callbackCache = null;
 
-        // 如果该事件没有回调函数，删除该事件的监听器
-        if (listenersForEvent.count === 0) { 
-            delete this.listeners[eventName]; 
-        } 
+        if (listenersForEvent.count === 0) {
+            delete this.listeners[eventName];
+        }
     }
+
 
     /**
      * 发布事件（带版本号缓存优化）
@@ -379,33 +405,55 @@ class org.flashNight.neur.Event.EventBus {
      * @param callback 回调函数
      * @param scope 执行域
      */
-    public function subscribeOnce(eventName:String, callback:Function, scope:Object):Void { 
+    public function subscribeOnce(eventName:String, callback:Function, scope:Object):Void {
+        var originalUID:String = String(Dictionary.getStaticUID(callback));
+        var wrappedFunc:Function = this.createOnceHandler(eventName, callback, scope, originalUID);
+        
+        // 存储包装函数到二维映射表
+        if (!this.onceWrappedCallbacks[eventName]) {
+            this.onceWrappedCallbacks[eventName] = {};
+        }
+        var eventMap:Object = this.onceWrappedCallbacks[eventName];
+        if (!eventMap[originalUID]) {
+            eventMap[originalUID] = [];
+        }
+        eventMap[originalUID].push(wrappedFunc);
+        
+        // 注册包装函数
+        this.subscribe(eventName, wrappedFunc, scope);
+    }
+
+    /**
+     * 创建一次性处理函数（核心修复）
+     */
+    private function createOnceHandler(eventName:String, callback:Function, scope:Object, originalUID:String):Function {
         var self:EventBus = this;
-        
-        // 利用 Dictionary 为每个回调生成唯一标识符
-        var callbackID:String = String(Dictionary.getStaticUID(callback));
-        
-        // 检查是否已经订阅过该回调，避免重复订阅
-        if (this.listeners[eventName] == undefined) {
-            this.listeners[eventName] = { callbacks: {}, funcToID: {}, count: 0, version: 0 };
-        }
-
-        var listenersForEvent:Object = this.listeners[eventName];
-        var funcToID:Object = listenersForEvent.funcToID;
-        
-        // 防止重复订阅
-        if (funcToID[callbackID] != undefined) {
-            return;
-        }
-
-        // 包装回调函数，使其在触发后取消订阅
-        var onceCallback:Function = function():Void { 
-            callback.apply(scope, arguments); 
-            self.unsubscribe(eventName, callback);  // 执行一次后取消订阅
+        var handler:Function = function():Void {
+            try {
+                callback.apply(scope, arguments);
+            } finally {
+                // 确保执行后立即清理
+                self.unsubscribe(eventName, handler);
+                
+                // 从映射表中移除
+                if (self.onceWrappedCallbacks[eventName]) {
+                    var list:Array = self.onceWrappedCallbacks[eventName][originalUID];
+                    if (list) {
+                        var index:Number = list.indexOf(handler);
+                        if (index > -1) {
+                            list.splice(index, 1);
+                            if (list.length === 0) {
+                                delete self.onceWrappedCallbacks[eventName][originalUID];
+                            }
+                        }
+                    }
+                }
+            }
         };
-
-        // 将包装后的回调添加到监听队列
-        this.subscribe(eventName, onceCallback, scope);
+        // 添加元数据（兼容AS2函数属性）
+        handler.__originalUID = originalUID;
+        handler.__isOnceWrapper = true;
+        return handler;
     }
 
 
