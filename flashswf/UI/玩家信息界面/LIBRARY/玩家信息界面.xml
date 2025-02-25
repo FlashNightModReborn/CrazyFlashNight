@@ -47,11 +47,11 @@ function 刷新攻击模式(攻击模式)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="快捷技能界面" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="快捷技能界面" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/快捷技能界面" name="快捷技能界面" selected="true" centerPoint3DX="700.45" centerPoint3DY="56.75">
+                <DOMSymbolInstance libraryItemName="sprite/快捷技能界面" name="快捷技能界面" centerPoint3DX="700.45" centerPoint3DY="56.75">
                   <matrix>
                     <Matrix tx="592.9" ty="16.9"/>
                   </matrix>
@@ -134,11 +134,11 @@ function 刷新攻击模式(攻击模式)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="功能按钮界面" color="#808080" autoNamed="false">
+        <DOMLayer name="功能按钮界面" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/功能按钮界面" name="功能按钮界面" centerPoint3DX="526.25" centerPoint3DY="62.8">
+                <DOMSymbolInstance libraryItemName="sprite/功能按钮界面" name="功能按钮界面" selected="true" centerPoint3DX="526.25" centerPoint3DY="62.8">
                   <matrix>
                     <Matrix tx="467.65" ty="36.8"/>
                   </matrix>

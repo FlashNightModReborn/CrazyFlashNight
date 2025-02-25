@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 960" itemID="6597607e-00000821" lastModified="1739433000">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 960" itemID="6597607e-00000821" lastModified="1740495511">
   <timeline>
     <DOMTimeline name="Symbol 960">
       <layers>
-        <DOMLayer name="Script Layer" color="#692BFF" locked="true">
+        <DOMLayer name="Script Layer" color="#692BFF" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -87,6 +87,10 @@ function parseXML()
 	}
 	play();
 }
+stop();
+
+//暂时屏蔽点歌器功能
+/*
 音乐列表 = new Array();
 var myXML = new XML();
 var mp3name = new Array();
@@ -108,8 +112,9 @@ myXML.onLoad = function(success)
 	}
 };
 myXML.load(XMLurl);
-stop();
-_root.全部翻译(this);]]></script>
+*/
+
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -282,7 +287,7 @@ s = new Sound();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#FBDE2B" current="true" isSelected="true">
+        <DOMLayer name="Layer 8" color="#FBDE2B">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>

@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/功能按钮界面" itemID="665210a6-00002497" lastModified="1735122882" lastUniqueIdentifier="11">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/功能按钮界面" itemID="665210a6-00002497" lastModified="1740495668" lastUniqueIdentifier="11">
   <timeline>
     <DOMTimeline name="功能按钮界面">
       <layers>
-        <DOMLayer name="装备" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="装备" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/长方块按钮" selected="true" centerPoint3DX="-5.5" centerPoint3DY="12">
+                <DOMSymbolInstance libraryItemName="UI重构/长方块按钮" centerPoint3DX="-5.5" centerPoint3DY="12">
                   <matrix>
                     <Matrix a="1.07708740234375" d="1.07708740234375" tx="-19.15" ty="-7.8"/>
                   </matrix>
@@ -89,11 +89,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="音乐" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="音乐" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/长方块按钮" centerPoint3DX="32" centerPoint3DY="11.9">
+                <DOMSymbolInstance libraryItemName="UI重构/长方块按钮（临时屏蔽点歌器用）" selected="true" centerPoint3DX="32" centerPoint3DY="11.9">
                   <matrix>
                     <Matrix a="1.07708740234375" d="1.07708740234375" tx="19.5" ty="-7.8"/>
                   </matrix>
@@ -101,13 +101,12 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   控制窗体 = "音乐播放界面";
-   x位置 = 8;
-   y位置 = 8;
-   注释文字 = _root.获得翻译("音乐");
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	控制窗体 = "音乐播放界面";
+	x位置 = 8;
+	y位置 = 8;
+	注释文字 = _root.获得翻译("音乐");
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
                 <DOMStaticText fontRenderingMode="standard" width="20.2" height="14.35" autoExpand="true" includeOutlines="true" isSelectable="false">
