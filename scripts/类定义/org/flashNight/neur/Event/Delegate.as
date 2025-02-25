@@ -54,30 +54,15 @@ class org.flashNight.neur.Event.Delegate {
 
         // 如果作用域为 null，则函数将在全局作用域中执行
         if (scope == null) {
-            cacheKey = methodUID;  // 使用方法的 UID 作为缓存键
-            //  ServerManager.getInstance().sendServerMessage("create "+ cacheKey + " " + ObjectUtil.toString(arguments));
-            //  trace(cacheKey)
-            // 尝试从缓存中获取已存在的委托函数
+            cacheKey = methodUID;  
             var cachedFunction:Function = loccache[cacheKey];
             if (cachedFunction != undefined) {
                 return cachedFunction;
             }
 
-            // 创建新的委托函数，针对不同参数数量优化调用逻辑
-            var wrappedFunction:Function = function() {
-                var len:Number = arguments.length;
-                if (len == 0) return method();
-                else if (len == 1) return method(arguments[0]);
-                else if (len == 2) return method(arguments[0], arguments[1]);
-                else if (len == 3) return method(arguments[0], arguments[1], arguments[2]);
-                else if (len == 4) return method(arguments[0], arguments[1], arguments[2], arguments[3]);
-                else if (len == 5) return method(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]);
-                else return method.apply(null, arguments);  // 对于超过5个参数的情况，使用 apply 调用
-            };
-
-            // 将新创建的委托函数缓存起来，供后续调用复用
-            loccache[cacheKey] = wrappedFunction;
-            return wrappedFunction;
+            // 直接返回原函数，避免生成新包装
+            loccache[cacheKey] = method;
+            return method;
         } else {
             // 为作用域生成唯一的 UID，并与方法 UID 组合生成缓存键
             var scopeUID:String = String(Dictionary.getStaticUID(scope));
