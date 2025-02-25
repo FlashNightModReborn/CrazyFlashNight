@@ -380,18 +380,34 @@ class org.flashNight.neur.Event.EventBus {
      * @param scope 执行域
      */
     public function subscribeOnce(eventName:String, callback:Function, scope:Object):Void { 
-        var self:EventBus = this; 
-        var originalID:String = String(Dictionary.getStaticUID(callback));
+        var self:EventBus = this;
+        
+        // 利用 Dictionary 为每个回调生成唯一标识符
+        var callbackID:String = String(Dictionary.getStaticUID(callback));
+        
+        // 检查是否已经订阅过该回调，避免重复订阅
+        if (this.listeners[eventName] == undefined) {
+            this.listeners[eventName] = { callbacks: {}, funcToID: {}, count: 0, version: 0 };
+        }
 
-        // 利用Delegate的缓存机制确保匿名函数的唯一性，使其可以被正确取消订阅
-        // 包装回调函数 
+        var listenersForEvent:Object = this.listeners[eventName];
+        var funcToID:Object = listenersForEvent.funcToID;
+        
+        // 防止重复订阅
+        if (funcToID[callbackID] != undefined) {
+            return;
+        }
+
+        // 包装回调函数，使其在触发后取消订阅
         var onceCallback:Function = function():Void { 
             callback.apply(scope, arguments); 
-            self.unsubscribe(eventName, callback); 
+            self.unsubscribe(eventName, callback);  // 执行一次后取消订阅
         };
 
-        this.subscribe(eventName, onceCallback, scope); 
+        // 将包装后的回调添加到监听队列
+        this.subscribe(eventName, onceCallback, scope);
     }
+
 
     /**
      * 销毁方法（增强版本清理）

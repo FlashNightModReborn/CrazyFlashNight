@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="50.6510299754819" tabOrderMode="relative" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <symbols>
-          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1740420489"/>
+          <Include href="asLoader.xml" itemID="65982cdb-00001469" lastModified="1740445840"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -8,6 +8,17 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[// 导入 EventBusTest 类
+import org.flashNight.neur.Event.EventBusTest;
+
+// 创建 EventBusTest 实例，自动运行所有测试
+var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
+
+
+
+]]></script>
+                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -21,25 +32,25 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
-          <PublishItem publishSize="287395" publishTime="1740247212"/>
-          <PublishItem publishSize="287402" publishTime="1740247098"/>
-          <PublishItem publishSize="287390" publishTime="1740246957"/>
-          <PublishItem publishSize="287377" publishTime="1740246853"/>
-          <PublishItem publishSize="287378" publishTime="1740246774"/>
-          <PublishItem publishSize="287371" publishTime="1740246694"/>
-          <PublishItem publishSize="287374" publishTime="1740246595"/>
-          <PublishItem publishSize="284224" publishTime="1739615055"/>
-          <PublishItem publishSize="284795" publishTime="1739550234"/>
-          <PublishItem publishSize="284794" publishTime="1739550118"/>
-          <PublishItem publishSize="284805" publishTime="1739549938"/>
-          <PublishItem publishSize="284132" publishTime="1739549383"/>
-          <PublishItem publishSize="284828" publishTime="1739549053"/>
-          <PublishItem publishSize="284156" publishTime="1739548391"/>
-          <PublishItem publishSize="284134" publishTime="1739548187"/>
-          <PublishItem publishSize="284102" publishTime="1739548096"/>
-          <PublishItem publishSize="284129" publishTime="1739547817"/>
-          <PublishItem publishSize="284131" publishTime="1739547533"/>
-          <PublishItem publishSize="284080" publishTime="1739535742"/>
-          <PublishItem publishSize="284073" publishTime="1739535695"/>
+          <PublishItem publishSize="268400" publishTime="1740445741"/>
+          <PublishItem publishSize="289822" publishTime="1740132325"/>
+          <PublishItem publishSize="289823" publishTime="1740132280"/>
+          <PublishItem publishSize="289822" publishTime="1740131189"/>
+          <PublishItem publishSize="289824" publishTime="1740130871"/>
+          <PublishItem publishSize="289827" publishTime="1740130745"/>
+          <PublishItem publishSize="289817" publishTime="1740130403"/>
+          <PublishItem publishSize="289776" publishTime="1740130041"/>
+          <PublishItem publishSize="289802" publishTime="1740129908"/>
+          <PublishItem publishSize="289803" publishTime="1740129801"/>
+          <PublishItem publishSize="289803" publishTime="1740129548"/>
+          <PublishItem publishSize="289803" publishTime="1740129502"/>
+          <PublishItem publishSize="289777" publishTime="1740129165"/>
+          <PublishItem publishSize="289891" publishTime="1740129113"/>
+          <PublishItem publishSize="289778" publishTime="1740128328"/>
+          <PublishItem publishSize="289786" publishTime="1740128189"/>
+          <PublishItem publishSize="289772" publishTime="1740128013"/>
+          <PublishItem publishSize="289768" publishTime="1740127890"/>
+          <PublishItem publishSize="289771" publishTime="1740127837"/>
+          <PublishItem publishSize="289741" publishTime="1740127823"/>
      </publishHistory>
 </DOMDocument>
