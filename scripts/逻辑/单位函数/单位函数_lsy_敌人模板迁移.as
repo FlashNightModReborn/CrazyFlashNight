@@ -427,6 +427,11 @@ _root.初始化敌人模板 = function(){
 	gotoAndStop(状态);
 }
 
+//对初始化单位的函数进行包装
+_root.敌人函数.初始化单位 = function(target){
+	StaticInitializer.initializeUnit(target);
+}
+
 
 _root.初始化可操控敌人模板 = function()
 {

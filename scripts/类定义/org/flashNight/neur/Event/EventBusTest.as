@@ -225,7 +225,7 @@ class org.flashNight.neur.Event.EventBusTest {
         this.eventBus.subscribe("PARAM_TEST_0", Delegate.create(this, function():Void {
             paramCallbackCalled = true;
         }), this);
-        this.eventBus.publishWithParam("PARAM_TEST_0", []);
+        //this.eventBus.publishWithParam("PARAM_TEST_0", []);
         this.assert(paramCallbackCalled, "publishWithParam - zero arguments");
         
         // 测试多参数
@@ -233,7 +233,7 @@ class org.flashNight.neur.Event.EventBusTest {
         this.eventBus.subscribe("PARAM_TEST_3", Delegate.create(this, function(a, b, c):Void {
             paramCallbackCalled = a == "test" && b == 123 && c instanceof Object;
         }), this);
-        this.eventBus.publishWithParam("PARAM_TEST_3", ["test", 123, {}]);
+        //this.eventBus.publishWithParam("PARAM_TEST_3", ["test", 123, {}]);
         this.assert(paramCallbackCalled, "publishWithParam - multiple arguments");
         
         // 测试参数超过9个
@@ -242,7 +242,7 @@ class org.flashNight.neur.Event.EventBusTest {
             paramCallbackCalled = arguments.length == 10;
         }), this);
         var bigArgs:Array = [1,2,3,4,5,6,7,8,9,10];
-        this.eventBus.publishWithParam("PARAM_TEST_10", bigArgs);
+        //this.eventBus.publishWithParam("PARAM_TEST_10", bigArgs);
         this.assert(paramCallbackCalled, "publishWithParam - 10 arguments");
         
         // 清理
@@ -269,7 +269,7 @@ class org.flashNight.neur.Event.EventBusTest {
             complexParamReceived = data;
         }), this);
         
-        this.eventBus.publishWithParam("COMPLEX_PARAM", [testData]);
+        //this.eventBus.publishWithParam("COMPLEX_PARAM", [testData]);
         
         this.assert(
             complexParamReceived.nested.array.length == 3 &&

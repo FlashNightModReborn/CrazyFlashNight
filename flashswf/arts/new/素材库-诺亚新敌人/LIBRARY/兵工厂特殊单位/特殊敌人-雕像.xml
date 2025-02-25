@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-雕像" itemID="66b8b58a-00000930" linkageExportForAS="true" linkageIdentifier="特殊敌人-雕像" lastModified="1729785517" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="兵工厂特殊单位/特殊敌人-雕像" itemID="66b8b58a-00000930" linkageExportForAS="true" linkageIdentifier="特殊敌人-雕像" lastModified="1740496943" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="特殊敌人-雕像">
       <layers>
@@ -87,7 +87,7 @@ function 复活计时()
 	死亡次数++;
 	
 	var 敌人实例名 = this._name + 召唤物名 + 召唤物计数;
-	var 召唤物 = 游戏世界.attachMovie(召唤物名, 敌人实例名, 游戏世界.getNextHighestDepth(), 召唤物参数);
+	var 召唤物 = _root.加载游戏世界人物(召唤物名, 敌人实例名, 游戏世界.getNextHighestDepth(), 召唤物参数);
 	召唤物._x = 游戏世界.door1._x;
 	召唤物._y = 游戏世界.door1._y;
 	游戏世界.door1.gotoAndPlay("开门");
@@ -118,7 +118,7 @@ hp = hp满血值 = 45000;
 状态 = "正常";
 击中效果 = "火花";
 
-_root.帧计时器.注册目标缓存(this);
+_root.敌人函数.初始化单位(this);
 gotoAndStop("正常");
 ]]></script>
               </Actionscript>

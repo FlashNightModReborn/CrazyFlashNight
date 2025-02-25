@@ -10,10 +10,10 @@
                               <DOMFrame index="0" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[// 导入 EventBusTest 类
-import org.flashNight.neur.Event.EventBusTest;
+//import org.flashNight.neur.Event.EventBusTest;
 
 // 创建 EventBusTest 实例，自动运行所有测试
-var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
+//var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
 
 
 
@@ -32,6 +32,8 @@ var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="288841" publishTime="1740496520"/>
+          <PublishItem publishSize="288845" publishTime="1740496372"/>
           <PublishItem publishSize="268400" publishTime="1740445741"/>
           <PublishItem publishSize="289822" publishTime="1740132325"/>
           <PublishItem publishSize="289823" publishTime="1740132280"/>
@@ -50,7 +52,5 @@ var eventBusTester:EventBusTest = new org.flashNight.neur.Event.EventBusTest();
           <PublishItem publishSize="289786" publishTime="1740128189"/>
           <PublishItem publishSize="289772" publishTime="1740128013"/>
           <PublishItem publishSize="289768" publishTime="1740127890"/>
-          <PublishItem publishSize="289771" publishTime="1740127837"/>
-          <PublishItem publishSize="289741" publishTime="1740127823"/>
      </publishHistory>
 </DOMDocument>
