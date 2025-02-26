@@ -70,30 +70,35 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种268</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种269</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种270</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="7">
                         <Type>兵种409</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -114,12 +119,14 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:翅虎堂司暗</Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种67</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:火凤堂赤旌</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -141,12 +148,14 @@
                         <Quantity>1</Quantity>
                         <Level>37</Level>
                         <SpawnIndex>back</SpawnIndex>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种66</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:翅虎堂司暗</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -168,12 +177,14 @@
                         <Quantity>1</Quantity>
                         <Level>37</Level>
                         <SpawnIndex>back</SpawnIndex>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种67</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:火凤堂赤旌</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -200,18 +211,21 @@
                         <Quantity>1</Quantity>
                         <Level>37</Level>
                         <SpawnIndex>back</SpawnIndex>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种66</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:翅虎堂司暗</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种67</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>37</Level>
+                        <Parameters>称号:火凤堂赤旌</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -292,7 +306,7 @@
                         <Level>37</Level>
                         <x>900</x>
                         <y>400</y>
-                        <Parameters>方向:左,登场动画:a0,死亡动画:a1</Parameters>
+                        <Parameters>方向:左,登场动画:a0,死亡动画:a1,称号:黑铁会教主</Parameters>
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>

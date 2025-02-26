@@ -69,6 +69,7 @@
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>34</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -95,6 +96,7 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -128,6 +130,7 @@
                                 <最小数量>1</最小数量>
                                 <最大数量>1</最大数量>
                             </掉落物>
+                            <称号>坛主</称号>
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
@@ -141,6 +144,7 @@
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -155,7 +159,7 @@
         <Dialogue>
             <SubDialogue id="0">
                 <Name>火凤</Name>
-                <Title>火凤堂堂主</Title>
+                <Title>火凤堂赤旌</Title>
                 <Char>火凤</Char>
                 <Text>翅虎这个家伙真是没用，竟然能被你这种无名鼠辈打败。</Text>
             </SubDialogue>
@@ -167,7 +171,7 @@
             </SubDialogue>
             <SubDialogue id="2">
                 <Name>火凤</Name>
-                <Title>火凤堂堂主</Title>
+                <Title>火凤堂赤旌</Title>
                 <Char>火凤</Char>
                 <Text>你……你敢污蔑教主！还没有人能当着我的面侮辱我最重要的人！看我不扒了你的皮！</Text>
             </SubDialogue>
@@ -191,6 +195,7 @@
                         <Level>34</Level>
                         <x>350</x>
                         <y>380</y>
+                        <Parameters>称号:火凤堂赤旌</Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种268</Type>
@@ -199,6 +204,7 @@
                         <Level>34</Level>
                         <x>400</x>
                         <y>300</y>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种270</Type>
@@ -207,6 +213,7 @@
                         <Level>34</Level>
                         <x>400</x>
                         <y>460</y>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种268</Type>
@@ -214,6 +221,7 @@
                         <Quantity>4</Quantity>
                         <Level>34</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种270</Type>
@@ -221,12 +229,13 @@
                         <Quantity>2</Quantity>
                         <Level>34</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
                     <SubDialogue id="0">
                         <Name>火凤</Name>
-                        <Title>火凤堂堂主</Title>
+                        <Title>火凤堂赤旌</Title>
                         <Char>火凤</Char>
                         <Text>你！别走，与我再战！</Text>
                     </SubDialogue>

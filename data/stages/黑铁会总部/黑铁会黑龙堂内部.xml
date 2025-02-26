@@ -78,6 +78,7 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
@@ -114,6 +115,7 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种269</Type>
@@ -130,6 +132,7 @@
                                 <最小数量>1</最小数量>
                                 <最大数量>1</最大数量>
                             </掉落物>
+                            <称号>坛主</称号>
                         </Parameters>
                     </Enemy>
                 </EnemyGroup>
@@ -160,6 +163,7 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种268</Type>
@@ -167,6 +171,7 @@
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种269</Type>
@@ -181,6 +186,7 @@
                                 <最小数量>1</最小数量>
                                 <最大数量>1</最大数量>
                             </掉落物>
+                            <Parameters>称号:坛主</Parameters>
                         </Parameters>
                     </Enemy>
                 </EnemyGroup>
@@ -202,7 +208,7 @@
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>黑龙</Name>
-                <Title>黑龙堂堂主</Title>
+                <Title>黑龙堂冶魁</Title>
                 <Char>黑龙</Char>
                 <Text>先顾好你自己，小子！</Text>
             </SubDialogue>
@@ -214,7 +220,7 @@
             </SubDialogue>
             <SubDialogue id="3">
                 <Name>黑龙</Name>
-                <Title>黑龙堂堂主</Title>
+                <Title>黑龙堂冶魁</Title>
                 <Char>黑龙</Char>
                 <Text>这没用的克隆人，就是我兄长一直悬赏的人，待会儿我要让我兄长亲自处决这个叛徒，至于你，哼，准备好被我撕成两半吧！</Text>
             </SubDialogue>
@@ -226,7 +232,7 @@
             </SubDialogue>
             <SubDialogue id="5">
                 <Name>黑龙</Name>
-                <Title>黑龙堂堂主</Title>
+                <Title>黑龙堂冶魁</Title>
                 <Char>黑龙</Char>
                 <Text>去死吧！</Text>
             </SubDialogue>
@@ -244,18 +250,19 @@
                         <Level>35</Level>
                         <x>500</x>
                         <y>370</y>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
                     </Enemy>
                 </EnemyGroup>
                 <Dialogue>
                     <SubDialogue id="0">
                         <Name>黑龙</Name>
-                        <Title>黑龙堂堂主</Title>
+                        <Title>黑龙堂冶魁</Title>
                         <Char>黑龙</Char>
                         <Text>怎么回事，我的胸口……</Text>
                     </SubDialogue>
                     <SubDialogue id="1">
                         <Name>黑龙</Name>
-                        <Title>黑龙堂堂主</Title>
+                        <Title>黑龙堂冶魁</Title>
                         <Char>黑龙</Char>
                         <Text>啊！（双膝跪地，吐出一大口鲜血）</Text>
                     </SubDialogue>

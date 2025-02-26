@@ -57,24 +57,28 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>36</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种270</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种268</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种269</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -101,24 +105,28 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种270</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种261</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种410</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>36</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -145,18 +153,21 @@
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种268</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种261</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>36</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种261</Type>
@@ -170,6 +181,7 @@
                                 <最小数量>1</最小数量>
                                 <最大数量>1</最大数量>
                             </掉落物>
+                            <称号>散人</称号>
                         </Parameters>
                     </Enemy>
                     <Enemy id="5">
@@ -177,6 +189,7 @@
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>36</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -197,6 +210,7 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>36</Level>
+                        <Parameters>称号:翅虎堂司暗</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -217,6 +231,7 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>36</Level>
+                        <Parameters>称号:火凤堂赤旌</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -238,6 +253,7 @@
                         <Quantity>1</Quantity>
                         <Level>36</Level>
                         <SpawnIndex>right</SpawnIndex>
+                        <Parameters>称号:黑龙堂冶魁</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

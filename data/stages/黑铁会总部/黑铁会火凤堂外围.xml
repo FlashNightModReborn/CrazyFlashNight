@@ -78,6 +78,7 @@
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>33</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种64</Type>
@@ -122,6 +123,7 @@
                         <Interval>500</Interval>
                         <Quantity>8</Quantity>
                         <Level>33</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种242</Type>
@@ -196,12 +198,14 @@
                         <Interval>500</Interval>
                         <Quantity>6</Quantity>
                         <Level>33</Level>
+                        <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种409</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>33</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -248,6 +252,7 @@
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>33</Level>
+                        <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种65</Type>
@@ -267,6 +272,7 @@
                                 <最小数量>1</最小数量>
                                 <最大数量>1</最大数量>
                             </掉落物>
+                            <称号>坛主</称号>
                         </Parameters>
                     </Enemy>
                     <Enemy id="4">
