@@ -81,14 +81,44 @@ _root.线性同余生成器 = function(种子:Number):Function
 	};
 };
 
-_root.根据等级计算值 = function(最小值, 最大值, 目前等级, 允许小数, 禁止超出最大等级) 
-{
-	if(禁止超出最大等级 === true && 目前等级 > _root.最大等级) 目前等级 = _root.最大等级;
-	var 该等级值 = 最小值 + (最大值 - 最小值) / (_root.最大等级 - 1) * 目前等级;
-	if(!允许小数) 该等级值 = Math.floor(该等级值);
-	if(!isNaN(该等级值) && 该等级值 > 0) return 该等级值;
-	return 1;
-}
+_root.根据等级计算值 = function(最小值, 最大值, 目前等级) {
+    // 初始化配置参数
+    var 允许小数 = false;
+    var 禁止超出最大等级 = false;
+    
+    // 参数解析逻辑
+    if (arguments.length >= 4) {
+        var arg4 = arguments[3];
+        
+        if (typeof arg4 === 'object') {
+            // 新调用方式：使用配置对象
+            允许小数 = arg4.允许小数 !== undefined ? Boolean(arg4.允许小数) : false;
+            禁止超出最大等级 = arg4.禁止超出最大等级 === true;
+        } else {
+            // 旧调用方式：第四、第五个参数
+			_root.发布消息("根据等级计算值的旧调用方式");
+            允许小数 = Boolean(arg4);
+            禁止超出最大等级 = arguments.length >= 5 ? arguments[4] === true : false;
+        }
+    }
+
+    // 等级限制处理
+    if (禁止超出最大等级 && 目前等级 > _root.最大等级) {
+        目前等级 = _root.最大等级;
+    }
+
+    // 核心计算公式
+    var 等级差 = _root.最大等级 - 1;
+    var 该等级值 = 最小值 + (最大值 - 最小值) * 目前等级 / (等级差 || 1); // 防止除以0
+    
+    // 小数处理
+    if (!允许小数) {
+        该等级值 = Math.floor(该等级值);
+    }
+
+    // 有效性校验
+    return (!isNaN(该等级值) && 该等级值 > 0) ? 该等级值 : 1;
+};
 
 _root.重量速度关系 = function(重量:Number, 等级值:Number):Number 
 {
