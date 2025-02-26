@@ -107,7 +107,7 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
                 break;
             case "格挡":
                 damageNumber = target.受击反制(damageNumber, bullet);
-                // _root.发布消息(damageNumber);
+                
                 if (damageNumber) {
                     target.损伤值 = damageNumber;
                     damageSize *= 0.3 + 0.7 * target.损伤值 / bullet.破坏力;
@@ -127,6 +127,7 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
                 _root.受击变红(120, target);
         }
         
+        // _root.服务器.发布服务器消息(manager.dodgeState + ":" + damageNumber);
         result.damageSize = damageSize;
     }
 
