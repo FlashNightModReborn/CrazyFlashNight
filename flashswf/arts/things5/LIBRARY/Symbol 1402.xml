@@ -5979,10 +5979,7 @@ gotoAndPlay(_parent.近战招式);
             <DOMFrame index="0" duration="21" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="21" duration="191" keyMode="9728" soundName="音效/吐.wav">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="21" duration="191" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

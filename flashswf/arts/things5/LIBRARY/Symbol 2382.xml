@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 2382" itemID="6577efbc-000008d7" linkageExportForAS="true" linkageIdentifier="加载mc库-黑铁会" lastModified="1702098593">
   <timeline>
-    <DOMTimeline name="Symbol 2382" currentFrame="1">
+    <DOMTimeline name="Symbol 2382" currentFrame="2">
       <layers>
         <DOMLayer name="Script Layer" color="#E64CE6">
           <frames>
@@ -107,14 +107,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#E582C9" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#E582C9">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 927" selected="true" centerPoint3DX="687.25" centerPoint3DY="138.15">
+                <DOMSymbolInstance libraryItemName="Symbol 927" centerPoint3DX="687.25" centerPoint3DY="138.15">
                   <matrix>
                     <Matrix tx="41.05" ty="-123.1"/>
                   </matrix>
@@ -296,7 +296,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#F1AED9">
+        <DOMLayer name="Layer 10" color="#F1AED9" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>

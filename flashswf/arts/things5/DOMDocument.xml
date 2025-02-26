@@ -50,7 +50,6 @@
           <DOMSoundItem name="音效/刀whoosh2.wav" itemID="679517a4-000008e9" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/刀whoosh2.wav" sourceLastImported="1737824116" externalFileCRC32="3851544294" externalFileSize="66372" href="音效/刀whoosh2.wav" soundDataHRef="M 39 1722600230.dat" format="44kHz 16bit Mono" sampleCount="33164" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="音效/刀蓄力.wav" itemID="679517a4-000008ea" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/刀蓄力.wav" sourceLastImported="1737824116" externalFileCRC32="2460959747" externalFileSize="74662" href="音效/刀蓄力.wav" soundDataHRef="M 40 1722600527.dat" format="44kHz 16bit Mono" sampleCount="37309" exportFormat="5" exportBits="17"/>
           <DOMSoundItem name="音效/流星锤.wav" itemID="679517a5-000008eb" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things5/LIBRARY/音效/流星锤.wav" sourceLastImported="1737824116" externalFileCRC32="170961830" externalFileSize="99534" href="音效/流星锤.wav" soundDataHRef="M 36 1722597327.dat" format="44kHz 16bit Mono" sampleCount="49745" exportFormat="5" exportBits="17"/>
-          <DOMSoundItem name="音效/吐.wav" itemID="66ac7dd1-000008a6" sourceExternalFilepath="G:/gunsound/things5/吐.wav" sourceLastImported="1722580411" externalFileCRC32="784112601" externalFileSize="39426" href="音效/吐.wav" soundDataHRef="M 29 1722580433.dat" format="44kHz 16bit Mono" sampleCount="19691" exportFormat="5" exportBits="17"/>
           <DOMBitmapItem name="位图 28" itemID="65c37675-00002def" sourceExternalFilepath="./LIBRARY/位图 28" sourceLastImported="1707308661" originalCompressionType="lossless" quality="50" href="位图 28" bitmapDataHRef="M 28 1707308661.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
@@ -620,7 +619,7 @@
           <Include href="Symbol 682.xml" loadImmediate="false" itemID="6577efbc-00000472" lastModified="1702098593"/>
           <Include href="Symbol 683.xml" loadImmediate="false" itemID="6577efbc-00000473" lastModified="1702098593"/>
           <Include href="Symbol 686.xml" loadImmediate="false" itemID="6577efbc-00000474" lastModified="1722604301"/>
-          <Include href="Symbol 687.xml" loadImmediate="false" itemID="6577efbc-00000475" lastModified="1734964152"/>
+          <Include href="Symbol 687.xml" loadImmediate="false" itemID="6577efbc-00000475" lastModified="1740559123"/>
           <Include href="Symbol 689.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000477" lastModified="1702098593"/>
           <Include href="Symbol 690.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000478" lastModified="1702098593"/>
           <Include href="Symbol 691.xml" itemIcon="1" loadImmediate="false" itemID="6577efbc-00000479" lastModified="1702098593"/>
@@ -1769,7 +1768,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="Symbol 2382" centerPoint3DX="1860.95" centerPoint3DY="831.05">
+                                        <DOMSymbolInstance libraryItemName="Symbol 2382" selected="true" centerPoint3DX="1860.95" centerPoint3DY="831.05">
                                              <matrix>
                                                   <Matrix tx="567.2" ty="183.8"/>
                                              </matrix>
@@ -2050,6 +2049,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="3172442" publishTime="1740559140"/>
           <PublishItem publishSize="3181306" publishTime="1737918817"/>
           <PublishItem publishSize="3181285" publishTime="1737918642"/>
           <PublishItem publishSize="3181314" publishTime="1737918512"/>
@@ -2069,6 +2069,5 @@
           <PublishItem publishSize="3185166" publishTime="1723308283"/>
           <PublishItem publishSize="3185170" publishTime="1723308148"/>
           <PublishItem publishSize="3185170" publishTime="1723307967"/>
-          <PublishItem publishSize="3185173" publishTime="1723307929"/>
      </publishHistory>
 </DOMDocument>

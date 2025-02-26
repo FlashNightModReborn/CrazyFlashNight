@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 687" itemID="6577efbc-00000475" lastModified="1734964152">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 687" itemID="6577efbc-00000475" lastModified="1740559123">
   <timeline>
     <DOMTimeline name="Symbol 687" currentFrame="17">
       <layers>
@@ -27,7 +27,8 @@
 刀 = "";
 手雷 = "";
 僵尸型敌人newname = _parent._name + 兵种;
-_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:_parent._x,_y:_parent._y,等级:this.等级,名字:this.名字,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:_parent.产生源});
+称号 = _parent.称号;
+_root.加载游戏世界人物(兵种,僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x:_parent._x,_y:_parent._y,等级:this.等级,名字:this.名字,称号:this.称号,是否为敌人:this.是否为敌人,身高:this.身高,长枪:this.长枪,手枪:this.手枪,手枪2:this.手枪2,刀:this.刀,手雷:this.手雷,产生源:_parent.产生源});
 ]]></script>
               </Actionscript>
               <elements/>
