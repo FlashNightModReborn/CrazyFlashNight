@@ -372,9 +372,7 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
     var percentageDamage:Number = isNaN(bullet.百分比伤害) ? 0 : hitTarget.hp * bullet.百分比伤害 / 100;
     bullet.破坏力 = damageVariance + bullet.固伤 + percentageDamage;
 
-    // ------------------------兼容区------------------------------
-    bullet.附加层伤害计算 = 0; 
-    bullet.命中对象 = hitTarget;
+
 
     /*
     manager.execute(bullet, shooter, hitTarget, damageResult);
@@ -604,6 +602,10 @@ _root.子弹生命周期 = function()
             hpBar._visible = true;
             hpBar.gotoAndPlay(2);
             hitTarget.攻击目标 = shooter._name;
+
+                // ------------------------兼容区------------------------------
+            this.附加层伤害计算 = 0; 
+            this.命中对象 = hitTarget;
 
             _root.冲击力刷新(hitTarget);
             hitTarget.dispatcher.publish("hit");
