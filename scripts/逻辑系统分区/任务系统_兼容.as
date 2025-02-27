@@ -47,7 +47,7 @@ _root.loaders.push(function ()
     this.tasks_of_npc = {};
     this.text_srcs = [];
     this.task_texts = {};
-    this.json_parser = new JSON();
+    this.json_parser = new LiteJSON();
 
     for (var i = 0; i < _root.preloaders.task_strarrs.length; i++)
     {

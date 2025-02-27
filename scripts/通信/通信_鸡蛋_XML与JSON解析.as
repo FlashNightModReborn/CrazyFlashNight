@@ -75,7 +75,7 @@ _root.MakeArray = function(len, content){
 	return newArray;
 };
 
-_root.json_parser = new JSON();
+_root.json_parser = new LiteJSON();
 
 
 //物品

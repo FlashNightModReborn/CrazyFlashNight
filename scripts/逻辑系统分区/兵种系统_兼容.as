@@ -31,7 +31,7 @@ _root.loaders.push(function ()
     this.unit_indices_by_id = {};
     this.unit_indices_by_name = {};
     this.兵种库 = {};
-    this.json_parser = new JSON();
+    this.json_parser = new LiteJSON();
 
     for (var i = 0; i < _root.preloaders.units_strarrs.length; i++)
     {

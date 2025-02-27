@@ -8,6 +8,24 @@
                     <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[/*var loader:LoadVars = new LoadVars();
+json = new LiteJSON();
+loader.onData = function(rawData:String):Void 
+{
+	if (rawData != null)
+	{
+		trace(getTimer() - _root.t);
+		_root.t = getTimer();
+		parsedData = json.parse(rawData);
+		trace(getTimer() - _root.t);
+		trace(org.flashNight.gesh.object.ObjectUtil.toString(parsedData["$MAIN_GET_0"]))
+	}
+};
+
+_root.t = getTimer();
+loader.load("C:/Workspaces/Flash+An/resources/data/task/text/text1.json");*/]]></script>
+                                   </Actionscript>
                                    <elements/>
                               </DOMFrame>
                          </frames>
@@ -21,6 +39,12 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="289404" publishTime="1740681237"/>
+          <PublishItem publishSize="286954" publishTime="1740680384"/>
+          <PublishItem publishSize="286905" publishTime="1740680319"/>
+          <PublishItem publishSize="286907" publishTime="1740680251"/>
+          <PublishItem publishSize="286894" publishTime="1740680206"/>
+          <PublishItem publishSize="286874" publishTime="1740680143"/>
           <PublishItem publishSize="286758" publishTime="1740678788"/>
           <PublishItem publishSize="287786" publishTime="1740678123"/>
           <PublishItem publishSize="287775" publishTime="1740678057"/>
@@ -35,11 +59,5 @@
           <PublishItem publishSize="289823" publishTime="1740132280"/>
           <PublishItem publishSize="289822" publishTime="1740131189"/>
           <PublishItem publishSize="289824" publishTime="1740130871"/>
-          <PublishItem publishSize="289827" publishTime="1740130745"/>
-          <PublishItem publishSize="289817" publishTime="1740130403"/>
-          <PublishItem publishSize="289776" publishTime="1740130041"/>
-          <PublishItem publishSize="289802" publishTime="1740129908"/>
-          <PublishItem publishSize="289803" publishTime="1740129801"/>
-          <PublishItem publishSize="289803" publishTime="1740129548"/>
      </publishHistory>
 </DOMDocument>

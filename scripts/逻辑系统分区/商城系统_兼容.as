@@ -28,7 +28,7 @@ _root.loaders.push(function ()
 {
     this.kshop_srcs = [];
     this.kshop_list = [];
-    this.json_parser = new JSON();
+    this.json_parser = new LiteJSON();
 
     for (var i = 0; i < _root.preloaders.kshop_strarrs.length; i++)
     {
