@@ -102,3 +102,33 @@ _root.初始化资源箱 = function(){
 	StaticInitializer.initializeUnit(this);
 	gotoAndStop("正常");
 }
+
+//_root.初始化NPC(this);
+_root.初始化NPC = function(目标){
+	if(目标.任务需求 > 1 && _root.主线任务进度 < 目标.任务需求){
+		目标.stop();
+		目标._visible = false;
+		return;
+	}
+	目标._name = 目标.名字;
+	目标.是否为敌人 = false;
+	if(目标.默认对话 == null) 目标.默认对话 = _root.读取并组装NPC对话(目标.名字);
+	if(目标.物品栏 == null) 目标.物品栏 = _root.getNPCShop(目标.名字);
+	if (_root.NPCTaskCheck(目标.名字).result == "接受任务"){
+		_root.发布消息(目标.名字 + "也许需要你的帮助");
+	}
+	//
+	//目标.击中效果 = "飙血"; //意义不明
+	if(目标.方向 == null) 目标.方向 = "右";
+	if(isNaN(目标.身高)) 目标.身高 = 175;
+	var 身高转换值 = _root.身高百分比转换(目标.身高);
+	目标._yscale = 身高转换值;
+	if(目标.方向 == "左"){
+		目标._xscale = - 身高转换值;
+		目标.文字信息._xscale = - 身高转换值;
+		目标.商店名._xscale = - 身高转换值;
+	}else{
+		目标._xscale = 身高转换值;
+	}
+
+}

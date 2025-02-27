@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1737625043" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1740634027" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="医务室">
       <layers>
-        <DOMLayer name="Script Layer" color="#F9E759" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#F9E759">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -157,29 +157,13 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "格格巫";
+	名字 = "格格巫";
 	商店 = "作战药剂出售";
 	身高 = 175;
 	性别 = "女";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
-	/*   物品栏 = [];
-	   物品栏[0] = ["普通hp药剂","普通hp药剂","消耗品","药剂",0.1,200,"普通加血用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[1] = ["普通mp药剂","普通mp药剂","消耗品","药剂",0.1,200,"普通加mp用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[2] = ["抗生素","普通hp药剂","消耗品","药剂",0.1,400,"普通加血用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[3] = ["加强抗生素药剂","普通hp药剂","消耗品","药剂",0.1,1000,"普通加血用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[4] = ["加强mp药剂","普通mp药剂","消耗品","药剂",0.1,1000,"普通加mp用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[5] = ["普通hp粉尘","普通hp药剂","消耗品","药剂",0.1,300,"普通加血用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[6] = ["普通mp粉尘","普通mp药剂","消耗品","药剂",0.1,300,"普通加mp用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[7] = ["战队药箱","普通hp药剂","消耗品","药剂",0.1,1500,"普通加血用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[8] = ["格格巫的毒","格格巫的毒","消耗品","药剂",0.1,500,"普通加血用的药。",0,0,0,50,0,0,0,[],""];*/
 	可学的技能 = _root.格格巫的技能;
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -187,11 +171,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#86FB92">
+        <DOMLayer name="Layer 10" color="#86FB92" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/莉莉丝/莉莉丝-NPC" centerPoint3DX="785.8" centerPoint3DY="401.5">
+                <DOMSymbolInstance libraryItemName="NPC/莉莉丝/莉莉丝-NPC" selected="true" centerPoint3DX="785.8" centerPoint3DY="401.5">
                   <matrix>
                     <Matrix tx="711.9" ty="304.75"/>
                   </matrix>
@@ -200,24 +184,13 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "丽丽丝";
+	名字 = "丽丽丝";
 	商店 = "作战药剂出售";
 	身高 = 165;
 	性别 = "女";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
-	/*   物品栏 = [];
-	   物品栏[0] = ["普通hp药剂","普通hp药剂","消耗品","药剂",0.1,200,"普通加血用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[1] = ["普通mp药剂","普通mp药剂","消耗品","药剂",0.1,200,"普通加mp用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[8] = ["丽丽丝的毒","丽丽丝的毒","消耗品","药剂",0.1,1000000,"普通加血用的药。",0,0,0,50,0,0,0,[],""];
-	   物品栏[9] = ["稀释的毒","稀释的毒","消耗品","药剂",0.1,7000,"普通加血用的药。",0,0,0,50,0,0,0,[],""];*/
 	可学的技能 = _root.丽丽丝的技能;
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1737625064" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1740634147" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -154,7 +154,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#B5B91A">
+        <DOMLayer name="Layer 6" color="#B5B91A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -184,7 +184,6 @@ onClipEvent(load){
 	默认对话[0][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：小F的翻译机挺好用，敌人的敌人就是朋友！", "普通"];
 	默认对话[1][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：一起干掉文明收割者！", "普通"];
 	默认对话[2][0] = ["远古武士铁血使者", "线人", "远古武士铁血使者", "(翻译机)：我们可以提供我们星球的技术！", "普通"];
-	NPC任务_任务_关卡路径 = "通关远古铁血的试验";
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -236,7 +235,6 @@ onClipEvent(load){
    默认对话[0][0] = ["被改造的方舟无人机","线人","被改造的方舟无人机","我这里有大量诺亚可公布信息可以随时查询！","普通"];
    默认对话[1][0] = ["被改造的方舟无人机","线人","被改造的方舟无人机","机器吱吱吱吱吱吱吱.....","普通"];
    NPC任务_任务_关卡路径 = "调查雪女获强化石";
-   商品编号 = "O2011100900000000803";
 }
 ]]></script>
                   </Actionscript>
@@ -260,19 +258,14 @@ onClipEvent(load){
                     <script><![CDATA[onClipEvent (load) {
 	if (_root.task_chains_progress.彩蛋 and _root.task_chains_progress.彩蛋 >= 1)
 	{
+		this.stop();
 		this._visible = 0;
 	}
-	是否为敌人 = false;
-	this._name = 名字 = "神秘男人";
+	名字 = "神秘男人";
 	身高 = 175;
 	性别 = "男";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

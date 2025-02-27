@@ -90,11 +90,11 @@ _root.isStageUnlocked = function(name){
 
 //商店
 _root.getNPCShop = function(name){
-	var shop = _root.MakeArray(80, function (index){
-		return null;
-	});
-	for (var i in _root.shops[name]){
-		shop[Number(i)] = [_root.shops[name][i]];
+	var shopData = _root.shops[name];
+	if(shopData == null) return null;
+	var shop = new Array(80);
+	for (var i in shopData){
+		shop[Number(i)] = [shopData[i]];
 	}
 	return shop;
 }

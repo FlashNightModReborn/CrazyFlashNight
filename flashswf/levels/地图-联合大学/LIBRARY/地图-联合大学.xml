@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1738917587" lastUniqueIdentifier="76">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1740635746" lastUniqueIdentifier="76">
   <timeline>
     <DOMTimeline name="地图-联合大学">
       <layers>
@@ -6,9 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.横版卷屏(_root.控制目标,背景长,背景高,1);
-_root.显示同伴血槽();
-
+                <script><![CDATA[允许通行 = true;
 _root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
@@ -146,7 +144,7 @@ onClipEvent(load){
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#9933CC" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="Tomboy" color="#A91BDC" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Tomboy" color="#A91BDC" parentLayerIndex="7" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -159,21 +157,13 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-   if(_root.主线任务进度 < 28)
-   {
-	   this._visible = 0;
-   }
-   是否为敌人 = false;
-	this._name = 名字 = "Tomboy";
+	任务需求 = 28;
+	名字 = "Tomboy";
 	身高 = 175;
-   性别 = "女";
-   方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
+	性别 = "女";
+	方向 = "右";
 	NPC任务_任务_关卡路径 = "与Tomboy切磋";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -181,7 +171,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="7" autoNamed="false">
+        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -194,31 +184,16 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-   if(_root.主线任务进度 < 28)
-   {
-	   this._visible = 0;
-   }
-   是否为敌人 = false;
-	this._name = 名字 = "Bat";
+	任务需求 = 28;
+	名字 = "Bat";
 	身高 = 185;
-   性别 = "男";
-   方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	//NPC任务_任务 = ["与Tomboy切磋", "NPC任务", "Tomboy", "Tomboy", 0, "和Tomboy进行切磋", "地狱", "新任务", [], [["经验值", 100000]], 任务前对话, 任务后对话, "与Tomboy切磋"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 0;
-	NPC任务_任务_等级限制 = 1;
-	NPC任务_任务_K点 = 0;
-	//商品编号 = "O2011100900000000802";
-	//NPC任务_任务_关卡路径 = "data/stages/副本任务/与Tomboy切磋.xml";
+	性别 = "男";
+	方向 = "右";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="新地图素材/npc黑仔" centerPoint3DX="326.95" centerPoint3DY="413.85">
+                <DOMSymbolInstance libraryItemName="新地图素材/npc黑仔" selected="true" centerPoint3DX="326.95" centerPoint3DY="413.85">
                   <matrix>
                     <Matrix tx="309.5" ty="421.65"/>
                   </matrix>
@@ -227,29 +202,13 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-   if(_root.主线任务进度 < 28)
-   {
-	   this._visible = 0;
-   }
-   是否为敌人 = false;
-	this._name = 名字 = "黑仔";
+	任务需求 = 28;
+	名字 = "黑仔";
 	身高 = 175;
-   性别 = "男";
-   方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	//NPC任务_任务 = ["与Tomboy切磋", "NPC任务", "Tomboy", "Tomboy", 0, "和Tomboy进行切磋", "地狱", "新任务", [], [["经验值", 100000]], 任务前对话, 任务后对话, "与Tomboy切磋"];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 0;
-	NPC任务_任务_等级限制 = 1;
-	NPC任务_任务_K点 = 0;
+	性别 = "男";
+	方向 = "右";
 	商店 = "简易护具出售";
-	物品栏 = _root.getNPCShop(名字);
-	//商品编号 = "O2011100900000000802";
-	//NPC任务_任务_关卡路径 = "data/stages/副本任务/与Tomboy切磋.xml";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

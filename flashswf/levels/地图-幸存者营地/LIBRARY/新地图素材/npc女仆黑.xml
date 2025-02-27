@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/npc女仆黑" itemID="65b649a8-00003bb2" lastModified="1707201630" lastUniqueIdentifier="30">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="新地图素材/npc女仆黑" itemID="65b649a8-00003bb2" lastModified="1740635197" lastUniqueIdentifier="30">
   <timeline>
-    <DOMTimeline name="npc女仆黑" currentFrame="16">
+    <DOMTimeline name="npc女仆黑">
       <layers>
         <DOMLayer name="Labels Layer" color="#A5949C" locked="true">
           <frames>
@@ -12,24 +12,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C29BBA" locked="true">
+        <DOMLayer name="Script Layer" color="#C29BBA" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[function 非主角外观刷新()
-{
-}
-击中效果 = "飙血";
-身高转换值 = _root.身高百分比转换(this.身高);
-this._xscale = 身高转换值;
-this._yscale = 身高转换值;
-if(方向 == "左")
-{
-   this._xscale = - 身高转换值;
-   this.文字信息._xscale = - 身高转换值;
-}
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
@@ -107,11 +92,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#71FCA4" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#71FCA4">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="新地图素材/狙击女仆黑" selected="true" centerPoint3DX="38.7" centerPoint3DY="-10.9">
+                <DOMSymbolInstance libraryItemName="新地图素材/狙击女仆黑" centerPoint3DX="38.7" centerPoint3DY="-10.9">
                   <matrix>
                     <Matrix tx="-19.25" ty="-93.9"/>
                   </matrix>

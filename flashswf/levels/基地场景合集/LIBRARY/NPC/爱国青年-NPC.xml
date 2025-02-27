@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="NPC/爱国青年-NPC" itemID="668a9be5-00004f7b" lastModified="1732205606" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="爱国青年-NPC">
+    <DOMTimeline name="爱国青年-NPC" currentFrame="6">
       <layers>
         <DOMLayer name="Labels Layer" color="#808080" autoNamed="false">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#4FFFFF" autoNamed="false">
+        <DOMLayer name="Script Layer" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -37,11 +37,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
+        <DOMLayer name="图层 3" color="#FF800A">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" selected="true" centerPoint3DX="71.25" centerPoint3DY="-179.9">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" centerPoint3DX="71.25" centerPoint3DY="-179.9">
                   <matrix>
                     <Matrix tx="7.25" ty="-189.65"/>
                   </matrix>

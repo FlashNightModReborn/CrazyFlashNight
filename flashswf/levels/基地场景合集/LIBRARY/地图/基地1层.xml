@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1739605976" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1740636356" lastUniqueIdentifier="21">
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -411,23 +411,14 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_root.主线任务进度 < 69)
-	{
-		this._visible = 0;
-	}
-	是否为敌人 = false;
-	this._name = 名字 = "黑铁会外交部长";
+	任务需求 = 69;
+	名字 = "黑铁会外交部长";
 	商店 = "服装出售";
 	身高 = 175;
 	性别 = "男";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
 	NPC任务_任务_关卡路径 = "制霸黑铁会";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -448,19 +439,14 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_root.主线任务进度 < 3)
-	{
-		this._visible = 0;
-	}
-	是否为敌人 = false;
-	this._name = 名字 = "爱国青年";
+	任务需求 = 3;
+	名字 = "爱国青年";
 	商店 = "空手装备出售";
 	身高 = 180;
 	性别 = "男";
 	方向 = "右";
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
 	NPC任务_任务_关卡路径 = "二战亡灵";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -468,11 +454,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="宝石线人" color="#C4FF64" parentLayerIndex="16" autoNamed="false">
+        <DOMLayer name="宝石线人" color="#C4FF64" parentLayerIndex="16" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/宝石线人-NPC" centerPoint3DX="1231.65" centerPoint3DY="479.4">
+                <DOMSymbolInstance libraryItemName="NPC/宝石线人-NPC" selected="true" centerPoint3DX="1231.65" centerPoint3DY="479.4">
                   <matrix>
                     <Matrix tx="1179.65" ty="376.2"/>
                   </matrix>
@@ -481,23 +467,14 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_root.主线任务进度 < 42)
-	{
-		this._visible = 0;
-	}
-	是否为敌人 = false;
-	this._name = 名字 = "宝石线人";
+	任务需求 = 36;
+	名字 = "宝石线人";
 	商店 = "服装出售";
 	身高 = 175;
 	性别 = "女";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
 	NPC任务_任务_关卡路径 = "夺取材料";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -518,23 +495,14 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_root.主线任务进度 < 40)
-	{
-		this._visible = 0;
-	}
-	是否为敌人 = false;
-	this._name = 名字 = "学生妹";
+	任务需求 = 29;
+	名字 = "学生妹";
 	商店 = "材料出售";
 	身高 = 180;
 	性别 = "男";
 	方向 = "右";
-	物品栏 = _root.getNPCShop(名字);
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
 	NPC任务_任务_关卡路径 = "堕落城的骚动";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -555,23 +523,14 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_root.主线任务进度 < 19)
-	{
-		this._visible = 0;
-	}
-	是否为敌人 = false;
-	this._name = 名字 = "幸存老兵";
+	任务需求 = 19;
+	名字 = "幸存老兵";
 	商店 = "服装出售";
 	身高 = 185;
 	性别 = "男";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
 	NPC任务_任务_关卡路径 = "AVP";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -592,23 +551,14 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_root.主线任务进度 < 22)
-	{
-		this._visible = 0;
-	}
-	是否为敌人 = false;
-	this._name = 名字 = "前治安官";
+	任务需求 = 22;
+	名字 = "前治安官";
 	商店 = "装备＆材料出售"
 	身高 = 180;
 	性别 = "男";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
 	NPC任务_任务_关卡路径 = "僵尸逆袭";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -629,25 +579,15 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_root.主线任务进度 < 38)
-	{
-		this._visible = 0;
-	}
-	是否为敌人 = false;
-	this._name = 名字 = "迷之盔甲君";
+	任务需求 = 38;
+	名字 = "迷之盔甲君";
 	商店 = "材料出售";
 	身高 = 185;
 	性别 = "男";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
 	NPC任务_任务_关卡路径 = "生存战";
-
 	可学的技能 = _root.盔甲君的技能;
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -668,16 +608,11 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "∞天ㄙ★使的剪∞";
+	名字 = "∞天ㄙ★使的剪∞";
 	身高 = 185;
 	性别 = "男";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

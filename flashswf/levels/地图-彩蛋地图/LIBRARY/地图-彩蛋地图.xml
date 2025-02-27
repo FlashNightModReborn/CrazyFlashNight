@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1738917384" lastUniqueIdentifier="42">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1740635629" lastUniqueIdentifier="42">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
-        <DOMLayer name="as" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -79,21 +79,10 @@ _root.配置场景环境信息();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	if (_root.task_chains_progress.彩蛋 and _root.task_chains_progress.彩蛋 >= 1)
-	{
-		this._visible = 1;
-	}
-	是否为敌人 = false;
-	this._name = 名字 = "文天";
+	名字 = "文天";
 	身高 = 175;
 	性别 = "男";
-	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -114,19 +103,13 @@ _root.配置场景环境信息();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "诺艾尔";
+	名字 = "诺艾尔";
 	商店 = "特殊武器出售";
 	身高 = 175;
 	性别 = "女";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
 	NPC任务_任务_关卡路径 = "挑战诺艾尔";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -155,23 +138,10 @@ _root.配置场景环境信息();]]></script>
 	{
 		this._visible = 0;
 	}
-	是否为敌人 = false;
-	this._name = 名字 = "歌留多";
+	名字 = "歌留多";
 	身高 = 175;
 	性别 = "女";
-	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
-	NPC任务_任务 = [];
-	NPC任务_任务_动画 = "";
-	NPC任务_任务_契约金 = 0;
-	NPC任务_任务_等级限制 = 5;
-	NPC任务_任务_K点 = 0;
-	商品编号 = "O2011100900000000802";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -179,11 +149,11 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="士力架npc" color="#9933CC" autoNamed="false">
+        <DOMLayer name="士力架npc" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="所有素材/士力架npc" centerPoint3DX="2310.3" centerPoint3DY="439.9">
+                <DOMSymbolInstance libraryItemName="所有素材/士力架npc" selected="true" centerPoint3DX="2310.3" centerPoint3DY="439.9">
                   <matrix>
                     <Matrix a="-0.54180908203125" d="0.582687377929688" tx="2267.75" ty="378.55"/>
                   </matrix>
@@ -192,17 +162,10 @@ _root.配置场景环境信息();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "尾上世莉架";
+	名字 = "尾上世莉架";
 	身高 = 160;
 	性别 = "女";
-	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -231,18 +194,12 @@ _root.配置场景环境信息();]]></script>
 	{
 		this._visible = 0;
 	}
-	是否为敌人 = false;
-	this._name = 名字 = "heeho君";
+	名字 = "heeho君";
 	商店 = "特殊武器出售";
 	身高 = 120;
 	性别 = "男";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

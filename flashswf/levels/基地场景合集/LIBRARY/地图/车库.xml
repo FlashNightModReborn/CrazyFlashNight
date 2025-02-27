@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1737625094" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1740634255" lastUniqueIdentifier="17">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -113,11 +113,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="冷兵器商人" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="冷兵器商人" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" centerPoint3DX="203.9" centerPoint3DY="236.25">
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" selected="true" centerPoint3DX="203.9" centerPoint3DY="236.25">
                   <matrix>
                     <Matrix tx="139.9" ty="177.6"/>
                   </matrix>
@@ -126,18 +126,12 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "冷兵器商人";
+	名字 = "冷兵器商人";
 	商店 = "冷兵器出售";
 	身高 = 185;
 	性别 = "男";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -166,7 +160,6 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
 	脸型 = "女变装-基本脸型";
 	发型 = "";
 	头部装备 = "King头-NPC";
@@ -180,17 +173,12 @@ onClipEvent(load){
 	手枪2 = "UZI";
 	刀 = "";
 	手雷 = "";
-	this._name = 名字 = "King";
+	名字 = "King";
 	商店 = "手枪出售";
 	身高 = 170;
 	性别 = "女";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -211,7 +199,6 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
 	脸型 = "男变装-基本脸型";
 	发型 = "";
 	头部装备 = "Boy头-NPC";
@@ -224,19 +211,15 @@ onClipEvent(load){
 	手枪 = "p90";
 	刀 = "";
 	手雷 = "";
-	this._name = 名字 = "Boy";
+	名字 = "Boy";
 	商店 = "长枪&手雷出售";
 	身高 = 179;
 	性别 = "男";
 	动画 = "站立吸烟";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
+	
 	可学的技能 = _root.boy的技能;
 	NPC任务_任务_关卡路径 = "挑战BPK";
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -257,7 +240,6 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
 	脸型 = "男变装-基本脸型";
 	发型 = "";
 	头部装备 = "Pig头-NPC";
@@ -270,15 +252,10 @@ onClipEvent(load){
 	手枪 = "";
 	刀 = "双面斧";
 	手雷 = "";
-	this._name = 名字 = "Pig";
-	商店 = "";
+	名字 = "Pig";
 	身高 = 210;
 	性别 = "男";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2716" itemID="6597607e-00000cd7" lastModified="1720360575" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2716" itemID="6597607e-00000cd7" lastModified="1740633527" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="Symbol 2716" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-149&lt;/guideline&gt;&lt;guideline direction="h"&gt;12&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -12,25 +12,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BC8344">
+        <DOMLayer name="Script Layer" color="#BC8344" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[function 非主角外观刷新()
-{
-}
-击中效果 = "飙血";
-身高转换值 = _root.身高百分比转换(this.身高);
-this._xscale = 身高转换值;
-this._yscale = 身高转换值;
-if(方向 == "右")
-{
-   this._xscale = - 身高转换值;
-   this.文字信息._xscale = - 身高转换值;
-   this.商店名._xscale = - 身高转换值;
-}
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
@@ -53,7 +37,7 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>

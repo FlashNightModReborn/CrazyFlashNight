@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1738917619" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1740634919" lastUniqueIdentifier="17">
   <timeline>
     <DOMTimeline name="地图-军阀基地">
       <layers>
@@ -7,10 +7,7 @@
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[允许通行 = true;
-_root.横版卷屏(_root.控制目标,背景长,背景高,1);
-_root.显示同伴血槽();
 _root.关卡地图帧值 = "地图-军阀基地";
-
 _root.配置场景环境信息();]]></script>
               </Actionscript>
               <elements/>
@@ -87,18 +84,12 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "general";
+	名字 = "general";
 	商店 = "服装出售";
 	身高 = 175;
 	性别 = "男";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -168,18 +159,12 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "gazer";
+	名字 = "gazer";
 	身高 = 185;
 	性别 = "女";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
 	NPC任务_任务_关卡路径 = "挑战gazer";
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

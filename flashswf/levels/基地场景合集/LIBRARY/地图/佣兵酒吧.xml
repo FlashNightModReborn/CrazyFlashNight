@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1737625012" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1740633992" lastUniqueIdentifier="10">
   <timeline>
     <DOMTimeline name="佣兵酒吧">
       <layers>
-        <DOMLayer name="Script Layer" color="#57AEE6" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#57AEE6">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -131,7 +131,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="985女" color="#60B1F3" autoNamed="false">
+        <DOMLayer name="985女" color="#60B1F3" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -144,21 +144,12 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "舞女";
+	名字 = "舞女";
 	商店 = "服装出售";
 	身高 = 167;
 	性别 = "女";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = [[], [], []];
-	默认对话[0][0] = ["舞女", "身体艺术家", "舞女", "Come on baby...", "普通"];
-	默认对话[1][0] = ["舞女", "身体艺术家", "舞女", "不要说话，用心感受……", "普通"];
-	默认对话[2][0] = ["舞女", "身体艺术家", "舞女", "不想喝一杯吗？勇士……", "普通"];
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -179,19 +170,13 @@ on(rollOut){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "酒保";
+	名字 = "酒保";
 	商店 = "服装＆消耗品出售";
 	身高 = 175;
 	性别 = "男";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
 	可学的技能 = _root.酒保的技能;
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

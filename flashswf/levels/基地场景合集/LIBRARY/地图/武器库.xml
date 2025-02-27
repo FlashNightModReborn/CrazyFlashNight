@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1737624953" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1740634487" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="武器库">
       <layers>
-        <DOMLayer name="as" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -239,11 +239,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#84BC96">
+        <DOMLayer name="Layer 6" color="#84BC96" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2547" centerPoint3DX="719" centerPoint3DY="410.2">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 2547" selected="true" centerPoint3DX="719" centerPoint3DY="410.2">
                   <matrix>
                     <Matrix tx="647.45" ty="276.6"/>
                   </matrix>
@@ -252,23 +252,15 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "小F";
+	名字 = "小F";
 	商店 = "图纸出售";
 	身高 = 145;
 	性别 = "男";
 	方向 = "右";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
-	物品栏 = _root.getNPCShop(名字);
 	可学的技能 = _root.小F的技能;
+	_root.初始化NPC(this);
 }
-onClipEvent (unload) {
-	_root.物品改装界面._visible = false;
-}]]></script>
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

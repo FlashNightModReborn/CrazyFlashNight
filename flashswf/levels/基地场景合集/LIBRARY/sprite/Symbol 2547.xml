@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2547" itemID="6597607e-00000bc7" lastModified="1723259438" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 2547" itemID="6597607e-00000bc7" lastModified="1740634401" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="Symbol 2547">
       <layers>
@@ -12,25 +12,9 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#82E338">
+        <DOMLayer name="Script Layer" color="#82E338" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[function 非主角外观刷新()
-{
-}
-击中效果 = "飙血";
-身高转换值 = _root.身高百分比转换(this.身高);
-this._xscale = 身高转换值;
-this._yscale = 身高转换值;
-if(方向 == "左")
-{
-   this._xscale = - 身高转换值;
-   this.文字信息._xscale = - 身高转换值;
-   this.商店名._xscale = - 身高转换值;
-}
-]]></script>
-              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
@@ -101,11 +85,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#A9796E" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#A9796E">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2546" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2546" symbolType="button">
                   <matrix>
                     <Matrix a="2.44000244140625" d="5.72062683105469" tx="-0.65" ty="-59.6"/>
                   </matrix>
@@ -126,14 +110,6 @@ on(release){
       _root.NPC功能菜单.当前NPC = this._name;
       _root.NPC功能菜单.刷新显示();
    }
-   /*if(_root.物品改装界面._visible == false)
-   {
-      _root.物品改装界面._visible = true;
-   }
-   else
-   {
-      _root.物品改装界面._visible = false;
-   }*/
 }
 on(rollOver){
    gotoAndStop("描边");

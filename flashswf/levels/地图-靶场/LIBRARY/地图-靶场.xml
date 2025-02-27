@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1738917432" lastUniqueIdentifier="107">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1740635464" lastUniqueIdentifier="107">
   <timeline>
     <DOMTimeline name="地图-靶场">
       <layers>
@@ -48,7 +48,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Ltinerant" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Ltinerant" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -61,18 +61,12 @@ _root.配置场景环境信息();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "Itinerant";
+	名字 = "Itinerant";
 	身高 = 175;
 	性别 = "女";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
 	NPC任务_任务_关卡路径 = "挑战Itinerant";
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -80,7 +74,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Surveyor" color="#9933CC" autoNamed="false">
+        <DOMLayer name="Surveyor" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -93,18 +87,12 @@ _root.配置场景环境信息();]]></script>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
-	this._name = 名字 = "surveyor";
+	名字 = "surveyor";
 	身高 = 135;
 	性别 = "男";
 	方向 = "左";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "似乎需要你的帮助");
-	}
-	默认对话 = _root.读取并组装NPC对话(名字);
 	NPC任务_任务_关卡路径 = "挑战surveyor";
-	物品栏 = _root.getNPCShop(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

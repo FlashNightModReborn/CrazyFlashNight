@@ -72,6 +72,7 @@
             "id": 3,
             "title": "$MAIN_TITLE_3",
             "description": "$MAIN_DESCRIPTION_3",
+            "announcement":"一名爱国青年出现在了基地大厅",
 
             "get_requirements": [2],
             "get_conversation": "$MAIN_GET_3",
@@ -454,7 +455,7 @@
             "id": 19,
             "title": "$MAIN_TITLE_19",
             "description": "$MAIN_DESCRIPTION_19",
-            "announcement":"一位幸存老兵来到了基地大厅#$#;酒保带来了新的酒……和一张通缉令",
+            "announcement":"一位幸存老兵来到了基地大厅#$#;酒保带来了新的通缉令和挑战任务",
 
             "get_requirements": [18],
             "get_conversation": "$MAIN_GET_19",
@@ -530,7 +531,7 @@
             "id": 22,
             "title": "$MAIN_TITLE_22",
             "description": "$MAIN_DESCRIPTION_22",
-            "announcement":"Andy Law发布了新的挑战任务",
+            "announcement":"一位前治安官出现在了基地大厅#$#;Andy Law发布了新的挑战任务",
 
             "get_requirements": [21],
             "get_conversation": "$MAIN_GET_22",
@@ -698,7 +699,7 @@
             "id": 29,
             "title": "$MAIN_TITLE_29",
             "description": "$MAIN_DESCRIPTION_29",
-            "announcement":"酒保带来了两张新的通缉令",
+            "announcement":"酒保带来了三张新的通缉令#$#;一位学生会长出现在了基地大厅",
 
             "get_requirements": [28],
             "get_conversation": "$MAIN_GET_29",
@@ -836,7 +837,6 @@
             "id": 35,
             "title": "$MAIN_TITLE_35",
             "description": "$MAIN_DESCRIPTION_35",
-            "announcement":"酒保带来了一张新的通缉令",
 
             "get_requirements": [34],
             "get_conversation": "$MAIN_GET_35",
@@ -862,6 +862,7 @@
             "id": 36,
             "title": "$MAIN_TITLE_36",
             "description": "$MAIN_DESCRIPTION_36",
+            "announcement":"一位宝石线人出现在了基地大厅",
 
             "get_requirements": [35],
             "get_conversation": "$MAIN_GET_36",
@@ -962,7 +963,6 @@
             "id": 40,
             "title": "$MAIN_TITLE_40",
             "description": "$MAIN_DESCRIPTION_40",
-            "announcement":"一位学生会长出现在了基地大厅",
 
             "get_requirements": [39],
             "get_conversation": "$MAIN_GET_40",
@@ -1013,7 +1013,6 @@
             "id": 42,
             "title": "$MAIN_TITLE_42",
             "description": "$MAIN_DESCRIPTION_42",
-            "announcement":"一位宝石线人出现在了基地大厅",
 
             "get_requirements": [41],
             "get_conversation": "$MAIN_GET_42",
