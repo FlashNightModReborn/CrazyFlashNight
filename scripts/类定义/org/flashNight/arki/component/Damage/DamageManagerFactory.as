@@ -306,12 +306,10 @@ class org.flashNight.arki.component.Damage.DamageManagerFactory {
 
     public function getDamageManager1(bullet:Object):DamageManager {
         var bitmask:Number = this._skipCheckBitmask;
-        var handles:Array = this._handles;
-        var conditionalIndices:Array = this._conditionalHandlerIndices;
         var index:Number;
 
-        index = conditionalIndices[0];
-        if (handles[index].canHandle(bullet))
+        index = this._conditionalHandlerIndices[0];
+        if (this._handles[index].canHandle(bullet))
             bitmask |= (1 << index);
 
         return DamageManager(this._managerCache.get(bitmask));

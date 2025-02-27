@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1740633992" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1740645643" lastUniqueIdentifier="10">
   <timeline>
     <DOMTimeline name="佣兵酒吧">
       <layers>
@@ -148,7 +148,6 @@ on(rollOut){
 	商店 = "服装出售";
 	身高 = 167;
 	性别 = "女";
-	方向 = "左";
 	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
