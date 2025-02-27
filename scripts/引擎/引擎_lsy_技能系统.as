@@ -283,7 +283,8 @@ _root.丽丽丝的技能[0] = ["炼金", 1,false];
 _root.格格巫的技能 = new Array(2);
 _root.格格巫的技能[0] = ["炼金", 1,false];
 
-
+_root.厨师的技能 = new Array(2);
+_root.厨师的技能[0] = ["烹饪", 1,false];
 
 
 
