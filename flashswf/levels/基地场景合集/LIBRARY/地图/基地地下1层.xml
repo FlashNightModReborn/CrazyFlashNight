@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1740634339" lastUniqueIdentifier="24">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地地下1层" itemID="668aa054-00005128" linkageExportForAS="true" linkageIdentifier="基地场景-地下室1层" lastModified="1740678615" lastUniqueIdentifier="24">
   <timeline>
     <DOMTimeline name="基地地下1层">
       <layers>
@@ -293,7 +293,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="蓝头巾" color="#EF7277" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="蓝头巾" color="#EF7277" parentLayerIndex="11" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -322,7 +322,6 @@ onClipEvent (load) {
 	身高 = 185;
 	性别 = "男";
 	动画 = "拳头攻击";
-	可学的技能 = _root.blue的技能;
 	NPC任务_任务_关卡路径 = "挑战Blue";
 	_root.初始化NPC(this);
 }]]></script>
@@ -332,11 +331,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Andy Law" color="#9BCD8B" parentLayerIndex="11" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Andy Law" color="#9BCD8B" parentLayerIndex="11" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/Andy-NPC" selected="true" centerPoint3DX="819.7" centerPoint3DY="382.95">
+                <DOMSymbolInstance libraryItemName="NPC/Andy-NPC" centerPoint3DX="819.7" centerPoint3DY="382.95">
                   <matrix>
                     <Matrix tx="731.4" ty="258.9"/>
                   </matrix>
@@ -364,7 +363,6 @@ onClipEvent (load) {
 	性别 = "男";
 	动画 = "普通坐";
 	方向 = "左";
-	可学的技能 = _root.andy的技能;
 	NPC任务_任务_关卡路径 = "挑战Andylaw";
 	_root.初始化NPC(this);
 }]]></script>

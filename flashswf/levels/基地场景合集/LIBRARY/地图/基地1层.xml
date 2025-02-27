@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1740636356" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1740678607" lastUniqueIdentifier="21">
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
@@ -398,7 +398,7 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="黑铁会外交部长" color="#E352B2" parentLayerIndex="16" autoNamed="false">
+        <DOMLayer name="黑铁会外交部长" color="#E352B2" parentLayerIndex="16" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -454,11 +454,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="宝石线人" color="#C4FF64" parentLayerIndex="16" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="宝石线人" color="#C4FF64" parentLayerIndex="16" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/宝石线人-NPC" selected="true" centerPoint3DX="1231.65" centerPoint3DY="479.4">
+                <DOMSymbolInstance libraryItemName="NPC/宝石线人-NPC" centerPoint3DX="1231.65" centerPoint3DY="479.4">
                   <matrix>
                     <Matrix tx="1179.65" ty="376.2"/>
                   </matrix>
@@ -586,7 +586,6 @@ onClipEvent (load) {
 	性别 = "男";
 	方向 = "右";
 	NPC任务_任务_关卡路径 = "生存战";
-	可学的技能 = _root.盔甲君的技能;
 	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>

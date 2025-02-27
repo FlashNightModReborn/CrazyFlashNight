@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1740445840">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1740678018">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="6">
+    <DOMTimeline name="asLoader" currentFrame="82">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -25,7 +25,10 @@
             <DOMFrame index="54" duration="13" name="加载运行2" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="67" duration="30" name="实验新xmlloader" labelType="comment" keyMode="9728">
+            <DOMFrame index="67" duration="13" name="实验新xmlloader" labelType="comment" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" duration="17" name="新jsonloader" labelType="comment" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="97" duration="11" name="卸载影片剪辑" labelType="comment" keyMode="9728">
@@ -435,7 +438,7 @@ stage_env_loader.loadStageEnvironment(
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="74" duration="23" keyMode="9728">
+            <DOMFrame index="74" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.SceneEnvironmentLoader;
 var scene_env_loader:SceneEnvironmentLoader = SceneEnvironmentLoader.getInstance();
@@ -450,6 +453,21 @@ scene_env_loader.loadSceneEnvironment(
     }
 );
 ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" duration="17" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var npcskillloader = org.flashNight.gesh.json.LoadJson.NPCSkillLoader.getInstance();
+npcskillloader.loadNPCSkills(
+    function(data:Object):Void {
+		trace("主程序：NPC技能数据加载成功！");
+		_root.NPC技能表 = data;
+    },
+    function():Void {
+        trace("主程序：NPC技能数据加载失败！");
+    }
+);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

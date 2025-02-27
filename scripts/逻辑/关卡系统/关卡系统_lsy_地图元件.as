@@ -114,6 +114,7 @@ _root.初始化NPC = function(目标){
 	目标.是否为敌人 = false;
 	if(目标.默认对话 == null) 目标.默认对话 = _root.读取并组装NPC对话(目标.名字);
 	if(目标.物品栏 == null) 目标.物品栏 = _root.getNPCShop(目标.名字);
+	if(目标.可学的技能 == null) 目标.可学的技能 = _root.getNPCSkills(目标.名字);
 	if (_root.NPCTaskCheck(目标.名字).result == "接受任务"){
 		_root.发布消息(目标.名字 + "也许需要你的帮助");
 	}

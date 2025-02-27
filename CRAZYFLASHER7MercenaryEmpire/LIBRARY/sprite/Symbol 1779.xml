@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1779" itemID="6597607e-000009fb" lastModified="1727760407">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1779" itemID="6597607e-000009fb" lastModified="1740678943">
   <timeline>
-    <DOMTimeline name="Symbol 1779" currentFrame="13">
+    <DOMTimeline name="Symbol 1779">
       <layers>
         <DOMLayer name="Labels Layer" color="#D622A5">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C4FC89">
+        <DOMLayer name="Script Layer" color="#C4FC89" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -45,7 +45,7 @@
 			temp_x = _root.学习技能界面.技能图标._x;
 			temp_y += temp_h;
 		}
-		var 当前技能名 = 可学的技能[p][0];
+		var 当前技能名 = 可学的技能[p];
 		if (当前技能名 == "空" || !当前技能名)
 		{
 			//技能格.gotoAndStop("空");
@@ -172,7 +172,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements/>

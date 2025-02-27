@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1740645641" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1740678654" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="医务室">
       <layers>
@@ -162,7 +162,6 @@ onClipEvent (load) {
 	身高 = 175;
 	性别 = "女";
 	方向 = "右";
-	可学的技能 = _root.格格巫的技能;
 	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
@@ -189,7 +188,6 @@ onClipEvent (load) {
 	身高 = 165;
 	性别 = "女";
 	方向 = "左";
-	可学的技能 = _root.丽丽丝的技能;
 	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>

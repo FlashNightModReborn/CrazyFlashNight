@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1740645643" lastUniqueIdentifier="10">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/佣兵酒吧" itemID="668aa09a-00005167" linkageExportForAS="true" linkageIdentifier="基地场景-佣兵酒吧" lastModified="1740678659" lastUniqueIdentifier="10">
   <timeline>
     <DOMTimeline name="佣兵酒吧">
       <layers>
@@ -131,7 +131,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="985女" color="#60B1F3" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="985女" color="#60B1F3" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -156,7 +156,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="9保" color="#CF7398" autoNamed="false">
+        <DOMLayer name="9保" color="#CF7398" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -174,7 +174,6 @@ on(rollOut){
 	身高 = 175;
 	性别 = "男";
 	方向 = "左";
-	可学的技能 = _root.酒保的技能;
 	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>

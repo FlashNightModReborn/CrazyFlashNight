@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1740645762" lastUniqueIdentifier="18">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1740678410" lastUniqueIdentifier="18">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -113,7 +113,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="冷兵器商人" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="冷兵器商人" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -147,7 +147,7 @@ onClipEvent(load){
           </frames>
         </DOMLayer>
         <DOMLayer name="BPK" color="#9933CC" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="KING" color="#BA6078" parentLayerIndex="7" autoNamed="false">
+        <DOMLayer name="KING" color="#BA6078" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -216,8 +216,6 @@ onClipEvent(load){
 	身高 = 179;
 	性别 = "男";
 	动画 = "站立吸烟";
-	
-	可学的技能 = _root.boy的技能;
 	NPC任务_任务_关卡路径 = "挑战BPK";
 	_root.初始化NPC(this);
 }]]></script>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1740645639" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1740678636" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="武器库">
       <layers>
@@ -239,7 +239,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#84BC96" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#84BC96">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -257,7 +257,6 @@ onClipEvent (load) {
 	身高 = 145;
 	性别 = "男";
 	方向 = "右";
-	可学的技能 = _root.小F的技能;
 	_root.初始化NPC(this);
 }
 ]]></script>
@@ -267,7 +266,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#7E77A1" locked="true">
+        <DOMLayer name="Layer 7" color="#7E77A1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -280,7 +279,6 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	是否为敌人 = false;
 	脸型 = "男变装-基本脸型";
 	发型 = "";
 	头部装备 = "ShopGirl头-NPC";
@@ -293,19 +291,12 @@ onClipEvent (load) {
 	手枪 = "美国制式手枪";
 	刀 = "";
 	手雷 = "";
-	this._name = 名字 = "Shop Girl";
-	商店 = "武器出售";
+	名字 = "Shop Girl";
 	身高 = 170;
 	性别 = "女";
 	方向 = "左";
 	动画 = "女式坐";
-	if (_root.NPCTaskCheck(名字).result == "接受任务")
-	{
-		_root.发布消息(名字 + "也许需要你的帮助");
-	}
-	物品栏 = _root.getNPCShop(名字);
-	可学的技能 = _root.shopGirl的技能;
-	默认对话 = _root.读取并组装NPC对话(名字);
+	_root.初始化NPC(this);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
