@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1740634027" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1740645641" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="医务室">
       <layers>
@@ -175,7 +175,7 @@ onClipEvent (load) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/莉莉丝/莉莉丝-NPC" selected="true" centerPoint3DX="785.8" centerPoint3DY="401.5">
+                <DOMSymbolInstance libraryItemName="NPC/莉莉丝/莉莉丝-NPC" centerPoint3DX="785.8" centerPoint3DY="401.5">
                   <matrix>
                     <Matrix tx="711.9" ty="304.75"/>
                   </matrix>

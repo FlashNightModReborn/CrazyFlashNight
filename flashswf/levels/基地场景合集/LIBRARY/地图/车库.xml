@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1740634255" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/车库" itemID="668aa123-00005253" linkageExportForAS="true" linkageIdentifier="基地场景-基地车库" lastModified="1740645762" lastUniqueIdentifier="18">
   <timeline>
     <DOMTimeline name="车库">
       <layers>
@@ -117,7 +117,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" selected="true" centerPoint3DX="203.9" centerPoint3DY="236.25">
+                <DOMSymbolInstance libraryItemName="NPC/冷武器商人/冷兵器商人-交互" centerPoint3DX="203.9" centerPoint3DY="236.25">
                   <matrix>
                     <Matrix tx="139.9" ty="177.6"/>
                   </matrix>
