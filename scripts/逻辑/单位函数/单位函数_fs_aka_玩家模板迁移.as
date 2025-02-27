@@ -95,10 +95,11 @@ _root.根据等级计算值 = function(最小值, 最大值, 目前等级) {
             允许小数 = arg4.允许小数 !== undefined ? Boolean(arg4.允许小数) : false;
             禁止超出最大等级 = arg4.禁止超出最大等级 === true;
         } else {
-            // 旧调用方式：第四、第五个参数
-			_root.发布消息("根据等级计算值的旧调用方式");
             允许小数 = Boolean(arg4);
             禁止超出最大等级 = arguments.length >= 5 ? arguments[4] === true : false;
+
+			            // 旧调用方式：第四、第五个参数
+			_root.发布消息("根据等级计算值的旧调用方式" + 允许小数 + " " + 禁止超出最大等级);
         }
     }
 

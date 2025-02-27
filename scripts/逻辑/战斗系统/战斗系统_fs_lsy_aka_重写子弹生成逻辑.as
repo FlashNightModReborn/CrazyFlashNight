@@ -95,7 +95,7 @@ _root.子弹区域shoot传递 = function(Obj){
     BulletInitializer.initializeBulletProperties(Obj);
 
     // 创建子弹
-    var bulletInstance = 创建子弹(Obj, shooter, 射击角度);
+    var bulletInstance = _root.创建子弹(Obj, shooter, 射击角度);
 
     // _root.服务器.发布服务器消息(ObjectUtil.toString(bulletInstance));
 
@@ -157,7 +157,16 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
         bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
 
         bulletInstance.damageManager = DamageManagerFactory.Basic.getDamageManager(bulletInstance);
-        // _root.发布消息(bulletInstance.damageManager);
+
+        /*
+        if(!bulletInstance.damageManager) {
+            _root.发布消息("DamageManager failed" + ObjectUtil.toString(bulletInstance));
+        }
+        else
+        {
+            _root.发布消息("DamageManager succesed");
+        }
+        */
 
         子弹总数--;
     } while (子弹总数 > 0);
@@ -351,7 +360,13 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
 // 专注于伤害与效果计算，并将计算结果打包返回
 // --------------------子弹伤害结算核心--------------------
 _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRatio, dodgeState) {
-    var manager:DamageManager = bullet.damageManager || (bullet.damageNumber = DamageManagerFactory.Basic.getDamageManager(bulletInstance));
+    var manager:DamageManager = bullet.damageManager
+    if(!manager) {
+        manager = DamageManagerFactory.Basic.getDamageManager(bullet);
+        bullet.damageManager = manager;
+        // _root.发布消息("DamageManager created" + ObjectUtil.toString(bullet));
+    }
+
     manager.overlapRatio = overlapRatio;
     manager.dodgeState = dodgeState;
 
@@ -389,7 +404,7 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
 // --------------------子弹伤害结算（主函数）--------------------
 // 继续保留原本的入口，但在里面调用 核心计算函数 和 显示函数。
 // --------------------子弹伤害结算（主函数）--------------------
-_root.子弹伤害结算 = function(bullet, shooter, hitTarget, overlapRatio, dodgeState, overlapCenter) {
+_root.子弹伤害结算 = function(bullet, shooter, hitTarget, overlapRatio, dodgeState) {
     _root.子弹伤害结算核心(
         bullet, 
         shooter, 
@@ -511,7 +526,7 @@ _root.子弹生命周期 = function()
             // 调用伤害结算函数
             if(this.击中时触发函数) this.击中时触发函数();
 
-            _root.子弹伤害结算(this, shooter, hitTarget, overlapRatio, dodgeState, overlapCenter);
+            _root.子弹伤害结算(this, shooter, hitTarget, overlapRatio, dodgeState);
 
             //伤害结算结束后，继续原逻辑
             if(!this.近战检测 && !this.爆炸检测 && hitTarget.hp <= 0)
