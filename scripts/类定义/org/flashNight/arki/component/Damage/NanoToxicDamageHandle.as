@@ -52,6 +52,7 @@ class org.flashNight.arki.component.Damage.NanoToxicDamageHandle extends BaseDam
      * @return Boolean 如果子弹具有纳米毒素属性则返回 true，否则返回 false
      */
     public function canHandle(bullet:Object):Boolean {
+        //_root.发布消息(!!(bullet.nanoToxic > 0))
         return (bullet.nanoToxic > 0);
     }
 

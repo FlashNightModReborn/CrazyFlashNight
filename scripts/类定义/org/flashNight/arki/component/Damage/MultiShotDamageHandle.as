@@ -51,6 +51,7 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
      * @return Boolean 如果子弹具有联弹属性且不穿刺则返回 true，否则返回 false
      */
     public function canHandle(bullet:Object):Boolean {
+        // _root.发布消息(!!(bullet.联弹检测 && !bullet.穿刺检测))
         return (bullet.联弹检测 && !bullet.穿刺检测);
     }
 
@@ -102,6 +103,8 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         // 更新 bullet 和 target
         bullet.霰弹值 -= actualScatterUsed;
         result.finalScatterValue = bullet.霰弹值;
+
+        // _root.发布消息("au:" + actualScatterUsed + ",fv:" + bullet.霰弹值 + ", dg:" + target.损伤值);
 
         // 乘以实际消耗霰弹值
         target.损伤值 *= actualScatterUsed;

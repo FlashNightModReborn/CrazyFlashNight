@@ -113,6 +113,40 @@ class org.flashNight.arki.component.Damage.DamageResult {
     public function addDamageEffect(effect:String):Void {
         this.damageEffects += effect;
     }
+
+    /**
+     * 兼容联弹处理逻辑，将伤害结果推入堆栈准备显示
+     * 
+     * @param remainingDamage 待处理的伤害数值
+     * @param damageSize 伤害数字大小
+     * @return 
+     */
+    public function calculateScatterDamage(remainingDamage:Number, damageSize:Number):Void {
+        // 设置显示次数为实际使用的霰弹值
+        this.displayCount = this.actualScatterUsed;
+        
+        var actualScatterUsed:Number = this.actualScatterUsed;
+        
+        if (actualScatterUsed > 1) {
+            // 分割总伤害为多个散射伤害
+            for (var i:Number = 0; i < actualScatterUsed - 1; i++) {
+                // 计算波动伤害（保留原随机逻辑）
+                var fluctuatedDamage:Number = (remainingDamage / (actualScatterUsed - i)) 
+                    * (100 + _root.随机偏移(50 / actualScatterUsed)) / 100;
+                
+                // 处理非法值并添加伤害
+                fluctuatedDamage = isNaN(fluctuatedDamage) ? 0 : fluctuatedDamage;
+                this.addDamageValue(Math.floor(fluctuatedDamage));
+                remainingDamage -= fluctuatedDamage;
+            }
+        }
+        
+        // 添加最后的剩余伤害
+        this.addDamageValue(isNaN(remainingDamage) ? 0 : Math.floor(remainingDamage));
+        
+        // 设置伤害尺寸
+        this.damageSize = damageSize;
+    }
     
     /**
      * 触发伤害显示功能，将伤害值显示在指定的坐标位置。

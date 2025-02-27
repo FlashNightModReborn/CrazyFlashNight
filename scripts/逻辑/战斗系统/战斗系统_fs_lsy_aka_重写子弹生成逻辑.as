@@ -380,106 +380,23 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
 
     */
 
-
+    
     var crit:CritDamageHandle = CritDamageHandle.instance;
     if(crit.canHandle(bullet)) crit.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-
-    
     var uni:UniversalDamageHandle = UniversalDamageHandle.instance;
     uni.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-    
+    var multi:MultiShotDamageHandle = MultiShotDamageHandle.instance;
+    if(multi.canHandle(bullet)) multi.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
+    var nano:NanoToxicDamageHandle = NanoToxicDamageHandle.instance;
+    if(nano.canHandle(bullet)) nano.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
+    var life:LifeStealDamageHandle = LifeStealDamageHandle.instance;
+    if(life.canHandle(bullet)) life.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
+    var crumble:CrumbleDamageHandle = CrumbleDamageHandle.instance;
+    if(crumble.canHandle(bullet)) crumble.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
+    var execute:ExecuteDamageHandle = ExecuteDamageHandle.instance;
+    if(execute.canHandle(bullet)) execute.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
 
-    var damageNumber:Number = hitTarget.损伤值;
-    var damageSize:Number = damageResult.damageSize;
-
-    var actualScatterUsed:Number = Math.min(
-        bullet.霰弹值,
-        Math.ceil(
-            Math.min(
-                bullet.最小霰弹值 + overlapRatio * ((bullet.霰弹值 - bullet.最小霰弹值) + 1) * 1.2,
-                hitTarget.hp / (hitTarget.损伤值 > 0 ? hitTarget.损伤值 : 1)
-            )
-        )
-    );
-    damageResult.actualScatterUsed = actualScatterUsed;
-    
-    if (bullet.联弹检测 && !bullet.穿刺检测) {
-        bullet.霰弹值 -= actualScatterUsed;
-        damageResult.finalScatterValue = bullet.霰弹值;
-    }
-    
-    hitTarget.损伤值 *= actualScatterUsed;
-    damageNumber *= actualScatterUsed;
-    
-    var poisonAmount:Number = 0;
-    if (bullet.nanoToxic > 0) {
-        poisonAmount = bullet.nanoToxic;
-        if (bullet.普通检测) {
-            poisonAmount *= 1;
-        } else {
-            poisonAmount *= 0.3;
-        }
-        bullet.additionalEffectDamage += poisonAmount;
-    }
-    if (poisonAmount > 0 && !isNaN(damageNumber) && damageNumber > 0) {
-        hitTarget.损伤值 += poisonAmount;
-        damageNumber = hitTarget.损伤值;
-        damageResult.addDamageEffect('<font color="#66dd00" size="20"> 毒</font>');
-        if (bullet.nanoToxicDecay && bullet.近战检测 && shooter.淬毒 > 10) {
-            shooter.淬毒 -= bullet.nanoToxicDecay;
-        }
-        if (hitTarget.毒返 > 0) {
-            var poisonReturnAmount:Number = poisonAmount * hitTarget.毒返;
-            if (hitTarget.毒返函数) {
-                hitTarget.毒返函数(poisonAmount, poisonReturnAmount);
-            }
-            hitTarget.淬毒 = poisonReturnAmount;
-        }
-    }
-    
-    if (bullet.吸血 > 0 && hitTarget.损伤值 > 1) {
-        var lifeStealAmount:Number = Math.floor(Math.max(Math.min(hitTarget.损伤值 * bullet.吸血 / 100, hitTarget.hp), 0));
-        shooter.hp += Math.min(lifeStealAmount, shooter.hp满血值 * 1.5 - shooter.hp);
-        damageResult.addDamageEffect('<font color="#bb00aa" size="15"> 汲:' + Math.floor(lifeStealAmount / actualScatterUsed).toString() + "</font>");
-    }
-    
-    var crumbleAmount:Number = 0;
-    if (bullet.击溃 > 0 && hitTarget.损伤值 > 1) {
-        crumbleAmount = Math.floor(hitTarget.hp满血值 * bullet.击溃 / 100);
-        bullet.additionalEffectDamage += crumbleAmount;
-        if (hitTarget.hp满血值 > 0) {
-            hitTarget.hp满血值 -= crumbleAmount;
-            hitTarget.损伤值 += crumbleAmount;
-        }
-        damageResult.addDamageEffect('<font color="#FF3333" size="20"> 溃</font>');
-        damageNumber = Math.floor(hitTarget.损伤值);
-    }
-    
-    if (bullet.斩杀) {
-        if (hitTarget.hp < hitTarget.hp满血值 * bullet.斩杀 / 100) {
-            hitTarget.损伤值 += hitTarget.hp; 
-            hitTarget.hp = 0;
-            var executeColor:String = bullet.子弹敌我属性值 ? '#4A0099' : '#660033';
-            damageResult.addDamageEffect('<font color="' + executeColor + '" size="20"> 斩</font>');
-        }
-        damageNumber = Math.floor(hitTarget.损伤值);
-    }
-    
-    damageResult.displayCount = damage.actualScatterUsed;
-    damageResult.displayCount = actualScatterUsed; 
-    var remainingDamage:Number = damageNumber;
-    
-    if (actualScatterUsed > 1) {
-        for (var i:Number = 0; i < actualScatterUsed - 1; i++) {
-            var fluctuatedDamage:Number = (remainingDamage / (actualScatterUsed - i)) * (100 + _root.随机偏移(50 / actualScatterUsed)) / 100;
-            fluctuatedDamage = isNaN(fluctuatedDamage) ? 0 : fluctuatedDamage;
-            damageResult.addDamageValue(Math.floor(fluctuatedDamage));
-            remainingDamage -= fluctuatedDamage;
-        }
-    }
-    damageResult.addDamageValue(isNaN(remainingDamage) ? 0 : Math.floor(remainingDamage));
-    
-    damageResult.damageSize = damageSize;
+    damageResult.calculateScatterDamage(hitTarget.损伤值, damageSize);
     
     hitTarget.hp = isNaN(hitTarget.损伤值) ? hitTarget.hp : Math.floor(hitTarget.hp - hitTarget.损伤值);
     hitTarget.hp = (hitTarget.hp < 0 || isNaN(hitTarget.hp)) ? 0 : hitTarget.hp;
