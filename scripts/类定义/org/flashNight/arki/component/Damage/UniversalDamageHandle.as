@@ -82,6 +82,8 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
         
         var damageNumber:Number = target.损伤值;
         var damageSize:Number = result.damageSize;
+
+        // _root.服务器.发布服务器消息(manager.dodgeState);
         
         switch (manager.dodgeState) {
             case "跳弹":
@@ -126,6 +128,8 @@ class org.flashNight.arki.component.Damage.UniversalDamageHandle extends BaseDam
                 target.损伤值 = damageNumber;
                 _root.受击变红(120, target);
         }
+
+        // _root.服务器.发布服务器消息(manager.dodgeState + ":" + result.damageColor);
         
         // _root.服务器.发布服务器消息(manager.dodgeState + ":" + damageNumber);
         result.damageSize = damageSize;

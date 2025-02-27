@@ -64,7 +64,12 @@ class org.flashNight.arki.component.Damage.DamageResult {
      * 静态实例，表示一个默认的伤害结果。
      * @type {DamageResult}
      */
+    
+    // 用于计算复用
     public static var IMPACT:DamageResult = new DamageResult();
+
+    // 只用于传递无伤害的情况，注意不可更改
+    public static var NULL:DamageResult = new DamageResult();
     
     /**
      * DamageResult 类的构造函数。
@@ -87,6 +92,23 @@ class org.flashNight.arki.component.Damage.DamageResult {
         this.actualScatterUsed = 1;
         this.displayCount = 1;
         this.displayFunction = _root.打击数字特效;
+    }
+
+    public static function getIMPACT():DamageResult
+    {
+        var r:DamageResult = DamageResult.IMPACT;
+
+        r.totalDamageList = [];
+        r.damageColor = null;
+        r.damageSize = 28;
+        r.damageEffects = "";
+        r.finalScatterValue = 0;
+        r.dodgeStatus = "";
+        r.actualScatterUsed = 1;
+        r.displayCount = 1;
+        r.displayFunction = _root.打击数字特效;
+
+        return r;
     }
     
     /**

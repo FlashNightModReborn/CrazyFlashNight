@@ -136,31 +136,32 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
     var 游戏世界 = _root.gameworld;
     var 子弹总数 = Obj.联弹检测 ? 1 : Obj.霰弹值;
     var bulletInstance;
-
-    obj.联弹霰弹值 = obj.联弹检测 ? obj.霰弹值 : 1;
-
-    for (var 子弹计数 = 0; 子弹计数 < 子弹总数; 子弹计数++) {
+    
+    Obj.联弹霰弹值 = Obj.联弹检测 ? Obj.霰弹值 : 1; // 修正大小写问题
+    
+    do {
         bulletInstance = 创建子弹实例(Obj, shooter, 射击角度);
         
         BulletInitializer.initializeNanoToxicfunction(Obj,bulletInstance, shooter)
 
-        // 创建生命周期逻辑实例
-        var lifecycle:BulletLifecycle = new BulletLifecycle(900); // 当前射程阈值为900
+        var lifecycle:BulletLifecycle = new BulletLifecycle(900);
         lifecycle.bindLifecycle(bulletInstance);
 
-        // 创建子弹移动逻辑实例
-        var movement:LinearBulletMovement = LinearBulletMovement.create(bulletInstance.速度X, bulletInstance.速度Y, bulletInstance.ZY比例);
+        var movement:LinearBulletMovement = LinearBulletMovement.create(
+            bulletInstance.速度X, 
+            bulletInstance.速度Y, 
+            bulletInstance.ZY比例
+        );
 
-        // 将 updateMovement 方法绑定到bulletInstance
         bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
-
-        // 将 shouldDestroy 方法绑定到bulletInstance
         bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
 
         bulletInstance.damageManager = DamageManagerFactory.Basic.getDamageManager(bulletInstance);
         // _root.发布消息(bulletInstance.damageManager);
-    }
 
+        子弹总数--;
+    } while (子弹总数 > 0);
+    
     
     return bulletInstance;
 }
@@ -349,53 +350,31 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
 // --------------------子弹伤害结算核心--------------------
 // 专注于伤害与效果计算，并将计算结果打包返回
 // --------------------子弹伤害结算核心--------------------
-_root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRatio, 消耗霰弹值, dodgeState) {
-    var damageResult:DamageResult = DamageResult.IMPACT;
-    damageResult.reset();
-
-    var manager:DamageManager = bullet.damageManager;
+_root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRatio, dodgeState) {
+    var manager:DamageManager = bullet.damageManager || (bullet.damageNumber = DamageManagerFactory.Basic.getDamageManager(bulletInstance));
     manager.overlapRatio = overlapRatio;
     manager.dodgeState = dodgeState;
 
     if (hitTarget.无敌 || hitTarget.man.无敌标签 || hitTarget.NPC) {
-        return damageResult; 
+        return DamageResult.NULL; 
     }
     
     if (hitTarget.hp == 0) {
-        return damageResult;
+        return DamageResult.NULL;
     }
+
+    var damageResult:DamageResult = DamageResult.getIMPACT();
     
-    hitTarget.防御力 = isNaN(hitTarget.防御力) ? 1 : Math.min(hitTarget.防御力, 99000);
+    // hitTarget.防御力 = isNaN(hitTarget.防御力) ? 1 : Math.min(hitTarget.防御力, 99000);
+    if(isNaN(hitTarget.防御力)) hitTarget.防御力 = 1;
+
     bullet.破坏力 = Number(bullet.子弹威力) + (isNaN(shooter.伤害加成) ? 0 : shooter.伤害加成);
     
     var damageVariance:Number = bullet.破坏力 * ((!_root.调试模式 || bullet.霰弹值 > 1) ? (0.85 + _root.basic_random() * 0.3) : 1);
     var percentageDamage:Number = isNaN(bullet.百分比伤害) ? 0 : hitTarget.hp * bullet.百分比伤害 / 100;
     bullet.破坏力 = damageVariance + bullet.固伤 + percentageDamage;
 
-
-
-    /*
     manager.execute(bullet, shooter, hitTarget, damageResult);
-    _root.发布消息(damageResult.toString());
-
-    */
-
-    
-    var crit:CritDamageHandle = CritDamageHandle.instance;
-    if(crit.canHandle(bullet)) crit.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-    var uni:UniversalDamageHandle = UniversalDamageHandle.instance;
-    uni.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-    var multi:MultiShotDamageHandle = MultiShotDamageHandle.instance;
-    if(multi.canHandle(bullet)) multi.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-    var nano:NanoToxicDamageHandle = NanoToxicDamageHandle.instance;
-    if(nano.canHandle(bullet)) nano.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-    var life:LifeStealDamageHandle = LifeStealDamageHandle.instance;
-    if(life.canHandle(bullet)) life.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-    var crumble:CrumbleDamageHandle = CrumbleDamageHandle.instance;
-    if(crumble.canHandle(bullet)) crumble.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-    var execute:ExecuteDamageHandle = ExecuteDamageHandle.instance;
-    if(execute.canHandle(bullet)) execute.handleBulletDamage(bullet, shooter, hitTarget, manager, damageResult);
-
     damageResult.calculateScatterDamage(hitTarget.损伤值, damageSize);
     
     hitTarget.hp = isNaN(hitTarget.损伤值) ? hitTarget.hp : Math.floor(hitTarget.hp - hitTarget.损伤值);
@@ -410,13 +389,12 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
 // --------------------子弹伤害结算（主函数）--------------------
 // 继续保留原本的入口，但在里面调用 核心计算函数 和 显示函数。
 // --------------------子弹伤害结算（主函数）--------------------
-_root.子弹伤害结算 = function(bullet, shooter, hitTarget, overlapRatio, 消耗霰弹值, dodgeState, overlapCenter) {
+_root.子弹伤害结算 = function(bullet, shooter, hitTarget, overlapRatio, dodgeState, overlapCenter) {
     _root.子弹伤害结算核心(
         bullet, 
         shooter, 
         hitTarget, 
         overlapRatio, 
-        消耗霰弹值, 
         dodgeState
     ).triggerDisplay(hitTarget._x, hitTarget._y);
 
@@ -531,11 +509,9 @@ _root.子弹生命周期 = function()
             var dodgeState = this.伤害类型 == "真伤" ? "未躲闪": _root.躲闪状态计算(hitTarget,_root.根据命中计算闪避结果(shooter, hitTarget, 命中率),this);
 
             // 调用伤害结算函数
-            var 消耗霰弹值 = 1; // 在伤害计算中实际会重新计算
-
             if(this.击中时触发函数) this.击中时触发函数();
 
-            _root.子弹伤害结算(this, shooter, hitTarget, overlapRatio, 消耗霰弹值, dodgeState, overlapCenter);
+            _root.子弹伤害结算(this, shooter, hitTarget, overlapRatio, dodgeState, overlapCenter);
 
             //伤害结算结束后，继续原逻辑
             if(!this.近战检测 && !this.爆炸检测 && hitTarget.hp <= 0)
