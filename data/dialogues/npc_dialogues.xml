@@ -2267,4 +2267,23 @@
             </SubDialogue>
         </Dialogue>
     </Dialogues>
+    <Dialogues>
+        <Name>厨师</Name>
+        <Dialogue id="0">
+            <SubDialogue id="0">
+                <Name>厨师</Name>
+                <Title>机器人厨师</Title>
+                <Char>厨师</Char>
+                <Text>已提交需求，等待处理。</Text>
+            </SubDialogue>
+        </Dialogue>
+        <Dialogue id="1">
+            <SubDialogue id="0">
+                <Name>厨师</Name>
+                <Title>机器人厨师</Title>
+                <Char>厨师</Char>
+                <Text>库存状态良好，未发现异常现象。</Text>
+            </SubDialogue>
+        </Dialogue>
+    </Dialogues>
 </root>
