@@ -3,6 +3,7 @@ import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.ILifecycle;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.component.Damage.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle implements ILifecycle {
     private var 射程阈值:Number;
@@ -86,6 +87,9 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
         // 判断是否需要绑定 onEnterFrame
 
         target.additionalEffectDamage = 0;
+
+        // 在执行结算前设置伤害管理器
+        target.damageManager = DamageManagerFactory.Basic.getDamageManager(target);
 
         _root.子弹生命周期.call(target);
         if(!target.透明检测) target.onEnterFrame = _root.子弹生命周期;

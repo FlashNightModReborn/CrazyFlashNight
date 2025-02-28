@@ -156,7 +156,7 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
         bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
         bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
 
-        bulletInstance.damageManager = DamageManagerFactory.Basic.getDamageManager(bulletInstance);
+        
 
         /*
         if(!bulletInstance.damageManager) {
@@ -361,11 +361,13 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
 // --------------------子弹伤害结算核心--------------------
 _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRatio, dodgeState) {
     var manager:DamageManager = bullet.damageManager
+    /*
     if(!manager) {
         manager = DamageManagerFactory.Basic.getDamageManager(bullet);
         bullet.damageManager = manager;
-        // _root.发布消息("DamageManager created" + ObjectUtil.toString(bullet));
+        _root.发布消息("DamageManager created" + ObjectUtil.toString(bullet));
     }
+    */
 
     manager.overlapRatio = overlapRatio;
     manager.dodgeState = dodgeState;
@@ -398,25 +400,6 @@ _root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRat
     // _root.服务器.发布服务器消息(damageResult);
     
     return damageResult;
-};
-
-
-// --------------------子弹伤害结算（主函数）--------------------
-// 继续保留原本的入口，但在里面调用 核心计算函数 和 显示函数。
-// --------------------子弹伤害结算（主函数）--------------------
-_root.子弹伤害结算 = function(bullet, shooter, hitTarget, overlapRatio, dodgeState) {
-    _root.子弹伤害结算核心(
-        bullet, 
-        shooter, 
-        hitTarget, 
-        overlapRatio, 
-        dodgeState
-    ).triggerDisplay(hitTarget._x, hitTarget._y);
-
-    
-    if (hitTarget._name === _root.控制目标) {
-        _root.玩家信息界面.刷新hp显示();
-    }
 };
 
 
@@ -526,7 +509,17 @@ _root.子弹生命周期 = function()
             // 调用伤害结算函数
             if(this.击中时触发函数) this.击中时触发函数();
 
-            _root.子弹伤害结算(this, shooter, hitTarget, overlapRatio, dodgeState);
+            _root.子弹伤害结算核心(
+                this, 
+                shooter, 
+                hitTarget, 
+                overlapRatio, 
+                dodgeState
+            ).triggerDisplay(hitTarget._x, hitTarget._y);
+
+            if (hitTarget._name === _root.控制目标) {
+                _root.玩家信息界面.刷新hp显示();
+            }
 
             //伤害结算结束后，继续原逻辑
             if(!this.近战检测 && !this.爆炸检测 && hitTarget.hp <= 0)
