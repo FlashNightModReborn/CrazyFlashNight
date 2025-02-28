@@ -3,10 +3,6 @@
     public var ch:String = "";
     public var at:Number = 0;
 
-    // 最大解析深度以防止栈溢出
-    public var maxDepth:Number = 256; 
-    private var currentDepth:Number = 0;
-    
     // 存储 text.length 的变量
     private var textLength:Number = 0;
     
@@ -240,7 +236,6 @@
         this.text = inputText;
         this.at = 0;
         this.ch = " ";
-        this.currentDepth = 0; // 重置深度计数器
         this.textLength = this.text.length; // 将 length 缓存为局部变量
         this.charArray = this.text.split(""); // 初始化字符数组
 
@@ -253,21 +248,17 @@
 
         // 定义堆栈类型常量（直接使用硬编码数值）
         // 0: VALUE, 1: OBJECT_BEGIN, 2: ARRAY_BEGIN, 5: OBJECT_VALUE, 7: ARRAY_VALUE
-        var stackTypes:Array = new Array(64); // 预分配堆栈容量
-        var stackData:Array = new Array(64);
+        var stackTypes:Array = new Array(512); // 预分配堆栈容量
+        var stackData:Array = new Array(512);
         var stackPtr:Number = 0;
 
-        var result;
         var numberStr:String;
         var word:String;
         var numValue:Number;
-        var unicodeValue:Number;
-        var hexDigit:Number;
         var currentCh:String = this.ch;
         var currentAt:Number = this.at;
         var currentTextLength:Number = this.textLength;
         var currentCharArray:Array = this.charArray;
-        var currentDepthCounter:Number = this.currentDepth;
 
         // 内联 white() 方法
         while (currentCh <= " " && currentCh != "") {
@@ -298,10 +289,6 @@
             var data = stackData[stackPtr];
 
             if (type === 0) { // VALUE
-                currentDepthCounter += 1;
-                if (currentDepthCounter > this.maxDepth) {
-                    this.error("Maximum parsing depth exceeded");
-                }
 
                 if (currentCh === "{") {
                     object = {};
@@ -326,7 +313,6 @@
                         } else {
                             currentCh = currentCharArray[currentAt++];
                         }
-                        currentDepthCounter -= 1;
                         tempValue = object;
                         continue;
                     }
@@ -356,7 +342,7 @@
                         } else {
                             currentCh = currentCharArray[currentAt++];
                         }
-                        currentDepthCounter -= 1;
+
                         tempValue = array;
                         continue;
                     }
@@ -389,12 +375,6 @@
                                 currentCh = currentCharArray[currentAt++];
                             }
                             switch (currentCh) {
-                                case "b":
-                                    resultStrParts.push("\b");
-                                    break;
-                                case "f":
-                                    resultStrParts.push("\f");
-                                    break;
                                 case "n":
                                     resultStrParts.push("\n");
                                     break;
@@ -404,22 +384,6 @@
                                 case "t":
                                     resultStrParts.push("\t");
                                     break;
-                                case "u":
-                                    unicodeValue = 0;
-                                    for (i = 0; i < 4; i++) {
-                                        if (currentAt >= currentTextLength) {
-                                            currentCh = "";
-                                        } else {
-                                            currentCh = currentCharArray[currentAt++];
-                                        }
-                                        hexDigit = parseInt(currentCh, 16);
-                                        if (!isFinite(hexDigit)) {
-                                            this.error("Invalid Unicode escape sequence");
-                                        }
-                                        unicodeValue = unicodeValue * 16 + hexDigit;
-                                    }
-                                    resultStrParts.push(String.fromCharCode(unicodeValue));
-                                    continue;
                                 default:
                                     resultStrParts.push(currentCh);
                                     break;
@@ -441,7 +405,7 @@
                         }
                     }
                     tempValue = resultStrParts.join("");
-                    currentDepthCounter -= 1;
+
                     continue;
                 } else if (currentCh === "-") {
                     // 解析负数
@@ -479,39 +443,10 @@
                             }
                         }
                     }
-                    if (currentCh == "e" || currentCh == "E") {
-                        numberStr += currentCh;
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                        if (currentCh == "-" || currentCh == "+") {
-                            numberStr += currentCh;
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        }
-                        while (currentCh >= "0" && currentCh <= "9") {
-                            numberStr += currentCh;
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        }
-                    }
+
                     numValue = Number(numberStr);
-                    if (isNaN(numValue)) {
-                        this.error("Bad number");
-                    }
                     tempValue = numValue;
-                    currentDepthCounter -= 1;
+
                     continue;
                 } else if (currentCh >= "0" && currentCh <= "9") {
                     // 解析正数
@@ -543,39 +478,10 @@
                             }
                         }
                     }
-                    if (currentCh == "e" || currentCh == "E") {
-                        numberStr += currentCh;
-                        // 内联 next() 方法
-                        if (currentAt >= currentTextLength) {
-                            currentCh = "";
-                        } else {
-                            currentCh = currentCharArray[currentAt++];
-                        }
-                        if (currentCh == "-" || currentCh == "+") {
-                            numberStr += currentCh;
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        }
-                        while (currentCh >= "0" && currentCh <= "9") {
-                            numberStr += currentCh;
-                            // 内联 next() 方法
-                            if (currentAt >= currentTextLength) {
-                                currentCh = "";
-                            } else {
-                                currentCh = currentCharArray[currentAt++];
-                            }
-                        }
-                    }
+
                     numValue = Number(numberStr);
-                    if (isNaN(numValue)) {
-                        this.error("Bad number");
-                    }
+
                     tempValue = numValue;
-                    currentDepthCounter -= 1;
                     continue;
                 } else if (currentCh >= "a" && currentCh <= "z") {
                     // 解析字面量：true, false, null
@@ -591,21 +497,14 @@
                     }
                     if (word == "true") {
                         tempValue = true;
-                        currentDepthCounter -= 1;
                         continue;
                     } else if (word == "false") {
                         tempValue = false;
-                        currentDepthCounter -= 1;
                         continue;
                     } else if (word == "null") {
                         tempValue = null;
-                        currentDepthCounter -= 1;
                         continue;
-                    } else {
-                        this.error("Unexpected token: " + word);
                     }
-                } else {
-                    this.error("Unexpected character: " + currentCh);
                 }
             } else if (type === 1) { // OBJECT_BEGIN
                 object = data;
@@ -626,13 +525,10 @@
                         } else {
                             currentCh = currentCharArray[currentAt++];
                         }
-                        currentDepthCounter -= 1;
                         tempValue = object;
                         break;
                     }
-                    if (currentCh != "\"") {
-                        this.error("Expected '\"' at the beginning of a key");
-                    }
+
                     // 解析键
                     keyStrParts = [];
                     // 内联 next() 方法，跳过开头的引号
@@ -659,12 +555,6 @@
                                 currentCh = currentCharArray[currentAt++];
                             }
                             switch (currentCh) {
-                                case "b":
-                                    keyStrParts.push("\b");
-                                    break;
-                                case "f":
-                                    keyStrParts.push("\f");
-                                    break;
                                 case "n":
                                     keyStrParts.push("\n");
                                     break;
@@ -674,22 +564,6 @@
                                 case "t":
                                     keyStrParts.push("\t");
                                     break;
-                                case "u":
-                                    unicodeValue = 0;
-                                    for (i = 0; i < 4; i++) {
-                                        if (currentAt >= currentTextLength) {
-                                            currentCh = "";
-                                        } else {
-                                            currentCh = currentCharArray[currentAt++];
-                                        }
-                                        hexDigit = parseInt(currentCh, 16);
-                                        if (!isFinite(hexDigit)) {
-                                            this.error("Invalid Unicode escape sequence");
-                                        }
-                                        unicodeValue = unicodeValue * 16 + hexDigit;
-                                    }
-                                    keyStrParts.push(String.fromCharCode(unicodeValue));
-                                    continue;
                                 default:
                                     keyStrParts.push(currentCh);
                                     break;
@@ -720,9 +594,7 @@
                             currentCh = currentCharArray[currentAt++];
                         }
                     }
-                    if (currentCh != ":") {
-                        this.error("Expected ':' after key");
-                    }
+
                     // 内联 next() 方法，跳过 ':'
                     if (currentAt >= currentTextLength) {
                         currentCh = "";
@@ -770,13 +642,10 @@
                     } else {
                         currentCh = currentCharArray[currentAt++];
                     }
-                    currentDepthCounter -= 1;
                     tempValue = object;
                     continue;
                 }
-                if (currentCh != ",") {
-                    this.error("Expected ',' or '}'");
-                }
+
                 // 内联 next() 方法，跳过 ','
                 if (currentAt >= currentTextLength) {
                     currentCh = "";
@@ -809,7 +678,7 @@
                 stackData[stackPtr++] = null;
             } else if (type === 7) { // ARRAY_VALUE
                 array = data;
-                array.push(tempValue);
+                array[array.length] = tempValue;
 
                 // 内联 white() 方法
                 while (currentCh <= " " && currentCh != "") {
@@ -827,13 +696,10 @@
                     } else {
                         currentCh = currentCharArray[currentAt++];
                     }
-                    currentDepthCounter -= 1;
                     tempValue = array;
                     continue;
                 }
-                if (currentCh != ",") {
-                    this.error("Expected ',' or ']'");
-                }
+
                 // 内联 next() 方法，跳过 ','
                 if (currentAt >= currentTextLength) {
                     currentCh = "";
@@ -860,10 +726,6 @@
             }
         }
 
-        // 更新解析器状态
-        this.ch = currentCh;
-        this.at = currentAt;
-        this.currentDepth = currentDepthCounter;
 
         // 内联 white() 方法，确保解析结束后没有多余字符
         while (this.ch <= " " && this.ch != "") {
@@ -874,20 +736,8 @@
                 this.ch = this.charArray[this.at++];
             }
         }
-        if (this.ch) {
-            this.error("Unexpected trailing characters");
-        }
 
         return tempValue;
-    }
-
-
-    /**
-     * 抛出错误
-     * @param message 错误信息
-     */
-    public function error(message:String):Void {
-        throw {name: "LiteJSONError", message: message, at: this.at - 1, text: this.text};
     }
 }
 
