@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1732694515" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1740728289" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="地图库-外部地图" currentFrame="13">
+    <DOMTimeline name="地图库-外部地图" currentFrame="14">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -150,12 +150,24 @@
             </DOMFrame>
             <DOMFrame index="13" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="import/外部地图/地图-走廊" selected="true" centerPoint3DX="49" centerPoint3DY="73.05">
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-走廊" centerPoint3DX="49" centerPoint3DY="73.05">
                   <matrix>
                     <Matrix tx="-3" ty="-5.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="52" y="79"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="地图-实验室" centerPoint3DX="-9" centerPoint3DY="14.4">
+                  <matrix>
+                    <Matrix tx="-61" ty="-12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="52" y="27.05"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
