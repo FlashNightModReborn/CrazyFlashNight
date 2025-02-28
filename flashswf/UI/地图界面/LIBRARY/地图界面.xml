@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1740730607" lastUniqueIdentifier="163">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1740731387" lastUniqueIdentifier="163">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
@@ -819,7 +819,7 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="调整焦点按钮" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="调整焦点按钮" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1197,7 +1197,7 @@ this.onEnterFrame = function() {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="层级关系按钮" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="层级关系按钮" symbolType="button">
                   <matrix>
                     <Matrix a="1.44635009765625" d="1.44635009765625" tx="903.55" ty="376.75"/>
                   </matrix>
@@ -2048,20 +2048,35 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="实验室" color="#9933CC" parentLayerIndex="26" autoNamed="false">
+        <DOMLayer name="实验室" color="#9933CC" parentLayerIndex="26" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="实验室" name="实验室" centerPoint3DX="597.7" centerPoint3DY="391.1">
+                <DOMSymbolInstance libraryItemName="实验室" name="实验室" selected="true" centerPoint3DX="597.7" centerPoint3DY="391.1">
                   <matrix>
                     <Matrix a="0.544525146484375" d="0.544525146484375" tx="508.1" ty="339.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="164.2" y="94.3"/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.地下二层可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("地图-实验室");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
                   </filters>
