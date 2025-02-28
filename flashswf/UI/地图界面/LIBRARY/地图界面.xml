@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1739797031" lastUniqueIdentifier="154">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1740730607" lastUniqueIdentifier="163">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
@@ -544,8 +544,10 @@ this.init = function() {
     layers.push(basement1Layer);
 
     var basement2Layer = new Layer("地下二层",
-        [this.走廊, this.食堂],
-        [],
+        [this.走廊, this.食堂, this.实验室],
+        [
+		 { avatar: this.厨师头像, name: "厨师头像" }
+		 ],
         "地下二层可选"
     );
     layers.push(basement2Layer);
@@ -673,14 +675,14 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="焦点按钮文字" color="#FF4FFF" autoNamed="false">
+        <DOMLayer name="焦点按钮文字" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
+                <DOMStaticText selected="true" fontRenderingMode="standard" width="88.2" height="31.6" autoExpand="true" isSelectable="false">
                   <matrix>
                     <Matrix tx="914.4" ty="115.65"/>
                   </matrix>
@@ -868,6 +870,8 @@ this.onEnterFrame = function() {
 	//地下二层
 	this.走廊._visible = 0;
 	this.食堂._visible = 0;
+	this.实验室._visible = 0;
+	this.厨师头像._alpha = 30;
 	//地下水
 	this.地下水._visible = 0;
 	
@@ -928,6 +932,8 @@ this.onEnterFrame = function() {
 	//地下二层
 	this.走廊._visible = 0;
 	this.食堂._visible = 0;
+	this.实验室._visible = 0;
+	this.厨师头像._alpha = 30;
 	//地下水
 	this.地下水._visible = 0;
 	
@@ -985,6 +991,8 @@ this.onEnterFrame = function() {
 	//地下二层
 	this.走廊._visible = 0;
 	this.食堂._visible = 0;
+	this.实验室._visible = 0;
+	this.厨师头像._alpha = 30;
 	//地下水
 	this.地下水._visible = 0;
 	
@@ -1039,8 +1047,11 @@ this.onEnterFrame = function() {
 	//地下二层
 	this.走廊._visible = 1;
 	this.食堂._visible = 1;
+	this.实验室._visible = 1;
 	this.走廊._alpha = 100;
 	this.食堂._alpha = 100;
+	this.实验室._alpha = 100;
+	this.厨师头像._alpha = 100;
 	//地下水
 	this.地下水._visible = 0;
 	
@@ -1095,6 +1106,8 @@ this.onEnterFrame = function() {
 	//地下二层
 	this.走廊._visible = 0;
 	this.食堂._visible = 0;
+	this.实验室._visible = 0;
+	this.厨师头像._alpha = 30;
 	//地下水
 	this.地下水._visible = 1;
 	this.地下水._alpha = 100;
@@ -1141,8 +1154,10 @@ this.onEnterFrame = function() {
 	//地下二层
 	this.走廊._visible = 1;
 	this.食堂._visible = 1;
+	this.实验室._visible = 1;
 	this.走廊._alpha = 50;
 	this.食堂._alpha = 50;
+	this.实验室._alpha = 50;
 	//地下水
 	this.地下水._visible = 1;
 	this.地下水._alpha = 50;
@@ -1176,10 +1191,13 @@ this.onEnterFrame = function() {
 	this.shopgirl头像._alpha = 60;
 	this.blue头像._alpha = 60;
 	this.小F头像._alpha = 60;
+	//地下二层
+	
+	this.厨师头像._alpha = 60;
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="层级关系按钮" symbolType="button">
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="层级关系按钮" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="1.44635009765625" d="1.44635009765625" tx="903.55" ty="376.75"/>
                   </matrix>
@@ -1213,8 +1231,10 @@ this.onEnterFrame = function() {
 	//地下二层
 	this.走廊._visible = 1;
 	this.食堂._visible = 1;
+	this.实验室._visible = 1;
 	this.走廊._alpha = 100;
 	this.食堂._alpha = 100;
+	this.实验室._alpha = 100;
 	//地下水
 	this.地下水._visible = 1;
 	this.地下水._alpha = 100;
@@ -1248,6 +1268,9 @@ this.onEnterFrame = function() {
 	this.shopgirl头像._alpha = 0;
 	this.blue头像._alpha = 0;
 	this.小F头像._alpha = 0;
+	//地下二层
+	
+	this.厨师头像._alpha = 0;
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -1345,7 +1368,7 @@ onClipEvent (load) {
                     <Matrix tx="174.85" ty="195.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="21.95" y="22"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="king头像" name="king头像" centerPoint3DX="249.15" centerPoint3DY="189.75" exportAsBitmap="true">
@@ -2008,8 +2031,42 @@ onClipEvent (load) {
         <DOMLayer name="地下二层" color="#9933CC" autoNamed="false" layerType="folder"/>
         <DOMLayer name="地下二层npc" color="#FF4F4F" parentLayerIndex="26" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="厨师头像" name="厨师头像" centerPoint3DX="307.15" centerPoint3DY="408.25">
+                  <matrix>
+                    <Matrix tx="283.9" ty="381.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="23.5" y="26.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="实验室" color="#9933CC" parentLayerIndex="26" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="实验室" name="实验室" centerPoint3DX="597.7" centerPoint3DY="391.1">
+                  <matrix>
+                    <Matrix a="0.544525146484375" d="0.544525146484375" tx="508.1" ty="339.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="164.2" y="94.3"/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="-30"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -2088,14 +2145,14 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="地下水" color="#FF4FFF" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="地下水npc" color="#4FFF4F" parentLayerIndex="30" autoNamed="false">
+        <DOMLayer name="地下水npc" color="#4FFF4F" parentLayerIndex="31" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下水" color="#808080" parentLayerIndex="30" autoNamed="false">
+        <DOMLayer name="地下水" color="#808080" parentLayerIndex="31" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
