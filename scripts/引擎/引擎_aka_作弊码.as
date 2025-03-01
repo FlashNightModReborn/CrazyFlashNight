@@ -1,81 +1,75 @@
 ﻿import org.flashNight.gesh.string.EvalParser;
-_root.cheatCode = function(作弊码){
-	
-	
-   if(作弊码 == "hardmode")
-   {
-      _root.difficultyMode = 0;
-      _root.最上层发布文字提示("更改为困难模式！");
-      _root.修改工具按钮._visible = true;
-   }
-   else if(作弊码 == "easymode")
-   {
-      _root.difficultyMode = 1;
-      _root.最上层发布文字提示("更改为简单模式！");
-      _root.修改工具按钮._visible = true;
-   }
-   else if(作弊码 == "challengemode")
-   {
-      _root.difficultyMode = 2;
-      _root.最上层发布文字提示("更改为挑战模式！");
-      _root.修改工具按钮._visible = false;
-   }
-   if(作弊码 == "easteregg")
-   {
-      _root.easterEgg = 1;
-      _root.最上层发布文字提示("彩蛋内容开启！");
-   }
-   else if(作弊码 == "eastereggoff")
-   {
-      _root.easterEgg = 0;
-      _root.最上层发布文字提示("彩蛋内容关闭！");
-   }
-   if(作弊码 == "test" and !_root.调试模式)
-   {
-      _root.调试模式 = true;
-      _root.最上层发布文字提示("调试模式开启！");
-   }
-   else if(作弊码 == "test" and _root.调试模式)
-   {
-      _root.调试模式 = false;
-      _root.最上层发布文字提示("调试模式关闭！");
-   }
-   if(作弊码 == "add1")
-   {
-  		add1僵尸兵种 = "敌人-光头军人僵尸1";
-  		add1僵尸等级 = 1;
-   		add1僵尸名字 = "僵尸";
-  	 	add1僵尸是否为敌人 = true;
-   		add1僵尸身高 = 175;
-  	 	add1僵尸长枪 = "";
-   		add1僵尸手枪 = "";
-   		add1僵尸手枪2 = "";
-  	 	add1僵尸刀 = "";
-   		add1僵尸手雷 = "";
-   		add1僵尸僵尸型敌人newname = this._name + 兵种;
-   		_root.gameworld.attachMovie(add1僵尸兵种,add1僵尸僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x: _root.gameworld[_root.控制目标]._x ,_y:_root.gameworld[_root.控制目标]._y,等级:this.add1僵尸等级,名字:this.add1僵尸名字,是否为敌人:this.add1僵尸是否为敌人,身高:this.add1僵尸身高,长枪:this.add1僵尸长枪,手枪:this.add1僵尸手枪,手枪2:this.add1僵尸手枪2,刀:this.add1僵尸刀,手雷:this.add1僵尸手雷,产生源:this._name});
+_root.cheatFunction = new Object();
 
-      _root.最上层发布文字提示("添加一个僵尸！");
-   }
-   if(作弊码 == "ultrarapidfire" || 作弊码 == "fire")
-   {
-		for(var key in _root.技能表对象){
-			_root.技能表对象[key].MaxLevel = 99;
-			if(_root.技能表对象[key].CD > 1000){
-				_root.技能表对象[key].CD = 1000;
-			}
+_root.cheatFunction.hardmode = function(){
+	_root.difficultyMode = 0;
+	_root.最上层发布文字提示("更改为困难模式！");
+	_root.修改工具按钮._visible = true;
+}
+_root.cheatFunction.easymode = function(){
+	_root.difficultyMode = 1;
+	_root.最上层发布文字提示("更改为简单模式！");
+	_root.修改工具按钮._visible = true;
+}
+_root.cheatFunction.challengemode = function(){
+	_root.difficultyMode = 2;
+	_root.最上层发布文字提示("更改为挑战模式！");
+	_root.修改工具按钮._visible = false;
+}
+
+_root.cheatFunction.test = function(){
+	if(!_root.调试模式){
+		_root.调试模式 = true;
+		_root.最上层发布文字提示("调试模式开启！");
+	}else{
+		_root.调试模式 = false;
+		_root.最上层发布文字提示("调试模式关闭！");
+	}
+}
+
+_root.cheatFunction.add1 = function(){
+	var add1僵尸兵种 = "敌人-光头军人僵尸1";
+	var add1僵尸等级 = 1;
+	var add1僵尸名字 = "僵尸";
+	var add1僵尸是否为敌人 = true;
+	var add1僵尸身高 = 175;
+	var add1僵尸长枪 = "";
+	var add1僵尸手枪 = "";
+	var add1僵尸手枪2 = "";
+	var add1僵尸刀 = "";
+	var add1僵尸手雷 = "";
+	var add1僵尸僵尸型敌人newname = this._name + 兵种;
+	_root.加载游戏世界人物(add1僵尸兵种,add1僵尸僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x: _root.gameworld[_root.控制目标]._x ,_y:_root.gameworld[_root.控制目标]._y,等级:this.add1僵尸等级,名字:this.add1僵尸名字,是否为敌人:this.add1僵尸是否为敌人,身高:this.add1僵尸身高,长枪:this.add1僵尸长枪,手枪:this.add1僵尸手枪,手枪2:this.add1僵尸手枪2,刀:this.add1僵尸刀,手雷:this.add1僵尸手雷,产生源:this._name});
+	_root.最上层发布文字提示("添加一个僵尸！");
+}
+
+_root.cheatFunction.ultrarapidfire = function(){
+	for(var key in _root.技能表对象){
+		_root.技能表对象[key].MaxLevel = 99;
+		if(_root.技能表对象[key].CD > 1000){
+			_root.技能表对象[key].CD = 1000;
 		}
-		for (var i = 1; i < 13; i++)
-		{
-			var 当前技能栏 = _root.玩家信息界面.快捷技能界面["快捷技能栏" + i];
-			if(当前技能栏.冷却时间 > 1000){
-				当前技能栏.冷却时间 = 1000;
-			}
+	}for (var i = 1; i < 13; i++){
+		var 当前技能栏 = _root.玩家信息界面.快捷技能界面["快捷技能栏" + i];
+		if(当前技能栏.冷却时间 > 1000){
+			当前技能栏.冷却时间 = 1000;
 		}
-		_root.玩家信息界面.刷新技能等级显示();
-		_root.最上层发布文字提示("无限火力开启！");
-		_root.发布消息("开启无限火力模式，所有技能的升级上限提升至99级，cd降低为1秒。部分技能可能产生bug。退出游戏后技能cd恢复正常。");
-   }
+	}
+	_root.玩家信息界面.刷新技能等级显示();
+	_root.最上层发布文字提示("无限火力开启！");
+	_root.发布消息("开启无限火力模式，所有技能的升级上限提升至99级，cd降低为1秒。部分技能可能产生bug。退出游戏后技能cd恢复正常。");
+}
+_root.cheatFunction.fire = _root.cheatFunction.ultrarapidfire;
+
+
+
+_root.cheatCode = function(作弊码){
+	if(typeof _root.cheatFunction[作弊码] === "function"){
+		_root.cheatFunction[作弊码]();
+		return;
+	}
+
+	var 执行代码;
 	if(作弊码.indexOf("#code:")>-1){
 		执行代码  = 作弊码.split("#code:")[1];
 		_root.发布消息("执行代码："+执行代码);
@@ -214,4 +208,27 @@ _root.测试作弊码2 = function(a,b){
 }
 _root.测试作弊码3 = function(a,b,c){
 	_root.发布消息(a+b+c);
+}
+
+//测试用，输出_root上共有多少个键
+_root.cheatFunction.printRootKeys = function(){
+	var str = "";
+	var countstr = "";
+	var counts = {};
+	var finalcount = 0;
+	var type;
+	for(var key in _root){
+		type = typeof _root[key];
+		if(counts[type] == null) counts[type] = 1;
+		else counts[type]++;
+		finalcount++;
+		str += key + "[" + type + "], ";
+	}
+	countstr += "Total: " + finalcount;
+	for(var typekey in counts){
+		countstr += ", " + typekey + ": " + counts[typekey];
+	}
+	str += "\n" + countstr;
+	_root.发布消息(countstr);
+	org.flashNight.neur.Server.ServerManager.getInstance().sendServerMessage(str);
 }
