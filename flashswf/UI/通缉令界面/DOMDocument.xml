@@ -81,7 +81,7 @@
           <Include href="sprite/Symbol 2810.xml" loadImmediate="false" itemID="6597607e-00000d8c" lastModified="1714923806"/>
           <Include href="sprite/Symbol 2811.xml" loadImmediate="false" itemID="6597607e-00000d8d" lastModified="1704196122"/>
           <Include href="sprite/Symbol 2824.xml" loadImmediate="false" itemID="6597607e-00000d94" lastModified="1704196122"/>
-          <Include href="sprite/点酒界面酒保.xml" loadImmediate="false" itemID="6637abba-00001c92" lastModified="1714926492"/>
+          <Include href="sprite/点酒界面酒保.xml" loadImmediate="false" itemID="6637abba-00001c92" lastModified="1740847323"/>
           <Include href="sprite/通用按钮.xml" loadImmediate="false" itemID="659bbbf8-000014dc" lastModified="1714648270"/>
           <Include href="sprite/透明控件.xml" loadImmediate="false" itemID="659f59dc-00000b36" lastModified="1704942044"/>
           <Include href="UI重构/通缉令UI/92副本酒杯.xml" loadImmediate="false" itemID="663a3fc5-00000e4e" lastModified="1715093445"/>
@@ -150,9 +150,11 @@
           <Include href="UI重构/通缉令UI/通缉令-下一页.xml" loadImmediate="false" itemID="6637ce36-0000295b" lastModified="1715083345"/>
           <Include href="UI重构/通缉令UI/通缉令标题栏.xml" loadImmediate="false" itemID="6637b566-00002601" lastModified="1714928812"/>
           <Include href="UI重构/通缉令UI/月光酒.xml" loadImmediate="false" itemID="663a61f4-00000167" lastModified="1715102196"/>
+          <Include href="酒吧场景.xml" itemIcon="1" loadImmediate="false" itemID="67c33944-0000029f" lastModified="1740847436"/>
+          <Include href="酒吧场景（去除遮罩部分）.xml" itemIcon="1" loadImmediate="false" itemID="67c33998-000002d2" lastModified="1740847512"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="场景 1" currentFrame="1">
+          <DOMTimeline name="场景 1">
                <layers>
                     <DOMLayer name="Labels Layer" color="#B780F7">
                          <frames>
@@ -367,7 +369,7 @@ on(rollOut){
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="通缉令" color="#9B76A2" parentLayerIndex="2" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+                    <DOMLayer name="通缉令" color="#9B76A2" parentLayerIndex="2" outline="true" useOutlineView="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
@@ -1482,12 +1484,12 @@ on (release) {
 [13040 2064 13030 2044!13030 2044[13016 2018 13008 1993!13008 1993[13000 1961 13000 1947!13000 1947|12980 1897!12980 1897|12984 1885!12984 1885|12970 1881!12970 1881[12980 1873 12976 1847!12976 1847[12976 1824 12984 1820!12984 1820[12980
  1818 12978 1806!12978 1806[12978 1794 12970 1784!12970 1784[12962 1790 12962 1806!12962 1806[12964 1824 12960 1828"/>
                                                   <Edge fillStyle0="1" edges="
-!13117 2358[13119 2364 13121 2368!13121 2368|13119 2356!13119 2356[13121 2358 13125 2372!13125 2372|13117 2372!13117 2372|13117 2358!13075 3483[#3317.1 #D9B.08 13083 3485!13083 3485[13081 3487 13077 3485!13077 3485[13077 #D9B.1 13075
- 3483!13087 3485|13091 3485!13091 3485[13091 3495 13095 3505!13095 3505[13099 3517 13089 3517!13089 3517|13087 3485"/>
+!13117 2358[13119 2364 13121 2368!13121 2368|13119 2356!13119 2356[13121 2358 13125 2372!13125 2372|13117 2372!13117 2372|13117 2358!13087 3485|13091 3485!13091 3485[13091 3495 13095 3505!13095 3505[13099 3517 13089 3517!13089 3517|13087
+ 3485!13083 3485[13081 3487 13077 3485!13077 3485[13077 #D9B.1 13075 3483!13075 3483[#3317.1 #D9B.08 13083 3485"/>
                                                   <Edge fillStyle1="1" edges="
 !13988 6445[13958 6419 13984 6576!13984 6576[13986 6514 13988 6445!13793 8579|13789 8540!13789 8540|13787 8542!13787 8542|13793 8579!8601 1394[8592 1396 8594 1376!8594 1376[8594 1357 8580 1361!8580 1361[8594 1349 8598 1368!8598 1368[8600
- 1378 8601 1394!9512 1186|9504 1186!9504 1186|9506 1120!9506 1120|9512 1186!6829 1376|6848 1392!6848 1392|6827 1408!6827 1408|6829 1376!11155 7725|11157 7766!11157 7766|11247 7798!11247 7798|11275 7745!11275 7745[11318 7762 11354 7768
-!11354 7768|11388 7772!11388 7772|11418 7772!11418 7772[11458 7770 11527 7764!11527 7764[11613 7768 11627 7725!11627 7725|11517 7737!11517 7737|11519 7707!11519 7707[11470 7707 11328 7717!11328 7717[11203 7727 11155 7725!11629 7715|11627
+ 1378 8601 1394!9504 1186|9506 1120!9506 1120|9512 1186!9512 1186|9504 1186!6827 1408|6829 1376!6829 1376|6848 1392!6848 1392|6827 1408!11157 7766|11247 7798!11247 7798|11275 7745!11275 7745[11318 7762 11354 7768!11354 7768|11388 7772
+!11388 7772|11418 7772!11418 7772[11458 7770 11527 7764!11527 7764[11613 7768 11627 7725!11627 7725|11517 7737!11517 7737|11519 7707!11519 7707[11470 7707 11328 7717!11328 7717[11203 7727 11155 7725!11155 7725|11157 7766!11629 7715|11627
  7725!11627 7725|11636 7723!11636 7723[11636 7717 11629 7715"/>
                                                   <Edge fillStyle0="1" edges="
 !12096 7862|12094 7862!12094 7862[12106 7860 12125 7858!12125 7858[12159 7856 12189 7854!12189 7854|12203 7872!12203 7872|12213 7884!12213 7884|12215 7888!12215 7888|12171 7888!12171 7888|12159 7884!12159 7884[12163 7884 12169 7884!12169
@@ -1500,16 +1502,38 @@ on (release) {
  7405!1703 7405|1721 7472!1721 7472|1729 7474!5332 7953[5290 7955 5231 7959!5231 7959[5052 7969 5000 7979!5000 7979[4992 7977 4986 7977!4986 7977[4994 7969 5024 7959!5024 7959[5048 7953 5078 7947!5078 7947[5245 7961 5262 7939!5262 7939
 [5262 7931 5266 7929!5266 7929[5274 7929 5314 7939!5314 7939|5380 7937!5380 7937[5362 7945 5332 7953!1790 8162[1796 8160 1802 8160!1802 8160[1810 8162 1808 8164!1808 8164[1802 8164 1794 8164!1794 8164[1792 8162 1790 8162"/>
                                                   <Edge fillStyle1="1" edges="
-!1544 9011[1542 9021 1556 9021!1556 9021[1548 9017 1548 9011!1548 9011|1544 9011!1556 9021[1562 9023 1570 9021!1570 9021|1566 9019!1566 9019|1556 9021"/>
+!1556 9021[1562 9023 1570 9021!1570 9021|1566 9019!1566 9019|1556 9021!1556 9021[1548 9017 1548 9011!1548 9011|1544 9011!1544 9011[1542 9021 1556 9021"/>
                                                   <Edge fillStyle0="1" edges="
-!7325 7949[7381 7953 7453 7945!7453 7945[7492 7941 7518 7941!7518 7941|7327 7961!7327 7961|7325 7949"/>
+!7453 7945[7492 7941 7518 7941!7518 7941|7327 7961!7327 7961|7325 7949!7325 7949[7381 7953 7453 7945"/>
                                              </edges>
                                         </DOMShape>
                                    </elements>
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="遮罩" color="#FF4FFF" parentLayerIndex="11" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
+                    <DOMLayer name="酒保" color="#9933CC" parentLayerIndex="11" locked="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" duration="3" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="sprite/点酒界面酒保" centerPoint3DX="403.15" centerPoint3DY="702.05">
+                                             <matrix>
+                                                  <Matrix a="1.987548828125" d="1.987548828125" tx="181.7" ty="463.45"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script><![CDATA[onClipEvent (load) {
+	名字 = "酒保";
+	_root.初始化NPC(this);
+}]]></script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="遮罩" color="#FF4FFF" parentLayerIndex="11" locked="true" outline="true" useOutlineView="true" autoNamed="false" layerType="mask">
                          <frames>
                               <DOMFrame index="0" duration="3" keyMode="9728">
                                    <elements>
@@ -1531,486 +1555,16 @@ on (release) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="遮罩场景" color="#FF800A" parentLayerIndex="14" autoNamed="false">
+                    <DOMLayer name="遮罩场景" color="#FF800A" parentLayerIndex="15" locked="true" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2759" symbolType="graphic" loop="loop">
+                                        <DOMSymbolInstance libraryItemName="酒吧场景（去除遮罩部分）" symbolType="graphic" loop="loop">
                                              <matrix>
-                                                  <Matrix a="0.969635009765625" d="0.969635009765625" tx="-121.85" ty="7.15"/>
+                                                  <Matrix tx="-180.05" ty="-178"/>
                                              </matrix>
                                              <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2769" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.49418640136719" d="1.49418640136719" tx="-174.5" ty="250.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2771" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.73785400390625" d="0.73785400390625" tx="-180.05" ty="217.45"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2780" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.814208984375" d="0.814208984375" tx="-22.35" ty="288.95"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2775" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.755630493164063" d="0.755630493164063" tx="-46.35" ty="87.05"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2783" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.76531982421875" d="0.76531982421875" tx="585.55" ty="166.8"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="529.3" ty="70.35"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2783" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.76531982421875" d="0.76531982421875" tx="270.3" ty="74.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2775" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.755630493164063" d="0.755630493164063" tx="-78.7" ty="87.8"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2783" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.76531982421875" d="0.76531982421875" tx="223.3" ty="74.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2781" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="63.6" ty="74.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2774" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.780609130859375" d="0.780609130859375" tx="408.7" ty="69.2"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2775" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.755630493164063" d="0.755630493164063" tx="20.8" ty="87.8"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2781" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.69183349609375" d="0.69183349609375" tx="71.8" ty="167.05"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.69183349609375" d="0.69183349609375" tx="443.25" ty="168.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2783" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.76531982421875" d="0.76531982421875" tx="297.05" ty="75.35"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2781" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="88.1" ty="73.6"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2781" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="113.5" ty="73.6"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="553.05" ty="70.35"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="574.8" ty="72.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="598.05" ty="72.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2774" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.780609130859375" d="0.780609130859375" tx="432.45" ty="69.2"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2774" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.780609130859375" d="0.780609130859375" tx="457.35" ty="69.2"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2774" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.780609130859375" d="0.780609130859375" tx="483" ty="69.2"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="506.55" ty="72.3"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2774" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.780609130859375" d="0.780609130859375" tx="382.65" ty="68.05"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2783" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.76531982421875" d="0.76531982421875" tx="325.8" ty="77.35"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2781" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="139.65" ty="74.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2781" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="166.85" ty="74.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2775" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.755630493164063" d="0.755630493164063" tx="118.15" ty="181.75"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2775" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.755630493164063" d="0.755630493164063" tx="347.75" ty="180.2"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2781" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="169.45" ty="168.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2781" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="195.95" ty="168.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2774" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.780609130859375" d="0.780609130859375" tx="304.75" ty="158.95"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.69183349609375" d="0.69183349609375" tx="474" ty="168.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.69183349609375" d="0.69183349609375" tx="496" ty="168.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.69183349609375" d="0.69183349609375" tx="544.25" ty="168.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2782" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.69183349609375" d="0.69183349609375" tx="570.5" ty="167.05"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2781" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.69183349609375" d="0.69183349609375" tx="33.1" ty="168.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2774" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.780609130859375" d="0.780609130859375" tx="3.25" ty="160.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2774" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="-0.780609130859375" d="0.780609130859375" tx="-31.55" ty="163.4"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2784" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.684738159179688" d="0.684738159179688" tx="357.7" ty="207.25"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2785" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.814682006835938" d="0.814682006835938" tx="37.3" ty="299.2"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2786" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.814682006835938" d="0.814682006835938" tx="635.3" ty="247.15"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2784" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.684738159179688" d="0.684738159179688" tx="376.05" ty="207.8"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2784" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.684738159179688" d="0.684738159179688" tx="394.45" ty="208.6"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2322" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.987548828125" d="1.987548828125" tx="72.95" ty="-9.55"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2322" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.987548828125" d="1.987548828125" tx="488.75" ty="-8"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2323" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.987548828125" d="1.987548828125" tx="72.95" ty="-9.55"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 2777" centerPoint3DX="135.85" centerPoint3DY="338.05">
-                                             <matrix>
-                                                  <Matrix a="0.69183349609375" d="0.69183349609375" tx="105.4" ty="275.35"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/点酒界面酒保" centerPoint3DX="403.15" centerPoint3DY="702.05">
-                                             <matrix>
-                                                  <Matrix a="1.987548828125" d="1.987548828125" tx="181.7" ty="463.45"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                             <Actionscript>
-                                                  <script><![CDATA[onClipEvent (load) {
-	名字 = "酒保";
-	_root.初始化NPC(this);
-}]]></script>
-                                             </Actionscript>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2786" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.814682006835938" d="0.814682006835938" tx="655.1" ty="266.7"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2786" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="0.814682006835938" d="0.814682006835938" tx="660.2" ty="280.1"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2770" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.196044921875" d="1.196044921875" tx="-67.2" ty="391.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2770" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.196044921875" d="1.196044921875" tx="99.8" ty="391.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2770" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.196044921875" d="1.196044921875" tx="255.55" ty="395.4"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2770" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.196044921875" d="1.196044921875" tx="421.05" ty="391.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2770" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.196044921875" d="1.196044921875" tx="578.15" ty="391.5"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="shape/Symbol 2323" symbolType="graphic" loop="loop">
-                                             <matrix>
-                                                  <Matrix a="1.987548828125" d="1.987548828125" tx="488.75" ty="-8"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point/>
+                                                  <Point x="453.1" y="343.35"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
