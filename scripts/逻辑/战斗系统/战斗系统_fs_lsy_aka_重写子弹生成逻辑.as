@@ -192,7 +192,7 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
         bulletInstance = _root.对象浅拷贝(Obj);
     } else {
         _root.子弹生成计数 = (_root.子弹生成计数 + 1) % 100;
-        var depth = 游戏世界.子弹区域.getNextHighestDepth();
+        var depth = _root.子弹生成计数 = (_root.子弹生成计数 + 1) % 100;
         var b_name = Obj.发射者名 + Obj.子弹种类 + depth + 散射角度 + _root.子弹生成计数;
         bulletInstance = 游戏世界.子弹区域.attachMovie(Obj.baseAsset, b_name, depth, Obj);
     }
