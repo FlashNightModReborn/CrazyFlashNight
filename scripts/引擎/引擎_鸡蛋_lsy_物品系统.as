@@ -58,17 +58,6 @@ _root.根据物品名查找全部属性 = function(物品名){
 	return 物品;
 }
 
-_root.parseXMLs2 = function(物品id){
-	return _root.根据物品名查找全部属性(_root.id物品名对应表[物品id]);
-}
-
-_root.parseXMLs3 = function(物品名){
-	if (物品名 != ""){
-		return _root.根据装备名获得装备id(物品名);
-	}
-	return undefined;
-}
-
 
 _root.强化计算 = function(初始值, 强化等级){
 	if (!isNaN(初始值)){

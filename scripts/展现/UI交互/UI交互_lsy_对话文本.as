@@ -1,8 +1,8 @@
 ﻿_root.对话赋值到对话框 = function(内容数组){
-	var _loc3_ = 0;
-	while (_loc3_ < 内容数组.length){
-		_root.对话框界面.本轮对话内容.push(内容数组[_loc3_]);
-		_loc3_ += 1;
+	var i = 0;
+	while (i < 内容数组.length){
+		_root.对话框界面.本轮对话内容.push(内容数组[i]);
+		i++;
 	}
 	_root.对话框界面.对话进度 = 0;
 	_root.对话框界面.对话条数 += 内容数组.length;
@@ -11,11 +11,10 @@
 
 _root.对话覆盖赋值到对话框 = function(内容数组){
 	_root.对话框界面.本轮对话内容 = [];
-	var _loc3_ = 0;
-	while (_loc3_ < 内容数组.length)
-	{
-		_root.对话框界面.本轮对话内容.push(内容数组[_loc3_]);
-		_loc3_ += 1;
+	var i = 0;
+	while (i < 内容数组.length){
+		_root.对话框界面.本轮对话内容.push(内容数组[i]);
+		i++;
 	}
 	_root.对话框界面.对话进度 = 0;
 	_root.对话框界面.对话条数 = 内容数组.length;
@@ -45,11 +44,10 @@ _root.getDifficultyString = function(str){
 
 _root.组装单次对话 = function(arr:Array){
 	var 输出对话 = new Array(arr.length);
-	for (var i = 0; i < arr.length; i++)
-	{
+	for (var i = 0; i < arr.length; i++){
 		var char = arr[i].char.split("#");
 		char[0] = getDialogueSpecialString(char[0]);
-		var 对话 = new Array(6);
+		var 对话 = new Array(7);
 		对话[0] = getDialogueSpecialString(arr[i].name);
 		对话[1] = getDialogueSpecialString(arr[i].title);
 		对话[2] = getDialogueSpecialString(char[0]);
@@ -75,38 +73,37 @@ _root.SetDialogue = function(arr, 是否覆盖已有对话){
 	}
 }
 
+/*
 _root.组装多语版任务对话 = function(任务属性, 任务名, 任务前后, 原装对话){
-	var _loc6_ = [];
-	var _loc7_ = 0;
-	while (_loc7_ < 原装对话.length){
-		_loc6_.push([原装对话[_loc7_][0], 原装对话[_loc7_][1], 原装对话[_loc7_][2], _root.json多语言任务对话数据[任务属性 + "【" + 任务名 + "】任务" + 任务前后 + "对话" + _loc7_], 原装对话[_loc7_][4]]);
-		_loc7_ += 1;
+	var arr = [];
+	var i = 0;
+	while (i < 原装对话.length){
+		arr.push([原装对话[i][0], 原装对话[i][1], 原装对话[i][2], _root.json多语言任务对话数据[任务属性 + "【" + 任务名 + "】任务" + 任务前后 + "对话" + i], 原装对话[i][4]]);
+		i += 1;
 	}
-	return _loc6_;
+	return arr;
 }
 _root.组装多语版NPC随机对话 = function(NPC名字, 原装对话, 随机数){
-	var _loc5_ = [];
-	var _loc6_ = 0;
-	while (_loc6_ < 原装对话[随机数].length)
-	{
-		_loc5_.push([原装对话[随机数][_loc6_][0], 原装对话[随机数][_loc6_][1], 原装对话[随机数][_loc6_][2], _root.json多语言任务对话数据[NPC名字 + "默认对话" + 随机数 + "_" + _loc6_], 原装对话[随机数][_loc6_][4]]);
-		_loc6_ += 1;
+	var arr = [];
+	var i = 0;
+	while (i < 原装对话[随机数].length){
+		arr.push([原装对话[随机数][i][0], 原装对话[随机数][i][1], 原装对话[随机数][i][2], _root.json多语言任务对话数据[NPC名字 + "默认对话" + 随机数 + "_" + i], 原装对话[随机数][i][4]]);
+		i += 1;
 	}
-	return _loc5_;
+	return arr;
 }
 _root.组装多语版佣兵随机对话 = function(索引文字, 原装对话){
-	var _loc4_ = [];
-	var _loc5_ = 0;
-	while (_loc5_ < 原装对话.length)
-	{
-		_loc4_.push([原装对话[_loc5_][0], 原装对话[_loc5_][1], 原装对话[_loc5_][2], _root.json多语言任务对话数据[索引文字], "普通"]);
-		_loc5_ += 1;
+	var arr = [];
+	var i = 0;
+	while (i < 原装对话.length){
+		arr.push([原装对话[i][0], 原装对话[i][1], 原装对话[i][2], _root.json多语言任务对话数据[索引文字], "普通"]);
+		i += 1;
 	}
-	return _loc4_;
+	return arr;
 }
+*/
 
-
-_root.获取游戏提示文本 = function (){
+_root.获取游戏提示文本 = function(){
 	var 提示文本列表 = _root.提示文本列表;
 	var 权重表 = new Array();
 	for(var i = 0; i < 提示文本列表.length; i++){
@@ -119,7 +116,7 @@ _root.获取游戏提示文本 = function (){
 	return _root.随机选择数组元素(选中文本组);
 }
 
-_root.处理html剧情文本 = function (str:String){
+_root.处理html剧情文本 = function(str:String){
 	//消除空格换两行的问题
 	str = str.split("\r\n").join("<BR>");
 	//将"$PC_NAME"替换为玩家名称
@@ -127,7 +124,7 @@ _root.处理html剧情文本 = function (str:String){
 	return str;
 }
 
-_root.加密html剧情文本 = function (str:String, encryptReplace, encryptCut){
+_root.加密html剧情文本 = function(str:String, encryptReplace, encryptCut){
 	//替换文本
 	if(encryptReplace != null){
 		var replaceArr = [];
