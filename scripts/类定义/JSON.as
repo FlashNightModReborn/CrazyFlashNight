@@ -1,6 +1,6 @@
 ﻿ import org.flashNight.neur.Server.ServerManager;  
  
- class JSON {
+class JSON implements IJSON{
     public var text;
     public var ch = "";
     public var at = 0;
@@ -27,7 +27,7 @@
      * @param arg 要序列化的对象
      * @return JSON 字符串
      */
-    public function stringify(arg) {
+    public function stringify(arg):String {
         var serializedValue;
         var result = ""; // 直接拼接字符串
         var index;
@@ -578,7 +578,7 @@
      * @param inputText 要解析的 JSON 字符串
      * @return 解析后的 AS2 对象
      */
-    public function parse(inputText) {
+    public function parse(inputText:String) {
         this.text = inputText;
         this.at = 0;
         this.ch = " ";

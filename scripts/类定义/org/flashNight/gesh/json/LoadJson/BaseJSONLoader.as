@@ -6,12 +6,13 @@ class org.flashNight.gesh.json.LoadJson.BaseJSONLoader {
     private var data:Object = null;
     private var _isLoading:Boolean = false; // Indicates if data is being loaded
     private var filePath:String;
+    private var parseType:String = "JSON"; // JSON, LiteJSON, FastJSON
 
     /**
      * Constructor to initialize the JSON loader.
      * @param relativePath String The file path relative to the resource directory.
      */
-    public function BaseJSONLoader(relativePath:String) {
+    public function BaseJSONLoader(relativePath:String, _parseType:String) {
         // Initialize the path manager
         PathManager.initialize();
         if (!PathManager.isEnvironmentValid()) {
@@ -24,6 +25,8 @@ class org.flashNight.gesh.json.LoadJson.BaseJSONLoader {
         if (this.filePath == null) {
             trace("BaseJSONLoader: Failed to resolve path, cannot load file!");
         }
+
+        this.parseType = _parseType;
     }
 
     /**
@@ -64,7 +67,7 @@ class org.flashNight.gesh.json.LoadJson.BaseJSONLoader {
             self._isLoading = false;
             trace("BaseJSONLoader: File load failed! Error: " + errorMessage);
             if (onErrorHandler != null) onErrorHandler(errorMessage);
-        });
+        }, null, this.parseType);
     }
 
     /**

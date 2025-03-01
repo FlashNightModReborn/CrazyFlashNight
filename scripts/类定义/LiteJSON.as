@@ -1,4 +1,4 @@
-﻿class LiteJSON {
+﻿class LiteJSON implements IJSON{
     public var text:String;
     public var ch:String = "";
     public var at:Number = 0;

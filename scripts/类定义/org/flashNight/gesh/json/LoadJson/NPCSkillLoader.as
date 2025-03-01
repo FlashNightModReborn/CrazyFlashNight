@@ -15,10 +15,10 @@ class org.flashNight.gesh.json.LoadJson.NPCSkillLoader extends BaseJSONLoader {
     }
 
     /**
-     * 构造函数，指定 npc_skills.json 的相对路径。
+     * 构造函数，指定 npc_skills.json 的相对路径，并以LiteJSON模式解析。
      */
     private function NPCSkillLoader() {
-        super("data/skills/npc_skills.json");
+        super("data/skills/npc_skills.json", "LiteJSON");
     }
 
     /**

@@ -2,10 +2,11 @@
 
 class org.flashNight.gesh.json.JSONLoader {
     private var url:String;
-    private var json:JSON;
+    private var json:IJSON;
     private var onLoadHandler:Function;
     private var onErrorHandler:Function;
     private var parsedData:Object;
+    private var parseType:String = "JSON"; // JSON, LiteJSON, FastJSON
 
     /**
      * Constructor
@@ -14,11 +15,25 @@ class org.flashNight.gesh.json.JSONLoader {
      * @param onErrorHandler A callback function to execute when an error occurs during loading.
      * @param lenientMode Optional. Whether to enable lenient mode for JSON parsing.
      */
-    public function JSONLoader(jsonURL:String, onLoadHandler:Function, onErrorHandler:Function, lenientMode:Boolean) {
+    public function JSONLoader(jsonURL:String, onLoadHandler:Function, onErrorHandler:Function, lenientMode:Boolean, _parseType:String) {
         this.url = jsonURL;
         this.onLoadHandler = onLoadHandler;
         this.onErrorHandler = onErrorHandler;
-        this.json = new JSON(lenientMode != undefined ? lenientMode : true);
+        switch(_parseType){
+            case "LiteJSON":
+                this.parseType = "LiteJSON";
+                this.json = new LiteJSON();
+                break;
+            case "FastJSON":
+                this.parseType = "FastJSON";
+                this.json = new FastJSON();
+                break;
+            case "JSON":
+            default:
+                this.parseType = "JSON";
+                this.json = new JSON(lenientMode != undefined ? lenientMode : true);
+                break;
+        }
 
         this.loadJSON();
     }
@@ -49,10 +64,11 @@ class org.flashNight.gesh.json.JSONLoader {
         try {
             this.parsedData = this.json.parse(rawData);
             
-            if (this.json.errors.length > 0) {
+            var errors = this.json["errors"];
+            if (errors.length > 0) {
                 // Log parsing errors
-                for (var i = 0; i < this.json.errors.length; i++) {
-                    ServerManager.getInstance().sendServerMessage("JSON parsing error: " + this.json.errors[i].message);
+                for (var i = 0; i < errors.length; i++) {
+                    ServerManager.getInstance().sendServerMessage("JSON parsing error: " + errors[i].message);
                 }
             }
 
