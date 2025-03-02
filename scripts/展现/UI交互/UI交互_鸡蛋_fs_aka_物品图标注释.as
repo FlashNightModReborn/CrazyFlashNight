@@ -180,8 +180,6 @@
 	}
 	if (物品数据.equipped.magicdefence !== undefined && 物品数据.equipped.magicdefence !== 0)
 	{
-		//文本数据.push("魔法抗性：<BR>");
-		//var 魔法抗性对象 = _root.json_parser.parse(物品数据.equipped.magicdefence );
 		var 魔法抗性对象 = 物品数据.equipped.magicdefence;
 		if(魔法抗性对象){
 			for(var key in 魔法抗性对象){
@@ -339,8 +337,7 @@
 
 
 //技能图标
-_root.技能栏技能图标注释 = function(对应数组号)
-{
+_root.技能栏技能图标注释 = function(对应数组号){
 	var 主角技能信息 = _root.主角技能表[对应数组号];
 	var 技能名 = 主角技能信息[0];
 	var 技能信息 = _root.技能表对象[技能名];
@@ -361,8 +358,7 @@ _root.技能栏技能图标注释 = function(对应数组号)
 	_root.注释(计算宽度, 文本数据);
 };
 
-_root.学习界面技能图标注释 = function(对应数组号)
-{
+_root.学习界面技能图标注释 = function(对应数组号){
 	var 技能信息 = _root.技能表[对应数组号];
 
 	var 文本数据 = "<B>" + 技能信息.Name + "</B>";
@@ -381,8 +377,7 @@ _root.学习界面技能图标注释 = function(对应数组号)
 
 
 
-_root.注释 = function(宽度, 内容)
-{
+_root.注释 = function(宽度, 内容){
 	_root.注释框._visible = 1;
 	_root.注释框.文本框.htmlText = 内容;
 	_root.注释框.文本框._width = 宽度;

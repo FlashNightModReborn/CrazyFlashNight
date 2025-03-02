@@ -33,13 +33,8 @@ _root.cheatFunction.add1 = function(){
 	var add1僵尸名字 = "僵尸";
 	var add1僵尸是否为敌人 = true;
 	var add1僵尸身高 = 175;
-	var add1僵尸长枪 = "";
-	var add1僵尸手枪 = "";
-	var add1僵尸手枪2 = "";
-	var add1僵尸刀 = "";
-	var add1僵尸手雷 = "";
 	var add1僵尸僵尸型敌人newname = this._name + 兵种;
-	_root.加载游戏世界人物(add1僵尸兵种,add1僵尸僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x: _root.gameworld[_root.控制目标]._x ,_y:_root.gameworld[_root.控制目标]._y,等级:this.add1僵尸等级,名字:this.add1僵尸名字,是否为敌人:this.add1僵尸是否为敌人,身高:this.add1僵尸身高,长枪:this.add1僵尸长枪,手枪:this.add1僵尸手枪,手枪2:this.add1僵尸手枪2,刀:this.add1僵尸刀,手雷:this.add1僵尸手雷,产生源:this._name});
+	_root.加载游戏世界人物(add1僵尸兵种,add1僵尸僵尸型敌人newname,_root.gameworld.getNextHighestDepth(),{_x: _root.gameworld[_root.控制目标]._x ,_y:_root.gameworld[_root.控制目标]._y,等级:add1僵尸等级,名字:add1僵尸名字,是否为敌人:add1僵尸是否为敌人,身高:add1僵尸身高,产生源:null});
 	_root.最上层发布文字提示("添加一个僵尸！");
 }
 
