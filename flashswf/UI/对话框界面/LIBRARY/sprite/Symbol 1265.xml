@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1265" itemID="6597607e-000008e4" lastModified="1740231746">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1265" itemID="6597607e-000008e4" lastModified="1740972314">
   <timeline>
-    <DOMTimeline name="Symbol 1265" currentFrame="19">
+    <DOMTimeline name="Symbol 1265">
       <layers>
         <DOMLayer name="表情" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" name="普通" labelType="name" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="表情普通" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="表情普通" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="55.3" ty="-491.2"/>
                   </matrix>
@@ -58,7 +58,7 @@
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Boy身体" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Boy身体" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix tx="-246.05" ty="-491.05"/>
                   </matrix>

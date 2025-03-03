@@ -1,8 +1,8 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1740233238" lastUniqueIdentifier="153">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="83">
+    <DOMTimeline name="对话框肖像" currentFrame="47">
       <layers>
-        <DOMLayer name="Labels Layer" color="#FC2986">
+        <DOMLayer name="Labels Layer" color="#FC2986" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -259,14 +259,14 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
+                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2" current="true" isSelected="true">
+        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -483,7 +483,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="75" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1275" name="肖像" selected="true" centerPoint3DX="501.95" centerPoint3DY="1175.05">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1275" name="肖像" centerPoint3DX="501.95" centerPoint3DY="1175.05">
                   <matrix>
                     <Matrix a="-0.319839477539063" d="0.319839477539063" tx="72" ty="192.95"/>
                   </matrix>
