@@ -1,5 +1,8 @@
 ﻿
 import org.flashNight.naki.Sort.InsertionSort;
+import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
+
 _root.删佣兵 = function(佣兵ID)
 {
 	删佣兵数组号 = -1;
@@ -296,7 +299,7 @@ _root.佣兵杂交名称 = function(n, 杂交许可, 战队信息)
 	var 选中的生成函数 = _root.基于权重随机选择函数(_root.名称生成函数集);
 	if (选中的生成函数 != null)
 	{
-		return _root.按宽度截断字符串(战队信息.战队抬头 + " " + 选中的生成函数(原佣兵名称, 杂交佣兵名称), 17);
+		return _root.按宽度截断字符串(战队信息.战队抬头 + " " + 选中的生成函数(原佣兵名称, 杂交佣兵名称), 30);
 	}
 	return "无名的佣兵";// 如果没有合适的函数被选中
 };
@@ -467,6 +470,18 @@ _root.创建佣兵实体对象 = function(佣兵数据, X, Y)
 		var 随机对话编号 = _root.获取随机索引(_root.佣兵随机对话);
 		var 随机对话内容 = _root.佣兵随机对话[随机对话编号].Text + "   (" + _root.佣兵随机对话[随机对话编号].Personality + ":" + _root.佣兵随机对话[随机对话编号].Value + ")";
 		佣兵对象.默认对话[0][i] = [佣兵数据[1], "佣兵", "主角模板", 随机对话内容, _root.佣兵随机对话[随机对话编号].Expression, 佣兵对象];
+	}
+	StaticInitializer.initializeUnit(佣兵对象);
+
+	var nx:Number = 佣兵对象.人物文字信息._x;
+	var ny:Number = 佣兵对象.人物文字信息._y;
+	佣兵对象.人物文字信息.unloadMovie();
+	佣兵对象.attachMovie("新版人物文字信息","新版人物文字信息",佣兵对象.getNextHighestDepth(),{_x:nx,_y:ny});
+	if(佣兵对象.方向 == "左"){
+		佣兵对象.新版人物文字信息._xscale = -100;
+	}
+	else{
+		佣兵对象.新版人物文字信息._xscale = 100;
 	}
 
 
