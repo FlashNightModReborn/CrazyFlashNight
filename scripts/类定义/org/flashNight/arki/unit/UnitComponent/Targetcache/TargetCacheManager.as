@@ -41,7 +41,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     public static function updateTargetCache(target:Object, updateInterval:Number, requestType:String, targetStatus:String):Void {
         if (!_initialized) initialize();
         
-        var SORT_KEY:String = "right";
         updateInterval = isNaN(updateInterval) ? 1 : updateInterval;
         
         if (!_targetCaches[targetStatus]) _targetCaches[targetStatus] = {};
