@@ -1,5 +1,7 @@
 ﻿
 
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
 class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
 {
 
@@ -13,6 +15,7 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
         if(!target._deInitialized)
         {
             target.aabbCollider.getFactory().releaseCollider(target.aabbCollider);
+            TargetCacheUpdater.removeUnit(target);
 
             target._deInitialized = true;
         } 

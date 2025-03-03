@@ -2,8 +2,11 @@
 import org.flashNight.naki.Sort.InsertionSort;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
-    // 静态临时列表用于缓存计算
-    private static var _tempList:Array = [];
+    // 缓存池对象（键为缓存类型，值为缓存数据对象）
+    private static var _cachePool:Object = {};
+    
+    // 全局版本号（任何单位变动时递增）
+    private static var _globalVersion:Number = 0;
     
     // 配置常量
     private static var _SORT_KEY:String = "right";
@@ -18,98 +21,98 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         targetIsEnemy:Boolean,
         cacheEntry:Object
     ):Void {
-        // 清空临时列表
-        _tempList.length = 0;
+        // 生成复合缓存键
+        var cacheKey:String = requestType + "_" + targetIsEnemy.toString();
         
-        // 阶段1：收集存活单位
-        _collectValidUnits(gameWorld, targetIsEnemy, requestType == _ENEMY_TYPE);
+        // 获取或创建缓存类型数据
+        var cacheTypeData:Object = _getCacheTypeData(cacheKey);
         
-        // 阶段2：版本对比
-        var newVersion:String = _generateDataVersion(_tempList);
-        if (_shouldSkipUpdate(cacheEntry, newVersion)) {
-            cacheEntry.lastUpdatedFrame = currentFrame; // 保持帧数更新
-            return;
+        // 版本检查
+        if(cacheTypeData.tempVersion < _globalVersion) {
+            cacheTypeData.tempList.length = 0;
+            _collectValidUnits(
+                gameWorld,
+                targetIsEnemy,
+                requestType == _ENEMY_TYPE,
+                cacheTypeData.tempList
+            );
+            cacheTypeData.tempVersion = _globalVersion;
         }
+
+        var list:Array = cacheTypeData.tempList;
         
-        // 阶段3：排序处理
-        _performSorting();
+        // 排序处理
+        InsertionSort.sort(list, function(a:Object, b:Object):Number {
+            return a.aabbCollider[_SORT_KEY] - b.aabbCollider[_SORT_KEY];
+        });
         
-        // 阶段4：构建缓存结构
-        _rebuildCacheData(cacheEntry, currentFrame, newVersion);
+        // 构建缓存结构
+        _rebuildCacheData(list, cacheEntry, currentFrame);
     }
 
-    // 收集有效单位（保持独立扩展性）
+    // 缓存类型数据工厂
+    private static function _getCacheTypeData(key:String):Object {
+        if(!_cachePool[key]) {
+            _cachePool[key] = {
+                tempList: [],    // 该缓存类型的临时列表
+                tempVersion: 0   // 该缓存类型的临时版本
+            };
+        }
+        return _cachePool[key];
+    }
+
+    // 全局版本控制
+    public static function addUnit(target:MovieClip):Void {
+        _globalVersion++;
+    }
+
+    public static function removeUnit(target:MovieClip):Void {
+        _globalVersion++;
+    }
+
+    // 收集有效单位（性能优化版）
     private static function _collectValidUnits(
         gameWorld:Object,
         requesterIsEnemy:Boolean,
-        isEnemyRequest:Boolean
+        isEnemyRequest:Boolean,
+        targetList:Array
     ):Void {
-        for (var unitKey:String in gameWorld) {
+        // 提前确定敌我关系判断方式
+        var shouldCheckOpposite:Boolean = isEnemyRequest;
+        
+        for(var unitKey:String in gameWorld) {
             var unit:Object = gameWorld[unitKey];
-            if (!_isUnitValid(unit, requesterIsEnemy, isEnemyRequest)) continue;
             
+            // 内联有效性检查（消除函数调用）
+            if(unit.hp <= 0) continue; // 死亡单位跳过
+            
+            var unitIsEnemy:Boolean = unit.是否为敌人;
+            var isValidRelation:Boolean = shouldCheckOpposite ? 
+                (requesterIsEnemy != unitIsEnemy) : 
+                (requesterIsEnemy == unitIsEnemy);
+            
+            if(!isValidRelation) continue;
+            
+            // 更新碰撞体并加入列表
             unit.aabbCollider.updateFromUnitArea(unit);
-            _tempList.push(unit);
+            targetList.push(unit);
         }
     }
 
-    // 单位有效性验证
-    private static function _isUnitValid(
-        unit:Object,
-        requesterIsEnemy:Boolean,
-        isEnemyRequest:Boolean
-    ):Boolean {
-        if (unit.hp <= 0) return false;
-        var unitIsEnemy:Boolean = unit.是否为敌人;
-        return isEnemyRequest ? 
-            (requesterIsEnemy != unitIsEnemy) : 
-            (requesterIsEnemy == unitIsEnemy);
-    }
 
-    // 生成数据版本标识（后续可改为增量更新）
-    private static function _generateDataVersion(units:Array):String {
-        var versionBuffer:Array = [];
-        for (var i:Number = 0; i < units.length; i++) {
-            var u:Object = units[i];
-            versionBuffer.push(
-                u._name, 
-                u.hp, 
-                u.aabbCollider.right
-            );
-        }
-        return versionBuffer.join("|");
-    }
-
-    // 更新决策逻辑（分离便于后续扩展）
-    private static function _shouldSkipUpdate(cache:Object, newVersion:String):Boolean {
-        return cache.dataVersion === newVersion;
-    }
-
-    // 排序处理
-    private static function _performSorting():Void {
-        InsertionSort.sort(_tempList, function(a:Object, b:Object):Number {
-            return a.aabbCollider[_SORT_KEY] - b.aabbCollider[_SORT_KEY];
-        });
-    }
-
-    // 重建缓存数据结构
-    private static function _rebuildCacheData(
-        cacheEntry:Object, 
-        currentFrame:Number,
-        newVersion:String
-    ):Void {
+    // 构建缓存数据结构（更新后版本）
+    private static function _rebuildCacheData(sourceList:Array, cacheEntry:Object, currentFrame:Number):Void {
         var newData:Array = [];
         var newNameIndex:Object = {};
         
-        for (var i:Number = 0; i < _tempList.length; i++) {
-            newData.push(_tempList[i]);
-            newNameIndex[_tempList[i]._name] = i;
+        for(var i:Number = 0; i < sourceList.length; i++) {
+            newData.push(sourceList[i]);
+            newNameIndex[sourceList[i]._name] = i;
         }
         
-        // 原子性更新
+        // 原子更新
         cacheEntry.data = newData;
         cacheEntry.nameIndex = newNameIndex;
         cacheEntry.lastUpdatedFrame = currentFrame;
-        cacheEntry.dataVersion = newVersion;
     }
 }

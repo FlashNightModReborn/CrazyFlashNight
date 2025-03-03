@@ -8,6 +8,7 @@ import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.gesh.func.*;
 import org.flashNight.arki.unit.UnitComponent.Updater.*;
 import org.flashNight.arki.component.StatHandler.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer implements IInitializer {
     public static var factory:IColliderFactory;
@@ -21,6 +22,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         ParameterInitializer.initialize(target);
         EventInitializer.initialize(target);
         DisplayNameInitializer.initialize(target);
+        TargetCacheUpdater.addUnit(target);
     }
 
     public static function initializeGameWorldUnit():Void {
