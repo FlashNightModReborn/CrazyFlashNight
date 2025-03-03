@@ -13,6 +13,7 @@ import org.flashNight.gesh.xml.LoadXml.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.key.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*
 
 _root.帧计时器 = {};
 ColliderFactoryRegistry.init();
@@ -25,11 +26,7 @@ _root.帧计时器.初始化任务栈 = function() {
     this.任务哈希表 = {}; // 频繁更新的任务利用键值对单独维护
     this.当前帧数 = 0; 
     this.任务ID计数器 = 0;
-    this.目标缓存 = {};
-    this.目标缓存["undefined"] = { 数据: [], 最后更新帧数: 0 };
-    this.目标缓存["true"] = { 数据: [], 最后更新帧数: 0 };
-    this.目标缓存["false"] = { 数据: [], 最后更新帧数: 0 };
-    this.阵营单位表 = {}; // 预备后续的
+
     this.帧率 = 30; // 当前项目为30帧/s
     this.毫秒每帧 = this.帧率 / 1000; // 用于乘法优化性能
     this.每帧毫秒 = 1000 / this.帧率;
@@ -103,6 +100,8 @@ _root.帧计时器.初始化任务栈 = function() {
     this.zeroFrameTasks = {}; // 使用对象存储任务
     this.server = ServerManager.getInstance();
     this.eventBus = EventBus.getInstance();
+
+    TargetCacheManager.initialize();
 };
 
 _root.帧计时器.初始化任务栈(); // 调用初始化方法
@@ -872,107 +871,8 @@ _root.帧计时器.延迟执行任务 = function(任务ID, 延迟时间)
 
 EventBus.getInstance().subscribe("SceneChanged", StaticInitializer.onSceneChanged, StaticInitializer); 
 
-
-_root.帧计时器.确保目标缓存存在 = function(自机状态, 请求类型) 
-{
-    var 自机状态键 = 自机状态.toString();
-    if (!this.目标缓存[自机状态键]) 
-    {
-        this.目标缓存[自机状态键] = {};
-        this.目标缓存[自机状态键][请求类型] = { 数据: [], 最后更新帧数: 0 };
-    }
-    else if (!this.目标缓存[自机状态键][请求类型]) 
-    {
-        this.目标缓存[自机状态键][请求类型] = { 数据: [], 最后更新帧数: 0 };
-    }
-};
-
-_root.帧计时器.更新目标缓存 = function(自机:Object, 更新间隔:Number, 请求类型:String, 自机状态键:String) {
-    var SORT_KEY:String = "right";
-    更新间隔 = isNaN(更新间隔) ? 1 : 更新间隔;
-    
-    if (!this.目标缓存[自机状态键]) this.目标缓存[自机状态键] = {};
-    var 状态缓存:Object = this.目标缓存[自机状态键];
-    if (!状态缓存[请求类型]) 状态缓存[请求类型] = { 数据: [], nameIndex: {}, 最后更新帧数: 0 };
-    
-    var cache:Object = 状态缓存[请求类型];
-    var 当前帧数:Number = this.当前帧数;
-    var isEnemyRequest:Boolean = (请求类型 == "敌人");
-    var 游戏世界:Object = _root.gameworld;
-    var 自机是敌人:Boolean = 自机.是否为敌人;
-    
-    // 收集符合条件的存活目标
-    var tempList:Array = [];
-    for (var 待选目标:String in 游戏世界) {
-        var 目标:Object = 游戏世界[待选目标];
-        if (目标.hp <= 0) continue;
-        
-        // 敌我判断
-        var 目标敌我状态:Boolean = 目标.是否为敌人;
-        var 需要处理:Boolean = isEnemyRequest ? 
-            (自机是敌人 != 目标敌我状态) : 
-            (自机是敌人 == 目标敌我状态);
-        if (!需要处理) continue;
-        
-        // 更新碰撞体
-        目标.aabbCollider.updateFromUnitArea(目标);
-        tempList.push(目标);
-    }
-    
-    // 按right升序排序
-    InsertionSort.sort(tempList, function(a:Object, b:Object):Number {
-        return a.aabbCollider.right - b.aabbCollider.right;
-    });
-    
-    // 重建数据与索引
-    var newData:Array = [];
-    var newNameIndex:Object = {};
-    for (var i:Number = 0; i < tempList.length; i++) {
-        newData.push(tempList[i]);
-        newNameIndex[tempList[i]._name] = i;
-    }
-    
-    // 更新缓存
-    cache.数据 = newData;
-    cache.nameIndex = newNameIndex;
-    cache.最后更新帧数 = 当前帧数;
-};
-
-
-
-
-_root.帧计时器.获取目标缓存 = function(自机:Object, 更新间隔:Number, 请求类型:String) {
-    var 自机状态键 = 自机.是否为敌人.toString();
-    var 目标缓存对象 = this.目标缓存[自机状态键][请求类型];
-
-    if (isNaN(目标缓存对象.最后更新帧数) || this.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) {
-        this.更新目标缓存(自机, 更新间隔, 请求类型, 自机状态键);
-    }
-
-    return 目标缓存对象.数据;
-};
-
-_root.帧计时器.获取敌人缓存 = function(自机:Object, 更新间隔:Number) {
-    var 自机状态键 = 自机.是否为敌人.toString();
-    var 目标缓存对象 = this.目标缓存[自机状态键]["敌人"];
-
-    if (isNaN(目标缓存对象.最后更新帧数) || this.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) {
-        this.更新目标缓存(自机, 更新间隔, "敌人", 自机状态键);
-    }
-
-    return 目标缓存对象.数据;
-};
-
-_root.帧计时器.获取友军缓存 = function(自机:Object, 更新间隔:Number) {
-    var 自机状态键 = 自机.是否为敌人.toString();
-    var 目标缓存对象 = this.目标缓存[自机状态键]["友军"];
-
-    if (isNaN(目标缓存对象.最后更新帧数) || this.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) {
-        this.更新目标缓存(自机, 更新间隔, "友军", 自机状态键);
-    }
-
-    return 目标缓存对象.数据;
-};
+_root.帧计时器.获取敌人缓存 = Delegate.create(TargetCacheManager, TargetCacheManager.getCachedEnemy);
+_root.帧计时器.获取友军缓存 = Delegate.create(TargetCacheManager, TargetCacheManager.getCachedAlly);
 
 _root.帧计时器.添加主动战技cd = function(动作, 间隔时间){
     return _root.帧计时器.添加单次任务(动作, 间隔时间); // 返回任务ID
