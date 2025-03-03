@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1736494882" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1741011582" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="新版人物文字信息">
+    <DOMTimeline name="新版人物文字信息" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Script Layer" color="#888BCD" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#888BCD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -71,34 +71,17 @@ this.onEnterFrame = function() {
         <DOMLayer name="Layer 3" color="#29F9D9">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMStaticText fontRenderingMode="standard" width="15.1" height="15.55" autoExpand="true" isSelectable="false">
-                  <matrix>
-                    <Matrix tx="-68.5" ty="-6.9"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>Lv.</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" rotation="true" leftMargin="1" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter blurX="2" blurY="2" color="#000000" quality="3" strength="10"/>
-                  </filters>
-                </DOMStaticText>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#99E2A2">
+        <DOMLayer name="Layer 4" color="#99E2A2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMDynamicText name="称号文本框" fontRenderingMode="device" width="153.5" height="15.55" isSelectable="false" variableName="_parent.称号" renderAsHTML="true">
                   <matrix>
-                    <Matrix tx="-73" ty="-24.4"/>
+                    <Matrix tx="-77.05" ty="-24.4"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -119,24 +102,7 @@ this.onEnterFrame = function() {
         <DOMLayer name="Layer 5" color="#EABEC0">
           <frames>
             <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMDynamicText fontRenderingMode="device" width="21.25" height="15.55" isSelectable="false" variableName="_parent.等级">
-                  <matrix>
-                    <Matrix tx="-47.25" ty="-6.9"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>999</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                  <filters>
-                    <GlowFilter blurX="2" blurY="2" color="#000000" quality="3" strength="10"/>
-                  </filters>
-                </DOMDynamicText>
-              </elements>
+              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -144,15 +110,15 @@ this.onEnterFrame = function() {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMDynamicText fontRenderingMode="device" width="100" height="15.55" isSelectable="false" variableName="_parent.displayName" renderAsHTML="true">
+                <DOMDynamicText fontRenderingMode="device" width="212.55" height="15.55" isSelectable="false" variableName="_parent.displayName" renderAsHTML="true">
                   <matrix>
-                    <Matrix tx="-16" ty="-6.9"/>
+                    <Matrix tx="-106.25" ty="-6.9"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
                       <characters>name</characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" lineSpacing="0" bitmapSize="240" face="MicrosoftYaHei" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>

@@ -1,32 +1,56 @@
 ﻿import org.flashNight.gesh.string.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer {
+    // 表驱动映射，存储称号与对应的处理函数
+    private static var _titleHandlers:Object = initializeHandlers();
+
+    // 初始化处理函数映射表（只初始化一次）
+    private static function initializeHandlers():Object {
+        var obj:Object = {
+            坛主: function(target:Object):Void {
+                target.称号 = MansionRandomizer.getRandomName() + target.称号;
+            },
+            散人: function(target:Object):Void {
+                target.称号 = HexagramRandomizer.getRandomName() + target.称号;
+            }
+            // 可在此继续添加新的称号处理逻辑
+        };
+
+        return obj;
+    }
+
     public static function initialize(target:Object):Void {
         var nameColor:String;
 
-        if (target.是否为敌人 == false) {
-            nameColor = "#00FF00"; // Friendly
-        } else if (target.是否为敌人 == true) {
-            nameColor = "#CC0000"; // Enemy
-        } else if (target._name == _root.控制目标) {
-            nameColor = "#FFFF00"; // Targeted
-        } else {
-            nameColor = "#FFFFFF"; // Default
-        }
+        // 初始化颜色判断逻辑保持不变
 
-        switch(target.称号)
+        if(target._name == _root.控制目标)
         {
-            case "坛主":
-                target.称号 = MansionRandomizer.getRandomName() + target.称号;
-                break;
-            case "散人":
-                target.称号 = HexagramRandomizer.getRandomName() + target.称号;
-                break;
-        
-            default:
-                break;
+            nameColor = "#FFFF00";
+        }
+        else if(target.是否为敌人 == false)
+        {
+            nameColor = "#00FF00";
+        }
+        else if(target.是否为敌人 == true)
+        {
+            nameColor = "#CC0000";
+        }
+        else
+        {
+            nameColor = "#FFFFFF";
         }
 
-        target.displayName =  "<FONT COLOR='" + nameColor + "'>" + target.名字 + "</FONT>";
+        // 表驱动处理逻辑
+        var currentTitle:String = target.称号;
+        if (_titleHandlers[currentTitle] != undefined) {
+            // 执行对应的处理函数
+            _titleHandlers[currentTitle](target);
+        }
+
+        var color:String = "<FONT COLOR='" + nameColor + "'>";
+
+        // 设置显示名称（保持不变）
+        target.displayName = color + "Lv." + target.等级 + "   " + target.名字 + "</FONT>";
     }
 }
