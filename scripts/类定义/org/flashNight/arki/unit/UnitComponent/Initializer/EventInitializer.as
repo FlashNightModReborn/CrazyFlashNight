@@ -1,15 +1,16 @@
-﻿import org.flashNight.neur.Event.*;
-import org.flashNight.arki.unit.UnitComponent.Updater.*;
-import org.flashNight.arki.component.StatHandler.*;
+﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventInitializer.as
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEventComponent;
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.WeatherEventComponent;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
+    /**
+     * 统一初始化单位的事件监听
+     * @param target 目标单位( MovieClip )
+     */
     public static function initialize(target:MovieClip):Void {
-        var dispatcher:EventDispatcher = target.dispatcher;
-
-        dispatcher.subscribeSingle("hit", HitUpdater.getUpdater(), target);
-
-        var wtfunc:Function = WeatherUpdater.getUpdater();
-        dispatcher.subscribeSingleGlobal("WeatherTimeRateUpdated", wtfunc, target);
-        wtfunc.call(target);
+        // 初始化受击事件组件
+        HitEventComponent.initialize(target);
+        // 初始化天气事件组件
+        WeatherEventComponent.initialize(target);
     }
 }
