@@ -2,48 +2,74 @@
 import org.flashNight.naki.Sort.InsertionSort;
 
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
-    
-    // 初始化缓存结构 (需由帧计时器初始化时调用)
+    // 静态缓存结构
+    private static var _targetCaches:Object;
+    private static var _initialized:Boolean = false;
+
+    // 模块化配置 (类常量)
+    private static var _STATUS_KEYS:Array = ["undefined", "true", "false"];
+    private static var _CACHE_TEMPLATE:Object = {
+        data: [],
+        lastUpdatedFrame: 0
+    };
+
+    // 初始化缓存结构
     public static function initialize():Void {
-        var temp = _root.帧计时器;
-
-        temp.目标缓存 = {};
-        temp.目标缓存["undefined"] = { 数据: [], 最后更新帧数: 0 };
-        temp.目标缓存["true"] = { 数据: [], 最后更新帧数: 0 };
-        temp.目标缓存["false"] = { 数据: [], 最后更新帧数: 0 };
-
+        _targetCaches = {};
+        
+        // 使用配置驱动初始化
+        for (var i:Number = 0; i < _STATUS_KEYS.length; i++) {
+            var key:String = _STATUS_KEYS[i];
+            _targetCaches[key] = {
+                // 深拷贝模板避免引用污染
+                敌人: _createCacheEntry(),
+                友军: _createCacheEntry()
+            };
+        }
+        _initialized = true;
     }
 
-    public static function updateTargetCache(自机:Object, 更新间隔:Number, 请求类型:String, 自机状态键:String):Void {
+    // 独立缓存项创建方法
+    private static function _createCacheEntry():Object {
+        return {
+            data: _CACHE_TEMPLATE.data.concat(), // 新建数组
+            nameIndex: {},
+            lastUpdatedFrame: _CACHE_TEMPLATE.lastUpdatedFrame
+        };
+    }
+
+    public static function updateTargetCache(target:Object, updateInterval:Number, requestType:String, targetStatus:String):Void {
+        if (!_initialized) initialize();
+        
         var SORT_KEY:String = "right";
-        更新间隔 = isNaN(更新间隔) ? 1 : 更新间隔;
+        updateInterval = isNaN(updateInterval) ? 1 : updateInterval;
         
-        if (!_root.帧计时器.目标缓存[自机状态键]) _root.帧计时器.目标缓存[自机状态键] = {};
-        var 状态缓存:Object = _root.帧计时器.目标缓存[自机状态键];
-        if (!状态缓存[请求类型]) 状态缓存[请求类型] = { 数据: [], nameIndex: {}, 最后更新帧数: 0 };
+        if (!_targetCaches[targetStatus]) _targetCaches[targetStatus] = {};
+        var stateCache:Object = _targetCaches[targetStatus];
+        if (!stateCache[requestType]) stateCache[requestType] = { data: [], nameIndex: {}, lastUpdatedFrame: 0 };
         
-        var cache:Object = 状态缓存[请求类型];
-        var 当前帧数:Number = _root.帧计时器.当前帧数;
-        var isEnemyRequest:Boolean = (请求类型 == "敌人");
-        var 游戏世界:Object = _root.gameworld;
-        var 自机是敌人:Boolean = 自机.是否为敌人;
+        var cache:Object = stateCache[requestType];
+        var frame:Number = _root.帧计时器.当前帧数;
+        var isEnemyRequest:Boolean = (requestType == "敌人");
+        var gameWorld:Object = _root.gameworld;
+        var targetIsEnemy:Boolean = target.是否为敌人;
         
         // 收集符合条件的存活目标
         var tempList:Array = [];
-        for (var 待选目标:String in 游戏世界) {
-            var 目标:Object = 游戏世界[待选目标];
-            if (目标.hp <= 0) continue;
+        for (var unitKey:String in gameWorld) {
+            var unit:Object = gameWorld[unitKey];
+            if (unit.hp <= 0) continue;
             
             // 敌我判断
-            var 目标敌我状态:Boolean = 目标.是否为敌人;
-            var 需要处理:Boolean = isEnemyRequest ? 
-                (自机是敌人 != 目标敌我状态) : 
-                (自机是敌人 == 目标敌我状态);
-            if (!需要处理) continue;
+            var enemyStatus:Boolean = unit.是否为敌人;
+            var needProcess:Boolean = isEnemyRequest ? 
+                (targetIsEnemy != enemyStatus) : 
+                (targetIsEnemy == enemyStatus);
+            if (!needProcess) continue;
             
             // 更新碰撞体
-            目标.aabbCollider.updateFromUnitArea(目标);
-            tempList.push(目标);
+            unit.aabbCollider.updateFromUnitArea(unit);
+            tempList.push(unit);
         }
         
         // 按right升序排序
@@ -60,41 +86,29 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
         }
         
         // 更新缓存
-        cache.数据 = newData;
+        cache.data = newData;
         cache.nameIndex = newNameIndex;
-        cache.最后更新帧数 = 当前帧数;
+        cache.lastUpdatedFrame = frame;
     }
 
-    public static function getCachedTargets(自机:Object, 更新间隔:Number, 请求类型:String):Array {
-        var 自机状态键 = 自机.是否为敌人.toString();
-        var 目标缓存对象 = _root.帧计时器.目标缓存[自机状态键][请求类型];
+    public static function getCachedTargets(target:Object, updateInterval:Number, requestType:String):Array {
+        if (!_initialized) initialize();
+        
+        var targetStatus = target.是否为敌人.toString();
+        var cachedTargets = _targetCaches[targetStatus][requestType];
 
-        if (isNaN(目标缓存对象.最后更新帧数) || _root.帧计时器.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) {
-            TargetCacheManager.updateTargetCache(自机, 更新间隔, 请求类型, 自机状态键);
+        if (isNaN(cachedTargets.lastUpdatedFrame) || _root.帧计时器.当前帧数 - cachedTargets.lastUpdatedFrame > updateInterval) {
+            updateTargetCache(target, updateInterval, requestType, targetStatus);
         }
 
-        return 目标缓存对象.数据;
+        return cachedTargets.data;
     }
 
-    public static function getCachedEnemy(自机:Object, 更新间隔:Number):Array {
-        var 自机状态键 = 自机.是否为敌人.toString();
-        var 目标缓存对象 = _root.帧计时器.目标缓存[自机状态键]["敌人"];
-
-        if (isNaN(目标缓存对象.最后更新帧数) || _root.帧计时器.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) {
-            TargetCacheManager.updateTargetCache(自机, 更新间隔, "敌人", 自机状态键);
-        }
-
-        return 目标缓存对象.数据;
+    public static function getCachedEnemy(target:Object, updateInterval:Number):Array {
+        return getCachedTargets(target, updateInterval, "敌人");
     }
 
-    public static function getCachedAlly(自机:Object, 更新间隔:Number):Array {
-        var 自机状态键 = 自机.是否为敌人.toString();
-        var 目标缓存对象 = _root.帧计时器.目标缓存[自机状态键]["友军"];
-
-        if (isNaN(目标缓存对象.最后更新帧数) || _root.帧计时器.当前帧数 - 目标缓存对象.最后更新帧数 > 更新间隔) {
-            TargetCacheManager.updateTargetCache(自机, 更新间隔, "友军", 自机状态键);
-        }
-
-        return 目标缓存对象.数据;
+    public static function getCachedAlly(target:Object, updateInterval:Number):Array {
+        return getCachedTargets(target, updateInterval, "友军");
     }
 }
