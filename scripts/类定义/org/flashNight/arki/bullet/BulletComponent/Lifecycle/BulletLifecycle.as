@@ -54,7 +54,6 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
         var detectionArea:MovieClip;
         var bulletRotation:Number = target._rotation; // 本地化避免多次访问造成getter开销
         var isRotated:Boolean = (bulletRotation != 0 && bulletRotation != 180);
-        var isAxisAlignedChain = target.联弹检测 && !isRotated;
         var factory:IColliderFactory;
 
         if(target.联弹检测)
