@@ -202,8 +202,14 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
     bulletInstance.ymov = bulletInstance.子弹速度 * Math.sin(angle);
     bulletInstance.霰弹值 = Obj.联弹检测 ? Obj.霰弹值 : 1;
 
-    /*
+    // 统计钩子调用（注释此行即可关闭统计）
+    //this.更新子弹统计(游戏世界, Obj, shooter);
 
+    return bulletInstance;
+};
+
+// 独立统计处理函数
+_root.更新子弹统计 = function(游戏世界, Obj, shooter) {
     var report_len = 16;
 
     // 初始化统计信息（如果没有）
@@ -349,13 +355,7 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
         // 发送汇总后的统计信息
         _root.服务器.发布服务器消息(report);
     }
-
-    */
-
-    return bulletInstance;
 };
-
-
 
 // --------------------子弹伤害结算核心--------------------
 // 专注于伤害与效果计算，并将计算结果打包返回
