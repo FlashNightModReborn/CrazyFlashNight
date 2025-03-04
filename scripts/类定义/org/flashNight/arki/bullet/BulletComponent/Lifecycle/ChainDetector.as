@@ -1,4 +1,10 @@
-﻿// 文件路径：org.flashNight.arki.bullet.BulletComponent.ChainDetector.as
+﻿import org.flashNight.neur.Event.*;
+import org.flashNight.arki.bullet.BulletComponent.Lifecycle.ILifecycle;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.component.Damage.*;
+
+// 文件路径：org.flashNight.arki.bullet.BulletComponent.ChainDetector.as
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.ChainDetector {
     /**
      * 创建联弹检测专用碰撞器

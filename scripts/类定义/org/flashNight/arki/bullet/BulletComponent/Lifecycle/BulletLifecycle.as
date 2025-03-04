@@ -6,14 +6,17 @@ import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.component.Damage.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle implements ILifecycle {
-    private var 射程阈值:Number;
+
+    public static var BASIC:BulletLifecycle = new BulletLifecycle(900);
+
+    private var rangeThreshold:Number;
 
     /**
      * 构造函数
-     * @param 射程阈值:Number 子弹的射程限制。
+     * @param rangeThreshold:Number 子弹的射程限制。
      */
-    public function BulletLifecycle(射程阈值:Number) {
-        this.射程阈值 = 射程阈值;
+    public function BulletLifecycle(rangeThreshold:Number) {
+        this.rangeThreshold = rangeThreshold;
     }
 
     /**
@@ -22,17 +25,18 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
      * @return Boolean 是否需要销毁。
      */
     public function shouldDestroy(target:MovieClip):Boolean {
-        var 发射者:MovieClip = _root.gameworld[target.发射者名];
-        if (发射者 == undefined) return false;
+        var shooter:MovieClip = _root.gameworld[target.发射者名];
+        
+        if (shooter == undefined) return false;
 
         var targetX:Number = target._x;
         var targetY:Number = target._y;
-        var 发射者X:Number = 发射者._x;
-        var 发射者Y:Number = 发射者._y;
+        var shooterX:Number = shooter._x;
+        var shooterY:Number = shooter._y;
 
         var isOutOfRange:Boolean = !target.远距离不消失 &&
-                                   (Math.abs(targetX - 发射者X) > this.射程阈值 ||
-                                    Math.abs(targetY - 发射者Y) > this.射程阈值);
+                                   (Math.abs(targetX - shooterX) > this.rangeThreshold ||
+                                    Math.abs(targetY - shooterY) > this.rangeThreshold);
 
         var isCollidedWithMap:Boolean = this.checkMapCollision(target);
 

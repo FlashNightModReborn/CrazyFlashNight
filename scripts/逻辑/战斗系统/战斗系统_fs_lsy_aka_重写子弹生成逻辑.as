@@ -142,35 +142,7 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
     
     do {
         bulletInstance = 创建子弹实例(Obj, shooter, 射击角度);
-        
-        BulletInitializer.initializeNanoToxicfunction(Obj,bulletInstance, shooter)
-
-        var lifecycle:BulletLifecycle = new BulletLifecycle(900);
-        lifecycle.bindLifecycle(bulletInstance);
-
-        var movement:LinearBulletMovement = LinearBulletMovement.create(
-            bulletInstance.速度X, 
-            bulletInstance.速度Y, 
-            bulletInstance.ZY比例
-        );
-
-        bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
-        bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
-
-        
-
-        /*
-        if(!bulletInstance.damageManager) {
-            _root.发布消息("DamageManager failed" + ObjectUtil.toString(bulletInstance));
-        }
-        else
-        {
-            _root.发布消息("DamageManager succesed");
-        }
-        */
-
-        子弹总数--;
-    } while (子弹总数 > 0);
+    } while (--子弹总数 > 0);
     
     
     return bulletInstance;
@@ -179,31 +151,67 @@ _root.创建子弹 = function(Obj, shooter, 射击角度){
 // 改进后的子弹统计钩子
 // 增强报告生成代码
 _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
-    var 游戏世界 = _root.gameworld;
-    var 散射角度 = Obj.近战检测 ? 0 : 射击角度 + (Obj.联弹检测 ? 0 : _root.随机偏移(Obj.子弹散射度));
-    var 形状偏角 = 0;
-    if(Obj.ZY比例 && Obj.速度X && Obj.速度Y){
-        形状偏角 = Math.atan2(Obj.速度Y, Obj.速度X) * (180 / Math.PI);
-        if (形状偏角 < 0) { 形状偏角 += 360; }
-    } else { 形状偏角 = 散射角度; }
-    Obj._rotation = 形状偏角;
-    var angle = 散射角度 * (Math.PI / 180);
-    var bulletInstance;
-    if(Obj.透明检测){
+    var gameWorld = _root.gameworld,
+        isTransparent = Obj.透明检测,
+        isChain = Obj.联弹检测,
+        isMelee = Obj.近战检测,
+        hasZY = Obj.ZY比例,
+        speedX = Obj.速度X,
+        speedY = Obj.速度Y,
+        velocity = Obj.子弹速度,
+        DEG_TO_RAD = Math.PI / 180,
+        RAD_TO_DEG = 180 / Math.PI,
+        // 散射角度计算
+        散射角度 = isMelee ? 0 : (射击角度 + (isChain ? 0 : _root.随机偏移(Obj.子弹散射度))),
+        // 形状偏角计算
+        useSpeedAngle = hasZY && speedX && speedY,
+        形状偏角 = useSpeedAngle ? (Math.atan2(speedY, speedX) * RAD_TO_DEG % 360 + 360) % 360 : 散射角度,
+        angleRadians = 散射角度 * DEG_TO_RAD,
+        bulletInstance;
+
+    Obj._rotation = 形状偏角; // 设置旋转角度
+
+    // 创建子弹实例
+    if (isTransparent) {
         bulletInstance = _root.对象浅拷贝(Obj);
     } else {
-        _root.子弹生成计数 = (_root.子弹生成计数 + 1) % 100;
-        var depth = _root.子弹生成计数 = (_root.子弹生成计数 + 1) % 100;
-        var b_name = Obj.发射者名 + Obj.子弹种类 + depth + 散射角度 + _root.子弹生成计数;
-        bulletInstance = 游戏世界.子弹区域.attachMovie(Obj.baseAsset, b_name, depth, Obj);
+        _root.子弹生成计数 = (_root.子弹生成计数 + 2) % 100; // 保持原计数逻辑
+        var depth = _root.子弹生成计数,
+            b_name = Obj.发射者名 + Obj.子弹种类 + depth + 散射角度 + _root.子弹生成计数;
+        bulletInstance = gameWorld.子弹区域.attachMovie(Obj.baseAsset, b_name, depth, Obj);
     }
 
-    bulletInstance.xmov = bulletInstance.子弹速度 * Math.cos(angle);
-    bulletInstance.ymov = bulletInstance.子弹速度 * Math.sin(angle);
-    bulletInstance.霰弹值 = Obj.联弹检测 ? Obj.霰弹值 : 1;
+    // 设置运动参数
 
-    // 统计钩子调用（注释此行即可关闭统计）
-    //this.更新子弹统计(游戏世界, Obj, shooter);
+    bulletInstance.霰弹值 = isChain ? Obj.霰弹值 : 1;
+
+    // 初始化纳米毒性功能
+    BulletInitializer.initializeNanoToxicfunction(Obj, bulletInstance, shooter);
+
+    if (isTransparent) {
+        lifecycle = TransparentBulletLifecycle.BASIC;
+    }
+    else
+    {
+        lifecycle = BulletLifecycle.BASIC;
+        bulletInstance.xmov = velocity * Math.cos(angleRadians);
+        bulletInstance.ymov = velocity * Math.sin(angleRadians);
+        
+        var movement = LinearBulletMovement.create(
+            speedX, 
+            speedY, 
+            hasZY
+        );
+        bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
+        bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
+    }
+
+    // 绑定生命周期逻辑
+
+    lifecycle.bindLifecycle(bulletInstance);
+
+    // 统计钩子调用（注释关闭）
+    // this.更新子弹统计(gameWorld, Obj, shooter);
 
     return bulletInstance;
 };

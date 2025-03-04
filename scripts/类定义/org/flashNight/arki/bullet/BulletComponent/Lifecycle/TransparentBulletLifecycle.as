@@ -1,10 +1,21 @@
 ﻿// 文件路径：org.flashNight.arki.bullet.BulletComponent.Lifecycle.TransparentBulletLifecycle.as
+import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.component.Damage.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TransparentBulletLifecycle implements ILifecycle {
     // 新增：联弹检测模块引用
+
+    public static var BASIC:TransparentBulletLifecycle = new TransparentBulletLifecycle();
+
+    /**
+     * 构造函数
+     */
+    public function TransparentBulletLifecycle() {
+    }
+
     private var chainDetector:Function = ChainDetector.createChainCollider;
     
     public function shouldDestroy(target:MovieClip):Boolean {

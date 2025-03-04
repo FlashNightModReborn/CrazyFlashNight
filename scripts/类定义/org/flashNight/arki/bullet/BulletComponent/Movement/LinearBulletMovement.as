@@ -3,23 +3,23 @@
 import org.flashNight.arki.bullet.BulletComponent.Movement.IMovement;
 
 class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement implements IMovement {
-    private var 速度X:Number;
-    private var 速度Y:Number;
-    private var ZY比例:Number;
+    private var _speedX:Number;
+    private var _speedY:Number;
+    private var _zyRatio:Number;
 
     // 动态绑定的方法
     private var updateMovementDelegate:Function;
 
     /**
-     * 构造函数
-     * @param 速度X:Number 子弹的 X 轴速度。
-     * @param 速度Y:Number 子弹的 Y 轴速度。
-     * @param ZY比例:Number ZY 比例，用于计算 Z 轴坐标。
+     * 构造函数，后续需要考虑是否应该设置成私有避免外部构造
+     * @param _speedX:Number 子弹的 X 轴速度。
+     * @param _speedY:Number 子弹的 Y 轴速度。
+     * @param _zyRatio:Number ZY 比例，用于计算 Z 轴坐标。
      */
-    public function LinearBulletMovement(速度X:Number, 速度Y:Number, ZY比例:Number) {
-        this.速度X = 速度X;
-        this.速度Y = 速度Y;
-        this.ZY比例 = ZY比例;
+    public function LinearBulletMovement(_speedX:Number, _speedY:Number, _zyRatio:Number) {
+        this._speedX = _speedX;
+        this._speedY = _speedY;
+        this._zyRatio = _zyRatio;
 
         // 初始化代理函数
         this.initializeDelegates();
@@ -37,9 +37,9 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
      * @return Function 更新逻辑函数。
      */
     private function getUpdateMovementFunction():Function {
-        if (this.速度X == undefined && this.速度Y == undefined) {
+        if (this._speedX == undefined && this._speedY == undefined) {
             return this.updateWithDefaultMovement;
-        } else if (this.ZY比例 == undefined) {
+        } else if (this._zyRatio == undefined) {
             return this.updateWithoutZCoordinate;
         } else {
             return this.updateWithFullMovement;
@@ -62,8 +62,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
      * @param target:MovieClip 目标对象。
      */
     private function updateWithoutZCoordinate(target:MovieClip):Void {
-        target._x += this.速度X;
-        target._y += this.速度Y;
+        target._x += this._speedX;
+        target._y += this._speedY;
     }
 
     /**
@@ -71,9 +71,9 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
      * @param target:MovieClip 目标对象。
      */
     private function updateWithFullMovement(target:MovieClip):Void {
-        target._x += this.速度X;
-        target._y += this.速度Y;
-        target.Z轴坐标 = target._y * this.ZY比例;
+        target._x += this._speedX;
+        target._y += this._speedY;
+        target.Z轴坐标 = target._y * this._zyRatio;
     }
 
     /**
@@ -86,12 +86,12 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
 
     /**
      * 静态方法构建实例。
-     * @param 速度X:Number 子弹的 X 轴速度。
-     * @param 速度Y:Number 子弹的 Y 轴速度。
-     * @param ZY比例:Number ZY 比例，用于计算 Z 轴坐标。
+     * @param _speedX:Number 子弹的 X 轴速度。
+     * @param _speedY:Number 子弹的 Y 轴速度。
+     * @param _zyRatio:Number ZY 比例，用于计算 Z 轴坐标。
      * @return LinearBulletMovement 实例。
      */
-    public static function create(速度X:Number, 速度Y:Number, ZY比例:Number):LinearBulletMovement {
-        return new LinearBulletMovement(速度X, 速度Y, ZY比例);
+    public static function create(_speedX:Number, _speedY:Number, _zyRatio:Number):LinearBulletMovement {
+        return new LinearBulletMovement(_speedX, _speedY, _zyRatio);
     }
 }
