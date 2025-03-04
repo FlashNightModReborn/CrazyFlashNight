@@ -73,12 +73,12 @@ _root.cheatCode = function(作弊码){
 		EvalParser.getPropertyValue(testObj, "user.name");
 	}else if(作弊码.indexOf("#_root.")>-1){
 		执行代码  = 作弊码.split("#_root.")[1].split("=");
-		变量名  = 执行代码[0].split(" ").join("");
-		变量值  = 执行代码[1];
+		var 变量名  = 执行代码[0].split(" ").join("");
+		var 变量值  = 执行代码[1];
 		if(变量值.indexOf(";")>-1){
-			变量值初始值 = 变量值.split(";");
+			var 变量值初始值 = 变量值.split(";");
 			变量值=变量值初始值[0];
-			参数类型 = 变量值初始值[1];
+			var 参数类型 = 变量值初始值[1];
 			if(参数类型.indexOf("int")>-1  or 参数类型.indexOf("数")>-1  or 参数类型.indexOf("float")>-1  or 参数类型.indexOf("number")>-1  or 参数类型.indexOf("Number")>-1 ){
 				变量值 = Number(变量值);
 				_root.发布消息("传入数字型");
@@ -96,15 +96,15 @@ _root.cheatCode = function(作弊码){
 		_root.发布消息("值已变更为:"+变量值);
 	}else if(作弊码.indexOf("#func:_root.")>-1){
 		执行代码  = 作弊码.split("#func:_root.")[1].split("(");
-		执行函数  = 执行代码[0].split(" ").join("");
-		执行参数初始值  = 执行代码[1].split(")");
-		执行参数  = 执行参数初始值[0];
-		参数类型  = 执行参数初始值[1];
+		var 执行函数  = 执行代码[0].split(" ").join("");
+		var 执行参数初始值  = 执行代码[1].split(")");
+		var 执行参数  = 执行参数初始值[0];
+		var 参数类型  = 执行参数初始值[1];
 		_root.发布消息("执行函数：_root."+执行函数+"("+执行参数+")");
-		执行参数数组 = 执行参数.split(",");
-		for(i=0;i<执行参数数组.length;i++){
+		var 执行参数数组 = 执行参数.split(",");
+		for(var i=0;i<执行参数数组.length;i++){
 			if(执行参数数组.length==1){
-				前缀="";
+				var 前缀="";
 			}else{
 				前缀=i+1;
 				前缀=前缀+":"
@@ -194,7 +194,9 @@ _root.函数执行(多参数，指定参数数据类型)：#func:_root.测试作
 #change:主角-尾上世莉架  
 #change:主角-文天
 
-*/
+
+测试函数：
+
 _root.测试作弊码 = function(a){
 	_root.发布消息(a+1);
 }
@@ -227,3 +229,4 @@ _root.cheatFunction.printRootKeys = function(){
 	_root.发布消息(countstr);
 	org.flashNight.neur.Server.ServerManager.getInstance().sendServerMessage(str);
 }
+*/

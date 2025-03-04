@@ -41,7 +41,7 @@ _root.mydata数据组包 = function(){
     var 健身储存数据 = [_root.全局健身HP加成,_root.全局健身MP加成,_root.全局健身空攻加成,_root.全局健身防御加成,_root.全局健身内力加成];
 
     var mydata = {};
-    mydata.version = "2.5";
+    mydata.version = "2.6";
     mydata[0] = 主角储存数据;
     mydata[1] = 装备储存数据;
     mydata[2] = null;
@@ -73,7 +73,7 @@ _root.自动存盘 = function(){
             _root.存盘中 = true;
             _root.存盘中 = false;
             _root.存盘标志 = 1;
-            存盘重连次数 = 0;
+            // 存盘重连次数 = 0;
             _root.存盘动画.gotoAndPlay("存储成功");
             _root.发布消息(_root.获得翻译("游戏服务器储存成功！"));
         }
@@ -86,7 +86,7 @@ _root.自动存盘 = function(){
     }
 }
 
-
+/*
 _root.将中文数据数字化 = function(中文数据, 对比数据){
     var _loc4_ = "";
     if(中文数据[0].toString() != 对比数据[0])
@@ -176,7 +176,7 @@ _root.将中文数据数字化 = function(中文数据, 对比数据){
     存储标识 += "\n";
     return _loc4_;
 }
-
+*/
 
 _root.本地存盘 = function() {
     var mysave = SharedObject.getLocal("crazyflasher7_saves");
@@ -406,13 +406,13 @@ _root.删除存盘 = function(){
 
 _root.存盘名 = "test";
 _root.lastsave2 = [];
-_root.lastsave2_1 = [];
-_root.lastsave2_2 = [];
-_root.lastsave2_3 = [];
+// _root.lastsave2_1 = [];
+// _root.lastsave2_2 = [];
+// _root.lastsave2_3 = [];
 _root.lastsave = "";
-_root.lastsave_1 = "";
-_root.lastsave_2 = "";
-_root.lastsave_3 = "";
+// _root.lastsave_1 = "";
+// _root.lastsave_2 = "";
+// _root.lastsave_3 = "";
 _root.存盘中 = false;
-_root.存盘重连次数 = 0;
-_root.存盘重连次数限制 = 10;
+// _root.存盘重连次数 = 0;
+// _root.存盘重连次数限制 = 10;

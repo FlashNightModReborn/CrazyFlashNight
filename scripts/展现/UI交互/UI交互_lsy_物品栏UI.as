@@ -368,7 +368,6 @@ _root.物品UI函数.创建材料图标 = function(methodName:String){
 	物品栏界面.材料图标列表 = new Array(总格数);
 
 	var 材料数据:Object = 材料.getItems();
-	_root.服务器.发布服务器消息(ObjectUtil.toString(材料数据))
 
 	var 材料列表 = [];
 

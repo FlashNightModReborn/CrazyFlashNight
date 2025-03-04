@@ -1,5 +1,5 @@
 ﻿// 当 XML 加载完成时触发的函数
-_root.关卡数据缓存 = [];
+// _root.关卡数据缓存 = [];
 
 _root.配置数据为数组 = function(输入){
     // 检查输入是否已经是数组
@@ -391,6 +391,8 @@ _root.配置基础关卡信息 = function(对象, StageInfo){
 	对象.限制词条 = StageInfo.Limitation ? _root.配置数据为数组(StageInfo.Limitation) : null;
 };
 
+
+/*
 _root.自动输出关卡数据 = function(关卡数据地址){
 	var 关卡数据 = _root.关卡数据缓存[关卡数据地址];
 	if (关卡数据 != undefined){
@@ -402,7 +404,7 @@ _root.自动输出关卡数据 = function(关卡数据地址){
 	}
 };// 检查对象中的所有属性是否为 undefined
 
-/*
+
 _root.关卡数据缓存上限 = 32;
 _root.关卡数据缓清理许可 = true;
 _root.关卡数据地址 = "/stages/";
