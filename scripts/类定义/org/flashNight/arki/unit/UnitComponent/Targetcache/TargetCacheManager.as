@@ -14,7 +14,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     private static var _initialized:Boolean = initialize();
 
     // 模块化配置: 类常量，存储目标缓存的状态标识
-    private static var _STATUS_KEYS:Array = ["undefined", "true", "false"];
+    private static var _STATUS_KEYS:Array = ["undefined", "true", "false", "all"];
     
     // 缓存模板，包含了缓存的数据数组、最后更新时间和数据版本
     private static var _CACHE_TEMPLATE:Object = {
@@ -37,7 +37,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
             _targetCaches[key] = {
                 // 深拷贝模板避免引用污染，初始化敌人和友军缓存项
                 敌人: _createCacheEntry(),
-                友军: _createCacheEntry()
+                友军: _createCacheEntry(),
+                全体: _createCacheEntry()
             };
         }
         return true;
@@ -99,7 +100,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      * @return {Array} 返回目标数据列表
      */
     public static function getCachedTargets(target:Object, updateInterval:Number, requestType:String):Array { 
-        var targetStatus:String = target.是否为敌人.toString();  // 获取目标的状态（敌人或友军）
+        // 全体请求使用all状态键
+        var targetStatus:String = (requestType == "全体") ? "all" : target.是否为敌人.toString();  // 获取目标的状态（敌人或友军）
         var currentFrame:Number = _root.帧计时器.当前帧数;  // 获取当前帧数
         
         // 内联_getCacheEntry逻辑开始
@@ -145,5 +147,15 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
      */
     public static function getCachedAlly(target:Object, updateInterval:Number):Array {
         return getCachedTargets(target, updateInterval, "友军");  // 获取友军的缓存数据
+    }
+
+    /**
+     * 获取缓存的全体数据。
+     * @param {Object} target - 目标对象
+     * @param {Number} updateInterval - 更新间隔，单位为帧数
+     * @return {Array} 返回全体数据列表
+     */
+    public static function getCachedAll(target:Object, updateInterval:Number):Array {
+        return getCachedTargets(target, updateInterval, "全体");
     }
 }

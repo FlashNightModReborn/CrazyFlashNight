@@ -5,6 +5,7 @@ import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 import org.flashNight.arki.bullet.BulletComponent.Attributes.*
 import org.flashNight.arki.bullet.BulletComponent.Init.*;
 import org.flashNight.naki.Sort.*;
@@ -434,15 +435,15 @@ _root.子弹生命周期 = function()
     }
     var 游戏世界 = _root.gameworld;
     var shooter = 游戏世界[this.发射者名];
-    var unitMap = _root.帧计时器.获取敌人缓存(shooter,1);
-    if(this.友军伤害){
-        var 遍历友军表 = _root.帧计时器.获取友军缓存(shooter,1);
-        unitMap = unitMap.concat(遍历友军表);
-
-        InsertionSort.sort(unitMap, function(a:Object, b:Object):Number {
-            return a.aabbCollider.right - b.aabbCollider.right;
-        });
+    var unitMap
+    if(this.友军伤害) {
+        unitMap = TargetCacheManager.getCachedAll(shooter,1);
     }
+    else
+    {
+        unitMap = TargetCacheManager.getCachedEnemy(shooter,1);
+    }
+    
     var 击中次数 = 0;
     var 是否生成击中后效果 = true;
 

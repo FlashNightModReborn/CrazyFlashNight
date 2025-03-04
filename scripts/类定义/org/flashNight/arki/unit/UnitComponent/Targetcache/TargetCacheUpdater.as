@@ -16,6 +16,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _SORT_KEY:String = "right"; // 排序使用的关键字
     private static var _ENEMY_TYPE:String = "敌人"; // 敌人类型标识
     private static var _ALLY_TYPE:String = "友军"; // 友军类型标识
+    private static var _ALL_TYPE:String = "全体";
     
     /**
      * 核心更新方法
@@ -33,9 +34,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         targetIsEnemy:Boolean,
         cacheEntry:Object
     ):Void {
+        var isAllRequest:Boolean = (requestType == _ALL_TYPE);
         // 生成复合缓存键（由请求类型和目标状态组成）
-        var cacheKey:String = requestType + "_" + targetIsEnemy.toString();
-        
+        var cacheKey:String = isAllRequest ? _ALL_TYPE : requestType + "_" + targetIsEnemy.toString();
+
         // 获取或创建缓存类型数据
         var cacheTypeData:Object = _getCacheTypeData(cacheKey);
         
@@ -43,12 +45,20 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         if(cacheTypeData.tempVersion < _globalVersion) {
             // 清空临时列表并重新收集有效单位
             cacheTypeData.tempList.length = 0;
-            _collectValidUnits(
-                gameWorld,
-                targetIsEnemy,
-                requestType == _ENEMY_TYPE,  // 判断是否为敌人请求
-                cacheTypeData.tempList
-            );
+            if(isAllRequest)
+            {
+                _collectAllValidUnits(gameWorld, cacheTypeData.tempList);
+            }
+            else
+            {
+                _collectValidUnits(
+                    gameWorld,
+                    targetIsEnemy,
+                    requestType == _ENEMY_TYPE,  // 判断是否为敌人请求
+                    cacheTypeData.tempList
+                );
+            }
+
             // 更新临时缓存版本号
             cacheTypeData.tempVersion = _globalVersion;
         }
@@ -135,6 +145,34 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                 (requesterIsEnemy == unitIsEnemy)))   // 判断相同关系（敌人或友军）
                 continue;
             
+            // 更新碰撞体信息并加入目标列表
+            unit.aabbCollider.updateFromUnitArea(targetList[targetList.length] = unit);
+        }
+    }
+
+    /**
+     * 收集有效单位（性能优化版）
+     * 遍历游戏世界中的所有单位，筛选符合条件的单位并加入目标列表
+     * @param {Object} gameWorld - 当前游戏世界对象，包含所有单位信息
+     * @param {Boolean} requesterIsEnemy - 请求者是否为敌人
+     * @param {Boolean} isEnemyRequest - 是否请求敌人数据
+     * @param {Array} targetList - 存储有效单位的目标列表
+     */
+    private static function _collectAllValidUnits(
+        gameWorld:Object,
+        targetList:Array
+    ):Void {
+
+        var unitKey:String;
+        var unit:Object;
+        var unitIsEnemy:Boolean;
+
+        // 遍历游戏世界中的所有单位
+        for(unitKey in gameWorld) {
+            unit = gameWorld[unitKey];
+            
+            // 内联有效性检查，死亡单位跳过
+            if(unit.hp <= 0) continue;  // 死亡单位不参与缓存
             // 更新碰撞体信息并加入目标列表
             unit.aabbCollider.updateFromUnitArea(targetList[targetList.length] = unit);
         }
