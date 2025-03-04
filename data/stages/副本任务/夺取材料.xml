@@ -165,6 +165,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/gk17_1_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>Schwarzflammen</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
