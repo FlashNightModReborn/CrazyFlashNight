@@ -7,8 +7,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
     private var _speedY:Number;
     private var _zyRatio:Number;
 
-    // 动态绑定的方法
-    private var updateMovementDelegate:Function;
+    private static var BASIC:LinearBulletMovement = new LinearBulletMovement(null, null, null);
 
     /**
      * 构造函数，后续需要考虑是否应该设置成私有避免外部构造
@@ -22,14 +21,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
         this._zyRatio = _zyRatio;
 
         // 初始化代理函数
-        this.initializeDelegates();
-    }
-
-    /**
-     * 初始化更新逻辑代理。
-     */
-    private function initializeDelegates():Void {
-        this.updateMovementDelegate = this.getUpdateMovementFunction();
+        this.updateMovement = this.getUpdateMovementFunction();
     }
 
     /**
@@ -37,7 +29,14 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
      * @return Function 更新逻辑函数。
      */
     private function getUpdateMovementFunction():Function {
-        if (this._speedX == undefined && this._speedY == undefined) {
+        var _speedX:Number = this._speedX;
+        var _speedY:Number = this._speedY;
+
+        var isBasicCase:Boolean = 
+            !isFinite(_speedX + _speedY) &&  // 捕获 NaN/undefined/null 等非有效数值
+            (_speedX == null) &&             // 显式排除 0 值
+            (_speedY == null);               // 显式排除 0 值
+        if (isBasicCase) {
             return this.updateWithDefaultMovement;
         } else if (this._zyRatio == undefined) {
             return this.updateWithoutZCoordinate;
@@ -51,10 +50,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
      * @param target:MovieClip 目标对象。
      */
     private function updateWithDefaultMovement(target:MovieClip):Void {
-        var xmov:Number = target.xmov;
-        var ymov:Number = target.ymov;
-        target._x += xmov;
-        target._y += ymov;
+        target._x += target.xmov;
+        target._y += target.ymov;
     }
 
     /**
@@ -78,10 +75,11 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
 
     /**
      * 更新运动逻辑。
+     * 运行时会被动态替换
      * @param target:MovieClip 要移动的目标对象。
      */
     public function updateMovement(target:MovieClip):Void {
-        this.updateMovementDelegate(target);
+        
     }
 
     /**
@@ -92,6 +90,22 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement i
      * @return LinearBulletMovement 实例。
      */
     public static function create(_speedX:Number, _speedY:Number, _zyRatio:Number):LinearBulletMovement {
-        return new LinearBulletMovement(_speedX, _speedY, _zyRatio);
+        // 利用类型转换特性进行智能判断
+        /*
+        var isBasicCase:Boolean = 
+            !isFinite(_speedX + _speedY) &&  // 捕获 NaN/undefined/null 等非有效数值
+            (_speedX == null) &&             // 显式排除 0 值
+            (_speedY == null);               // 显式排除 0 值
+
+        _root.发布消息(isBasicCase)
+        
+        return isBasicCase ? LinearBulletMovement.BASIC : new LinearBulletMovement(
+            _speedX, _speedY, _zyRatio
+        );
+        */
+
+        return new LinearBulletMovement(
+            _speedX, _speedY, _zyRatio
+        );
     }
 }
