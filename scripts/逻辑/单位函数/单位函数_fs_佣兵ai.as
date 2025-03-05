@@ -262,6 +262,10 @@ _root.主角模板ai函数.根据等级取得随机技能 = function()
 
 
 _root.初始化主角模板ai = function(){
+	if(_parent._name == _root.控制目标){
+		this.stop();
+		return;
+	}
 	this.思考 = _root.主角模板ai函数.思考;
 	this.攻击 = _root.主角模板ai函数.攻击;
 	this.寻找攻击目标 = _root.主角模板ai函数.寻找攻击目标;
