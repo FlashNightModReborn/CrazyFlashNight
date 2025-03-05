@@ -1,5 +1,8 @@
 ﻿class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer
 {
+    private static var maxHor:Number = 33;
+    private static var maxVer:Number = 15;
+    
     // 构造函数（私有或空实现，避免被实例化）
     private function BulletInitializer()
     {
@@ -14,7 +17,7 @@
     public static function setDefaults(Obj:Object, shooter:Object):Void
     {
         // 相当于 _root.设置默认值(Obj, shooter);
-        Obj.固伤 = (isNaN(Obj.固伤)) ? 0 : Obj.固伤;
+        Obj.固伤 = Obj.固伤 | 0;
         Obj.命中率 = (isNaN(Obj.命中率)) ? shooter.命中率 : Obj.命中率;
         Obj.最小霰弹值 = (isNaN(Obj.最小霰弹值)) ? 1 : Obj.最小霰弹值;
 
@@ -29,24 +32,25 @@
      */
     public static function inheritShooterAttributes(Obj:Object, shooter:Object):Void
     {
-        // 相当于 _root.继承发射者属性(Obj, shooter);
-        Obj.伤害类型 = (!Obj.伤害类型 && shooter.伤害类型) ? shooter.伤害类型 : Obj.伤害类型;
-        Obj.魔法伤害属性 = (!Obj.魔法伤害属性 && shooter.魔法伤害属性) ? shooter.魔法伤害属性 : Obj.魔法伤害属性;
+        // 局部化变量优化属性访问
+        var objDmgType:Object = Obj.伤害类型;
+        var shooterDmgType:Object = shooter.伤害类型;
+        Obj.伤害类型 = (!objDmgType && shooterDmgType) ? shooterDmgType : objDmgType;
+
+        var objMagicDmg:Object = Obj.魔法伤害属性;
+        var shooterMagicDmg:Object = shooter.魔法伤害属性;
+        Obj.魔法伤害属性 = (!objMagicDmg && shooterMagicDmg) ? shooterMagicDmg : objMagicDmg;
 
         // 最高吸血取较大值
         if (Obj.吸血 || shooter.吸血)
         {
-            var obj吸血 = isNaN(Obj.吸血) ? 0 : Obj.吸血;
-            var shooter吸血 = isNaN(shooter.吸血) ? 0 : shooter.吸血;
-            Obj.吸血 = Math.max(obj吸血, shooter吸血);
+            Obj.吸血 = Math.max(Obj.吸血 | 0, shooter.吸血 | 0);
         }
 
         // 击溃
         if (Obj.血量上限击溃 || shooter.击溃)
         {
-            var obj击溃 = isNaN(Obj.血量上限击溃) ? 0 : Obj.血量上限击溃;
-            var shooter击溃 = isNaN(shooter.击溃) ? 0 : shooter.击溃;
-            Obj.击溃 = Math.max(obj击溃, shooter击溃);
+            Obj.击溃 = Math.max(Obj.血量上限击溃 | 0, shooter.击溃 | 0);
         }
     }
 
@@ -56,19 +60,14 @@
      */
     public static function calculateKnockback(Obj:Object):Void
     {
-        // 相当于 _root.计算击退速度(Obj);
-        // 假设 _root.最大水平击退速度、_root.最大垂直击退速度 是在全局可访问的地方
-        var maxHor:Number = _root.最大水平击退速度; // 需在外部定义
-        var maxVer:Number = _root.最大垂直击退速度; // 需在外部定义
-
-        if (isNaN(Obj.水平击退速度) || Obj.水平击退速度 < 0) {
+        if (!(Obj.水平击退速度 >= 0)) {
             Obj.水平击退速度 = 10;
         } else {
-            Obj.水平击退速度 = Math.min(Obj.水平击退速度, maxHor);
+            Obj.水平击退速度 = Math.min(Obj.水平击退速度, BulletInitializer.maxHor);
         }
 
-        Obj.垂直击退速度 = isNaN(Obj.垂直击退速度) ? 0 : Obj.垂直击退速度;
-        Obj.垂直击退速度 = Math.min(Obj.垂直击退速度, maxVer);
+        Obj.垂直击退速度 = Obj.垂直击退速度 | 0;
+        Obj.垂直击退速度 = Math.min(Obj.垂直击退速度, BulletInitializer.maxVer);
     }
 
     /**
@@ -93,8 +92,8 @@
     public static function initializeNanoToxicfunction(Obj:Object, bullet:Object, shooter:Object):Void
     {
         if(Obj.毒 || shooter.淬毒 || shooter.毒) {
-            var shooterToxic = isNaN(shooter.淬毒) ? 0 : shooter.淬毒;
-            Obj.毒 = Math.max((isNaN(Obj.毒) ? 0 : Obj.毒), (isNaN(shooter.毒) ? 0 : shooter.毒));
+            var shooterToxic:Number = shooter.淬毒 | 0;
+            Obj.毒 = Math.max(Obj.毒 | 0, shooter.毒 | 0);
             if(shooterToxic && shooterToxic > Obj.毒) {
                 bullet.nanoToxic = shooterToxic;
                 bullet.nanoToxicDecay = 1;
