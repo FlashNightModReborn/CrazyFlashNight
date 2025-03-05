@@ -54,7 +54,7 @@ _root.mydata数据组包 = function(){
     mydata.collection = 收集品储存数据;
 
     _root.mydata = mydata;
-    _root.playerData[_root.playerCurrent] = mydata;
+    // _root.playerData[_root.playerCurrent] = mydata;
 }
 
 _root.自动存盘 = function(){

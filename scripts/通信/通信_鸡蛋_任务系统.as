@@ -1,4 +1,6 @@
-﻿_root.LoadPCTasks = function()
+﻿import org.flashNight.arki.task.*;
+
+_root.LoadPCTasks = function()
 {
 	var _loc2_ = SharedObject.getLocal("crazyflasher7_saves");
 	_root.tasks_to_do = _loc2_.data.tasks_to_do;
@@ -7,13 +9,13 @@
 	_root.task_history = _loc2_.data.task_history;
 	UpdateTaskProgress();
 	//检查任务数据完整性，若完整则检查并删除undefined任务
-	if(_root.tasks != null){
-		for (var index in tasks_to_do){
-			if(_root.getTaskData(tasks_to_do[index].id).title == undefined){
-				_root.DeleteTask(index);
-			}
-		}
-	}
+	// if(_root.tasks.length > 0){
+	// 	for (var index in tasks_to_do){
+	// 		if(_root.getTaskData(tasks_to_do[index].id).title == undefined){
+	// 			_root.DeleteTask(index);
+	// 		}
+	// 	}
+	// }
 }
 
 _root.SavePCTasks = function()
@@ -35,14 +37,14 @@ _root.NPCTaskCheck = function(npcname)
 			return {result:"完成任务", id:index};
 		}
 	}
-	for (var i = 0; i < _root.tasks_of_npc[npcname].length; i++){
-		if (taskAvailable(_root.tasks_of_npc[npcname][i])){
+	for (var i = 0; i < TaskUtil.tasks_of_npc[npcname].length; i++){
+		if (_root.taskAvailable(TaskUtil.tasks_of_npc[npcname][i])){
 			for (var j = 0; j < tasks_to_do.length; j++){
-				if (tasks_to_do[j].id == _root.tasks_of_npc[npcname][i]){
+				if (tasks_to_do[j].id == TaskUtil.tasks_of_npc[npcname][i]){
 					return {result:"路过"};
 				}
 			}
-			return {result:"接受任务", id:_root.tasks_of_npc[npcname][i]};
+			return {result:"接受任务", id:TaskUtil.tasks_of_npc[npcname][i]};
 		}
 	}
 	return {result:"路过"};
@@ -332,7 +334,7 @@ _root.打印任务进度 = function(页数){
 		_root.任务栏界面.新任务text.text = "";
 		var _loc3_ = (页数 - 1) * 事件日志每页条数;
 		while (_loc3_ < task_history.length && _loc3_ < 页数 * 事件日志每页条数){
-			_root.任务栏界面.mc事件日志.mytext.text = _root.任务栏界面.mc事件日志.mytext.text + "\r" + _root.getTaskText(_root.getTaskData(task_history[_loc3_]).title) + _root.获得翻译(" 完成");
+			// _root.任务栏界面.mc事件日志.mytext.text = _root.任务栏界面.mc事件日志.mytext.text + "\r" + _root.getTaskText(_root.getTaskData(task_history[_loc3_]).title) + _root.获得翻译(" 完成");
 			_loc3_ += 1;
 		}
 	}

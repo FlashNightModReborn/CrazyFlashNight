@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1741190797">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1741201212">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="3">
+    <DOMTimeline name="asLoader" currentFrame="13">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -112,21 +112,71 @@ function 打印加载内容(str){
             </DOMFrame>
             <DOMFrame index="11" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[打印加载内容("加载任务数据……");
+                <script><![CDATA[//用新版jsonLoader加载任务数据
+打印加载内容("加载任务数据……");
+
+import org.flashNight.gesh.json.LoadJson.TaskDataLoader;
+
+//暂停外置大脑以等待任务数据加载完毕
+this.stop();
+var asloader = this;
+
+var taskloader = TaskDataLoader.getInstance();
+taskloader.loadTaskData(
+    function(data:Object):Void {
+        trace("主程序：任务数据加载成功！");
+		asloader.rawTaskData = data;
+		asloader.play();
+    },
+    function():Void {
+        trace("主程序：任务数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[import org.flashNight.gesh.json.LoadJson.TaskTextLoader;
+
+//暂停外置大脑以等待任务数据加载完毕
+this.stop();
+var asloader = this;
+
+var textloader = TaskTextLoader.getInstance();
+textloader.loadTaskText(
+    function(data:Object):Void {
+        trace("主程序：任务文本加载成功！");
+		asloader.rawTextData = data;
+		asloader.play();
+    },
+    function():Void {
+        trace("主程序：任务文本加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//在任务数据和任务文本皆加载完成后配置数据
+org.flashNight.arki.task.TaskUtil.ParseTaskData(this.rawTaskData, this.rawTextData);
+this.rawTaskData = null;
+this.rawTextData = null;]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[打印加载内容("加载佣兵数据……");
 
 #include "../逻辑系统分区/系统文件/逻辑系统分区_初始化.as"]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="12" duration="4" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[gotoAndPlay("systems");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
             <DOMFrame index="16" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[#include "../逻辑系统分区/任务系统_兼容.as"
+                <script><![CDATA[//#include "../逻辑系统分区/任务系统_兼容.as"
 #include "../逻辑系统分区/佣兵系统_兼容.as"
 //#include "../逻辑系统分区/关卡系统_兼容.as"
 #include "../逻辑系统分区/兵种系统_兼容.as"

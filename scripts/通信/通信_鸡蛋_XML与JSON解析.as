@@ -106,22 +106,13 @@ _root.getUnitData = function(index){
 }
 
 //任务
-_root.getTaskData = function(index, chain){
-	if (chain == undefined){
-		if (isNaN(Number(index))){
-			return _root.duplicateOf(_root.tasks[_root.task_indices_by_title[index]]);
-		}
-		return _root.duplicateOf(_root.tasks[_root.task_indices_by_id[Number(index)]]);
-	}
-	return _root.duplicateOf(_root.tasks[_root.task_chains[chain][String(index)]]);
+_root.getTaskData = function(index){
+	return org.flashNight.arki.task.TaskUtil.getTaskData(index);
 }
 
 //任务文本
 _root.getTaskText = function(str){
-	if (str.charAt(0) == "$"){
-		return _root.task_texts[str];
-	}
-	return str;
+	return org.flashNight.arki.task.TaskUtil.getTaskText(str);
 }
 
 //佣兵
