@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1740678018">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1741190797">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="13">
+    <DOMTimeline name="asLoader" currentFrame="3">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -81,7 +81,6 @@ function 打印加载内容(str){
                 <script><![CDATA[打印加载内容("加载游戏代码……");
 
 #include "../引擎/引擎_aka_作弊码.as"
-#include "../引擎/引擎_fs_eval解析器.as"
 #include "../引擎/引擎_fs_常用工具函数.as"
 #include "../引擎/引擎_fs_调试模式.as"
 #include "../引擎/引擎_fs_随机数引擎.as"
