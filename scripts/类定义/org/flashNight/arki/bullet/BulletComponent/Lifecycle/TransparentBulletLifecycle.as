@@ -14,8 +14,6 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TransparentBulletLife
     /** 静态实例 - 默认透明子弹生命周期管理器 */
     public static var BASIC:TransparentBulletLifecycle = new TransparentBulletLifecycle();
 
-    /** 联弹碰撞检测器生成器 */
-    private var chainDetector:Function = ChainDetector.createChainCollider;
 
     /**
      * 默认构造函数
@@ -46,33 +44,21 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TransparentBulletLife
      */
     public function bindLifecycle(target:MovieClip):Void {
         var factory:IColliderFactory;
-        var areaAABB:ICollider;
 
-        // 联弹子弹检测模块
-        if (target.联弹检测) {
-            var chainResult:Object = this.chainDetector(target);
-            factory = chainResult.factory;
-            if (chainResult.collider) {
-                target.polygonCollider = chainResult.collider;
-            }
-        } else {
-            // 默认使用AABB碰撞工厂
-            factory = ColliderFactoryRegistry.getFactory(
-                ColliderFactoryRegistry.AABBFactory
-            );
-        }
-
-        // 碰撞区域创建逻辑
-        if (target.子弹区域area) {
-            // 使用自定义子弹区域
-            areaAABB = factory.createFromBullet(target, target.子弹区域area);
-        } else {
-            // 使用透明子弹默认区域
-            areaAABB = factory.createFromTransparentBullet(target);
-        }
+        // 使用ChainDetector统一处理联弹检测逻辑
+        var chainResult:Object = ChainDetector.processChainDetection(target);
+        factory = chainResult.factory;
 
         // 组件绑定
-        target.aabbCollider = areaAABB;          // 碰撞检测器
+        if(target.子弹区域area)
+        {
+            target.aabbCollider = factory.createFromBullet(target, target.子弹区域area);
+        }
+        else
+        {
+            target.aabbCollider = factory.createFromTransparentBullet(target);
+        }
+
         target.additionalEffectDamage = 0;       // 附加效果伤害初始化
         target.damageManager = DamageManagerFactory.Basic.getDamageManager(target); // 伤害管理器
 

@@ -193,7 +193,15 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
     }
     else
     {
-        lifecycle = NormalBulletLifecycle.BASIC;
+        if(bulletInstance.近战检测)
+        {
+            lifecycle = MeleeBulletLifecycle.BASIC;
+        }
+        else
+        {
+            lifecycle = NormalBulletLifecycle.BASIC;
+        }
+        
         bulletInstance.xmov = velocity * Math.cos(angleRadians);
         bulletInstance.ymov = velocity * Math.sin(angleRadians);
         

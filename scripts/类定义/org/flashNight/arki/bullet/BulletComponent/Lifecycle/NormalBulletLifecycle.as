@@ -10,7 +10,9 @@ import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
  * 普通子弹生命周期管理器
  * 实现子弹的存活判定、碰撞检测和生命周期绑定逻辑
  */
-class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle implements ILifecycle {
+class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
+extends TransparentBulletLifecycle 
+implements ILifecycle {
     
     /** 静态实例 - 默认射程900像素的基础子弹生命周期管理器 */
     public static var BASIC:NormalBulletLifecycle = new NormalBulletLifecycle(900);
@@ -29,9 +31,6 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
         this.rangeThreshold = rangeThreshold;
     }
 
-    /** 联弹碰撞检测器生成器 */
-    private var chainDetector:Function = ChainDetector.createChainCollider;
-    
     /**
      * 子弹销毁判定逻辑
      * 满足以下任一条件时销毁子弹：
@@ -52,13 +51,15 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
         // 1. 非远距离子弹才进行射程检测
         // 2. X或Y轴方向距离超过阈值则判定为超范围
 
-        var dx:Number = target._x - target._y;
-        var dy:Number = shooter._x - shooter._y;
+        var dx:Number = shooter._x - target._x;
+        var dy:Number = shooter._y - shooter._y;
         var rangeThreshold:Number = this.rangeThreshold;
         var isOutOfRange:Boolean = !target.远距离不消失 &&
             (dx > rangeThreshold || dx < -rangeThreshold ||
             dy > rangeThreshold || dy < -rangeThreshold);
 
+        // 如果超出视觉距离，地图碰撞检测所影响到的碰撞特效或许也可以省略以节约性能开销
+        if(isOutOfRange) return true;
         // 地图碰撞检测
         var isCollidedWithMap:Boolean = this.checkMapCollision(target);
         
@@ -67,7 +68,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
             target.击中地图 = true;
         }
 
-        return isOutOfRange || isCollidedWithMap;
+        return isCollidedWithMap;
     }
 
     /**
@@ -80,31 +81,14 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
      * @param target:MovieClip 要绑定的子弹对象
      */
     public function bindLifecycle(target:MovieClip):Void {
-        var areaAABB:ICollider;
-        var detectionArea:MovieClip;
-        var bulletRotation:Number = target._rotation; // 本地化旋转值减少getter调用
-        var isRotated:Boolean = (bulletRotation != 0 && bulletRotation != 180);
         var factory:IColliderFactory;
 
-        // 联弹子弹检测模块
-        if (target.联弹检测) {
-            var chainResult:Object = this.chainDetector(target);
-            factory = chainResult.factory;
-            if (chainResult.collider) {
-                target.polygonCollider = chainResult.collider;
-            }
-        } else {
-            // 默认使用AABB碰撞工厂
-            factory = ColliderFactoryRegistry.getFactory(
-                ColliderFactoryRegistry.AABBFactory
-            );
-        }
+        // 使用ChainDetector统一处理联弹检测逻辑
+        var chainResult:Object = ChainDetector.processChainDetection(target);
+        factory = chainResult.factory;
 
-        // 创建碰撞区域
-        areaAABB = factory.createFromBullet(target, target.area);
-        
         // 绑定碰撞检测器
-        target.aabbCollider = areaAABB;
+        target.aabbCollider = factory.createFromBullet(target, target.area);
         
         // 初始化附加伤害值
         target.additionalEffectDamage = 0;
@@ -113,7 +97,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
         target.damageManager = DamageManagerFactory.Basic.getDamageManager(target);
 
         // 绑定帧事件处理器
-        _root.子弹生命周期.call(target);
+        // _root.子弹生命周期.call(target);
         target.onEnterFrame = _root.子弹生命周期;
     }
 
@@ -130,7 +114,6 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
     private function checkMapCollision(target:MovieClip):Boolean {
         var gameWorld:Object = _root.gameworld;
         var Z轴坐标:Number = target.Z轴坐标;
-        var 近战检测:Boolean = target.近战检测;
 
         // 地图边界检测
         var Xmin:Number = _root.Xmin;
@@ -146,7 +129,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
             return true;
         } 
         // 非近战子弹的Y轴检测
-        else if (targetY > Z轴坐标 && !近战检测) {
+        else if (targetY > Z轴坐标) {
             return true;
         } 
         // 精确碰撞检测
