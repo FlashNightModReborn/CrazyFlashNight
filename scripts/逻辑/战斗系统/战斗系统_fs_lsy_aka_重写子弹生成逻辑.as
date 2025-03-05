@@ -12,6 +12,7 @@ import org.flashNight.naki.Sort.*;
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.aven.Proxy.*;
+import org.flashNight.sara.util.*;
 import org.flashNight.arki.bullet.Factory.BulletFactory
 
 DamageManagerFactory.init();
@@ -72,14 +73,20 @@ _root.子弹区域shoot传递 = function(Obj){
 
     if (_root.暂停 || isNaN(Obj.子弹威力)) return;
 
-    var 游戏世界 = _root.gameworld;
-    var shooter = 游戏世界[Obj.发射者];
+    var gameWorld:MovieClip = _root.gameworld;
+    var shooter:MovieClip = gameWorld[Obj.发射者];
 
     // 计算射击角度
-    var 射击角度 = 计算射击角度(Obj, shooter);
+    var 射击角度:Number = 计算射击角度(Obj, shooter);
 
     // 创建发射效果和音效
-    _root.创建发射效果(Obj, shooter);
+    var shootX:Number = Obj.shootX;
+    var shootY:Number = Obj.shootY;
+    var xscale:Number = shooter._xscale;
+    var effect:MovieClip = _root.效果(Obj.发射效果, shootX, shootY, xscale);
+    if(effect) effect._rotation = Obj.角度偏移;
+    ShellSystem.launchShell(Obj.子弹种类, shootX, shootY, xscale);
+    _root.播放音效(Obj.声音);
 
     // 设置子弹类型标志
     BulletTypesetter.setTypeFlags(Obj);
@@ -105,9 +112,9 @@ _root.子弹区域shoot传递 = function(Obj){
 };
 
 _root.计算射击角度 = function(Obj, shooter){
-    Obj.角度偏移 = isNaN(Obj.角度偏移) ? 0 : Number(Obj.角度偏移);
+    Obj.角度偏移 = Obj.角度偏移 | 0;
     var 基础射击角度:Number = 0;
-    var 发射方向 = shooter.方向;
+    var 发射方向:String = shooter.方向;
     if (Obj.子弹速度 < 0) {
         Obj.子弹速度 *= -1;
         发射方向 = 发射方向 === "右" ? "左" : "右";
@@ -118,21 +125,7 @@ _root.计算射击角度 = function(Obj, shooter){
     }
     var 射击角度 = 基础射击角度 + shooter._rotation + Obj.角度偏移;
     return 射击角度;
-}
-
-_root.创建发射效果 = function(Obj, shooter){
-    var 游戏世界 = _root.gameworld;
-    var depth = _root.随机整数(0, _root.发射效果上限);
-    var f_name = "f" + depth;
-    var 发射效果对象 = 游戏世界.效果.attachMovie(Obj.发射效果, f_name, depth, {
-        _xscale: shooter._xscale,
-        _x: Obj.shootX,
-        _y: Obj.shootY,
-        _rotation: Obj.角度偏移
-    });
-    ShellSystem.launchShell(Obj.子弹种类, Obj.shootX, Obj.shootY, shooter._xscale);
-    _root.播放音效(Obj.声音);
-}
+};
 
 
 // 子弹生命周期函数
@@ -149,8 +142,7 @@ _root.子弹生命周期 = function()
     var detectionArea:MovieClip;
     var areaAABB:ICollider = this.aabbCollider;
     var bullet_rotation:Number = this._rotation; // 本地化避免多次访问造成getter开销
-    var isRotated:Boolean = (bullet_rotation != 0 && bullet_rotation != 180);
-    var isPointSet:Boolean = this.联弹检测 && isRotated;
+    var isPointSet:Boolean = this.联弹检测 && (bullet_rotation != 0 && bullet_rotation != 180);
 
     if (this.透明检测 && !this.子弹区域area) {
         areaAABB.updateFromTransparentBullet(this);
@@ -163,8 +155,8 @@ _root.子弹生命周期 = function()
     {
         _root.绘制线框(detectionArea);
     }
-    var 游戏世界 = _root.gameworld;
-    var shooter = 游戏世界[this.发射者名];
+    var gameWorld = _root.gameworld;
+    var shooter = gameWorld[this.发射者名];
     var unitMap
     if(this.友军伤害) {
         unitMap = TargetCacheManager.getCachedAll(shooter,1);
@@ -177,11 +169,18 @@ _root.子弹生命周期 = function()
     var 击中次数 = 0;
     var 是否生成击中后效果 = true;
 
-    for (var i = 0; i < unitMap.length ; ++i)
+    var len:Number = unitMap.length;
+    var hitTarget:MovieClip;
+    var zOffset:Number;
+    var overlapRatio:Number;
+    var overlapCenter:Vector;
+    var unitArea:AABBCollider;
+    var result:CollisionResult;
+
+    for (var i:Number = 0; i < len ; ++i)
     {
-        this.hitTarget = unitMap[i];
-        var hitTarget:MovieClip = this.hitTarget;
-        var zOffset = hitTarget.Z轴坐标 - this.Z轴坐标;
+        hitTarget = this.hitTarget = unitMap[i];
+        zOffset = hitTarget.Z轴坐标 - this.Z轴坐标;
 
         if (Math.abs(zOffset) >= this.Z轴攻击范围)
         {
@@ -189,13 +188,12 @@ _root.子弹生命周期 = function()
         }
         if (hitTarget.防止无限飞 != true || (hitTarget.hp <= 0 && !this.近战检测))
         {
-            var overlapRatio = 1;
-            var overlapCenter;
+            overlapRatio = 1;
 
-            var unitArea:AABBCollider = hitTarget.aabbCollider;
+            unitArea = hitTarget.aabbCollider;
             unitArea.updateFromUnitArea(hitTarget);
             
-            var result:CollisionResult = areaAABB.checkCollision(unitArea, zOffset);
+            result = areaAABB.checkCollision(unitArea, zOffset);
 
             if(!result.isColliding)
             {
