@@ -200,18 +200,18 @@ _root.创建子弹实例 = function(Obj, shooter, 射击角度) {
         else
         {
             lifecycle = NormalBulletLifecycle.BASIC;
+
+            bulletInstance.xmov = velocity * Math.cos(angleRadians);
+            bulletInstance.ymov = velocity * Math.sin(angleRadians);
+            
+            var movement = LinearBulletMovement.create(
+                speedX, 
+                speedY, 
+                hasZY
+            );
+            bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
+            bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
         }
-        
-        bulletInstance.xmov = velocity * Math.cos(angleRadians);
-        bulletInstance.ymov = velocity * Math.sin(angleRadians);
-        
-        var movement = LinearBulletMovement.create(
-            speedX, 
-            speedY, 
-            hasZY
-        );
-        bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
-        bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
     }
 
     // 绑定生命周期逻辑
@@ -373,53 +373,6 @@ _root.更新子弹统计 = function(游戏世界, Obj, shooter) {
     }
 };
 
-// --------------------子弹伤害结算核心--------------------
-// 专注于伤害与效果计算，并将计算结果打包返回
-// --------------------子弹伤害结算核心--------------------
-_root.子弹伤害结算核心 = function(bullet, shooter, hitTarget, overlapRatio, dodgeState) {
-    var manager:DamageManager = bullet.damageManager
-    /*
-    if(!manager) {
-        manager = DamageManagerFactory.Basic.getDamageManager(bullet);
-        bullet.damageManager = manager;
-        _root.发布消息("DamageManager created" + ObjectUtil.toString(bullet));
-    }
-    */
-
-    manager.overlapRatio = overlapRatio;
-    manager.dodgeState = dodgeState;
-
-    if (hitTarget.无敌 || hitTarget.man.无敌标签 || hitTarget.NPC) {
-        return DamageResult.NULL; 
-    }
-    
-    if (hitTarget.hp == 0) {
-        return DamageResult.NULL;
-    }
-
-    var damageResult:DamageResult = DamageResult.getIMPACT();
-    
-    // hitTarget.防御力 = isNaN(hitTarget.防御力) ? 1 : Math.min(hitTarget.防御力, 99000);
-    if(isNaN(hitTarget.防御力)) hitTarget.防御力 = 1;
-
-    bullet.破坏力 = Number(bullet.子弹威力) + (isNaN(shooter.伤害加成) ? 0 : shooter.伤害加成);
-    
-    var damageVariance:Number = bullet.破坏力 * ((!_root.调试模式 || bullet.霰弹值 > 1) ? (0.85 + _root.basic_random() * 0.3) : 1);
-    var percentageDamage:Number = isNaN(bullet.百分比伤害) ? 0 : hitTarget.hp * bullet.百分比伤害 / 100;
-    bullet.破坏力 = damageVariance + bullet.固伤 + percentageDamage;
-
-    manager.execute(bullet, shooter, hitTarget, damageResult);
-    damageResult.calculateScatterDamage(hitTarget.损伤值, damageSize);
-    
-    hitTarget.hp = isNaN(hitTarget.损伤值) ? hitTarget.hp : Math.floor(hitTarget.hp - hitTarget.损伤值);
-    hitTarget.hp = (hitTarget.hp < 0 || isNaN(hitTarget.hp)) ? 0 : hitTarget.hp;
-
-    // _root.服务器.发布服务器消息(damageResult);
-    
-    return damageResult;
-};
-
-
 
 // 子弹生命周期函数
 _root.子弹生命周期 = function()
@@ -526,7 +479,7 @@ _root.子弹生命周期 = function()
             // 调用伤害结算函数
             if(this.击中时触发函数) this.击中时触发函数();
 
-            _root.子弹伤害结算核心(
+            DamageCalculator.calculateDamage(
                 this, 
                 shooter, 
                 hitTarget, 

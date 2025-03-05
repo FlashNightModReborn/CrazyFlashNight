@@ -143,7 +143,7 @@ class org.flashNight.arki.component.Damage.DamageResult {
      * @param damageSize 伤害数字大小
      * @return 
      */
-    public function calculateScatterDamage(remainingDamage:Number, damageSize:Number):Void {
+    public function calculateScatterDamage(remainingDamage:Number):Void {
         // 设置显示次数为实际使用的霰弹值
         this.displayCount = this.actualScatterUsed;
         
@@ -165,9 +165,6 @@ class org.flashNight.arki.component.Damage.DamageResult {
         
         // 添加最后的剩余伤害
         this.addDamageValue(isNaN(remainingDamage) ? 0 : Math.floor(remainingDamage));
-        
-        // 设置伤害尺寸
-        this.damageSize = damageSize;
     }
     
     /**

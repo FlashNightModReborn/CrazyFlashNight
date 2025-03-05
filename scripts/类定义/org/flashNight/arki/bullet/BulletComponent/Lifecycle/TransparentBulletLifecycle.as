@@ -46,8 +46,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TransparentBulletLife
         var factory:IColliderFactory;
 
         // 使用ChainDetector统一处理联弹检测逻辑
-        var chainResult:Object = ChainDetector.processChainDetection(target);
-        factory = chainResult.factory;
+        factory = ChainDetector.processChainDetection(target).factory;
 
         // 组件绑定
         if(target.子弹区域area)

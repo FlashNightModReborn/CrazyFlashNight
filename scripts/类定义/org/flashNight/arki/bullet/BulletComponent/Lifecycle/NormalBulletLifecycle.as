@@ -84,8 +84,7 @@ implements ILifecycle {
         var factory:IColliderFactory;
 
         // 使用ChainDetector统一处理联弹检测逻辑
-        var chainResult:Object = ChainDetector.processChainDetection(target);
-        factory = chainResult.factory;
+        factory = ChainDetector.processChainDetection(target).factory;
 
         // 绑定碰撞检测器
         target.aabbCollider = factory.createFromBullet(target, target.area);
