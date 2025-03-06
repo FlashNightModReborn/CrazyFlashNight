@@ -238,6 +238,15 @@ _root.子弹生命周期 = function()
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
             hitTarget.dispatcher.publish("hit", shooter, this, collisionResult, damageResult);
+
+            if (this.近战检测 && !this.不硬直)
+            {
+                shooter.硬直(shooter.man,_root.钝感硬直时间);
+            }
+            else if(!this.穿刺检测)
+            {
+                this.gotoAndPlay("消失");
+            }
         }
     }
 

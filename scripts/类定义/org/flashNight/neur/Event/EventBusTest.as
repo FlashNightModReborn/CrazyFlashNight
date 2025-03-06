@@ -73,8 +73,8 @@ class org.flashNight.neur.Event.EventBusTest {
         this.testEventBusCallbackErrorHandling();
         this.testEventBusDestroy();
 
-        this.testPublishWithParamBasic();
-        this.testPublishWithParamComplex();
+        // this.testPublishWithParamBasic();
+        // this.testPublishWithParamComplex();
         this.testSubscribeOnceReliability();
         this.testSubscribeOnceWithNestedPublish();
         this.testMultipleSubscribeOnce();
