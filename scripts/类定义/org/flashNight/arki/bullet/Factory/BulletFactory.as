@@ -17,6 +17,12 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
     }
 
     private static var count:Number = 0;
+
+    public static function resetCount():Void
+    {
+        // _root.服务器.发布服务器消息("子弹计数已重置:" + BulletFactory.count);
+        BulletFactory.count = 0;
+    }
     
     /**
      * 创建子弹
@@ -76,11 +82,12 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
             bulletInstance = gameWorld.子弹区域.attachMovie(
                 Obj.baseAsset, 
                 Obj.发射者名 + Obj.子弹种类 + count + scatteringAngle,
-                count, 
+                count++, 
                 Obj);
         }
 
-        count = (++count) % 100; // 让深度值在 100 之间循环
+        // count = (++count) % 100; 
+        // 计数器改为在外部重置
 
         // 设置运动参数
 

@@ -14,6 +14,7 @@ import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.key.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*
+import org.flashNight.arki.bullet.Factory.*;
 
 _root.帧计时器 = {};
 ColliderFactoryRegistry.init();
@@ -895,3 +896,4 @@ var 检测在线奖励 = function(){
 }
 _root.在线时间计数 = 0;
 _root.帧计时器.添加任务(检测在线奖励, 300000, 24); // 每5分钟检测一次，共24次
+_root.帧计时器.添加循环任务(BulletFactory.resetCount, 1000 * 60 * 5); // 每5分钟重置一次子弹深度计数
