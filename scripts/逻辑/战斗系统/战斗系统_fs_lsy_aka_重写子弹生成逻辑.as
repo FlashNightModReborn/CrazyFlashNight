@@ -166,8 +166,8 @@ _root.子弹生命周期 = function()
         unitMap = TargetCacheManager.getCachedEnemy(shooter,1);
     }
     
-    var 击中次数 = 0;
-    var 是否生成击中后效果 = true;
+    var 击中次数:Number = 0;
+    this.shouldGeneratePostHitEffect = true;
 
     var len:Number = unitMap.length;
     var hitTarget:MovieClip;
@@ -250,7 +250,7 @@ _root.子弹生命周期 = function()
         }
     }
 
-    if(是否生成击中后效果 && 击中次数 > 0){
+    if(this.shouldGeneratePostHitEffect && 击中次数 > 0){
         _root.效果(this.击中后子弹的效果,this._x,this._y,shooter._xscale);
     }
 
