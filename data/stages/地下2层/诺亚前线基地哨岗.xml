@@ -12,11 +12,6 @@
             <QuantityMax>1</QuantityMax>
         </Reward>
         <Reward id="2">
-            <Name>资料</Name>
-            <AcquisitionProbability>1</AcquisitionProbability>
-            <QuantityMax>20</QuantityMax>
-        </Reward>
-        <Reward id="3">
             <Name>未知金属</Name>
             <AcquisitionProbability>1</AcquisitionProbability>
             <QuantityMax>4</QuantityMax>
@@ -27,6 +22,11 @@
             <Background>flashswf/backgrounds/nyqxjdww_men_BG.swf</Background>
             <PlayerX>200</PlayerX>
             <PlayerY>420</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Tetrriture</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Dialogue>
             <SubDialogue id="0">
