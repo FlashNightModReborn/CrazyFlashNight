@@ -175,7 +175,7 @@ _root.子弹生命周期 = function()
     var overlapRatio:Number;
     var overlapCenter:Vector;
     var unitArea:AABBCollider;
-    var result:CollisionResult;
+    var collisionResult:CollisionResult;
 
     for (var i:Number = 0; i < len ; ++i)
     {
@@ -193,11 +193,11 @@ _root.子弹生命周期 = function()
             unitArea = hitTarget.aabbCollider;
             unitArea.updateFromUnitArea(hitTarget);
             
-            result = areaAABB.checkCollision(unitArea, zOffset);
+            collisionResult = areaAABB.checkCollision(unitArea, zOffset);
 
-            if(!result.isColliding)
+            if(!collisionResult.isColliding)
             {
-                if(result.isOrdered)
+                if(collisionResult.isOrdered)
                 {
                     continue;
                 }
@@ -208,174 +208,36 @@ _root.子弹生命周期 = function()
             }
             if(isPointSet) {
                 this.polygonCollider.updateFromBullet(this, detectionArea)
-                result = this.polygonCollider.checkCollision(unitArea, zOffset);
+                collisionResult = this.polygonCollider.checkCollision(unitArea, zOffset);
             }
 
-            overlapRatio = result.overlapRatio;
-            overlapCenter = result.overlapCenter;
+            overlapRatio = collisionResult.overlapRatio;
+            overlapCenter = collisionResult.overlapCenter;
 
             //击中
             击中次数++;
-            if(_root.调试模式)
-            {
-                _root.绘制线框(hitTarget.area);
-            }
-            var hpBar = hitTarget.新版人物文字信息 ? hitTarget.新版人物文字信息.头顶血槽 : hitTarget.人物文字信息.头顶血槽;
-            hpBar._visible = true;
-            hpBar.gotoAndPlay(2);
-            hitTarget.攻击目标 = shooter._name;
 
                 // ------------------------兼容区------------------------------
             this.附加层伤害计算 = 0; 
             this.命中对象 = hitTarget;
 
-            _root.冲击力刷新(hitTarget);
-            hitTarget.dispatcher.publish("hit");
-
+            
             // 命中率计算略，原代码有提到根据命中率计算闪避
             var dodgeState = this.伤害类型 == "真伤" ? "未躲闪": _root.躲闪状态计算(hitTarget,_root.根据命中计算闪避结果(shooter, hitTarget, 命中率),this);
 
             // 调用伤害结算函数
             if(this.击中时触发函数) this.击中时触发函数();
 
-            DamageCalculator.calculateDamage(
+            var damageResult:DamageResult = DamageCalculator.calculateDamage(
                 this, 
                 shooter, 
                 hitTarget, 
                 overlapRatio, 
                 dodgeState
-            ).triggerDisplay(hitTarget._x, hitTarget._y);
+            )
+            damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
-            if (hitTarget._name === _root.控制目标) {
-                _root.玩家信息界面.刷新hp显示();
-            }
-
-            //伤害结算结束后，继续原逻辑
-            if(!this.近战检测 && !this.爆炸检测 && hitTarget.hp <= 0)
-            {
-                hitTarget.状态改变("血腥死");
-            }
-
-            var 被击方向 = (hitTarget._x < shooter._x) ? "左" : "右" ;
-            if(this.水平击退反向){
-                被击方向 = 被击方向 === "左" ? "右" : "左";
-            }
-            hitTarget.方向改变(被击方向 === "左" ? "右" : "左");
-
-            if (_root.血腥开关)
-            {
-                var 子弹效果碎片 = "";
-                switch (hitTarget.击中效果)
-                {
-                    case "飙血":
-                        子弹效果碎片 = "子弹碎片-飞血";
-                        break;
-                    case "异形飙血":
-                        子弹效果碎片 = "子弹碎片-异形飞血";
-                        break;
-                    default:
-                }
-
-                if(子弹效果碎片 != "")
-                {
-                    var 效果对象 = _root.效果(子弹效果碎片, overlapCenter.x, overlapCenter.y, shooter._xscale);
-                    效果对象.出血来源 = hitTarget._name;
-                }
-            }
-
-            var 刚体检测 = hitTarget.刚体 || hitTarget.man.刚体标签;
-            if (!hitTarget.浮空 && !hitTarget.倒地)
-            {
-                _root.冲击力结算(hitTarget.损伤值,this.击倒率,hitTarget);
-                hitTarget.血条变色状态 = "常态";
-
-                if (!isNaN(hitTarget.hp) && hitTarget.hp <= 0)
-                {
-                    hitTarget.状态改变(_root.血腥开关 ? "血腥死" : "击倒");
-                }
-                else if (dodgeState == "躲闪")
-                {
-                    hitTarget.被击移动(被击方向,this.水平击退速度,3);
-                }
-                else
-                {
-                    if (hitTarget.remainingImpactForce > hitTarget.韧性上限)
-                    {
-                        if (!刚体检测)
-                        {
-                            hitTarget.状态改变("击倒");
-                            hitTarget.血条变色状态 = "击倒";
-                        }
-                        hitTarget.remainingImpactForce = 0;
-                        hitTarget.被击移动(被击方向,this.水平击退速度,0.5);
-                    }
-                    else if (hitTarget.remainingImpactForce > hitTarget.韧性上限 / _root.踉跄判定 / hitTarget.躲闪率)
-                    {
-                        if (!刚体检测)
-                        {
-                            hitTarget.状态改变("被击");
-                            hitTarget.血条变色状态 = "被击";
-                        }
-
-                        hitTarget.被击移动(被击方向,this.水平击退速度,2);
-                    }
-                    else
-                    {
-                        hitTarget.被击移动(被击方向,this.水平击退速度,3);
-                    }
-                }
-            }
-            else
-            {
-                hitTarget.remainingImpactForce = 0;
-                if (!刚体检测)
-                {
-                    hitTarget.状态改变("击倒");
-                    hitTarget.血条变色状态 = "击倒";
-                    if (!(this.垂直击退速度 > 0))
-                    {
-                        var y速度 = 5;
-                        hitTarget.man.垂直速度 = -y速度;
-                    }
-                }
-                hitTarget.被击移动(被击方向,this.水平击退速度,0.5);
-            }
-
-            if(!this.近战检测 && !this.爆炸检测 && hitTarget.hp <= 0)
-            {
-                hitTarget.状态改变("血腥死");
-            }
-
-            switch (hitTarget.血条变色状态)
-            {
-                case "常态": _root.重置色彩(hpBar);
-                    break;
-                default: _root.暗化色彩(hpBar);
-            }
-
-            _root.效果(hitTarget.击中效果, overlapCenter.x, overlapCenter.y, shooter._xscale);
-            if(hitTarget.击中效果 == this.击中后子弹的效果) {
-                是否生成击中后效果 = false;
-            }
-
-            if (this.近战检测 && !this.不硬直)
-            {
-                shooter.硬直(shooter.man,_root.钝感硬直时间);
-            }
-            else if(!this.穿刺检测)
-            {
-                this.gotoAndPlay("消失");
-            }
-
-            if (this.垂直击退速度 > 0)
-            {
-                hitTarget.man.play();
-                clearInterval(hitTarget.pauseInterval);
-                hitTarget.硬直中 = false;
-                clearInterval(hitTarget.pauseInterval2);
-
-                _root.fly(hitTarget,this.垂直击退速度,0);
-            }
+            hitTarget.dispatcher.publish("hit", shooter, this, collisionResult, damageResult);
         }
     }
 
