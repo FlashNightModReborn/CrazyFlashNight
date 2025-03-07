@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/复选框" itemID="67b05569-00000ab7" lastModified="1741190565">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/复选框" itemID="67b05569-00000ab7" lastModified="1739609449">
   <timeline>
     <DOMTimeline name="复选框">
       <layers>
@@ -6,19 +6,21 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 刷新(){
-	var 参数值 = org.flashNight.gesh.string.EvalParser.getPropertyValue(_root, 控制参数);
-	if (参数值 == 打钩值)
-	{
-		gotoAndStop(2);
-	}
-	else if (参数值 == 无钩值)
-	{
-		gotoAndStop(1);
-	}
+                <script><![CDATA[function 刷新()
+{
+   var 参数值 = _root.eval解析器.解析属性值(_root ,控制参数);
+   if(参数值 == 打钩值)
+   {
+      gotoAndStop(2);
+   }
+   else if(参数值 == 无钩值)
+   {
+      gotoAndStop(1);
+   }
 }
 刷新();
-stop();]]></script>
+stop();
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -36,20 +38,20 @@ stop();]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on (press) {
-	import org.flashNight.gesh.string.EvalParser;
-	var 参数 = EvalParser.getPropertyValue(_root, 控制参数);
-	if (参数 == 打钩值)
-	{
-		EvalParser.setPropertyValue(_root,控制参数,无钩值);
-		刷新();
-	}
-	else if (参数 == 无钩值)
-	{
-		EvalParser.setPropertyValue(_root,控制参数,打钩值);
-		刷新();
-	}
-}]]></script>
+                    <script><![CDATA[on(press){
+	var 参数 = _root.eval解析器.解析属性值(_root ,控制参数);
+   if(参数 == 打钩值)
+   {
+	  _root.eval解析器.设置属性值(_root,控制参数,无钩值);
+      刷新();
+   }
+   else if(参数 == 无钩值)
+   {
+	  _root.eval解析器.设置属性值(_root,控制参数,打钩值);
+      刷新();
+   }
+}
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>

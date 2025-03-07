@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1727" itemID="6597607e-000009de" lastModified="1740333035" lastUniqueIdentifier="8">
   <timeline>
-    <DOMTimeline name="Symbol 1727" currentFrame="10">
+    <DOMTimeline name="Symbol 1727" currentFrame="29">
       <layers>
         <DOMLayer name="Labels Layer" color="#C688B8">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#4B7DFD">
+        <DOMLayer name="Script Layer" color="#4B7DFD" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1610,7 +1610,7 @@ onClipEvent(mouseUp){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 38" color="#E2C777" current="true" isSelected="true">
+        <DOMLayer name="Layer 38" color="#E2C777">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
