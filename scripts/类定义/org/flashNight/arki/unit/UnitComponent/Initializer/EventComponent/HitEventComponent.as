@@ -10,6 +10,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEvent
     public static function initialize(target:MovieClip):Void {
         var dispatcher:EventDispatcher = target.dispatcher;
         // 订阅 hit 事件到 HitUpdater 逻辑
-        dispatcher.subscribeSingle("hit", HitUpdater.getUpdater(), target);
+        dispatcher.subscribeSingle("hit", HitUpdater.getUpdater(target), target);
     }
 }
