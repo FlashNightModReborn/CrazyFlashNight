@@ -1,20 +1,31 @@
-﻿import org.flashNight.neur.Event.*;
-import org.flashNight.arki.bullet.BulletComponent.Movement.*;
-import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
-import org.flashNight.arki.bullet.BulletComponent.Type.*;
-import org.flashNight.arki.bullet.BulletComponent.Shell.*;
-import org.flashNight.arki.bullet.BulletComponent.Collider.*;
-import org.flashNight.arki.component.Collider.*;
-import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
-import org.flashNight.arki.bullet.BulletComponent.Attributes.*
-import org.flashNight.arki.bullet.BulletComponent.Init.*;
-import org.flashNight.naki.Sort.*;
-import org.flashNight.gesh.object.*;
-import org.flashNight.arki.component.Damage.*;
-import org.flashNight.aven.Proxy.*;
-import org.flashNight.sara.util.*;
-import org.flashNight.arki.bullet.Factory.BulletFactory
+﻿// 1. 核心框架组件 (按包层级排序)
+import org.flashNight.arki.bullet.BulletComponent.Attributes.*; // 属性定义优先
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;   // 碰撞组件
+import org.flashNight.arki.bullet.BulletComponent.Init.*;       // 初始化组件
+import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*; // 生命周期管理
+import org.flashNight.arki.bullet.BulletComponent.Movement.*;  // 移动逻辑
+import org.flashNight.arki.bullet.BulletComponent.Shell.*;     // 弹壳组件
+import org.flashNight.arki.bullet.BulletComponent.Type.*;      // 类型定义
+import org.flashNight.arki.bullet.BulletComponent.Utils.*;     // 工具类
 
+// 2. 子弹工厂（具体类单独导入）
+import org.flashNight.arki.bullet.Factory.BulletFactory;
+
+// 3. 其他组件（按功能分类）
+import org.flashNight.arki.component.Collider.*;    // 碰撞系统
+import org.flashNight.arki.component.Damage.*;      // 伤害计算
+import org.flashNight.arki.component.Effect.*;      // 特效组件
+
+// 4. 单位组件
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*; // 目标缓存
+
+// 5. 辅助模块（按字母顺序）
+import org.flashNight.aven.Proxy.*;     // 代理模式实现
+import org.flashNight.gesh.object.*;    // 对象管理
+import org.flashNight.naki.Sort.*;      // 排序算法
+import org.flashNight.neur.Event.*;     // 事件系统
+import org.flashNight.sara.util.*;      // 工具方法
+ 
 DamageManagerFactory.init();
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
@@ -77,13 +88,13 @@ _root.子弹区域shoot传递 = function(Obj){
     var shooter:MovieClip = gameWorld[Obj.发射者];
 
     // 计算射击角度
-    var 射击角度:Number = 计算射击角度(Obj, shooter);
+    var shootingAngle:Number = ShootingAngleCalculator.calculate(Obj, shooter);
 
     // 创建发射效果和音效
     var shootX:Number = Obj.shootX;
     var shootY:Number = Obj.shootY;
     var xscale:Number = shooter._xscale;
-    var effect:MovieClip = _root.效果(Obj.发射效果, shootX, shootY, xscale);
+    var effect:MovieClip = EffectSystem.Effect(Obj.发射效果, shootX, shootY, xscale);
     if(effect) effect._rotation = Obj.角度偏移;
     ShellSystem.launchShell(Obj.子弹种类, shootX, shootY, xscale);
     _root.播放音效(Obj.声音);
@@ -104,28 +115,13 @@ _root.子弹区域shoot传递 = function(Obj){
     BulletInitializer.initializeBulletProperties(Obj);
 
     // 创建子弹
-    var bulletInstance = BulletFactory.createBullet(Obj, shooter, 射击角度);
+    var bulletInstance = BulletFactory.createBullet(Obj, shooter, shootingAngle);
 
     // _root.服务器.发布服务器消息(ObjectUtil.toString(bulletInstance));
 
     return bulletInstance;
 };
 
-_root.计算射击角度 = function(Obj, shooter){
-    Obj.角度偏移 = Obj.角度偏移 | 0;
-    var 基础射击角度:Number = 0;
-    var 发射方向:String = shooter.方向;
-    if (Obj.子弹速度 < 0) {
-        Obj.子弹速度 *= -1;
-        发射方向 = 发射方向 === "右" ? "左" : "右";
-    }
-    if(发射方向 === "左") {
-        基础射击角度 = 180;
-        Obj.角度偏移 = -Obj.角度偏移;
-    }
-    var 射击角度 = 基础射击角度 + shooter._rotation + Obj.角度偏移;
-    return 射击角度;
-};
 
 
 // 子弹生命周期函数
@@ -251,7 +247,7 @@ _root.子弹生命周期 = function()
     }
 
     if(this.shouldGeneratePostHitEffect && 击中次数 > 0){
-        _root.效果(this.击中后子弹的效果,this._x,this._y,shooter._xscale);
+        EffectSystem.Effect(this.击中后子弹的效果,this._x,this._y,shooter._xscale);
     }
 
     // 调用更新运动逻辑
@@ -268,7 +264,7 @@ _root.子弹生命周期 = function()
 
         if (this.击中地图) {
             this.霰弹值 = 1;
-            _root.效果(this.击中地图效果, this._x, this._y);
+            EffectSystem.Effect(this.击中地图效果, this._x, this._y);
             if (this.击中时触发函数) {
                 this.击中时触发函数();
             }

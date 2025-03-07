@@ -67,6 +67,11 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         // 判断是否需要生成子弹击中后的后续效果
         bullet.shouldGeneratePostHitEffect = (hitTarget.击中效果 != bullet.击中后子弹的效果);
     }
+
+    public static function doHeroUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
+        doHitUpdate(hitTarget, shooter, bullet, collisionResult, damageResult);
+        _root.玩家信息界面.刷新hp显示();
+    }
     
     /**
      * 根据目标单位返回对应的受击事件处理函数
@@ -77,14 +82,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
     public static function getUpdater(target:MovieClip):Function {
         if (target._name === _root.控制目标) {
             // 主角：返回包装函数，先执行核心逻辑，再刷新hp显示
-            return function(hitTarget:MovieClip, 
-                            shooter:MovieClip, 
-                            bullet:MovieClip, 
-                            collisionResult:CollisionResult, 
-                            damageResult:DamageResult):Void {
-                doHitUpdate(hitTarget, shooter, bullet, collisionResult, damageResult);
-                _root.玩家信息界面.刷新hp显示();
-            };
+            return doHeroUpdate;
         } else {
             // 非主角：直接返回核心逻辑函数
             return doHitUpdate;
