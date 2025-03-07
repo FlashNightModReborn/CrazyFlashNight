@@ -3,6 +3,7 @@ import org.flashNight.sara.util.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.component.Effect.*;
+import org.flashNight.arki.unit.UnitComponent.Status.*;
 
 class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
@@ -27,12 +28,8 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
                 _root.玩家信息界面.刷新hp显示();
             }
 
-            // 缓存目标血量和刚体状态
-            var hp:Number = hitTarget.hp;
-            var isRigid:Boolean = hitTarget.刚体 || hitTarget.man.刚体标签;
-
             // 初步判断：若非近战/爆炸子弹且目标血量已耗尽，直接设定死亡状态
-            if (!bullet.近战检测 && !bullet.爆炸检测 && hp <= 0) {
+            if (!bullet.近战检测 && !bullet.爆炸检测 && hitTarget.hp <= 0) {
                 hitTarget.状态改变("血腥死");
             }
 
@@ -66,9 +63,10 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
             var ocx:Number = overlapCenter.x;
             var ocy:Number = overlapCenter.y;
             var sxc:Number = shooter._xscale;
+            var bloodEnabled:Boolean = _root.血腥开关;
             
             // 根据血腥开关，生成对应的击中血液效果
-            if(_root.血腥开关) BulletEffectHandler.createBulletEffect(
+            if(bloodEnabled) BulletEffectHandler.createBulletEffect(
                 hitTarget,
                 ocx,
                 ocy,
@@ -77,52 +75,8 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
             
 
             // ────────────── 冲击力与状态判断 ──────────────
-
-            // 浮空与倒地属于少数情况，优先处理可能性更高的常规情况
-            if (!(hitTarget.浮空 || hitTarget.倒地)) {
-                // 常态冲击处理：目标既不浮空也不倒地
-                ImpactHandler.settleImpactForce(hitTarget.损伤值, bullet.击倒率, hitTarget);
-                hitTarget.barColorState = "常态";
-                
-                if (hp <= 0) {
-                    // 血量耗尽，根据血腥开关设定死亡或击倒状态
-                    hitTarget.状态改变(_root.血腥开关 ? "血腥死" : "击倒");
-                } else if (damageResult.dodgeStatus == "躲闪") {
-                    // 目标成功躲闪，直接执行被击移动效果
-                    hitTarget.被击移动(hitDirection, bullet.水平击退速度, 3);
-                } else if (hitTarget.remainingImpactForce > hitTarget.韧性上限) {
-                    // 冲击力超过韧性上限：如非刚体则设为击倒状态，并重置冲击力
-                    if (!isRigid) {
-                        hitTarget.状态改变("击倒");
-                        hitTarget.barColorState = "击倒";
-                    }
-                    hitTarget.remainingImpactForce = 0;
-                    hitTarget.被击移动(hitDirection, bullet.水平击退速度, 0.5);
-                } else if (hitTarget.remainingImpactForce > hitTarget.韧性上限 / ImpactHandler.IMPACT_STAGGER_COEFFICIENT / hitTarget.躲闪率) {
-                    // 冲击力处于中间范围，如非刚体则设为被击状态
-                    if (!isRigid) {
-                        hitTarget.状态改变("被击");
-                        hitTarget.barColorState = "被击";
-                    }
-                    hitTarget.被击移动(hitDirection, bullet.水平击退速度, 2);
-                } else {
-                    // 其他情况，执行默认被击移动效果
-                    hitTarget.被击移动(hitDirection, bullet.水平击退速度, 3);
-                }
-            } else {
-
-                hitTarget.remainingImpactForce = 0;
-                if (!isRigid) {
-                    hitTarget.状态改变("击倒");
-                    hitTarget.barColorState = "击倒";
-                    if (!(bullet.垂直击退速度 > 0)) {
-                        hitTarget.man.垂直速度 = -5;
-                    }
-                }
-                hitTarget.被击移动(hitDirection, bullet.水平击退速度, 0.5);
-            }
-
-
+            ImpactStateHandler.handleImpactState(hitTarget, bullet, damageResult, hitDirection, bloodEnabled);
+ 
             // ────────────── 血槽颜色与后续特效 ──────────────
 
             // 根据当前状态，重置或暗化血槽色彩
@@ -133,17 +87,6 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
             // 判断是否需要生成子弹击中后的后续效果
             bullet.shouldGeneratePostHitEffect = (hitTarget.击中效果 != bullet.击中后子弹的效果);
-
-            // ────────────── 垂直击退处理 ──────────────
-
-            // 若子弹有垂直击退速度，则恢复动画播放并处理相关状态
-            if (bullet.垂直击退速度 > 0) {
-                hitTarget.man.play();
-                clearInterval(hitTarget.pauseInterval);
-                hitTarget.硬直中 = false;
-                clearInterval(hitTarget.pauseInterval2);
-                _root.fly(hitTarget, bullet.垂直击退速度, 0);
-            }
         };
     }
 }
