@@ -2,6 +2,7 @@
 import org.flashNight.sara.util.*;
 import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.component.Effect.*;
 
 class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
@@ -72,23 +73,13 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
             var sxc:Number = shooter._xscale;
             
             // 根据血腥开关，生成对应的击中血液效果
-            if (_root.血腥开关) {
-                var bulletEffectFragment:String = "";
-                switch (hitTarget.击中效果) {
-                    case "飙血":
-                        bulletEffectFragment = "子弹碎片-飞血";
-                        break;
-                    case "异形飙血":
-                        bulletEffectFragment = "子弹碎片-异形飞血";
-                        break;
-                    default:
-                        // 不生成子弹效果
-                }
-                if(bulletEffectFragment != "") {
-                    var effectInstance = _root.效果(bulletEffectFragment, ocx, ocy, sxc);
-                    effectInstance.出血来源 = hitTarget._name;
-                }
-            }
+            if(_root.血腥开关) BulletEffectHandler.createBulletEffect(
+                hitTarget,
+                ocx,
+                ocy,
+                sxc
+            );
+            
 
             // ────────────── 冲击力与状态判断 ──────────────
 
