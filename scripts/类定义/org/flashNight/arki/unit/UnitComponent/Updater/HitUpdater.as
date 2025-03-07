@@ -43,10 +43,6 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         // 根据异或运算的结果，使用三元运算符直接赋值 hitDirection 为 "左" 或 "右"。
         var hitDirection:String = ((hitTarget._x < shooter._x) ^ bullet.水平击退反向) ? "左" : "右";
 
-        // 为了实现被击目标视觉上"面向"与受击方向相反的效果（左右取反），
-        // 这里将 hitTarget 的面向设置为 hitDirection 的反方向。
-        // 例如：如果 hitDirection 为 "左"，则将 hitTarget 面向设置为 "右"。
-        var hitDirection:String = ((hitTarget._x < shooter._x) ^ bullet.水平击退反向) ? "左" : "右";
         // 为实现受击目标视觉上面向与受击方向相反的效果
         hitTarget.方向改变((hitDirection == "左") ? "右" : "左");
         
