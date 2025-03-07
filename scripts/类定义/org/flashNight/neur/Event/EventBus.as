@@ -132,52 +132,54 @@ class org.flashNight.neur.Event.EventBus {
      */
 
     public function unsubscribe(eventName:String, callback:Function):Void {
+        // trace("[EventBus][" + eventName + "] unsubscribe() START");
+        // trace(" |- Requested removal of callback UID: " + Dictionary.getStaticUID(callback));
+
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
+            // trace(" |- No listeners found for event");
+            // trace("[EventBus][" + eventName + "] unsubscribe() END (early exit)\n");
             return;
         }
 
         var funcToID:Object = listenersForEvent.funcToID;
-
-        // 先拿到 "用户给的函数" 的 UID
         var unsubUID:String = String(Dictionary.getStaticUID(callback));
+        // trace(" |- Original unsubUID: " + unsubUID);
 
-        // 检查是否在 onceCallbackMap 中。如果是一次性回调，就能在这里找到
+        // 检查一次性回调映射
         var mappedCallback:Function = this.onceCallbackMap[unsubUID];
         if (mappedCallback != null) {
-            // 找到真正的包装函数引用
-            // 用包装函数的 UID 才能在 listenersForEvent 里匹配到
             var mappedUID:String = String(Dictionary.getStaticUID(mappedCallback));
-
-            // 用完就删掉映射，避免内存滞留
+            // trace(" |- Found mapped callback UID: " + mappedUID);
+            // trace(" |- Cleaning onceCallbackMap entry for: " + unsubUID);
             delete this.onceCallbackMap[unsubUID];
-
-            unsubUID = mappedUID; 
+            unsubUID = mappedUID;
         }
 
-        // 再去 funcToID 里找 callbackID
-        var callbackID:Number = funcToID[unsubUID];
-        if (callbackID == undefined) {
-            return; // 根本没订阅过，不做事
-        }
-
-        // 拿到具体的 pool index
-        var allocIndex:Number = listenersForEvent.callbacks[callbackID];
+        // 直接使用 unsubUID（可能已替换为包装后的回调UID）在 callbacks 中查找
+        var allocIndex:Number = listenersForEvent.callbacks[unsubUID];
         if (allocIndex != undefined) {
-            // 从池里移除
+            // 释放池空间
             this.pool[allocIndex] = null;
             this.availSpace[this.availSpaceTop++] = allocIndex;
+            // trace(" |- Freed pool index: " + allocIndex);
+            // trace(" |- Avail space top: " + this.availSpaceTop);
 
-            delete listenersForEvent.callbacks[callbackID];
-            delete funcToID[unsubUID];
+            // 清理数据结构
+            delete listenersForEvent.callbacks[unsubUID];
             listenersForEvent.count--;
+            // trace(" |- Remaining listeners for event: " + listenersForEvent.count);
 
-            // 如果该事件名下所有回调都删光了，就把该事件也移除
+            // 清理空事件
             if (listenersForEvent.count === 0) {
+                // trace(" |- Removing empty event listener structure");
                 delete this.listeners[eventName];
             }
         }
+
+        // trace("[EventBus][" + eventName + "] unsubscribe() END\n");
     }
+
 
     /**
      * 发布事件，通知所有订阅者，并传递可选的参数。
@@ -185,9 +187,13 @@ class org.flashNight.neur.Event.EventBus {
      * @param eventName 事件名称
      */
     public function publish(eventName:String):Void {
+        // trace("[EventBus][" + eventName + "] publish() START");
+
         var listenersForEvent:Object = this.listeners[eventName];
-        if (!listenersForEvent)
+        if (!listenersForEvent) {
+            // trace("[EventBus][" + eventName + "] publish() - No listeners found, returning");
             return;
+        }
 
         var callbacks:Object = listenersForEvent.callbacks;
         var poolRef:Array = this.pool;
@@ -196,91 +202,101 @@ class org.flashNight.neur.Event.EventBus {
         var callback:Function;
 
         // 收集回调函数，使用索引方式
+        // trace("[EventBus][" + eventName + "] publish() - Collecting callbacks...");
         for (var cbID:String in callbacks) {
             callback = poolRef[callbacks[cbID]];
             if (callback != null) {
                 localTempCallbacks[tempCallbacksCount++] = callback;
             }
         }
+        // trace("[EventBus][" + eventName + "] publish() - Collected " + tempCallbacksCount + " callbacks.");
+
+        // 输出收集到的回调 UID 列表
+        for (var k:Number = 0; k < tempCallbacksCount; k++) {
+            // trace("    Callback[" + k + "] UID: " + Dictionary.getStaticUID(localTempCallbacks[k]));
+        }
 
         var argsLength:Number = arguments.length - 1;
+        // trace("[EventBus][" + eventName + "] publish() - Arguments count: " + argsLength);
         var j:Number = tempCallbacksCount - 1;
         var cb:Function;
         var localTempArgs:Array;
 
         // 如果有参数，使用索引方式复制参数到 tempArgs
         if (argsLength >= 1) {
+            localTempArgs = []; // 每次复制新的数组，确保不受上次调用影响
             var i:Number = 0;
             do {
                 localTempArgs[i] = arguments[i + 1];
             } while (++i < argsLength);
+            // trace("[EventBus][" + eventName + "] publish() - Copied arguments: " + localTempArgs);
 
+            // 执行回调函数（倒序执行）
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
+                // trace("[EventBus][" + eventName + "] publish() - Executing callback UID: " + Dictionary.getStaticUID(cb));
                 try {
-
-                if (argsLength < 3) {
-                    // argsLength 为 1 或 2
-                    if (argsLength == 1) {
-                        cb(localTempArgs[0]);
-                    } else { // argsLength == 2
-                        cb(localTempArgs[0], localTempArgs[1]);
+                    if (argsLength < 3) {
+                        if (argsLength == 1) {
+                            cb(localTempArgs[0]);
+                        } else { // argsLength == 2
+                            cb(localTempArgs[0], localTempArgs[1]);
+                        }
+                    } else if (argsLength < 7) {
+                        if (argsLength == 3) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2]);
+                        } else if (argsLength == 4) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3]);
+                        } else if (argsLength == 5) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4]);
+                        } else { // argsLength == 6
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5]);
+                        }
+                    } else if (argsLength < 11) {
+                        if (argsLength == 7) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6]);
+                        } else if (argsLength == 8) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7]);
+                        } else if (argsLength == 9) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8]);
+                        } else { // argsLength == 10
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9]);
+                        }
+                    } else if (argsLength < 16) {
+                        if (argsLength == 11) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10]);
+                        } else if (argsLength == 12) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11]);
+                        } else if (argsLength == 13) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12]);
+                        } else if (argsLength == 14) {
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13]);
+                        } else { // argsLength == 15
+                            cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13], localTempArgs[14]);
+                        }
+                    } else {
+                        cb.apply(null, localTempArgs.slice(0, argsLength));
                     }
-                } else if (argsLength < 7) {
-                    // argsLength 为 3 ~ 6
-                    if (argsLength == 3) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2]);
-                    } else if (argsLength == 4) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3]);
-                    } else if (argsLength == 5) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4]);
-                    } else { // argsLength == 6
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5]);
-                    }
-                } else if (argsLength < 11) {
-                    // argsLength 为 7 ~ 10
-                    if (argsLength == 7) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6]);
-                    } else if (argsLength == 8) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7]);
-                    } else if (argsLength == 9) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8]);
-                    } else { // argsLength == 10
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9]);
-                    }
-                } else if (argsLength < 16) {
-                    // argsLength 为 11 ~ 15
-                    if (argsLength == 11) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10]);
-                    } else if (argsLength == 12) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11]);
-                    } else if (argsLength == 13) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12]);
-                    } else if (argsLength == 14) {
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13]);
-                    } else { // argsLength == 15
-                        cb(localTempArgs[0], localTempArgs[1], localTempArgs[2], localTempArgs[3], localTempArgs[4], localTempArgs[5], localTempArgs[6], localTempArgs[7], localTempArgs[8], localTempArgs[9], localTempArgs[10], localTempArgs[11], localTempArgs[12], localTempArgs[13], localTempArgs[14]);
-                    }
-                } else {
-                    // 超出显式支持范围时，退回 apply 方式
-                    cb.apply(null, localTempArgs.slice(0, argsLength));
-                }
-
+                    // trace("[EventBus][" + eventName + "] publish() - Callback UID " + Dictionary.getStaticUID(cb) + " executed successfully.");
                 } catch (error:Error) {
-                    trace("Error executing callback for event '" + eventName + "': " + error.message);
+                    // trace("Error executing callback for event '" + eventName + "': " + error.message);
                 }
             }
         } else {
-            // 倒序执行回调函数
+            // 无参数时的倒序执行
             for (; j >= 0; j--) {
                 cb = localTempCallbacks[j];
+                // trace("[EventBus][" + eventName + "] publish() - Executing callback UID: " + Dictionary.getStaticUID(cb));
                 try {
                     cb();
+                    // trace("[EventBus][" + eventName + "] publish() - Callback UID " + Dictionary.getStaticUID(cb) + " executed successfully.");
                 } catch (error:Error) {
-                    trace("Error executing callback for event '" + eventName + "': " + error.message);
+                    // trace("Error executing callback for event '" + eventName + "': " + error.message);
                 }
             }
         }
+
+        // trace("[EventBus][" + eventName + "] publish() END");
     }
 
 
@@ -291,57 +307,65 @@ class org.flashNight.neur.Event.EventBus {
      * @param scope     回调函数执行时的作用域
      */
     public function subscribeOnce(eventName:String, callback:Function, scope:Object):Void {
+        // trace("[EventBus][" + eventName + "] subscribeOnce() START");
+        // trace(" |- Original Callback UID: " + Dictionary.getStaticUID(callback));
+
         var self:EventBus = this;
-        var originalCallback:Function = callback; 
-
-        // 先用用户的callback生成UID —— 这是“原函数”的UID
+        var originalCallback:Function = callback;
         var originalFuncID:String = String(Dictionary.getStaticUID(originalCallback));
+        // trace(" |- Original FuncID: " + originalFuncID);
 
+        // 确保事件监听器结构存在
         var listenersForEvent:Object = this.listeners[eventName];
         if (!listenersForEvent) {
             listenersForEvent = {callbacks: {}, funcToID: {}, count: 0};
             this.listeners[eventName] = listenersForEvent;
+            // trace(" |- Created new listeners structure for event: " + eventName);
         }
 
-        // var funcToID:Object = listenersForEvent.funcToID;
-        // if (funcToID[originalFuncID] != undefined) {
-        //     return;
-        // }
+        // 创建一次性包装器，自动取消订阅自身
+        var wrappedOnceCallback:Function = function():Void {
+            // trace("[EventBus][" + eventName + "] wrappedOnceCallback EXECUTED");
+            // trace(" |- Original Callback UID: " + originalFuncID + " is about to be unsubscribed");
 
-        // 包装一个函数：执行后自动退订
-        var wrappedOnceCallback:Function = function() {
+            // 先取消订阅包装后的回调
+            self.unsubscribe(eventName, wrappedCallback);
+            // 再调用原始回调
             originalCallback.apply(scope, arguments);
-            self.unsubscribe(eventName, originalCallback);
+            // trace(" |- Automatic unsubscription completed");
         };
-        // 再用 Delegate.create 得到实际放进回调池的包装函数
+
+        // 使用 Delegate 创建最终回调
         var wrappedCallback:Function = Delegate.create(scope, wrappedOnceCallback);
+        var wrappedCallbackID:String = String(Dictionary.getStaticUID(wrappedCallback));
+        // trace(" |- Wrapped Callback UID: " + wrappedCallbackID);
 
-        // ---- 记录“原函数UID -> 最终包装函数” 的映射 ----
+        // 建立原始回调到包装回调的映射
         this.onceCallbackMap[originalFuncID] = wrappedCallback;
-
-        // 生成包装函数UID
-        var wrappedCallbackID:Number = Dictionary.getStaticUID(wrappedCallback);
+        // trace(" |- onceCallbackMap[" + originalFuncID + "] = " + wrappedCallbackID);
 
         // 分配池索引
         var allocIndex:Number;
         if (this.availSpaceTop > 0) {
             allocIndex = this.availSpace[--this.availSpaceTop];
+            // trace(" |- Reusing pool index: " + allocIndex);
         } else {
-            // 扩展容量
             this.expandPool();
             allocIndex = this.availSpace[--this.availSpaceTop];
+            // trace(" |- Expanded pool, allocated index: " + allocIndex);
         }
 
-        // 存入池
+        // 存入池并更新监听器结构
         this.pool[allocIndex] = wrappedCallback;
-
-        // 将“wrappedCallbackID”登记到监听器结构中
         listenersForEvent.callbacks[wrappedCallbackID] = allocIndex;
-        // 或许可以 funcToID 中也存一份，并非必需
-        // listenersForEvent.funcToID[String(wrappedCallbackID)] = wrappedCallbackID;
-
         listenersForEvent.count++;
+
+        // trace(" |- Pool[" + allocIndex + "] assigned");
+        // trace(" |- Current listener count for event: " + listenersForEvent.count);
+        // trace("[EventBus][" + eventName + "] subscribeOnce() END\n");
     }
+
+
 
 
     /**
@@ -384,32 +408,21 @@ class org.flashNight.neur.Event.EventBus {
         var oldCapacity:Number = this.pool.length;
         var newCapacity:Number = oldCapacity * 2;
 
-        // 预创建新的数组并复制旧数据
         var newPool:Array = new Array(newCapacity);
         var newAvailSpace:Array = new Array(newCapacity);
 
-        // 使用循环展开复制数组元素
-        var unrollFactor:Number = 8;
-        var i:Number = 0;
-        for (; i + unrollFactor <= oldCapacity; i += unrollFactor) {
-            newPool[i] = this.pool[i];
-            newPool[i + 1] = this.pool[i + 1];
-            newPool[i + 2] = this.pool[i + 2];
-            newPool[i + 3] = this.pool[i + 3];
-            newPool[i + 4] = this.pool[i + 4];
-            newPool[i + 5] = this.pool[i + 5];
-            newPool[i + 6] = this.pool[i + 6];
-            newPool[i + 7] = this.pool[i + 7];
-        }
-        for (; i < oldCapacity; i++) {
+        // 复制旧数据到新池
+        for (var i:Number = 0; i < oldCapacity; i++) {
             newPool[i] = this.pool[i];
         }
 
-        // 初始化新扩展的部分
+        // 初始化新扩展的可用空间
+        var newTop:Number = this.availSpaceTop;
         for (i = oldCapacity; i < newCapacity; i++) {
             newPool[i] = null;
-            newAvailSpace[this.availSpaceTop++] = i;
+            newAvailSpace[newTop++] = i;
         }
+        this.availSpaceTop = newTop;
 
         // 复制旧的可用空间索引
         for (i = 0; i < this.availSpaceTop; i++) {
@@ -418,5 +431,7 @@ class org.flashNight.neur.Event.EventBus {
 
         this.pool = newPool;
         this.availSpace = newAvailSpace;
+        // trace("[Pool] Expanded to " + newCapacity + ", availSpaceTop: " + this.availSpaceTop);
     }
+
 }
