@@ -19,11 +19,6 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
             // 刷新目标的冲击力数据
             ImpactHandler.refreshImpactForce(hitTarget);
 
-            // 获取并显示血槽（新版或旧版取决于 hitTarget 的数据结构）
-            var bar = (hitTarget.新版人物文字信息) ? hitTarget.新版人物文字信息.头顶血槽 : hitTarget.人物文字信息.头顶血槽;
-            bar._visible = true;
-            bar.gotoAndPlay(2);
-
             // 记录攻击来源
             hitTarget.攻击目标 = shooter._name;
 
@@ -131,23 +126,13 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
             // ────────────── 血槽颜色与后续特效 ──────────────
 
             // 根据当前状态，重置或暗化血槽色彩
-            switch (hitTarget.barColorState) {
-                case "常态":
-                    _root.重置色彩(bar);
-                    break;
-                default:
-                    _root.暗化色彩(bar);
-            }
+            BloodBarEffectHandler.updateStatus(hitTarget);
 
             // 生成击中特效
-            _root.效果(hitTarget.击中效果, ocx, ocy, sxc);
+            EffectSystem.Effect(hitTarget.击中效果, ocx, ocy, sxc);
 
             // 判断是否需要生成子弹击中后的后续效果
-            bullet.shouldGeneratePostHitEffect = true;
-            if (hitTarget.击中效果 == bullet.击中后子弹的效果) {
-                bullet.shouldGeneratePostHitEffect = false;
-            }
-
+            bullet.shouldGeneratePostHitEffect = (hitTarget.击中效果 != bullet.击中后子弹的效果);
 
             // ────────────── 垂直击退处理 ──────────────
 
