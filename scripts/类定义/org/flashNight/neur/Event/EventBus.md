@@ -1,216 +1,308 @@
 # `org.flashNight.neur.Event.EventBus` 使用指南
 
-## 1. 引言
+## 1. 概述
 
-在传统的 Flash 开发中，事件的传播和管理通常是通过 `MovieClip` 的事件系统进行的，例如 `onEnterFrame`、`onClick` 等。但这些事件机制在复杂的应用程序中，特别是在需要跨多个模块或组件传递信息时，可能变得难以维护。
+在传统的 Flash 开发（ActionScript 2.0）中，事件的传播与管理常常依赖内置的事件系统（例如 `onEnterFrame`、`onClick` 等）或基于显示列表的广播。随着项目复杂度的提升，这种直接耦合的事件处理方式会导致模块间相互依赖，难以维护。
 
-为了解决这个问题，我们引入了 **事件总线 (Event Bus)** 模型。`EventBus` 是一种用于管理事件的工具，它可以让应用程序的各个部分之间通过发布（`publish`）和订阅（`subscribe`）事件来进行通信，而不需要直接的依赖关系。这样能够使代码更加模块化、易于扩展和维护。
+**`EventBus`** 提供了一个全局的“消息中心”，所有模块都可以通过**发布**（`publish` / `publishWithParam`）和**订阅**（`subscribe` / `subscribeOnce`）事件来进行解耦的通信。具体而言：
+- 需要触发某个事件的模块通过 `publish` 或 `publishWithParam` 对外发布消息；
+- 对该事件感兴趣的模块则通过 `subscribe` 或 `subscribeOnce` 注册回调函数；
+- 事件触发后，所有订阅者都会收到通知，并可在各自的回调中进行业务逻辑处理。
 
-本指南将详细介绍 `EventBus` 类的使用方法，并对比 Flash 原生事件系统，帮助开发者理解如何在项目中利用它来简化事件处理。
-
----
-
-## 2. 什么是事件总线？
-
-**事件总线** 可以看作是一个全局的消息中心，各个模块或组件可以在其中发布和接收事件：
-
-- **发布事件**：当某个模块发生了一件事情（例如，玩家角色完成了某个任务），它可以通过事件总线发布事件，并附带相关的数据（例如任务完成的信息）。
-- **订阅事件**：其他模块可以订阅该事件，当事件被发布时，订阅者将会被通知，并且可以根据收到的信息进行相应的处理（例如，更新任务进度条，奖励玩家等）。
-
-这种松耦合的设计，使得模块之间不需要直接引用彼此，只需通过事件总线来通信，这对于复杂的应用程序来说尤为重要。
+此类**松耦合**的设计，让模块之间无需相互引用就能进行通信，大幅提高了代码的扩展性与可维护性。
 
 ---
 
-## 3. 核心功能
+## 2. 特性亮点
 
-`EventBus` 提供了几个关键的功能，帮助开发者管理事件和回调：
-
-- **事件订阅 (`subscribe`)**：允许开发者订阅某个事件，并绑定回调函数，当事件被触发时，回调函数会被执行。
-- **取消订阅 (`unsubscribe`)**：可以移除某个事件的订阅，防止回调函数被再次触发。
-- **发布事件 (`publish`)**：可以发布事件，并传递可选的参数给所有订阅者。
-- **一次性订阅 (`subscribeOnce`)**：允许某个回调函数只执行一次，之后自动取消订阅。
-- **事件销毁 (`destroy`)**：清理所有事件监听器和回调函数，防止内存泄漏。
-
----
-
-## 4. 使用场景
-
-在开发大型应用程序时，常常会遇到需要跨模块、跨层次传递信息的需求。`EventBus` 适用于以下场景：
-
-1. **模块解耦**：例如，UI 模块和业务逻辑模块不需要直接通信，只需通过事件总线传递数据，减少模块之间的耦合。
+1. **饿汉式单例模式**  
+   - 在类加载时即初始化单例 `EventBus.instance`，确保全局只有一个事件总线实例，避免重复创建。
    
-2. **全局通知**：当某个全局事件发生时（如网络连接断开、游戏暂停），所有需要处理这个事件的模块可以通过事件总线同步处理。
-
-3. **高效的事件管理**：`EventBus` 提供了内存池机制和参数优化，能够高效地处理大量订阅者和事件。
-
----
-
-## 5. `EventBus` 与 Flash 原生事件机制的对比
-
-Flash 原生的事件处理机制大多是基于显示列表（`MovieClip`）或 `EventListener` 的，当多个对象之间需要通信时，必须在它们之间创建引用，或者通过层次结构来管理，这会导致以下问题：
-
-1. **耦合性强**：多个模块或对象必须知道彼此的存在，增加了模块之间的耦合。
+2. **内存池与索引管理**  
+   - 维护一个回调函数池（`pool`）与可用空间栈（`availSpace`），减少运行中对象的重复创建。  
+   - 当内存池空间不足时，采用倍增策略进行扩容。
    
-2. **扩展性差**：当项目变得复杂时，添加新的事件监听器可能变得困难，尤其是当事件在多个层次结构间传播时。
-
-`EventBus` 则不同，它通过一个全局的总线，允许任何模块在没有直接依赖的情况下进行通信：
-
-- **松耦合**：不需要模块之间互相持有引用，通过事件总线，模块可以专注于自己的功能，只需发布或订阅事件。
-- **事件统一管理**：所有的事件都通过一个总线来管理，易于维护和调试。
+3. **多种发布方式**  
+   - `publish`：直接传可变长参数（`...args`）。  
+   - `publishWithParam`：显式传入一个 `paramArray`。  
+   - 内部对不同数量的参数进行了手动展开与优化，提升高频调用时的效率。
+   
+4. **多种订阅方式**  
+   - `subscribe`: 普通订阅，持续生效。  
+   - `subscribeOnce`: 一次性订阅，回调函数只执行一次后自动取消。
+   
+5. **快速取消订阅**  
+   - 通过维护回调函数的唯一 ID（`Dictionary.getStaticUID`），在取消订阅时能快速定位并释放回调。
+   - 对一次性回调做了额外的映射处理，避免难以追踪的回调泄漏。
+   
+6. **全面的测试与性能验证**  
+   - 自带 `EventBusTest` 测试类，涵盖功能测试与性能测试，确保在大量订阅、高频发布的场景下依旧表现良好。
 
 ---
 
-## 6. 核心 API 详解
+## 3. 典型使用场景
 
-### 6.1 `subscribe(eventName: String, callback: Function, scope: Object): Void`
+- **跨组件或跨层级事件传递**：例如界面模块与逻辑模块、数据模块与动画模块之间的交互。
+- **全局广播**：游戏或应用状态改变时，需要多处进行联动更新。
+- **简化复杂事件流程**：避免传统事件监听中横向或纵向层级混杂导致的维护难题。
 
-**功能**：订阅指定事件，绑定回调函数。当事件发布时，回调函数会被触发，并在指定作用域内执行。
+---
 
-- `eventName`: 要订阅的事件名称。
-- `callback`: 事件触发时要执行的回调函数。
-- `scope`: 回调函数的执行作用域（即 `this` 指向的对象）。
+## 4. API 详解
+
+以下为 `EventBus` 提供的主要方法及其用法说明。
+
+### 4.1 获取单例
+
+```actionscript
+public static function getInstance():EventBus
+```
+或直接使用
+```actionscript
+EventBus.instance
+```
+**说明**：  
+- 由于采用饿汉式单例，可以在程序任意处调用 `EventBus.instance` 来获取或使用事件总线。  
+- 如果需要手动初始化，一般在程序入口处调用 `EventBus.initialize()`。两者效果相同。
+
+---
+
+### 4.2 `subscribe(eventName:String, callback:Function, scope:Object):Void`
+
+**功能**：订阅指定事件，绑定回调函数。当 `eventName` 对应的事件被发布时，会在 `scope` 所指向的上下文执行 `callback`。  
+- `eventName`: 字符串类型，事件名称。  
+- `callback`: 事件触发时要执行的回调函数（普通函数或 `Delegate.create(...)` 生成的代理函数）。  
+- `scope`: 回调函数的作用域（this 指向）。
 
 **示例**：
 
 ```actionscript
-eventBus.subscribe("PLAYER_JUMP", function() {
-    trace("玩家跳跃事件触发！");
+// 假设我们有一个玩家跳跃事件 "PLAYER_JUMP"
+EventBus.instance.subscribe("PLAYER_JUMP", onPlayerJump, this);
+
+function onPlayerJump() {
+    trace("玩家跳跃逻辑被触发！");
+}
+```
+
+---
+
+### 4.3 `unsubscribe(eventName:String, callback:Function):Void`
+
+**功能**：取消订阅先前注册的回调，防止其在事件发布时被触发。  
+- `eventName`: 字符串类型，要取消订阅的事件名称。  
+- `callback`: 之前传给 `subscribe` 或 `subscribeOnce` 的回调函数。
+
+**注意**：如果订阅时用了 `Delegate.create(this, someFunc)`，则在 `unsubscribe` 时，**也需要用相同的 `Delegate.create`** 来标识它。
+
+**示例**：
+
+```actionscript
+EventBus.instance.unsubscribe("PLAYER_JUMP", onPlayerJump);
+```
+
+调用后，`onPlayerJump` 将不再响应 `"PLAYER_JUMP"` 事件。
+
+---
+
+### 4.4 `publish(eventName:String, ...args):Void`
+
+**功能**：发布事件，并将可变数量的参数传给所有订阅者。  
+- `eventName`: 字符串类型，事件名称。  
+- `args`: 任意个数或类型的参数。
+
+回调接收方式示例：
+```actionscript
+EventBus.instance.subscribe("PLAYER_SCORE_CHANGED", Delegate.create(this, onScoreChanged), this);
+
+function onScoreChanged(newScore:Number, bonus:Number) {
+    trace("分数变更: " + newScore + ", 奖励: " + bonus);
+}
+
+// 发布带两个参数的事件
+EventBus.instance.publish("PLAYER_SCORE_CHANGED", 100, 20);
+```
+
+---
+
+### 4.5 `publishWithParam(eventName:String, paramArray:Array):Void`
+
+**功能**：以一个数组形式传参来发布事件。适合需要传递复杂或动态参数时使用。  
+- `eventName`: 字符串类型，事件名称。  
+- `paramArray`: 参数数组，将被传递给回调函数。
+
+**示例**：
+
+```actionscript
+EventBus.instance.subscribe("PLAYER_STATUS_UPDATE", Delegate.create(this, onStatusUpdate), this);
+
+function onStatusUpdate(health:Number, mana:Number, items:Array) {
+    trace("生命值:" + health + ", 法力值:" + mana + ", 背包:" + items);
+}
+
+// 以数组方式传入
+var args:Array = [80, 50, ["Sword", "Shield"]];
+EventBus.instance.publishWithParam("PLAYER_STATUS_UPDATE", args);
+```
+
+---
+
+### 4.6 `subscribeOnce(eventName:String, callback:Function, scope:Object):Void`
+
+**功能**：一次性订阅某个事件，回调函数只执行一次后立即自动取消订阅。  
+- `eventName`: 字符串类型，事件名称。  
+- `callback`: 回调函数。  
+- `scope`: 回调函数的作用域。
+
+**实现原理**：内部会先将 `callback` 用包装函数代理，当该事件首次发布后，执行包装函数并自动调用 `unsubscribe` 移除回调。
+
+**示例**：
+
+```actionscript
+EventBus.instance.subscribeOnce("LEVEL_COMPLETE", onLevelCompleteOnce, this);
+
+function onLevelCompleteOnce() {
+    trace("关卡完成，只在第一次触发时生效，之后自动移除。");
+}
+```
+
+**注意**：如果需要手动取消一次性订阅，也需要使用原始的回调函数进行 `unsubscribe`。
+
+---
+
+### 4.7 `destroy():Void`
+
+**功能**：销毁整个事件总线，释放所有事件监听器、回调函数以及内部缓存结构。通常只在应用结束、场景彻底销毁或调试场景下使用。
+
+**示例**：
+
+```actionscript
+// 停止并清理所有事件监听
+EventBus.instance.destroy();
+```
+
+调用后，`EventBus` 将清空内存池、可用空间数组和所有监听器记录。
+
+---
+
+## 5. 内部机制与优化
+
+### 5.1 回调池 (`pool`) 与可用索引 (`availSpace`)
+
+- 在构造时预先分配了一定大小（默认为 1024）的数组，所有回调函数会以索引的方式存储到 `pool` 中。  
+- 当有新的回调要加入时，会从 `availSpace` 弹出一个空闲索引来存储该回调；当取消订阅时，再把该索引推回 `availSpace`，供后续使用。  
+- **扩展容量**：当 `availSpace` 耗尽时，会自动调用 `expandPool` 进行容量倍增；并将旧池数据复制到新池中，保证大规模订阅时也能稳定运行。
+
+### 5.2 参数展开与调用优化
+
+- 对于常用的参数长度（0～10 以及部分更高值），`publish` / `publishWithParam` 中使用了**手动展开**方法调用，减少 `apply` 带来的性能损耗。  
+- 当参数数量超过一定阈值时，才会使用 `Function.apply` 动态调用。  
+- 在高频调用的场景下，这种“有针对性的手动展开”能够显著降低 CPU 开销。
+
+### 5.3 一次性订阅映射 (`onceCallbackMap`)
+
+- 在 `subscribeOnce` 中，原始回调被包装后会存入 `onceCallbackMap`，以便在 `unsubscribe` 时能够正确地查到并移除那个包装后的回调。  
+- 避免了调用 `unsubscribe` 时无法定位“一次性包装函数”的问题，大大降低了忘记手动清理回调造成的内存泄漏风险。
+
+### 5.4 高并发与高频测试覆盖
+
+- 测试类 `EventBusTest` 包含了功能性测试（确保订阅、取消订阅、一次性订阅、参数传递、异常捕获等正常工作）和**高压性能测试**（大规模订阅、多事件并发、高频发布、批量取消等）。  
+- 测试结果显示，`EventBus` 在 1 万以上订阅者、10 万次以上事件发布的场景中依旧具备较好的性能，能够应用于大型项目或高频事件场景（如游戏中的 AI、动画帧事件、多人同步更新等）。
+
+---
+
+## 6. 对比传统 Flash 事件模型
+
+| 特性            | Flash 原生事件                       | `EventBus`                              |
+|-----------------|--------------------------------------|-----------------------------------------|
+| 事件管理方式    | 基于 `MovieClip` 或 `Listener`       | 统一的全局发布/订阅                     |
+| 耦合度          | 多数情况下需要持有目标实例引用       | 松耦合，无需知道订阅者/发布者之间的关系 |
+| 多模块通信      | 需要复杂的层级或引用传递             | 通过统一的事件名进行跨模块通讯          |
+| 一次性订阅      | 无内置支持，需手动写逻辑             | 提供 `subscribeOnce`，自动取消          |
+| 性能优化        | 参数传递一般需 `apply` 或原生支持    | 手动展开 + 回调池，适合高频、海量事件    |
+| 大规模测试与验证| 仅有基础事件机制                    | 自带丰富的单元测试与性能测试            |
+
+---
+
+## 7. 典型用法示例
+
+### 7.1 模块间通信
+
+假设有一个**数据模块**负责加载并解析外部配置，一个**界面模块**需要在解析完成后更新界面。可以这样设计：
+
+```actionscript
+// 数据模块
+function loadConfig() {
+    // ... 执行加载和解析 ...
+    EventBus.instance.publish("CONFIG_LOADED", configData); 
+}
+
+// UI 模块
+EventBus.instance.subscribe("CONFIG_LOADED", onConfigLoaded, this);
+
+function onConfigLoaded(data:Object) {
+    // 根据 data 刷新界面
+    trace("配置加载完成，开始更新界面...");
+}
+```
+
+### 7.2 全局广播事件
+
+当网络断开或玩家掉线，需要通知全局多个模块（UI、数据同步、提示框等）：
+
+```actionscript
+// 网络模块
+function onNetworkDisconnected() {
+    EventBus.instance.publish("NETWORK_DISCONNECTED");
+}
+
+// UI 模块
+EventBus.instance.subscribe("NETWORK_DISCONNECTED", function() {
+    trace("网络断开，弹出提示对话框");
+}, this);
+
+// 其他需要处理断网的模块也各自 subscribe 同一事件
+```
+
+### 7.3 一次性逻辑（动画播放完成、任务达成等）
+
+```actionscript
+EventBus.instance.subscribeOnce("MISSION_COMPLETED", function() {
+    trace("任务完成，只处理一次的逻辑，比如领取奖励");
 }, this);
 ```
 
-当发布 `"PLAYER_JUMP"` 事件时，上述回调函数会被调用。
+---
+
+## 8. 性能建议
+
+1. **合理利用回调池**  
+   - 不要频繁创建/销毁大量回调对象，尤其在性能敏感的场景中。  
+   - 如果知道订阅会长期存在，就采用普通 `subscribe`；只执行一次的用 `subscribeOnce`。避免过度订阅又立即退订。
+
+2. **减少过深的嵌套发布**  
+   - 在回调内部再次 `publish` 可以实现嵌套事件，但要避免**无限或深度循环**发布，否则容易出现性能或逻辑问题。
+
+3. **批量管理**  
+   - 如果需要同时订阅/取消订阅一批回调，可以在循环中进行统一操作；如需初始化大量事件，可优先适当增大初始容量，以减少 `expandPool` 频次。
+
+4. **异常处理**  
+   - 回调若可能抛出异常，`EventBus` 内部会捕获并忽略，以保证不影响其他回调的执行。但请务必在业务层面进行合理的异常处理或记录。
 
 ---
 
-### 6.2 `unsubscribe(eventName: String, callback: Function): Void`
+## 9. 总结
 
-**功能**：取消对某个事件的订阅，防止回调函数在事件发布时被调用。
+`EventBus` 通过**全局单例**、**回调池**和**手动参数展开**等多重优化，实现了高性能、低耦合的事件管理。它非常适合需要在模块间进行灵活通信的中大型 Flash/AS2 项目，尤其是需要处理**大规模事件**或**高频发布**的场景。
 
-- `eventName`: 要取消的事件名称。
-- `callback`: 要取消的回调函数。
+- 统一的事件调度，方便调试与维护  
+- 灵活的订阅形式（普通、一次性、无参数、多参数）  
+- 广泛的单元测试和性能测试验证  
+- 适合各类模块间的解耦消息传递
 
-**示例**：
-
-```actionscript
-eventBus.unsubscribe("PLAYER_JUMP", onPlayerJump);
-```
-
-当调用 `unsubscribe` 后，`onPlayerJump` 函数将不再在 `"PLAYER_JUMP"` 事件发布时被调用。
+如需更进一步了解测试细节及性能数据，可参考配套的 `EventBusTest` 类。希望本指南能帮助您在项目中更好地使用并维护 `EventBus`！
 
 ---
-
-### 6.3 `publish(eventName: String, ...args): Void`
-
-**功能**：发布事件，并将可选的参数传递给所有订阅者。
-
-- `eventName`: 要发布的事件名称。
-- `args`: 可选参数，将被传递给回调函数。
-
-**示例**：
-
-```actionscript
-eventBus.publish("PLAYER_SCORE_UPDATED", 1000);
-```
-
-这里发布了 `PLAYER_SCORE_UPDATED` 事件，并传递了 `1000` 作为参数，所有订阅该事件的回调函数将会收到这个参数。
-
----
-
-### 6.4 `subscribeOnce(eventName: String, callback: Function, scope: Object): Void`
-
-**功能**：订阅事件，但回调函数只会执行一次，之后自动取消订阅。
-
-- `eventName`: 要订阅的事件名称。
-- `callback`: 事件触发时执行的回调函数。
-- `scope`: 回调函数的执行作用域。
-
-**示例**：
-
-```actionscript
-eventBus.subscribeOnce("LEVEL_COMPLETE", function() {
-    trace("关卡完成事件只触发一次！");
-}, this);
-```
-
-回调函数只会在第一次发布 `"LEVEL_COMPLETE"` 事件时被调用，之后自动取消订阅。
-
----
-
-### 6.5 `destroy(): Void`
-
-**功能**：销毁所有的事件监听器和回调函数，释放资源，防止内存泄露。
-
-**示例**：
-
-```actionscript
-eventBus.destroy();
-```
-
-调用 `destroy` 后，所有事件和回调将被清理。
-
----
-
-## 7. 性能优化
-
-`EventBus` 在设计上考虑了性能优化，尤其适合高频事件发布和大量订阅者的场景。
-
-### 7.1 内存池与空间管理
-
-为了减少内存分配开销，`EventBus` 内部使用了 **回调池** 来管理回调函数的位置，并预先分配了 1024 个空闲位置。当池满时，它会自动扩展。
-
-### 7.2 参数优化
-
-`EventBus` 对常见的参数传递场景进行了手动展开优化（支持 0 到 7 个参数），避免了频繁调用 `apply` 带来的性能损耗。
-
-### 7.3 回调函数缓存
-
-通过 `Dictionary` 类为每个回调生成唯一 ID，从而避免重复订阅相同回调函数，提高事件管理效率。
-
----
-
-## 8. 典型应用场景
-
-### 8.1 处理游戏事件
-
-在游戏开发中，常常需要跨越多个系统传递事件，例如玩家得分更新、关卡完成、敌人击杀等。通过 `EventBus`，这些事件可以被任何需要的模块订阅和处理：
-
-```actionscript
-eventBus.subscribe("PLAYER_DIED", function() {
-    trace("玩家死亡，游戏结束");
-}, this);
-```
-
-### 8.2 模块化设计
-
-在大型应用程序中，模块间的通信可能会变得复杂。通过事件总线，模块之间可以保持独立性，不需要相互引用，降低耦合度：
-
-```actionscript
-eventBus.publish("USER_LOGIN", userData);
-```
-
-所有关心用户登录的模块都会收到这个事件。
-
----
-
-## 9. 性能建议
-
-1. **避免过多 `apply` 调用**：
-
-手动展开参数可以提高性能，尽量减少动态传参时的 `apply` 调用。
-   
-2. **定期清理事件**：长时间运行的应用中，建议定期清理不再需要的事件订阅，以防止内存泄漏。
-
-3. **批量订阅与发布**：对于大规模事件，建议采用批量订阅和发布，减少函数调用的开销。
-
----
-
-## 10. 总结
-
-通过 `EventBus`，开发者可以轻松实现复杂的事件管理机制，减少模块间的耦合，提高代码的可维护性和扩展性。同时，事件总线提供的性能优化机制确保了它在高频事件场景下的高效运行，非常适合大型 Flash 项目或游戏开发。
-
-`EventBus` 的灵活性和高效性使其成为事件管理的理想工具，适合各类事件驱动的应用。
-
-
 
 
 // 导入 EventBusTest 类

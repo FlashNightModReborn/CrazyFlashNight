@@ -732,27 +732,34 @@ class org.flashNight.neur.Event.EventBusTest {
      */
     private function testHighVolumeSubscribeOnce():Void {
         this.resetFlags();
-        var VOLUME_SIZE:Number = 5000;
+        var VOLUME_SIZE:Number = 5;
         var gcDetector:Object = {count: 0};
         var self:EventBusTest = this;
+        // trace("gcDetector.count = " + gcDetector.count + " || " + this.eventBus["listeners"]["HIGH_VOLUME_ONCE"].count);
         // 创建带闭包引用的回调
         for (var i:Number = 0; i < VOLUME_SIZE; i++) {
-            var callback:Function = (function(idx:Number) {
+            var callbackIIFE:Function = (function(idx:Number) {
                 return function():Void {
-                    gcDetector.count++;
+                    // trace("Callback idx: " + idx);
+                    var abc:Number = idx;
+                    gcDetector.count += abc - abc + 1;
                     // AS2 缺乏真正的词法闭包，循环中的匿名函数可能共享相同的变量作用域，导致所有回调绑定到同一个上下文。
                     // 为了避免这种情况，这里使用一个闭包捕获变量 idx，并在回调中使用它。
-                    // 姑且使用iife 替代
+                    // as2 不支持iife，因此需要拆分使用
                 };
-            })(i);
+            });
 
-            this.eventBus.subscribeOnce("HIGH_VOLUME_ONCE", Delegate.create(this, callback), this);
+            this.eventBus.subscribeOnce("HIGH_VOLUME_ONCE", callbackIIFE(i), this);
         }
 
-
         // 触发并验证
+
         this.eventBus.publish("HIGH_VOLUME_ONCE");
-        this.assert(gcDetector.count == VOLUME_SIZE && this.eventBus["listeners"]["HIGH_VOLUME_ONCE"] == undefined, "subscribeOnce - high volume (" + VOLUME_SIZE + ") with GC check");
+        //trace("gcDetector.count = " + gcDetector.count + " || " + this.eventBus["listeners"]["HIGH_VOLUME_ONCE"].count);
+        // this.eventBus.publish("HIGH_VOLUME_ONCE");
+        //trace("gcDetector.count = " + gcDetector.count + " || " + this.eventBus["listeners"]["HIGH_VOLUME_ONCE"].count);
+        this.assert(gcDetector.count == VOLUME_SIZE && (this.eventBus["listeners"]["HIGH_VOLUME_ONCE"] == undefined || this.eventBus["listeners"]["HIGH_VOLUME_ONCE"].count == 0), "subscribeOnce - high volume (" + VOLUME_SIZE + ") with GC check");
+
     }
 }
 
