@@ -325,14 +325,14 @@
 		文本数据.push(value);
 	}
 
-	var 完整文本 = translateStrings(文本数据.join(''));
+	var 完整文本 = 文本数据.join('');
 	var 字数 = 完整文本.length;
 	var 每字平均宽度 = 0.06;// 根据实际情况调整
 	var 最大宽度 = 500;// 根据实际情况调整
 	var 计算宽度 = Math.max(150, Math.min(字数 * 每字平均宽度, 最大宽度));
 
 	// 调用注释函数，传递计算出的宽度和文本内容
-	_root.注释(计算宽度,translateStrings(文本数据));
+	_root.注释(计算宽度, 完整文本);
 };
 
 

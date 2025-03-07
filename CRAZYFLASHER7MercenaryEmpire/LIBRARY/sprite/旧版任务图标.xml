@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1631" itemID="6597607e-000009b1" linkageExportForAS="true" linkageIdentifier="任务图标" lastModified="1719209581" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/旧版任务图标" itemID="67cb166a-0000049c" lastModified="1741362807" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="Symbol 1631" currentFrame="9">
+    <DOMTimeline name="旧版任务图标" currentFrame="10">
       <layers>
         <DOMLayer name="Labels Layer" color="#C582C0">
           <frames>
@@ -44,7 +44,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#5A3EE8" parentLayerIndex="2" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 4" color="#5A3EE8" parentLayerIndex="2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
@@ -63,14 +63,14 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#E5A531">
+        <DOMLayer name="Layer 5" color="#E5A531" visible="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="6" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1085" name="完成提示" centerPoint3DX="236.6" centerPoint3DY="19.65">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 1085" name="完成提示" selected="true" centerPoint3DX="236.6" centerPoint3DY="19.65">
                   <matrix>
                     <Matrix tx="227.4" ty="10.45"/>
                   </matrix>
@@ -114,7 +114,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#72AEFE" locked="true" visible="false">
+        <DOMLayer name="Layer 7" color="#72AEFE" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements/>

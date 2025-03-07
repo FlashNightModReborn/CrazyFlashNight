@@ -350,6 +350,18 @@ _root.检测并添加初始任务 = function(){
 	}
 }
 
+
+//获取任务数据
+_root.getTaskData = function(index){
+	return org.flashNight.arki.task.TaskUtil.getTaskData(index);
+}
+
+//获取任务文本
+_root.getTaskText = function(str){
+	return org.flashNight.arki.task.TaskUtil.getTaskText(str);
+}
+
+
 //游戏难度检测
 _root.isHardMode = function():Boolean{
 	return _root.difficultyMode == 0;

@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 1647" itemID="6597607e-000009bb" lastModified="1736348953" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/旧版任务栏界面" itemID="67cb1652-0000049b" lastModified="1741362770" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="Symbol 1647">
+    <DOMTimeline name="旧版任务栏界面">
       <layers>
         <DOMLayer name="Labels Layer" color="#EF656C">
           <frames>
@@ -432,11 +432,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#64F7E1">
+        <DOMLayer name="Layer 15" color="#64F7E1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 1631" name="任务图标" centerPoint3DX="143.05" centerPoint3DY="127">
+                <DOMSymbolInstance libraryItemName="sprite/旧版任务图标" name="任务图标" centerPoint3DX="143.05" centerPoint3DY="127">
                   <matrix>
                     <Matrix tx="4" ty="35"/>
                   </matrix>
@@ -587,7 +587,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 19" color="#CDC8DC" current="true" isSelected="true">
+        <DOMLayer name="Layer 19" color="#CDC8DC">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

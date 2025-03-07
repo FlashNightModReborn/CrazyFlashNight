@@ -105,16 +105,6 @@ _root.getUnitData = function(index){
 	return _root.duplicateOf(_root.units[_root.unit_indices_by_id[Number(index)]]);
 }
 
-//任务
-_root.getTaskData = function(index){
-	return org.flashNight.arki.task.TaskUtil.getTaskData(index);
-}
-
-//任务文本
-_root.getTaskText = function(str){
-	return org.flashNight.arki.task.TaskUtil.getTaskText(str);
-}
-
 //佣兵
 _root.getMercData = function(index){
 	return _root.duplicateOf(_root.mercs_list[_root.merc_indices_by_id[index]]);

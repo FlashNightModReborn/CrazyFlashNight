@@ -1,4 +1,6 @@
-﻿_root.任务栏UI函数 = new Object();
+﻿import org.flashNight.arki.item.itemIcon.*;
+
+_root.任务栏UI函数 = new Object();
 
 
 _root.任务栏UI函数.打印物品列表 = function(itemList):String{
@@ -64,3 +66,87 @@ _root.任务栏UI函数.打印任务挑战明细 = function(id){
 	return str;
 }
 
+_root.任务栏UI函数.显示任务明细 = function(index){
+	var taskData = _root.getTaskData(_root.tasks_to_do[index].id);
+	this.taskName.htmlText = _root.getTaskText(taskData.title);
+	this.taskDesc.htmlText = _root.getTaskText(taskData.description);
+	this.关卡需求._visible = true;
+	if(taskData.finish_requirements == null){
+		this.关卡需求.taskStage.htmlText = "无";
+	}else{
+		var stageText = "";
+		for (var i = 0; i < taskData.finish_requirements.length; i++){
+			var itemArr = taskData.finish_requirements[i].split("#");
+			stageText += itemArr[0] + "(" + _root.getDifficultyString(itemArr[1]) + ")" + "  ";
+			this.关卡需求.taskStage.htmlText = stageText;
+		}
+	}
+	//计算容器初始位置
+	var 容器位置 = this.关卡需求._y;
+	//提交物品
+	if(taskData.finish_submit_items == null){
+		this.提交物品._visible = false;
+	}else{
+		容器位置 += 40;
+		this.提交物品._visible = true;
+		this.提交物品._y = 容器位置;
+		for(var i = 0; i < this.提交物品.iconList.length; i++){
+			this.提交物品.iconList[i].removeMovieClip();
+		}
+		this.提交物品.iconList = new Array();
+		for (var i = 0; i < taskData.finish_submit_items.length; i++){
+			var itemArr = taskData.finish_submit_items[i].split("#");
+			var 物品图标 = this.提交物品.attachMovie("物品图标","物品图标" + i, i);
+			物品图标._x = 140 + i * 36;
+			物品图标._y = 20;
+			物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
+			this.提交物品.iconList.push(物品图标);
+		}
+	}
+	//持有物品
+	if(taskData.finish_contain_items == null){
+		this.持有物品._visible = false;
+	}else{
+		容器位置 += 40;
+		this.持有物品._visible = true;
+		this.持有物品._y = 容器位置;
+		for(var i = 0; i < this.持有物品.iconList.length; i++){
+			this.持有物品.iconList[i].removeMovieClip();
+		}
+		this.持有物品.iconList = new Array();
+		for (var i = 0; i < taskData.finish_contain_items.length; i++){
+			var itemArr = taskData.finish_contain_items[i].split("#");
+			var 物品图标 = this.持有物品.attachMovie("物品图标","物品图标" + i, i);
+			物品图标._x = 140 + i * 36;
+			物品图标._y = 20;
+			物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
+			this.持有物品.iconList.push(物品图标);
+		}
+	}
+	//奖励
+	容器位置 += 80;
+	this.任务奖励._visible = true;
+	this.任务奖励._y = 容器位置;
+	this.任务奖励.taskFinishNPC.htmlText = "提交NPC：" + taskData.finish_npc;
+	for(var i = 0; i < this.任务奖励.iconList.length; i++){
+		this.任务奖励.iconList[i].removeMovieClip();
+	}
+	this.任务奖励.iconList = new Array();
+	for (var i = 0; i < taskData.rewards.length; i++){
+		var itemArr = taskData.rewards[i].split("#");
+		var 物品图标 = this.任务奖励.attachMovie("物品图标","物品图标" + i, i);
+		物品图标._x = 20 + i * 36;
+		物品图标._y = 60;
+		物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
+		this.任务奖励.iconList.push(物品图标);
+	}
+}
+
+_root.任务栏UI函数.隐藏任务明细 = function(){
+	this.taskName.htmlText = "";
+	this.taskDesc.htmlText = "";
+	this.关卡需求._visible = false;
+	this.提交物品._visible = false;
+	this.持有物品._visible = false;
+	this.任务奖励._visible = false;
+}
