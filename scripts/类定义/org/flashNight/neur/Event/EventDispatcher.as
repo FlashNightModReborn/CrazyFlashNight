@@ -173,9 +173,15 @@ class org.flashNight.neur.Event.EventDispatcher {
         }
 
         var bus:EventBus = EventDispatcher.bus;
-        
-        // 使用 apply 传递参数
-        bus.publish.apply(bus, ArgumentsUtil.combineArgs([uniqueEventName], arguments, 1));
+
+        if(arguments.length > 1)
+        {
+            bus.publishWithParam(uniqueEventName, ArgumentsUtil.sliceArgs(arguments, 1));
+        }
+        else
+        {
+            bus.publish(uniqueEventName);
+        }
     }
     
     /**
@@ -242,7 +248,14 @@ class org.flashNight.neur.Event.EventDispatcher {
         var bus:EventBus = EventDispatcher.bus;
         
         // 使用 apply 传递参数
-        bus.publish.apply(bus, ArgumentsUtil.combineArgs([eventName], arguments, 1));
+        if(arguments.length > 1)
+        {
+            bus.publishWithParam(eventName, ArgumentsUtil.sliceArgs(arguments, 1));
+        }
+        else
+        {
+            bus.publish(eventName);
+        }
     }
     
     /**

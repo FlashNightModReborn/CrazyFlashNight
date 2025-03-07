@@ -228,7 +228,7 @@ class org.flashNight.neur.Event.EventBusTest {
         this.eventBus.subscribe("PARAM_TEST_0", Delegate.create(this, function():Void {
             paramCallbackCalled = true;
         }), this);
-        //this.eventBus.publishWithParam("PARAM_TEST_0", []);
+        this.eventBus.publishWithParam("PARAM_TEST_0", []);
         this.assert(paramCallbackCalled, "publishWithParam - zero arguments");
 
         // 测试多参数
@@ -236,7 +236,7 @@ class org.flashNight.neur.Event.EventBusTest {
         this.eventBus.subscribe("PARAM_TEST_3", Delegate.create(this, function(a, b, c):Void {
             paramCallbackCalled = a == "test" && b == 123 && c instanceof Object;
         }), this);
-        //this.eventBus.publishWithParam("PARAM_TEST_3", ["test", 123, {}]);
+        this.eventBus.publishWithParam("PARAM_TEST_3", ["test", 123, {}]);
         this.assert(paramCallbackCalled, "publishWithParam - multiple arguments");
 
         // 测试参数超过9个
@@ -245,7 +245,7 @@ class org.flashNight.neur.Event.EventBusTest {
             paramCallbackCalled = arguments.length == 10;
         }), this);
         var bigArgs:Array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        //this.eventBus.publishWithParam("PARAM_TEST_10", bigArgs);
+        this.eventBus.publishWithParam("PARAM_TEST_10", bigArgs);
         this.assert(paramCallbackCalled, "publishWithParam - 10 arguments");
 
         // 清理
@@ -271,7 +271,7 @@ class org.flashNight.neur.Event.EventBusTest {
             complexParamReceived = data;
         }), this);
 
-        //this.eventBus.publishWithParam("COMPLEX_PARAM", [testData]);
+        this.eventBus.publishWithParam("COMPLEX_PARAM", [testData]);
 
         this.assert(complexParamReceived.nested.array.length == 3 && complexParamReceived.nested.date instanceof Date && complexParamReceived.func === testData.func, "publishWithParam - complex object validation");
 
@@ -737,10 +737,18 @@ class org.flashNight.neur.Event.EventBusTest {
         var self:EventBusTest = this;
         // 创建带闭包引用的回调
         for (var i:Number = 0; i < VOLUME_SIZE; i++) {
-            this.eventBus.subscribeOnce("HIGH_VOLUME_ONCE", Delegate.create(this, function():Void {
-                gcDetector.count++;
-            }), this);
+            var callback:Function = (function(idx:Number) {
+                return function():Void {
+                    gcDetector.count++;
+                    // AS2 缺乏真正的词法闭包，循环中的匿名函数可能共享相同的变量作用域，导致所有回调绑定到同一个上下文。
+                    // 为了避免这种情况，这里使用一个闭包捕获变量 idx，并在回调中使用它。
+                    // 姑且使用iife 替代
+                };
+            })(i);
+
+            this.eventBus.subscribeOnce("HIGH_VOLUME_ONCE", Delegate.create(this, callback), this);
         }
+
 
         // 触发并验证
         this.eventBus.publish("HIGH_VOLUME_ONCE");

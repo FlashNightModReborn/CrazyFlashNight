@@ -299,6 +299,100 @@ class org.flashNight.neur.Event.EventBus {
         // trace("[EventBus][" + eventName + "] publish() END");
     }
 
+    /**
+     * 发布事件（带显式参数数组），通知所有订阅者，并传递参数数组。
+     *
+     * @param eventName 事件名称
+     * @param paramArray 显式传入的参数数组
+     */
+    public function publishWithParam(eventName:String, paramArray:Array):Void {
+        var listenersForEvent:Object = this.listeners[eventName];
+        if (!listenersForEvent) {
+            return;
+        }
+        
+        var callbacks:Object = listenersForEvent.callbacks;
+        var poolRef:Array = this.pool;
+        var tempCallbacksCount:Number = 0;
+        var localTempCallbacks:Array = this.tempCallbacks;
+        var callback:Function;
+        
+        // 收集回调函数，使用索引方式遍历回调池
+        for (var cbID:String in callbacks) {
+            callback = poolRef[callbacks[cbID]];
+            if (callback != null) {
+                localTempCallbacks[tempCallbacksCount++] = callback;
+            }
+        }
+        
+        var argsLength:Number = (paramArray != null) ? paramArray.length : 0;
+        var j:Number = tempCallbacksCount - 1;
+        
+        if (argsLength >= 1) {
+            // 根据参数个数优化调用，避免 apply 的额外开销
+            for (; j >= 0; j--) {
+                callback = localTempCallbacks[j];
+                try {
+                    if (argsLength < 3) {
+                        if (argsLength == 1) {
+                            callback(paramArray[0]);
+                        } else { // argsLength == 2
+                            callback(paramArray[0], paramArray[1]);
+                        }
+                    } else if (argsLength < 7) {
+                        if (argsLength == 3) {
+                            callback(paramArray[0], paramArray[1], paramArray[2]);
+                        } else if (argsLength == 4) {
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3]);
+                        } else if (argsLength == 5) {
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4]);
+                        } else { // argsLength == 6
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5]);
+                        }
+                    } else if (argsLength < 11) {
+                        if (argsLength == 7) {
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6]);
+                        } else if (argsLength == 8) {
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7]);
+                        } else if (argsLength == 9) {
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8]);
+                        } else { // argsLength == 10
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9]);
+                        }
+                    } else if (argsLength < 16) {
+                        if (argsLength == 11) {
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10]);
+                        } else if (argsLength == 12) {
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11]);
+                        } else if (argsLength == 13) {
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12]);
+                        } else if (argsLength == 14) {
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12], paramArray[13]);
+                        } else { // argsLength == 15
+                            callback(paramArray[0], paramArray[1], paramArray[2], paramArray[3], paramArray[4], paramArray[5], paramArray[6], paramArray[7], paramArray[8], paramArray[9], paramArray[10], paramArray[11], paramArray[12], paramArray[13], paramArray[14]);
+                        }
+                    } else {
+                        callback.apply(null, paramArray.slice(0, argsLength));
+                    }
+                } catch (error:Error) {
+                    // 出现异常时忽略当前回调的错误
+                    // trace("Error executing callback for event '" + eventName + "': " + error.message);
+                }
+            }
+        } else {
+            // 当参数数组为空时，直接调用回调函数
+            for (; j >= 0; j--) {
+                callback = localTempCallbacks[j];
+                try {
+                    callback();
+                } catch (error:Error) {
+                    // trace("Error executing callback for event '" + eventName + "': " + error.message);
+                }
+            }
+        }
+    }
+
+
 
     /**
      * 一次性订阅事件，回调执行一次后即自动取消订阅。
@@ -405,33 +499,57 @@ class org.flashNight.neur.Event.EventBus {
      * 采用倍增策略，减少频繁扩容的开销。
      */
     private function expandPool():Void {
-        var oldCapacity:Number = this.pool.length;
+        var oldPool:Array = this.pool;
+        var oldAvail:Array = this.availSpace;
+        var oldCapacity:Number = oldPool.length;
         var newCapacity:Number = oldCapacity * 2;
-
+        
         var newPool:Array = new Array(newCapacity);
-        var newAvailSpace:Array = new Array(newCapacity);
-
-        // 复制旧数据到新池
-        for (var i:Number = 0; i < oldCapacity; i++) {
-            newPool[i] = this.pool[i];
-        }
-
-        // 初始化新扩展的可用空间
+        var newAvail:Array = new Array(newCapacity);
         var newTop:Number = this.availSpaceTop;
-        for (i = oldCapacity; i < newCapacity; i++) {
+        
+        // 局部化循环变量
+        var i:Number;
+        var j:Number;
+        var end:Number;
+
+        // 1. 复制旧池数据（循环展开4倍）
+        i = 0;
+        end = oldCapacity;
+        while (i <= end - 4) {
+            newPool[i] = oldPool[i];
+            newPool[i+1] = oldPool[i+1];
+            newPool[i+2] = oldPool[i+2];
+            newPool[i+3] = oldPool[i+3];
+            i += 4;
+        }
+        // 处理剩余元素
+        while (i < end) {
+            newPool[i] = oldPool[i];
+            i++;
+        }
+
+        // 2. 初始化新扩展空间（双元素展开）
+        i = oldCapacity;
+        end = newCapacity;
+        do {
             newPool[i] = null;
-            newAvailSpace[newTop++] = i;
-        }
-        this.availSpaceTop = newTop;
+            newAvail[newTop++] = i++;
+            newPool[i] = null;
+            newAvail[newTop++] = i++;
+        } while (i < end);
 
-        // 复制旧的可用空间索引
-        for (i = 0; i < this.availSpaceTop; i++) {
-            newAvailSpace[i] = this.availSpace[i];
-        }
+        // 3. 复制旧可用空间（单循环展开）
+        var copyEnd:Number = this.availSpaceTop;
+        j = 0;
+        do {
+            newAvail[j] = oldAvail[j];
+        } while (++j < copyEnd);
 
+        // 更新对象属性
         this.pool = newPool;
-        this.availSpace = newAvailSpace;
-        // trace("[Pool] Expanded to " + newCapacity + ", availSpaceTop: " + this.availSpaceTop);
+        this.availSpace = newAvail;
+        this.availSpaceTop = newTop;
     }
 
 }
