@@ -5,7 +5,7 @@
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
           <DOMFolderItem name="sound" itemID="663b39d7-00000d89"/>
           <DOMFolderItem name="sprite" itemID="65976153-00000ea6"/>
-          <DOMFolderItem name="选关界面UI" itemID="663b39d7-00000d8d"/>
+          <DOMFolderItem name="选关界面UI" itemID="663b39d7-00000d8d" isExpanded="true"/>
      </folders>
      <media>
           <DOMBitmapItem name="image/bitmap19450.png" itemID="6597607d-00000518" sourceExternalFilepath="../选关界面/LIBRARY/image/bitmap19450.png" sourceLastImported="1704419453" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap19450.png" bitmapDataHRef="M 31 1715157464.dat" frameRight="3220" frameBottom="1180"/>
@@ -174,13 +174,14 @@
           <Include href="选关界面UI/魔神选关.xml" loadImmediate="false" itemID="660f6dc0-000019c9" lastModified="1712287168"/>
           <Include href="选关界面UI/桶10.xml" loadImmediate="false" itemID="660f7acb-000024f0" lastModified="1712290507"/>
           <Include href="选关界面UI/桶16.xml" loadImmediate="false" itemID="660f79c4-000024bd" lastModified="1712290244"/>
-          <Include href="选关界面UI/外交地图-堕落城酒吧.xml" loadImmediate="false" itemID="666ea1ba-0000051c" lastModified="1718526770"/>
+          <Include href="选关界面UI/外交地图-第一防线防区.xml" loadImmediate="false" itemID="67ca8576-00000470" lastModified="1741325686"/>
+          <Include href="选关界面UI/外交地图-堕落城酒吧.xml" loadImmediate="false" itemID="666ea1ba-0000051c" lastModified="1741325510"/>
           <Include href="选关界面UI/外交地图-军阀基地.xml" loadImmediate="false" itemID="666ea1ec-00000569" lastModified="1718526787"/>
           <Include href="选关界面UI/外交地图-联合大学.xml" loadImmediate="false" itemID="66e79c68-000006eb" lastModified="1726454945"/>
           <Include href="选关界面UI/外交地图-幸存者营地.xml" loadImmediate="false" itemID="666ea362-000005b9" lastModified="1718526840"/>
           <Include href="选关界面UI/外交地图-摇滚.xml" loadImmediate="false" itemID="666ea10b-00000507" lastModified="1718526786"/>
           <Include href="选关界面UI/选关按钮.xml" loadImmediate="false" itemID="666ea230-0000056b" lastModified="1739186635"/>
-          <Include href="选关界面UI/选关界面 1024&amp;#042576.xml" itemID="663b46a2-000023af" lastModified="1738919210"/>
+          <Include href="选关界面UI/选关界面 1024&amp;#042576.xml" itemID="663b46a2-000023af" lastModified="1741325690"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -466,6 +467,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2093579" publishTime="1741325539"/>
+          <PublishItem publishSize="2093591" publishTime="1741324399"/>
           <PublishItem publishSize="2093616" publishTime="1738918937"/>
           <PublishItem publishSize="2093827" publishTime="1738918641"/>
           <PublishItem publishSize="2094072" publishTime="1738910047"/>
@@ -484,7 +487,5 @@
           <PublishItem publishSize="1585630" publishTime="1718526526"/>
           <PublishItem publishSize="1584226" publishTime="1715874882"/>
           <PublishItem publishSize="1584329" publishTime="1715874127"/>
-          <PublishItem publishSize="1584326" publishTime="1715874043"/>
-          <PublishItem publishSize="1584311" publishTime="1715873952"/>
      </publishHistory>
 </DOMDocument>

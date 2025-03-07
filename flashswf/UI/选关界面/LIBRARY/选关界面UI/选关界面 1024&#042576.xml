@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1738919210" lastUniqueIdentifier="200">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1741325690" lastUniqueIdentifier="204">
   <timeline>
-    <DOMTimeline name="选关界面 1024*576">
+    <DOMTimeline name="选关界面 1024*576" currentFrame="4">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E5DCA">
           <frames>
@@ -1127,7 +1127,7 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="498.25" centerPoint3DY="414.6">
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="498.25" centerPoint3DY="414.6">
                   <matrix>
                     <Matrix tx="247.25" ty="191.5"/>
                   </matrix>
@@ -1189,6 +1189,21 @@ on(rollOut){
 }
 onClipEvent(load){
    this.gotoAndStop(1);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-第一防线防区" centerPoint3DX="830.45" centerPoint3DY="435.45">
+                  <matrix>
+                    <Matrix tx="759.95" ty="402.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="70.5" y="33.3"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("外交-第一防线防区");
 }
 ]]></script>
                   </Actionscript>
@@ -1456,7 +1471,7 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-联合大学" centerPoint3DX="163.6" centerPoint3DY="207.45">
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-联合大学" selected="true" centerPoint3DX="163.6" centerPoint3DY="207.45">
                   <matrix>
                     <Matrix tx="163.6" ty="68.75"/>
                   </matrix>
@@ -2230,7 +2245,7 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-军阀基地" centerPoint3DX="512.45" centerPoint3DY="468.2">
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-军阀基地" selected="true" centerPoint3DX="512.45" centerPoint3DY="468.2">
                   <matrix>
                     <Matrix tx="261.45" ty="245.1"/>
                   </matrix>
