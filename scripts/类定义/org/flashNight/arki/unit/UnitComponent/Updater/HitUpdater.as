@@ -44,7 +44,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
         var hitDirection:String = ((hitTarget._x < shooter._x) ^ bullet.水平击退反向) ? "左" : "右";
 
         // 为实现受击目标视觉上面向与受击方向相反的效果
-        hitTarget.方向改变((hitDirection == "左") ? "右" : "左");
+        if(!hitTarget.锁定方向) hitTarget.方向改变((hitDirection == "左") ? "右" : "左");
         
         var overlapCenter:Vector = collisionResult.overlapCenter;
         var ocx:Number = overlapCenter.x;

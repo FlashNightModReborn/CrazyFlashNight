@@ -153,7 +153,7 @@ _root.子弹生命周期 = function()
     }
     var gameWorld = _root.gameworld;
     var shooter = gameWorld[this.发射者名];
-    var unitMap
+    var unitMap:Array;
     if(this.友军伤害) {
         unitMap = TargetCacheManager.getCachedAll(shooter,1);
     }
@@ -231,9 +231,10 @@ _root.子弹生命周期 = function()
                 overlapRatio, 
                 dodgeState
             )
-            damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
             hitTarget.dispatcher.publish("hit", hitTarget, shooter, this, collisionResult, damageResult);
+
+            damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
             if (this.近战检测 && !this.不硬直)
             {
