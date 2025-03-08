@@ -84,7 +84,7 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 		}
 	}
 	this.关卡需求.完成标志._visible = _root.tasks_to_do[index].requirements.stages.length <= 0;
-	//计算容器初始位置
+	//记录关卡需求容器的位置，以决定接下来面板的位置
 	var 容器位置 = this.关卡需求._y;
 	//提交物品
 	if(taskData.finish_submit_items == null){
@@ -101,7 +101,7 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 			var itemArr = taskData.finish_submit_items[i].split("#");
 			var 物品图标 = this.提交物品.attachMovie("物品图标","物品图标" + i, i);
 			物品图标._x = 140 + i * 36;
-			物品图标._y = 20;
+			物品图标._y = 16;
 			物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
 			this.提交物品.iconList.push(物品图标);
 		}
@@ -122,14 +122,14 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 			var itemArr = taskData.finish_contain_items[i].split("#");
 			var 物品图标 = this.持有物品.attachMovie("物品图标","物品图标" + i, i);
 			物品图标._x = 140 + i * 36;
-			物品图标._y = 20;
+			物品图标._y = 16;
 			物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
 			this.持有物品.iconList.push(物品图标);
 		}
 		this.持有物品.完成标志._visible = TaskUtil.containTaskItems(taskData.finish_contain_items);
 	}
 	//奖励
-	容器位置 += 80;
+	容器位置 += 60;
 	this.任务奖励._visible = true;
 	this.任务奖励._y = 容器位置;
 	this.任务奖励.taskFinishNPC.htmlText = "提交NPC：" + taskData.finish_npc;
@@ -154,4 +154,7 @@ _root.任务栏UI函数.隐藏任务明细 = function(){
 	this.提交物品._visible = false;
 	this.持有物品._visible = false;
 	this.任务奖励._visible = false;
+}
+
+_root.任务栏UI函数.创建任务树 = function(){
 }

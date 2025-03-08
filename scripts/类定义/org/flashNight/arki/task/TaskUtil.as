@@ -13,16 +13,16 @@ class org.flashNight.arki.task.TaskUtil{
     public static var tasks_of_npc:Object;
     public static var task_texts:Object;
 
-    public static function getTaskData(id){
-        return ObjectUtil.clone(tasks[id]);
+    public static function getTaskData(index){
+        return ObjectUtil.clone(tasks[index]);
     }
 
-    public static function getTaskText(str){
+    public static function getTaskText(str:String):String{
         if (str.charAt(0) == "$") return task_texts[str];
         return str;
     }
 
-    public static function ParseTaskData(rawTaskData,rawTextData){
+    public static function ParseTaskData(rawTaskData, rawTextData):Void{
         //先配置任务文本数据
         task_texts = rawTextData;
         //新建任务数据字典
@@ -52,10 +52,6 @@ class org.flashNight.arki.task.TaskUtil{
             var title = typeof task_texts[taskData.title] == "string" ? task_texts[taskData.title] : taskData.title;
             tasks[title] = taskData;
         }
-    }
-
-    public static function ParseTaskText(data){
-        task_texts = data;
     }
 
     public static function taskAvailable(index){

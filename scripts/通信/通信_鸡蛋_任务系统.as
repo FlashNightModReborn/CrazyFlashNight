@@ -2,11 +2,11 @@
 
 _root.LoadPCTasks = function()
 {
-	var _loc2_ = SharedObject.getLocal("crazyflasher7_saves");
-	_root.tasks_to_do = _loc2_.data.tasks_to_do;
-	_root.tasks_finished = _loc2_.data.tasks_finished;
-	_root.task_chains_progress = _loc2_.data.task_chains_progress;
-	_root.task_history = _loc2_.data.task_history;
+	var saveData = SharedObject.getLocal("crazyflasher7_saves");
+	_root.tasks_to_do = saveData.data.tasks_to_do;
+	_root.tasks_finished = saveData.data.tasks_finished;
+	_root.task_chains_progress = saveData.data.task_chains_progress;
+	_root.task_history = saveData.data.task_history;
 	UpdateTaskProgress();
 	//检查任务数据完整性，若完整则检查并删除undefined任务
 	// if(_root.tasks.length > 0){
@@ -20,12 +20,12 @@ _root.LoadPCTasks = function()
 
 _root.SavePCTasks = function()
 {
-	var _loc2_ = SharedObject.getLocal("crazyflasher7_saves");
-	_loc2_.data.tasks_to_do = _root.tasks_to_do;
-	_loc2_.data.tasks_finished = _root.tasks_finished;
-	_loc2_.data.task_chains_progress = _root.task_chains_progress;
-	_loc2_.data.task_history = _root.task_history;
-	_loc2_.flush();
+	var saveData = SharedObject.getLocal("crazyflasher7_saves");
+	saveData.data.tasks_to_do = _root.tasks_to_do;
+	saveData.data.tasks_finished = _root.tasks_finished;
+	saveData.data.task_chains_progress = _root.task_chains_progress;
+	saveData.data.task_history = _root.task_history;
+	saveData.flush();
 	UpdateTaskProgress();
 }
 
@@ -89,25 +89,19 @@ _root.taskAvailable = function(index){
 		return false;
 	}
 	for (var i = 0; i < tasks_to_do.length; i++){
-		if (tasks_to_do[i].id == index)
-		{
+		if (tasks_to_do[i].id == index){
 			return false;
 		}
 	}
-	var _loc4_ = 0;
+	var i = 0;
 	var 前置任务 = TaskUtil.getTaskData(index).get_requirements;
-	while (_loc4_ < 前置任务.length){
-		if (前置任务[_loc4_].__proto__ == Number.prototype){
-			if (tasks_finished[String(前置任务[_loc4_])] < 1 || tasks_finished[String(前置任务[_loc4_])] == null){
+	while (i < 前置任务.length){
+		if (前置任务[i].__proto__ == Number.prototype){
+			if (tasks_finished[String(前置任务[i])] < 1 || tasks_finished[String(前置任务[i])] == null){
 				return false;
 			}
-		}else{
-			var _loc6_ = 前置任务[_loc4_].split("#");
-			// var itemArray = org.flashNight.arki.item.ItemUtil.getRequirement(requirements.items);
-			// if(!org.flashNight.arki.item.ItemUtil.contain(itemArray))
-			return false;
 		}
-		_loc4_ += 1;
+		i += 1;
 	}
 	return true;
 }
@@ -155,18 +149,16 @@ _root.FinishTask = function(index){
 	//
 	var _loc7_ = -1;
 	var i = 0;
-	while (i < TaskUtil.task_in_chains_by_sequence[taskData.chain[0]].length)
-	{
-		if (TaskUtil.task_chains[taskData.chain[0]][String(TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i])] == taskData.id)
-		{
+	while (i < TaskUtil.task_in_chains_by_sequence[taskData.chain[0]].length){
+		if (TaskUtil.task_chains[taskData.chain[0]][String(TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i])] == taskData.id){
 			_loc7_ = i;
 			break;
 		}
 		i += 1;
 	}
-	var _loc9_ = TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i + 1] != undefined && _loc7_ != -1;
-	var _loc10_ = taskAvailable(TaskUtil.task_chains[taskData.chain[0]][String(TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i + 1])]);
-	if (_loc9_ && _loc10_)
+	var 下个任务是否存在 = TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i + 1] != undefined && _loc7_ != -1;
+	var 下个任务是否可以接取 = taskAvailable(TaskUtil.task_chains[taskData.chain[0]][String(TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i + 1])]);
+	if (下个任务是否存在 && 下个任务是否可以接取)
 	{
 		_root.GetTask(TaskUtil.task_chains[taskData.chain[0]][String(TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i + 1])]);
 	}
@@ -220,25 +212,16 @@ _root.AddTask = function(id){
 	var taskData = TaskUtil.getTaskData(id);
 	var finish_requirements = TaskUtil.getTaskData(id).finish_requirements;
 	var 关卡要求 = {};
-	// var _loc5_ = [];
 	var stageArr = [];
 	var i = 0;
 	for (i in finish_requirements){
-		var _loc9_ = finish_requirements[i].split("#");
+		var itemArr = finish_requirements[i].split("#");
 		
 		var stage = {};
-		stage.name = _loc9_[0];
-		stage.difficulty = _loc9_[1];
+		stage.name = itemArr[0];
+		stage.difficulty = itemArr[1];
 		stageArr.push(stage);
-		// else
-		// {
-		// 	_loc7_ = {};
-		// 	_loc7_.name = _loc9_[0];
-		// 	_loc7_.count = _loc9_[1];
-		// 	_loc5_.push(_loc7_);
-		// }
 	}
-	// 关卡要求.items = _loc5_;
 	关卡要求.stages = stageArr;
 	//记录挑战难度
 	if(taskData.challenge.difficulty){
