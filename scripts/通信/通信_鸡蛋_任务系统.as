@@ -11,7 +11,7 @@ _root.LoadPCTasks = function()
 	//检查任务数据完整性，若完整则检查并删除undefined任务
 	// if(_root.tasks.length > 0){
 	// 	for (var index in tasks_to_do){
-	// 		if(_root.getTaskData(tasks_to_do[index].id).title == undefined){
+	// 		if(TaskUtil.getTaskData(tasks_to_do[index].id).title == undefined){
 	// 			_root.DeleteTask(index);
 	// 		}
 	// 	}
@@ -32,7 +32,7 @@ _root.SavePCTasks = function()
 _root.NPCTaskCheck = function(npcname)
 {
 	for (var index in tasks_to_do){
-		var finish_npc = _root.getTaskData(tasks_to_do[index].id).finish_npc;
+		var finish_npc = TaskUtil.getTaskData(tasks_to_do[index].id).finish_npc;
 		if (finish_npc == npcname && _root.taskFinished(index)){
 			return {result:"完成任务", id:index};
 		}
@@ -59,36 +59,26 @@ _root.GetTask = function(id){
 		}
 	}
 	_root.AddTask(id);
-	_root.SetDialogue(_root.getTaskText(_root.getTaskData(id).get_conversation));
+	_root.SetDialogue(TaskUtil.getTaskText(TaskUtil.getTaskData(id).get_conversation));
 	_root.任务栏界面.排列任务图标();
 	_root.弹出公告界面.弹出新任务(id);
 }
 
-_root.taskFinished = function(index)
-{
-	var taskData = _root.getTaskData(tasks_to_do[index].id);
+_root.taskFinished = function(index){
+	var taskData = TaskUtil.getTaskData(tasks_to_do[index].id);
 	var requirements = tasks_to_do[index].requirements;
-	if (requirements.stages.length != 0)
-	{
+	if (requirements.stages.length != 0){
 		_root.任务完成提示._visible = false;
 		return false;
 	}
 
-	var containItems = taskData.finish_contain_items;
-	if(containItems != null){
-		var itemArray1 = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(containItems);
-		if(!org.flashNight.arki.item.ItemUtil.contain(itemArray1)){
-			_root.任务完成提示._visible = false;
-			return false;
-		}
+	if(!TaskUtil.containTaskItems(taskData.finish_contain_items)){
+		_root.任务完成提示._visible = false;
+		return false;
 	}
-	var submitItems = taskData.finish_submit_items;
-	if(submitItems != null){
-		var itemArray2 = org.flashNight.arki.item.ItemUtil.getRequirementFromTask(submitItems);
-		if(!org.flashNight.arki.item.ItemUtil.contain(itemArray2)){
-			_root.任务完成提示._visible = false;
-			return false;
-		}
+	if(!TaskUtil.containTaskItems(taskData.finish_submit_items)){
+		_root.任务完成提示._visible = false;
+		return false;
 	}
 	_root.任务完成提示._visible = true;
 	return true;
@@ -105,7 +95,7 @@ _root.taskAvailable = function(index){
 		}
 	}
 	var _loc4_ = 0;
-	var 前置任务 = _root.getTaskData(index).get_requirements;
+	var 前置任务 = TaskUtil.getTaskData(index).get_requirements;
 	while (_loc4_ < 前置任务.length){
 		if (前置任务[_loc4_].__proto__ == Number.prototype){
 			if (tasks_finished[String(前置任务[_loc4_])] < 1 || tasks_finished[String(前置任务[_loc4_])] == null){
@@ -124,7 +114,7 @@ _root.taskAvailable = function(index){
 
 _root.FinishTask = function(index){
 	var taskID = tasks_to_do[index].id;
-	var taskData = _root.getTaskData(taskID);
+	var taskData = TaskUtil.getTaskData(taskID);
 	var rewards = taskData.rewards;
 	//检测挑战是否完成
 	if(taskData.challenge.rewards.length > 0 && tasks_to_do[index].requirements.challenge.finished == true){
@@ -158,27 +148,27 @@ _root.FinishTask = function(index){
 			_root.发布消息("交付任务物品异常！");
 		}
 	}
-	_root.SetDialogue(_root.getTaskText(taskData.finish_conversation));
+	_root.SetDialogue(TaskUtil.getTaskText(taskData.finish_conversation));
 	//移除已完成的任务
 	UpdateTaskProgress(taskID);
 	tasks_to_do.splice(index,1);
 	//
 	var _loc7_ = -1;
 	var i = 0;
-	while (i < task_in_chains_by_sequence[taskData.chain[0]].length)
+	while (i < TaskUtil.task_in_chains_by_sequence[taskData.chain[0]].length)
 	{
-		if (task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][i])] == taskData.id)
+		if (TaskUtil.task_chains[taskData.chain[0]][String(TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i])] == taskData.id)
 		{
 			_loc7_ = i;
 			break;
 		}
 		i += 1;
 	}
-	var _loc9_ = task_in_chains_by_sequence[taskData.chain[0]][i + 1] != undefined && _loc7_ != -1;
-	var _loc10_ = taskAvailable(task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][i + 1])]);
+	var _loc9_ = TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i + 1] != undefined && _loc7_ != -1;
+	var _loc10_ = taskAvailable(TaskUtil.task_chains[taskData.chain[0]][String(TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i + 1])]);
 	if (_loc9_ && _loc10_)
 	{
-		_root.GetTask(task_chains[taskData.chain[0]][String(task_in_chains_by_sequence[taskData.chain[0]][i + 1])]);
+		_root.GetTask(TaskUtil.task_chains[taskData.chain[0]][String(TaskUtil.task_in_chains_by_sequence[taskData.chain[0]][i + 1])]);
 	}
 	return true;
 }
@@ -227,8 +217,8 @@ _root.AddTask = function(id){
 			return false;
 		}
 	}
-	var taskData = _root.getTaskData(id);
-	var finish_requirements = _root.getTaskData(id).finish_requirements;
+	var taskData = TaskUtil.getTaskData(id);
+	var finish_requirements = TaskUtil.getTaskData(id).finish_requirements;
 	var 关卡要求 = {};
 	// var _loc5_ = [];
 	var stageArr = [];
@@ -263,7 +253,7 @@ _root.AddTask = function(id){
 }
 
 _root.DeleteTask = function(index){
-	if (_root.getTaskData(tasks_to_do[index].id).chain[0] == "主线"){
+	if (TaskUtil.getTaskData(tasks_to_do[index].id).chain[0] == "主线"){
 		_root.发布消息("无法删除主线任务！");
 		return false;
 	}
@@ -277,7 +267,7 @@ _root.UpdateTaskProgress = function(id){
 		if (tasks_finished[String(id)] == undefined){
 			tasks_finished[String(id)] = 0;
 		}
-		var chain = _root.getTaskData(id).chain;
+		var chain = TaskUtil.getTaskData(id).chain;
 		if (task_chains_progress[chain[0]] < Number(chain[1]) || task_chains_progress[chain[0]] == undefined){
 			task_chains_progress[chain[0]] = Number(chain[1]);
 		}
@@ -334,7 +324,7 @@ _root.打印任务进度 = function(页数){
 		_root.任务栏界面.新任务text.text = "";
 		var _loc3_ = (页数 - 1) * 事件日志每页条数;
 		while (_loc3_ < task_history.length && _loc3_ < 页数 * 事件日志每页条数){
-			// _root.任务栏界面.mc事件日志.mytext.text = _root.任务栏界面.mc事件日志.mytext.text + "\r" + _root.getTaskText(_root.getTaskData(task_history[_loc3_]).title) + _root.获得翻译(" 完成");
+			// _root.任务栏界面.mc事件日志.mytext.text = _root.任务栏界面.mc事件日志.mytext.text + "\r" + TaskUtil.getTaskText(TaskUtil.getTaskData(task_history[_loc3_]).title) + _root.获得翻译(" 完成");
 			_loc3_ += 1;
 		}
 	}
@@ -346,19 +336,19 @@ _root.检测并添加初始任务 = function(){
 	if(是否获取初始任务){
 		_root.新手引导界面._visible = true;
 		_root.新手引导界面.gotoAndStop("任务面板");
-		_root.GetTask(_root.task_chains.主线[String(_root.task_in_chains_by_sequence.主线[0])]);
+		_root.GetTask(TaskUtil.task_chains.主线[String(TaskUtil.task_in_chains_by_sequence.主线[0])]);
 	}
 }
 
 
 //获取任务数据
 _root.getTaskData = function(index){
-	return org.flashNight.arki.task.TaskUtil.getTaskData(index);
+	return TaskUtil.getTaskData(index);
 }
 
 //获取任务文本
 _root.getTaskText = function(str){
-	return org.flashNight.arki.task.TaskUtil.getTaskText(str);
+	return TaskUtil.getTaskText(str);
 }
 
 

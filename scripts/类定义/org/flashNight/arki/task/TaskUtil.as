@@ -1,5 +1,6 @@
 ﻿// import org.flashNight.neur.Server.ServerManager;
 import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.arki.item.ItemUtil;
 /*
  * TaskUtil 静态类，存储任务数据，任务文本数据与任务相关函数
  */
@@ -58,5 +59,11 @@ class org.flashNight.arki.task.TaskUtil{
     }
 
     public static function taskAvailable(index){
+    }
+
+    public static function containTaskItems(items:Array):Boolean{
+        if(items == null) return true;
+        var itemArray = ItemUtil.getRequirementFromTask(items);
+        return ItemUtil.contain(itemArray) != null;
     }
 }

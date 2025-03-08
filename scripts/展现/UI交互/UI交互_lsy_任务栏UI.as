@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.item.itemIcon.*;
+import org.flashNight.arki.task.*;
 
 _root.任务栏UI函数 = new Object();
 
@@ -70,6 +71,7 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 	var taskData = _root.getTaskData(_root.tasks_to_do[index].id);
 	this.taskName.htmlText = _root.getTaskText(taskData.title);
 	this.taskDesc.htmlText = _root.getTaskText(taskData.description);
+	//关卡需求
 	this.关卡需求._visible = true;
 	if(taskData.finish_requirements == null){
 		this.关卡需求.taskStage.htmlText = "无";
@@ -81,6 +83,7 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 			this.关卡需求.taskStage.htmlText = stageText;
 		}
 	}
+	this.关卡需求.完成标志._visible = _root.tasks_to_do[index].requirements.stages.length <= 0;
 	//计算容器初始位置
 	var 容器位置 = this.关卡需求._y;
 	//提交物品
@@ -102,6 +105,7 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 			物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
 			this.提交物品.iconList.push(物品图标);
 		}
+		this.提交物品.完成标志._visible = TaskUtil.containTaskItems(taskData.finish_submit_items);
 	}
 	//持有物品
 	if(taskData.finish_contain_items == null){
@@ -122,6 +126,7 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 			物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
 			this.持有物品.iconList.push(物品图标);
 		}
+		this.持有物品.完成标志._visible = TaskUtil.containTaskItems(taskData.finish_contain_items);
 	}
 	//奖励
 	容器位置 += 80;
