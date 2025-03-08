@@ -14,6 +14,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
 
     /** 坐标转换临时对象（优化GC） */
     private static var point:Vector = new Vector(null, null);
+    private static var processor:BulletLifecycleProcessor = new BulletLifecycleProcessor();
+
 
     public function BulletLifecycle() {
     }
