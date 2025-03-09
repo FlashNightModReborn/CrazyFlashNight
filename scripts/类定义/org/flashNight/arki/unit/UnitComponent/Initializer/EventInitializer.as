@@ -1,6 +1,5 @@
 ﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventInitializer.as
-import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEventComponent;
-import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.WeatherEventComponent;
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
     /**
@@ -12,5 +11,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
         HitEventComponent.initialize(target);
         // 初始化天气事件组件
         WeatherEventComponent.initialize(target);
+        // 初始化死亡事件组件
+        KillEventComponent.initialize(target);
     }
 }

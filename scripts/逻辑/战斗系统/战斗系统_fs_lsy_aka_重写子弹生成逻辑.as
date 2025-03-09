@@ -101,16 +101,12 @@ _root.子弹区域shoot传递 = function(Obj){
 
     // 设置子弹类型标志
     BulletTypesetter.setTypeFlags(Obj);
-
     // 1. 设置默认值
     BulletInitializer.setDefaults(Obj, shooter);
-
     // 2. 继承发射者属性
     BulletInitializer.inheritShooterAttributes(Obj, shooter);
-
     // 3. 计算击退速度
     BulletInitializer.calculateKnockback(Obj);
-
     // 4. 初始化子弹属性
     BulletInitializer.initializeBulletProperties(Obj);
 
@@ -121,21 +117,6 @@ _root.子弹区域shoot传递 = function(Obj){
 
     return bulletInstance;
 };
-
-
-
-// 子弹生命周期函数
-_root.子弹生命周期 = function()
-{
-    if(BulletLifecycle.processor.updateCollider(this)) {
-        return;
-    }
-
-    var unitMap:Array = BulletLifecycle.processor.getPotentialTargets(this);
-    BulletLifecycle.processor.handleCollisionAndHit(this, unitMap);
-    BulletLifecycle.processor.finalizeDestructionIfNeeded(this);
-};
-
 
 
 _root.子弹区域shoot表演 = _root.子弹区域shoot;

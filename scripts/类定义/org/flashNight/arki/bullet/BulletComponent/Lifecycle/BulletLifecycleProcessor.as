@@ -43,17 +43,12 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
      * @param target:MovieClip 当前子弹实例 (this)
      */
     public function processFrame(target:MovieClip):Void {
-        // 步骤1：若需要，更新碰撞器（含透明/非透明检测）
-        this.updateCollider(target);
+        if(this.updateCollider(target)) {
+            return;
+        }
 
-        // 步骤3：获取潜在的碰撞目标（友军或敌军等）
         var unitMap:Array = this.getPotentialTargets(target);
-
-        // 步骤4：执行碰撞检测与命中处理（包括击中函数、伤害结算、硬直等）
         this.handleCollisionAndHit(target, unitMap);
-
-
-        // 步骤6：检查销毁条件并执行销毁逻辑（释放碰撞器、移除MC或播放消失动画等）
         this.finalizeDestructionIfNeeded(target);
     }
 
@@ -87,23 +82,11 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
     }
 
     /**
-     * [步骤2] 调试模式下绘制碰撞区域
-     */
-    public function debugDraw(target:MovieClip):Void {
-        if(_root.调试模式) {
-            var detectionArea:MovieClip = target.子弹区域 || target.area;
-            if(detectionArea) {
-                _root.绘制线框(detectionArea);
-            }
-        }
-    }
-
-    /**
      * [步骤3] 获取潜在碰撞目标
      *  - 判断是友军伤害还是敌军伤害，从而调用不同的 TargetCacheManager 缓存方法
      */
     public function getPotentialTargets(target:MovieClip):Array {
-        var shooter:MovieClip = _root.gameworld[target.发射者名];
+        var shooter:MovieClip = target.shooter;
         if (shooter == undefined) {
             return []; // 发射者不存在的异常情况，返回空数组
         }
@@ -129,7 +112,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
 
         // 获取主要碰撞器
         var areaAABB:ICollider = target.aabbCollider;
-        var shooter:MovieClip = _root.gameworld[target.发射者名];
+        var shooter:MovieClip = target.shooter;
 
         // 联弹检测需要的碰撞器
         var bullet_rotation:Number = target._rotation;
@@ -148,9 +131,10 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
             // 命中前判定：例如“防止无限飞”或 “目标HP<=0且非近战检测”
             if (hitTarget.防止无限飞 == true && (hitTarget.hp > 0 || target.近战检测)) {
                 // 说明目标不接受命中，跳过
+
                 continue;
             }
-
+           
             // 更新目标单位的 aabbCollider
             var unitArea:AABBCollider = hitTarget.aabbCollider;
             if(unitArea) {
@@ -194,7 +178,14 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
                 : _root.躲闪状态计算(hitTarget, _root.根据命中计算闪避结果(shooter, hitTarget, target.命中率), target);
 
             var damageResult:DamageResult = DamageCalculator.calculateDamage(target, shooter, hitTarget, overlapRatio, dodgeState);
-            hitTarget.dispatcher.publish("hit", hitTarget, shooter, target, collisionResult, damageResult);
+            var dispatcher:EventDispatcher = hitTarget.dispatcher;
+            dispatcher.publish("hit", hitTarget, shooter, target, collisionResult, damageResult);
+
+             if(!target.近战检测 && !target.爆炸检测 && hitTarget.hp <= 0)
+             {
+                dispatcher.publish("kill", hitTarget);
+             }
+
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
             // 近战检测 + 不硬直=false => 发射者硬直

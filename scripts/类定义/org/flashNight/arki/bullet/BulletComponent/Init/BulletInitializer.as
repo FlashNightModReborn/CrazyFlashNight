@@ -23,6 +23,7 @@
 
         // 远距离不消失的逻辑
         Obj.远距离不消失 = Obj.手雷检测 || Obj.爆炸检测;
+        Obj.shooter = shooter;
     }
 
     /**
