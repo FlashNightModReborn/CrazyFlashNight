@@ -46,17 +46,12 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
         // 步骤1：若需要，更新碰撞器（含透明/非透明检测）
         this.updateCollider(target);
 
-        // 步骤2：调试绘制，非必要，可以单独拆分以控制性能
-        this.debugDraw(target);
-
         // 步骤3：获取潜在的碰撞目标（友军或敌军等）
         var unitMap:Array = this.getPotentialTargets(target);
 
         // 步骤4：执行碰撞检测与命中处理（包括击中函数、伤害结算、硬直等）
         this.handleCollisionAndHit(target, unitMap);
 
-        // 步骤5：更新运动（移动/动画/轨迹等）
-        this.updateMovement(target);
 
         // 步骤6：检查销毁条件并执行销毁逻辑（释放碰撞器、移除MC或播放消失动画等）
         this.finalizeDestructionIfNeeded(target);
@@ -70,26 +65,25 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
      *  - 若启用了联弹检测，需要更新多边形碰撞器 polygonCollider
      *  - 缺省实现：如果 target.透明检测 && !target.子弹区域，则 updateFromTransparentBullet；否则 updateFromBullet
      */
-    public function updateCollider(target:MovieClip):Void {
-        var areaAABB:ICollider = target.aabbCollider;
-        if(!areaAABB) {
-            return; // 如果没有碰撞器则跳过
+    public function updateCollider(target:MovieClip):Boolean {
+        if(!target.area && !target.透明检测){
+            target.updateMovement(target);
+            return true;
         }
 
-        if (target.透明检测 && !target.子弹区域) {
-            areaAABB.updateFromTransparentBullet(target);
+        var detectionArea:MovieClip;
+        var areaAABB:ICollider = target.aabbCollider;
+        var bullet_rotation:Number = target._rotation; // 本地化避免多次访问造成getter开销
+        var isPointSet:Boolean = target.联弹检测 && (bullet_rotation != 0 && bullet_rotation != 180);
+
+        if (target.透明检测 && !target.子弹区域area) {
+            areaAABB.updateFromTransparentBullet(this);
         } else {
-            var detectionArea:MovieClip = target.子弹区域 || target.area;
+            detectionArea = target.子弹区域area || target.area;
             areaAABB.updateFromBullet(target, detectionArea);
         }
 
-        // 如果有联弹检测需求且角度不为0或180，则更新 polygonCollider
-        var bullet_rotation:Number = target._rotation;
-        var isPointSet:Boolean = target.联弹检测 && (bullet_rotation != 0 && bullet_rotation != 180);
-        if (isPointSet && target.polygonCollider) {
-            var detectionArea2:MovieClip = target.子弹区域 || target.area;
-            target.polygonCollider.updateFromBullet(target, detectionArea2);
-        }
+        return false; // 返回 false 表示不需要跳过
     }
 
     /**
@@ -130,12 +124,12 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
      *  - 将命中次数等信息记录在 target 对象上
      */
     public function handleCollisionAndHit(target:MovieClip, unitMap:Array):Void {
-        target.击中次数 = 0;
-        target.shouldGeneratePostHitEffect = true;
+        var hitCount:Number = 0;
+        var shouldGeneratePostHitEffect:Boolean = true;
 
         // 获取主要碰撞器
         var areaAABB:ICollider = target.aabbCollider;
-        if(!areaAABB) return;
+        var shooter:MovieClip = _root.gameworld[target.发射者名];
 
         // 联弹检测需要的碰撞器
         var bullet_rotation:Number = target._rotation;
@@ -181,9 +175,11 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
                 }
             }
 
-            // 记录碰撞信息
-            target.hitTarget = hitTarget;
-            target.击中次数++;
+            // 兼容区
+            target.附加层伤害计算 = 0; 
+            target.命中对象 = hitTarget;
+
+            hitCount++;
             var overlapRatio:Number = collisionResult.overlapRatio;
 
             // 击中时触发函数
@@ -192,7 +188,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
             }
 
             // 伤害计算和事件派发
-            var shooter:MovieClip = _root.gameworld[target.发射者名];
+
             var dodgeState:String = (target.伤害类型 == "真伤")
                 ? "未躲闪"
                 : _root.躲闪状态计算(hitTarget, _root.根据命中计算闪避结果(shooter, hitTarget, target.命中率), target);
@@ -202,23 +198,20 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 
             // 近战检测 + 不硬直=false => 发射者硬直
-            if(target.近战检测 && !target.不硬直) {
-                shooter.硬直(shooter.man, _root.钝感硬直时间);
-            }
+        }
 
+        if(hitCount > 0) {
             // 若不是穿刺子弹，则子弹碰撞后播放消失动画
             if(!target.穿刺检测) {
                 target.gotoAndPlay("消失");
             }
+            if(target.近战检测 && !target.不硬直) {
+                shooter.硬直(shooter.man, _root.钝感硬直时间);
+            }
+            if(shouldGeneratePostHitEffect){
+                EffectSystem.Effect(target.击中后子弹的效果,target._x,target._y,shooter._xscale);
+            }
         }
-    }
-
-    /**
-     * [步骤5] 更新运动逻辑
-     * 默认调用 target.updateMovement(target)
-     */
-    public function updateMovement(target:MovieClip):Void {
-        target.updateMovement(target);
     }
 
     /**
@@ -227,9 +220,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
      *  - 播放 "消失" 动画或直接 removeMovieClip()
      */
     public function finalizeDestructionIfNeeded(target:MovieClip):Void {
-        if(!target.shouldDestroy) {
-            return; // 若未挂载 shouldDestroy 方法，则无法判断
-        }
+        target.updateMovement(target);
 
         if(target.shouldDestroy(target)) {
             // 释放碰撞器
