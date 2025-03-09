@@ -2447,6 +2447,34 @@
       <defence>0</defence>
     </equipped>
   </item>
+   <item>
+    <id>1561</id>
+    <name>终极战斗仪</name>
+    <displayname>终极战斗仪</displayname>
+    <icon>终极战斗仪</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>长柄</actiontype>
+    <weight>15</weight>
+    <price>240000</price>
+    <skill>
+      <skillname>回旋裂地</skillname>
+      <description>手持该武器时可以使用回旋裂地。</description>
+      <cd>7000</cd>
+      <mp>40</mp>
+    </skill>
+    <description>此器仅为样品，性能以模板代之，由于正品尚未完工，武器性能具体该当如何，相关人员仍在思考中。</description>
+    <level>36</level>
+    <data>
+      <power>500</power>
+    </data>
+    <equipped>
+      <dressup>刀-终极战斗仪</dressup>
+      <hp>0</hp>
+      <mp>0</mp>
+      <defence>0</defence>
+    </equipped>
+  </item>
   <item>
     <id>1570</id>
     <name>霜精大头套</name>
