@@ -4,6 +4,7 @@
           <DOMFolderItem name="3.防具/10.军阀系列" itemID="66f580e8-0000216d"/>
           <DOMFolderItem name="3.防具/10.军阀系列/未命名文件夹 1" itemID="657b1152-000030c5"/>
           <DOMFolderItem name="4.发型相关" itemID="67331ffe-0000076a"/>
+          <DOMFolderItem name="artist素材" itemID="67cd7c96-00000adc"/>
           <DOMFolderItem name="Blue.svg" itemID="67c521ce-000009c4"/>
           <DOMFolderItem name="Blue.svg/Layer 1" itemID="67c521ce-000009c5"/>
           <DOMFolderItem name="Boy愤怒.svg" itemID="67b9d2ad-000009e8"/>
@@ -39,10 +40,10 @@
           <DOMFolderItem name="King身体.svg/Layer 1" itemID="67b41adf-00000695"/>
           <DOMFolderItem name="king身体.svg_0" itemID="67bc2767-00000f69"/>
           <DOMFolderItem name="king身体.svg_0/Layer 1" itemID="67bc2767-00000f6a"/>
+          <DOMFolderItem name="Layer 1" itemID="67b3de88-00000636"/>
           <DOMFolderItem name="lochan" itemID="66e1bc59-00000cf1"/>
           <DOMFolderItem name="Pig2.psd 资源" itemID="67b178a6-00002168"/>
           <DOMFolderItem name="Pig立绘(1).svg" itemID="67b3de88-00000635" isExpanded="true"/>
-          <DOMFolderItem name="Pig立绘(1).svg/Layer 1" itemID="67b3de88-00000636"/>
           <DOMFolderItem name="Pig立绘表情悲伤(1).svg" itemID="67b3e7af-00000c92"/>
           <DOMFolderItem name="Pig立绘表情悲伤(1).svg/Layer 1" itemID="67b3e7af-00000c93"/>
           <DOMFolderItem name="Pig立绘表情愤怒(1).svg" itemID="67b3e67b-00000c80"/>
@@ -103,7 +104,7 @@
           <DOMFolderItem name="冷兵/钝器" itemID="67331ffe-00000752"/>
           <DOMFolderItem name="冷兵/钝器/棒球棒" itemID="67331ffe-00000753"/>
           <DOMFolderItem name="普通.svg_0" itemID="67bc27cb-00000fad"/>
-          <DOMFolderItem name="普通.svg_0/Layer 1" itemID="67bc27cb-00000fae"/>
+          <DOMFolderItem name="普通.svg_0/Layer 1" itemID="67bc27cb-00000fae" isExpanded="true"/>
           <DOMFolderItem name="失落.svg" itemID="67bc2b49-00001055"/>
           <DOMFolderItem name="失落.svg/Layer 1" itemID="67bc2b49-00001056"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
@@ -129,6 +130,7 @@
           <DOMFolderItem name="杂项" itemID="665b5cb2-00001fa1"/>
      </folders>
      <media>
+          <DOMBitmapItem name="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" itemID="67812173-00000959" sourceExternalFilepath="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" sourceLastImported="1736515955" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" bitmapDataHRef="M 13 1741519841.dat" frameRight="4680" frameBottom="5160"/>
           <DOMSoundItem name="sound/sound18.wav" itemID="6597607a-00000205" sourceExternalFilepath="../对话框界面/LIBRARY/sound/sound18.wav" sourceLastImported="1704419450" href="sound/sound18.wav" soundDataHRef="M 1 1716708655.dat" format="22kHz 16bit Mono" sampleCount="1893" exportFormat="10"/>
           <DOMSoundItem name="sound/sound19.wav" itemID="6597607a-00000206" sourceExternalFilepath="../对话框界面/LIBRARY/sound/sound19.wav" sourceLastImported="1704196122" href="sound/sound19.wav" soundDataHRef="M 2 1716708655.dat" format="11kHz 16bit Mono" sampleCount="4282" exportFormat="5" exportBits="7"/>
           <DOMBitmapItem name="king2.psd 资源 4/资源/悲伤" itemID="678f68fb-00000a6a" sourceExternalFilepath="../对话框界面/LIBRARY/king2.psd 资源 4/资源/悲伤" sourceLastImported="1737451771" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="90" href="king2.psd 资源 4/资源/悲伤" bitmapDataHRef="M 6 1737562615.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
@@ -145,6 +147,27 @@
      <symbols>
           <Include href="3.防具/10.军阀系列/未命名文件夹 1/director大腿素材.xml" itemIcon="1" loadImmediate="false" itemID="66f591ee-0000565d" lastModified="1727369710"/>
           <Include href="4.发型相关/黑猫王头.xml" itemID="67331fd4-00000725" lastModified="1731403732"/>
+          <Include href="artist素材/artist.xml" loadImmediate="false" itemID="67cd7c36-00000ab6" lastModified="1741519926"/>
+          <Include href="artist素材/artist头.xml" loadImmediate="false" itemID="67ca7cf3-00000302" lastModified="1741520072"/>
+          <Include href="artist素材/Symbol 1112.xml" loadImmediate="false" itemID="66631a4d-0000183d" lastModified="1741519975"/>
+          <Include href="artist素材/Symbol 1118.xml" loadImmediate="false" itemID="66631a4d-00001840" lastModified="1741519976"/>
+          <Include href="artist素材/Symbol 1176.xml" loadImmediate="false" itemID="66631a4d-0000186a" lastModified="1741519977"/>
+          <Include href="artist素材/Symbol 1355.xml" itemIcon="1" loadImmediate="false" itemID="66631a4d-000018eb" lastModified="1715872572"/>
+          <Include href="artist素材/Symbol 1356.xml" loadImmediate="false" itemID="66631a4d-000018ec" lastModified="1741519978"/>
+          <Include href="artist素材/Symbol 1357.xml" itemIcon="1" loadImmediate="false" itemID="66631a4d-000018ed" lastModified="1715872572"/>
+          <Include href="artist素材/Symbol 1358.xml" loadImmediate="false" itemID="66631a4d-000018ee" lastModified="1741519979"/>
+          <Include href="artist素材/Symbol 1359.xml" itemIcon="1" loadImmediate="false" itemID="66631a4d-000018ef" lastModified="1715872572"/>
+          <Include href="artist素材/Symbol 1360.xml" loadImmediate="false" itemID="66631a4d-000018f0" lastModified="1741519981"/>
+          <Include href="artist素材/Symbol 1361.xml" itemIcon="1" loadImmediate="false" itemID="66631a4d-000018f1" lastModified="1715872572"/>
+          <Include href="artist素材/Symbol 1362.xml" loadImmediate="false" itemID="66631a4d-000018f2" lastModified="1741519981"/>
+          <Include href="artist素材/Symbol 2143.xml" loadImmediate="false" itemID="66631a4d-00001b3a" lastModified="1741519983"/>
+          <Include href="artist素材/Symbol 2145.xml" loadImmediate="false" itemID="66631a4d-00001b3b" lastModified="1741519984"/>
+          <Include href="artist素材/Symbol 3556.xml" loadImmediate="false" itemID="66631a4d-00001ed9" lastModified="1741519986"/>
+          <Include href="artist素材/Symbol 3557.xml" itemIcon="1" loadImmediate="false" itemID="66631a4d-00001eda" lastModified="1741282311"/>
+          <Include href="artist素材/Symbol 3558.xml" loadImmediate="false" itemID="66631a4d-00001edb" lastModified="1741519988"/>
+          <Include href="artist素材/Symbol 3560.xml" loadImmediate="false" itemID="66631a4d-00001edc" lastModified="1741519989"/>
+          <Include href="artist素材/Symbol 3561.xml" loadImmediate="false" itemID="66631a4d-00001edd" lastModified="1741519991"/>
+          <Include href="artist素材/Symbol 3562.xml" loadImmediate="false" itemID="66631a4d-00001ede" lastModified="1741519994"/>
           <Include href="Blue.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67c521ce-000009f9" lastModified="1740972494"/>
           <Include href="Blue.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67c521ce-000009fa" lastModified="1740972494"/>
           <Include href="Blue.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67c521ce-000009fb" lastModified="1740972494"/>
@@ -760,6 +783,54 @@
           <Include href="king身体.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_26.xml" loadImmediate="false" itemID="67bc2767-00000fa7" lastModified="1740384103"/>
           <Include href="king身体.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_27.xml" loadImmediate="false" itemID="67bc2767-00000fa8" lastModified="1740384103"/>
           <Include href="king身体.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_28.xml" loadImmediate="false" itemID="67bc2767-00000fa9" lastModified="1740384103"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67b3de88-00000668" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67b3de88-00000669" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67b3de88-0000066a" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="67b3de88-0000066b" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="67b3de88-0000066c" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="67b3de88-0000066d" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="67b3de88-0000066e" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="67b3de88-0000066f" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7.xml" loadImmediate="false" itemID="67b3de88-00000670" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_8.xml" loadImmediate="false" itemID="67b3de88-00000671" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_9.xml" loadImmediate="false" itemID="67b3de88-00000672" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_10.xml" loadImmediate="false" itemID="67b3de88-00000673" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_11.xml" loadImmediate="false" itemID="67b3de88-00000674" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_12.xml" loadImmediate="false" itemID="67b3de88-00000675" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_13.xml" loadImmediate="false" itemID="67b3de88-00000676" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_14.xml" loadImmediate="false" itemID="67b3de88-00000677" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_15.xml" loadImmediate="false" itemID="67b3de88-00000678" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_16.xml" loadImmediate="false" itemID="67b3de88-00000679" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_17.xml" loadImmediate="false" itemID="67b3de88-0000067a" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_18.xml" loadImmediate="false" itemID="67b3de88-0000067b" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_19.xml" loadImmediate="false" itemID="67b3de88-0000067c" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_20.xml" loadImmediate="false" itemID="67b3de88-0000067d" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_21.xml" loadImmediate="false" itemID="67b3de88-0000067e" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_22.xml" loadImmediate="false" itemID="67b3de88-0000067f" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_23.xml" loadImmediate="false" itemID="67b3de88-00000680" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_24.xml" loadImmediate="false" itemID="67b3de88-00000681" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_25.xml" loadImmediate="false" itemID="67b3de88-00000682" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_26.xml" loadImmediate="false" itemID="67b3de88-00000683" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_27.xml" loadImmediate="false" itemID="67b3de88-00000684" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_28.xml" loadImmediate="false" itemID="67b3de88-00000685" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_29.xml" loadImmediate="false" itemID="67b3de88-00000686" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_30.xml" loadImmediate="false" itemID="67b3de88-00000687" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_31.xml" loadImmediate="false" itemID="67b3de88-00000688" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_32.xml" loadImmediate="false" itemID="67b3de88-00000689" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_33.xml" loadImmediate="false" itemID="67b3de88-0000068a" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_34.xml" loadImmediate="false" itemID="67b3de88-0000068b" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_35.xml" loadImmediate="false" itemID="67b3de88-0000068c" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_36.xml" loadImmediate="false" itemID="67b3de88-0000068d" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_37.xml" loadImmediate="false" itemID="67b3de88-0000068e" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_38.xml" loadImmediate="false" itemID="67b3de88-0000068f" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_39.xml" loadImmediate="false" itemID="67b3de88-00000690" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_40.xml" loadImmediate="false" itemID="67b3de88-00000691" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_41.xml" loadImmediate="false" itemID="67b3de88-00000692" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_42.xml" loadImmediate="false" itemID="67b3de88-00000693" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_43.xml" loadImmediate="false" itemID="67b3de88-00000694" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_44.xml" loadImmediate="false" itemID="67b3de88-00000695" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_45.xml" loadImmediate="false" itemID="67b3de88-00000696" lastModified="1739841160"/>
+          <Include href="Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_46.xml" loadImmediate="false" itemID="67b3de88-00000697" lastModified="1739841160"/>
           <Include href="lochan/lo-chan侧发1.xml" loadImmediate="false" itemID="66c0a2c6-000003fa" lastModified="1726067065"/>
           <Include href="lochan/lo-chan侧发2.xml" loadImmediate="false" itemID="66c0a34c-000003fe" lastModified="1723900748"/>
           <Include href="lochan/lo-chan呆毛.xml" loadImmediate="false" itemID="66bf6782-00000208" lastModified="1723819906"/>
@@ -804,54 +875,6 @@
           <Include href="Pig表情愤怒.xml" itemIcon="1" loadImmediate="false" itemID="67b3ebae-00000d01" lastModified="1739844526"/>
           <Include href="Pig表情坏笑.xml" itemIcon="1" loadImmediate="false" itemID="67b3eb92-00000cf3" lastModified="1739844498"/>
           <Include href="Pig表情普通.xml" itemIcon="1" loadImmediate="false" itemID="67b3eb67-00000ce5" lastModified="1739844455"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67b3de88-00000668" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67b3de88-00000669" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67b3de88-0000066a" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="67b3de88-0000066b" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="67b3de88-0000066c" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="67b3de88-0000066d" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="67b3de88-0000066e" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="67b3de88-0000066f" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7.xml" loadImmediate="false" itemID="67b3de88-00000670" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_8.xml" loadImmediate="false" itemID="67b3de88-00000671" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_9.xml" loadImmediate="false" itemID="67b3de88-00000672" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_10.xml" loadImmediate="false" itemID="67b3de88-00000673" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_11.xml" loadImmediate="false" itemID="67b3de88-00000674" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_12.xml" loadImmediate="false" itemID="67b3de88-00000675" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_13.xml" loadImmediate="false" itemID="67b3de88-00000676" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_14.xml" loadImmediate="false" itemID="67b3de88-00000677" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_15.xml" loadImmediate="false" itemID="67b3de88-00000678" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_16.xml" loadImmediate="false" itemID="67b3de88-00000679" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_17.xml" loadImmediate="false" itemID="67b3de88-0000067a" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_18.xml" loadImmediate="false" itemID="67b3de88-0000067b" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_19.xml" loadImmediate="false" itemID="67b3de88-0000067c" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_20.xml" loadImmediate="false" itemID="67b3de88-0000067d" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_21.xml" loadImmediate="false" itemID="67b3de88-0000067e" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_22.xml" loadImmediate="false" itemID="67b3de88-0000067f" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_23.xml" loadImmediate="false" itemID="67b3de88-00000680" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_24.xml" loadImmediate="false" itemID="67b3de88-00000681" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_25.xml" loadImmediate="false" itemID="67b3de88-00000682" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_26.xml" loadImmediate="false" itemID="67b3de88-00000683" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_27.xml" loadImmediate="false" itemID="67b3de88-00000684" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_28.xml" loadImmediate="false" itemID="67b3de88-00000685" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_29.xml" loadImmediate="false" itemID="67b3de88-00000686" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_30.xml" loadImmediate="false" itemID="67b3de88-00000687" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_31.xml" loadImmediate="false" itemID="67b3de88-00000688" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_32.xml" loadImmediate="false" itemID="67b3de88-00000689" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_33.xml" loadImmediate="false" itemID="67b3de88-0000068a" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_34.xml" loadImmediate="false" itemID="67b3de88-0000068b" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_35.xml" loadImmediate="false" itemID="67b3de88-0000068c" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_36.xml" loadImmediate="false" itemID="67b3de88-0000068d" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_37.xml" loadImmediate="false" itemID="67b3de88-0000068e" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_38.xml" loadImmediate="false" itemID="67b3de88-0000068f" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_39.xml" loadImmediate="false" itemID="67b3de88-00000690" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_40.xml" loadImmediate="false" itemID="67b3de88-00000691" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_41.xml" loadImmediate="false" itemID="67b3de88-00000692" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_42.xml" loadImmediate="false" itemID="67b3de88-00000693" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_43.xml" loadImmediate="false" itemID="67b3de88-00000694" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_44.xml" loadImmediate="false" itemID="67b3de88-00000695" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_45.xml" loadImmediate="false" itemID="67b3de88-00000696" lastModified="1739841160"/>
-          <Include href="Pig立绘(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_46.xml" loadImmediate="false" itemID="67b3de88-00000697" lastModified="1739841160"/>
           <Include href="Pig立绘表情悲伤(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67b3e7af-00000ca0" lastModified="1739843503"/>
           <Include href="Pig立绘表情悲伤(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67b3e7af-00000ca1" lastModified="1739843503"/>
           <Include href="Pig立绘表情悲伤(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67b3e7af-00000ca2" lastModified="1739843503"/>
@@ -1131,6 +1154,7 @@
           <Include href="shape/Symbol 1626.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ac" lastModified="1704196122"/>
           <Include href="shape/Symbol 1628.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ae" lastModified="1704196122"/>
           <Include href="shape/Symbol 1629.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009af" lastModified="1704196122"/>
+          <Include href="shape/Symbol 2640.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c49" lastModified="1741282797"/>
           <Include href="shape/Symbol 2677.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c82" lastModified="1704196122"/>
           <Include href="shape/Symbol 2678.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c84" lastModified="1704196122"/>
           <Include href="shape/Symbol 2679.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c86" lastModified="1704196122"/>
@@ -1292,7 +1316,7 @@
           <Include href="sprite/主角/枪械&amp;女体/Symbol 1180.xml" itemID="6597607e-0000089e" lastModified="1704196122"/>
           <Include href="sprite/主角/枪械&amp;女体/Symbol 1184.xml" itemID="6597607e-000008a1" lastModified="1704196122"/>
           <Include href="sprite/主角/枪械&amp;女体/Symbol 1188.xml" itemID="6597607e-000008a5" lastModified="1704196122"/>
-          <Include href="sprite/主角/枪械&amp;女体/Symbol 1197.xml" itemID="6597607e-000008aa" lastModified="1704196122"/>
+          <Include href="sprite/主角/枪械&amp;女体/Symbol 1197.xml" loadImmediate="false" itemID="6597607e-000008aa" lastModified="1741520071"/>
           <Include href="sprite/主角/枪械&amp;女体/Symbol 1201.xml" itemID="6597607e-000008ad" lastModified="1704196122"/>
           <Include href="sprite/主角/枪械&amp;女体/Symbol 1205.xml" itemID="6597607e-000008b0" lastModified="1704196122"/>
           <Include href="sprite/主角/枪械&amp;女体/Symbol 1209.xml" itemID="6597607e-000008b4" lastModified="1704196122"/>
@@ -1300,6 +1324,9 @@
           <Include href="sprite/主角/枪械&amp;女体/Symbol 1217.xml" itemID="6597607e-000008ba" lastModified="1704196122"/>
           <Include href="sprite/主角/枪械&amp;女体/Symbol 1221.xml" itemID="6597607e-000008bd" lastModified="1704196122"/>
           <Include href="Symbol 793.xml" itemIcon="1" loadImmediate="false" itemID="6577faef-00001592" lastModified="1726472234"/>
+          <Include href="Symbol 945.xml" itemIcon="1" loadImmediate="false" itemID="66631a4d-000017dc" lastModified="1715872572"/>
+          <Include href="Symbol 951.xml" itemIcon="1" loadImmediate="false" itemID="66631a4d-000017e1" lastModified="1715872572"/>
+          <Include href="Symbol 953.xml" itemIcon="1" loadImmediate="false" itemID="66631a4d-000017e3" lastModified="1715872572"/>
           <Include href="ts-npc/Symbol 58.xml" itemIcon="1" loadImmediate="false" itemID="66ad1235-00000400" lastModified="1669348407"/>
           <Include href="ts-npc/Symbol 61.xml" itemIcon="1" loadImmediate="false" itemID="66ad1235-00000403" lastModified="1669348407"/>
           <Include href="ts-npc/Symbol 62.xml" itemIcon="1" loadImmediate="false" itemID="66ad1235-00000404" lastModified="1669348407"/>
@@ -1341,6 +1368,10 @@
           <Include href="表情微笑.xml" itemIcon="1" loadImmediate="false" itemID="67b9d3f4-00000a63" lastModified="1740231668"/>
           <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="67aca21b-00002124" lastModified="1739366939"/>
           <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="67aca21b-00002126" lastModified="1739366939"/>
+          <Include href="厨师.xml" loadImmediate="false" itemID="67cd7bf9-000009ff" lastModified="1741519865"/>
+          <Include href="厨师帽.xml" loadImmediate="false" itemID="6746b877-00000ab0" lastModified="1732688355"/>
+          <Include href="厨师帽文字.xml" loadImmediate="false" itemID="6746b818-00000aac" lastModified="1732687896"/>
+          <Include href="待整理防具相关汇总/Symbol 97.xml" loadImmediate="false" itemID="668e7c1e-000005fe" lastModified="1741520072"/>
           <Include href="待整理防具相关汇总/男变装-bob自由火箭皮鞋特别款.xml" loadImmediate="false" itemID="66e7d59c-00002268" lastModified="1726469830"/>
           <Include href="待整理防具相关汇总/男变装-黑色立领校服上臂.xml" loadImmediate="false" itemID="66e7d2d3-000021f1" lastModified="1726469979"/>
           <Include href="待整理防具相关汇总/男变装-黑色立领校服身体特别款.xml" loadImmediate="false" itemID="66e7d4c2-00002247" lastModified="1726471332"/>
@@ -1350,6 +1381,7 @@
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子小腿.xml" loadImmediate="false" itemID="66e7d2b8-000021ec" lastModified="1726469988"/>
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子右大腿.xml" loadImmediate="false" itemID="66e7d2b5-000021eb" lastModified="1726469989"/>
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子左大腿.xml" loadImmediate="false" itemID="66e7d2af-000021ea" lastModified="1726469990"/>
+          <Include href="底座.xml" loadImmediate="false" itemID="67683bbc-000001df" lastModified="1734884284"/>
           <Include href="动画/待机.xml" loadImmediate="false" itemID="65f4431c-00000940" lastModified="1710749398"/>
           <Include href="对话框UI/Andy对话立绘/Andy对话立绘.xml" loadImmediate="false" itemID="65f4349d-0000148c" lastModified="1710574514"/>
           <Include href="对话框UI/Andy对话立绘/Andy五官-悲伤表情/Andy五官-悲伤表情.xml" loadImmediate="false" itemID="65f50b7e-000028b7" lastModified="1710574446"/>
@@ -1688,7 +1720,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1739526304"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1740233238"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1741520174"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc29fa-00001039" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc29fa-0000103a" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc29fa-0000103b" lastModified="1740384762"/>
@@ -1751,9 +1783,16 @@
           <Include href="混沌系列素材包/尾上世莉架/人物组件/左大腿.xml" loadImmediate="false" itemID="65522153-0000002d" lastModified="1711360661"/>
           <Include href="混沌系列素材包/尾上世莉架/人物组件/左手.xml" loadImmediate="false" itemID="6551c20c-00000416" lastModified="1711361849"/>
           <Include href="混沌系列素材包/尾上世莉架/人物组件/左小腿.xml" loadImmediate="false" itemID="655223f4-00000031" lastModified="1699940009"/>
+          <Include href="机器门.xml" loadImmediate="false" itemID="67683ba5-000001d6" lastModified="1734884261"/>
+          <Include href="机器身体.xml" loadImmediate="false" itemID="67683bb2-000001db" lastModified="1734884275"/>
+          <Include href="机器头.xml" loadImmediate="false" itemID="67683b13-000001c1" lastModified="1734884115"/>
+          <Include href="机械臂1.xml" loadImmediate="false" itemID="67683af3-000001b5" lastModified="1734884083"/>
+          <Include href="机械爪背面.xml" loadImmediate="false" itemID="67683d4f-00000346" lastModified="1734884699"/>
+          <Include href="机械爪正面.xml" loadImmediate="false" itemID="67683d69-0000034e" lastModified="1734884713"/>
           <Include href="砍刀.xml" loadImmediate="false" itemID="66099719-0000407b" lastModified="1717253609"/>
           <Include href="冷兵/钝器/棒球棒/棒球棒.xml" itemIcon="1" loadImmediate="false" itemID="660f7d90-000019bc" lastModified="1712291609"/>
           <Include href="冷兵/钝器/棒球棒/棒球棍末端.xml" loadImmediate="false" itemID="64b91170-00001168" lastModified="1690285773"/>
+          <Include href="轮子.xml" loadImmediate="false" itemID="67683bc4-000001e3" lastModified="1734884292"/>
           <Include href="普通.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc27cb-00000fc9" lastModified="1740384203"/>
           <Include href="普通.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc27cb-00000fca" lastModified="1740384203"/>
           <Include href="普通.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc27cb-00000fcb" lastModified="1740384203"/>
@@ -1809,6 +1848,7 @@
           <Include href="拖拽动画2.xml" loadImmediate="false" itemID="67aca57c-0000214d" lastModified="1739367882"/>
           <Include href="文天.xml" itemIcon="1" loadImmediate="false" itemID="65c1c8c7-00000c83" lastModified="1716709924"/>
           <Include href="无AS链接/Symbol 8.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005ba" lastModified="1720533000"/>
+          <Include href="无AS链接/Symbol 92.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005fd" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 245.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000067c" lastModified="1720533000"/>
           <Include href="无AS链接/Symbol 247.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-0000067e" lastModified="1727366402"/>
           <Include href="无AS链接/Symbol 249.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000680" lastModified="1727366391"/>
@@ -1907,11 +1947,14 @@
           <Include href="新地图素材/武装jk肖像.xml" loadImmediate="false" itemID="65bbe55d-00001871" lastModified="1706813310"/>
           <Include href="新地图素材/腰带.xml" itemIcon="1" loadImmediate="false" itemID="6594182f-000001c5" lastModified="1704204501"/>
           <Include href="新地图素材/医疗女仆白肖像.xml" loadImmediate="false" itemID="65bbe61b-00002b67" lastModified="1706812955"/>
+          <Include href="一看就是迪吧手的东西.xml" loadImmediate="false" itemID="67683b09-000001bd" lastModified="1734884105"/>
+          <Include href="阴影.xml" loadImmediate="false" itemID="67c95901-00000a54" lastModified="1741248877"/>
           <Include href="元件 1.xml" itemIcon="1" loadImmediate="false" itemID="67b1791b-00002180" lastModified="1739684124"/>
           <Include href="元件 2.xml" itemIcon="1" loadImmediate="false" itemID="67b1793d-0000218b" lastModified="1739684157"/>
           <Include href="元件 3.xml" itemIcon="1" loadImmediate="false" itemID="67b17ebe-000021af" lastModified="1739685566"/>
           <Include href="元件 4.xml" itemIcon="1" loadImmediate="false" itemID="67b17ec4-000021b6" lastModified="1739685572"/>
           <Include href="元件 5.xml" itemIcon="1" loadImmediate="false" itemID="67b17ec9-000021bc" lastModified="1739685577"/>
+          <Include href="圆柱.xml" loadImmediate="false" itemID="6780d65b-00000160" lastModified="1736496731"/>
           <Include href="杂项/细铁.xml" loadImmediate="false" itemID="666080e1-000004dc" lastModified="1717237580"/>
      </symbols>
      <timelines>
@@ -2283,6 +2326,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2059515" publishTime="1741519966"/>
           <PublishItem publishSize="1407392" publishTime="1740115486"/>
           <PublishItem publishSize="1407377" publishTime="1740115393"/>
           <PublishItem publishSize="1407376" publishTime="1740115337"/>
@@ -2302,6 +2346,5 @@
           <PublishItem publishSize="2225906" publishTime="1739368323"/>
           <PublishItem publishSize="2225902" publishTime="1739368153"/>
           <PublishItem publishSize="2225909" publishTime="1739367998"/>
-          <PublishItem publishSize="2225903" publishTime="1739367912"/>
      </publishHistory>
 </DOMDocument>
