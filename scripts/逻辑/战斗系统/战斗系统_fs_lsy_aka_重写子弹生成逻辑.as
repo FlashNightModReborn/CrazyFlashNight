@@ -176,7 +176,7 @@ _root.子弹生命周期 = function()
     for (var i:Number = 0; i < len ; ++i)
     {
         hitTarget = this.hitTarget = unitMap[i];
-        zOffset = hitTarget.Z轴坐标 - this.Z轴坐标;
+        zOffset = this.Z轴坐标 - hitTarget.Z轴坐标;
 
         if (Math.abs(zOffset) >= this.Z轴攻击范围)
         {
