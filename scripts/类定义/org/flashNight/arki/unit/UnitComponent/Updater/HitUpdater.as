@@ -10,20 +10,12 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
     // 私有方法：核心受击处理逻辑（不包含主角专供的hp刷新）
     private static function doHitUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
         // ────────────── 调试与预处理 ──────────────
-        if (_root.调试模式) {
-            _root.绘制线框(hitTarget.area);
-        }
-        
+
         // 刷新目标的冲击力数据
         ImpactHandler.refreshImpactForce(hitTarget);
         
         // 记录攻击来源
         hitTarget.攻击目标 = shooter._name;
-        
-        // 初步判断：若非近战/爆炸子弹且目标血量已耗尽，直接设定死亡状态
-        if (!bullet.近战检测 && !bullet.爆炸检测 && hitTarget.hp <= 0) {
-            hitTarget.状态改变("血腥死");
-        }
         
         // ────────────── 方向判断及效果 ──────────────
         // 利用布尔运算确定初始受击方向，考虑了两个因素：

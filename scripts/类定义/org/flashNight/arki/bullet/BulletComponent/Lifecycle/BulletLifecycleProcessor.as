@@ -175,7 +175,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
 
             var dodgeState:String = (target.伤害类型 == "真伤")
                 ? "未躲闪"
-                : _root.躲闪状态计算(hitTarget, _root.根据命中计算闪避结果(shooter, hitTarget, target.命中率), target);
+                : DodgeHandler.calculateDodgeState(hitTarget, DodgeHandler.calcDodgeResult(shooter, hitTarget, target.命中率), target);
 
             var damageResult:DamageResult = DamageCalculator.calculateDamage(target, shooter, hitTarget, overlapRatio, dodgeState);
             var dispatcher:EventDispatcher = hitTarget.dispatcher;
