@@ -1,17 +1,24 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/雷电电/雷电电" itemID="6554c5a8-00002fd6" linkageExportForAS="true" linkageIdentifier="雷电电" lastModified="1741540457" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/雷电电/终极战斗仪-雷击" itemID="67cdcc67-000012f0" linkageExportForAS="true" linkageIdentifier="终极战斗仪-雷击" lastModified="1741541084" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="雷电电" currentFrame="14">
+    <DOMTimeline name="终极战斗仪-雷击" currentFrame="14">
       <layers>
-        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="代码&amp;判定" color="#9933CC" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_root.gameworld[发射者名].方向 == "左")
+{
+   this._xscale = -100;
+}
+this._rotation = 0;]]></script>
+              </Actionscript>
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-15.05" centerPoint3DY="-55.55">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="177.6" centerPoint3DY="-20.95">
                   <matrix>
-                    <Matrix d="4.37054443359375" tx="-35.05" ty="-186.1"/>
+                    <Matrix a="-3.0517578125e-005" b="2.38125610351563" c="-5.03315734863281" d="0" tx="199.3" ty="-41.55"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="20" y="42.05"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -21,12 +28,12 @@
             </DOMFrame>
             <DOMFrame index="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="-15.05" centerPoint3DY="-55.55">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="218.95" centerPoint3DY="-25.4">
                   <matrix>
-                    <Matrix d="5.92961120605469" tx="-35.05" ty="-251.65"/>
+                    <Matrix a="-3.0517578125e-005" b="2.38125610351563" c="-5.93907165527344" d="0" tx="240.65" ty="-46"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="20" y="42.05"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -36,12 +43,12 @@
             </DOMFrame>
             <DOMFrame index="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-15.05" centerPoint3DY="-55.55">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="188.15" centerPoint3DY="-38.7">
                   <matrix>
-                    <Matrix d="4.50566101074219" tx="-35.05" ty="-191.8"/>
+                    <Matrix a="-3.0517578125e-005" b="2.74140930175781" c="-5.19668579101563" d="0" tx="209.85" ty="-59.3"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="20" y="42.05"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -51,12 +58,12 @@
             </DOMFrame>
             <DOMFrame index="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="-13.1" centerPoint3DY="-55.55">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="223.85" centerPoint3DY="-36.75">
                   <matrix>
-                    <Matrix d="4.50566101074219" tx="-33.1" ty="-191.8"/>
+                    <Matrix a="-3.0517578125e-005" b="2.45567321777344" c="-5.93907165527344" d="0" tx="245.55" ty="-57.35"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="20" y="42.05"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -66,12 +73,12 @@
             </DOMFrame>
             <DOMFrame index="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="15.2" centerPoint3DY="-47.1">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="222" centerPoint3DY="-34.8">
                   <matrix>
-                    <Matrix a="2.73716735839844" d="4.50566101074219" tx="-35" ty="-183.35"/>
+                    <Matrix a="-3.0517578125e-005" b="2.45567321777344" c="-5.93907165527344" d="0" tx="243.7" ty="-55.4"/>
                   </matrix>
                   <transformationPoint>
-                    <Point y="40"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
@@ -81,17 +88,38 @@
             </DOMFrame>
             <DOMFrame index="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="15.2" centerPoint3DY="-47.1">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="185.2" centerPoint3DY="-25.2">
                   <matrix>
-                    <Matrix a="2.51239013671875" d="4.76470947265625" tx="-43" ty="-183.35"/>
+                    <Matrix a="-3.0517578125e-005" b="2.45567321777344" c="-5.07847595214844" d="0" tx="206.9" ty="-45.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="40"/>
+                    <Point/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="11" duration="4" keyMode="9728">
+            <DOMFrame index="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="167.9" centerPoint3DY="-16.05">
+                  <matrix>
+                    <Matrix a="-1.52587890625e-005" b="1.30519104003906" c="-4.64048767089844" d="0" tx="189.6" ty="-36.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -100,9 +128,9 @@
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 22" blendMode="add" centerPoint3DX="56.65" centerPoint3DY="38.55">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 22" blendMode="add" centerPoint3DX="-57.75" centerPoint3DY="-52.2">
                   <matrix>
-                    <Matrix a="0" b="-0.976913452148438" c="1" d="0" tx="-33.1" ty="-17.35"/>
+                    <Matrix a="0.961288452148438" b="-0.174026489257813" c="-0.178131103515625" d="-0.9840087890625" tx="13.15" ty="25.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -116,9 +144,9 @@
             </DOMFrame>
             <DOMFrame index="2" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 24" blendMode="add" centerPoint3DX="95.2" centerPoint3DY="24.65">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 24" blendMode="add" centerPoint3DX="-38.15" centerPoint3DY="-105.2">
                   <matrix>
-                    <Matrix a="0" b="-0.976913452148438" c="1" d="0" tx="-27.2" ty="-15.9"/>
+                    <Matrix a="0.976821899414063" b="-0.01324462890625" c="-0.0135498046875" d="-0.999908447265625" tx="4" ty="15.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -132,9 +160,9 @@
             </DOMFrame>
             <DOMFrame index="4" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 26" blendMode="add" centerPoint3DX="73.7" centerPoint3DY="14.9">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 26" blendMode="add" centerPoint3DX="-31.3" centerPoint3DY="-79.2">
                   <matrix>
-                    <Matrix a="0" b="-0.976913452148438" c="1" d="0" tx="-30.9" ty="-43.05"/>
+                    <Matrix a="0.97576904296875" b="-0.0473785400390625" c="-0.048492431640625" d="-0.998825073242188" tx="32" ty="22.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -148,9 +176,9 @@
             </DOMFrame>
             <DOMFrame index="6" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 28" blendMode="add" centerPoint3DX="104.4" centerPoint3DY="38.45">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 28" blendMode="add" centerPoint3DX="-52.2" centerPoint3DY="-109.1">
                   <matrix>
-                    <Matrix a="0" b="-0.976913452148438" c="1" d="0" tx="-25.25" ty="-17.35"/>
+                    <Matrix a="0.975738525390625" b="-0.0478363037109375" c="-0.0489501953125" d="-0.998809814453125" tx="9.95" ty="17.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -164,9 +192,9 @@
             </DOMFrame>
             <DOMFrame index="8" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 30" blendMode="add" centerPoint3DX="26.2" centerPoint3DY="-101.8">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 30" blendMode="add" centerPoint3DX="115.4" centerPoint3DY="-15.5">
                   <matrix>
-                    <Matrix tx="-27.65" ty="-223.45"/>
+                    <Matrix a="-0.0491943359375" b="-0.998794555664063" c="-0.998794555664063" d="0.0491943359375" tx="239.3" ty="32.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -180,9 +208,9 @@
             </DOMFrame>
             <DOMFrame index="10" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 32" blendMode="add" centerPoint3DX="25.75" centerPoint3DY="-89.85">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 32" blendMode="add" centerPoint3DX="102.4" centerPoint3DY="-18.35">
                   <matrix>
-                    <Matrix tx="-24.5" ty="-191.15"/>
+                    <Matrix a="-0.0659027099609375" b="-0.997833251953125" c="-0.997833251953125" d="0.0659027099609375" tx="207" ty="25.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -196,9 +224,9 @@
             </DOMFrame>
             <DOMFrame index="12" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 34" blendMode="add" centerPoint3DX="6.35" centerPoint3DY="-101.3">
+                <DOMSymbolInstance libraryItemName="1.特效文件夹/06.青蓝色系/雷电电/Symbol 34" blendMode="add" centerPoint3DX="97.9" centerPoint3DY="-10.5">
                   <matrix>
-                    <Matrix tx="-16.8" ty="-194.7"/>
+                    <Matrix a="-0.0238494873046875" b="-0.999710083007813" c="-0.999710083007813" d="0.0238494873046875" tx="191.8" ty="10.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
