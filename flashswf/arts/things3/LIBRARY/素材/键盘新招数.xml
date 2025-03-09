@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/键盘新招数" itemID="6728e3d4-0000062c" lastModified="1731346928" lastUniqueIdentifier="525">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/键盘新招数" itemID="6728e3d4-0000062c" lastModified="1741544031" lastUniqueIdentifier="525">
   <timeline>
     <DOMTimeline name="键盘新招数" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;174&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
@@ -26,7 +26,7 @@ function 弧光斩旋转()
 	子弹属性.最小霰弹值 = 3;
 
 	子弹属性.伤害类型 = "魔法";
-	子弹属性.魔法伤害属性 = "能";
+	//子弹属性.魔法伤害属性 = "能";
 
 	子弹属性.区域定位area = this.攻击点;
 
@@ -47,7 +47,7 @@ function 弧光斩纵劈()
 	子弹属性.击倒率 = 1;
 
 	子弹属性.伤害类型 = "魔法";
-	子弹属性.魔法伤害属性 = "能";
+	//子弹属性.魔法伤害属性 = "能";
 
 	子弹属性.区域定位area = this.攻击点;
 

@@ -72,7 +72,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#5B80C5" locked="true" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#5B80C5" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -313,7 +313,7 @@ if(等级 > 35){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#FF02F6">
+        <DOMLayer name="Layer 11" color="#FF02F6" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
