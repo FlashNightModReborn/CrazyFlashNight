@@ -17,6 +17,7 @@ import org.flashNight.arki.bullet.Factory.BulletFactory;
 import org.flashNight.arki.component.Collider.*;    // 碰撞系统
 import org.flashNight.arki.component.Damage.*;      // 伤害计算
 import org.flashNight.arki.component.Effect.*;      // 特效组件
+import org.flashNight.arki.component.StatHandler.*; // 状态处理
 
 // 4. 单位组件
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*; // 目标缓存
@@ -121,8 +122,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
         var len:Number = unitMap.length;
         for(var i:Number = 0; i < len; i++) {
             var hitTarget:MovieClip = unitMap[i];
-            var zOffset:Number = hitTarget.Z轴坐标 - target.Z轴坐标;
-
+            // var zOffset:Number = hitTarget.Z轴坐标 - target.Z轴坐标;
+            var zOffset:Number = target.Z轴坐标 - hitTarget.Z轴坐标;
             // 判断Z轴距离是否在攻击范围内
             if(Math.abs(zOffset) >= target.Z轴攻击范围) {
                 continue;
@@ -177,6 +178,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
                 ? "未躲闪"
                 : DodgeHandler.calculateDodgeState(hitTarget, DodgeHandler.calcDodgeResult(shooter, hitTarget, target.命中率), target);
 
+            // _root.发布消息(dodgeState);
             var damageResult:DamageResult = DamageCalculator.calculateDamage(target, shooter, hitTarget, overlapRatio, dodgeState);
             var dispatcher:EventDispatcher = hitTarget.dispatcher;
             dispatcher.publish("hit", hitTarget, shooter, target, collisionResult, damageResult);

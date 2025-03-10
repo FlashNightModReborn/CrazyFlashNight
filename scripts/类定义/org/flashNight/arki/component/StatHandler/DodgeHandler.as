@@ -1,5 +1,7 @@
-﻿import org.flashNight.naki.NormalizationUtil;
-import org.flashNight.naki.RandomNumberEngine.*;
+﻿import org.flashNight.naki.RandomNumberEngine.*;
+import org.flashNight.naki.Normalization.*;
+
+import org.flashNight.arki.component.StatHandler.*; // 状态处理
 
 /**
  * DodgeHandler

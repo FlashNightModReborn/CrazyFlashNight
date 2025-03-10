@@ -9,10 +9,8 @@ class org.flashNight.naki.Normalization.NormalizationUtil
      * @param x 输入值
      * @return sigmoid(x)
      */
-    public static function sigmoid(x:Number):Number
-    {
-        var expX:Number = Math.exp(x);
-        return expX / (1 + expX);
+    public static function sigmoid(x:Number):Number {
+        return 1 / (1 + Math.exp(-x));
     }
 
     /**
