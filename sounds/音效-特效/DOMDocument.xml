@@ -1,13 +1,13 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="80" height="80" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="8.66021495624003" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
      <folders>
           <DOMFolderItem name="UI" itemID="67bb5bb8-00000490" isExpanded="true"/>
-          <DOMFolderItem name="爆炸" itemID="67251edb-0000ccae"/>
-          <DOMFolderItem name="刀光" itemID="672521ac-0000cd05"/>
+          <DOMFolderItem name="爆炸" itemID="67251edb-0000ccae" isExpanded="true"/>
+          <DOMFolderItem name="刀光" itemID="672521ac-0000cd05" isExpanded="true"/>
           <DOMFolderItem name="动画" itemID="6793af9d-0000055a"/>
-          <DOMFolderItem name="技能" itemID="6793af9c-00000559"/>
-          <DOMFolderItem name="其他" itemID="672520ca-0000ccfa"/>
+          <DOMFolderItem name="技能" itemID="6793af9c-00000559" isExpanded="true"/>
+          <DOMFolderItem name="其他" itemID="672520ca-0000ccfa" isExpanded="true"/>
           <DOMFolderItem name="血液" itemID="669e4395-00003307"/>
-          <DOMFolderItem name="战斗" itemID="657437e1-00000909"/>
+          <DOMFolderItem name="战斗" itemID="657437e1-00000909" isExpanded="true"/>
      </folders>
      <media>
           <DOMSoundItem name="血液/blood1.wav" itemID="669e43a9-00003311" linkageExportForAS="true" linkageIdentifier="blood1.wav" sourceExternalFilepath="G:/gunsound/blood/new/blood1.wav" sourceLastImported="1722442995" href="血液/blood1.wav" soundDataHRef="M 38 1737731645.dat" format="44kHz 16bit Mono" sampleCount="48510" exportFormat="1" exportBits="17"/>
@@ -55,7 +55,7 @@
           <DOMSoundItem name="爆炸/爆炸 火球 炸裂 01.mp3" itemID="656c2960-0000100c" linkageExportForAS="true" linkageIdentifier="爆炸 火球 炸裂 01.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆炸 火球 炸裂 01.mp3" sourceLastImported="1730486504" href="爆炸/爆炸 火球 炸裂 01.mp3" soundDataHRef="M 31 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="337536" exportFormat="5" exportBits="17" dataLength="92802" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="42192"/>
           <DOMSoundItem name="爆炸/爆炸 火球 炸裂 04.mp3" itemID="656c2960-00001010" linkageExportForAS="true" linkageIdentifier="爆炸 火球 炸裂 04.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆炸 火球 炸裂 04.mp3" sourceLastImported="1730486639" href="爆炸/爆炸 火球 炸裂 04.mp3" soundDataHRef="M 32 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="202752" exportFormat="5" exportBits="17" dataLength="58708" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="25344"/>
           <DOMSoundItem name="爆炸/爆炸 火球 炸裂 05.mp3" itemID="656c2960-00001014" linkageExportForAS="true" linkageIdentifier="爆炸 火球 炸裂 05.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆炸 火球 炸裂 05.mp3" sourceLastImported="1730486508" href="爆炸/爆炸 火球 炸裂 05.mp3" soundDataHRef="M 33 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="196992" exportFormat="5" exportBits="17" dataLength="53244" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="24624"/>
-          <DOMSoundItem name="爆炸/爆炸 较明亮 01.mp3" itemID="656c2960-00001018" linkageExportForAS="true" linkageIdentifier="爆炸 较明亮 01.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆炸 较明亮 01.mp3" sourceLastImported="1730486510" href="爆炸/爆炸 较明亮 01.mp3" soundDataHRef="M 34 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="112896" exportFormat="5" exportBits="17" dataLength="32332" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="14112"/>
+          <DOMSoundItem name="爆炸/爆炸 较明亮 01.mp3" itemID="656c2960-00001018" linkageExportForAS="true" linkageIdentifier="爆炸 较明亮 01.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆炸 较明亮 01.mp3" sourceLastImported="1741590799" href="爆炸/爆炸 较明亮 01.mp3" soundDataHRef="M 34 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="112896" exportFormat="5" exportBits="17" dataLength="32332" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="14112"/>
           <DOMSoundItem name="爆炸/爆炸 较明亮 02.mp3" itemID="656c2960-0000101c" linkageExportForAS="true" linkageIdentifier="爆炸 较明亮 02.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆炸 较明亮 02.mp3" sourceLastImported="1730486512" href="爆炸/爆炸 较明亮 02.mp3" soundDataHRef="M 35 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="169344" exportFormat="5" exportBits="17" dataLength="48224" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="21168"/>
           <DOMSoundItem name="爆炸/爆炸 较深邃 01.mp3" itemID="656c2961-00001020" linkageExportForAS="true" linkageIdentifier="爆炸 较深邃 01.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆炸 较深邃 01.mp3" sourceLastImported="1730486513" href="爆炸/爆炸 较深邃 01.mp3" soundDataHRef="M 36 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="194688" exportFormat="5" exportBits="17" dataLength="54607" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="24336"/>
           <DOMSoundItem name="爆炸/爆炸 较深邃 02.mp3" itemID="656c2961-00001024" linkageExportForAS="true" linkageIdentifier="爆炸 较深邃 02.mp3" sourceExternalFilepath="E:/未成世界/Audio/SE/战斗相关/爆炸 较深邃 02.mp3" sourceLastImported="1730486515" href="爆炸/爆炸 较深邃 02.mp3" soundDataHRef="M 37 1737731645.dat" format="44kHz 16bit Stereo" sampleCount="245376" exportFormat="5" exportBits="17" dataLength="69867" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="30672"/>

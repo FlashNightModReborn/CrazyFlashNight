@@ -53,11 +53,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
           <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
      </fonts>
      <media>
           <DOMBitmapItem name="image/bitmap1263.png" itemID="67764730-00002060" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/image/bitmap1263.png" sourceLastImported="1736862750" externalFileCRC32="1229271075" externalFileSize="302" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1263.png" bitmapDataHRef="M 109 1702343951.dat" frameRight="4800" frameBottom="4800"/>
@@ -1114,7 +1114,7 @@
           <Include href="sprite/元件 1.xml" loadImmediate="false" itemID="66078dbd-00000693" lastModified="1711771069"/>
           <Include href="sprite/元件 2.xml" loadImmediate="false" itemID="66078dc1-00000698" lastModified="1711771073"/>
           <Include href="sprite/元件 3.xml" loadImmediate="false" itemID="66078dc5-0000069c" lastModified="1711771077"/>
-          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1741547133"/>
+          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1741590782"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1741161249"/>
           <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289c" lastModified="1726480498"/>
           <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289e" lastModified="1726480498"/>
@@ -1815,6 +1815,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2286115" publishTime="1741590179"/>
+          <PublishItem publishSize="2286098" publishTime="1741589838"/>
+          <PublishItem publishSize="2285543" publishTime="1741587449"/>
           <PublishItem publishSize="2598845" publishTime="1737228291"/>
           <PublishItem publishSize="2597435" publishTime="1736866187"/>
           <PublishItem publishSize="2597416" publishTime="1736866084"/>
@@ -1832,8 +1835,5 @@
           <PublishItem publishSize="3307837" publishTime="1733059147"/>
           <PublishItem publishSize="3306765" publishTime="1732878923"/>
           <PublishItem publishSize="3324829" publishTime="1732380583"/>
-          <PublishItem publishSize="3337060" publishTime="1732288174" publishDebug="true"/>
-          <PublishItem publishSize="3077490" publishTime="1732107726"/>
-          <PublishItem publishSize="3077502" publishTime="1732107223"/>
      </publishHistory>
 </DOMDocument>
