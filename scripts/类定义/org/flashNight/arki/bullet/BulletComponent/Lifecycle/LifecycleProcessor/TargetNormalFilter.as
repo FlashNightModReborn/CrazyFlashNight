@@ -1,9 +1,9 @@
 ﻿
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*;
 
-class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.TargetFilter implements ITargetFilter{
+class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.TargetNormalFilter implements ITargetFilter{
 
-    public function TargetFilter() {
+    public function TargetNormalFilter() {
     }
 
     /**
@@ -13,7 +13,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.Ta
         if (Math.abs(zOffset) >= target.Z轴攻击范围) {
             return true;
         }
-        if (hitTarget.防止无限飞 == true && (hitTarget.hp > 0 || target.近战检测)) {
+        if (hitTarget.防止无限飞 == true && (hitTarget.hp > 0)) {
             return true;
         }
         return false;

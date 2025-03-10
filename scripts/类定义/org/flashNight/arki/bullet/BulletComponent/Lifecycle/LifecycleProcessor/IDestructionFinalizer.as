@@ -2,5 +2,5 @@
     /**
      * 执行销毁前的检查与后续处理
      */
-    function finalizeDestruction(target:MovieClip):Void;
+    function finalizeDestruction(target:MovieClip, isPointSet:Boolean):Void;
 }

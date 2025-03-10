@@ -6,11 +6,12 @@ import org.flashNight.arki.component.Collider.*;    // 碰撞系统
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*;
 
 /**
- * 默认碰撞命中处理器实现
+ * 针对无击中回调的子弹
  */
-class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.CollisionAndHitProcessor implements ICollisionAndHitProcessor {
+
+class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.CollisionAndHitNormalProcessor implements ICollisionAndHitProcessor {
     
-    public function CollisionAndHitProcessor() {}
+    public function CollisionAndHitNormalProcessor() {}
     
     public function processCollisionAndHit(
         target:MovieClip,
@@ -48,11 +49,6 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.Co
             target.附加层伤害计算 = 0;
             target.命中对象 = hitTarget;
             hitCount++;
-
-            // 触发回调
-            if (target.击中时触发函数) {
-                target.击中时触发函数();
-            }
             
             // 计算躲避状态
             var dodgeState:String = (target.伤害类型 == "真伤")

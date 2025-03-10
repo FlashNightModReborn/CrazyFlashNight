@@ -2,9 +2,9 @@
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*; // 目标缓存
 
 
-class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.TargetRetriever implements ITargetRetriever{
+class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.TargetEnemyRetriever implements ITargetRetriever{
     
-    public function TargetRetriever() { }
+    public function TargetEnemyRetriever() { }
     
     /**
      * 根据发射者及伤害类型获取潜在目标
@@ -15,10 +15,8 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.Ta
             return []; // 发射者不存在返回空数组
         }
         
-        if (target.友军伤害) {
-            return TargetCacheManager.getCachedAll(shooter, 1);
-        } else {
-            return TargetCacheManager.getCachedEnemy(shooter, 1);
-        }
+
+        return TargetCacheManager.getCachedEnemy(shooter, 1);
+
     }
 }

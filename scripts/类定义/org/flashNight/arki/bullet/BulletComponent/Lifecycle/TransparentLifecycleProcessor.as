@@ -44,7 +44,7 @@ import org.flashNight.sara.util.*;      // 工具方法
  *     并基于是否联弹（isPointSet）拆分碰撞检测，避免不必要的多边形检测开销，
  *     后续可通过工厂模式装配不同的检测器。
  */
-class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProcessor {
+class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TransparentLifecycleProcessor {
 
 
     // 各个工具类实例
@@ -58,7 +58,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
     private var destructionFinalizer:IDestructionFinalizer;
     private var collisionHitProcessor:ICollisionAndHitProcessor;
     
-    public function BulletLifecycleProcessor() {
+    public function TransparentLifecycleProcessor() {
         colliderUpdater = new ColliderUpdater();
         targetRetriever = new TargetRetriever();
         targetFilter = new TargetFilter();
@@ -68,30 +68,5 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
         postHitFinalizer = new PostHitFinalizer();
         destructionFinalizer = new DestructionFinalizer();
         collisionHitProcessor = new CollisionAndHitProcessor();
-    }
-
-    /**
-     * 每帧调用的核心方法
-     * @param target:MovieClip 当前子弹实例 (this)
-     */
-    public function processFrame(target:MovieClip):Void {
-        if (colliderUpdater.updateCollider(target)) {
-            return;
-        }
-        
-        var unitMap:Array = targetRetriever.getPotentialTargets(target);
-        var isPointSet:Boolean = target.联弹检测 && (target._rotation % 180 !== 0);
-        var detector:ICollisionDetector = isPointSet ? pointDetector : nonPointDetector;
-
-        collisionHitProcessor.processCollisionAndHit(
-            target,
-            unitMap,
-            detector,
-            targetFilter,
-            hitResultProcessor,
-            postHitFinalizer
-        );
-
-        destructionFinalizer.finalizeDestruction(target, isPointSet);
     }
 }
