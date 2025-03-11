@@ -3,7 +3,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*; // 目标缓存
 
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.TargetEnemyRetriever implements ITargetRetriever{
-    
+    public static var instance:TargetEnemyRetriever = new TargetEnemyRetriever();
     public function TargetEnemyRetriever() { }
     
     /**

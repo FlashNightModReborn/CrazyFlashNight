@@ -9,7 +9,7 @@ import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*
 
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.PointCollisionDetector implements ICollisionDetector {
-    
+    public static var instance:PointCollisionDetector = new PointCollisionDetector();
     public function PointCollisionDetector() { }
     
     /**

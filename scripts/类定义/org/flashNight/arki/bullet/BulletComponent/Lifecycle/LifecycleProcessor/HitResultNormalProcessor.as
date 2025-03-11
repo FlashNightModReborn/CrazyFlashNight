@@ -11,7 +11,7 @@ import org.flashNight.neur.Event.*;     // 事件系统
 // 不发送kill事件
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.HitResultNormalProcessor implements IHitResultProcessor {
-    
+    public static var instance:HitResultNormalProcessor = new HitResultNormalProcessor();
     public function HitResultNormalProcessor() { }
     
     /**

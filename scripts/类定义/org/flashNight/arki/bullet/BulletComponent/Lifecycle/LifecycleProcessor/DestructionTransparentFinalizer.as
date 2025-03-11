@@ -7,7 +7,7 @@ import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*
 
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.DestructionTransparentFinalizer implements IDestructionFinalizer {
-    
+    public static var instance:DestructionTransparentFinalizer = new DestructionTransparentFinalizer();
     public function DestructionTransparentFinalizer() { }
     
     /**

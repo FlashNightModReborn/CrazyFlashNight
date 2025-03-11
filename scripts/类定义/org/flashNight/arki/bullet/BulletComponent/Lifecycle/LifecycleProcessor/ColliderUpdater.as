@@ -6,7 +6,7 @@ import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*
 import org.flashNight.arki.component.Collider.*;    // 碰撞系统
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.ColliderUpdater implements IColliderUpdater {
-    
+    public static var instance:ColliderUpdater = new ColliderUpdater();
     public function ColliderUpdater() { }
     
     /**

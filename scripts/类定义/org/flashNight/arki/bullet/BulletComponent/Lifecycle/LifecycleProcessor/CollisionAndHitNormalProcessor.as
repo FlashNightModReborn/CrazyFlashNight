@@ -10,7 +10,7 @@ import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*
  */
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.CollisionAndHitNormalProcessor implements ICollisionAndHitProcessor {
-    
+    public static var instance:CollisionAndHitNormalProcessor = new CollisionAndHitNormalProcessor();
     public function CollisionAndHitNormalProcessor() {}
     
     public function processCollisionAndHit(

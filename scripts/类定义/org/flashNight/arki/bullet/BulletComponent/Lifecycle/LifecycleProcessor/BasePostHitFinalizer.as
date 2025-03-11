@@ -5,6 +5,7 @@ import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*
  */
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.BasePostHitFinalizer implements IPostHitFinalizer {
     
+    public static var instance:BasePostHitFinalizer = new BasePostHitFinalizer();
     public function BasePostHitFinalizer() { }
     
     /**

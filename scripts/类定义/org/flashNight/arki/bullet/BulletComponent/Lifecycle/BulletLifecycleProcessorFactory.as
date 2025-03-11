@@ -1,5 +1,4 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Lifecycle.IBulletLifecycleProcessor;
-import org.flashNight.arki.bullet.BulletComponent.Lifecycle.BaseBulletLifecycleProcessor;
+﻿import org.flashNight.arki.bullet.BulletComponent.Lifecycle.*;
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*; // 各种处理器接口及实现
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProcessorFactory {
@@ -10,6 +9,37 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycleProces
      * @return IBulletLifecycleProcessor
      */
     public static function createBulletLifecycleProcessor(target:MovieClip):IBulletLifecycleProcessor {
+
+        var colliderUpdater:IColliderUpdater;
+        var targetRetriever:ITargetRetriever;
+        var targetFilter:ITargetFilter;
+        var nonPointDetector:ICollisionDetector;
+        var pointDetector:ICollisionDetector;
+        var hitResultProcessor:IHitResultProcessor;
+        var postHitFinalizer:IPostHitFinalizer;
+        var destructionFinalizer:IDestructionFinalizer;
+        var collisionHitProcessor:ICollisionAndHitProcessor;
+
+        if (target.透明检测) {
+            colliderUpdater = new ColliderTransparentUpdater();
+        }
+        else {
+            colliderUpdater = new ColliderUpdater();
+        }
+
+        if(target.友军伤害) {
+            targetRetriever = new TargetALLRetriever();
+        }
+        else {
+            targetRetriever = new TargetEnemyRetriever();
+        }
+
+        if(target.近战检测) {
+            targetFilter = new TargetALLRetriever();
+        }
+        else {
+            targetFilter = new TargetEnemyRetriever();
+        }
 
         // 1. 准备可能使用到的组件实现，之后视情况选用。
         var nonPointDetector:ICollisionDetector     = new NonPointCollisionDetector();

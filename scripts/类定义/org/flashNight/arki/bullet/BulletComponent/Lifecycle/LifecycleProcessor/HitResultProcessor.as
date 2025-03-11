@@ -8,7 +8,7 @@ import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*
 import org.flashNight.neur.Event.*;     // 事件系统
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.HitResultProcessor implements IHitResultProcessor {
-    
+    public static var instance:HitResultProcessor = new HitResultProcessor();
     public function HitResultProcessor() { }
     
     /**

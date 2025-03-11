@@ -8,7 +8,7 @@ import org.flashNight.arki.component.Collider.*;    // 碰撞系统
 // 非透明子弹使用
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.ColliderNormalUpdater implements IColliderUpdater {
-    
+    public static var instance:ColliderNormalUpdater = new ColliderNormalUpdater();
     public function ColliderNormalUpdater() { }
     
     /**

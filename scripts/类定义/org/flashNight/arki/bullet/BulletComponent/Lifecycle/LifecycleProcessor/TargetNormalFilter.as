@@ -2,7 +2,7 @@
 import org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.*;
 
 class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.TargetNormalFilter implements ITargetFilter{
-
+    public static var instance:TargetNormalFilter = new TargetNormalFilter();
     public function TargetNormalFilter() {
     }
 
