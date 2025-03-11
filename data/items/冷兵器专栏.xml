@@ -322,19 +322,13 @@
     <type>武器</type>
     <use>刀</use>
 	<actiontype>刀剑</actiontype>
-    <weight>1.5</weight>
-    <price>12000</price>
-    <skill>
-      <skillname>弧光斩</skillname>
-      <description>手持该武器时可以使用弧光斩。</description>
-      <cd>8000</cd>
-      <mp>40</mp>
-    </skill>
+    <weight>3</weight>
+    <price>10000</price>
     <description>棱角分明的砍刀在末日前就于黑社会中流行，末日后更是在堕落城几乎人手一把。
 在生产出更精致且轻盈的短刀前，&lt;font color=&quot;#000000&quot;&gt;黑铁会死士&lt;/font&gt;用的砍刀往往十分粗糙，且容易脱手。而在那几经易主之后，结局多是进入商店售出。</description>
     <level>11</level>
     <data>
-      <power>80</power>
+      <power>70</power>
     </data>
     <equipped>
       <dressup>刀-砍刀</dressup>
