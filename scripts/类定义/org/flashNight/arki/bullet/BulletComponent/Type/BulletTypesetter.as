@@ -54,9 +54,9 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
      * 设置子弹类型标志位。
      * 
      * @param bullet:Object 子弹对象，需包含子弹种类 (子弹种类: String)。
-     * @return Void
+     * @return Number 计算后的标志位值，如果子弹或子弹种类未定义，则返回 undefined。
      */
-    public static function setTypeFlags(bullet:Object):Void {
+    public static function setTypeFlags(bullet:Object):Number {
         if (bullet == undefined || bullet.子弹种类 == undefined) {
             trace("Warning: Bullet object or 子弹种类 is undefined.");
             return;
@@ -116,6 +116,11 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
 
         // 缓存基础素材名
         bullet.baseAsset = baseAsset;
+
+        // 缓存标志位
+        bullet.flags = flags;
+
+        return flags
     }
 
     /**
@@ -136,8 +141,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
         if (cachedData == undefined) {
             // 创建一个假子弹对象，仅包含必要的属性，避免影响原始对象
             var dummyBullet:Object = { 子弹种类: bulletType };
-            setTypeFlags(dummyBullet);
-            cachedData = typeCache[bulletType];
+            return setTypeFlags(dummyBullet);
         }
         
         return cachedData.flags;
