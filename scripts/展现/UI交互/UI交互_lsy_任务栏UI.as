@@ -69,8 +69,9 @@ _root.任务栏UI函数.打印任务挑战明细 = function(id){
 
 _root.任务栏UI函数.显示任务明细 = function(index){
 	var taskData = _root.getTaskData(_root.tasks_to_do[index].id);
-	this.taskName.htmlText = _root.getTaskText(taskData.title);
-	this.taskDesc.htmlText = _root.getTaskText(taskData.description);
+	this.任务标题 = _root.getTaskText(taskData.title);
+	this.任务详情.refresh();
+	this.任务信息.typeDescription(_root.getTaskText(taskData.description));
 	//关卡需求
 	this.关卡需求._visible = true;
 	if(taskData.finish_requirements == null){
@@ -129,22 +130,9 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 		this.持有物品.完成标志._visible = TaskUtil.containTaskItems(taskData.finish_contain_items);
 	}
 	//奖励
-	容器位置 += 60;
-	this.任务奖励._visible = true;
-	this.任务奖励._y = 容器位置;
-	this.任务奖励.taskFinishNPC.htmlText = "提交NPC：" + taskData.finish_npc;
-	for(var i = 0; i < this.任务奖励.iconList.length; i++){
-		this.任务奖励.iconList[i].removeMovieClip();
-	}
-	this.任务奖励.iconList = new Array();
-	for (var i = 0; i < taskData.rewards.length; i++){
-		var itemArr = taskData.rewards[i].split("#");
-		var 物品图标 = this.任务奖励.attachMovie("物品图标","物品图标" + i, i);
-		物品图标._x = 20 + i * 36;
-		物品图标._y = 60;
-		物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
-		this.任务奖励.iconList.push(物品图标);
-	}
+	this.任务奖励.rewards = taskData.rewards;
+	this.任务奖励.refresh();
+	// this.任务奖励.taskFinishNPC.htmlText = "提交NPC：" + taskData.finish_npc;
 }
 
 _root.任务栏UI函数.隐藏任务明细 = function(){
@@ -154,6 +142,17 @@ _root.任务栏UI函数.隐藏任务明细 = function(){
 	this.提交物品._visible = false;
 	this.持有物品._visible = false;
 	this.任务奖励._visible = false;
+}
+
+_root.任务栏UI函数.创建任务奖励图标 = function(){
+	for (var i = 0; i < this.rewards.length; i++){
+		var itemArr = this.rewards[i].split("#");
+		var 物品图标 = this["奖励图标" + i].底框.底框图形.attachMovie("物品图标","物品图标", 0);
+		物品图标._x = 15;
+		物品图标._y = 15;
+		物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
+		this.任务奖励.iconList.push(物品图标);
+	}
 }
 
 _root.任务栏UI函数.创建任务树 = function(){
