@@ -54,15 +54,29 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle imple
     }
 
     /**
+     * 获取动态帧处理器
+     * 根据联弹检测状态返回对应的处理函数
+     * 
+     * @param target:MovieClip 子弹对象
+     * @return Function 绑定到onEnterFrame的处理函数
+     */
+    private function getDynamicFrameHandler(target:MovieClip):Function {
+        // 在绑定时固化检测结果（假设此时状态已确定）
+
+        return target.联弹检测 
+            ? function() { BulletLifecycle.processor.processFrame(this); }
+            : function() { BulletLifecycle.processor.processFrameWithoutPointCheck(this); };
+    }
+
+
+    /**
      * 绑定帧事件处理器
      * 默认实现为将全局子弹生命周期处理器赋值给target.onEnterFrame
      *
      * @param target:MovieClip 要绑定的子弹对象
      */
     public function bindFrameHandler(target:MovieClip):Void {
-        target.onEnterFrame = function(){
-            BulletLifecycle.processor.processFrame(this);
-        };
+        target.onEnterFrame = getDynamicFrameHandler(target)
     }
 
     /**

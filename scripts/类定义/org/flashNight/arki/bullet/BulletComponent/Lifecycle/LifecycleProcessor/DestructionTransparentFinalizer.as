@@ -27,4 +27,18 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.De
             target.击中时触发函数();
         }
     }
+
+    /**
+     * 执行销毁前的检查与后续处理，不检查pointset
+     */
+    public function finalizeDestructionWithoutPointCheck(target:MovieClip):Void {
+        var areaAABB:ICollider = target.aabbCollider;
+        if (areaAABB) {
+            areaAABB.getFactory().releaseCollider(areaAABB);
+        }
+        
+        if (target.击中时触发函数) {
+            target.击中时触发函数();
+        }
+    }
 }

@@ -56,6 +56,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.TransparentBulletLife
      * @param target:MovieClip 要绑定的子弹对象
      */
     public function bindFrameHandler(target:MovieClip):Void {
-        BulletLifecycle.processor.processFrame(target);
+
+        getDynamicFrameHandler(target).call(target);
     }
 }
