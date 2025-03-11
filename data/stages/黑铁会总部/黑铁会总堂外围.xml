@@ -253,7 +253,21 @@
                         <Quantity>1</Quantity>
                         <Level>36</Level>
                         <SpawnIndex>right</SpawnIndex>
-                        <Parameters>称号:黑龙堂冶魁</Parameters>
+                        <Parameters>
+                            <掉落物>
+                                <名字>十文字大剑</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                            <掉落物>
+                                <名字>黑龙装备碎片</名字>
+                                <概率>100</概率>
+                                <最小数量>5</最小数量>
+                                <最大数量>5</最大数量>
+                            </掉落物>
+                            <称号>黑龙堂冶魁</称号>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
