@@ -34,7 +34,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BaseBulletLifecyclePr
     }
 
     /**
-     * 每帧调用的核心方法
+     * 每帧为联弹调用的核心方法
      * @param target:MovieClip 当前子弹实例 (this)
      */
     public function processFrame(target:MovieClip):Void {
@@ -43,11 +43,26 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.BaseBulletLifecyclePr
         }
 
         var unitMap:Array = targetRetriever.getPotentialTargets(target);
-        var isPointSet:Boolean = target.联弹检测 && (target._rotation % 180 !== 0);
+        var isPointSet:Boolean = target._rotation % 180 !== 0;
         var detector:ICollisionDetector = isPointSet ? pointDetector : nonPointDetector;
 
         collisionHitProcessor.processCollisionAndHit(target, unitMap, detector, targetFilter, hitResultProcessor, postHitFinalizer);
 
         destructionFinalizer.finalizeDestruction(target, isPointSet);
+    }
+
+    /**
+     * 非联弹时使用
+     * @param target:MovieClip 当前子弹实例 (this)
+     */
+    public function processFrameWithoutPointCheck(target:MovieClip):Void {
+        if (colliderUpdater.updateCollider(target)) {
+            return;
+        }
+
+        var unitMap:Array = targetRetriever.getPotentialTargets(target);
+        collisionHitProcessor.processCollisionAndHit(target, unitMap, nonPointDetector, targetFilter, hitResultProcessor, postHitFinalizer);
+
+        destructionFinalizer.finalizeDestructionWithoutPointCheck(target);
     }
 }

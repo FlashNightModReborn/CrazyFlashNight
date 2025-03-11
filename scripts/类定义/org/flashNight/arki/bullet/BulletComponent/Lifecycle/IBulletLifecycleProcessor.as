@@ -8,4 +8,9 @@ interface org.flashNight.arki.bullet.BulletComponent.Lifecycle.IBulletLifecycleP
      * 每帧调用的核心方法
      */
     function processFrame(target:MovieClip):Void;
+
+    /**
+     * 非联弹时使用
+     */
+    function processFrameWithoutPointCheck(target:MovieClip):Void
 }
