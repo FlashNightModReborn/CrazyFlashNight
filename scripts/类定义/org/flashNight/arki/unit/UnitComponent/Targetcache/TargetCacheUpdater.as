@@ -14,14 +14,14 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _allyVersion:Number = 0;
     
     // 配置常量
-    private static var _SORT_KEY:String = "right"; // 排序使用的关键字
+    // private static var _SORT_KEY:String = "right"; // 排序使用的关键字
     private static var _ENEMY_TYPE:String = "敌人";  // 敌人类型标识
     private static var _ALLY_TYPE:String = "友军";   // 友军类型标识
     private static var _ALL_TYPE:String = "全体";
 
 
     // 脏标记用于强制刷新
-    public static var dirtyMark:Boolean = true;
+    // public static var dirtyMark:Boolean = true;
     
     /**
      * 核心更新方法（方案1重写版）
@@ -74,7 +74,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         }
         
         // 如果缓存中记录的版本低于当前版本，或者全局脏标记 dirtyMark 为 true，则需要重新收集有效单位
-        if (cacheTypeData.tempVersion < currentVersion || dirtyMark) {
+        // if (cacheTypeData.tempVersion < currentVersion || dirtyMark) {
+        if (cacheTypeData.tempVersion < currentVersion) {
             // 清空临时列表
             cacheTypeData.tempList.length = 0;
             if (isAllRequest) {
@@ -96,26 +97,31 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         // 获取缓存类型的临时列表
         var list:Array = cacheTypeData.tempList;
         
-        // 内联展开插入排序（按照指定排序关键字进行排序）
+        // 内联展开插入排序（直接点索引属性进行排序）
         var len:Number = list.length;
         if (len > 1) {
-            for (var i:Number = 1; i < len; i++) {
+            var i:Number = 1;
+            do {
                 var key:Object = list[i];
-                var keyVal:Number = key.aabbCollider[_SORT_KEY];
+                var keyVal:Number = key.aabbCollider.right;
                 var j:Number = i - 1;
-                while (j >= 0 && list[j].aabbCollider[_SORT_KEY] > keyVal) {
-                    list[j + 1] = list[j];
-                    j--;
-                }
+                do {
+                    // 若 j 有效且前一个元素的 right 大于当前 key 的 right，则后移
+                    if (j >= 0 && list[j].aabbCollider.right > keyVal) {
+                        list[j + 1] = list[j--];
+                    } else {
+                        break;
+                    }
+                } while (j >= 0);
                 list[j + 1] = key;
-            }
+            } while (++i < len);
         }
         
         // 根据排序后的列表构建并更新缓存数据结构
         _rebuildCacheData(list, cacheEntry, currentFrame);
         
         // 重置全局脏标记（标记已被刷新）
-        dirtyMark = false;
+        // dirtyMark = false;
     }
 
     
@@ -148,7 +154,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             _allyVersion++;
         }
 
-        dirtyMark = true;
+        // dirtyMark = true;
     }
     
     /**
@@ -163,7 +169,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             _allyVersion++;
         }
 
-        dirtyMark = true;
+        // dirtyMark = true;
     }
     
     /**
