@@ -48,7 +48,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         var currentVersion:Number;
         if (isAllRequest) {
             // “全体”请求以敌人和友军中较高的版本号为准
-            currentVersion = (_enemyVersion > _allyVersion) ? _enemyVersion : _allyVersion;
+            currentVersion = _enemyVersion + _allyVersion;
         } else {
             currentVersion = targetIsEnemy ? _enemyVersion : _allyVersion;
         }
@@ -115,9 +115,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     /**
      * 全局版本控制方法 - 单位添加时更新对应阵营的版本号
      * 
-     * @param {MovieClip} target - 新增的单位
+     * @param {Object} target - 新增的单位
      */
-    public static function addUnit(target:MovieClip):Void {
+    public static function addUnit(target:Object):Void {
         if(target.是否为敌人) {
             _enemyVersion++;
         } else {
@@ -128,9 +128,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     /**
      * 全局版本控制方法 - 单位移除时更新对应阵营的版本号
      * 
-     * @param {MovieClip} target - 移除的单位
+     * @param {Object} target - 移除的单位
      */
-    public static function removeUnit(target:MovieClip):Void {
+    public static function removeUnit(target:Object):Void {
         if(target.是否为敌人) {
             _enemyVersion++;
         } else {
