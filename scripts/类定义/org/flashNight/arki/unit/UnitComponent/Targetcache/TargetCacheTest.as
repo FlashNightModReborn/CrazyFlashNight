@@ -1,6 +1,6 @@
-﻿import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+﻿/* 文件路径: org/flashNight/arki/unit/UnitComponent/targetcache/TargetCacheTest.as */
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
 
-// TargetCacheTest.as
 class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
   
     // 模拟游戏世界对象，存储所有单位
@@ -75,6 +75,10 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
                 this.right = u.x + u.width;
             }
         };
+
+        unit.toString = function():String {
+            return unit._name + " " + unit.是否为敌人 + " " + unit.aabbCollider.right;
+        };
         return unit;
     }
   
@@ -85,7 +89,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         if (getUnitCount() >= maxUnits) return;
         var unit:Object = createFakeUnit();
         this.gameWorld[unit._name] = unit;
-        TargetCacheUpdater.addUnit(unit); // ✅ 新增版本更新
+        TargetCacheUpdater.addUnit(unit); // 新增行
     }
   
     /**
@@ -99,7 +103,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         }
         var randomIndex:Number = Math.floor(Math.random() * keys.length);
         var unitKey:String = keys[randomIndex];
-        TargetCacheUpdater.removeUnit(this.gameWorld[unitKey]); // ✅ 新增版本更新
+        TargetCacheUpdater.removeUnit(this.gameWorld[unitKey]); // 新增行
         delete this.gameWorld[unitKey];
     }
   
@@ -118,7 +122,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
      * 模拟更新单位状态，包括随机移动和随机增删单位
      */
     private function updateUnits():Void {
-        // 遍历所有单位，随机移动单位并更新碰撞箱
         for (var key:String in this.gameWorld) {
             var unit:Object = this.gameWorld[key];
             // 随机移动：x 和 y 方向各随机 -2 到 +2
@@ -126,7 +129,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
             var dy:Number = (Math.random() * 4) - 2;
             unit.x += dx;
             unit.y += dy;
-            // 更新碰撞箱右边界
             unit.aabbCollider.updateFromUnitArea(unit);
         }
     }
@@ -135,7 +137,6 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
      * 运行一次更新循环，模拟一帧游戏更新
      */
     public function runUpdateCycle():Void {
-        // 增加全局帧计时器
         _root.帧计时器.当前帧数++;
       
         // 随机决定是否添加或移除单位（各 10% 概率）
@@ -147,10 +148,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
             }
         }
       
-        // 更新所有单位的位置和碰撞箱
         updateUnits();
       
-        // 选择一个示例单位（任一单位）用于调用 TargetCacheManager 的接口
         var sampleUnit:Object;
         for (var key:String in this.gameWorld) {
             sampleUnit = this.gameWorld[key];
@@ -158,122 +157,45 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         }
         if (!sampleUnit) return;
       
-        // 模拟调用缓存更新接口（更新敌人、友军、全体缓存），这里的更新间隔写死为 5 帧
-        TargetCacheManager.updateTargetCache(sampleUnit, 5, "敌人", sampleUnit.是否为敌人.toString());
-        TargetCacheManager.updateTargetCache(sampleUnit, 5, "友军", sampleUnit.是否为敌人.toString());
-        TargetCacheManager.updateTargetCache(sampleUnit, 5, "全体", "all");
-      
-        // 如果需要，也可在此读取缓存（例如测试读取性能）
-        // var enemyTargets:Array = TargetCacheManager.getCachedEnemy(sampleUnit, 5);
-        // var allyTargets:Array = TargetCacheManager.getCachedAlly(sampleUnit, 5);
-        // var allTargets:Array = TargetCacheManager.getCachedAll(sampleUnit, 5);
+        // 更新敌人、友军、全体缓存（更新间隔写死为 1 帧）
+        TargetCacheManager.getCachedEnemy(sampleUnit, 1);
+        TargetCacheManager.getCachedAlly(sampleUnit, 1);
+        TargetCacheManager.getCachedAll(sampleUnit, 1);
     }
   
     /**
-     * 预热阶段：执行一段时间的更新循环并记录耗时（以便让系统进入稳定状态）
+     * 预热阶段：执行一段时间的更新循环并记录耗时
      */
     public function performWarmup():Number {
         var startTime:Number = getTimer();
         for (var i:Number = 0; i < this.warmupIterations; i++) {
             runUpdateCycle();
         }
-        var endTime:Number = getTimer();
-        var elapsed:Number = endTime - startTime;
+        var elapsed:Number = getTimer() - startTime;
         trace("预热阶段：" + this.warmupIterations + " 次更新耗时 " + elapsed + " 毫秒");
         return elapsed;
     }
   
     /**
-     * 测试阶段：执行指定次数的更新循环，记录总耗时（包含更新和缓存获取）
+     * 测试阶段：执行指定次数的更新循环并记录总耗时
      */
     public function performTest():Number {
         var startTime:Number = getTimer();
         for (var i:Number = 0; i < this.updateIterations; i++) {
             runUpdateCycle();
         }
-        var endTime:Number = getTimer();
-        var elapsed:Number = endTime - startTime;
+        var elapsed:Number = getTimer() - startTime;
         trace("测试阶段：" + this.updateIterations + " 次更新耗时 " + elapsed + " 毫秒");
         return elapsed;
     }
 
     /**
-     * 在预热结束后，进行一次缓存准确性检验：
-     * 对当前游戏世界中每个单位，分别获取敌人、友军和全体缓存，
-     * 与手动筛选 + 排序的结果对比，检查是否满足预期。
-     */
-    private function checkCacheAccuracy():Void {
-        trace("=== 开始缓存准确性检验 ===");
-        var mismatchCount:Number = 0;
-
-        var traceEnemies:Boolean = false;
-        var traceAllies:Boolean = false;
-        var traceALL:Boolean = false;
-        
-        for (var key:String in this.gameWorld) {
-            var unit:Object = this.gameWorld[key];
-            
-            // 从 TargetCacheManager 获取缓存数据（设定 updateInterval=0，强制立即更新）
-            var enemiesCached:Array = TargetCacheManager.getCachedEnemy(unit, 0);
-            var alliesCached:Array  = TargetCacheManager.getCachedAlly(unit, 0);
-            var allCached:Array     = TargetCacheManager.getCachedAll(unit, 0);
-
-            // 手动筛选并排序
-            var enemiesManual:Array = collectManualEnemies(unit);
-            var alliesManual:Array  = collectManualAllies(unit);
-            var allManual:Array     = collectManualAll();
-
-            // 逐项比较
-            if (!compareArrays(enemiesCached, enemiesManual)) {
-                mismatchCount++;
-                trace(" [不匹配] 单位 " + unit._name + " 的敌人列表与手动结果不同");
-                traceEnemies = true;
-
-            }
-            
-            if (!compareArrays(alliesCached, alliesManual)) {
-                mismatchCount++;
-                trace(" [不匹配] 单位 " + unit._name + " 的友军列表与手动结果不同");
-                traceAllies = true;
-
-            }
-            
-            if (!compareArrays(allCached, allManual)) {
-                mismatchCount++;
-                trace(" [不匹配] 单位 " + unit._name + " 的全体列表与手动结果不同");
-                traceALL = true;
-            }
-        }
-
-        if(traceEnemies) {
-            trace("   缓存返回: " + arrayToString(enemiesCached));
-            trace("   手动结果: " + arrayToString(enemiesManual));
-        }
-
-        if(traceAllies) {
-            trace("   缓存返回: " + arrayToString(alliesCached));
-            trace("   手动结果: " + arrayToString(alliesManual));
-        }
-
-        if(traceALL) {
-            trace("   缓存返回: " + arrayToString(allCached));
-            trace("   手动结果: " + arrayToString(allManual));
-        }
-        if (mismatchCount == 0) {
-            trace("=== 缓存准确性检验通过，未发现差异 ===");
-        } else {
-            trace("=== 缓存准确性检验结束，共发现 " + mismatchCount + " 处不匹配 ===");
-        }
-    }
-    
-    /**
-     * 将数组信息转为便于阅读的字符串，可根据需要增改打印的属性
+     * 辅助方法：将数组转为便于阅读的字符串
      */
     private function arrayToString(arr:Array):String {
         var s:String = "[";
         for (var i:Number = 0; i < arr.length; i++) {
             var u:Object = arr[i];
-            // 打印名称和 right 值，以直观查看排序结果
             s += u._name + "(right=" + u.aabbCollider.right + ")";
             if (i < arr.length - 1) {
                 s += ", ";
@@ -283,67 +205,74 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         return s;
     }
   
-    /**
-     * 运行完整测试：先预热，再进行准确性校验，然后再正式测试
-     */
-    public function runTest():Void {
-        trace("=== TargetCache 测试开始 ===");
-        var warmupTime:Number = performWarmup();
-        
-        // 预热结束后，进行缓存准确性检验
-        checkCacheAccuracy();
-        
-        // 然后进入正式性能测试
-        var testTime:Number = performTest();
-        
-        trace("预热阶段耗时：" + warmupTime + " 毫秒");
-        trace("测试阶段耗时：" + testTime + " 毫秒");
-        trace("当前单位数量：" + getUnitCount());
-        trace("=== TargetCache 测试结束 ===");
+    private function insertionSortByRight(list:Array):Void {
+        var len:Number = list.length;
+        for (var i:Number = 1; i < len; i++) {
+            var currentUnit:Object = list[i];
+            var currentVal:Number = currentUnit.aabbCollider.right;
+            var j:Number = i - 1;
+            while (j >= 0 && list[j].aabbCollider.right > currentVal) {
+                list[j + 1] = list[j];
+                j--;
+            }
+            list[j + 1] = currentUnit;
+        }
     }
   
-    // -----------------------------------------------------------------
-    // 以下是校验准确性时用到的辅助方法：手动筛选 + 排序 + 数组比对
-    // -----------------------------------------------------------------
-
-    /**
-     * 手动筛选：收集指定参考单位(RefUnit)的敌人集合并按 right 值排序
-     */
-    private function collectManualEnemies(refUnit:Object):Array {
+    private function compareArrays(arr1:Array, arr2:Array):Boolean {
+        if (arr1.length != arr2.length) {
+            trace("数组长度不匹配: ");
+            trace("arr1 长度: " + arr1.length + " | 内容: " + arrayToString(arr1));
+            trace("arr2 长度: " + arr2.length + " | 内容: " + arrayToString(arr2));
+            return false;
+        }
+        for (var i:Number = 0; i < arr1.length; i++) {
+            if (arr1[i] != arr2[i]) {
+                trace("数组元素不匹配（索引 " + i + "）: ");
+                trace("arr1 元素: " + arr1[i]._name + " (right=" + arr1[i].aabbCollider.right + ")");
+                trace("arr2 元素: " + arr2[i]._name + " (right=" + arr2[i].aabbCollider.right + ")");
+                trace("完整数组对比:");
+                trace("arr1: " + arrayToString(arr1));
+                trace("arr2: " + arrayToString(arr2));
+                return false;
+            }
+        }
+        return true;
+    }
+  
+    // 以下方法用于手动筛选，用以验证缓存准确性
+    private function collectManualEnemies(requestor:Object):Array {
         var result:Array = [];
         for (var key:String in this.gameWorld) {
             var u:Object = this.gameWorld[key];
-            if (u.hp > 0 && u.是否为敌人 != refUnit.是否为敌人) {
+            if (u.hp > 0 && u.是否为敌人 != requestor.是否为敌人) {
+                u.aabbCollider.updateFromUnitArea(u);
                 result.push(u);
             }
         }
         insertionSortByRight(result);
         return result;
     }
-
-    /**
-     * 手动筛选：收集指定参考单位(RefUnit)的友军集合并按 right 值排序
-     */
-    private function collectManualAllies(refUnit:Object):Array {
+  
+    private function collectManualAllies(requestor:Object):Array {
         var result:Array = [];
         for (var key:String in this.gameWorld) {
             var u:Object = this.gameWorld[key];
-            if (u.hp > 0 && u.是否为敌人 == refUnit.是否为敌人) {
+            if (u.hp > 0 && u.是否为敌人 == requestor.是否为敌人) {
+                u.aabbCollider.updateFromUnitArea(u);
                 result.push(u);
             }
         }
         insertionSortByRight(result);
         return result;
     }
-
-    /**
-     * 手动筛选：收集所有存活单位并按 right 值排序
-     */
+  
     private function collectManualAll():Array {
         var result:Array = [];
         for (var key:String in this.gameWorld) {
             var u:Object = this.gameWorld[key];
             if (u.hp > 0) {
+                u.aabbCollider.updateFromUnitArea(u);
                 result.push(u);
             }
         }
@@ -352,34 +281,67 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
     }
   
     /**
-     * 简单的插入排序，根据 aabbCollider.right 进行排序
+     * 校验缓存准确性，将缓存结果与手动筛选+排序结果对比
      */
-    private function insertionSortByRight(list:Array):Void {
-        var len:Number = list.length;
-        for (var i:Number = 1; i < len; i++) {
-            var key:Object = list[i];
-            var keyVal:Number = key.aabbCollider.right;
-            var j:Number = i - 1;
-            while (j >= 0 && list[j].aabbCollider.right > keyVal) {
-                list[j + 1] = list[j];
-                j--;
+    private function checkCacheAccuracy():Void {
+        trace("=== 开始缓存准确性检验 ===");
+        var mismatchCount:Number = 0;
+        for (var key:String in this.gameWorld) {
+            var unit:Object = this.gameWorld[key];
+            var enemiesCached:Array = TargetCacheManager.getCachedEnemy(unit, 0);
+            var alliesCached:Array  = TargetCacheManager.getCachedAlly(unit, 0);
+            var allCached:Array     = TargetCacheManager.getCachedAll(unit, 0);
+  
+            var enemiesManual:Array = collectManualEnemies(unit);
+            var alliesManual:Array  = collectManualAllies(unit);
+            var allManual:Array     = collectManualAll();
+  
+            if (!compareArrays(enemiesCached, enemiesManual)) {
+                mismatchCount++;
+                trace("Enemies [不匹配] 单位 " + unit + " 的敌人列表与手动结果不同");
             }
-            list[j + 1] = key;
+            if (!compareArrays(alliesCached, alliesManual)) {
+                mismatchCount++;
+                trace("Allies [不匹配] 单位 " + unit + " 的友军列表与手动结果不同");
+            }
+            if (!compareArrays(allCached, allManual)) {
+                mismatchCount++;
+                trace("All [不匹配] 单位 " + unit + " 的全体列表与手动结果不同");
+            }
+        }
+  
+        if (mismatchCount == 0) {
+            trace("=== 缓存准确性检验通过，未发现差异 ===");
+        } else {
+            trace("=== 缓存准确性检验结束，共发现 " + mismatchCount + " 处不匹配 ===");
         }
     }
-
+  
     /**
-     * 比较两个数组元素是否相同（包含顺序比较），如果长度或任一位置的元素不一致则返回 false
+     * 执行测试：预热、准确性校验、正式测试，并输出性能指标
      */
-    private function compareArrays(arr1:Array, arr2:Array):Boolean {
-        if (arr1.length != arr2.length) {
-            return false;
-        }
-        for (var i:Number = 0; i < arr1.length; i++) {
-            if (arr1[i] != arr2[i]) {
-                return false;
-            }
-        }
-        return true;
+    public function runTest():Void {
+        trace("=== TargetCache 测试开始 ===");
+        var warmupTime:Number = performWarmup();
+        checkCacheAccuracy();
+        var testTime:Number = performTest();
+        var totalIterations:Number = this.warmupIterations + this.updateIterations;
+        var totalTime:Number = warmupTime + testTime;
+        var warmupAvg:Number = warmupTime / this.warmupIterations;
+        var testAvg:Number = testTime / this.updateIterations;
+        var totalAvg:Number = totalTime / totalIterations;
+        trace("\n性能指标分析：");
+        trace("预热阶段：");
+        trace("  ▸ 总次数：" + this.warmupIterations + " 次");
+        trace("  ▸ 单次耗时：" + warmupAvg + " 毫秒/次");
+        trace("测试阶段：");
+        trace("  ▸ 总次数：" + this.updateIterations + " 次");
+        trace("  ▸ 单次耗时：" + testAvg + " 毫秒/次");
+        trace("综合统计：");
+        trace("  ▸ 总耗时：" + totalTime + " 毫秒");
+        trace("  ▸ 平均耗时：" + totalAvg + " 毫秒/次");
+        trace("  ▸ 帧率估算：" + (1000 / totalAvg) + " FPS");
+        trace("\n当前单位数量：" + getUnitCount());
+        trace("=== TargetCache 测试结束 ===");
     }
 }

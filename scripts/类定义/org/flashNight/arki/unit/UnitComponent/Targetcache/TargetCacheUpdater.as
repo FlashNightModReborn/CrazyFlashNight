@@ -47,7 +47,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         // 根据阵营细化的版本号，判断是否需要更新缓存
         var currentVersion:Number;
         if (isAllRequest) {
-            // “全体”请求以敌人和友军中较高的版本号为准
+            // “全体”请求以敌人和友军中较高的版本号和为准
             currentVersion = _enemyVersion + _allyVersion;
         } else {
             currentVersion = targetIsEnemy ? _enemyVersion : _allyVersion;
