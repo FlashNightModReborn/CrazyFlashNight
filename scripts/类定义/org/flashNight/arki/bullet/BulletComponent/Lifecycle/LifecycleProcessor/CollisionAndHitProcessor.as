@@ -30,6 +30,7 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.LifecycleProcessor.Co
         for (var i:Number = 0; i < len; i++) {
             var hitTarget:MovieClip = unitMap[i];
             var zOffset:Number = hitTarget.Z轴坐标 - target.Z轴坐标;
+            // _root.发布消息(hitTarget + " " + zOffset)
             
             // 目标过滤逻辑
             if (targetFilter.shouldSkipHitTarget(target, hitTarget, zOffset)) {
