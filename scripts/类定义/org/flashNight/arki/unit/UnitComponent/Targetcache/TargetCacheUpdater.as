@@ -61,7 +61,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         var cacheKey:String = isAllRequest ? _ALL_TYPE : requestType + "_" + effectiveFaction.toString();
         
         // 获取或创建缓存类型数据
-        var cacheTypeData:Object = _getCacheTypeData(cacheKey);
+        // 内联展开 _getCacheTypeData 的核心逻辑 (性能关键优化点)
+        var cacheTypeData:Object; // 原函数返回值
+        if(!_cachePool[cacheKey]) { // 原函数条件判断
+            // 原函数创建逻辑
+            _cachePool[cacheKey] = { 
+                tempList: [], 
+                tempVersion: 0 
+            };
+        }
+        cacheTypeData = _cachePool[cacheKey]; // 原函数返回语句
         
         // 根据实际要收集的阵营选择对应的版本号：
         // - 对于全体请求，采用 ( _enemyVersion + _allyVersion )
@@ -118,7 +127,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         }
         
         // 根据排序后的列表构建并更新缓存数据结构
-        _rebuildCacheData(list, cacheEntry, currentFrame);
+        //_rebuildCacheData(list, cacheEntry, currentFrame);
+        cacheEntry.data = list;
+        cacheEntry.lastUpdatedFrame = currentFrame;
         
         // 重置全局脏标记（标记已被刷新）
         // dirtyMark = false;
@@ -187,25 +198,34 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         isEnemyRequest:Boolean,
         targetList:Array
     ):Void {
-        var shouldCheckOpposite:Boolean = isEnemyRequest;
         var unitKey:String;
         var unit:Object;
         var unitIsEnemy:Boolean;
-    
-        for(unitKey in gameWorld) {
-            unit = gameWorld[unitKey];
-            // 内联有效性检查，跳过血量小于等于0的死亡单位
-            if(unit.hp <= 0) continue;
-            unitIsEnemy = unit.是否为敌人;
-            // 根据请求条件判断单位是否有效
-            if(!(shouldCheckOpposite ? 
-                (requesterIsEnemy != unitIsEnemy) :  // 判断对立关系（敌人请求）
-                (requesterIsEnemy == unitIsEnemy)))   // 判断相同关系（友军请求）
-                continue;
-            // 更新碰撞体信息并加入目标列表
-            unit.aabbCollider.updateFromUnitArea(targetList[targetList.length] = unit);
+        
+        // 将核心判断逻辑提升到循环外
+        if (isEnemyRequest) {
+            // 敌人请求分支：收集与请求者阵营不同的单位
+            for (unitKey in gameWorld) {
+                unit = gameWorld[unitKey];
+                if (unit.hp <= 0) continue;
+                unitIsEnemy = unit.是否为敌人;
+                if (requesterIsEnemy != unitIsEnemy) {
+                    unit.aabbCollider.updateFromUnitArea(targetList[targetList.length] = unit);
+                }
+            }
+        } else {
+            // 友军请求分支：收集与请求者阵营相同的单位
+            for (unitKey in gameWorld) {
+                unit = gameWorld[unitKey];
+                if (unit.hp <= 0) continue;
+                unitIsEnemy = unit.是否为敌人;
+                if (requesterIsEnemy == unitIsEnemy) {
+                    unit.aabbCollider.updateFromUnitArea(targetList[targetList.length] = unit);
+                }
+            }
         }
     }
+
     
     /**
      * 收集有效单位（性能优化版） - 全体单位收集
@@ -243,8 +263,9 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             unit = sourceList[i];
             newNameIndex[unit._name] = i;
         }
-        cacheEntry.data = sourceList;
         cacheEntry.nameIndex = newNameIndex;
+
+        cacheEntry.data = sourceList;
         cacheEntry.lastUpdatedFrame = currentFrame;
     }
 }

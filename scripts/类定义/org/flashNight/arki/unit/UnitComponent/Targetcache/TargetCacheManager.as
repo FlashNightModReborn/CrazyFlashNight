@@ -52,7 +52,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     private static function _createCacheEntry():Object {
         return {
             data: _CACHE_TEMPLATE.data.concat(),  // 新建数组，避免与其他缓存数据共享引用
-            nameIndex: {},  // 名称索引，可能用于快速查找目标
+            // nameIndex: {},  // 名称索引，可能用于快速查找目标
             lastUpdatedFrame: _CACHE_TEMPLATE.lastUpdatedFrame  // 初始化时设置为0
         };
     }
