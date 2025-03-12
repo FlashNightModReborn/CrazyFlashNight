@@ -18,16 +18,20 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _ENEMY_TYPE:String = "敌人";  // 敌人类型标识
     private static var _ALLY_TYPE:String = "友军";   // 友军类型标识
     private static var _ALL_TYPE:String = "全体";
+
+
+    // 脏标记用于强制刷新
+    public static var dirtyMark:Boolean = true;
     
     /**
-     * 核心更新方法
-     * 用于更新目标缓存数据，包括目标的有效性检查、排序、缓存重建等操作。
-     * 此版本对版本号进行了阵营细化，并采用内联展开的插入排序，避免匿名函数带来的性能损耗。
-     * 
+     * 核心更新方法（方案1重写版）
+     * 用于更新目标缓存数据，包括有效性检查、排序、缓存重建等操作。
+     * 根据请求类型和请求者阵营，确定实际要收集的单位阵营，并使用对应版本号判断是否需要更新缓存。
+     *
      * @param {Object} gameWorld - 当前游戏世界对象，包含所有单位信息
-     * @param {Number} currentFrame - 当前帧数，用于判断缓存是否过时
-     * @param {String} requestType - 请求类型（如“敌人”或“友军”）
-     * @param {Boolean} targetIsEnemy - 目标是否为敌人
+     * @param {Number} currentFrame - 当前帧数，用于更新缓存的时间戳
+     * @param {String} requestType - 请求类型（如“敌人”、“友军”或“全体”）
+     * @param {Boolean} targetIsEnemy - 发起请求的单位是否为敌人（true表示敌人，false表示友军）
      * @param {Object} cacheEntry - 目标缓存项
      */
     public static function updateCache(
@@ -37,53 +41,69 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         targetIsEnemy:Boolean,
         cacheEntry:Object
     ):Void {
+        // 判断是否为全体请求
         var isAllRequest:Boolean = (requestType == _ALL_TYPE);
-        // 生成复合缓存键（由请求类型和目标状态组成）
-        var cacheKey:String = isAllRequest ? _ALL_TYPE : requestType + "_" + targetIsEnemy.toString();
+        // 判断请求类型是否为“敌人”
+        var isEnemyRequest:Boolean = (requestType == _ENEMY_TYPE);
+        
+        // 根据请求类型确定实际要收集的阵营：
+        // - 如果是“全体”，则不分阵营
+        // - 如果是“敌人”，则要收集与请求者相反的单位（即：effectiveFaction = !targetIsEnemy）
+        // - 如果是“友军”，则收集与请求者相同的单位（effectiveFaction = targetIsEnemy）
+        var effectiveFaction:Boolean;
+        if (isAllRequest) {
+            // 此时不需要区分敌友，effectiveFaction无效
+        } else {
+            effectiveFaction = isEnemyRequest ? !targetIsEnemy : targetIsEnemy;
+        }
+        
+        // 生成复合缓存键
+        var cacheKey:String = isAllRequest ? _ALL_TYPE : requestType + "_" + effectiveFaction.toString();
         
         // 获取或创建缓存类型数据
         var cacheTypeData:Object = _getCacheTypeData(cacheKey);
         
-        // 根据阵营细化的版本号，判断是否需要更新缓存
+        // 根据实际要收集的阵营选择对应的版本号：
+        // - 对于全体请求，采用 ( _enemyVersion + _allyVersion )
+        // - 否则：如果 effectiveFaction 为 true，则代表敌人（使用 _enemyVersion），否则使用 _allyVersion
         var currentVersion:Number;
         if (isAllRequest) {
-            // “全体”请求以敌人和友军中较高的版本号和为准
             currentVersion = _enemyVersion + _allyVersion;
         } else {
-            currentVersion = targetIsEnemy ? _enemyVersion : _allyVersion;
+            currentVersion = effectiveFaction ? _enemyVersion : _allyVersion;
         }
         
-        // 版本检查：如果缓存数据的版本小于当前版本，则需要重新收集有效单位
-        if(cacheTypeData.tempVersion < currentVersion) {
-            // 通知重建索引（消息可能触发其它逻辑，需注意是否引入额外开销）
-            _root.发布消息("重建索引 " + _root.帧计时器.当前帧数);
-            // 清空临时列表并重新收集有效单位
+        // 如果缓存中记录的版本低于当前版本，或者全局脏标记 dirtyMark 为 true，则需要重新收集有效单位
+        if (cacheTypeData.tempVersion < currentVersion || dirtyMark) {
+            // 清空临时列表
             cacheTypeData.tempList.length = 0;
-            if(isAllRequest) {
+            if (isAllRequest) {
                 _collectAllValidUnits(gameWorld, cacheTypeData.tempList);
             } else {
+                // 注意：_collectValidUnits 参数中的 isEnemyRequest 表示是否收集敌方单位，
+                // 此处如果请求类型为“敌人”，则收集与请求者相反的一边
                 _collectValidUnits(
                     gameWorld,
-                    targetIsEnemy,
-                    requestType == _ENEMY_TYPE,  // 判断是否为敌人请求
+                    targetIsEnemy,         // 请求者的阵营
+                    isEnemyRequest,        // 收集敌人（true）或友军（false）
                     cacheTypeData.tempList
                 );
             }
-            // 更新临时缓存版本号
+            // 更新缓存的临时版本号为当前版本
             cacheTypeData.tempVersion = currentVersion;
         }
         
         // 获取缓存类型的临时列表
         var list:Array = cacheTypeData.tempList;
         
-        // 内联展开排序处理，按指定的排序关键字进行排序
+        // 内联展开插入排序（按照指定排序关键字进行排序）
         var len:Number = list.length;
-        if(len > 1) {
+        if (len > 1) {
             for (var i:Number = 1; i < len; i++) {
                 var key:Object = list[i];
                 var keyVal:Number = key.aabbCollider[_SORT_KEY];
                 var j:Number = i - 1;
-                while(j >= 0 && list[j].aabbCollider[_SORT_KEY] > keyVal) {
+                while (j >= 0 && list[j].aabbCollider[_SORT_KEY] > keyVal) {
                     list[j + 1] = list[j];
                     j--;
                 }
@@ -91,9 +111,13 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             }
         }
         
-        // 构建并更新缓存数据结构
+        // 根据排序后的列表构建并更新缓存数据结构
         _rebuildCacheData(list, cacheEntry, currentFrame);
+        
+        // 重置全局脏标记（标记已被刷新）
+        dirtyMark = false;
     }
+
     
     /**
      * 缓存类型数据工厂
@@ -123,6 +147,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         } else {
             _allyVersion++;
         }
+
+        dirtyMark = true;
     }
     
     /**
@@ -136,6 +162,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         } else {
             _allyVersion++;
         }
+
+        dirtyMark = true;
     }
     
     /**

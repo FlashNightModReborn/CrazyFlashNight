@@ -80,7 +80,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
         // 内联_needUpdate逻辑开始
         // 如果缓存已经过时，且超过更新间隔，则执行缓存更新操作
-        if ((frame - cache.lastUpdatedFrame) > updateInterval) {
+        if (TargetCacheUpdater.dirtyMark || (frame - cache.lastUpdatedFrame) >= updateInterval) {
             TargetCacheUpdater.updateCache(
                 _root.gameworld,
                 frame,
