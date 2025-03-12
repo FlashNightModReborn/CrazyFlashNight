@@ -17,12 +17,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
     private var updateIterations:Number;
     private var warmupIterations:Number;
   
+    // 新增：预热循环次数，用于重复预热和准确率校验
+    private var warmupCycles:Number;
+  
     /**
-     * 构造函数，传入正式测试和预热的迭代次数
+     * 构造函数，传入正式测试和预热的迭代次数，以及预热循环次数
      */
-    public function TargetCacheTest(updateIterations:Number, warmupIterations:Number) {
+    public function TargetCacheTest(updateIterations:Number, warmupIterations:Number, warmupCycles:Number) {
         this.updateIterations = updateIterations;
         this.warmupIterations = warmupIterations;
+        this.warmupCycles = warmupCycles;
         this.gameWorld = {};
         this.unitCounter = 0;
         this.minUnits = 10;
@@ -318,22 +322,32 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
     }
   
     /**
-     * 执行测试：预热、准确性校验、正式测试，并输出性能指标
+     * 执行测试：重复多次预热+准确性校验，再执行正式测试，并输出性能指标
      */
     public function runTest():Void {
         trace("=== TargetCache 测试开始 ===");
-        var warmupTime:Number = performWarmup();
-        checkCacheAccuracy();
+        var totalWarmupTime:Number = 0;
+        for (var cycle:Number = 0; cycle < this.warmupCycles; cycle++) {
+            trace("=== 预热阶段循环 " + (cycle + 1) + " 开始 ===");
+            var warmupTime:Number = performWarmup();
+            totalWarmupTime += warmupTime;
+            checkCacheAccuracy();
+            trace("=== 预热阶段循环 " + (cycle + 1) + " 结束 ===");
+        }
+        var totalWarmupIterations:Number = this.warmupCycles * this.warmupIterations;
+        var avgWarmupTime:Number = totalWarmupTime / totalWarmupIterations;
+      
         var testTime:Number = performTest();
-        var totalIterations:Number = this.warmupIterations + this.updateIterations;
-        var totalTime:Number = warmupTime + testTime;
-        var warmupAvg:Number = warmupTime / this.warmupIterations;
+        var totalIterations:Number = totalWarmupIterations + this.updateIterations;
+        var totalTime:Number = totalWarmupTime + testTime;
         var testAvg:Number = testTime / this.updateIterations;
         var totalAvg:Number = totalTime / totalIterations;
+      
         trace("\n性能指标分析：");
         trace("预热阶段：");
-        trace("  ▸ 总次数：" + this.warmupIterations + " 次");
-        trace("  ▸ 单次耗时：" + warmupAvg + " 毫秒/次");
+        trace("  ▸ 循环次数：" + this.warmupCycles);
+        trace("  ▸ 每循环更新次数：" + this.warmupIterations);
+        trace("  ▸ 平均耗时：" + avgWarmupTime + " 毫秒/次");
         trace("测试阶段：");
         trace("  ▸ 总次数：" + this.updateIterations + " 次");
         trace("  ▸ 单次耗时：" + testAvg + " 毫秒/次");
