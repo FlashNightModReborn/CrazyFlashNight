@@ -75,7 +75,7 @@
                         <Quantity>1</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量:5</Parameters>
+                        <Parameters>内部物:强化石,数量:50</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="3">
@@ -84,7 +84,7 @@
                         <Quantity>1</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量:8</Parameters>
+                        <Parameters>内部物:强化石,数量:80</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
@@ -92,6 +92,13 @@
                         <Interval>500</Interval>
                         <Quantity>10</Quantity>
                         <Level>35</Level>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种55</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -216,7 +223,7 @@
                         <Quantity>1</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量_min:10,数量_max:14</Parameters>
+                        <Parameters>内部物:强化石,数量_min:100,数量_max:150</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="2">
@@ -275,7 +282,7 @@
                         <Quantity>1</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量_min:10,数量_max:14</Parameters>
+                        <Parameters>内部物:强化石,数量_min:100,数量_max:150</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="2">
@@ -334,7 +341,7 @@
                         <Quantity>1</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量_min:15,数量_max:20</Parameters>
+                        <Parameters>内部物:强化石,数量_min:50,数量_max:100</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="2">
@@ -393,7 +400,7 @@
                         <Quantity>1</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量_min:19,数量_max:26</Parameters>
+                        <Parameters>内部物:强化石,数量_min:90,数量_max:160</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="2">
@@ -413,6 +420,27 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>兵种55</Type>
+                        <Interval>500</Interval>
+                        <Quantity>7</Quantity>
+                        <Level>50</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种265</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
@@ -470,7 +498,7 @@
                         <Quantity>2</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量_min:8,数量_max:9</Parameters>
+                        <Parameters>内部物:强化石,数量_min:80,数量_max:90</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
@@ -479,7 +507,7 @@
                         <Quantity>1</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量_min:18,数量_max:21</Parameters>
+                        <Parameters>内部物:强化石,数量_min:80,数量_max:110</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="5">
@@ -488,7 +516,7 @@
                         <Quantity>1</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量:32</Parameters>
+                        <Parameters>内部物:强化石,数量:120</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="6">
@@ -589,7 +617,7 @@
                         <Quantity>3</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量_min:18,数量_max:21</Parameters>
+                        <Parameters>内部物:强化石,数量_min:120,数量_max:200</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="3">
@@ -598,7 +626,7 @@
                         <Quantity>1</Quantity>
                         <Level>1</Level>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>内部物:强化石,数量_min:85,数量_max:99</Parameters>
+                        <Parameters>内部物:强化石,数量_min:200,数量_max:210</Parameters>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
