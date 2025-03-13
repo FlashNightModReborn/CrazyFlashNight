@@ -119,7 +119,7 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
 
         // 缓存标志位
         bullet.flags = flags;
-
+        // _root.发布消息(baseAsset + ":" + flagsToString(flags))
         return flags
     }
 
@@ -164,6 +164,26 @@ class org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter implement
             setTypeFlags(tempBullet);
             return typeCache[bulletType].baseAsset;
         }
+    }
+
+    /**
+    * 将子弹类型的标志位转换为可读的字符串，便于调试输出。
+    * 
+    * @param flags:Number 标志位值。
+    * @return String 转换后的字符串，格式如 "MELEE, CHAIN"。若无标志位则返回 "NONE"。
+    */
+    public static function flagsToString(flags:Number):String {
+        var parts:Array = [];
+        if (flags & FLAG_MELEE)         parts.push("MELEE");
+        if (flags & FLAG_CHAIN)         parts.push("CHAIN");
+        if (flags & FLAG_PIERCE)        parts.push("PIERCE");
+        if (flags & FLAG_TRANSPARENCY)  parts.push("TRANSPARENCY");
+        if (flags & FLAG_GRENADE)       parts.push("GRENADE");
+        if (flags & FLAG_EXPLOSIVE)     parts.push("EXPLOSIVE");
+        if (flags & FLAG_NORMAL)        parts.push("NORMAL");
+        if (flags & FLAG_ENERGY)        parts.push("ENERGY");
+        if (flags & FLAG_REFINED)       parts.push("REFINED");
+        return parts.length > 0 ? parts.join(", ") : "NONE";
     }
 
     /**
