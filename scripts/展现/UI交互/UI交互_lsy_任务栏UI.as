@@ -3,7 +3,7 @@ import org.flashNight.arki.task.*;
 
 _root.任务栏UI函数 = new Object();
 
-
+//文本相关函数
 _root.任务栏UI函数.打印物品列表 = function(itemList):String{
 	var str = "";
 	for (var i = 0; i < itemList.length; i++){
@@ -67,6 +67,17 @@ _root.任务栏UI函数.打印任务挑战明细 = function(id){
 	return str;
 }
 
+_root.任务栏UI函数.打印任务对话 = function(taskText){
+	var str = "";
+	for(var i=0; i<taskText.length; i++){
+		str += _root.getDialogueSpecialString(taskText[i].name) + "：" + taskText[i].text + "\n";
+	}
+	return str;
+}
+
+
+
+//UI逻辑相关函数
 _root.任务栏UI函数.显示任务明细 = function(index){
 	var taskData = _root.getTaskData(_root.tasks_to_do[index].id);
 	this.任务标题 = _root.getTaskText(taskData.title);
@@ -163,6 +174,8 @@ _root.任务栏UI函数.创建任务树 = function(){
 	this.创建单个任务树("主线");
 	//设置可拖拽范围
 	任务节点图标._visible = false;
+	this.任务对话按钮._visible = false;
+	this.任务完成对话按钮._visible = false;
 }
 
 _root.任务栏UI函数.创建单个任务树 = function(chainName){
@@ -180,6 +193,26 @@ _root.任务栏UI函数.创建单个任务树 = function(chainName){
 		新节点._y = i * 30;
 		新节点.taskID = taskID;
 		if(_root.tasks_finished[taskID] <= 0) 新节点.taskName.htmlText = "？？？";
+	}
+}
+
+_root.任务栏UI函数.显示事件日志任务明细 = function(taskID){
+	this.taskDetail.htmlText = _root.任务栏UI函数.打印任务明细(taskID);
+	var get_conversation = TaskUtil.getTaskText(TaskUtil.getTaskData(taskID).get_conversation);
+	if(get_conversation.length > 0){
+		this.任务对话按钮._visible = true;
+		this.任务对话按钮.taskText = get_conversation;
+	}else{
+		this.任务对话按钮._visible = false;
+		this.任务对话按钮.taskText = null;
+	}
+	var finish_conversation = TaskUtil.getTaskText(TaskUtil.getTaskData(taskID).finish_conversation);
+	if(finish_conversation.length > 0){
+		this.任务完成对话按钮._visible = true;
+		this.任务完成对话按钮.taskText = finish_conversation;
+	}else{
+		this.任务完成对话按钮._visible = false;
+		this.任务完成对话按钮.taskText = null;
 	}
 }
 
