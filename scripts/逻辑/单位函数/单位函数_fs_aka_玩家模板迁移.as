@@ -1272,63 +1272,86 @@ _root.主角函数.非主角外观刷新 = function(){
 };
 
 
-_root.主角函数.移动 = function(移动方向, 速度){
-	//加上飞行浮空的判断
-	if (this.飞行浮空) return;
-	if (this.浮空 && (移动方向 === "上" || 移动方向 === "下")){
-		this.跳跃上下移动(移动方向, 速度);
-		return;
-	}
-	
-	var 坐标向量 = {x:this._x, y:this.Z轴坐标};
-	var 游戏世界 = _root.gameworld;
-	var 游戏世界地图 = 游戏世界.地图;
-
-	游戏世界.localToGlobal(坐标向量);
-	var xx = 坐标向量.x;
-	var yy = 坐标向量.y;
-	if (移动方向 === "右" && this._x + 速度 < _root.Xmax && (this._x + 速度 > _root.Xmin || 速度 > 0) && !游戏世界地图.hitTest(xx + 速度, yy, true))
-	{
-		this._x += 速度;
-	}
-	else if (移动方向 === "左" && this._x - 速度 > _root.Xmin && (this._x - 速度 < _root.Xmax || 速度 > 0) && !游戏世界地图.hitTest(xx - 速度, yy, true))
-	{
-		this._x -= 速度;
-	}
-	if (移动方向 === "下" && this._y + 速度 < _root.Ymax && !游戏世界地图.hitTest(xx, yy + 速度, true))
-	{
-		Z轴坐标 += 速度;
-		this._y = Z轴坐标;
-		this.swapDepths(this._y);
-	}
-	else if (移动方向 === "上" && this._y - 速度 > _root.Ymin && !游戏世界地图.hitTest(xx, yy - 速度, true))
-	{
-		Z轴坐标 -= 速度;
-		this._y = Z轴坐标;
-		this.swapDepths(this._y);
-	}
+_root.主角函数.移动 = function(移动方向, 速度) {
+    if (this.飞行浮空) return;
+    if (this.浮空 && (移动方向 === "上" || 移动方向 === "下")) {
+        this.跳跃上下移动(移动方向, 速度);
+        return;
+    }
+    
+    // 通用移动向量表：定义方向增量、坐标轴及垂直标志
+    var 移动向量表 = {
+        上:  {dx:0,  dy:-1, axis:"Z轴坐标", isVertical:true},
+        下:  {dx:0,  dy:1,  axis:"Z轴坐标", isVertical:true},
+        左:  {dx:-1, dy:0,  axis:"_x",     isVertical:false},
+        右:  {dx:1,  dy:0,  axis:"_x",     isVertical:false}
+    };
+    var vector = 移动向量表[移动方向];
+    if (!vector) return;
+    
+    // 计算全局坐标
+    var localPoint = {x:this._x, y:this.Z轴坐标};
+    _root.gameworld.localToGlobal(localPoint);
+    var targetX = localPoint.x + vector.dx * 速度;
+    var targetY = localPoint.y + vector.dy * 速度;
+    
+    // 碰撞检测与移动
+    if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
+        this[vector.axis] += (vector.dx || vector.dy) * 速度; // 根据轴增量更新坐标
+        if (vector.isVertical) { // 垂直方向需同步_y并调整深度
+            this._y = this.Z轴坐标;
+            this.swapDepths(this._y);
+        }
+    }
 };
 
 _root.移动 = _root.主角函数.移动;
 
-_root.主角函数.跳跃上下移动 = function(移动方向, 速度){
-	var 坐标向量 = {x:this._x, y:this.Z轴坐标};
-	var 游戏世界 = _root.gameworld;
-	var 游戏世界地图 = 游戏世界.地图;
-	游戏世界.localToGlobal(坐标向量);
-	var xx = 坐标向量.x;
-	var yy = 坐标向量.y;
-	if (移动方向 === "下" && this.Z轴坐标 + 速度 < _root.Ymax && !游戏世界地图.hitTest(xx, yy + 速度, true)){
-		Z轴坐标 += 速度;
-		this._y += 速度;
-		this.起始Y += 速度;
-		this.swapDepths(this.Z轴坐标);
-	}else if (移动方向 === "上" && this.Z轴坐标 - 速度 > _root.Ymin && !游戏世界地图.hitTest(xx, yy - 速度, true)){
-		Z轴坐标 -= 速度;
-		this._y -= 速度;
-		this.起始Y -= 速度;
-		this.swapDepths(this.Z轴坐标);
-	}
+_root.主角函数.跳跃上下移动 = function(移动方向, 速度) {
+    // 跳跃移动专用向量表：含起始Y更新量
+    var 跳跃向量表 = {
+        上: {dx:0, dy:-1, axis:"Z轴坐标", isVertical:true, 起始Y增量:-速度},
+        下: {dx:0, dy:1,  axis:"Z轴坐标", isVertical:true, 起始Y增量:速度}
+    };
+    var vector = 跳跃向量表[移动方向];
+    if (!vector) return;
+    
+    var localPoint = {x:this._x, y:this.Z轴坐标};
+    _root.gameworld.localToGlobal(localPoint);
+    var targetX = localPoint.x + vector.dx * 速度;
+    var targetY = localPoint.y + vector.dy * 速度;
+    
+    if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
+        this[vector.axis] += vector.dy * 速度;
+        this._y = this.Z轴坐标;       // 同步_y坐标
+        this.起始Y += vector.起始Y增量; // 更新跳跃起始点
+        this.swapDepths(this._y);     // 调整显示深度
+    }
+};
+
+_root.主角函数.强制移动 = function(移动方向, 速度) {
+    // 复用通用向量表，无状态检查直接移动
+    var 移动向量表 = {
+        上:  {dx:0,  dy:-1, axis:"Z轴坐标", isVertical:true},
+        下:  {dx:0,  dy:1,  axis:"Z轴坐标", isVertical:true},
+        左:  {dx:-1, dy:0,  axis:"_x",     isVertical:false},
+        右:  {dx:1,  dy:0,  axis:"_x",     isVertical:false}
+    };
+    var vector = 移动向量表[移动方向];
+    if (!vector) return;
+    
+    var localPoint = {x:this._x, y:this.Z轴坐标};
+    _root.gameworld.localToGlobal(localPoint);
+    var targetX = localPoint.x + vector.dx * 速度;
+    var targetY = localPoint.y + vector.dy * 速度;
+    
+    if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
+        this[vector.axis] += (vector.dx || vector.dy) * 速度;
+        if (vector.isVertical) {
+            this._y = this.Z轴坐标;
+            this.swapDepths(this._y);
+        }
+    }
 };
 
 _root.主角函数.被击移动 = function(移动方向, 速度, 摩擦力){
@@ -1355,29 +1378,6 @@ _root.主角函数.被击移动 = function(移动方向, 速度, 摩擦力){
 				}
 			}
 		};
-	}
-};
-
-_root.主角函数.强制移动 = function(移动方向, 速度){
-	var 坐标向量 = {x:this._x, y:this.Z轴坐标};
-	var 游戏世界 = _root.gameworld;
-	var 游戏世界地图 = 游戏世界.地图;
-
-	游戏世界.localToGlobal(坐标向量);
-	var xx = 坐标向量.x;
-	var yy = 坐标向量.y;
-	if (移动方向 === "右" && this._x + 速度 < _root.Xmax && (this._x + 速度 > _root.Xmin || 速度 > 0) && !游戏世界地图.hitTest(xx + 速度, yy, true)){
-		this._x += 速度;
-	}else if (移动方向 === "左" && this._x - 速度 > _root.Xmin && (this._x - 速度 < _root.Xmax || 速度 > 0) && !游戏世界地图.hitTest(xx - 速度, yy, true)){
-		this._x -= 速度;
-	}if (移动方向 === "下" && this._y + 速度 < _root.Ymax && !游戏世界地图.hitTest(xx, yy + 速度, true)){
-		Z轴坐标 += 速度;
-		this._y += 速度;
-		this.swapDepths(this._y);
-	}else if (移动方向 === "上" && this._y - 速度 > _root.Ymin && !游戏世界地图.hitTest(xx, yy - 速度, true)){
-		Z轴坐标 -= 速度;
-		this._y -= 速度;
-		this.swapDepths(this._y);
 	}
 };
 

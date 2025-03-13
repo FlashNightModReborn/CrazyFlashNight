@@ -98,35 +98,45 @@ _root.敌人函数.行走 = function()
 	}
 };
 
-_root.敌人函数.移动 = function(移动方向, 速度)
-{
-	var point = {x:this._x, y:this.Z轴坐标};
-	var 游戏世界 = _root.gameworld;
-	var 游戏世界地图 = 游戏世界.地图;
-	游戏世界.localToGlobal(point);
-	var xx = point.x;
-	var yy = point.y;
-	if (移动方向 === "右" && this._x + 速度 < _root.Xmax && (this._x + 速度 > _root.Xmin || 速度 > 0) && !游戏世界地图.hitTest(xx + 速度, yy, true))
-	{
-		this._x += 速度;
-	}
-	else if (移动方向 === "左" && this._x - 速度 > _root.Xmin && (this._x - 速度 < _root.Xmax || 速度 > 0) && !游戏世界地图.hitTest(xx - 速度, yy, true))
-	{
-		this._x -= 速度;
-	}
-	if (移动方向 === "下" && this._y + 速度 < _root.Ymax && !游戏世界地图.hitTest(xx, yy + 速度, true))
-	{
-		Z轴坐标 += 速度;
-		this._y = Z轴坐标;
-		this.swapDepths(this._y);
-	}
-	else if (移动方向 === "上" && this._y - 速度 > _root.Ymin && !游戏世界地图.hitTest(xx, yy - 速度, true))
-	{
-		Z轴坐标 -= 速度;
-		this._y = Z轴坐标;
-		this.swapDepths(this._y);
-	}
+_root.敌人函数.移动 = function(移动方向, 速度) {
+    // 计算当前对象的全局坐标
+    var point = {x: this._x, y: this.Z轴坐标};
+    var 游戏世界 = _root.gameworld;
+    var 游戏世界地图 = 游戏世界.地图;
+    游戏世界.localToGlobal(point);
+    var xx = point.x;
+    var yy = point.y;
+    
+    // 定义方向向量表，每个方向对应一个增量
+    var 方向向量 = {
+        上:  {dx: 0,  dy: -1},
+        下:  {dx: 0,  dy:  1},
+        左:  {dx: -1, dy:  0},
+        右:  {dx:  1, dy:  0}
+    };
+
+    // 根据传入的方向获取向量
+    var vector = 方向向量[移动方向];
+    if (vector != undefined) {
+        // 根据方向向量计算目标全局坐标
+        var targetX = xx + vector.dx * 速度;
+        var targetY = yy + vector.dy * 速度;
+        // 如果目标位置无碰撞，则执行移动
+        if (!游戏世界地图.hitTest(targetX, targetY, true)) {
+            // 水平移动：更新 _x
+            if (vector.dx != 0) {
+                this._x += vector.dx * 速度;
+            }
+            // 垂直移动：更新 Z轴坐标，并同步 _y 与深度
+            else if (vector.dy != 0) {
+                this.Z轴坐标 += vector.dy * 速度;
+                this._y = this.Z轴坐标;
+                this.swapDepths(this._y);
+            }
+        }
+    }
 };
+
 
 _root.敌人函数.被击移动 = function(移动方向, 速度, 摩擦力)
 {

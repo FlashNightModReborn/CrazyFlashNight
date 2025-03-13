@@ -110,17 +110,17 @@ _root.贴背景图 = function(){
 	游戏世界.deadbody.layers[0].draw(背景层,matrix,new flash.geom.ColorTransform(),"normal",undefined,true);
 	背景层._visible = false;
 	背景层.外部动画加载壳mc.unloadMovie(); //尝试直接卸载原背景
-	/*
-	
-    // 先清空之前的绘制
-    var 地图 = 游戏世界.地图;
 
+	var point = new Object({x:0, y:0});
+    var 地图 = 游戏世界.地图;
+	地图.localToGlobal(point);
+	游戏世界.globalToLocal(point)
     // 定义边界及安全边距
-    var margin = 10;  
-    var xmin = _root.Xmin;
-    var xmax = _root.Xmax;
-    var ymin = _root.Ymin;
-    var ymax = _root.Ymax;
+    var margin = 150;  
+    var xmin = _root.Xmin - point.x;
+    var xmax = _root.Xmax - point.x;
+    var ymin = _root.Ymin - point.y;
+    var ymax = _root.Ymax - point.y;
 
     // 计算“外框”坐标
     var outerLeft   = xmin - margin;
@@ -150,10 +150,10 @@ _root.贴背景图 = function(){
 
     // 结束填充
     地图.endFill();
+	
+	// 地图._visible = true;  // 显示地图
+	// 地图._alpha = 100;     // 让地图本身完全不透明（100 表示 100% 不透明）
 
-	地图._visible = true;  // 显示地图
-	地图._alpha = 100;     // 让地图本身完全不透明（100 表示 100% 不透明）
-	*/
 };
 
 _root.配置场景环境信息 = function(){
