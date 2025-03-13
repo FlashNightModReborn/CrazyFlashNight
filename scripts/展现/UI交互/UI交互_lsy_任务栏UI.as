@@ -156,4 +156,50 @@ _root.任务栏UI函数.创建任务奖励图标 = function(){
 }
 
 _root.任务栏UI函数.创建任务树 = function(){
+	this.任务树.initX = this.任务树._x;
+	this.任务树.initY = this.任务树._y;
+	this.任务树.setMask(this.遮罩);
+	var 任务节点图标 = this.任务树.任务节点图标;
+	this.创建单个任务树("主线");
+	//设置可拖拽范围
+	任务节点图标._visible = false;
+}
+
+_root.任务栏UI函数.创建单个任务树 = function(chainName){
+	var 任务节点图标 = this.任务树.任务节点图标;
+	var 任务进度 = _root.task_chains_progress[chainName];
+	if(!任务进度) return;
+	var chainArr = TaskUtil.task_in_chains_by_sequence[chainName];
+	var chainObj = TaskUtil.task_chains[chainName];
+	if(任务进度 > chainArr.length) 任务进度 = chainArr.length;
+	for(var i = 0; i < 任务进度; i++){
+		var taskID = chainObj[chainArr[i]];
+		var taskData = _root.getTaskData(taskID);
+		var 新节点 = 任务节点图标.duplicateMovieClip(chainName + "任务节点图标" + i,this.任务树.getNextHighestDepth());
+		新节点.taskName.htmlText = _root.getTaskText(taskData.title);
+		新节点._y = i * 30;
+		新节点.taskID = taskID;
+		if(_root.tasks_finished[taskID] <= 0) 新节点.taskName.htmlText = "？？？";
+	}
+}
+
+_root.任务栏UI函数.拖拽任务树 = function(){
+	//定义窗体基础大小与padding以计算拖拽范围
+	var x = this.任务树.initX;
+	var y = this.任务树.initY;
+	var baseWidth = 560;
+	var halfWidth = baseWidth / 2;
+	var baseHeight = 480;
+	var paddingX = 0;
+	var paddingY = 20;
+	var rect = this.任务树.getRect(this.任务树);
+	var left = rect.xMax > halfWidth ? halfWidth - rect.xMax : 0;
+	var right = -rect.xMin > halfWidth ? halfWidth + rect.xMin : 0;
+	var top = rect.yMax > baseHeight ? baseHeight - rect.yMax: 0;
+	var bottom = 0;
+	this.任务树.startDrag(false, x + left, y + top, x + right, y + bottom);
+}
+
+_root.任务栏UI函数.停止拖拽任务树 = function(){
+	this.任务树.stopDrag();
 }
