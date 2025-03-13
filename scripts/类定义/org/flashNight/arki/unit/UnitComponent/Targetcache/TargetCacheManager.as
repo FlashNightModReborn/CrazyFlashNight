@@ -19,8 +19,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     // 缓存模板，包含了缓存的数据数组、最后更新时间和数据版本
     private static var _CACHE_TEMPLATE:Object = {
         data: [],  // 缓存数据（目标列表）
-        lastUpdatedFrame: 0,  // 缓存的最后更新时间帧
-        dataVersion: ""  // 缓存的数据版本标识
+        lastUpdatedFrame: 0  // 缓存的最后更新时间帧
     };
 
     /**
