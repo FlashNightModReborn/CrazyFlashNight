@@ -19,6 +19,16 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
   
     // 新增：预热循环次数，用于重复预热和准确率校验
     private var warmupCycles:Number;
+
+    // 新增边界测试结果跟踪
+    private var boundaryTestPassed:Boolean = true;
+    private var boundaryTestCases:Number = 0;
+    private var boundaryTestFailures:Number = 0;
+    private var sampleUnit:Object;
+    private var expectedOrder:Array;
+    private var sampleU2:Object;  // 用于存储相同right值排序测试中创建的第二个单位
+
+
   
     /**
      * 构造函数，传入正式测试和预热的迭代次数，以及预热循环次数
@@ -51,6 +61,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
      * 初始化游戏世界，构造初始假数据单位
      */
     private function initializeGameWorld():Void {
+
+        _resetCacheSystem();
         var initialCount:Number = 20;
         for (var i:Number = 0; i < initialCount; i++) {
             addUnit();
@@ -166,6 +178,262 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         TargetCacheManager.getCachedAlly(sampleUnit, 1);
         TargetCacheManager.getCachedAll(sampleUnit, 1);
     }
+
+    /**
+     * 新增：边界条件测试核心方法
+     * 执行所有预定义的边界场景测试用例
+     */
+    public function runBoundaryTests():Void {
+        trace("\n=== 开始边界条件测试 ===");
+        
+        // 测试用例1：空游戏世界
+        _testBoundaryCase(
+            "空游戏世界测试", 
+            function(test:TargetCacheTest):Void {
+                test.gameWorld = {};
+                test.unitCounter = 0;
+                var dummy:Object = { 是否为敌人: true, aabbCollider: { right: 0, updateFromUnitArea: function(u:Object):Void {} } };
+                test.sampleUnit = dummy;
+
+            },
+            function(test:TargetCacheTest, u:Object):Void {
+                // 无需测试单位，直接验证缓存
+                test.assertArrayLength("敌人缓存", TargetCacheManager.getCachedEnemy(null, 0), 0);
+                test.assertArrayLength("友军缓存", TargetCacheManager.getCachedAlly(null, 0), 0);
+                test.assertArrayLength("全体缓存", TargetCacheManager.getCachedAll(null, 0), 0);
+            }
+        );
+
+
+        // 测试用例 2：仅存在一个敌人单位
+        _testBoundaryCase(
+            "单一敌人单位测试", 
+            function(test:TargetCacheTest):Void {
+                test._resetWorld();
+                var unit:Object = test._addUnitDirectly(true);
+                test.sampleUnit = unit;
+            },
+            function(test:TargetCacheTest, u:Object):Void {
+                test.assertArrayProp("敌人缓存应为空（只有自己，无相反阵营）", TargetCacheManager.getCachedEnemy(u, 0), "length", 0);
+                test.assertArrayLength("友军缓存(包含自己)", TargetCacheManager.getCachedAlly(u, 0), 1);
+                test.assertArrayLength("全体缓存", TargetCacheManager.getCachedAll(u, 0), 1);
+            }
+        );
+
+        // 测试用例 3：仅存在一个友军单位
+        _testBoundaryCase(
+            "单一友军单位测试", 
+            function(test:TargetCacheTest):Void {
+                test._resetWorld();
+                var unit:Object = test._addUnitDirectly(false);
+                test.sampleUnit = unit;
+            },
+            function(test:TargetCacheTest, u:Object):Void {
+                test.assertArrayLength("敌人缓存(空)", TargetCacheManager.getCachedEnemy(u, 0), 0);
+                test.assertArrayLength("友军缓存(包含自己)", TargetCacheManager.getCachedAlly(u, 0), 1);
+                test.assertArrayLength("全体缓存", TargetCacheManager.getCachedAll(u, 0), 1);
+            }
+        );
+
+        // 测试用例 4：全部单位均为敌人
+        _testBoundaryCase(
+            "全敌人场景测试", 
+            function(test:TargetCacheTest):Void {
+                test._resetWorld();
+                for(var i:Number=0; i<5; i++) test._addUnitDirectly(true);
+                test.sampleUnit = test._getFirstUnit();
+            },
+            function(test:TargetCacheTest, u:Object):Void {
+                test.assertArrayLength("敌人缓存（请求者为敌人）", TargetCacheManager.getCachedEnemy(u, 0), 0);
+                test.assertArrayLength("全体缓存", TargetCacheManager.getCachedAll(u, 0), 5);
+            }
+        );
+
+        // 测试用例5：相同right值排序测试
+        _testBoundaryCase(
+            "相同right值排序测试", 
+            function(test:TargetCacheTest):Void {
+                test._resetWorld();
+                var u1:Object = test._addUnitDirectly(true); // 敌人
+                u1.x = 100;
+                u1.aabbCollider.updateFromUnitArea(u1);
+                var u2:Object = test._addUnitDirectly(false); // 友军
+                u2.x = 100;
+                u2.aabbCollider.updateFromUnitArea(u2);
+                test.sampleUnit = u2; // 请求者改为友军
+                test.sampleU2 = u1;
+            },
+            function(test:TargetCacheTest, u:Object):Void {
+                var cached:Array = TargetCacheManager.getCachedEnemy(u, 0);
+                test.assertArrayLength("应包含1个敌人", cached, 1);
+                test.assertSameObject("应返回敌人单位", cached[0], test.sampleU2);
+            }
+        );
+
+
+
+        // 测试用例 6：精确排序验证
+        _testBoundaryCase(
+            "精确排序验证", 
+            function(test:TargetCacheTest):Void {
+                test._resetWorld();
+                var units:Array = [];
+                for(var i:Number=0; i<5; i++){
+                    var u:Object = test._addUnitDirectly(i%2==0);
+                    u.x = 100 - i*10;
+                    // 新增：更新碰撞箱右边界
+                    u.aabbCollider.updateFromUnitArea(u);
+                    units.push(u);
+                }
+                test.sampleUnit = units[4];
+                var sorted:Array = units.slice();
+                sorted.sort(function(a:Object, b:Object):Number {
+                    return a.aabbCollider.right - b.aabbCollider.right;
+                });
+                test.expectedOrder = sorted;
+            },
+            function(test:TargetCacheTest, u:Object):Void {
+                var cachedAll:Array = TargetCacheManager.getCachedAll(u, 0);
+                test.assertArrayOrder("全体缓存排序验证", cachedAll, test.expectedOrder);
+            }
+        );
+
+
+
+        // 输出边界测试结果
+        trace("\n=== 边界条件测试完成 ===");
+        trace("测试用例总数: " + boundaryTestCases);
+        trace("通过用例: " + (boundaryTestCases - boundaryTestFailures));
+        trace("失败用例: " + boundaryTestFailures);
+        boundaryTestPassed = (boundaryTestFailures == 0);
+    }
+
+    /**
+     * 新增：边界测试用例执行器
+     */
+    private function _testBoundaryCase(
+        caseName:String,
+        setup:Function,
+        verify:Function
+    ):Void {
+        boundaryTestCases++;
+        trace("\n运行边界测试用例: " + caseName);
+        
+        // 重置测试环境
+        _resetCacheSystem();
+        
+        try {
+            // 执行测试设置
+            setup(this);
+            
+            // 获取参考单位（优先使用预设单位）
+            var testUnit:Object = this.sampleUnit || _getFirstUnit();
+            if(!testUnit) {
+                trace("测试用例错误：未设置有效测试单位");
+                boundaryTestFailures++;
+                return;
+            }
+            
+            // 强制刷新缓存（updateInterval=0）
+            TargetCacheManager.getCachedEnemy(testUnit, 0);
+            TargetCacheManager.getCachedAlly(testUnit, 0);
+            TargetCacheManager.getCachedAll(testUnit, 0);
+            
+            // 执行验证
+            verify(this, testUnit);
+        } catch(e:Error) {
+            trace("测试用例执行异常: " + e.message);
+            boundaryTestFailures++;
+        }
+    }
+
+    /**
+     * 新增：断言辅助方法
+     */
+    public function assertArrayLength(context:String, arr:Array, expected:Number):Void {
+        var actual:Number = arr ? arr.length : 0;
+        if(actual !== expected) {
+            trace("[断言失败] " + context + " 预期长度:" + expected + " 实际长度:" + actual);
+            boundaryTestFailures++;
+        }
+    }
+    
+    public function assertArrayProp(context:String, arr:Array, prop:String, expected:Number):Void {
+        var actual:Number = arr[prop];
+        if(actual !== expected) {
+            trace("[断言失败] " + context + " 属性" + prop + " 预期值:" + expected + " 实际值:" + actual);
+            boundaryTestFailures++;
+        }
+    }
+    
+    public function assertSameObject(context:String, actual:Object, expected:Object):Void {
+        if(actual !== expected) {
+            trace("[断言失败] " + context);
+            trace("预期对象: " + expected._name);
+            trace("实际对象: " + (actual ? actual._name : "null"));
+            boundaryTestFailures++;
+        }
+    }
+    
+    public function assertArrayOrder(context:String, actual:Array, expected:Array):Void {
+        if(actual.length != expected.length) {
+            trace("[断言失败] " + context + " 数组长度不一致");
+            boundaryTestFailures++;
+            return;
+        }
+        for(var i:Number=0; i<expected.length; i++) {
+            if(actual[i] !== expected[i]) {
+                trace("[断言失败] " + context + " 位置" + i + "不匹配");
+                trace("预期对象: " + expected[i]._name);
+                trace("实际对象: " + actual[i]._name);
+                boundaryTestFailures++;
+                return;
+            }
+        }
+    }
+
+    /**
+     * 新增：重置缓存系统状态
+     */
+    private function _resetCacheSystem():Void {
+        // 重置缓存管理器
+        TargetCacheManager.initialize();
+        
+        // 重置帧计时器
+        _root.帧计时器.当前帧数 = 0;
+        
+        // 重置游戏世界
+        _resetWorld();
+    }
+
+    /**
+     * 新增：直接添加单位（不触发版本更新）
+     */
+    private function _addUnitDirectly(isEnemy:Boolean):Object {
+        var unit:Object = createFakeUnit();
+        unit.是否为敌人 = isEnemy;
+        gameWorld[unit._name] = unit;
+        TargetCacheUpdater.addUnit(unit);
+        return unit;
+    }
+
+    /**
+     * 新增：获取第一个单位
+     */
+    private function _getFirstUnit():Object {
+        for(var key:String in gameWorld) return gameWorld[key];
+        return null;
+    }
+
+    /**
+     * 新增：重置游戏世界
+     */
+    private function _resetWorld():Void {
+        gameWorld = {};
+        unitCounter = 0;
+        _root.gameworld = gameWorld; // 确保全局引用指向新对象
+    }
+
   
     /**
      * 预热阶段：执行一段时间的更新循环并记录耗时
@@ -249,7 +517,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         var result:Array = [];
         for (var key:String in this.gameWorld) {
             var u:Object = this.gameWorld[key];
-            if (u.hp > 0 && u.是否为敌人 != requestor.是否为敌人) {
+            if (u.hp > 0 && u.是否为敌人 != requestor.是否为敌人) { 
                 u.aabbCollider.updateFromUnitArea(u);
                 result.push(u);
             }
@@ -257,12 +525,12 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         insertionSortByRight(result);
         return result;
     }
-  
+
     private function collectManualAllies(requestor:Object):Array {
         var result:Array = [];
         for (var key:String in this.gameWorld) {
             var u:Object = this.gameWorld[key];
-            if (u.hp > 0 && u.是否为敌人 == requestor.是否为敌人) {
+            if (u.hp > 0 && u.是否为敌人 == requestor.是否为敌人) { 
                 u.aabbCollider.updateFromUnitArea(u);
                 result.push(u);
             }
@@ -270,6 +538,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
         insertionSortByRight(result);
         return result;
     }
+
   
     private function collectManualAll():Array {
         var result:Array = [];
@@ -326,6 +595,17 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheTest {
      */
     public function runTest():Void {
         trace("=== TargetCache 测试开始 ===");
+
+        // 阶段1：执行边界条件测试
+        runBoundaryTests();
+        if(!boundaryTestPassed) {
+            trace("\n!!! 边界条件测试未通过，终止测试流程 !!!");
+            return;
+        }
+        
+        // 阶段2：恢复随机测试环境
+        initializeGameWorld();
+
         var totalWarmupTime:Number = 0;
         for (var cycle:Number = 0; cycle < this.warmupCycles; cycle++) {
             trace("=== 预热阶段循环 " + (cycle + 1) + " 开始 ===");
