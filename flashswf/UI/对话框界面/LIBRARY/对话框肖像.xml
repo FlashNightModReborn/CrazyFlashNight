@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1740233238" lastUniqueIdentifier="153">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1741520174" lastUniqueIdentifier="185">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="47">
+    <DOMTimeline name="对话框肖像" currentFrame="496">
       <layers>
-        <DOMLayer name="Labels Layer" color="#FC2986" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -235,11 +235,17 @@
             <DOMFrame index="490" duration="5" name="Bat" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="495" duration="5" name="厨师" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="500" duration="5" name="artist" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#F7F5D9">
           <frames>
-            <DOMFrame index="0" duration="495" keyMode="9728">
+            <DOMFrame index="0" duration="505" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 ]]></script>
@@ -250,7 +256,7 @@
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#17EED4" outline="true" useOutlineView="true" layerType="mask">
           <frames>
-            <DOMFrame index="0" duration="495" keyMode="9728">
+            <DOMFrame index="0" duration="505" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -266,7 +272,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2">
+        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -2822,7 +2828,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="484" duration="6" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="歌留多/髅髅宫歌留多" selected="true" centerPoint3DX="65.5" centerPoint3DY="212.95">
+                <DOMSymbolInstance libraryItemName="歌留多/髅髅宫歌留多" centerPoint3DX="65.5" centerPoint3DY="212.95">
                   <matrix>
                     <Matrix a="0.593017578125" d="0.593017578125" tx="-11.15" ty="-109.8"/>
                   </matrix>
@@ -3008,6 +3014,30 @@ onClipEvent (enterFrame) {
                   </matrix>
                   <transformationPoint>
                     <Point x="3.35" y="-16.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="495" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="厨师" centerPoint3DX="-71" centerPoint3DY="66.35">
+                  <matrix>
+                    <Matrix a="0.806533813476563" d="0.806533813476563" tx="-258.55" ty="-60.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="232.5" y="157.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="500" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="artist素材/artist" centerPoint3DX="29.45" centerPoint3DY="154.9">
+                  <matrix>
+                    <Matrix a="0.712799072265625" d="0.712799072265625" tx="-79.75" ty="-75.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="153.25" y="323.25"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

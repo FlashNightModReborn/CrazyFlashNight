@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-摇滚公园御姐" itemID="67ac3e1e-0000061f" linkageExportForAS="true" linkageIdentifier="敌人-摇滚公园御姐" lastModified="1739341342" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="敌人-摇滚公园御姐" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-31&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="敌人-摇滚公园御姐" currentFrame="126" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;6&lt;/guideline&gt;&lt;guideline direction="v"&gt;-31&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Labels Layer" color="#E1FF16">
           <frames>
@@ -488,11 +488,11 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#A88B8C" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 8" color="#A88B8C" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/思考块" selected="true" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="素材/思考块" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>
@@ -563,7 +563,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#82F515">
+        <DOMLayer name="Layer 11" color="#82F515" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

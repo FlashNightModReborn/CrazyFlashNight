@@ -1,14 +1,4 @@
-﻿_root.根据购物车刷新商品 = function()
-{
-}
-_root.打开商城 = function()
-{
-	_root.商城主mc._visible = true;
-	_root.获取虚拟币值();
-	_root.商城主mc.刷新购物清单();
-	_root.购物车总价 = _root.获取购物车总价();
-}
-_root.读盘商城已购买物品 = function()
+﻿_root.读盘商城已购买物品 = function()
 {
 	本地loadgame = SharedObject.getLocal("crazyflasher7_saves");
 	if (本地loadgame.data.商城已购买物品.length > 0)

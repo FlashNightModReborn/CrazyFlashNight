@@ -647,7 +647,7 @@
         <Height>190</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
-        <UnlockTask>64</UnlockTask>
+        <UnlockTask>39</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>8000</KPrice>
@@ -703,7 +703,7 @@
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
-        <UnlockTask>64</UnlockTask>
+        <UnlockTask>40</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>7000</KPrice>
@@ -716,7 +716,7 @@
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
-        <UnlockTask>64</UnlockTask>
+        <UnlockTask>42</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>7000</KPrice>
@@ -729,11 +729,15 @@
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
-        <UnlockTask>64</UnlockTask>
+        <UnlockTask>44</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>10000</KPrice>
         <IncreasePrice>0</IncreasePrice>
+        <Promotion>
+            <Item>凑数组的</Item>
+            <Item>冲腿龙息</Item>
+        </Promotion>
     </Pet>
     <Pet>
         <id>44</id>
@@ -742,7 +746,7 @@
         <Height>200</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
-        <UnlockTask>166</UnlockTask>
+        <UnlockTask>71</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>11000</KPrice>
@@ -755,7 +759,7 @@
         <Height>185</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
-        <UnlockTask>166</UnlockTask>
+        <UnlockTask>71</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>20000</KPrice>
@@ -794,7 +798,7 @@
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
-        <UnlockTask>166</UnlockTask>
+        <UnlockTask>71</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>5000</KPrice>
@@ -811,7 +815,7 @@
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
-        <UnlockTask>166</UnlockTask>
+        <UnlockTask>71</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>5000</KPrice>
@@ -828,7 +832,7 @@
         <Height>275</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>18</UnlockLevel>
-        <UnlockTask>64</UnlockTask>
+        <UnlockTask>39</UnlockTask>
         <Unique>false</Unique>
         <Price>0</Price>
         <KPrice>6800</KPrice>
@@ -875,7 +879,7 @@
         <Height>280</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
-        <UnlockTask>100</UnlockTask>
+        <UnlockTask>39</UnlockTask>
         <Unique>false</Unique>
         <Price>0</Price>
         <KPrice>5000</KPrice>
@@ -888,7 +892,7 @@
         <Height>200</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
-        <UnlockTask>80</UnlockTask>
+        <UnlockTask>39</UnlockTask>
         <Unique>false</Unique>
         <Price>0</Price>
         <KPrice>1600</KPrice>
@@ -989,11 +993,15 @@
         <Height>175</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>20</UnlockLevel>
-        <UnlockTask>64</UnlockTask>
+        <UnlockTask>44</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>8888</KPrice>
         <IncreasePrice>0</IncreasePrice>
+        <Promotion>
+            <Item>凑数组的</Item>
+            <Item>晶能者</Item>
+        </Promotion>
     </Pet>
     <Pet>
         <id>62</id>
@@ -1296,7 +1304,7 @@
         <Height>220</Height>
         <InitialLevel>1</InitialLevel>
         <UnlockLevel>10</UnlockLevel>
-        <UnlockTask>69</UnlockTask>
+        <UnlockTask>44</UnlockTask>
         <Unique>true</Unique>
         <Price>0</Price>
         <KPrice>10000</KPrice>

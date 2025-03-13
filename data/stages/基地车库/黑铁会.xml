@@ -179,7 +179,15 @@
                         <Level>22</Level>
                         <x>1750</x>
                         <y>550</y>
-                        <Parameters>称号:坛主</Parameters>
+                        <Parameters>
+                            <掉落物>
+                                <名字>战术黑刀</名字>
+                                <概率>20</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                            <称号>坛主</称号>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

@@ -9,6 +9,9 @@
           <DOMFolderItem name="1.冷兵器/长柄" itemID="66f2d400-00001016"/>
           <DOMFolderItem name="1.冷兵器/长柄/5.黑铁重剑枪" itemID="66f2d400-00001017"/>
           <DOMFolderItem name="1.冷兵器/长柄/7.硬木长矛" itemID="66f76b32-000004f8"/>
+          <DOMFolderItem name="1.特效文件夹" itemID="67cddd8a-000023e2" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/06.青蓝色系" itemID="67cddd8a-000023e3" isExpanded="true"/>
+          <DOMFolderItem name="1.特效文件夹/06.青蓝色系/雷电电" itemID="67cddd8a-000023e4" isExpanded="true"/>
           <DOMFolderItem name="Graphic" itemID="669baccc-0000152d"/>
           <DOMFolderItem name="image" itemID="65a6bb64-00001381"/>
           <DOMFolderItem name="shape" itemID="65a6bb2a-00001374"/>
@@ -25,7 +28,7 @@
           <DOMFolderItem name="临时武器" itemID="65deedc8-00000e19"/>
           <DOMFolderItem name="神秘文件夹" itemID="66530522-00000d7c" isExpanded="true"/>
           <DOMFolderItem name="属性标签标志元件" itemID="66738923-00001ce2"/>
-          <DOMFolderItem name="特效与子弹" itemID="6634d11f-000008c2"/>
+          <DOMFolderItem name="特效与子弹" itemID="6634d11f-000008c2" isExpanded="true"/>
           <DOMFolderItem name="特效与子弹/01.白净色系" itemID="6634d11f-000008c3"/>
           <DOMFolderItem name="特效与子弹/01.白净色系/上勾拳特效组件" itemID="668c195d-00001fc7"/>
           <DOMFolderItem name="特效与子弹/01.白净色系/突刺用特效" itemID="6666075a-0000150d"/>
@@ -50,11 +53,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
           <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
      </fonts>
      <media>
           <DOMBitmapItem name="image/bitmap1263.png" itemID="67764730-00002060" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/image/bitmap1263.png" sourceLastImported="1736862750" externalFileCRC32="1229271075" externalFileSize="302" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1263.png" bitmapDataHRef="M 109 1702343951.dat" frameRight="4800" frameBottom="4800"/>
@@ -163,6 +166,15 @@
           <DOMSoundItem name="sound/重武器.wav" itemID="65b9f98c-000005f0" sourceExternalFilepath="./LIBRARY/sound/重武器.wav" sourceLastImported="1736862781" externalFileCRC32="2943343212" externalFileSize="27420" href="sound/重武器.wav" soundDataHRef="M 112 1706686860.dat" format="44kHz 16bit Mono" sampleCount="13688" exportFormat="5"/>
      </media>
      <symbols>
+          <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 22.xml" loadImmediate="false" itemID="654ba156-00002640" lastModified="1696643875"/>
+          <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 24.xml" loadImmediate="false" itemID="654ba156-00002641" lastModified="1696643875"/>
+          <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 26.xml" loadImmediate="false" itemID="654ba156-00002642" lastModified="1696643875"/>
+          <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 28.xml" loadImmediate="false" itemID="654ba156-00002643" lastModified="1696643875"/>
+          <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 30.xml" loadImmediate="false" itemID="654ba156-00002644" lastModified="1696643875"/>
+          <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 32.xml" loadImmediate="false" itemID="654ba156-00002645" lastModified="1696643875"/>
+          <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 34.xml" loadImmediate="false" itemID="654ba156-00002646" lastModified="1696643875"/>
+          <Include href="1.特效文件夹/06.青蓝色系/雷电电/终极战斗仪-雷击.xml" loadImmediate="false" itemID="67cdcc67-000012f0" lastModified="1741545144"/>
+          <Include href="area.xml" loadImmediate="false" itemID="67cddd8a-000023f8" lastModified="1702141674"/>
           <Include href="Graphic/shape 595.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000254" lastModified="1477651486"/>
           <Include href="Graphic/shape 596.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000255" lastModified="1477651486"/>
           <Include href="Graphic/shape 597.xml" itemIcon="1" loadImmediate="false" itemID="58132c1e-00000256" lastModified="1477651486"/>
@@ -1102,7 +1114,7 @@
           <Include href="sprite/元件 1.xml" loadImmediate="false" itemID="66078dbd-00000693" lastModified="1711771069"/>
           <Include href="sprite/元件 2.xml" loadImmediate="false" itemID="66078dc1-00000698" lastModified="1711771073"/>
           <Include href="sprite/元件 3.xml" loadImmediate="false" itemID="66078dc5-0000069c" lastModified="1711771077"/>
-          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1731920525"/>
+          <Include href="sprite/战技.xml" loadImmediate="false" itemID="66098aa7-00002911" lastModified="1741605536"/>
           <Include href="sprite/主角-女（弃用）.xml" loadImmediate="false" itemID="67c8031d-00000716" lastModified="1741161249"/>
           <Include href="补间 1.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289c" lastModified="1726480498"/>
           <Include href="补间 2.xml" itemIcon="1" loadImmediate="false" itemID="66e80072-0000289e" lastModified="1726480498"/>
@@ -1388,7 +1400,7 @@
                               </DOMFrame>
                               <DOMFrame index="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 617" selected="true" centerPoint3DX="114.75" centerPoint3DY="184.65">
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 617" centerPoint3DX="114.75" centerPoint3DY="184.65">
                                              <matrix>
                                                   <Matrix tx="50.25" ty="147.95"/>
                                              </matrix>
@@ -1396,7 +1408,7 @@
                                                   <Point x="64.35" y="36.45"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="sprite/战技" centerPoint3DX="493.05" centerPoint3DY="164.9">
+                                        <DOMSymbolInstance libraryItemName="sprite/战技" selected="true" centerPoint3DX="493.05" centerPoint3DY="164.9">
                                              <matrix>
                                                   <Matrix tx="428.55" ty="147.95"/>
                                              </matrix>
@@ -1408,7 +1420,7 @@
                               </DOMFrame>
                               <DOMFrame index="4" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 665" selected="true" centerPoint3DX="390.7" centerPoint3DY="89.8">
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 665" centerPoint3DX="390.7" centerPoint3DY="89.8">
                                              <matrix>
                                                   <Matrix tx="429" ty="188.9"/>
                                              </matrix>
@@ -1803,6 +1815,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2286189" publishTime="1741598949"/>
+          <PublishItem publishSize="2286151" publishTime="1741590875"/>
+          <PublishItem publishSize="2286115" publishTime="1741590179"/>
+          <PublishItem publishSize="2286098" publishTime="1741589838"/>
+          <PublishItem publishSize="2285543" publishTime="1741587449"/>
           <PublishItem publishSize="2598845" publishTime="1737228291"/>
           <PublishItem publishSize="2597435" publishTime="1736866187"/>
           <PublishItem publishSize="2597416" publishTime="1736866084"/>
@@ -1818,10 +1835,5 @@
           <PublishItem publishSize="3314667" publishTime="1733071198"/>
           <PublishItem publishSize="3314672" publishTime="1733070871"/>
           <PublishItem publishSize="3307837" publishTime="1733059147"/>
-          <PublishItem publishSize="3306765" publishTime="1732878923"/>
-          <PublishItem publishSize="3324829" publishTime="1732380583"/>
-          <PublishItem publishSize="3337060" publishTime="1732288174" publishDebug="true"/>
-          <PublishItem publishSize="3077490" publishTime="1732107726"/>
-          <PublishItem publishSize="3077502" publishTime="1732107223"/>
      </publishHistory>
 </DOMDocument>

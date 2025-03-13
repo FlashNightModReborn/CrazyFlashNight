@@ -101,16 +101,12 @@ _root.子弹区域shoot传递 = function(Obj){
 
     // 设置子弹类型标志
     BulletTypesetter.setTypeFlags(Obj);
-
     // 1. 设置默认值
     BulletInitializer.setDefaults(Obj, shooter);
-
     // 2. 继承发射者属性
     BulletInitializer.inheritShooterAttributes(Obj, shooter);
-
     // 3. 计算击退速度
     BulletInitializer.calculateKnockback(Obj);
-
     // 4. 初始化子弹属性
     BulletInitializer.initializeBulletProperties(Obj);
 
@@ -121,164 +117,6 @@ _root.子弹区域shoot传递 = function(Obj){
 
     return bulletInstance;
 };
-
-
-
-// 子弹生命周期函数
-_root.子弹生命周期 = function()
-{
-    // 原有逻辑保持不变，仅在合适位置调用 _root.子弹伤害结算
-
-    // 如果没有 area 且不是透明检测，直接进行运动更新
-    if(!this.area && !this.透明检测){
-        this.updateMovement(this);
-        return;
-    }
-
-    var detectionArea:MovieClip;
-    var areaAABB:ICollider = this.aabbCollider;
-    var bullet_rotation:Number = this._rotation; // 本地化避免多次访问造成getter开销
-    var isPointSet:Boolean = this.联弹检测 && (bullet_rotation != 0 && bullet_rotation != 180);
-
-    if (this.透明检测 && !this.子弹区域area) {
-        areaAABB.updateFromTransparentBullet(this);
-    } else {
-        detectionArea = this.子弹区域area || this.area;
-        areaAABB.updateFromBullet(this, detectionArea);
-    }
-
-    if (_root.调试模式)
-    {
-        _root.绘制线框(detectionArea);
-    }
-    var gameWorld = _root.gameworld;
-    var shooter = gameWorld[this.发射者名];
-    var unitMap:Array;
-    if(this.友军伤害) {
-        unitMap = TargetCacheManager.getCachedAll(shooter,1);
-    }
-    else
-    {
-        unitMap = TargetCacheManager.getCachedEnemy(shooter,1);
-    }
-    
-    var 击中次数:Number = 0;
-    this.shouldGeneratePostHitEffect = true;
-
-    var len:Number = unitMap.length;
-    var hitTarget:MovieClip;
-    var zOffset:Number;
-    var overlapRatio:Number;
-    var overlapCenter:Vector;
-    var unitArea:AABBCollider;
-    var collisionResult:CollisionResult;
-
-    for (var i:Number = 0; i < len ; ++i)
-    {
-        hitTarget = this.hitTarget = unitMap[i];
-        zOffset = this.Z轴坐标 - hitTarget.Z轴坐标;
-
-        if (Math.abs(zOffset) >= this.Z轴攻击范围)
-        {
-            continue;
-        }
-        if (hitTarget.防止无限飞 != true || (hitTarget.hp <= 0 && !this.近战检测))
-        {
-            overlapRatio = 1;
-
-            unitArea = hitTarget.aabbCollider;
-            unitArea.updateFromUnitArea(hitTarget);
-            
-            collisionResult = areaAABB.checkCollision(unitArea, zOffset);
-
-            if(!collisionResult.isColliding)
-            {
-                if(collisionResult.isOrdered)
-                {
-                    continue;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            if(isPointSet) {
-                this.polygonCollider.updateFromBullet(this, detectionArea)
-                collisionResult = this.polygonCollider.checkCollision(unitArea, zOffset);
-            }
-
-            overlapRatio = collisionResult.overlapRatio;
-            overlapCenter = collisionResult.overlapCenter;
-
-            //击中
-            击中次数++;
-
-            // ------------------------兼容区------------------------------
-            this.附加层伤害计算 = 0; 
-            this.命中对象 = hitTarget;
-
-            // ------------------------兼容区------------------------------
-
-            
-            // 命中率计算略，原代码有提到根据命中率计算闪避
-            var dodgeState = this.伤害类型 == "真伤" ? "未躲闪": _root.躲闪状态计算(hitTarget,_root.根据命中计算闪避结果(shooter, hitTarget, this.命中率),this);
-
-            // 调用伤害结算函数
-            if(this.击中时触发函数) this.击中时触发函数();
-
-            var damageResult:DamageResult = DamageCalculator.calculateDamage(
-                this, 
-                shooter, 
-                hitTarget, 
-                overlapRatio, 
-                dodgeState
-            )
-
-            hitTarget.dispatcher.publish("hit", hitTarget, shooter, this, collisionResult, damageResult);
-
-            damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
-
-            if (this.近战检测 && !this.不硬直)
-            {
-                shooter.硬直(shooter.man,_root.钝感硬直时间);
-            }
-            else if(!this.穿刺检测)
-            {
-                this.gotoAndPlay("消失");
-            }
-        }
-    }
-
-    if(this.shouldGeneratePostHitEffect && 击中次数 > 0){
-        EffectSystem.Effect(this.击中后子弹的效果,this._x,this._y,shooter._xscale);
-    }
-
-    // 调用更新运动逻辑
-    this.updateMovement(this);
-
-    // 检查是否需要销毁
-    if (this.shouldDestroy(this)) {
-        areaAABB.getFactory().releaseCollider(areaAABB);
-
-        if(isPointSet)
-        {
-            this.polygonCollider.getFactory().releaseCollider(this.polygonCollider);
-        }
-
-        if (this.击中地图) {
-            this.霰弹值 = 1;
-            EffectSystem.Effect(this.击中地图效果, this._x, this._y);
-            if (this.击中时触发函数) {
-                this.击中时触发函数();
-            }
-            this.gotoAndPlay("消失");
-        } else {
-            this.removeMovieClip();
-        }
-        return;
-    }
-};
-
 
 
 _root.子弹区域shoot表演 = _root.子弹区域shoot;

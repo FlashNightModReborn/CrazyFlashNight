@@ -1,0 +1,1 @@
+org.flashNight.arki.bullet.BulletComponent.Utils.ShootingAngleCalculatorTest.runTests();

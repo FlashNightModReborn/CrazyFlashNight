@@ -77,6 +77,11 @@
                         <Level>50</Level>
                         <SpawnIndex>right</SpawnIndex>
                         <DifficultyMin>地狱</DifficultyMin>
+                        <Parameters>
+                            <宠物属性>
+                                <晶能者>true</晶能者>
+                            </宠物属性>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

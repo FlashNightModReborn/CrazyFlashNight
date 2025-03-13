@@ -1,8 +1,18 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/蓝色炮击/蓝色炮击" itemID="6554cd6f-0000302c" linkageExportForAS="true" linkageIdentifier="蓝色炮击" lastModified="1700056802" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/06.青蓝色系/蓝色炮击/蓝色炮击" itemID="6554cd6f-0000302c" linkageExportForAS="true" linkageIdentifier="蓝色炮击" lastModified="1741591000" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="蓝色炮击" currentFrame="3">
+    <DOMTimeline name="蓝色炮击">
       <layers>
-        <DOMLayer name="代码&amp;判定" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="音效" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("爆炸 较明亮 01.mp3");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码&amp;判定" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -25,7 +35,7 @@ this._rotation = 0;]]></script>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="area" name="area" selected="true" centerPoint3DX="4.15" centerPoint3DY="-18.5">
+                <DOMSymbolInstance libraryItemName="area" name="area" centerPoint3DX="4.15" centerPoint3DY="-18.5">
                   <matrix>
                     <Matrix a="3.76556396484375" d="2.7086181640625" tx="-71.15" ty="-106.85"/>
                   </matrix>

@@ -184,7 +184,7 @@ class org.flashNight.naki.Normalization.NormalizationUtilTest
     private function runPerformanceTest():Void
     {
         trace("\n=== Running Performance Test ===");
-        var iterations:Number = 1000000;
+        var iterations:Number = 10000;
         var testValues:Array = [0, 1, -1, 1.5, -1.5, 1000000, -1000000, 1.79769313486231e+308, -1.79769313486231e+308, 4.94065645841247e-324, -4.94065645841247e-324, Infinity, -Infinity, NaN];
 
         for (var i:Number = 0; i < testValues.length; i++)

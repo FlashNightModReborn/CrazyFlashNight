@@ -86,12 +86,28 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>方钢锤</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种248</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>苍面银牙</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -137,12 +153,28 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>战术狗腿刀</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种250</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>长墨白铁</名字>
+                                <概率>20</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -188,12 +220,28 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>虎彻</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种252</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>黑铁巨斧</名字>
+                                <概率>20</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -207,12 +255,28 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>黑铁重剑枪</名字>
+                                <概率>80</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种254</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <Parameters>
+                            <掉落物>
+                                <名字>西洋重剑枪</名字>
+                                <概率>20</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种270</Type>

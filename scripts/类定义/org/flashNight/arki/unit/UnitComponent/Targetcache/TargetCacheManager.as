@@ -19,8 +19,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     // 缓存模板，包含了缓存的数据数组、最后更新时间和数据版本
     private static var _CACHE_TEMPLATE:Object = {
         data: [],  // 缓存数据（目标列表）
-        lastUpdatedFrame: 0,  // 缓存的最后更新时间帧
-        dataVersion: ""  // 缓存的数据版本标识
+        lastUpdatedFrame: 0  // 缓存的最后更新时间帧
     };
 
     /**
@@ -52,7 +51,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
     private static function _createCacheEntry():Object {
         return {
             data: _CACHE_TEMPLATE.data.concat(),  // 新建数组，避免与其他缓存数据共享引用
-            nameIndex: {},  // 名称索引，可能用于快速查找目标
+            // nameIndex: {},  // 名称索引，可能用于快速查找目标
             lastUpdatedFrame: _CACHE_TEMPLATE.lastUpdatedFrame  // 初始化时设置为0
         };
     }
@@ -80,7 +79,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
         // 内联_needUpdate逻辑开始
         // 如果缓存已经过时，且超过更新间隔，则执行缓存更新操作
-        if ((frame - cache.lastUpdatedFrame) > updateInterval) {
+        if ((frame - cache.lastUpdatedFrame) >= updateInterval) {
             TargetCacheUpdater.updateCache(
                 _root.gameworld,
                 frame,
@@ -116,7 +115,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
 
         // 内联_needForceUpdate并优化条件判断
         // 如果缓存已经过时，且超过更新间隔，则执行缓存更新操作
-        if ((currentFrame - cacheEntry.lastUpdatedFrame) > updateInterval) {  // 依赖初始化时lastUpdatedFrame=-Infinity触发首次更新
+        if ((currentFrame - cacheEntry.lastUpdatedFrame) >= updateInterval) {  // 依赖初始化时lastUpdatedFrame=-Infinity触发首次更新
             TargetCacheUpdater.updateCache(
                 _root.gameworld,
                 currentFrame,

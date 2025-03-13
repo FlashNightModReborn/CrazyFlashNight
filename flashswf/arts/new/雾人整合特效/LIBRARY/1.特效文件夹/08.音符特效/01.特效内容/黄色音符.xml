@@ -1,13 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/08.音符特效/01.特效内容/黄色音符" itemID="65458de1-000004c8" linkageExportForAS="true" linkageIdentifier="黄色音符" lastModified="1701607126" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="1.特效文件夹/08.音符特效/01.特效内容/黄色音符" itemID="65458de1-000004c8" linkageExportForAS="true" linkageIdentifier="黄色音符" lastModified="1741592507" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="黄色音符">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="30" keyMode="9728" soundName="2.音效文件夹/钢琴2.mp3">
-              <SoundEnvelope>
-                <SoundEnvelopePoint level0="32768" level1="32768"/>
-              </SoundEnvelope>
+            <DOMFrame index="0" duration="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("钢琴2.mp3");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -70,7 +70,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true" heightLiteral="24">
+        <DOMLayer name="图层_1" color="#00FFFF" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>

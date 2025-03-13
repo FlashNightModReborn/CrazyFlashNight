@@ -52,6 +52,7 @@
           <DOMSoundItem name="音效/转手枪3.wav" itemID="67ac3da5-0000061d" sourceExternalFilepath="C:/Workspaces/Flash+An/resources/flashswf/arts/things3/LIBRARY/音效/转手枪3.wav" sourceLastImported="1739341183" externalFileCRC32="2373353100" externalFileSize="74662" href="音效/转手枪3.wav" soundDataHRef="M 32 1722419212.dat" format="44kHz 16bit Mono" sampleCount="37309" exportFormat="5" exportBits="17"/>
      </media>
      <symbols>
+          <Include href="地瓜手雷.xml" itemID="6724e9b8-00003bf5" lastModified="1739341324"/>
           <Include href="敌人-辫子姑娘.xml" itemID="67ac3e65-00000630" lastModified="1739341413"/>
           <Include href="敌人-盗贼大叔.xml" itemID="67ac3e61-0000062f" lastModified="1739341409"/>
           <Include href="敌人-盗贼枪手.xml" itemID="67ac3e5b-0000062e" lastModified="1739341403"/>
@@ -70,7 +71,6 @@
           <Include href="敌人-摇滚公园萝莉.xml" itemID="67ac3e25-00000621" lastModified="1739341349"/>
           <Include href="敌人-摇滚公园少女.xml" itemID="67ac3e22-00000620" lastModified="1739341346"/>
           <Include href="敌人-摇滚公园御姐.xml" itemID="67ac3e1e-0000061f" lastModified="1739341342"/>
-          <Include href="地瓜手雷.xml" itemID="6724e9b8-00003bf5" lastModified="1739341324"/>
           <Include href="定位子弹/Symbol 13.xml" itemIcon="1" loadImmediate="false" itemID="65a55354-00001a7f" lastModified="1705337906"/>
           <Include href="定位子弹/Symbol 14.xml" loadImmediate="false" itemID="65a55354-00001a7e" lastModified="1701884437"/>
           <Include href="定位子弹/近战子弹区域定位2帧持续.xml" loadImmediate="false" itemID="65a65ae0-00000839" lastModified="1705401056"/>
@@ -491,7 +491,7 @@
           <Include href="素材/Symbol 676.xml" loadImmediate="false" itemID="6577faef-0000154a" lastModified="1701508661"/>
           <Include href="素材/Symbol 678.xml" loadImmediate="false" itemID="6577faef-0000154b" lastModified="1701508661"/>
           <Include href="素材/Symbol 680.xml" loadImmediate="false" itemID="6577faef-0000154c" lastModified="1701508661"/>
-          <Include href="素材/Symbol 681.xml" loadImmediate="false" itemID="6577faef-0000154d" lastModified="1731418999"/>
+          <Include href="素材/Symbol 681.xml" loadImmediate="false" itemID="6577faef-0000154d" lastModified="1741544021"/>
           <Include href="素材/Symbol 683.xml" loadImmediate="false" itemID="6577faef-0000154e" lastModified="1701508661"/>
           <Include href="素材/Symbol 684.xml" loadImmediate="false" itemID="6577faef-0000154f" lastModified="1722424119"/>
           <Include href="素材/Symbol 685.xml" loadImmediate="false" itemID="6577faef-00001550" lastModified="1730123995"/>
@@ -1019,7 +1019,7 @@
           <Include href="素材/刀光.xml" loadImmediate="false" itemID="67265674-000002a8" lastModified="1730565819"/>
           <Include href="素材/地瓜手雷素材.xml" loadImmediate="false" itemID="6724f246-00008154" lastModified="1730474566"/>
           <Include href="素材/激光刀光.xml" loadImmediate="false" itemID="6727a7da-00000178" lastModified="1730654198"/>
-          <Include href="素材/键盘新招数.xml" loadImmediate="false" itemID="6728e3d4-0000062c" lastModified="1731346928"/>
+          <Include href="素材/键盘新招数.xml" loadImmediate="false" itemID="6728e3d4-0000062c" lastModified="1741544031"/>
           <Include href="素材/近战子弹.xml" loadImmediate="false" itemID="65c3743d-000024bd" lastModified="1707308093"/>
           <Include href="素材/镰刀变形.xml" loadImmediate="false" itemID="6726452b-00000155" lastModified="1730564244"/>
           <Include href="素材/镰刀变形 复制.xml" loadImmediate="false" itemID="672660f7-000002c6" lastModified="1730568853"/>
