@@ -23,9 +23,8 @@ class org.flashNight.arki.spatial.transform.SceneCoordinateManager {
         return offset;
     }
 
-    public static function update():Void
-    {
+    // 场景切换调用，重新计算偏移
+    public static function update():Void {
         calculateOffset();
-        //_root.发布消息("update" + offset)
     }
 }

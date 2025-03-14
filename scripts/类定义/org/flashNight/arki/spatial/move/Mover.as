@@ -1,37 +1,23 @@
 ﻿import org.flashNight.sara.util.*;
-import org.flashNight.arki.spatial.transform.SceneCoordinateManager;
 
-/**
- * org.flashNight.arki.spatial.move.Mover
- * 
- * 提供统一的移动工具方法：
- * - move2D：处理纯 2D 移动
- * - move25D：处理带高度变化的 2.5D 移动（例如跳跃、浮空等）
- *
- * 优化说明：
- * 1. 将方向向量提前定义为静态属性，避免每次调用时重复创建。
- * 2. 利用 SceneCoordinateManager.getOffset() 获取全局偏移量，减少局部与全局坐标转换的开销。
- * 3. 内部采用静态临时变量复用 Vector 和 Vertex3D 对象，减少垃圾对象产生。
- * 4. 新增 moveWithVector 与 moveWithVertex 两个通用方法，move2D 与 move25D 仅作为封装。
- */
 class org.flashNight.arki.spatial.move.Mover {
     
     // --------------------
     // 静态方向向量（2D）—仅包含 dx, dy
     private static var directions2D:Object = {
-        "上":  { dx: 0, dy: -1 },
-        "下":  { dx: 0, dy:  1 },
-        "左":  { dx: -1, dy: 0 },
-        "右":  { dx: 1, dy: 0 }
+        上:  { dx: 0, dy: -1 },
+        下:  { dx: 0, dy:  1 },
+        左:  { dx: -1, dy: 0 },
+        右:  { dx: 1, dy: 0 }
     };
 
     // 静态方向向量（2.5D）—包含 dx, dy, dz（跳跃时 dz 有效）
     // 注意：这里保存的是基础值，调用时根据 isJump 参数决定是否采用 dz
     private static var directions25D:Object = {
-        "上":  { dx: 0, dy: -1, dz: -1 },
-        "下":  { dx: 0, dy:  1, dz:  1 },
-        "左":  { dx: -1, dy: 0, dz: 0 },
-        "右":  { dx: 1, dy: 0, dz: 0 }
+        上:  { dx: 0, dy: -1, dz: -1 },
+        下:  { dx: 0, dy:  1, dz:  1 },
+        左:  { dx: -1, dy: 0, dz: 0 },
+        右:  { dx: 1, dy: 0, dz: 0 }
     };
 
     // --------------------
@@ -47,17 +33,16 @@ class org.flashNight.arki.spatial.move.Mover {
      * @param velocity 速度向量（Vector 对象）
      */
     public static function moveWithVector(entity:MovieClip, velocity:Vector):Void {
-        // 直接计算目标坐标
+        // 计算目标局部坐标
         var targetX:Number = entity._x + velocity.x;
         var targetY:Number = entity._y + velocity.y;
-
-        // 利用全局偏移量（直接获取预先计算好的 offset）
-        var offset:Vector = SceneCoordinateManager.getOffset();
-        var globalX:Number = targetX + offset.x;
-        var globalY:Number = targetY + offset.y;
-
-        // 碰撞检测通过则更新实体坐标
-        if (!_root.gameworld.地图.hitTest(globalX, globalY, true)) {
+        
+        // 使用 localToGlobal 转换为全局坐标（用于碰撞检测）
+        var globalPoint:Object = { x: targetX, y: targetY };
+        _root.gameworld.localToGlobal(globalPoint);
+        
+        // 如果全局坐标无碰撞，则更新实体的局部坐标
+        if (!_root.gameworld.地图.hitTest(globalPoint.x, globalPoint.y, true)) {
             entity._x = targetX;
             entity._y = targetY;
         }
@@ -69,18 +54,17 @@ class org.flashNight.arki.spatial.move.Mover {
      * @param velocity 速度向量（Vertex3D 对象）
      */
     public static function moveWithVertex(entity:MovieClip, velocity:Vertex3D):Void {
-        // 直接计算目标坐标（x, y, z）
+        // 计算目标局部坐标（x, y, z）
         var targetX:Number = entity._x + velocity.x;
         var targetY:Number = entity._y + velocity.y;
         var targetZ:Number = entity.Z轴坐标 + velocity.z;
-
-        // 获取全局偏移量，仅用于 x, y 坐标的全局校正
-        var offset:Vector = SceneCoordinateManager.getOffset();
-        var globalX:Number = targetX + offset.x;
-        var globalY:Number = targetY + offset.y;
-
-        // 碰撞检测通过则更新坐标与深度
-        if (!_root.gameworld.地图.hitTest(globalX, globalY, true)) {
+        
+        // 使用 localToGlobal 转换目标 (x, y) 坐标为全局坐标
+        var globalPoint:Object = { x: targetX, y: targetY };
+        _root.gameworld.localToGlobal(globalPoint);
+        
+        // 如果全局坐标无碰撞，则更新实体坐标、Z轴及显示层级
+        if (!_root.gameworld.地图.hitTest(globalPoint.x, globalPoint.y, true)) {
             entity._x = targetX;
             entity._y = targetY;
             entity.Z轴坐标 = targetZ;
@@ -98,8 +82,8 @@ class org.flashNight.arki.spatial.move.Mover {
     public static function move2D(entity:MovieClip, direction:String, speed:Number):Void {
         var dir:Object = directions2D[direction];
         if (!dir) return;
-
-        // 利用静态临时变量计算速度向量
+        
+        // 计算速度向量，并复用静态临时变量
         tmpVelocity2D.setTo(dir.dx * speed, dir.dy * speed);
         moveWithVector(entity, tmpVelocity2D);
     }
@@ -115,10 +99,10 @@ class org.flashNight.arki.spatial.move.Mover {
     public static function move25D(entity:MovieClip, direction:String, speed:Number, isJump:Boolean):Void {
         var dir:Object = directions25D[direction];
         if (!dir) return;
-
-        // 根据 isJump 决定是否采用 dz 分量
+        
+        // 根据 isJump 决定是否使用 dz 分量
         var dz:Number = (isJump ? dir.dz : 0);
-        // 利用静态临时变量计算 2.5D 速度向量
+        // 计算 2.5D 速度向量，复用静态临时变量
         tmpVelocity3D.setTo(dir.dx * speed, dir.dy * speed, dz * speed);
         moveWithVertex(entity, tmpVelocity3D);
     }
