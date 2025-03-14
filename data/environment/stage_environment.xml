@@ -2260,4 +2260,16 @@
         <MaxIllumination>7</MaxIllumination>
         <MinIllumination>7</MinIllumination>
     </Environment>
+    
+    <!--自来水厂-->
+    <Environment>
+        <BackgroundURL>自来水厂正门.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>10</Xmin>
+        <Xmax>1350</Xmax>
+        <Ymin>440</Ymin>
+        <Ymax>720</Ymax>
+        <Width>1490</Width>
+        <Height>720</Height>
+    </Environment>
 </EnvironmentSettings>
