@@ -1,6 +1,8 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
+import org.flashNight.arki.spatial.move.*;
+
 _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
 
@@ -1353,6 +1355,37 @@ _root.主角函数.强制移动 = function(移动方向, 速度) {
         }
     }
 };
+
+/*
+
+// 将原有移动方法重构为使用Mover类
+_root.主角函数.移动 = function(移动方向, 速度) {
+    if (this.飞行浮空) return;
+    
+    // 浮空状态下处理垂直移动（使用2.5D带跳跃参数）
+    if (this.浮空 && (移动方向 === "上" || 移动方向 === "下")) {
+        Mover.move25D(this, 移动方向, 速度, true);
+        return;
+    }
+    
+    // 普通移动使用2D移动
+    Mover.move2D(this, 移动方向, 速度);
+};
+
+// 强制移动直接调用基础移动方法
+_root.主角函数.强制移动 = function(移动方向, 速度) {
+    Mover.move2D(this, 移动方向, 速度);
+};
+
+// 跳跃专用移动函数
+_root.主角函数.跳跃上下移动 = function(direction:String, speed:Number):Void {
+    Mover.move25D(this, direction, speed, true); // 直接使用2.5D跳跃移动
+};
+
+// 保持全局访问
+_root.移动 = _root.主角函数.移动;
+
+*/
 
 _root.主角函数.被击移动 = function(移动方向, 速度, 摩擦力){
 	移动钝感硬直(_root.钝感硬直时间);

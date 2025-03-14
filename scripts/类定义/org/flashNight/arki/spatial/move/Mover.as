@@ -23,7 +23,8 @@ class org.flashNight.arki.spatial.move.Mover {
     // --------------------
     // 静态临时变量，复用以减少对象创建（2D 部分）
     private static var tmpVelocity2D:Vector = new Vector(0, 0);
-    
+    private static var globalPoint:Vector = new Vector(0, 0);
+
     // 静态临时变量，复用以减少对象创建（2.5D 部分）
     private static var tmpVelocity3D:Vertex3D = new Vertex3D(0, 0, 0);
 
@@ -33,18 +34,20 @@ class org.flashNight.arki.spatial.move.Mover {
      * @param velocity 速度向量（Vector 对象）
      */
     public static function moveWithVector(entity:MovieClip, velocity:Vector):Void {
-        // 计算目标局部坐标
-        var targetX:Number = entity._x + velocity.x;
-        var targetY:Number = entity._y + velocity.y;
         
         // 使用 localToGlobal 转换为全局坐标（用于碰撞检测）
-        var globalPoint:Object = { x: targetX, y: targetY };
+        globalPoint.setTo(entity._x, entity.Z轴坐标);
         _root.gameworld.localToGlobal(globalPoint);
+        _root.发布消息(globalPoint)
+        // 计算目标局部坐标
+        var targetX:Number = globalPoint.x + velocity.x;
+        var targetY:Number = globalPoint.y + velocity.y;
         
         // 如果全局坐标无碰撞，则更新实体的局部坐标
-        if (!_root.gameworld.地图.hitTest(globalPoint.x, globalPoint.y, true)) {
-            entity._x = targetX;
-            entity._y = targetY;
+        if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
+            entity._x += targetX;
+            entity.Z轴坐标 += targetY;
+            entity._y = entity.Z轴坐标;
         }
     }
 
@@ -54,23 +57,28 @@ class org.flashNight.arki.spatial.move.Mover {
      * @param velocity 速度向量（Vertex3D 对象）
      */
     public static function moveWithVertex(entity:MovieClip, velocity:Vertex3D):Void {
-        // 计算目标局部坐标（x, y, z）
-        var targetX:Number = entity._x + velocity.x;
-        var targetY:Number = entity._y + velocity.y;
-        var targetZ:Number = entity.Z轴坐标 + velocity.z;
-        
-        // 使用 localToGlobal 转换目标 (x, y) 坐标为全局坐标
-        var globalPoint:Object = { x: targetX, y: targetY };
+        // 使用 localToGlobal 将局部坐标转换为全局坐标用于碰撞检测
+        globalPoint.setTo(entity._x, entity.Z轴坐标);
         _root.gameworld.localToGlobal(globalPoint);
         
-        // 如果全局坐标无碰撞，则更新实体坐标、Z轴及显示层级
-        if (!_root.gameworld.地图.hitTest(globalPoint.x, globalPoint.y, true)) {
-            entity._x = targetX;
-            entity._y = targetY;
-            entity.Z轴坐标 = targetZ;
-            entity.swapDepths(targetY);
+        // 对于跳跃移动，以实体当前的 Z轴坐标作为垂直移动的基准
+        var targetX:Number = globalPoint.x + velocity.x;
+        // 这里不使用 entity._y，而是以 Z轴坐标作为基准
+        var targetY:Number = globalPoint.y + velocity.y;
+        
+        if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
+            // 更新水平位置
+            entity._x += targetX;
+            // 更新垂直（Z轴）位置，使用跳跃移动的增量
+            entity._y += targetY;
+            entity.Z轴坐标 = entity._y;
+            // 根据 velocity.z 更新起始点
+            entity.起始Y += velocity.z;
+            // 调整显示层次
+            entity.swapDepths(entity._y);
         }
     }
+
 
     /**
      * 纯 2D 移动（无高度变化）
