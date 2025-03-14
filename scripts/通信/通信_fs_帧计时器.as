@@ -15,6 +15,7 @@ import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.key.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*
 import org.flashNight.arki.bullet.Factory.*;
+import org.flashNight.arki.spatial.transform.*;
 
 _root.帧计时器 = {};
 ColliderFactoryRegistry.init();
@@ -879,6 +880,9 @@ _root.帧计时器.添加主动战技cd = function(动作, 间隔时间){
     return _root.帧计时器.添加单次任务(动作, 间隔时间); // 返回任务ID
 };
 
+
+_root.帧计时器.eventBus.subscribe("SceneChanged", SceneCoordinateManager.update
+, SceneCoordinateManager); 
 
 
 

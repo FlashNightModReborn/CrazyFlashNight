@@ -1,4 +1,7 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+import org.flashNight.arki.spatial.transform.*;
+import org.flashNight.sara.util.*;
+import org.flashNight.neur.Event.*;
 
 _root.add2map = function(tg, ln){
 	tg.暴走标志.removeMovieClip();
@@ -110,11 +113,9 @@ _root.贴背景图 = function(){
 	游戏世界.deadbody.layers[0].draw(背景层,matrix,new flash.geom.ColorTransform(),"normal",undefined,true);
 	背景层._visible = false;
 	背景层.外部动画加载壳mc.unloadMovie(); //尝试直接卸载原背景
+	var 地图 = 游戏世界.地图;
+	var point:Vector = SceneCoordinateManager.calculateOffset();
 
-	var point = new Object({x:0, y:0});
-    var 地图 = 游戏世界.地图;
-	地图.localToGlobal(point);
-	游戏世界.globalToLocal(point)
     // 定义边界及安全边距
     var margin = 150;  
     var xmin = _root.Xmin - point.x;
@@ -150,9 +151,13 @@ _root.贴背景图 = function(){
 
     // 结束填充
     地图.endFill();
+
+	if(_root.调试模式) {
+		地图._visible = true;  // 显示地图
+		地图._alpha = 66;     // 让地图本身半透明
+	}
 	
-	// 地图._visible = true;  // 显示地图
-	// 地图._alpha = 100;     // 让地图本身完全不透明（100 表示 100% 不透明）
+
 
 };
 
