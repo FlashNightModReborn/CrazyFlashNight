@@ -1276,116 +1276,32 @@ _root.主角函数.非主角外观刷新 = function(){
 
 _root.主角函数.移动 = function(移动方向, 速度) {
     if (this.飞行浮空) return;
+    
+    // 浮空状态下，上/下使用跳跃移动
     if (this.浮空 && (移动方向 === "上" || 移动方向 === "下")) {
-        this.跳跃上下移动(移动方向, 速度);
-        return;
-    }
-    
-    // 通用移动向量表：定义方向增量、坐标轴及垂直标志
-    var 移动向量表 = {
-        上:  {dx:0,  dy:-1, axis:"Z轴坐标", isVertical:true},
-        下:  {dx:0,  dy:1,  axis:"Z轴坐标", isVertical:true},
-        左:  {dx:-1, dy:0,  axis:"_x",     isVertical:false},
-        右:  {dx:1,  dy:0,  axis:"_x",     isVertical:false}
-    };
-    var vector = 移动向量表[移动方向];
-    if (!vector) return;
-    
-    // 计算全局坐标
-    var localPoint = {x:this._x, y:this.Z轴坐标};
-    _root.gameworld.localToGlobal(localPoint);
-    var targetX = localPoint.x + vector.dx * 速度;
-    var targetY = localPoint.y + vector.dy * 速度;
-    
-    // 碰撞检测与移动
-    if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
-        this[vector.axis] += (vector.dx || vector.dy) * 速度; // 根据轴增量更新坐标
-        if (vector.isVertical) { // 垂直方向需同步_y并调整深度
-            this._y = this.Z轴坐标;
-            this.swapDepths(this._y);
-        }
-    }
-};
-
-_root.移动 = _root.主角函数.移动;
-
-_root.主角函数.跳跃上下移动 = function(移动方向, 速度) {
-    // 跳跃移动专用向量表：含起始Y更新量
-    var 跳跃向量表 = {
-        上: {dx:0, dy:-1, axis:"Z轴坐标", isVertical:true, 起始Y增量:-速度},
-        下: {dx:0, dy:1,  axis:"Z轴坐标", isVertical:true, 起始Y增量:速度}
-    };
-    var vector = 跳跃向量表[移动方向];
-    if (!vector) return;
-    
-    var localPoint = {x:this._x, y:this.Z轴坐标};
-    _root.gameworld.localToGlobal(localPoint);
-    var targetX = localPoint.x + vector.dx * 速度;
-    var targetY = localPoint.y + vector.dy * 速度;
-    
-    if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
-        this[vector.axis] += vector.dy * 速度;
-        this._y = this.Z轴坐标;       // 同步_y坐标
-        this.起始Y += vector.起始Y增量; // 更新跳跃起始点
-        this.swapDepths(this._y);     // 调整显示深度
-    }
-};
-
-_root.主角函数.强制移动 = function(移动方向, 速度) {
-    // 复用通用向量表，无状态检查直接移动
-    var 移动向量表 = {
-        上:  {dx:0,  dy:-1, axis:"Z轴坐标", isVertical:true},
-        下:  {dx:0,  dy:1,  axis:"Z轴坐标", isVertical:true},
-        左:  {dx:-1, dy:0,  axis:"_x",     isVertical:false},
-        右:  {dx:1,  dy:0,  axis:"_x",     isVertical:false}
-    };
-    var vector = 移动向量表[移动方向];
-    if (!vector) return;
-    
-    var localPoint = {x:this._x, y:this.Z轴坐标};
-    _root.gameworld.localToGlobal(localPoint);
-    var targetX = localPoint.x + vector.dx * 速度;
-    var targetY = localPoint.y + vector.dy * 速度;
-    
-    if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
-        this[vector.axis] += (vector.dx || vector.dy) * 速度;
-        if (vector.isVertical) {
-            this._y = this.Z轴坐标;
-            this.swapDepths(this._y);
-        }
-    }
-};
-
-/*
-
-// 将原有移动方法重构为使用Mover类
-_root.主角函数.移动 = function(移动方向, 速度) {
-    if (this.飞行浮空) return;
-    
-    // 浮空状态下处理垂直移动（使用2.5D带跳跃参数）
-    if (this.浮空 && (移动方向 === "上" || 移动方向 === "下")) {
+        // 使用 2.5D 跳跃移动（跳跃状态传 true）
         Mover.move25D(this, 移动方向, 速度, true);
         return;
     }
     
-    // 普通移动使用2D移动
+    // 其他情况采用常规 2D 移动
     Mover.move2D(this, 移动方向, 速度);
 };
 
-// 强制移动直接调用基础移动方法
+_root.主角函数.跳跃上下移动 = function(移动方向, 速度) {
+    // 调用 Mover.move25D，跳跃状态传 true
+    Mover.move25D(this, 移动方向, 速度, true);
+};
+
 _root.主角函数.强制移动 = function(移动方向, 速度) {
+    // 直接调用常规 2D 移动
     Mover.move2D(this, 移动方向, 速度);
 };
 
-// 跳跃专用移动函数
-_root.主角函数.跳跃上下移动 = function(direction:String, speed:Number):Void {
-    Mover.move25D(this, direction, speed, true); // 直接使用2.5D跳跃移动
-};
 
-// 保持全局访问
+// 保持全局引用
 _root.移动 = _root.主角函数.移动;
 
-*/
 
 _root.主角函数.被击移动 = function(移动方向, 速度, 摩擦力){
 	移动钝感硬直(_root.钝感硬直时间);

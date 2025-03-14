@@ -184,7 +184,7 @@ _root.本地存盘 = function() {
     // Store the actual game data in the SharedObject
     mysave.data[存盘名] = _root.mydata;
     mysave.flush();  // Save the data to disk
-    
+    /*
     if(_root.调试模式 === true)
     {
         // Convert the saved object to FNTL format for testing and display purposes
@@ -216,6 +216,7 @@ _root.本地存盘 = function() {
         
         _root.saveDataField.text = FNTL;  // Display the FNTL string in the text field
     }
+    */
 };
 
 
