@@ -128,25 +128,19 @@
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMGroup selected="true">
-                  <matrix>
-                    <Matrix tx="168.5" ty="60.45"/>
-                  </matrix>
                   <transformationPoint>
-                    <Point x="-116.15" y="82.85"/>
+                    <Point x="52.35" y="143.3"/>
                   </transformationPoint>
                   <members>
                     <DOMShape selected="true">
-                      <matrix>
-                        <Matrix tx="168.5" ty="60.45"/>
-                      </matrix>
                       <transformationPoint>
-                        <Point x="-116.15" y="82.85"/>
+                        <Point x="52.35" y="143.3"/>
                       </transformationPoint>
                       <fills>
                         <FillStyle index="1">
                           <LinearGradient>
                             <matrix>
-                              <Matrix a="0.0542144775390625" d="0.009033203125" tx="-116.15" ty="77.85"/>
+                              <Matrix a="0.0542144775390625" d="0.009033203125" tx="52.35" ty="138.3"/>
                             </matrix>
                             <GradientEntry color="#9F9F9F" ratio="0"/>
                             <GradientEntry color="#808080" ratio="0.12156862745098"/>
@@ -164,7 +158,7 @@
                         <FillStyle index="2">
                           <RadialGradient>
                             <matrix>
-                              <Matrix a="0" b="-0.01556396484375" c="0.0669403076171875" d="0" tx="-116" ty="81.25"/>
+                              <Matrix a="0" b="-0.01556396484375" c="0.0669403076171875" d="0" tx="52.5" ty="141.7"/>
                             </matrix>
                             <GradientEntry color="#9F9F9F" ratio="0"/>
                             <GradientEntry color="#808080" ratio="0.12156862745098"/>
@@ -181,22 +175,9 @@
                           </RadialGradient>
                         </FillStyle>
                         <FillStyle index="3">
-                          <LinearGradient>
-                            <matrix>
-                              <Matrix a="0.0509490966796875" d="0.00518798828125" tx="-116.15" ty="93.3"/>
-                            </matrix>
-                            <GradientEntry color="#5D5D5D" ratio="0"/>
-                            <GradientEntry color="#5D5D5D" ratio="0.196078431372549"/>
-                            <GradientEntry color="#585858" ratio="0.388235294117647"/>
-                            <GradientEntry color="#515151" ratio="0.670588235294118"/>
-                            <GradientEntry color="#4D4D4D" ratio="1"/>
-                            <GradientEntry color="#6B6B6B" ratio="1"/>
-                          </LinearGradient>
-                        </FillStyle>
-                        <FillStyle index="4">
                           <RadialGradient>
                             <matrix>
-                              <Matrix a="0" b="-0.0125579833984375" c="0.0507049560546875" d="0" tx="-116.25" ty="87.15"/>
+                              <Matrix a="0" b="-0.0125579833984375" c="0.0507049560546875" d="0" tx="52.25" ty="147.6"/>
                             </matrix>
                             <GradientEntry color="#9F9F9F" ratio="0"/>
                             <GradientEntry color="#939393" ratio="0.196078431372549"/>
@@ -205,6 +186,19 @@
                             <GradientEntry color="#7B7B7B" ratio="1"/>
                             <GradientEntry color="#6B6B6B" ratio="1"/>
                           </RadialGradient>
+                        </FillStyle>
+                        <FillStyle index="4">
+                          <LinearGradient>
+                            <matrix>
+                              <Matrix a="0.0509490966796875" d="0.00518798828125" tx="52.35" ty="153.75"/>
+                            </matrix>
+                            <GradientEntry color="#5D5D5D" ratio="0"/>
+                            <GradientEntry color="#5D5D5D" ratio="0.196078431372549"/>
+                            <GradientEntry color="#585858" ratio="0.388235294117647"/>
+                            <GradientEntry color="#515151" ratio="0.670588235294118"/>
+                            <GradientEntry color="#4D4D4D" ratio="1"/>
+                            <GradientEntry color="#6B6B6B" ratio="1"/>
+                          </LinearGradient>
                         </FillStyle>
                       </fills>
                       <strokes>
@@ -217,18 +211,16 @@
                         </StrokeStyle>
                       </strokes>
                       <edges>
-                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="!-3156 1781S7[-3115 1792 -3063 1806!-3063 1806[-2756 1880 -2320 1880!-2320 1880[-1887 1880 -1580 1806!-1580 1806[-1531 1795 -1487 1781"/>
-                        <Edge fillStyle0="2" strokeStyle="1" edges="!-1487 1781S5[-1275 1716 -1273 1628!-1273 1628|-1273 1622!-1273 1622[-1275 1518 -1580 1441!-1580 1441[-1887 1368 -2320 1368!-2320 1368[-2756 1368 -3063 1441!-3063 1441[-3367 1518 -3370 1622!-3370 1622|-3370 1628!-3370 1628[-3367 1716
- -3156 1781"/>
-                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
-!-1492 1705S7[-1451 1680 -1440 1653!-1440 1653[-1437 1647 -1437 1644!-1437 1644[-1435 1636 -1435 1628!-1435 1628|-1435 1620!-1435 1620[-1437 1534 -1698 1472!-1698 1472[-1958 1409 -2323 1409!-2323 1409[-2690 1409 -2951 1472!-2951 1472
-[-3211 1534 -3211 1620!-3211 1620|-3211 1628!-3211 1628[-3211 1633 -3209 1642!-3209 1642[-3209 1650 -3203 1658!-3203 1658[-3189 1683 -3154 1705"/>
-                        <Edge fillStyle0="1" fillStyle1="4" strokeStyle="1" edges="
-!-3154 1705S7[-3107 1647 -2921 1601!-2921 1601[-2671 1540 -2323 1540!-2323 1540[-1975 1540 -1728 1601!-1728 1601[-1542 1647 -1492 1705"/>
-                        <Edge fillStyle0="3" strokeStyle="1" edges="
-!-3156 1781S5[-3121 1845 -2921 1891!-2921 1891[-2671 1951 -2323 1951!-2323 1951[-1975 1951 -1728 1891!-1728 1891[-1531 1845 -1487 1781"/>
-                        <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="
-!-3154 1705S7[-3088 1743 -2951 1776!-2951 1776[-2690 1839 -2323 1839!-2323 1839[-1958 1839 -1698 1776!-1698 1776[-1560 1743 -1492 1705"/>
+                        <Edge fillStyle0="2" strokeStyle="1" edges="!1883 2990S5[2095 2925 2097 2837!2097 2837|2097 2831!2097 2831[2095 2727 1790 2650!1790 2650[1483 2577 1050 2577!1050 2577[614 2577 307 2650!307 2650[3 2727 0 2831!0 2831|0 2837!0 2837[3 2925 214 2990"/>
+                        <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!214 2990S7[255 3001 307 3015!307 3015[614 3089 1050 3089!1050 3089[1483 3089 1790 3015!1790 3015[1839 3004 1883 2990"/>
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1878 2914S7[1919 2889 1930 2862!1930 2862[1933 2856 1933 2853!1933 2853[1935 2845 1935 2837!1935 2837|1935 2829!1935 2829[1933 2743 1672 2681!1672 2681[1412 2618 1047 2618!1047 2618[680 2618 419 2681!419 2681[159 2743 159 2829!159 2829
+|159 2837!159 2837[159 2842 161 2851!161 2851[161 2859 167 2867!167 2867[181 2892 216 2914"/>
+                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
+!216 2914S7[263 2856 449 2810!449 2810[699 2749 1047 2749!1047 2749[1395 2749 1642 2810!1642 2810[1828 2856 1878 2914"/>
+                        <Edge fillStyle0="4" strokeStyle="1" edges="
+!214 2990S5[249 3054 449 3100!449 3100[699 3160 1047 3160!1047 3160[1395 3160 1642 3100!1642 3100[1839 3054 1883 2990"/>
+                        <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
+!216 2914S7[282 2952 419 2985!419 2985[680 3048 1047 3048!1047 3048[1412 3048 1672 2985!1672 2985[1810 2952 1878 2914"/>
                       </edges>
                     </DOMShape>
                   </members>

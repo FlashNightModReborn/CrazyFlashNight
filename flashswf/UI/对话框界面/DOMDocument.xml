@@ -63,7 +63,7 @@
           <DOMFolderItem name="ts-npc" itemID="66ad200c-00000fee"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="67331ffe-00000756"/>
           <DOMFolderItem name="动画" itemID="65f7e940-00000bc1"/>
-          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9" isExpanded="true"/>
+          <DOMFolderItem name="对话框UI" itemID="66346c29-000015d9"/>
           <DOMFolderItem name="对话框UI/Andy对话立绘" itemID="65f434da-000014a4"/>
           <DOMFolderItem name="对话框UI/Andy对话立绘/Andy五官-悲伤表情" itemID="65f53304-00002906"/>
           <DOMFolderItem name="对话框UI/Andy对话立绘/Andy五官-愤怒表情" itemID="65f532f9-00002901"/>
@@ -871,6 +871,7 @@
           <Include href="lochan/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-0000065e" lastModified="1726068284"/>
           <Include href="lochan/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-00000662" lastModified="1726068284"/>
           <Include href="lochan/盘子.xml" loadImmediate="false" itemID="66e1b386-00000068" lastModified="1726067641"/>
+          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1741931664"/>
           <Include href="Pig表情悲伤.xml" itemIcon="1" loadImmediate="false" itemID="67b3ebbe-00000d0d" lastModified="1739844542"/>
           <Include href="Pig表情愤怒.xml" itemIcon="1" loadImmediate="false" itemID="67b3ebae-00000d01" lastModified="1739844526"/>
           <Include href="Pig表情坏笑.xml" itemIcon="1" loadImmediate="false" itemID="67b3eb92-00000cf3" lastModified="1739844498"/>
@@ -1701,7 +1702,7 @@
           <Include href="对话框UI/袁望surveyor/sprite 4185.xml" loadImmediate="false" itemID="560f79f6-0000105a" lastModified="1451631788"/>
           <Include href="对话框UI/袁望surveyor/防毒口罩4.xml" itemIcon="1" loadImmediate="false" itemID="5180f987-000006de" lastModified="1467883665"/>
           <Include href="对话框UI/袁望surveyor/钩子.xml" loadImmediate="false" itemID="57be4c9f-00000021" lastModified="1472089247"/>
-          <Include href="对话框UI/袁望surveyor/火箭筒.xml" loadImmediate="false" itemID="658e93ac-000001e5" lastModified="1716659702"/>
+          <Include href="对话框UI/袁望surveyor/火箭筒.xml" loadImmediate="false" itemID="658e93ac-000001e5" lastModified="1741930140"/>
           <Include href="对话框UI/袁望surveyor/激光链刃.xml" loadImmediate="false" itemID="658e8ee3-0000015c" lastModified="1703841508"/>
           <Include href="对话框UI/袁望surveyor/屁股.xml" loadImmediate="false" itemID="658e8e94-00000156" lastModified="1703841428"/>
           <Include href="对话框UI/袁望surveyor/身体.xml" loadImmediate="false" itemID="658e8e79-0000014e" lastModified="1703841401"/>
@@ -1719,7 +1720,7 @@
           <Include href="对话框UI/袁望surveyor/左上臂.xml" loadImmediate="false" itemID="658e9304-000001cc" lastModified="1703844269"/>
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
-          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1739526304"/>
+          <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1741929654"/>
           <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1741520174"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc29fa-00001039" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc29fa-0000103a" lastModified="1740384762"/>
@@ -1964,7 +1965,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="对话框界面" name="对话框界面" selected="true" centerPoint3DX="585.45" centerPoint3DY="674.75">
+                                        <DOMSymbolInstance libraryItemName="对话框界面" name="对话框界面" centerPoint3DX="585.45" centerPoint3DY="674.75">
                                              <matrix>
                                                   <Matrix tx="234.05" ty="306.8"/>
                                              </matrix>
@@ -2326,6 +2327,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2078310" publishTime="1741930247"/>
           <PublishItem publishSize="2059515" publishTime="1741519966"/>
           <PublishItem publishSize="1407392" publishTime="1740115486"/>
           <PublishItem publishSize="1407377" publishTime="1740115393"/>
@@ -2345,6 +2347,5 @@
           <PublishItem publishSize="2225907" publishTime="1739368421"/>
           <PublishItem publishSize="2225906" publishTime="1739368323"/>
           <PublishItem publishSize="2225902" publishTime="1739368153"/>
-          <PublishItem publishSize="2225909" publishTime="1739367998"/>
      </publishHistory>
 </DOMDocument>
