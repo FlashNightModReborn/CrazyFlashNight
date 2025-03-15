@@ -117,7 +117,7 @@ _root.贴背景图 = function(){
 	var point:Vector = SceneCoordinateManager.calculateOffset();
 
     // 定义边界及安全边距
-    var margin = 150;  
+    var margin = 300;  
     var xmin = _root.Xmin - point.x;
     var xmax = _root.Xmax - point.x;
     var ymin = _root.Ymin - point.y;
