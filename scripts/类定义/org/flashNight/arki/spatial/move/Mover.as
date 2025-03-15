@@ -23,6 +23,7 @@ class org.flashNight.arki.spatial.move.Mover {
     // --------------------
     // 静态临时变量，复用以减少对象创建（2D 部分）
     private static var globalPoint:Vector = new Vector(0, 0);
+    private static var debug:Boolean = false;
 
     /**
      * 纯 2D 移动（无高度变化）
@@ -32,6 +33,10 @@ class org.flashNight.arki.spatial.move.Mover {
      * @param speed     移动速度
      */
     public static function move2D(entity:MovieClip, direction:String, speed:Number):Void {
+        if (debug) {
+            resolveCollision(entity, globalPoint, speed, direction);
+            return;
+        }
         // 先根据方向获取 dx, dy
         var dir:Object = directions2D[direction];
         if (!dir) return;
@@ -61,7 +66,7 @@ class org.flashNight.arki.spatial.move.Mover {
             return;
         }
 
-        resolveCollision(entity, globalPoint, speed);
+        resolveCollision(entity, globalPoint, speed, direction);
     }
 
 
@@ -74,6 +79,10 @@ class org.flashNight.arki.spatial.move.Mover {
      * @param isJump    是否处于跳跃/高度变化状态，true 表示需要更新高度
      */
     public static function move25D(entity:MovieClip, direction:String, speed:Number, isJump:Boolean):Void {
+        if (debug) {
+            resolveCollision(entity, globalPoint, speed, direction);
+            return;
+        }
         var dir:Object = directions25D[direction];
         if (!dir) return;
         
@@ -108,31 +117,87 @@ class org.flashNight.arki.spatial.move.Mover {
             }
             return;
         }
-        resolveCollision(entity, globalPoint, speed);
+        resolveCollision(entity, globalPoint, speed, direction);
     }
 
-
-    private static function resolveCollision(entity:MovieClip, globalPoint:Vector, speed:Number):Void {
-        // 如果当前 globalPoint 位置不再碰撞，则无需处理
-        if (!_root.gameworld.地图.hitTest(globalPoint.x, globalPoint.y, true)) {
+    /**
+     * 基础的碰撞挤出逻辑 —— 根据实体离边界的距离自适应混合“中心回归向量”与“原移动方向向量”。
+     * 当单位越靠近边界时，中心回归的权重越高；靠近中心时，原移动方向控制权重越高。
+     * @param entity     被挤出的对象
+     * @param globalPt   当前全局坐标（用于检测碰撞）
+     * @param speed      当前移动速度
+     * @param direction  原移动方向
+     */
+    private static function resolveCollision(entity:MovieClip,
+                                            globalPt:Vector,
+                                            speed:Number,
+                                            direction:String
+    ):Void {
+        // 如果当前全局坐标点本身并不碰撞，则无需挤出
+        if (!_root.gameworld.地图.hitTest(globalPt.x, globalPt.y, true)) {
             return;
         }
-   
-        // 基于强制性边界计算从当前 globalPoint 到世界中心的推送向量
-        globalPoint.setTo(_root.Xmin + _root.Xmax - 2 * globalPoint.x,
-                          _root.Ymin + _root.Ymax - 2 * globalPoint.y);
-        // 对推送向量进行归一化，只保留方向信息
-        globalPoint.normalize();
         
-        // 定义一个固定的挤出步长，数值可根据实际情况调整
-        globalPoint.mult(Math.max(speed, 5));
+        // 1) 计算“中心回归向量”：从角色指向世界中心
+        //    假设世界中心为 ( (Xmin+Xmax)/2, (Ymin+Ymax)/2 )
+        var centerX:Number = (_root.Xmin + _root.Xmax) / 2;
+        var centerY:Number = (_root.Ymin + _root.Ymax) / 2;
+        var centerVec:Vector = new Vector(centerX - entity._x,
+                                        centerY - entity._y);
+
+        // 2) 计算“原移动方向向量”
+        var dir2D:Object = directions2D[direction];  
+        if (!dir2D) {
+            // 若没取到，则默认一个向量 (0,0) 避免出错
+            dir2D = { dx: 0, dy: 0 };
+        }
+        var moveVec:Vector = new Vector(dir2D.dx, dir2D.dy);
+
+        // 3) 根据实体与边界的距离自适应计算混合比重 adaptiveRatio
+        // 计算实体离各边界的距离
+        var distLeft:Number   = entity._x - _root.Xmin;
+        var distRight:Number  = _root.Xmax - entity._x;
+        var distTop:Number    = entity._y - _root.Ymin;
+        var distBottom:Number = _root.Ymax - entity._y;
+        var minDist:Number = Math.min(distLeft, distRight, distTop, distBottom);
         
-        // 更新 entity 的位置
-        entity._x += globalPoint.x;
-        entity.Z轴坐标 += globalPoint.y;
-        entity._y += globalPoint.y;
+        // 计算中心点处离各边界的最小距离（安全区半径）
+        var centerDistLeft:Number   = centerX - _root.Xmin;
+        var centerDistRight:Number  = _root.Xmax - centerX;
+        var centerDistTop:Number    = centerY - _root.Ymin;
+        var centerDistBottom:Number = _root.Ymax - centerY;
+        var maxMin:Number = Math.min(centerDistLeft, centerDistRight, centerDistTop, centerDistBottom);
         
-        // 调整显示层次，确保角色正确显示
+        // 当实体恰好在中心时，minDist==maxMin，此时希望 ratio=0，即完全依靠原移动方向
+        // 当实体恰好在边界时，minDist==0，此时 ratio=1，即完全向中心回归
+        // 采用线性映射计算：adaptiveRatio = 1 - (minDist / maxMin)
+        var adaptiveRatio:Number = 1 - (minDist / maxMin);
+        _root.发布消息("adaptiveRatio: " + adaptiveRatio);
+        // 确保比重在 [0, 1] 内
+        if (adaptiveRatio < 0) {
+            adaptiveRatio = 0;
+        } else if (adaptiveRatio > 1) {
+            adaptiveRatio = 1;
+        }
+        
+        // 4) 将“中心回归向量”和“原移动方向向量”按 adaptiveRatio 加权混合
+        // finalVec = adaptiveRatio * centerVec + (1 - adaptiveRatio) * moveVec
+        var finalVec:Vector = new Vector(
+            adaptiveRatio * centerVec.x + (1 - adaptiveRatio) * moveVec.x,
+            adaptiveRatio * centerVec.y + (1 - adaptiveRatio) * moveVec.y
+        );
+        
+        // 5) 归一化并乘以挤出步长（确保即使 speed 较小也能产生足够位移）
+        finalVec.normalize();
+        finalVec.mult(Math.max(speed, 5));
+        
+        // 6) 更新实体位置（这里假定 Z轴坐标与 _y 同步）
+        entity._x += finalVec.x;
+        entity.Z轴坐标 += finalVec.y;
+        entity._y += finalVec.y;
+        
+        // 7) 调整显示层次，确保角色正确显示
         entity.swapDepths(entity._y);
     }
+
 }
