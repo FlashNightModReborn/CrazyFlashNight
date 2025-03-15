@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2012" itemID="6597607e-00000a78" lastModified="1704564957">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/任务完成提示" itemID="67d51a9b-0000041f" lastModified="1742019227">
   <timeline>
-    <DOMTimeline name="Symbol 2012">
+    <DOMTimeline name="任务完成提示">
       <layers>
         <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this._visible = 0;]]></script>
+                <script><![CDATA[this._visible = false;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -24,24 +24,19 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(rollOver){
-   _root.注释(150,_root.获得翻译("有任务已达成，请尽快交付！"));
+                    <script><![CDATA[on (rollOver) {
+	_root.注释(150,_root.获得翻译("有任务已达成，请尽快交付！"));
 }
-on(press){
-   if(_root.地图界面._x != undefined)
-   {
-      _root.地图界面.gotoAndStop(2);
-   }
-   else
-   {
-      _root.任务栏界面._visible = 1;
-   }
-   _root.注释结束();
+on (press) {
+	if (_root.地图界面._x != undefined)
+	{
+		_root.地图界面.gotoAndStop(2);
+	}
+	_root.注释结束();
 }
-on(rollOut){
-   _root.注释结束();
-}
-]]></script>
+on (rollOut) {
+	_root.注释结束();
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
