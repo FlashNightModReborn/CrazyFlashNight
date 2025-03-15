@@ -158,6 +158,19 @@
                         <FillStyle index="2">
                           <RadialGradient>
                             <matrix>
+                              <Matrix a="0" b="-0.0125579833984375" c="0.0507049560546875" d="0" tx="52.25" ty="147.6"/>
+                            </matrix>
+                            <GradientEntry color="#9F9F9F" ratio="0"/>
+                            <GradientEntry color="#939393" ratio="0.196078431372549"/>
+                            <GradientEntry color="#8E8E8E" ratio="0.388235294117647"/>
+                            <GradientEntry color="#959595" ratio="0.670588235294118"/>
+                            <GradientEntry color="#7B7B7B" ratio="1"/>
+                            <GradientEntry color="#6B6B6B" ratio="1"/>
+                          </RadialGradient>
+                        </FillStyle>
+                        <FillStyle index="3">
+                          <RadialGradient>
+                            <matrix>
                               <Matrix a="0" b="-0.01556396484375" c="0.0669403076171875" d="0" tx="52.5" ty="141.7"/>
                             </matrix>
                             <GradientEntry color="#9F9F9F" ratio="0"/>
@@ -172,19 +185,6 @@
                             <GradientEntry color="#6D6D6D" ratio="0.968627450980392"/>
                             <GradientEntry color="#6B6B6B" ratio="1"/>
                             <GradientEntry color="#626262" ratio="1"/>
-                          </RadialGradient>
-                        </FillStyle>
-                        <FillStyle index="3">
-                          <RadialGradient>
-                            <matrix>
-                              <Matrix a="0" b="-0.0125579833984375" c="0.0507049560546875" d="0" tx="52.25" ty="147.6"/>
-                            </matrix>
-                            <GradientEntry color="#9F9F9F" ratio="0"/>
-                            <GradientEntry color="#939393" ratio="0.196078431372549"/>
-                            <GradientEntry color="#8E8E8E" ratio="0.388235294117647"/>
-                            <GradientEntry color="#959595" ratio="0.670588235294118"/>
-                            <GradientEntry color="#7B7B7B" ratio="1"/>
-                            <GradientEntry color="#6B6B6B" ratio="1"/>
                           </RadialGradient>
                         </FillStyle>
                         <FillStyle index="4">
@@ -211,15 +211,15 @@
                         </StrokeStyle>
                       </strokes>
                       <edges>
-                        <Edge fillStyle0="2" strokeStyle="1" edges="!1883 2990S5[2095 2925 2097 2837!2097 2837|2097 2831!2097 2831[2095 2727 1790 2650!1790 2650[1483 2577 1050 2577!1050 2577[614 2577 307 2650!307 2650[3 2727 0 2831!0 2831|0 2837!0 2837[3 2925 214 2990"/>
-                        <Edge fillStyle0="2" fillStyle1="4" strokeStyle="1" edges="!214 2990S7[255 3001 307 3015!307 3015[614 3089 1050 3089!1050 3089[1483 3089 1790 3015!1790 3015[1839 3004 1883 2990"/>
-                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!1878 2914S7[1919 2889 1930 2862!1930 2862[1933 2856 1933 2853!1933 2853[1935 2845 1935 2837!1935 2837|1935 2829!1935 2829[1933 2743 1672 2681!1672 2681[1412 2618 1047 2618!1047 2618[680 2618 419 2681!419 2681[159 2743 159 2829!159 2829
+                        <Edge fillStyle0="3" strokeStyle="1" edges="!1883 2990S5[2095 2925 2097 2837!2097 2837|2097 2831!2097 2831[2095 2727 1790 2650!1790 2650[1483 2577 1050 2577!1050 2577[614 2577 307 2650!307 2650[3 2727 0 2831!0 2831|0 2837!0 2837[3 2925 214 2990"/>
+                        <Edge fillStyle0="3" fillStyle1="4" strokeStyle="1" edges="!214 2990S7[255 3001 307 3015!307 3015[614 3089 1050 3089!1050 3089[1483 3089 1790 3015!1790 3015[1839 3004 1883 2990"/>
+                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="!1878 2914S7[1919 2889 1930 2862!1930 2862[1933 2856 1933 2853!1933 2853[1935 2845 1935 2837!1935 2837|1935 2829!1935 2829[1933 2743 1672 2681!1672 2681[1412 2618 1047 2618!1047 2618[680 2618 419 2681!419 2681[159 2743 159 2829!159 2829
 |159 2837!159 2837[159 2842 161 2851!161 2851[161 2859 167 2867!167 2867[181 2892 216 2914"/>
-                        <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
+                        <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
 !216 2914S7[263 2856 449 2810!449 2810[699 2749 1047 2749!1047 2749[1395 2749 1642 2810!1642 2810[1828 2856 1878 2914"/>
                         <Edge fillStyle0="4" strokeStyle="1" edges="
 !214 2990S5[249 3054 449 3100!449 3100[699 3160 1047 3160!1047 3160[1395 3160 1642 3100!1642 3100[1839 3054 1883 2990"/>
-                        <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
+                        <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
 !216 2914S7[282 2952 419 2985!419 2985[680 3048 1047 3048!1047 3048[1412 3048 1672 2985!1672 2985[1810 2952 1878 2914"/>
                       </edges>
                     </DOMShape>
