@@ -1,4 +1,5 @@
 ﻿import org.flashNight.sara.util.*;
+import org.flashNight.arki.spatial.transform.*;
 
 class org.flashNight.arki.spatial.move.Mover {
     
@@ -137,14 +138,13 @@ class org.flashNight.arki.spatial.move.Mover {
         if (!_root.gameworld.地图.hitTest(globalPt.x, globalPt.y, true)) {
             return;
         }
+
+        var point:Vector = new Vector(entity._x, entity._y);
         
         // 1) 计算“中心回归向量”：从角色指向世界中心
-        //    假设世界中心为 ( (Xmin+Xmax)/2, (Ymin+Ymax)/2 )
-        var centerX:Number = (_root.Xmin + _root.Xmax) / 2;
-        var centerY:Number = (_root.Ymin + _root.Ymax) / 2;
-        var centerVec:Vector = new Vector(centerX - entity._x,
-                                        centerY - entity._y);
-
+        var center:Vector = SceneCoordinateManager.center;
+        var centerVec:Vector = center.minusNew(point);
+        centerVec.normalize();
         // 2) 计算“原移动方向向量”
         var dir2D:Object = directions2D[direction];  
         if (!dir2D) {
@@ -153,39 +153,19 @@ class org.flashNight.arki.spatial.move.Mover {
         }
         var moveVec:Vector = new Vector(dir2D.dx, dir2D.dy);
 
-        // 3) 根据实体与边界的距离自适应计算混合比重 adaptiveRatio
-        // 计算实体离各边界的距离
-        var distLeft:Number   = entity._x - _root.Xmin;
-        var distRight:Number  = _root.Xmax - entity._x;
-        var distTop:Number    = entity._y - _root.Ymin;
-        var distBottom:Number = _root.Ymax - entity._y;
-        var minDist:Number = Math.min(distLeft, distRight, distTop, distBottom);
-        
-        // 计算中心点处离各边界的最小距离（安全区半径）
-        var centerDistLeft:Number   = centerX - _root.Xmin;
-        var centerDistRight:Number  = _root.Xmax - centerX;
-        var centerDistTop:Number    = centerY - _root.Ymin;
-        var centerDistBottom:Number = _root.Ymax - centerY;
-        var maxMin:Number = Math.min(centerDistLeft, centerDistRight, centerDistTop, centerDistBottom);
-        
-        // 当实体恰好在中心时，minDist==maxMin，此时希望 ratio=0，即完全依靠原移动方向
-        // 当实体恰好在边界时，minDist==0，此时 ratio=1，即完全向中心回归
-        // 采用线性映射计算：adaptiveRatio = 1 - (minDist / maxMin)
-        var adaptiveRatio:Number = 1 - (minDist / maxMin);
-        _root.发布消息("adaptiveRatio: " + adaptiveRatio);
-        // 确保比重在 [0, 1] 内
-        if (adaptiveRatio < 0) {
-            adaptiveRatio = 0;
-        } else if (adaptiveRatio > 1) {
-            adaptiveRatio = 1;
-        }
-        
+        // 3) 根据实体与中心的距离自适应计算混合比重 adaptiveRatio
+        // 计算实体到中心点的距离
+        var minDist:Number = point.distance(center)
+
+        // 计算中心安全区半径
+        var maxMin:Number = Math.min(_root.Xmax - _root.Xmin, _root.Ymax - _root.Ymin) / 2;
+
+        // 计算插值系数
+        var adaptiveRatio:Number = Math.max(0, Math.min(1, 1 - (maxMin / minDist)));
         // 4) 将“中心回归向量”和“原移动方向向量”按 adaptiveRatio 加权混合
-        // finalVec = adaptiveRatio * centerVec + (1 - adaptiveRatio) * moveVec
-        var finalVec:Vector = new Vector(
-            adaptiveRatio * centerVec.x + (1 - adaptiveRatio) * moveVec.x,
-            adaptiveRatio * centerVec.y + (1 - adaptiveRatio) * moveVec.y
-        );
+        //_root.发布消息(moveVec + " " + centerVec + " adaptiveRatio: " + adaptiveRatio);
+        var finalVec:Vector = moveVec.lerp(centerVec, adaptiveRatio);
+
         
         // 5) 归一化并乘以挤出步长（确保即使 speed 较小也能产生足够位移）
         finalVec.normalize();
