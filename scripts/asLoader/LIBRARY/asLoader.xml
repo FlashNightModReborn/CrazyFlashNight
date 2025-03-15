@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1741201212">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1742037339">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="13">
+    <DOMTimeline name="asLoader" currentFrame="85">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -301,15 +301,9 @@ _root.加载并配置非人形佣兵随机对话("data/dialogues/enemy_dialogues
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="62" keyMode="9728">
+            <DOMFrame index="62" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.加载并配置宠物信息("data/merc/pets.xml");]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="63" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[_root.加载并配置改装清单("data/shops/crafting.xml");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -505,7 +499,7 @@ scene_env_loader.loadSceneEnvironment(
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="80" duration="17" keyMode="9728">
+            <DOMFrame index="80" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[var npcskillloader = org.flashNight.gesh.json.LoadJson.NPCSkillLoader.getInstance();
 npcskillloader.loadNPCSkills(
@@ -515,6 +509,35 @@ npcskillloader.loadNPCSkills(
     },
     function():Void {
         trace("主程序：NPC技能数据加载失败！");
+    }
+);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="81" duration="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var craftinglistloader = org.flashNight.gesh.json.LoadJson.CraftingListLoader.getInstance();
+
+//暂停外置大脑以等待任务数据加载完毕
+this.stop();
+var asloader = this;
+
+craftinglistloader.loadCraftingList(
+    function(data:Object):Void {
+		trace("主程序：合成表数据加载成功！");
+		var carftingDict = {};
+		for(var category in data){
+			var list = data[category];
+			for(var i = 0; i < list.length; i++){
+				carftingDict[list[i].name] = list[i];
+			}
+		}
+		_root.改装清单 = data;
+		_root.改装清单对象 = carftingDict;
+		asloader.play();
+    },
+    function():Void {
+        trace("主程序：合成表数据加载失败！");
     }
 );]]></script>
               </Actionscript>

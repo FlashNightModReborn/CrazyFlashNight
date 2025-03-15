@@ -870,31 +870,6 @@ _root.加载并配置技能表 = function(xml文件地址:String):Void
 	技能XML.load(xml文件地址);
 };
 
-_root.加载并配置改装清单 = function(xml文件地址:String):Void 
-{
-	var 改装XML:XML = new XML();
-	改装XML.ignoreWhite = true;
-	改装XML.onLoad = function(加载成功:Boolean){
-		if (加载成功){
-			var 改装清单对象 = new Object();
-			var 改装清单列表 = _root.解析XML节点(this.firstChild).Group;
-			_root.改装清单 = new Object();
-			for(var i = 0; i < 改装清单列表.length; i++){
-				var 当前改装清单 = _root.配置数据为数组(改装清单列表[i].Item);
-				_root.改装清单[改装清单列表[i].Name] = 当前改装清单;
-				for(var j = 0; j < 当前改装清单.length; j++){
-					var 物品 = 当前改装清单[j];
-					物品.Material = _root.配置数据为数组(物品.Material);
-					改装清单对象[物品.Name] = 物品;
-				}
-			}
-			_root.改装清单对象 = 改装清单对象;
-		}else{
-			//_root.服务器.发布服务器消息("无法加载 XML 文件: " + xml文件地址);
-		}
-	};
-	改装XML.load(xml文件地址);
-};
 
 _root.加载过场背景与文本 = function(xml文件地址:String):Void 
 {

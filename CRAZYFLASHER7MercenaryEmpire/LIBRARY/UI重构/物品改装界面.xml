@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1740332469" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1742038195" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="物品改装界面">
+    <DOMTimeline name="物品改装界面" currentFrame="9">
       <layers>
         <DOMLayer name="Labels Layer" color="#F2BEC5">
           <frames>
@@ -18,28 +18,26 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#C44A9F">
+        <DOMLayer name="Script Layer" color="#C44A9F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 物品合成(素材数组)
+                <script><![CDATA[import org.flashNight.arki.item.*;
+
+function 物品合成(素材数组)
 {
 	符合条件 = true;
 	var i = 0;
-	var 合成表 = 素材数组.Material;
-	var 物品数据 = _root.getItemData(素材数组.Name);
+	var 合成表 = 素材数组.materials;
+	var 物品数据 = _root.getItemData(素材数组.name);
 	if (物品数据.level && _root.等级 < Number(物品数据.level))
 	{
 		_root.发布消息("当前等级不足！");
 		_root.最上层发布文字提示("装备所需等级高于当前等级！");
 		return;
 	}
-	this.itemArray = new Array(合成表.length);
-	for (var i = 0; i < 合成表.length; i++)
-	{
-		itemArray[i] = {name:合成表[i].Name, value:合成表[i].Quantity};
-	}
-	if (_root.itemContain(itemArray) == null)
+	this.itemArray = ItemUtil.getRequirementFromTask(合成表);
+	if (ItemUtil.contain(itemArray) == null)
 	{
 		_root.发布消息("素材不足！");
 		return;
@@ -49,7 +47,7 @@
 	{
 		合成价格倍率 = 1 - _root.主角被动技能.铁匠.等级 * 0.05;
 	}
-	if (_root.金钱 < Math.floor(素材数组.Price * 合成价格倍率))
+	if (_root.金钱 < Math.floor(素材数组.price * 合成价格倍率))
 	{
 		符合条件 = false;
 		_root.发布消息(_root.获得翻译("金钱不足！"));
@@ -61,7 +59,7 @@
 	}
 	if (符合条件 == true)
 	{
-		虚拟币支付(Math.floor(Number(素材数组.KPrice) * 合成价格倍率),素材数组);
+		虚拟币支付(Math.floor(Number(素材数组.kprice) * 合成价格倍率),素材数组);
 	}
 }
 function 排列奖励块(页)
@@ -83,9 +81,9 @@ function 排列奖励块(页)
 				return;
 			}
 			var 当前物品 = 改装清单[i];
-			if (当前物品.Title)
+			if (当前物品.title)
 			{
-				this.attachMovie("装备改装界面显示块","图纸块" + i,this.getNextHighestDepth(),{_x:xMoveNumbers * 244 + 8, _y:yMoveNumbers * 28 + 30, 改装信息:当前物品, 标题:当前物品.Title, 多语言标题:_root.获得翻译(_root.getItemData(当前物品.Name).displayname), 价格:当前物品.Price, K点价格:当前物品.KPrice, 数组号:i});
+				this.attachMovie("装备改装界面显示块","图纸块" + i,this.getNextHighestDepth(),{_x:xMoveNumbers * 244 + 8, _y:yMoveNumbers * 28 + 30, 改装信息:当前物品, 标题:当前物品.title, 多语言标题:_root.获得翻译(_root.getItemData(当前物品.name).displayname), 价格:当前物品.price, K点价格:当前物品.kprice, 数组号:i});
 			}
 			yMoveNumbers++;
 			i++;
@@ -103,19 +101,19 @@ function 删除奖励块()
 }
 function 虚拟币支付(amount, 素材数组)
 {
-	var 合成表 = 素材数组.Material;
+	var 合成表 = 素材数组.materials;
 
 	if (amount > 0)
 	{
 		if (_root.虚拟币 >= amount)
 		{
-			var result = _root.itemSubmit(this.itemArray);
+			var result = ItemUtil.submit(this.itemArray);
 			if (!result)
 			{
 				_root.发布消息("素材不足！素材检索可能存在漏洞");
 				return;
 			}
-			_root.singleAcquire(素材数组.Name,1);
+			ItemUtil.singleAcquire(素材数组.name,1);
 			_root.虚拟币 -= amount;
 			合成价格倍率 = 1;
 			if (_root.主角被动技能.铁匠 && _root.主角被动技能.铁匠.启用)
@@ -124,7 +122,7 @@ function 虚拟币支付(amount, 素材数组)
 			}
 			铁匠提示 = 合成价格倍率 < 1 ? "节约" + (1 - 合成价格倍率) * 100 + "金额支出。" : "";
 			_root.发布消息(_root.获得翻译("支付成功！" + 铁匠提示));
-			tmp_金钱 = _root.金钱 - Math.floor(素材数组.Price * 合成价格倍率);
+			tmp_金钱 = _root.金钱 - Math.floor(素材数组.price * 合成价格倍率);
 			if (tmp_金钱 != undefined and isNaN(tmp_金钱) != true)
 			{
 				_root.金钱 = tmp_金钱;
@@ -148,7 +146,7 @@ function 虚拟币支付(amount, 素材数组)
 		{
 			合成价格倍率 = 1 - _root.主角被动技能.铁匠.等级 * 0.05;
 		}
-		if (_root.金钱 >= Math.floor(素材数组.Price * 合成价格倍率))
+		if (_root.金钱 >= Math.floor(素材数组.price * 合成价格倍率))
 		{
 			var result = _root.itemSubmit(this.itemArray);
 			if (!result)
@@ -156,16 +154,15 @@ function 虚拟币支付(amount, 素材数组)
 				_root.发布消息("素材不足！素材检索可能存在漏洞");
 				return;
 			}
-			_root.singleAcquire(素材数组.Name,1);
+			_root.singleAcquire(素材数组.name,1);
 			铁匠提示 = 合成价格倍率 < 1 ? "节约" + (1 - 合成价格倍率) * 100 + "金额支出。" : "";
 			_root.发布消息(_root.获得翻译("支付成功！" + 铁匠提示));
-			tmp_金钱 = _root.金钱 - Math.floor(素材数组.Price * 合成价格倍率);
+			tmp_金钱 = _root.金钱 - Math.floor(素材数组.price * 合成价格倍率);
 			if (tmp_金钱 != undefined and isNaN(tmp_金钱) != true)
 			{
 				_root.金钱 = tmp_金钱;
 			}
 			删除材料块();
-			_root.物品栏添加(素材数组.Name,1,0);
 			_root.最上层发布文字提示(_root.获得翻译("改装成功！请查看背包。"));
 			_root.获取虚拟币值();
 			gotoAndStop("成功");
@@ -193,36 +190,38 @@ stop();
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 排列材料块()
+                <script><![CDATA[import org.flashNight.arki.item.*;
+
+function 排列材料块()
 {
-	var 材料列表 = 改装清单[准备合成的数组号].Material;
+	var 材料列表 = ItemUtil.getRequirementFromTask(改装清单[准备合成的数组号].materials);
 	for (var i = 0; i < 材料列表.length; i++)
 	{
 		var 材料信息 = 材料列表[i];
 		var 材料块 = this.attachMovie("装备改装界面显示块2","材料" + i,this.getNextHighestDepth(),{
 			_x:8, 
 			_y:i * 30 + 45, 
-			标题:材料信息.Name, 
-			多语言标题:_root.获得翻译(_root.getItemData(材料信息.Name).displayname), 
-			个数:材料信息.Quantity
+			标题:材料信息.name, 
+			多语言标题:_root.获得翻译(_root.getItemData(材料信息.name).displayname), 
+			个数:材料信息.value
 		});
 	}
 }
 function 删除材料块()
 {
-	var 材料列表 = 改装清单[准备合成的数组号].Material;
-	for (var i = 0; i < 材料列表.length; i++)
+	var len = 改装清单[准备合成的数组号].materials.length;
+	for (var i = 0; i < len; i++)
 	{
 		this["材料" + i].removeMovieClip();
 	}
 }
-物品显示名称 = _root.物品属性列表[改装清单[准备合成的数组号].Name].displayname;
+物品显示名称 = _root.物品属性列表[改装清单[准备合成的数组号].name].displayname;
 合成价格倍率 = 1;
 if (_root.主角被动技能.铁匠 && _root.主角被动技能.铁匠.启用)
 {
 	合成价格倍率 = 1 - _root.主角被动技能.铁匠.等级 * 0.05;
 }
-mytext.htmlText = _root.获得翻译(物品显示名称 + "<BR>" + _root.获得翻译("金币") + "：" + Math.floor(改装清单[准备合成的数组号].Price * 合成价格倍率) + "   " + _root.获得翻译("K点") + "：" + Math.floor(改装清单[准备合成的数组号].KPrice * 合成价格倍率) + "<BR>");
+mytext.htmlText = _root.获得翻译(物品显示名称 + "<BR>" + _root.获得翻译("金币") + "：" + Math.floor(改装清单[准备合成的数组号].price * 合成价格倍率) + "   " + _root.获得翻译("K点") + "：" + Math.floor(改装清单[准备合成的数组号].kprice * 合成价格倍率) + "<BR>");
 requirements.htmlText = _root.获得翻译("需要材料（数量/强化度）：");
 排列材料块();]]></script>
               </Actionscript>
@@ -471,12 +470,12 @@ onClipEvent (unload) {
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
    stop();
-   tmp_sx = _root.根据物品名查找全部属性(_parent.改装信息.Name);
+   tmp_sx = _root.根据物品名查找全部属性(_parent.改装信息.name);
    图标 = "图标-" + tmp_sx[1];
    gotoAndStop("默认图标");
 }
 on(rollOver){
-   _root.物品图标注释(_parent.改装信息.Name,1);
+   _root.物品图标注释(_parent.改装信息.name,1);
 }
 on(rollOut){
    _root.注释结束();
@@ -597,11 +596,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#EE80AB" current="true" isSelected="true">
+        <DOMLayer name="Layer 10" color="#EE80AB">
           <frames>
             <DOMFrame index="0" duration="80" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/关闭按钮" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/关闭按钮" symbolType="button">
                   <matrix>
                     <Matrix tx="484" ty="15.5"/>
                   </matrix>
