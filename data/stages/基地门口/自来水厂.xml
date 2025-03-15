@@ -5,21 +5,140 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/自来水厂正门.swf</Background>
-            <PlayerX>153</PlayerX>
-            <PlayerY>461</PlayerY>
+            <PlayerX>30</PlayerX>
+            <PlayerY>550</PlayerY>
             <BGM>
                 <Command>play</Command>
                 <Title>Moan</Title>
                 <Loop>true</Loop>
             </BGM>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1380</x>
+                <y>730</y>
+            </Point>
+            <Point id="1">
+                <x>800</x>
+                <y>420</y>
+            </Point>
+            <Point id="2">
+                <x>1380</x>
+                <y>440</y>
+            </Point>
+        </SpawnPoint>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
-                    <FinishRequirement>2</FinishRequirement>
                 </WaveInformation>
-                <EnemyGroup></EnemyGroup>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种1</Type>
+                        <Interval>300</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种293</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种2</Type>
+                        <Interval>300</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种6</Type>
+                        <Interval>300</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种3</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种5</Type>
+                        <Interval>300</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>300</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种13</Type>
+                        <Interval>400</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种400</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种7</Type>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种401</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种10</Type>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种13</Type>
+                        <Interval>400</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种10</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
             </SubWave>
         </Wave>
     </SubStage>
