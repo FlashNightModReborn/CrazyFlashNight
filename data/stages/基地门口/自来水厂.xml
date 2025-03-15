@@ -17,14 +17,17 @@
             <Point id="0">
                 <x>1380</x>
                 <y>730</y>
+                <QuantityMax>4</QuantityMax>
             </Point>
             <Point id="1">
                 <x>800</x>
                 <y>420</y>
+                <QuantityMax>4</QuantityMax>
             </Point>
             <Point id="2">
                 <x>1380</x>
                 <y>440</y>
+                <QuantityMax>4</QuantityMax>
             </Point>
         </SpawnPoint>
         <Wave>
@@ -135,6 +138,20 @@
                         <Type>兵种10</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种401</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种400</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
                         <Level>15</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
