@@ -144,6 +144,8 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 	this.任务奖励.rewards = taskData.rewards;
 	this.任务奖励.refresh();
 	// this.任务奖励.taskFinishNPC.htmlText = "提交NPC：" + taskData.finish_npc;
+	this.提交NPC界面.finish_npc = taskData.finish_npc;
+	this.提交NPC界面.提交NPC.NPC头像框.gotoAndStop(taskData.finish_npc);
 }
 
 _root.任务栏UI函数.隐藏任务明细 = function(){
@@ -172,7 +174,7 @@ _root.任务栏UI函数.创建任务树 = function(){
 	this.任务树.setMask(this.遮罩);
 	var 任务节点图标 = this.任务树.任务节点图标;
 	this.创建单个任务树("主线");
-	//设置可拖拽范围
+	//
 	任务节点图标._visible = false;
 	this.任务对话按钮._visible = false;
 	this.任务完成对话按钮._visible = false;
@@ -189,10 +191,9 @@ _root.任务栏UI函数.创建单个任务树 = function(chainName){
 		var taskID = chainObj[chainArr[i]];
 		var taskData = _root.getTaskData(taskID);
 		var 新节点 = 任务节点图标.duplicateMovieClip(chainName + "任务节点图标" + i,this.任务树.getNextHighestDepth());
-		新节点.taskName.htmlText = _root.getTaskText(taskData.title);
+		新节点.taskChain.text = chainName + "#" + chainArr[i];
 		新节点._y = i * 30;
 		新节点.taskID = taskID;
-		if(_root.tasks_finished[taskID] <= 0) 新节点.taskName.htmlText = "？？？";
 	}
 }
 
