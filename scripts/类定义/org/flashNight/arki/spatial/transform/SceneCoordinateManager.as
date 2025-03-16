@@ -1,4 +1,5 @@
 ﻿import org.flashNight.sara.util.*;
+import org.flashNight.arki.spatial.move.*;
 
 /**
  * 场景坐标管理系统
@@ -60,6 +61,7 @@ class org.flashNight.arki.spatial.transform.SceneCoordinateManager {
         calculateOffset();
         calculateCenter();
         calculateSafeRadius();
+        if(!Mover.initTag) Mover.init();
     }
     
 

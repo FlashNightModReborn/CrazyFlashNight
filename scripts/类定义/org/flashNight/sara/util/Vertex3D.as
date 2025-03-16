@@ -1,7 +1,6 @@
 ﻿/**
  * Vertex3D - 三维向量类，用于2.5d支持
  * 参考了 Vector 类的设计风格，提供常用的三维向量运算方法
- * 
  */
 class org.flashNight.sara.util.Vertex3D {
 
@@ -11,41 +10,41 @@ class org.flashNight.sara.util.Vertex3D {
     
     /**
      * 构造函数，初始化三维向量的 x, y, z 分量
-     * @param x 初始的 x 分量
-     * @param y 初始的 y 分量
-     * @param z 初始的 z 分量
+     * @param px 初始的 x 分量
+     * @param py 初始的 y 分量
+     * @param pz 初始的 z 分量
      */
-    public function Vertex3D(x:Number, y:Number, z:Number) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public function Vertex3D(px:Number, py:Number, pz:Number) {
+        this.x = px;
+        this.y = py;
+        this.z = pz;
     }
     
     /**
      * 设置向量的值
-     * @param x 新的 x 分量
-     * @param y 新的 y 分量
-     * @param z 新的 z 分量
+     * @param px 新的 x 分量
+     * @param py 新的 y 分量
+     * @param pz 新的 z 分量
      */
-    public function setTo(x:Number, y:Number, z:Number):Void {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public function setTo(px:Number, py:Number, pz:Number):Void {
+        this.x = px;
+        this.y = py;
+        this.z = pz;
     }
     
     /**
      * 复制另一个三维向量的值到当前向量
-     * @param v 要复制的向量
+     * @param other 要复制的向量
      */
-    public function copy(v:Vertex3D):Void {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
+    public function copy(other:Vertex3D):Void {
+        this.x = other.x;
+        this.y = other.y;
+        this.z = other.z;
     }
     
     /**
      * 克隆方法，返回当前三维向量的副本
-     * @return 一个新的 Vertex3D 实例，x, y, z 分量与当前向量相同
+     * @return 一个新的 Vertex3D 实例，其 x, y, z 分量与当前向量相同
      */
     public function clone():Vertex3D {
         return new Vertex3D(this.x, this.y, this.z);
@@ -53,99 +52,99 @@ class org.flashNight.sara.util.Vertex3D {
     
     /**
      * 向当前向量加上另一个向量（原位修改）
-     * @param v 要相加的向量
+     * @param other 要相加的向量
      * @return 当前向量（已修改）
      */
-    public function plus(v:Vertex3D):Vertex3D {
-        this.x += v.x;
-        this.y += v.y;
-        this.z += v.z;
+    public function plus(other:Vertex3D):Vertex3D {
+        this.x += other.x;
+        this.y += other.y;
+        this.z += other.z;
         return this;
     }
     
     /**
      * 返回当前向量与另一个向量相加后的新向量
-     * @param v 要相加的向量
-     * @return 一个新的向量，表示当前向量和 v 相加的结果
+     * @param other 要相加的向量
+     * @return 一个新的向量，表示当前向量与 other 相加的结果
      */
-    public function plusNew(v:Vertex3D):Vertex3D {
-        return new Vertex3D(this.x + v.x, this.y + v.y, this.z + v.z);
+    public function plusNew(other:Vertex3D):Vertex3D {
+        return new Vertex3D(this.x + other.x, this.y + other.y, this.z + other.z);
     }
     
     /**
      * 向当前向量减去另一个向量（原位修改）
-     * @param v 要减去的向量
+     * @param other 要减去的向量
      * @return 当前向量（已修改）
      */
-    public function minus(v:Vertex3D):Vertex3D {
-        this.x -= v.x;
-        this.y -= v.y;
-        this.z -= v.z;
+    public function minus(other:Vertex3D):Vertex3D {
+        this.x -= other.x;
+        this.y -= other.y;
+        this.z -= other.z;
         return this;
     }
     
     /**
      * 返回当前向量减去另一个向量后的新向量
-     * @param v 要减去的向量
-     * @return 一个新的向量，表示当前向量减去 v 的结果
+     * @param other 要减去的向量
+     * @return 一个新的向量，表示当前向量减去 other 的结果
      */
-    public function minusNew(v:Vertex3D):Vertex3D {
-        return new Vertex3D(this.x - v.x, this.y - v.y, this.z - v.z);
+    public function minusNew(other:Vertex3D):Vertex3D {
+        return new Vertex3D(this.x - other.x, this.y - other.y, this.z - other.z);
     }
     
     /**
      * 将当前向量乘以一个标量（原位修改）
-     * @param s 要乘的标量
+     * @param scalar 要乘的标量
      * @return 当前向量（已修改）
      */
-    public function mult(s:Number):Vertex3D {
-        this.x *= s;
-        this.y *= s;
-        this.z *= s;
+    public function mult(scalar:Number):Vertex3D {
+        this.x *= scalar;
+        this.y *= scalar;
+        this.z *= scalar;
         return this;
     }
     
     /**
      * 返回当前向量乘以一个标量后的新向量
-     * @param s 要乘的标量
+     * @param scalar 要乘的标量
      * @return 一个新的向量，表示当前向量乘以标量后的结果
      */
-    public function multNew(s:Number):Vertex3D {
-        return new Vertex3D(this.x * s, this.y * s, this.z * s);
+    public function multNew(scalar:Number):Vertex3D {
+        return new Vertex3D(this.x * scalar, this.y * scalar, this.z * scalar);
     }
     
     /**
      * 计算当前向量和另一个向量的点积
-     * @param v 另一个向量
-     * @return 当前向量和 v 的点积结果
+     * @param other 另一个向量
+     * @return 当前向量和 other 的点积结果
      */
-    public function dot(v:Vertex3D):Number {
-        return this.x * v.x + this.y * v.y + this.z * v.z;
+    public function dot(other:Vertex3D):Number {
+        return this.x * other.x + this.y * other.y + this.z * other.z;
     }
     
     /**
      * 计算当前向量和另一个向量的叉积
-     * @param v 另一个向量
-     * @return 当前向量和 v 的叉积结果（一个新的 Vertex3D 向量）
+     * @param other 另一个向量
+     * @return 当前向量和 other 的叉积结果（一个新的 Vertex3D 向量）
      */
-    public function cross(v:Vertex3D):Vertex3D {
+    public function cross(other:Vertex3D):Vertex3D {
         return new Vertex3D(
-            this.y * v.z - this.z * v.y,
-            this.z * v.x - this.x * v.z,
-            this.x * v.y - this.y * v.x
+            this.y * other.z - this.z * other.y,
+            this.z * other.x - this.x * other.z,
+            this.x * other.y - this.y * other.x
         );
     }
     
     /**
      * 计算当前向量与另一个向量之间的欧几里得距离
-     * @param v 另一个向量
+     * @param other 另一个向量
      * @return 两个向量之间的距离
      */
-    public function distance(v:Vertex3D):Number {
-        var dx:Number = this.x - v.x;
-        var dy:Number = this.y - v.y;
-        var dz:Number = this.z - v.z;
-        return Math.sqrt(dx*dx + dy*dy + dz*dz);
+    public function distance(other:Vertex3D):Number {
+        var dx:Number = this.x - other.x;
+        var dy:Number = this.y - other.y;
+        var dz:Number = this.z - other.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
     
     /**
@@ -153,7 +152,7 @@ class org.flashNight.sara.util.Vertex3D {
      * @return 向量的模长
      */
     public function magnitude():Number {
-        return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+        return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     }
     
     /**
@@ -172,28 +171,28 @@ class org.flashNight.sara.util.Vertex3D {
     
     /**
      * 线性插值 (Lerp) 当前向量和另一个向量之间的插值
-     * @param v 目标向量
+     * @param other 目标向量
      * @param t 插值因子，范围 0 <= t <= 1
      * @return 插值后的新向量
      */
-    public function lerp(v:Vertex3D, t:Number):Vertex3D {
+    public function lerp(other:Vertex3D, t:Number):Vertex3D {
         return new Vertex3D(
-            this.x + (v.x - this.x) * t,
-            this.y + (v.y - this.y) * t,
-            this.z + (v.z - this.z) * t
+            this.x + (other.x - this.x) * t,
+            this.y + (other.y - this.y) * t,
+            this.z + (other.z - this.z) * t
         );
     }
     
     /**
      * 计算当前向量与另一个向量之间的夹角（弧度）
-     * @param v 另一个向量
+     * @param other 另一个向量
      * @return 两个向量之间的夹角（弧度）
      */
-    public function angleBetween(v:Vertex3D):Number {
+    public function angleBetween(other:Vertex3D):Number {
         var mag1:Number = this.magnitude();
-        var mag2:Number = v.magnitude();
-        if(mag1 > 0 && mag2 > 0) {
-            return Math.acos(this.dot(v) / (mag1 * mag2));
+        var mag2:Number = other.magnitude();
+        if (mag1 > 0 && mag2 > 0) {
+            return Math.acos(this.dot(other) / (mag1 * mag2));
         } else {
             return 0;
         }
@@ -201,13 +200,13 @@ class org.flashNight.sara.util.Vertex3D {
     
     /**
      * 计算当前向量在另一个向量上的投影
-     * @param v 要投影的向量
+     * @param other 要投影的向量
      * @return 投影后的新向量
      */
-    public function project(v:Vertex3D):Vertex3D {
-        var dotProduct:Number = this.dot(v);
-        var lenSq:Number = v.x*v.x + v.y*v.y + v.z*v.z;
-        return new Vertex3D((dotProduct / lenSq) * v.x, (dotProduct / lenSq) * v.y, (dotProduct / lenSq) * v.z);
+    public function project(other:Vertex3D):Vertex3D {
+        var dotProduct:Number = this.dot(other);
+        var lenSq:Number = other.x * other.x + other.y * other.y + other.z * other.z;
+        return new Vertex3D((dotProduct / lenSq) * other.x, (dotProduct / lenSq) * other.y, (dotProduct / lenSq) * other.z);
     }
     
     /**
@@ -235,7 +234,7 @@ class org.flashNight.sara.util.Vertex3D {
     
     /**
      * 检查当前向量是否为零向量
-     * @return 如果向量为零向量，返回 true，否则返回 false
+     * @return 如果向量为零向量，返回 true；否则返回 false
      */
     public function isZero():Boolean {
         return (this.x == 0 && this.y == 0 && this.z == 0);

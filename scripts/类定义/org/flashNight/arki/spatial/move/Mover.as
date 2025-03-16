@@ -1,4 +1,5 @@
 ﻿import org.flashNight.sara.util.*;
+import org.flashNight.gesh.object.*;
 import org.flashNight.arki.spatial.transform.*;
 
 /*
@@ -21,7 +22,7 @@ class org.flashNight.arki.spatial.move.Mover {
 
     // --------------------
     // 2D方向向量（只包含水平和垂直分量）
-    private static var directions2D:Object = initDirections2D();
+    private static var directions2D:Object;
 
     // 初始化2D方向向量映射表
     private static function initDirections2D():Object {
@@ -40,21 +41,26 @@ class org.flashNight.arki.spatial.move.Mover {
     // --------------------
     // 2.5D方向向量（包含水平、垂直和高度变化的dz分量）
     // 注意：此处保存的是基础值，在调用时根据是否跳跃决定是否使用dz分量
-    private static var directions25D:Object = initDirections25D();
+    private static var directions25D:Object;
 
     // 初始化2.5D方向向量映射表
     private static function initDirections25D():Object {
         var obj:Object = {};
-        // "上": 向上移动，基础向量 (0, -1, -1)
+
         obj["上"] = new Vertex3D(0, -1, -1);
-        // "下": 向下移动，基础向量 (0, 1, 1)
         obj["下"] = new Vertex3D(0, 1, 1);
-        // "左": 向左移动，基础向量 (-1, 0, 0)
         obj["左"] = new Vertex3D(-1, 0, 0);
-        // "右": 向右移动，基础向量 (1, 0, 0)
         obj["右"] = new Vertex3D(1, 0, 0);
         return obj;
     };
+
+    public static var initTag:Boolean = false;
+
+    public static function init():Void {
+        directions2D = initDirections2D();
+        directions25D = initDirections25D();
+        initTag = true;
+    }
 
     // --------------------
     // 全局临时变量，减少对象重复创建（用于2D部分）
@@ -87,7 +93,7 @@ class org.flashNight.arki.spatial.move.Mover {
             resolveCollision(entity, globalPoint, speed, direction);
             return;
         }
-        var dir:Vector = directions2D[direction];
+        var dir:Vector = Mover.directions2D[direction];
         if (!dir) return;
         var vx:Number = dir.x * speed;
         var vy:Number = dir.y * speed;
@@ -142,38 +148,44 @@ class org.flashNight.arki.spatial.move.Mover {
             resolveCollision(entity, globalPoint, speed, direction);
             return;
         }
-        var dir:Vertex3D = directions25D[direction];
+        var dir:Object = Mover.directions25D[direction];
+
         if (!dir) return;
         
-        // 根据跳跃状态确定dz分量
+        // 计算跳跃时的 dz 分量，非跳跃状态下 dz 为 0
         var dz:Number = (isJump ? dir.z : 0);
         
-        // 计算全局坐标以供碰撞检测使用
+        // 使用局部坐标转换为全局坐标（用于碰撞检测）
         globalPoint.setTo(entity._x, entity.Z轴坐标);
         _root.gameworld.localToGlobal(globalPoint);
         
+        // 根据方向计算目标全局坐标
         var targetX:Number = globalPoint.x + dir.x * speed;
         var targetY:Number = globalPoint.y + dir.y * speed;
         
-        // 检测目标位置是否发生碰撞
+        // 碰撞检测
         if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
+            // 如果是垂直方向移动（上或下），走跳跃/高度变化逻辑
             if (direction == "上" || direction == "下") {
+                // 更新垂直轴：旧代码中只操作 Z轴坐标，再同步 _y
                 var dy:Number = dir.y * speed;
                 entity.Z轴坐标 += dy;
                 entity._y += dy;
-                // 若处于跳跃状态，更新起始Y以便后续计算
+                // 跳跃状态下，更新起始Y（用于后续跳跃计算）
                 if (isJump) {
                     entity.起始Y += dy;
                 }
+                // 调整显示层次
                 entity.swapDepths(entity._y);
             } else {
+                // 如果是水平移动（左或右），只更新 _x 坐标
                 entity._x += dir.x * speed;
             }
             return;
         }
-        // 发生碰撞时，尝试通过碰撞挤出逻辑进行处理
         resolveCollision(entity, globalPoint, speed, direction);
     }
+
 
     /*
      * 方法：resolveCollision
