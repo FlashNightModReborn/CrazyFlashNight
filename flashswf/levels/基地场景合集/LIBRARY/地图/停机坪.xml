@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1740678626" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1742200515" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
@@ -154,7 +154,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#B5B91A" current="true" isSelected="true">
+        <DOMLayer name="Layer 6" color="#B5B91A">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -296,13 +296,13 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#9FA94F" outline="true" useOutlineView="true">
+        <DOMLayer name="地图" color="#9FA94F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 3035" name="地图" centerPoint3DX="525.45" centerPoint3DY="99.9">
+                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 基地房顶" name="地图" centerPoint3DX="905.95" centerPoint3DY="288.3">
                   <matrix>
-                    <Matrix d="1.0001220703125" tx="-380.5" ty="-188.4"/>
+                    <Matrix d="1.0001220703125"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -326,7 +326,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2331" name="deadbody">
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

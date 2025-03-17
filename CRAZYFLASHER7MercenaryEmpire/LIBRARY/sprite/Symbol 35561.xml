@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 35561" itemID="6597607e-00000d78" lastModified="1723605811" lastUniqueIdentifier="18">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 35561" itemID="6597607e-00000d78" lastModified="1742202790" lastUniqueIdentifier="18">
   <timeline>
     <DOMTimeline name="Symbol 35561">
       <layers>
@@ -351,30 +351,6 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="343.15" centerPoint3DY="252.7">
-                  <matrix>
-                    <Matrix tx="297.35" ty="241.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on (release) {
-	_root.关卡结束界面._visible = 0;
-	_root.场景进入位置名 = "出生地";
-	_root.淡出动画.淡出跳转帧("地图-工厂");
-}
-onClipEvent (load) {
-	显示文字 = _root.获得翻译("工厂");
-}
-on (rollOver) {
-	_root.注释(100,_root.获得翻译("test"));
-}
-on (rollOut) {
-	_root.注释结束();
-}]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="72.75" centerPoint3DY="291.5">
                   <matrix>
                     <Matrix tx="26.95" ty="280.3"/>
@@ -431,7 +407,7 @@ on(rollOut){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/通用按钮" selected="true" centerPoint3DX="343.15" centerPoint3DY="291.5">
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="343.15" centerPoint3DY="291.5">
                   <matrix>
                     <Matrix tx="297.35" ty="280.3"/>
                   </matrix>

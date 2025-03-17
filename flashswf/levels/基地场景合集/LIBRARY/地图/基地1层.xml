@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1742194692" lastUniqueIdentifier="22">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1742200176" lastUniqueIdentifier="22">
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
@@ -242,7 +242,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#99997E" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 13" color="#99997E" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -635,7 +635,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图碰撞箱" color="#B326B5" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图碰撞箱" color="#B326B5" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -709,7 +709,7 @@ onClipEvent (load) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2331" name="deadbody">
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

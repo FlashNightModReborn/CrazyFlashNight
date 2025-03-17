@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1740634919" lastUniqueIdentifier="17">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-军阀基地" itemID="65c79a9b-00000eb4" linkageExportForAS="true" linkageIdentifier="地图-军阀基地" lastModified="1742201546" lastUniqueIdentifier="19">
   <timeline>
     <DOMTimeline name="地图-军阀基地">
       <layers>
@@ -14,7 +14,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#D47599">
+        <DOMLayer name="Layer 1" color="#D47599" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -33,7 +33,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#B0C0C6">
+        <DOMLayer name="Layer 2" color="#B0C0C6" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -146,11 +146,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="gazer" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="gazer" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="gazer" selected="true" centerPoint3DX="749.45" centerPoint3DY="344.95">
+                <DOMSymbolInstance libraryItemName="gazer" centerPoint3DX="749.45" centerPoint3DY="344.95">
                   <matrix>
                     <Matrix tx="693.4" ty="263.5"/>
                   </matrix>
@@ -254,16 +254,13 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#78FE25" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#78FE25" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/新地图/Symbol 51881" name="地图" centerPoint3DX="593.5" centerPoint3DY="428.9">
-                  <matrix>
-                    <Matrix a="2.30471801757813" d="1.52587890625" tx="296.25" ty="300"/>
-                  </matrix>
+                <DOMSymbolInstance libraryItemName="地图碰撞箱" name="地图" centerPoint3DX="484.1" centerPoint3DY="296">
                   <transformationPoint>
-                    <Point x="345.25" y="133.65"/>
+                    <Point x="483.85" y="295.75"/>
                   </transformationPoint>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -286,7 +283,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#7BF194">
+        <DOMLayer name="Layer 7" color="#7BF194" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

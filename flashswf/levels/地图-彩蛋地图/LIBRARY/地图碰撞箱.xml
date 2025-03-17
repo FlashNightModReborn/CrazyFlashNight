@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图碰撞箱" itemID="67d7e1b3-000017cf" lastModified="1742201273">
+  <timeline>
+    <DOMTimeline name="地图碰撞箱">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!51925 6749|7847 6749!7847 6749/4904 19218!4904 19218/56790 19252!56790 19252/51925 6749"/>
+                    <Edge fillStyle0="1" edges="!49132 16487/10822 16460!10822 16460/15172 10171!15172 10171|44856 10171!44856 10171/49132 16487"/>
+                    <Edge cubics="!56790 19252(;56790,19252 51925,6749 51925,6749q56790 19252 51925 6749);"/>
+                    <Edge cubics="!44856 10171(;44856,10171 49132,16487 49132,16487q44856 10171 49132 16487);"/>
+                    <Edge cubics="!10822 16460(;10822,16460 15172,10171 15172,10171q10822 16460 15172 10171);"/>
+                    <Edge cubics="!7847 6749(;7847,6749 4904,19218 4904,19218q7847 6749 4904 19218);"/>
+                    <Edge cubics="!49132 16487(;49132,16487 10822,16460 10822,16460q49132 16487 10822 16460);"/>
+                    <Edge cubics="!15172 10171(;15172,10171 44856,10171 44856,10171q15172 10171 44856 10171);"/>
+                    <Edge cubics="!51925 6749(;51925,6749 7847,6749 7847,6749q51925 6749 7847 6749);"/>
+                    <Edge cubics="!4904 19218(;4904,19218 56790,19252 56790,19252q4904 19218 56790 19252);"/>
+                    <Edge cubics="!0 0(;0,0 1640,1320 1640,1320q0 0 1640 1320);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

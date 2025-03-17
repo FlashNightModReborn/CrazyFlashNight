@@ -100,9 +100,9 @@
           <Include href="03.摆件/装置/警示灯-2-亮.xml" loadImmediate="false" itemID="66c9b280-00001f79" lastModified="1724494464"/>
           <Include href="03.摆件/装置/灭火器箱-1.xml" loadImmediate="false" itemID="66c205a2-00001507" lastModified="1723991458"/>
           <Include href="03.摆件/装置/排风装置-1.xml" loadImmediate="false" itemID="66c5cb4b-00000adb" lastModified="1726408079"/>
+          <Include href="04.挂件/告示牌-1.xml" loadImmediate="false" itemID="66c1f98b-00001260" lastModified="1723988363"/>
           <Include href="04.挂件/警告标识-触电.xml" loadImmediate="false" itemID="66e71e04-00000f89" lastModified="1726422532"/>
           <Include href="4.发型相关/Symbol 788.xml" itemID="668e7c1e-00000781" lastModified="1720533000"/>
-          <Include href="04.挂件/告示牌-1.xml" loadImmediate="false" itemID="66c1f98b-00001260" lastModified="1723988363"/>
           <Include href="06.涂鸦/涂鸦-9.xml" loadImmediate="false" itemID="66c1fd41-00001379" lastModified="1723992235"/>
           <Include href="06.涂鸦/涂鸦-10.xml" loadImmediate="false" itemID="66c1fd44-0000137a" lastModified="1723992227"/>
           <Include href="06.涂鸦/涂鸦-11.xml" loadImmediate="false" itemID="66c1fd46-0000137b" lastModified="1723992220"/>
@@ -141,8 +141,8 @@
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子右大腿.xml" loadImmediate="false" itemID="66e7d2b5-000021eb" lastModified="1726469989"/>
           <Include href="待整理防具相关汇总/男变装-黑色校服裤子左大腿.xml" loadImmediate="false" itemID="66e7d2af-000021ea" lastModified="1726469990"/>
           <Include href="地板.xml" loadImmediate="false" itemID="66e6d0e9-000003ef" lastModified="1726402793"/>
-          <Include href="地图.xml" loadImmediate="false" itemID="66e79681-000005c5" lastModified="1727267595"/>
-          <Include href="地图-联合大学.xml" itemID="66e7946e-00000497" lastModified="1740635746"/>
+          <Include href="地图-联合大学.xml" itemID="66e7946e-00000497" lastModified="1742201735"/>
+          <Include href="地图碰撞箱.xml" loadImmediate="false" itemID="67d7e377-000019cf" lastModified="1742201724"/>
           <Include href="地图元件/deadbody.xml" loadImmediate="false" itemID="666e9ef0-000003cc" lastModified="1727182776"/>
           <Include href="地图元件/效果.xml" loadImmediate="false" itemID="666ea047-000003ea" lastModified="1718526023"/>
           <Include href="地图元件/子弹区域.xml" loadImmediate="false" itemID="666ea01c-000003e3" lastModified="1718525981"/>
@@ -534,6 +534,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="314941" publishTime="1742201739"/>
           <PublishItem publishSize="315094" publishTime="1737186685"/>
           <PublishItem publishSize="488661" publishTime="1737186478"/>
           <PublishItem publishSize="488647" publishTime="1737186392"/>
@@ -553,6 +554,5 @@
           <PublishItem publishSize="535116" publishTime="1727181080"/>
           <PublishItem publishSize="535258" publishTime="1727179661"/>
           <PublishItem publishSize="535254" publishTime="1727179448"/>
-          <PublishItem publishSize="535231" publishTime="1727179106"/>
      </publishHistory>
 </DOMDocument>

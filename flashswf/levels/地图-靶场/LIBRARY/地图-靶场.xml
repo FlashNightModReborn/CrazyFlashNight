@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1741757744" lastUniqueIdentifier="107">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-靶场" itemID="66337922-00000dda" linkageExportForAS="true" linkageIdentifier="地图-靶场" lastModified="1742201079" lastUniqueIdentifier="108">
   <timeline>
     <DOMTimeline name="地图-靶场">
       <layers>
@@ -74,11 +74,11 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Surveyor" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="Surveyor" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Surveyor" selected="true" centerPoint3DX="2041.15" centerPoint3DY="779.4">
+                <DOMSymbolInstance libraryItemName="Surveyor" centerPoint3DX="2041.15" centerPoint3DY="779.4">
                   <matrix>
                     <Matrix a="0.722854614257813" d="0.72265625" tx="1769.55" ty="483.95"/>
                   </matrix>
@@ -171,16 +171,13 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#FF800A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/新地图/Symbol 51881" name="地图" centerPoint3DX="1071.65" centerPoint3DY="582.55">
-                  <matrix>
-                    <Matrix a="2.30471801757813" d="1.52587890625" tx="774.4" ty="453.65"/>
-                  </matrix>
+                <DOMSymbolInstance libraryItemName="地图碰撞箱" name="地图" centerPoint3DX="1475.8" centerPoint3DY="513.4">
                   <transformationPoint>
-                    <Point x="345.25" y="133.65"/>
+                    <Point x="1475.8" y="513.4"/>
                   </transformationPoint>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -219,7 +216,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#4FFF4F" autoNamed="false">
+        <DOMLayer name="背景" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

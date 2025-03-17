@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1742195147" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/医务室" itemID="668aa0bc-000051a1" linkageExportForAS="true" linkageIdentifier="基地场景-医务室" lastModified="1742200672" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="医务室">
       <layers>
@@ -99,9 +99,9 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 医务室" name="地图" centerPoint3DX="348.95" centerPoint3DY="116.9">
+                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 医务室" name="地图" centerPoint3DX="729.45" centerPoint3DY="305.3">
                   <matrix>
-                    <Matrix d="1.0001220703125" tx="-380.5" ty="-188.4"/>
+                    <Matrix d="1.0001220703125"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -235,7 +235,7 @@ onClipEvent (load) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2331" name="deadbody">
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

@@ -47,7 +47,7 @@ _root.转场景数据传递 = function(){
 			i++;
 		}
 		_root.新出生 = false;
-		return undefined;
+		return;
 	}
 	var i = 0;
 	while (i < 4){

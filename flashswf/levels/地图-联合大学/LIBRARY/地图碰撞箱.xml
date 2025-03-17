@@ -1,12 +1,15 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图" itemID="66e79681-000005c5" lastModified="1727267595">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图碰撞箱" itemID="67d7e377-000019cf" lastModified="1742201724">
   <timeline>
-    <DOMTimeline name="地图">
+    <DOMTimeline name="地图碰撞箱">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="1.19999694824219" d="1.19999694824219" tx="7" ty="469.05"/>
+                  </matrix>
                   <transformationPoint>
                     <Point x="947.15" y="259.7"/>
                   </transformationPoint>

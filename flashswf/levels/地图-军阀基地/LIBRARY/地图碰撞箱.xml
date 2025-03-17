@@ -1,0 +1,30 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图碰撞箱" itemID="67d7e076-0000157a" lastModified="1742203305">
+  <timeline>
+    <DOMTimeline name="地图碰撞箱">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!17156 9984|15624 12371!15624 12371/18524 12371!18524 12371|19144 9984!19144 9984|17156 9984"/>
+                    <Edge cubics="!18524 12371(;18524,12371 15624,12371 15624,12371q18524 12371 15624 12371);"/>
+                    <Edge cubics="!18524 12371(;18524,12371 19144,9984 19144,9984q18524 12371 19144 9984);"/>
+                    <Edge cubics="!19144 9984(;19144,9984 17156,9984 17156,9984q19144 9984 17156 9984);"/>
+                    <Edge cubics="!17156 9984(;17156,9984 15624,12371 15624,12371q17156 9984 15624 12371);"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

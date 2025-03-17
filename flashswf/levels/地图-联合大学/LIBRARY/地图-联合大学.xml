@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1740635746" lastUniqueIdentifier="76">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-联合大学" itemID="66e7946e-00000497" linkageExportForAS="true" linkageIdentifier="地图-联合大学" lastModified="1742201735" lastUniqueIdentifier="77">
   <timeline>
     <DOMTimeline name="地图-联合大学">
       <layers>
@@ -69,20 +69,14 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#FF4FFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="地图" name="地图" centerPoint3DX="1143.6" centerPoint3DY="747.15">
-                  <matrix>
-                    <Matrix a="1.19999694824219" d="1.19999694824219" tx="7" ty="469.05"/>
-                  </matrix>
+                <DOMSymbolInstance libraryItemName="地图碰撞箱" name="地图" centerPoint3DX="1140.1" centerPoint3DY="270.05">
                   <transformationPoint>
-                    <Point x="947.15" y="231.75"/>
+                    <Point x="1139.85" y="390.1"/>
                   </transformationPoint>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -171,7 +165,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="球棒少年" color="#FF800A" parentLayerIndex="7" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -193,7 +187,7 @@ onClipEvent(load){
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="新地图素材/npc黑仔" selected="true" centerPoint3DX="326.95" centerPoint3DY="413.85">
+                <DOMSymbolInstance libraryItemName="新地图素材/npc黑仔" centerPoint3DX="326.95" centerPoint3DY="413.85">
                   <matrix>
                     <Matrix tx="309.5" ty="421.65"/>
                   </matrix>
@@ -216,7 +210,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#9933CC" autoNamed="false">
+        <DOMLayer name="背景" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

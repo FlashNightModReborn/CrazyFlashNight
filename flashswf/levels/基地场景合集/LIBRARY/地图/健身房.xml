@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1742194970" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/健身房" itemID="668aa068-0000512a" linkageExportForAS="true" linkageIdentifier="基地场景-健身房" lastModified="1742200421" lastUniqueIdentifier="3">
   <timeline>
     <DOMTimeline name="健身房">
       <layers>
@@ -309,7 +309,7 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2331" name="deadbody">
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

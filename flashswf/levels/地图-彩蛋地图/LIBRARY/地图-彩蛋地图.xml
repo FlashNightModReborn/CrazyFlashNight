@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1740635629" lastUniqueIdentifier="42">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1742201276" lastUniqueIdentifier="42">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
@@ -149,11 +149,11 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="士力架npc" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="士力架npc" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="所有素材/士力架npc" selected="true" centerPoint3DX="2310.3" centerPoint3DY="439.9">
+                <DOMSymbolInstance libraryItemName="所有素材/士力架npc" centerPoint3DX="2310.3" centerPoint3DY="439.9">
                   <matrix>
                     <Matrix a="-0.54180908203125" d="0.582687377929688" tx="2267.75" ty="378.55"/>
                   </matrix>
@@ -273,16 +273,13 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="碰撞" color="#4FFFFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="碰撞" color="#4FFFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/新地图/Symbol 51881" name="地图" centerPoint3DX="999.35" centerPoint3DY="529.6">
-                  <matrix>
-                    <Matrix a="2.388427734375" d="1.64054870605469" tx="562.75" ty="366.25"/>
-                  </matrix>
+                <DOMSymbolInstance libraryItemName="地图碰撞箱" name="地图" centerPoint3DX="1419.75" centerPoint3DY="481.3">
                   <transformationPoint>
-                    <Point/>
+                    <Point x="1419.75" y="481.3"/>
                   </transformationPoint>
                   <color>
                     <Color alphaMultiplier="0"/>

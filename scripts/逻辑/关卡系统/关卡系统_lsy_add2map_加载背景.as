@@ -98,13 +98,62 @@ _root.贴背景图 = function(){
 		}
 	}
 
-	// if(天气系统.空间情况 !== "室外") _root.天空盒.removeMovieClip();
-
 	游戏世界.已更新天气 = false;
 	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域"], 1, true);
 
+	//
+	var 地图 = 游戏世界.地图;
+	if(地图.初始化完毕 !== true){
+		var point:Vector = SceneCoordinateManager.calculateOffset();
+
+		// 定义边界及安全边距
+		var margin = 300;  
+		var xmin = _root.Xmin - point.x;
+		var xmax = _root.Xmax - point.x;
+		var ymin = _root.Ymin - point.y;
+		var ymax = _root.Ymax - point.y;
+
+		// 计算“外框”坐标
+		var outerLeft   = xmin - margin;
+		var outerRight  = xmax + margin;
+		var outerTop    = ymin - margin;
+		var outerBottom = ymax + margin;
+
+		// 为了可视化调试，设置较明显的线条和半透明填充
+		地图.lineStyle(2, 0xFF0000, 100);   // 红色边线，不透明
+		地图.beginFill(0x66CC66, 100);      // 半透明绿色填充
+
+		// ------ 先绘制外框 (顺时针) ------
+		// 例如：从左上 -> 右上 -> 右下 -> 左下 -> 回到左上
+		地图.moveTo(outerLeft,  outerTop);
+		地图.lineTo(outerRight, outerTop);
+		地图.lineTo(outerRight, outerBottom);
+		地图.lineTo(outerLeft,  outerBottom);
+		地图.lineTo(outerLeft,  outerTop);
+
+		// ------ 再绘制内框 (逆时针)，产生“中空”效果 ------
+		// 如果外框是顺时针，这里反向绘制才能在非零环绕规则下形成洞
+		地图.moveTo(xmin, ymin);
+		地图.lineTo(xmax, ymin);
+		地图.lineTo(xmax, ymax);
+		地图.lineTo(xmin, ymax);
+		地图.lineTo(xmin, ymin);
+
+		// 结束填充
+		地图.endFill();
+
+		if(_root.调试模式) {
+			地图._visible = true;  // 显示地图
+			地图._alpha = 66;     // 让地图本身半透明
+		}else{
+			地图._visible = false;
+		}
+		地图.初始化完毕 = true;
+	}
+
 	if (背景层._width <= 1300) return;
 
+	// 若背景层存在且宽度大于1300则贴背景图
 	背景层._visible = true;
 	var pos = new Object({x:0, y:0});
 	背景层.localToGlobal(pos);
@@ -113,51 +162,6 @@ _root.贴背景图 = function(){
 	游戏世界.deadbody.layers[0].draw(背景层,matrix,new flash.geom.ColorTransform(),"normal",undefined,true);
 	背景层._visible = false;
 	背景层.外部动画加载壳mc.unloadMovie(); //尝试直接卸载原背景
-	var 地图 = 游戏世界.地图;
-	var point:Vector = SceneCoordinateManager.calculateOffset();
-
-    // 定义边界及安全边距
-    var margin = 300;  
-    var xmin = _root.Xmin - point.x;
-    var xmax = _root.Xmax - point.x;
-    var ymin = _root.Ymin - point.y;
-    var ymax = _root.Ymax - point.y;
-
-    // 计算“外框”坐标
-    var outerLeft   = xmin - margin;
-    var outerRight  = xmax + margin;
-    var outerTop    = ymin - margin;
-    var outerBottom = ymax + margin;
-
-    // 为了可视化调试，设置较明显的线条和半透明填充
-    地图.lineStyle(2, 0xFF0000, 100);   // 红色边线，不透明
-    地图.beginFill(0x66CC66, 100);      // 半透明绿色填充
-
-    // ------ 先绘制外框 (顺时针) ------
-    // 例如：从左上 -> 右上 -> 右下 -> 左下 -> 回到左上
-    地图.moveTo(outerLeft,  outerTop);
-    地图.lineTo(outerRight, outerTop);
-    地图.lineTo(outerRight, outerBottom);
-    地图.lineTo(outerLeft,  outerBottom);
-    地图.lineTo(outerLeft,  outerTop);
-
-    // ------ 再绘制内框 (逆时针)，产生“中空”效果 ------
-    // 如果外框是顺时针，这里反向绘制才能在非零环绕规则下形成洞
-    地图.moveTo(xmin, ymin);
-    地图.lineTo(xmax, ymin);
-    地图.lineTo(xmax, ymax);
-    地图.lineTo(xmin, ymax);
-    地图.lineTo(xmin, ymin);
-
-    // 结束填充
-    地图.endFill();
-
-	if(_root.调试模式) {
-		地图._visible = true;  // 显示地图
-		地图._alpha = 66;     // 让地图本身半透明
-	}
-	
-
 
 };
 

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1741019337" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/武器库" itemID="668aa006-0000507c" linkageExportForAS="true" linkageIdentifier="基地场景-武器库" lastModified="1742200583" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="武器库">
       <layers>
@@ -171,13 +171,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#60EFAF" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="地图" color="#60EFAF" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2549" name="地图" centerPoint3DX="275.2" centerPoint3DY="151.45">
+                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 武器库" name="地图" centerPoint3DX="655.7" centerPoint3DY="339.85">
                   <matrix>
-                    <Matrix d="1.0001220703125" tx="-380.5" ty="-188.4"/>
+                    <Matrix d="1.0001220703125"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -266,11 +266,11 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#7E77A1" current="true" isSelected="true">
+        <DOMLayer name="Layer 7" color="#7E77A1">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" selected="true" centerPoint3DX="500.75" centerPoint3DY="445.6">
+                <DOMSymbolInstance libraryItemName="NPC/ShopGirl-NPC" centerPoint3DX="500.75" centerPoint3DY="445.6">
                   <matrix>
                     <Matrix tx="412.45" ty="321.55"/>
                   </matrix>
@@ -316,7 +316,7 @@ onClipEvent (load) {
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2331" name="deadbody">
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>

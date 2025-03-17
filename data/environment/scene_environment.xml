@@ -19,7 +19,7 @@
         <BackgroundURL>地下室1层</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>50</Xmin>
-        <Xmax>1812</Xmax>
+        <Xmax>1535</Xmax>
         <Ymin>260</Ymin>
         <Ymax>547</Ymax>
         <Width>1812</Width>
@@ -195,6 +195,7 @@
         <BGM>Dialtone</BGM>
     </Environment>
     <!-- 外部地图-->
+    <!-- 
     <Environment>
         <BackgroundURL>地图-工厂</BackgroundURL>
         <Alignment>true</Alignment>
@@ -207,6 +208,7 @@
         <SpaceCondition>室内</SpaceCondition>
         <Horizon>240</Horizon>
     </Environment>
+    -->
     <Environment>
         <BackgroundURL>地图-军阀基地</BackgroundURL>
         <Alignment>true</Alignment>
