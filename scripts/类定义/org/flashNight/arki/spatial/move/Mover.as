@@ -89,12 +89,13 @@ class org.flashNight.arki.spatial.move.Mover {
      *      若发生碰撞，则调用 resolveCollision 进行挤出处理。
      */
     public static function move2D(entity:MovieClip, direction:String, speed:Number):Void {
-        if (debug) {
-            resolveCollision(entity, globalPoint, speed, direction);
-            return;
-        }
         var dir:Vector = Mover.directions2D[direction];
         if (!dir) return;
+
+        if (debug) {
+            resolveCollision(entity, globalPoint, speed, dir);
+            return;
+        }
         var vx:Number = dir.x * speed;
         var vy:Number = dir.y * speed;
 
@@ -107,7 +108,7 @@ class org.flashNight.arki.spatial.move.Mover {
 
         // 执行碰撞检测
         if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
-            if (direction == "上" || direction == "下") {
+            if (vx === 0) {
                 // 垂直移动：更新Z轴和_y，并调整显示层次
                 entity.swapDepths(entity._y = (entity.Z轴坐标 += vy));
             } else {
@@ -117,7 +118,7 @@ class org.flashNight.arki.spatial.move.Mover {
             return;
         }
         // 碰撞发生时调用挤出处理
-        resolveCollision(entity, globalPoint, speed, direction);
+        resolveCollision(entity, globalPoint, speed, dir);
     }
 
     /*
@@ -142,13 +143,13 @@ class org.flashNight.arki.spatial.move.Mover {
      *      若发生碰撞，则调用 resolveCollision 进行挤出处理。
      */
     public static function move25D(entity:MovieClip, direction:String, speed:Number):Void {
+        var dir:Vertex3D = Mover.directions25D[direction];
+        if (!dir) return;
+
         if (debug) {
-            resolveCollision(entity, globalPoint, speed, direction);
+            resolveCollision(entity, globalPoint, speed, dir);
             return;
         }
-        var dir:Object = Mover.directions25D[direction];
-
-        if (!dir) return;
         
         // 计算跳跃时的 dz 分量，非跳跃状态下 dz 为 0
         var dx:Number = dir.x * speed;
@@ -180,7 +181,7 @@ class org.flashNight.arki.spatial.move.Mover {
             }
             return;
         }
-        resolveCollision(entity, globalPoint, speed, direction);
+        resolveCollision(entity, globalPoint, speed, dir);
     }
 
 
@@ -209,9 +210,10 @@ class org.flashNight.arki.spatial.move.Mover {
     private static function resolveCollision(entity:MovieClip,
                                              globalPt:Vector,
                                              speed:Number,
-                                             direction:String
+                                             dir:Vector
     ):Void {
-        if (!_root.gameworld.地图.hitTest(globalPt.x, globalPt.y, true)) {
+        if (!debug && !_root.gameworld.地图.hitTest(globalPt.x, globalPt.y, true)) {
+            // _root.发布消息("提前返回")
             return;
         }
 
@@ -224,16 +226,14 @@ class org.flashNight.arki.spatial.move.Mover {
         centerVec.normalize();
         
         // 2. 获取原始移动方向向量
-        var dir2D:Vector = directions2D[direction];  
-        if (!dir2D) {
-            dir2D = new Vector(0, 0);
-        }
+        var dir2D:Vector = new Vector(dir.x, dir.y);
 
         // 3. 计算自适应混合比率，根据实体与中心距离决定
         var adaptiveRatio:Number = Math.max(0, 
                                    Math.min(1, 1 - (SceneCoordinateManager.safeRadius / point.distance(center))));
         // 4. 进行线性插值混合，得到最终挤出向量
         var finalVec:Vector = dir2D.lerp(centerVec, adaptiveRatio);
+        // _root.发布消息(dir2D + " " + adaptiveRatio + " " + finalVec)
 
         // 5. 对挤出向量归一化并乘以步长（取 speed 与 5 中较大值）
         finalVec.normalize();

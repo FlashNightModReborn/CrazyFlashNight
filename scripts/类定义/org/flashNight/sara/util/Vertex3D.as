@@ -4,7 +4,7 @@
  * Vertex3D - 三维向量类，用于2.5d支持
  * 参考了 Vector 类的设计风格，提供常用的三维向量运算方法
  */
-class org.flashNight.sara.util.Vertex3D implements IVector{
+class org.flashNight.sara.util.Vertex3D extends Vector{
 
     public var x:Number;
     public var y:Number;
@@ -21,7 +21,7 @@ class org.flashNight.sara.util.Vertex3D implements IVector{
         this.y = py;
         this.z = pz;
     }
-    
+
     /**
      * 设置向量的值
      * @param px 新的 x 分量
