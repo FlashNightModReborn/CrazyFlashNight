@@ -2271,5 +2271,28 @@
         <Ymax>720</Ymax>
         <Width>1490</Width>
         <Height>720</Height>
+        <Door>
+            <Index>1</Index>
+            <Direction>上</Direction>
+            <x0>700</x0>
+            <y0>440</y0>
+            <x1>800</x1>
+            <y1>460</y1>
+        </Door>
+    </Environment>
+    <Environment>
+        <BackgroundURL>自来水厂主路.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>10</Xmin>
+        <Xmax>2000</Xmax>
+        <Ymin>480</Ymin>
+        <Ymax>720</Ymax>
+        <Width>2000</Width>
+        <Height>720</Height>
+        <Horizon>186</Horizon>
+        <Skybox>
+            <url>废城远景1.swf</url>
+            <SpeedRate>4</SpeedRate>
+        </Skybox>
     </Environment>
 </EnvironmentSettings>
