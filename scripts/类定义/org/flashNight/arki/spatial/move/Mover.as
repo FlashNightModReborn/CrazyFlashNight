@@ -184,6 +184,59 @@ class org.flashNight.arki.spatial.move.Mover {
         resolveCollision(entity, globalPoint, speed, dir);
     }
 
+    // 纯2D移动：直接根据传入的 2D 位移向量移动实体
+    public static function move2DWithVector(entity:MovieClip, offset:Vector):Void {
+        // 计算实体当前的全局坐标
+        globalPoint.setTo(entity._x, entity.Z轴坐标);
+        _root.gameworld.localToGlobal(globalPoint);
+        
+        // 计算目标位置
+        var targetX:Number = globalPoint.x + offset.x;
+        var targetY:Number = globalPoint.y + offset.y;
+        
+        // 进行碰撞检测
+        if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
+            // 根据移动方向，分别处理水平与垂直移动
+            if(offset.x == 0) {
+                // 垂直移动：更新 Z轴坐标，并同步 _y 后调整显示层次
+                entity.Z轴坐标 += offset.y;
+                entity._y = entity.Z轴坐标;
+                entity.swapDepths(entity._y);
+            } else {
+                // 水平移动：直接更新 _x 坐标
+                entity._x += offset.x;
+            }
+            return;
+        }
+    }
+
+    // 2.5D移动：直接根据传入的 2.5D 位移向量移动实体
+    public static function move25DWithVector(entity:MovieClip, offset:Vertex3D):Void {
+        // 计算实体当前的全局坐标
+        globalPoint.setTo(entity._x, entity.Z轴坐标);
+        _root.gameworld.localToGlobal(globalPoint);
+        
+        // 计算目标全局位置（仅检测水平和垂直分量）
+        var targetX:Number = globalPoint.x + offset.x;
+        var targetY:Number = globalPoint.y + offset.y;
+        
+        // 进行碰撞检测
+        if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
+            // 如果存在垂直位移或高度变化，则走2.5D跳跃逻辑
+            if(offset.y != 0 || offset.z != 0) {
+                entity.Z轴坐标 += offset.y;
+                entity.起始Y += offset.z;
+                entity._y += offset.y;
+                entity.swapDepths(entity._y);
+            } else {
+                // 否则只处理水平移动
+                entity._x += offset.x;
+            }
+            return;
+        }
+    }
+
+
 
     /*
      * 方法：resolveCollision
