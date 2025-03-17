@@ -109,9 +109,7 @@ class org.flashNight.arki.spatial.move.Mover {
         if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
             if (direction == "上" || direction == "下") {
                 // 垂直移动：更新Z轴和_y，并调整显示层次
-                entity.Z轴坐标 += vy;
-                entity._y = entity.Z轴坐标;
-                entity.swapDepths(entity._y);
+                entity.swapDepths(entity._y = (entity.Z轴坐标 += vy));
             } else {
                 // 水平移动：仅更新_x坐标
                 entity._x += vx;
@@ -143,7 +141,7 @@ class org.flashNight.arki.spatial.move.Mover {
      *         - 水平移动（"左"、"右"）：仅更新 _x 坐标；
      *      若发生碰撞，则调用 resolveCollision 进行挤出处理。
      */
-    public static function move25D(entity:MovieClip, direction:String, speed:Number, isJump:Boolean):Void {
+    public static function move25D(entity:MovieClip, direction:String, speed:Number):Void {
         if (debug) {
             resolveCollision(entity, globalPoint, speed, direction);
             return;
@@ -153,33 +151,32 @@ class org.flashNight.arki.spatial.move.Mover {
         if (!dir) return;
         
         // 计算跳跃时的 dz 分量，非跳跃状态下 dz 为 0
-        var dz:Number = (isJump ? dir.z : 0);
+        var dx:Number = dir.x * speed;
+        var dy:Number = dir.y * speed;
+        var dz:Number = dir.z * speed;
         
         // 使用局部坐标转换为全局坐标（用于碰撞检测）
         globalPoint.setTo(entity._x, entity.Z轴坐标);
         _root.gameworld.localToGlobal(globalPoint);
         
         // 根据方向计算目标全局坐标
-        var targetX:Number = globalPoint.x + dir.x * speed;
-        var targetY:Number = globalPoint.y + dir.y * speed;
+        var targetX:Number = globalPoint.x + dx;
+        var targetY:Number = globalPoint.y + dy;
         
         // 碰撞检测
         if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
             // 如果是垂直方向移动（上或下），走跳跃/高度变化逻辑
-            if (direction == "上" || direction == "下") {
+            if (dy | dz) {
                 // 更新垂直轴：旧代码中只操作 Z轴坐标，再同步 _y
-                var dy:Number = dir.y * speed;
+                
                 entity.Z轴坐标 += dy;
-                entity._y += dy;
-                // 跳跃状态下，更新起始Y（用于后续跳跃计算）
-                if (isJump) {
-                    entity.起始Y += dy;
-                }
+                entity.起始Y += dz;
+
                 // 调整显示层次
-                entity.swapDepths(entity._y);
+                entity.swapDepths(entity._y += dy);
             } else {
                 // 如果是水平移动（左或右），只更新 _x 坐标
-                entity._x += dir.x * speed;
+                entity._x += dx;
             }
             return;
         }

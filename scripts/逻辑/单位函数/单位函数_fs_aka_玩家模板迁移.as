@@ -1280,7 +1280,7 @@ _root.主角函数.移动 = function(移动方向, 速度) {
     // 浮空状态下，上/下使用跳跃移动
     if (this.浮空 && (移动方向 === "上" || 移动方向 === "下")) {
         // 使用 2.5D 跳跃移动（跳跃状态传 true）
-        Mover.move25D(this, 移动方向, 速度, true);
+        Mover.move25D(this, 移动方向, 速度);
         return;
     }
     
@@ -1290,7 +1290,7 @@ _root.主角函数.移动 = function(移动方向, 速度) {
 
 _root.主角函数.跳跃上下移动 = function(移动方向, 速度) {
     // 调用 Mover.move25D，跳跃状态传 true
-    Mover.move25D(this, 移动方向, 速度, true);
+    Mover.move25D(this, 移动方向, 速度);
 };
 
 _root.主角函数.强制移动 = function(移动方向, 速度) {

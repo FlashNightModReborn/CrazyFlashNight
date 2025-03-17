@@ -1,4 +1,6 @@
-﻿/**
+﻿import org.flashNight.sara.util.*;
+
+/**
  * Sara - Customized Dynamics Engine for FlashNight Game
  * Release based on Flade 0.6 alpha modified for project-specific functionalities
  * Copyright 2004, 2005 Alec Cove
@@ -20,7 +22,7 @@
  * Flash is a registered trademark of Adobe Systems Incorporated.
  */
 
-class org.flashNight.sara.util.Vector {
+class org.flashNight.sara.util.Vector implements IVector{
 
     // 向量的 x 和 y 分量
     public var x:Number;
