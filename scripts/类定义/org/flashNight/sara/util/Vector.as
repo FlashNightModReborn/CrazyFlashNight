@@ -49,6 +49,19 @@ class org.flashNight.sara.util.Vector implements IVector{
     }
 
     /**
+     * 设置向量的值并返回自身
+     * @param px 新的 x 分量
+     * @param py 新的 y 分量
+     * 
+     * @return  当前向量（已修改）
+     */
+    public function assign(px:Number, py:Number):Vector {
+        x = px;
+        y = py;
+        return this;
+    }
+
+    /**
      * 复制另一个向量的值到当前向量
      * @param v 要复制的向量
      */

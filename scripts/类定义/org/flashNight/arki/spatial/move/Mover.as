@@ -3,28 +3,35 @@ import org.flashNight.gesh.object.*;
 import org.flashNight.arki.spatial.transform.*;
 
 /*
- * Mover 类
- * =========
- * 该类实现了2D和2.5D的移动逻辑，包括碰撞检测和碰撞挤出处理。
+ * Mover 类 - 2D 与 2.5D 移动逻辑处理
+ * --------------------------------------------------
+ * 本类用于处理游戏实体的移动逻辑，涵盖：
+ *   - 纯2D移动（不涉及高度变化）：方法 move2D
+ *   - 2.5D移动（包含高度变化，例如跳跃效果）：方法 move25D
  *
- * 主要功能：
- *   1. move2D  - 实现纯2D移动（不考虑高度变化）
- *   2. move25D - 实现2.5D移动（带高度变化，如跳跃时）
- *   3. resolveCollision - 当移动发生碰撞时，通过计算挤出向量帮助实体摆脱障碍
+ * 在移动过程中，类内部实现了碰撞检测与碰撞挤出处理（resolveCollision），
+ * 以确保实体在遇到障碍时能够自动调整位置、避免重叠。
  *
- * 内部结构说明：
- *   - directions2D: 存储纯2D移动的基础方向向量（仅包含水平和垂直分量）
- *   - directions25D: 存储2.5D移动的基础方向向量（包含水平、垂直及高度变化的dz分量）
- *   - globalPoint: 作为全局临时变量，用于减少重复创建 Vector 对象，主要在碰撞检测中使用
- *   - debug: 调试标志，开启后将直接调用碰撞挤出逻辑，而不进行正常移动
+ * 内部关键变量说明：
+ *   - directions2D: 存储纯2D移动基础方向向量（仅含水平与垂直分量），键为中文方向字符串。
+ *   - directions25D: 存储2.5D移动基础方向向量（包含水平、垂直及高度变化 dz 分量），键为中文方向字符串。
+ *   - globalPoint: 全局临时 Vector 对象，用于减少重复创建，主要在碰撞检测中进行全局坐标转换。
+ *   - debug: 调试标识，启用时将直接调用碰撞挤出逻辑，而跳过正常的移动流程。
  */
 class org.flashNight.arki.spatial.move.Mover {
 
     // --------------------
-    // 2D方向向量（只包含水平和垂直分量）
+    // 纯2D方向向量（仅水平和垂直分量）
     private static var directions2D:Object;
 
-    // 初始化2D方向向量映射表
+    /**
+     * 初始化2D方向向量映射表
+     *
+     * 构造一个 Object 对象，将中文方向（"上"、"下"、"左"、"右"）映射到对应的 Vector 实例，
+     * 每个 Vector 对象仅包含水平和垂直分量，用于纯2D移动时的方向控制。
+     *
+     * @return Object 方向字符串到 Vector 实例的映射表
+     */
     private static function initDirections2D():Object {
         var obj:Object = {};
         // "上": 向上移动，向量 (0, -1)
@@ -39,11 +46,18 @@ class org.flashNight.arki.spatial.move.Mover {
     };
 
     // --------------------
-    // 2.5D方向向量（包含水平、垂直和高度变化的dz分量）
-    // 注意：此处保存的是基础值，在调用时根据是否跳跃决定是否使用dz分量
+    // 2.5D方向向量（包含水平、垂直及高度变化的 dz 分量）
     private static var directions25D:Object;
 
-    // 初始化2.5D方向向量映射表
+    /**
+     * 初始化2.5D方向向量映射表
+     *
+     * 构造一个 Object 对象，将中文方向（"上"、"下"、"左"、"右"）映射到对应的 Vertex3D 实例，
+     * 每个 Vertex3D 对象包含水平、垂直及高度变化（dz）分量，用于2.5D移动时的方向控制。
+     * 注意：基础 dz 分量在调用时可根据跳跃等状态调整使用。
+     *
+     * @return Object 方向字符串到 Vertex3D 实例的映射表
+     */
     private static function initDirections25D():Object {
         var obj:Object = {};
 
@@ -56,6 +70,12 @@ class org.flashNight.arki.spatial.move.Mover {
 
     public static var initTag:Boolean = false;
 
+    /**
+     * 初始化 Mover 类
+     *
+     * 该方法初始化 2D 与 2.5D 的方向向量映射表，并设置初始化标志，
+     * 为后续的移动处理提供必要的数据支持。
+     */
     public static function init():Void {
         directions2D = initDirections2D();
         directions25D = initDirections25D();
@@ -63,149 +83,144 @@ class org.flashNight.arki.spatial.move.Mover {
     }
 
     // --------------------
-    // 全局临时变量，减少对象重复创建（用于2D部分）
+    // 全局临时变量，用于减少 Vector 对象的重复创建（主要用于2D部分的碰撞检测）
     private static var globalPoint:Vector = new Vector(0, 0);
-    // 调试标志，默认为 false；为 true 时，调用调试逻辑（直接使用碰撞挤出函数）
+    // 调试标识，默认为 false；当为 true 时，将直接调用碰撞挤出逻辑，而不进行正常移动
     private static var debug:Boolean = false;
 
-    /*
-     * 方法：move2D
-     * --------------
-     * 用途：实现纯2D移动（无高度变化）。
+    /**
+     * 纯2D移动处理
      *
-     * 参数：
-     *   entity    - 需要移动的 MovieClip 对象（包含 _x、_y、Z轴坐标等属性）
-     *   direction - 移动方向（取值："上"、"下"、"左"、"右"）
-     *   speed     - 移动速度，决定位移大小
+     * 实现基于水平与垂直位移的2D移动逻辑，主要步骤包括：
+     *   1. 根据给定的 direction 查找对应的2D向量；
+     *   2. 计算水平与垂直位移 (vx, vy)；
+     *   3. 将实体的局部坐标转换为全局坐标，便于执行碰撞检测；
+     *   4. 根据全局坐标与位移量计算目标位置；
+     *   5. 如果目标位置无碰撞，则直接更新实体位置：
+     *         - 对于垂直移动（"上"、"下"）：同步更新 Z轴和 _y，并调整显示层次；
+     *         - 对于水平移动（"左"、"右"）：仅更新 _x 坐标；
+     *      否则，调用 resolveCollision 进行碰撞挤出处理。
      *
-     * 移动逻辑：
-     *   1. 根据 direction 查找对应的2D向量；
-     *   2. 计算水平和垂直位移 (vx, vy)；
-     *   3. 将实体的局部坐标转换为全局坐标，以便进行碰撞检测；
-     *   4. 根据全局坐标和位移计算目标位置；
-     *   5. 若目标位置无碰撞，执行移动：
-     *         - 垂直移动（"上"、"下"）：更新 Z轴坐标，同时同步 _y 并调整显示层次；
-     *         - 水平移动（"左"、"右"）：仅更新 _x 坐标；
-     *      若发生碰撞，则调用 resolveCollision 进行挤出处理。
+     * @param entity 需要移动的 MovieClip 对象（必须包含 _x、_y、Z轴坐标等属性）
+     * @param direction 移动方向，支持 "上"、"下"、"左"、"右"
+     * @param speed 移动速度，用于计算实际位移
      */
     public static function move2D(entity:MovieClip, direction:String, speed:Number):Void {
         var dir:Vector = Mover.directions2D[direction];
         if (!dir) return;
 
+        var gp:Vector = Mover.globalPoint;
+        
+        /*
         if (debug) {
-            resolveCollision(entity, globalPoint, speed, dir);
+            resolveCollision(entity, gp, speed, dir);
             return;
         }
+        */
+
         var vx:Number = dir.x * speed;
         var vy:Number = dir.y * speed;
+        var gameworld:MovieClip = _root.gameworld;
+        var ex:Number = entity._x;
+        var ez:Number = entity.Z轴坐标;
 
-        // 计算实体的全局坐标
-        globalPoint.setTo(entity._x, entity.Z轴坐标);
-        _root.gameworld.localToGlobal(globalPoint);
+        // 将实体局部坐标转换为全局坐标，便于碰撞检测
+        gameworld.localToGlobal(gp.assign(ex, ez));
 
-        var targetX:Number = globalPoint.x + vx;
-        var targetY:Number = globalPoint.y + vy;
-
-        // 执行碰撞检测
-        if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
+        // 执行碰撞检测：若目标位置无碰撞，则更新实体位置
+        if (!gameworld.地图.hitTest(gp.x + vx, gp.y + vy, true)) {
             if (vx === 0) {
-                // 垂直移动：更新Z轴和_y，并调整显示层次
-                entity.swapDepths(entity._y = (entity.Z轴坐标 += vy));
+                // 垂直移动：更新 Z轴 和 _y 坐标，并调整显示层次
+                entity.swapDepths(entity._y = (entity.Z轴坐标 = ez + vy));
             } else {
-                // 水平移动：仅更新_x坐标
-                entity._x += vx;
+                // 水平移动：仅更新 _x 坐标
+                entity._x = ex + vx;
             }
             return;
         }
-        // 碰撞发生时调用挤出处理
-        resolveCollision(entity, globalPoint, speed, dir);
+        // 若检测到碰撞，则调用碰撞挤出处理
+        resolveCollision(entity, gp, speed, dir);
     }
 
-    /*
-     * 方法：move25D
-     * --------------
-     * 用途：实现2.5D移动（包含高度变化）。
+    /**
+     * 2.5D移动处理（包含高度变化）
      *
-     * 参数：
-     *   entity    - 需要移动的 MovieClip 对象（必须包含 Z轴坐标属性）
-     *   direction - 移动方向（取值："上"、"下"、"左"、"右"）
-     *   speed     - 移动速度
-     *   isJump    - 布尔值，指示是否处于跳跃状态；若为 true，则使用dz分量
-     *
-     * 移动逻辑：
+     * 实现带有高度变化的移动逻辑，例如跳跃动作。主要步骤包括：
      *   1. 根据 direction 查找对应的2.5D向量；
-     *   2. 判断 isJump 决定是否使用dz分量（非跳跃状态下dz为0）；
-     *   3. 将局部坐标转换为全局坐标，用于碰撞检测；
-     *   4. 根据全局坐标和位移计算目标位置；
-     *   5. 若目标位置无碰撞，执行移动：
-     *         - 垂直移动（"上"、"下"）：更新Z轴和_y，且在跳跃时更新起始Y；
-     *         - 水平移动（"左"、"右"）：仅更新 _x 坐标；
-     *      若发生碰撞，则调用 resolveCollision 进行挤出处理。
+     *   2. 计算水平和垂直分量的位移 (dx, dy)；
+     *   3. 将实体的局部坐标转换为全局坐标，便于进行碰撞检测；
+     *   4. 根据全局坐标与位移计算目标位置；
+     *   5. 如果目标位置无碰撞，则根据移动方向更新实体坐标：
+     *         - 对于垂直移动（"上"、"下"）：更新 Z轴、同步 _y，同时处理跳跃时的起始 Y；
+     *         - 对于水平移动（"左"、"右"）：仅更新 _x 坐标；
+     *      否则，调用 resolveCollision 进行碰撞挤出处理。
+     *
+     * @param entity 需要移动的 MovieClip 对象（必须包含 _x、_y、Z轴坐标属性）
+     * @param direction 移动方向，支持 "上"、"下"、"左"、"右"
+     * @param speed 移动速度，用于计算实际位移
      */
     public static function move25D(entity:MovieClip, direction:String, speed:Number):Void {
         var dir:Vertex3D = Mover.directions25D[direction];
         if (!dir) return;
 
+        var gp:Vector = Mover.globalPoint;
+        
+        /*
         if (debug) {
-            resolveCollision(entity, globalPoint, speed, dir);
+            resolveCollision(entity, gp, speed, dir);
             return;
         }
+        */
         
-        // 计算跳跃时的 dz 分量，非跳跃状态下 dz 为 0
+        // 计算水平与垂直位移
         var dx:Number = dir.x * speed;
         var dy:Number = dir.y * speed;
-        var dz:Number = dir.z * speed;
+        var gameworld:MovieClip = _root.gameworld;
+        var ex:Number = entity._x;
+        var ez:Number = entity.Z轴坐标;
+
+        // 将局部坐标转换为全局坐标，便于碰撞检测
+        gameworld.localToGlobal(gp.assign(ex, ez));
         
-        // 使用局部坐标转换为全局坐标（用于碰撞检测）
-        globalPoint.setTo(entity._x, entity.Z轴坐标);
-        _root.gameworld.localToGlobal(globalPoint);
-        
-        // 根据方向计算目标全局坐标
-        var targetX:Number = globalPoint.x + dx;
-        var targetY:Number = globalPoint.y + dy;
-        
-        // 碰撞检测
-        if (!_root.gameworld.地图.hitTest(targetX, targetY, true)) {
-            // 如果是垂直方向移动（上或下），走跳跃/高度变化逻辑
+        // 执行碰撞检测：若目标位置无碰撞，则更新实体坐标
+        if (!gameworld.地图.hitTest(gp.x + dx, gp.y + dy, true)) {
+            var dz:Number = dir.z * speed;
+            // 若为垂直方向移动（"上" 或 "下"），则处理跳跃/高度变化逻辑
             if (dy | dz) {
-                // 更新垂直轴：旧代码中只操作 Z轴坐标，再同步 _y
-                
-                entity.Z轴坐标 += dy;
+                // 更新垂直轴：先更新 Z轴，再同步 _y 坐标
+                entity.Z轴坐标 = ez + dy;
                 entity.起始Y += dz;
 
-                // 调整显示层次
+                // 调整显示层次，确保正确的层次关系
                 entity.swapDepths(entity._y += dy);
             } else {
-                // 如果是水平移动（左或右），只更新 _x 坐标
-                entity._x += dx;
+                // 对于水平移动（"左" 或 "右"），仅更新 _x 坐标
+                entity._x = ex + dx;
             }
             return;
         }
-        resolveCollision(entity, globalPoint, speed, dir);
+        // 若检测到碰撞，则调用碰撞挤出处理
+        resolveCollision(entity, gp, speed, dir);
     }
 
-
-    /*
-     * 方法：resolveCollision
-     * -------------------------
-     * 用途：当检测到目标位置发生碰撞时，通过计算挤出向量帮助实体“挤出”障碍区域，
-     *       使其从碰撞状态中摆脱出来。
+    /**
+     * 碰撞挤出处理
      *
-     * 参数：
-     *   entity    - 需要进行挤出处理的 MovieClip 对象
-     *   globalPt  - 当前全局坐标，用于碰撞检测
-     *   speed     - 当前移动速度，用于计算最小挤出步长
-     *   direction - 原始移动方向（"上"、"下"、"左"、"右"）
+     * 当检测到目标位置发生碰撞时，通过计算合适的挤出向量，
+     * 将实体推送至非碰撞区域，解除重叠状态。具体流程如下：
+     *   1. 检查当前全局坐标是否发生碰撞（若无碰撞则提前返回）；
+     *   2. 计算中心回归向量：从实体当前位置指向场景中心，并进行归一化；
+     *   3. 获取原始移动方向向量（仅取水平与垂直分量）；
+     *   4. 根据实体与场景中心的距离，计算自适应混合比率 adaptiveRatio：
+     *         - 实体越靠近场景中心，adaptiveRatio 越大；越靠近边界，则越小；
+     *   5. 对原始移动向量和中心回归向量进行线性插值，获得最终的挤出向量；
+     *   6. 对最终向量进行归一化，并乘以步长（取 speed 与 5 的较大值）；
+     *   7. 更新实体的位置（同步更新 _x、Z轴坐标及 _y），并调用 swapDepths 调整显示层次。
      *
-     * 挤出逻辑步骤：
-     *   1. 若当前全局坐标没有碰撞，则直接返回；
-     *   2. 计算中心回归向量：从实体当前位置指向场景中心，并归一化；
-     *   3. 获取原始移动方向向量（若获取失败则使用零向量）；
-     *   4. 根据实体与场景中心的距离计算自适应混合比率 adaptiveRatio：
-     *         - 实体越靠近中心，adaptiveRatio 越大；越靠近边界，adaptiveRatio 越小；
-     *   5. 对原始移动向量和中心回归向量进行线性插值，得到最终挤出向量；
-     *   6. 对最终向量归一化，并乘以步长（步长取 speed 和 5 中较大值）；
-     *   7. 更新实体的位置（假定 Z轴与 _y 同步），并调用 swapDepths 调整显示层次。
+     * @param entity 需要进行碰撞挤出处理的 MovieClip 对象
+     * @param globalPt 当前全局坐标（用于碰撞检测）
+     * @param speed 当前移动速度（用于计算最小挤出步长）
+     * @param dir 原始移动方向向量（仅包含水平与垂直分量）
      */
     private static function resolveCollision(entity:MovieClip,
                                              globalPt:Vector,
@@ -213,33 +228,33 @@ class org.flashNight.arki.spatial.move.Mover {
                                              dir:Vector
     ):Void {
         if (!debug && !_root.gameworld.地图.hitTest(globalPt.x, globalPt.y, true)) {
-            // _root.发布消息("提前返回")
+            // 若当前坐标无碰撞，直接返回
             return;
         }
 
         // 获取实体当前局部坐标
         var point:Vector = new Vector(entity._x, entity._y);
         
-        // 1. 计算中心回归向量（指向场景中心）
+        // 1. 计算指向场景中心的归一化向量（中心回归向量）
         var center:Vector = SceneCoordinateManager.center;
         var centerVec:Vector = center.minusNew(point);
         centerVec.normalize();
         
-        // 2. 获取原始移动方向向量
+        // 2. 获取原始移动方向向量（仅保留水平与垂直分量）
         var dir2D:Vector = new Vector(dir.x, dir.y);
 
-        // 3. 计算自适应混合比率，根据实体与中心距离决定
+        // 3. 根据实体与中心的距离，计算自适应混合比率
         var adaptiveRatio:Number = Math.max(0, 
                                    Math.min(1, 1 - (SceneCoordinateManager.safeRadius / point.distance(center))));
-        // 4. 进行线性插值混合，得到最终挤出向量
+        // 4. 对原始向量和中心回归向量进行线性插值，获得最终挤出向量
         var finalVec:Vector = dir2D.lerp(centerVec, adaptiveRatio);
         // _root.发布消息(dir2D + " " + adaptiveRatio + " " + finalVec)
 
-        // 5. 对挤出向量归一化并乘以步长（取 speed 与 5 中较大值）
+        // 5. 对最终向量进行归一化，并乘以步长（speed 与 5 中较大值）
         finalVec.normalize();
         finalVec.mult(Math.max(speed, 5));
         
-        // 6. 更新实体位置（更新 _x、Z轴坐标和 _y）
+        // 6. 更新实体位置（同步更新 _x、Z轴坐标及 _y）
         entity._x += finalVec.x;
         entity.Z轴坐标 += finalVec.y;
         entity._y += finalVec.y;
