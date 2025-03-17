@@ -15,7 +15,6 @@ import org.flashNight.arki.spatial.transform.*;
  * 内部关键变量说明：
  *   - directions2D: 存储纯2D移动基础方向向量（仅含水平与垂直分量），键为中文方向字符串。
  *   - directions25D: 存储2.5D移动基础方向向量（包含水平、垂直及高度变化 dz 分量），键为中文方向字符串。
- *   - globalPoint: 全局临时 Vector 对象，用于减少重复创建，主要在碰撞检测中进行全局坐标转换。
  *   - debug: 调试标识，启用时将直接调用碰撞挤出逻辑，而跳过正常的移动流程。
  */
 class org.flashNight.arki.spatial.move.Mover {
@@ -83,8 +82,6 @@ class org.flashNight.arki.spatial.move.Mover {
     }
 
     // --------------------
-    // 全局临时变量，用于减少 Vector 对象的重复创建（主要用于2D部分的碰撞检测）
-    private static var globalPoint:Vector = new Vector(0, 0);
     // 调试标识，默认为 false；当为 true 时，将直接调用碰撞挤出逻辑，而不进行正常移动
     private static var debug:Boolean = false;
 
@@ -109,8 +106,6 @@ class org.flashNight.arki.spatial.move.Mover {
         var dir:Vector = Mover.directions2D[direction];
         if (!dir) return;
 
-        var gp:Vector = Mover.globalPoint;
-        
         /*
         if (debug) {
             resolveCollision(entity, gp, speed, dir);
@@ -123,12 +118,11 @@ class org.flashNight.arki.spatial.move.Mover {
         var gameworld:MovieClip = _root.gameworld;
         var ex:Number = entity._x;
         var ez:Number = entity.Z轴坐标;
-
-        // 将实体局部坐标转换为全局坐标，便于碰撞检测
-        gameworld.localToGlobal(gp.assign(ex, ez));
+        var gwx:Number = ex + gameworld._x;
+        var gwy:Number = ez + gameworld._y;
 
         // 执行碰撞检测：若目标位置无碰撞，则更新实体位置
-        if (!gameworld.地图.hitTest(gp.x + vx, gp.y + vy, true)) {
+        if (!gameworld.地图.hitTest(gwx + vx, gwy + vy, true)) {
             if (vx === 0) {
                 // 垂直移动：更新 Z轴 和 _y 坐标，并调整显示层次
                 entity.swapDepths(entity._y = (entity.Z轴坐标 = ez + vy));
@@ -139,7 +133,7 @@ class org.flashNight.arki.spatial.move.Mover {
             return;
         }
         // 若检测到碰撞，则调用碰撞挤出处理
-        resolveCollision(entity, gp, speed, dir);
+        resolveCollision(entity, gwx, gwy, speed, dir);
     }
 
     /**
@@ -163,8 +157,6 @@ class org.flashNight.arki.spatial.move.Mover {
         var dir:Vertex3D = Mover.directions25D[direction];
         if (!dir) return;
 
-        var gp:Vector = Mover.globalPoint;
-        
         /*
         if (debug) {
             resolveCollision(entity, gp, speed, dir);
@@ -178,12 +170,12 @@ class org.flashNight.arki.spatial.move.Mover {
         var gameworld:MovieClip = _root.gameworld;
         var ex:Number = entity._x;
         var ez:Number = entity.Z轴坐标;
+        var gwx:Number = ex + gameworld._x;
+        var gwy:Number = ez + gameworld._y;
 
-        // 将局部坐标转换为全局坐标，便于碰撞检测
-        gameworld.localToGlobal(gp.assign(ex, ez));
         
         // 执行碰撞检测：若目标位置无碰撞，则更新实体坐标
-        if (!gameworld.地图.hitTest(gp.x + dx, gp.y + dy, true)) {
+        if (!gameworld.地图.hitTest(gwx + dx, gwy + dy, true)) {
             var dz:Number = dir.z * speed;
             // 若为垂直方向移动（"上" 或 "下"），则处理跳跃/高度变化逻辑
             if (dy | dz) {
@@ -200,7 +192,7 @@ class org.flashNight.arki.spatial.move.Mover {
             return;
         }
         // 若检测到碰撞，则调用碰撞挤出处理
-        resolveCollision(entity, gp, speed, dir);
+        resolveCollision(entity, gwx, gwy, speed, dir);
     }
 
     /**
@@ -218,16 +210,18 @@ class org.flashNight.arki.spatial.move.Mover {
      *   7. 更新实体的位置（同步更新 _x、Z轴坐标及 _y），并调用 swapDepths 调整显示层次。
      *
      * @param entity 需要进行碰撞挤出处理的 MovieClip 对象
-     * @param globalPt 当前全局坐标（用于碰撞检测）
+     * @param x 实体当前全局 x 坐标
+     * @param y 实体当前全局 y 坐标
      * @param speed 当前移动速度（用于计算最小挤出步长）
      * @param dir 原始移动方向向量（仅包含水平与垂直分量）
      */
     private static function resolveCollision(entity:MovieClip,
-                                             globalPt:Vector,
+                                             x:Number,
+                                             y:Number,
                                              speed:Number,
                                              dir:Vector
     ):Void {
-        if (!debug && !_root.gameworld.地图.hitTest(globalPt.x, globalPt.y, true)) {
+        if (!debug && !_root.gameworld.地图.hitTest(x, y, true)) {
             // 若当前坐标无碰撞，直接返回
             return;
         }
