@@ -1,7 +1,9 @@
-﻿_root.物品图标注释 = function(name, value){
+﻿import org.flashNight.arki.item.*;
+
+_root.物品图标注释 = function(name, value){
 	var 强化等级 = value.level > 0 ? value.level : 1;
 	
-	var 物品数据 = _root.getItemData(name);
+	var 物品数据 = ItemUtil.getItemData(name);
 	var 文本数据 = new Array();
 	文本数据.push("<B>");
 	文本数据.push(物品数据.displayname);
@@ -44,7 +46,7 @@
 		case "长枪" :
 		case "手枪" :
 			文本数据.push("使用弹夹：");
-			文本数据.push(_root.getItemData(物品数据.data.clipname).displayname);
+			文本数据.push(ItemUtil.getItemData(物品数据.data.clipname).displayname);
 			文本数据.push("<BR>");
 			文本数据.push("子弹类型：");
 			if(物品数据.data.bulletrename){
@@ -242,12 +244,12 @@
 
 
 	//合成材料
-	if (物品数据.synthesis !== undefined && 物品数据.synthesis !== 0){
-		var 合成表 = _root.改装清单对象[物品数据.synthesis].Material;
+	if (物品数据.synthesis != null){
+		var 合成表 = ItemUtil.getRequirementFromTask(_root.改装清单对象[物品数据.synthesis].materials);
 		if(合成表.length > 0){
 			文本数据.push("合成材料：<BR>");
 			for(var i = 0; i < 合成表.length; i++){
-				文本数据.push(_root.getItemData(合成表[i].Name).displayname+"："+ 合成表[i].Quantity);
+				文本数据.push(ItemUtil.getItemData(合成表[i].name).displayname+"："+ 合成表[i].value);
 				文本数据.push("<BR>");
 			}
 		}

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/Symbol 1113" itemID="6597607e-0000086c" linkageExportForAS="true" linkageIdentifier="男变装-裸体左下臂" lastModified="1704196122">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/主角/男变装-裸体右大腿" itemID="67d7c63a-00000566" lastModified="1742194234">
   <timeline>
-    <DOMTimeline name="Symbol 1113">
+    <DOMTimeline name="男变装-裸体右大腿">
       <layers>
-        <DOMLayer name="Layer 1" color="#FA5396" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#CD7ED1" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -22,11 +22,10 @@
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!219 -990[427 -566 278 -43!278 -43|211 1023"/>
-                    <Edge fillStyle1="1" edges="!211 1023[-15 1187 -240 1052"/>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="!-240 1052[-420 -587 -274 -997!-274 -997|-278 -997!-278 -997|-256 -1015"/>
-                    <Edge fillStyle1="1" edges="!-256 -1015|-173 -1083!-173 -1083[-64 -1171 219 -990"/>
-                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!-132 572|-92 992"/>
+                    <Edge fillStyle0="1" edges="!458 -946[422 -1422 76 -1546!76 -1546[-208 -1627 -369 -1271!-369 -1271|-385 -1234"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!-385 -1234[-541 -850 -511 -57!-511 -57|-275 1350"/>
+                    <Edge fillStyle0="1" edges="!-275 1350[39 1708 329 1462"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!329 1462[622 415 458 -946"/>
                   </edges>
                 </DOMShape>
               </elements>

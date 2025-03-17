@@ -5,13 +5,7 @@ _root.任务栏UI函数 = new Object();
 
 //文本相关函数
 _root.任务栏UI函数.打印物品列表 = function(itemList):String{
-	var str = "";
-	for (var i = 0; i < itemList.length; i++){
-		var requirementArr = itemList[i].split("#");
-		str += requirementArr[0] + "*" + requirementArr[1] + "  ";
-	}
-	str += "\n";
-	return str;
+	return itemList.join("  ").split("#").join("*") + "\n";
 }
 
 _root.任务栏UI函数.打印限制词条明细 = function(entryArray):String{

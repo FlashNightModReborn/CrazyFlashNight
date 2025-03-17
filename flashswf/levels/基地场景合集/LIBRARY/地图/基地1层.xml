@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1740678607" lastUniqueIdentifier="21">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地1层" itemID="668a9fdf-00005040" linkageExportForAS="true" linkageIdentifier="基地场景-基地1层" lastModified="1742194692" lastUniqueIdentifier="22">
   <timeline>
     <DOMTimeline name="基地1层">
       <layers>
@@ -242,11 +242,11 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 13" color="#99997E" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 13" color="#99997E" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2590" centerPoint3DX="-239.45" centerPoint3DY="410.4">
+                <DOMSymbolInstance libraryItemName="sprite/场景门 废弃" centerPoint3DX="-239.45" centerPoint3DY="410.4">
                   <matrix>
                     <Matrix a="3.107421875" d="8.47605895996094" tx="-249.95" ty="390.45"/>
                   </matrix>
@@ -398,7 +398,7 @@ onClipEvent (load) {
           </frames>
         </DOMLayer>
         <DOMLayer name="NPC" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="黑铁会外交部长" color="#E352B2" parentLayerIndex="16" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="黑铁会外交部长" color="#E352B2" parentLayerIndex="16" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -635,13 +635,13 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图碰撞箱" color="#B326B5" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图碰撞箱" color="#B326B5" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2612" name="地图" centerPoint3DX="661.35" centerPoint3DY="218.85">
+                <DOMSymbolInstance libraryItemName="sprite/地图碰撞箱 基地1层" name="地图" centerPoint3DX="1041.85" centerPoint3DY="407.25">
                   <matrix>
-                    <Matrix d="1.0001220703125" tx="-380.5" ty="-188.4"/>
+                    <Matrix d="1.0001220703125"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

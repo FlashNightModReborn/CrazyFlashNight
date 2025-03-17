@@ -120,7 +120,7 @@ _root.处理html剧情文本 = function(str:String){
 	//消除空格换两行的问题
 	str = str.split("\r\n").join("<BR>");
 	//将"$PC_NAME"替换为玩家名称
-	if(_root.角色名) str = str.split("$PC_NAME").join(_root.角色名);
+	if(_root.角色名) str = str.split("${PC_NAME}").join(_root.角色名);
 	return str;
 }
 
