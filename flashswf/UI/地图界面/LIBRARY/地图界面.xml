@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1740731387" lastUniqueIdentifier="163">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1742304059" lastUniqueIdentifier="163">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="1">
       <layers>
-        <DOMLayer name="Script Layer" color="#D4FDCB">
+        <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -469,9 +469,9 @@ function setNpcFlashTips() {
 			_this[specialKey].swapDepths(--d);
         }
     }
-    if (_root.tasks_to_do && _root.taskFinished && _root.getTaskData) {
+    if (_root.tasks_to_do && _root.taskCompleteCheck && _root.getTaskData) {
         for (var tIndex = 0; tIndex < _root.tasks_to_do.length; tIndex++) {
-            if (_root.taskFinished(tIndex)) {
+            if (_root.taskCompleteCheck(tIndex)) {
                 var taskData = _root.getTaskData(_root.tasks_to_do[tIndex].id);
                 var finishNpc = taskData.finish_npc;
                 if (NPC映射[finishNpc]) {
@@ -688,7 +688,13 @@ this.onEnterFrame = function() {
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地屋顶</characters>
+                      <characters>基地屋</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>顶</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -707,7 +713,13 @@ this.onEnterFrame = function() {
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>基地一层</characters>
+                      <characters>基地一</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -726,7 +738,13 @@ this.onEnterFrame = function() {
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下一层</characters>
+                      <characters>地下一</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -745,7 +763,13 @@ this.onEnterFrame = function() {
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>地下二层</characters>
+                      <characters>地下二</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>层</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -802,7 +826,13 @@ this.onEnterFrame = function() {
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>层级关系</characters>
+                      <characters>层级关</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters>系</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -2048,14 +2078,14 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="实验室" color="#9933CC" parentLayerIndex="26" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="实验室" color="#9933CC" parentLayerIndex="26" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="实验室" name="实验室" selected="true" centerPoint3DX="597.7" centerPoint3DY="391.1">
+                <DOMSymbolInstance libraryItemName="实验室" name="实验室" centerPoint3DX="597.7" centerPoint3DY="391.1">
                   <matrix>
                     <Matrix a="0.544525146484375" d="0.544525146484375" tx="508.1" ty="339.7"/>
                   </matrix>

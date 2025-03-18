@@ -90,11 +90,11 @@ _root.taskCompleteCheck = function(index){
 		return false;
 	}
 
-	if(!TaskUtil.containTaskItems(taskData.finish_contain_items)){
+	//目前逻辑为提交物品与持有物品不可兼容，优先判定提交物品
+	if(taskData.finish_submit_items.length > 0 && !TaskUtil.containTaskItems(taskData.finish_submit_items)){
 		_root.任务完成提示._visible = false;
 		return false;
-	}
-	if(!TaskUtil.containTaskItems(taskData.finish_submit_items)){
+	}else if(taskData.finish_contain_items.length > 0 && !TaskUtil.containTaskItems(taskData.finish_contain_items)){
 		_root.任务完成提示._visible = false;
 		return false;
 	}

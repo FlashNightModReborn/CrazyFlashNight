@@ -5,7 +5,19 @@ _root.任务栏UI函数 = new Object();
 
 //文本相关函数
 _root.任务栏UI函数.打印物品列表 = function(itemList):String{
-	return itemList.join("  ").split("#").join("*") + "\n";
+	var list = [];
+	for(var i=0; i<itemList.length; i++){
+		var itemArr = itemList[i].split("#");
+		var itemData = _root.getItemData(itemArr[0]);
+		var str = itemData.displayname;
+		if(itemData.type == "武器" || itemData.type == "防具"){
+			if(itemArr[1] > 1) str += "[+" + itemArr[1] + "]";
+		}else{
+			str += "*" + itemArr[1];
+		}
+		list.push(str);
+	}
+	return list.join("  ") + "\n";
 }
 
 _root.任务栏UI函数.打印限制词条明细 = function(entryArray):String{
@@ -33,15 +45,11 @@ _root.任务栏UI函数.打印任务明细 = function(id):String{
 		}
 		str += "\n";
 	}
-	if(taskData.finish_submit_items.length > 0 || taskData.finish_contain_items.length > 0){
-		str += "- 物品需求 -\n";
-	}
 	if(taskData.finish_submit_items.length > 0){
-		str += "需提交："
+		str += "- 提交物品 -\n";
 		str += _root.任务栏UI函数.打印物品列表(taskData.finish_submit_items);
-	}
-	if(taskData.finish_contain_items.length > 0){
-		str += "需持有："
+	}else if(taskData.finish_contain_items.length > 0){
+		str += "- 持有物品 -\n";
 		str += _root.任务栏UI函数.打印物品列表(taskData.finish_contain_items);
 	}
 	str += "提交NPC：" + taskData.finish_npc + "\n";
@@ -78,61 +86,74 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 	this.任务详情.refresh();
 	this.任务信息.typeDescription(_root.getTaskText(taskData.description));
 	//关卡需求
-	this.关卡需求._visible = true;
-	if(taskData.finish_requirements == null){
-		this.关卡需求.taskStage.htmlText = "无";
+	var 关卡需求图标 = this.关卡需求.关卡需求图标;
+	if(taskData.finish_requirements.length <= 0){
+		关卡需求图标.stageName.htmlText = "无需通过关卡";
+		关卡需求图标.关卡难度标志._visible = false;
 	}else{
-		var stageText = "";
-		for (var i = 0; i < taskData.finish_requirements.length; i++){
-			var itemArr = taskData.finish_requirements[i].split("#");
-			stageText += itemArr[0] + "(" + _root.getDifficultyString(itemArr[1]) + ")" + "  ";
-			this.关卡需求.taskStage.htmlText = stageText;
-		}
+		var itemArr = taskData.finish_requirements[0].split("#");
+		关卡需求图标.stageName.htmlText = itemArr[0]; //  + "[" + _root.getDifficultyString(itemArr[1]) + "]"
+		关卡需求图标.关卡难度标志._visible = true;
+		关卡需求图标.关卡难度标志.gotoAndStop(itemArr[1]);
 	}
-	this.关卡需求.完成标志._visible = _root.tasks_to_do[index].requirements.stages.length <= 0;
-	//记录关卡需求容器的位置，以决定接下来面板的位置
-	var 容器位置 = this.关卡需求._y;
+	if(_root.tasks_to_do[index].requirements.stages.length <= 0){
+		关卡需求图标.完成标志._visible = true;
+		关卡需求图标.完成标志.gotoAndPlay(1);
+	}else{
+		关卡需求图标.完成标志._visible = false;
+		关卡需求图标.完成标志.stop();
+	}
+	
 	//提交物品
-	if(taskData.finish_submit_items == null){
-		this.提交物品._visible = false;
-	}else{
-		容器位置 += 40;
-		this.提交物品._visible = true;
-		this.提交物品._y = 容器位置;
-		for(var i = 0; i < this.提交物品.iconList.length; i++){
-			this.提交物品.iconList[i].removeMovieClip();
-		}
-		this.提交物品.iconList = new Array();
-		for (var i = 0; i < taskData.finish_submit_items.length; i++){
-			var itemArr = taskData.finish_submit_items[i].split("#");
-			var 物品图标 = this.提交物品.attachMovie("物品图标","物品图标" + i, i);
-			物品图标._x = 140 + i * 36;
-			物品图标._y = 16;
-			物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
-			this.提交物品.iconList.push(物品图标);
-		}
-		this.提交物品.完成标志._visible = TaskUtil.containTaskItems(taskData.finish_submit_items);
+	var 物品需求图标 = this.物品需求.物品需求图标;
+	for(var i = 0; i < 物品需求图标.iconList.length; i++){
+		物品需求图标.iconList[i].removeMovieClip();
 	}
-	//持有物品
-	if(taskData.finish_contain_items == null){
-		this.持有物品._visible = false;
-	}else{
-		容器位置 += 40;
-		this.持有物品._visible = true;
-		this.持有物品._y = 容器位置;
-		for(var i = 0; i < this.持有物品.iconList.length; i++){
-			this.持有物品.iconList[i].removeMovieClip();
-		}
-		this.持有物品.iconList = new Array();
-		for (var i = 0; i < taskData.finish_contain_items.length; i++){
-			var itemArr = taskData.finish_contain_items[i].split("#");
-			var 物品图标 = this.持有物品.attachMovie("物品图标","物品图标" + i, i);
-			物品图标._x = 140 + i * 36;
-			物品图标._y = 16;
+	var items = null;
+	if(taskData.finish_submit_items.length > 0){
+		物品需求图标.itemType.text = "提交物品";
+		items = taskData.finish_submit_items;
+	}else if(taskData.finish_contain_items.length > 0){
+		物品需求图标.itemType.text = "持有物品";
+		items = taskData.finish_contain_items;
+	}
+	if(items.length > 0){
+		var 物品展示框 = 物品需求图标.物品展示框;
+		物品需求图标.iconList = new Array();
+		for (var i = 0; i < items.length; i++){
+			var itemArr = items[i].split("#");
+			var 物品图标 = 物品展示框.attachMovie("物品图标","物品图标" + i, i);
+			物品图标._x = 10 + i * 20;
+			物品图标._y = 10;
+			物品图标._xscale = 物品图标._yscale = 75;
 			物品图标.itemIcon = new ItemIcon(物品图标, itemArr[0], Number(itemArr[1]));
-			this.持有物品.iconList.push(物品图标);
+			物品需求图标.iconList.push(物品图标);
 		}
-		this.持有物品.完成标志._visible = TaskUtil.containTaskItems(taskData.finish_contain_items);
+		if(items.length == 1){
+			var itemArr = items[0].split("#");
+			var itemData = _root.getItemData(itemArr[0]);
+			var str = itemData.displayname;
+			if(itemData.type == "武器" || itemData.type == "防具"){
+				if(itemArr[1] > 1) str += "[+" + itemArr[1] + "]";
+			}else{
+				str += "*" + itemArr[1];
+			}
+			物品展示框.itemInfo = str;
+		}else{
+			物品展示框.itemInfo = "";
+		}
+		if(TaskUtil.containTaskItems(items)){
+			物品需求图标.完成标志._visible = true;
+			物品需求图标.完成标志.gotoAndPlay(1);
+		}else{
+			物品需求图标.完成标志._visible = false;
+			物品需求图标.完成标志.stop();
+		}
+	}else{
+		物品需求图标.itemType.text = "提交物品";
+		物品展示框.itemInfo = "无需提交物品";
+		物品需求图标.完成标志._visible = true;
+		物品需求图标.完成标志.gotoAndPlay(1);
 	}
 	//奖励
 	this.任务奖励.rewards = taskData.rewards;
