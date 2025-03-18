@@ -15,6 +15,8 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader {
      */
     private function InfoLoader() {
         this.loadersMap["shellData"] = new ShellLoader();
+        this.loadersMap["attributeData"] = new AttributeLoader();
+        
         var server = ServerManager.getInstance();
         var self = this;
 
