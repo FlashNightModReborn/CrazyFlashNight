@@ -1,6 +1,8 @@
 ﻿import org.flashNight.sara.util.*;
 import org.flashNight.gesh.object.*;
 import org.flashNight.arki.spatial.transform.*;
+import org.flashNight.arki.bullet.BulletComponent.Collider.*;
+
 
 /*
  * Mover 类 - 2D 与 2.5D 移动逻辑处理
@@ -117,6 +119,8 @@ class org.flashNight.arki.spatial.move.Mover {
                 // 水平移动：仅更新 _x 坐标
                 entity._x += vx;
             }
+
+            entity.aabbCollider.updateFromUnitArea(entity);
             return;
         }
         // 若检测到碰撞，则调用碰撞挤出处理
@@ -177,6 +181,8 @@ class org.flashNight.arki.spatial.move.Mover {
                 // 对于水平移动（"左" 或 "右"），仅更新 _x 坐标
                 entity._x += dx;
             }
+
+            entity.aabbCollider.updateFromUnitArea(entity);
             return;
         }
         // 若检测到碰撞，则调用碰撞挤出处理
@@ -236,11 +242,12 @@ class org.flashNight.arki.spatial.move.Mover {
         finalVec.normalize();
         finalVec.mult(Math.max(speed, 5));
         
-        // 6. 更新实体位置（同步更新 _x、Z轴坐标及 _y）
+        // 6. 更新实体位置（同步更新 _x、Z轴坐标及 _y 与碰撞箱）
         entity._x += finalVec.x;
         entity.Z轴坐标 += finalVec.y;
         entity._y += finalVec.y;
-        
+        entity.aabbCollider.updateFromUnitArea(entity);
+
         // 7. 调整显示层次，确保实体正确显示
         entity.swapDepths(entity._y);
     }

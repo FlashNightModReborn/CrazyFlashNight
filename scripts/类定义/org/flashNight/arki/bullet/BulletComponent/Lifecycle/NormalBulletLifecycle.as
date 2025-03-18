@@ -80,33 +80,16 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
      * @return Boolean 是否发生地图碰撞
      */
     private function checkMapCollision(target:MovieClip):Boolean {
-        var gameWorld:Object = _root.gameworld;
+        var gameworld:Object = _root.gameworld;
         var Z轴坐标:Number = target.Z轴坐标;
 
-        // 地图边界检测
-        var Xmin:Number = _root.Xmin;
-        var Xmax:Number = _root.Xmax;
-        var Ymin:Number = _root.Ymin;
-        var Ymax:Number = _root.Ymax;
-
-        var targetX:Number = target._x;
-        var targetY:Number = target._y;
-
-        // 快速边界检测（优化性能）
-        if (targetX < Xmin || targetX > Xmax || Z轴坐标 < Ymin || Z轴坐标 > Ymax) {
-            return true;
-        } 
         // 非近战子弹的Y轴检测
-        else if (targetY > Z轴坐标) {
+        if (target._y > Z轴坐标) {
             return true;
         } 
         // 精确碰撞检测
         else {
-            var localPoint:Object = BulletLifecycle.point;
-            localPoint.x = targetX;
-            localPoint.y = Z轴坐标;
-            gameWorld.localToGlobal(localPoint);
-            return gameWorld.地图.hitTest(localPoint.x, localPoint.y, true);
+            return gameworld.地图.hitTest(target._x + gameworld._x, Z轴坐标 + gameworld._y, true);
         }
     }    
 }

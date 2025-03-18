@@ -188,7 +188,7 @@ _root.子弹生命周期 = function()
             overlapRatio = 1;
 
             unitArea = hitTarget.aabbCollider;
-            unitArea.updateFromUnitArea(hitTarget);
+            // unitArea.updateFromUnitArea(hitTarget);
             
             collisionResult = areaAABB.checkCollision(unitArea, zOffset);
 
@@ -235,7 +235,13 @@ _root.子弹生命周期 = function()
                 dodgeState
             )
 
-            hitTarget.dispatcher.publish("hit", hitTarget, shooter, this, collisionResult, damageResult);
+            var dispatcher:EventDispatcher = hitTarget.dispatcher;
+            dispatcher.publish("hit", hitTarget, shooter, this, collisionResult, damageResult);
+
+            if(!this.近战检测 && !this.爆炸检测 && hitTarget.hp <= 0)
+            {
+                dispatcher.publish("kill", hitTarget);
+            }
 
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
 

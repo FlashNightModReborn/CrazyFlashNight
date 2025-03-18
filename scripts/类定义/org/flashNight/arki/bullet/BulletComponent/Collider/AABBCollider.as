@@ -217,10 +217,10 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @param unit 包含 area 属性的单位 MovieClip 实例
      */
     public function updateFromUnitArea(unit:MovieClip):Void {
-        var frame = _root.帧计时器.当前帧数;
-        if (this._currentFrame == frame) return;
+        // var frame = _root.帧计时器.当前帧数;
+        //if (this._currentFrame == frame) return;
 
-        this._currentFrame = frame;
+        // this._currentFrame = frame;
         var coords:Object = getUnitAreaCoordinates(unit);
         this.left = coords.left;
         this.right = coords.right;
