@@ -163,11 +163,37 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/自来水厂主路.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>580</x>
+                <y>480</y>
+            </Point>
+            <Point id="1">
+                <x>820</x>
+                <y>480</y>
+            </Point>
+        </SpawnPoint>
         <Wave>
-            <SubWave id="1">
+            <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
                 </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种1</Type>
+                        <Interval>800</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种293</Type>
+                        <Interval>800</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>15</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
             </SubWave>
         </Wave>
     </SubStage>
