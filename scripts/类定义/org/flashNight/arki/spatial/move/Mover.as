@@ -15,7 +15,6 @@ import org.flashNight.arki.spatial.transform.*;
  * 内部关键变量说明：
  *   - directions2D: 存储纯2D移动基础方向向量（仅含水平与垂直分量），键为中文方向字符串。
  *   - directions25D: 存储2.5D移动基础方向向量（包含水平、垂直及高度变化 dz 分量），键为中文方向字符串。
- *   - debug: 调试标识，启用时将直接调用碰撞挤出逻辑，而跳过正常的移动流程。
  */
 class org.flashNight.arki.spatial.move.Mover {
 
@@ -81,10 +80,6 @@ class org.flashNight.arki.spatial.move.Mover {
         initTag = true;
     }
 
-    // --------------------
-    // 调试标识，默认为 false；当为 true 时，将直接调用碰撞挤出逻辑，而不进行正常移动
-    private static var debug:Boolean = false;
-
     /**
      * 纯2D移动处理
      *
@@ -106,12 +101,6 @@ class org.flashNight.arki.spatial.move.Mover {
         var dir:Vector = Mover.directions2D[direction];
         if (!dir) return;
 
-        /*
-        if (debug) {
-            resolveCollision(entity, gp, speed, dir);
-            return;
-        }
-        */
 
         var vx:Number = dir.x * speed;
         var vy:Number = dir.y * speed;
@@ -156,13 +145,6 @@ class org.flashNight.arki.spatial.move.Mover {
     public static function move25D(entity:MovieClip, direction:String, speed:Number):Void {
         var dir:Vertex3D = Mover.directions25D[direction];
         if (!dir) return;
-
-        /*
-        if (debug) {
-            resolveCollision(entity, gp, speed, dir);
-            return;
-        }
-        */
         
         // 计算水平与垂直位移
         var dx:Number = dir.x * speed;
@@ -179,12 +161,22 @@ class org.flashNight.arki.spatial.move.Mover {
             var dz:Number = dir.z * speed;
             // 若为垂直方向移动（"上" 或 "下"），则处理跳跃/高度变化逻辑
             if (dy | dz) {
-                // 更新垂直轴：先更新 Z轴，再同步 _y 坐标
-                entity.Z轴坐标 = ez + dy;
-                entity.起始Y += dz;
+                // 更新垂直轴坐标并调整显示层次（性能关键路径）
+                entity.swapDepths(
+                    // 使用逗号运算符合并多步操作，确保执行顺序和参数传递
+                    (
+                        // [步骤1] 更新实体的 Z轴坐标，并累加 dz 到起始Y
+                        //  - 先计算 Z轴坐标: ez + dy
+                        //  - 逗号运算符返回 dz，因此起始Y += dz
+                        entity.起始Y += (entity.Z轴坐标 = ez + dy, dz), 
 
-                // 调整显示层次，确保正确的层次关系
-                entity.swapDepths(entity._y += dy);
+                        // [步骤2] 更新实体的 _y 坐标（垂直位置）
+                        //  - 此处 dy 是垂直偏移量，_y 是显示对象的实际坐标
+                        //  - 逗号运算符最终返回 entity._y 的新值，作为 swapDepths 参数
+                        entity._y += dy
+                    )
+                );
+
             } else {
                 // 对于水平移动（"左" 或 "右"），仅更新 _x 坐标
                 entity._x = ex + dx;
@@ -221,7 +213,7 @@ class org.flashNight.arki.spatial.move.Mover {
                                              speed:Number,
                                              dir:Vector
     ):Void {
-        if (!debug && !_root.gameworld.地图.hitTest(x, y, true)) {
+        if (!_root.gameworld.地图.hitTest(x, y, true)) {
             // 若当前坐标无碰撞，直接返回
             return;
         }
