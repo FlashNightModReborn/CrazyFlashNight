@@ -105,19 +105,17 @@ class org.flashNight.arki.spatial.move.Mover {
         var vx:Number = dir.x * speed;
         var vy:Number = dir.y * speed;
         var gameworld:MovieClip = _root.gameworld;
-        var ex:Number = entity._x;
-        var ez:Number = entity.Z轴坐标;
-        var gwx:Number = ex + gameworld._x;
-        var gwy:Number = ez + gameworld._y;
+        var gwx:Number = entity._x + gameworld._x;
+        var gwy:Number = entity.Z轴坐标 + gameworld._y;
 
         // 执行碰撞检测：若目标位置无碰撞，则更新实体位置
         if (!gameworld.地图.hitTest(gwx + vx, gwy + vy, true)) {
             if (vx === 0) {
                 // 垂直移动：更新 Z轴 和 _y 坐标，并调整显示层次
-                entity.swapDepths(entity._y = (entity.Z轴坐标 = ez + vy));
+                entity.swapDepths(entity._y = (entity.Z轴坐标 += vy));
             } else {
                 // 水平移动：仅更新 _x 坐标
-                entity._x = ex + vx;
+                entity._x += vx;
             }
             return;
         }
@@ -150,10 +148,8 @@ class org.flashNight.arki.spatial.move.Mover {
         var dx:Number = dir.x * speed;
         var dy:Number = dir.y * speed;
         var gameworld:MovieClip = _root.gameworld;
-        var ex:Number = entity._x;
-        var ez:Number = entity.Z轴坐标;
-        var gwx:Number = ex + gameworld._x;
-        var gwy:Number = ez + gameworld._y;
+        var gwx:Number = entity._x + gameworld._x;
+        var gwy:Number = entity.Z轴坐标 + gameworld._y;
 
         
         // 执行碰撞检测：若目标位置无碰撞，则更新实体坐标
@@ -166,9 +162,9 @@ class org.flashNight.arki.spatial.move.Mover {
                     // 使用逗号运算符合并多步操作，确保执行顺序和参数传递
                     (
                         // [步骤1] 更新实体的 Z轴坐标，并累加 dz 到起始Y
-                        //  - 先计算 Z轴坐标: ez + dy
+                        //  - 先计算 Z轴坐标: 自增 dy
                         //  - 逗号运算符返回 dz，因此起始Y += dz
-                        entity.起始Y += (entity.Z轴坐标 = ez + dy, dz), 
+                        entity.起始Y += (entity.Z轴坐标 += dy, dz), 
 
                         // [步骤2] 更新实体的 _y 坐标（垂直位置）
                         //  - 此处 dy 是垂直偏移量，_y 是显示对象的实际坐标
@@ -179,7 +175,7 @@ class org.flashNight.arki.spatial.move.Mover {
 
             } else {
                 // 对于水平移动（"左" 或 "右"），仅更新 _x 坐标
-                entity._x = ex + dx;
+                entity._x += dx;
             }
             return;
         }
