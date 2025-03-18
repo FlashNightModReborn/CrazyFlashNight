@@ -18,7 +18,7 @@ _root.任务栏UI函数.打印限制词条明细 = function(entryArray):String{
 }
 
 _root.任务栏UI函数.打印任务明细 = function(id):String{
-	var taskData = _root.getTaskData(id);
+	var taskData = TaskUtil.getTaskData(id);
 	var str = _root.getTaskText(taskData.title) + "\n";
 	//任务描述
 	str += "\t";
@@ -52,7 +52,7 @@ _root.任务栏UI函数.打印任务明细 = function(id):String{
 }
 
 _root.任务栏UI函数.打印任务挑战明细 = function(id){
-	var challenge = _root.getTaskData(id).challenge;
+	var challenge = TaskUtil.getTaskData(id).challenge;
 	str = "挑战模式【难度：" + _root.getDifficultyString(challenge.difficulty) + "】\n";
 	if(challenge.limitations) str += _root.任务栏UI函数.打印限制词条明细(challenge.limitations);
 	if(challenge.description) str += "* " + challenge.description + "\n";
@@ -73,7 +73,7 @@ _root.任务栏UI函数.打印任务对话 = function(taskText){
 
 //UI逻辑相关函数
 _root.任务栏UI函数.显示任务明细 = function(index){
-	var taskData = _root.getTaskData(_root.tasks_to_do[index].id);
+	var taskData = TaskUtil.getTaskData(_root.tasks_to_do[index].id);
 	this.任务标题 = _root.getTaskText(taskData.title);
 	this.任务详情.refresh();
 	this.任务信息.typeDescription(_root.getTaskText(taskData.description));
@@ -167,28 +167,66 @@ _root.任务栏UI函数.创建任务树 = function(){
 	this.任务树.initY = this.任务树._y;
 	this.任务树.setMask(this.遮罩);
 	var 任务节点图标 = this.任务树.任务节点图标;
-	this.创建单个任务树("主线");
+	this.创建主线任务树();
+	var x = 1;
+	for(var key in _root.task_chains_progress){
+		if(key != "主线" && key != "委托"){
+			this.创建支线任务树(key, x);
+			x = -x;
+			if(x > 0) x++;
+		}
+	}
 	//
 	任务节点图标._visible = false;
 	this.任务对话按钮._visible = false;
 	this.任务完成对话按钮._visible = false;
 }
 
-_root.任务栏UI函数.创建单个任务树 = function(chainName){
+_root.任务栏UI函数.创建主线任务树 = function(){
+	var 任务节点图标 = this.任务树.任务节点图标;
+	var 任务进度 = _root.task_chains_progress.主线;
+	if(!任务进度) return;
+	var chainArr = TaskUtil.task_in_chains_by_sequence.主线;
+	var chainObj = TaskUtil.task_chains.主线;
+	if(任务进度 > chainArr.length) 任务进度 = chainArr.length;
+	for(var i = 0; i < 任务进度; i++){
+		var taskID = chainObj[chainArr[i]];
+		var taskData = TaskUtil.getTaskData(taskID);
+		this.创建任务节点("主线", taskID, 0, taskID);
+	}
+}
+
+_root.任务栏UI函数.创建支线任务树 = function(chainName, x){
 	var 任务节点图标 = this.任务树.任务节点图标;
 	var 任务进度 = _root.task_chains_progress[chainName];
 	if(!任务进度) return;
 	var chainArr = TaskUtil.task_in_chains_by_sequence[chainName];
 	var chainObj = TaskUtil.task_chains[chainName];
 	if(任务进度 > chainArr.length) 任务进度 = chainArr.length;
+	var y = 0; //基准y位置
 	for(var i = 0; i < 任务进度; i++){
+		y++; //基准y位置至少加1
 		var taskID = chainObj[chainArr[i]];
-		var taskData = _root.getTaskData(taskID);
-		var 新节点 = 任务节点图标.duplicateMovieClip(chainName + "任务节点图标" + i,this.任务树.getNextHighestDepth());
-		新节点.taskChain.text = chainName + "#" + chainArr[i];
-		新节点._y = i * 30;
-		新节点.taskID = taskID;
+		var taskData = TaskUtil.getTaskData(taskID);
+		for(var j=0; j<taskData.get_requirements.length; j++){
+			var requirementID = taskData.get_requirements[j];
+			if(TaskUtil.getTaskData(requirementID).chain[0] == "主线" && requirementID > y){
+				y = requirementID;
+				break;
+			}
+		}
+		this.创建任务节点(chainName, taskID, x, y);
 	}
+}
+
+_root.任务栏UI函数.创建任务节点 = function(chainName, taskID, x, y){
+	var 任务节点图标 = this.任务树.任务节点图标;
+	var taskData = TaskUtil.getTaskData(taskID);
+	var 新节点 = 任务节点图标.duplicateMovieClip(chainName + "任务节点图标" + i,this.任务树.getNextHighestDepth());
+	新节点.taskChain.text = taskData.chain.join("#");
+	新节点._x = x * 100;
+	新节点._y = y * 30;
+	新节点.taskID = taskID;
 }
 
 _root.任务栏UI函数.显示事件日志任务明细 = function(taskID){

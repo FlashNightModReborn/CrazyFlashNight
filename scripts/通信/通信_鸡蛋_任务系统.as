@@ -52,7 +52,7 @@ _root.检查任务数据完整性 = function(){
 _root.NPCTaskCheck = function(npcname){
 	for (var index in tasks_to_do){
 		var finish_npc = TaskUtil.getTaskData(tasks_to_do[index].id).finish_npc;
-		if (finish_npc == npcname && _root.taskFinished(index)){
+		if (finish_npc == npcname && _root.taskCompleteCheck(index)){
 			return {result:"完成任务", id:index};
 		}
 	}
@@ -81,7 +81,8 @@ _root.GetTask = function(id){
 	_root.弹出公告界面.弹出新任务(id);
 }
 
-_root.taskFinished = function(index){
+// 原名为taskFinished
+_root.taskCompleteCheck = function(index){
 	var taskData = TaskUtil.getTaskData(tasks_to_do[index].id);
 	var requirements = tasks_to_do[index].requirements;
 	if (requirements.stages.length != 0){
@@ -285,6 +286,14 @@ _root.UpdateTaskProgress = function(id){
 	}
 }
 
+
+// 检测对应任务是否已完成
+_root.isTaskFinished = function(index):Boolean{
+	 return _root.tasks_finished[String(index)] > 0;
+}
+
+
+
 _root.计算难度等级 = function(等级描述){
 	if (等级描述 === "简单") return 1;
 	if (等级描述 === "冒险") return 1.5;
@@ -310,7 +319,7 @@ _root.点击npc后检测任务 = function(npc名字){
 
 _root.是否达成任务检测 = function(){
 	for (var i in tasks_to_do){
-		if (_root.taskFinished(i)) return true;
+		if (_root.taskCompleteCheck(i)) return true;
 	}
 	return false;
 }
