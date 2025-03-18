@@ -25,7 +25,7 @@ class org.flashNight.arki.spatial.transform.SceneCoordinateManager {
      * 格式：二维向量 (x, y)
      */
     public static var offset:Vector = new Vector(0, 0);
-    
+    public static var effectOffset:Vector = new Vector(0, 0);
     /**
      * 场景中心点坐标（游戏逻辑坐标系）
      * 格式：二维向量 (x, y)
@@ -60,7 +60,9 @@ class org.flashNight.arki.spatial.transform.SceneCoordinateManager {
     public static function update():Void {
         calculateOffset();
         calculateCenter();
+        calculateEffectOffset();
         calculateSafeRadius();
+        
         if(!Mover.initTag) Mover.init();
     }
     
@@ -103,6 +105,30 @@ class org.flashNight.arki.spatial.transform.SceneCoordinateManager {
      */
     public static function getOffset():Vector {
         return offset;
+    }
+
+    public static function calculateEffectOffset():Vector {
+        effectOffset.setTo(0, 0);
+        
+        // 获取场景容器引用
+        var gw:MovieClip = _root.gameworld;
+        var db:MovieClip = gw.deadbody;
+        var effect:MovieClip = gw.效果;
+        
+        // 执行坐标系转换
+        effect.localToGlobal(effectOffset);
+        db.globalToLocal(effectOffset);
+        
+        return effectOffset;
+    }
+    
+    /**
+     * 获取当前场景偏移量
+     * 
+     * @return Vector 当前偏移量（与静态属性 EffectOffset 指向同一对象）
+     */
+    public static function getEffectOffset():Vector {
+        return effectOffset;
     }
     
 

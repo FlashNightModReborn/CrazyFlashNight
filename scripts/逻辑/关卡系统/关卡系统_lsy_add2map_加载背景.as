@@ -55,10 +55,8 @@ _root.add2map3 = function(tg, ln){
 
 	if (_root.帧计时器.是否死亡特效){
 		var 尸体层 = 游戏世界.deadbody;
-		pos = new Object({x:0, y:0});
-		tg.localToGlobal(pos);
-		尸体层.globalToLocal(pos);
-	
+
+		var offset:Vector = SceneCoordinateManager.effectOffset;
         var rotationRadians = tg._rotation * Math.PI / 180;// 获取影片剪辑的旋转角度并转换为弧度
         var scaleX = tg._xscale * 0.01;
         var scaleY = tg._yscale * 0.01;
@@ -69,7 +67,7 @@ _root.add2map3 = function(tg, ln){
 		var r_sin = Math.sin(rotationRadians) * scaleY;
 		//_root.服务器.发布服务器消息(tg._xscale + "_" + tg._yscale + " " +  scaleX + " : " + scaleY);
         // 创建带有旋转的矩阵
-        matrix = new flash.geom.Matrix(r_cos, r_sin, -r_sin, r_cos, pos.x, pos.y);
+        matrix = new flash.geom.Matrix(r_cos, r_sin, -r_sin, r_cos, tg._x + offset.x, tg._y + offset.y);
 		var 颜色调整 = tg.transform.colorTransform;
 		var 暗化调整 = new flash.geom.ColorTransform(颜色调整.redMultiplier - 0.3, 颜色调整.greenMultiplier - 0.3, 颜色调整.blueMultiplier - 0.3, 颜色调整.alphaMultiplier, 颜色调整.redOffset - 0, 颜色调整.greenOffset, 颜色调整.blueOffset, 颜色调整.alphaOffset);
 		尸体层.layers[ln].draw(tg,matrix,暗化调整,"normal",undefined,true);
