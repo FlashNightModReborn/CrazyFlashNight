@@ -44,6 +44,18 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+    </bullet>    
+    <bullet>
+        <name>子弹示例</name>
+        <shell>
+            <casing>能量弹壳</casing>
+            <xOffset>60</xOffset>
+            <simulationMethod>标准</simulationMethod>
+            <yOffset>0</yOffset>
+        </shell>
+        <attribute>
+            <pierceLimit>2</pierceLimit>
+        </attribute>
         <movement>
             <func>基础导弹</func>
             <param>

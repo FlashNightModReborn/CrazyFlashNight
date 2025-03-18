@@ -17,8 +17,8 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
         
         // 如果 attribute 节点存在，则读取配置项
         if(attributeNode != undefined) {
-            // 读取穿刺限制配置，注意转换为数字类型，默认值设为 0
-            attributeInfo.pierceLimit = (attributeNode.pierceLimit != undefined) ? Number(attributeNode.pierceLimit) : 0;
+            // 读取穿刺限制配置，默认配额5
+            attributeInfo.pierceLimit = (attributeNode.pierceLimit != undefined) ? Number(attributeNode.pierceLimit) : 5;
             // 如果以后还有更多属性，可以在这里继续解析并赋值
 
             return attributeInfo;

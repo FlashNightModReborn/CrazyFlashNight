@@ -27,6 +27,8 @@ import org.flashNight.neur.Event.*;     // 事件系统
 import org.flashNight.sara.util.*;      // 工具方法
  
 DamageManagerFactory.init();
+BulletInitializer.initializeAttributes();
+
 //重写子弹生成逻辑
 _root.子弹生成计数 = 0;
 
@@ -161,8 +163,7 @@ _root.子弹生命周期 = function()
     {
         unitMap = TargetCacheManager.getCachedEnemy(shooter,1);
     }
-    
-    var 击中次数:Number = 0;
+
     this.shouldGeneratePostHitEffect = true;
 
     var len:Number = unitMap.length;
@@ -211,7 +212,7 @@ _root.子弹生命周期 = function()
             overlapCenter = collisionResult.overlapCenter;
 
             //击中
-            击中次数++;
+            this.hitCount++;
 
             // ------------------------兼容区------------------------------
             this.附加层伤害计算 = 0; 
@@ -247,9 +248,17 @@ _root.子弹生命周期 = function()
                 this.gotoAndPlay("消失");
             }
         }
+
+        if(this.pierceLimit && this.pierceLimit < this.hitCount) {
+            // _root.发布消息(this.pierceLimit + " 强制消失 " + this.hitCount)
+            this.shouldDestroy = function() {
+                return true;
+            };
+            break;
+        }
     }
 
-    if(this.shouldGeneratePostHitEffect && 击中次数 > 0){
+    if(this.shouldGeneratePostHitEffect && this.hitCount > 0){
         EffectSystem.Effect(this.击中后子弹的效果,this._x,this._y,shooter._xscale);
     }
 
