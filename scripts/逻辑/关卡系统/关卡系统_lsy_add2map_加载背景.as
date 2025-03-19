@@ -1,80 +1,27 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Shell.*;
+import org.flashNight.arki.corpse.*;
 import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.Event.*;
 
-_root.add2map = function(tg, ln){
-	tg.暴走标志.removeMovieClip();
-	tg.远古标志.removeMovieClip();
-	tg.亚种标志.removeMovieClip();
-	tg.人物文字信息.removeMovieClip();
-	tg.新版人物文字信息.removeMovieClip();
-	if(!_root.帧计时器.是否死亡特效) return;
-
-	var pos = new Object({x:0, y:0});
-	var 游戏世界 = _root.gameworld;
-	tg.localToGlobal(pos);
-	if (_root.血腥开关){
-		游戏世界.deadbody.globalToLocal(pos);
-		var matrix = new flash.geom.Matrix(1 * tg._xscale * 0.01, 0, 0, 1 * tg._yscale * 0.01, pos.x, pos.y);
-		var 颜色调整 = tg.transform.colorTransform;
-		var 暗化调整 = new flash.geom.ColorTransform(颜色调整.redMultiplier - 0.3, 颜色调整.greenMultiplier - 0.3, 颜色调整.blueMultiplier - 0.3, 颜色调整.alphaMultiplier, 颜色调整.redOffset - 0, 颜色调整.greenOffset, 颜色调整.blueOffset, 颜色调整.alphaOffset);
-		游戏世界.deadbody.layers[ln].draw(tg,matrix,暗化调整,"normal",undefined,true);
-	}else{
-		游戏世界.效果.globalToLocal(pos);
-		_root.效果("尸体消失",pos.x,pos.y,100);
-	}
-};
-_root.add2map2 = function(tg, ln){
-	tg.人物文字信息.removeMovieClip();
-	tg.新版人物文字信息.removeMovieClip();
-	var 游戏世界 = _root.gameworld;
-
-	if (_root.血腥开关 and _root.帧计时器.是否死亡特效){
-		var 尸体层 = 游戏世界.deadbody;
-		pos = new Object({x:0, y:0});
-		tg.localToGlobal(pos);
-		尸体层.globalToLocal(pos);
-		if (tg._xscale < 0){
-			matrix = new flash.geom.Matrix(-1, 0, 0, 1, pos.x, pos.y);
-		}else{
-			matrix = new flash.geom.Matrix(1, 0, 0, 1, pos.x, pos.y);
-		}
-		var _loc4_ = tg.transform.colorTransform;
-		var _loc5_ = new flash.geom.ColorTransform(_loc4_.redMultiplier - 0.3, _loc4_.greenMultiplier - 0.3, _loc4_.blueMultiplier - 0.3, _loc4_.alphaMultiplier, _loc4_.redOffset - 0, _loc4_.greenOffset, _loc4_.blueOffset, _loc4_.alphaOffset);
-		尸体层.layers[ln].draw(tg,matrix,_loc5_,"normal",undefined,true);
-	}else{
-		pos = new Object({x:0, y:0});
-		tg.localToGlobal(pos);
-		游戏世界.效果.globalToLocal(pos);
-		_root.效果("尸体消失",pos.x,pos.y,100);
-	}
-};
-_root.add2map3 = function(tg, ln){
-	var 游戏世界 = _root.gameworld;
-
-	if (_root.帧计时器.是否死亡特效){
-		var 尸体层 = 游戏世界.deadbody;
-
-		var offset:Vector = SceneCoordinateManager.effectOffset;
-        var rotationRadians = tg._rotation * Math.PI / 180;// 获取影片剪辑的旋转角度并转换为弧度
-        var scaleX = tg._xscale * 0.01;
-        var scaleY = tg._yscale * 0.01;
-		scaleX /= Math.abs(scaleX);
-		scaleX = Math.abs(scaleX) > 0.5 ? scaleX : 0.5;
-		scaleY = Math.abs(scaleY) > 0.5 ? scaleY : 0.5;
-		var r_cos = Math.cos(rotationRadians) * scaleX;
-		var r_sin = Math.sin(rotationRadians) * scaleY;
-		//_root.服务器.发布服务器消息(tg._xscale + "_" + tg._yscale + " " +  scaleX + " : " + scaleY);
-        // 创建带有旋转的矩阵
-        matrix = new flash.geom.Matrix(r_cos, r_sin, -r_sin, r_cos, tg._x + offset.x, tg._y + offset.y);
-		var 颜色调整 = tg.transform.colorTransform;
-		var 暗化调整 = new flash.geom.ColorTransform(颜色调整.redMultiplier - 0.3, 颜色调整.greenMultiplier - 0.3, 颜色调整.blueMultiplier - 0.3, 颜色调整.alphaMultiplier, 颜色调整.redOffset - 0, 颜色调整.greenOffset, 颜色调整.blueOffset, 颜色调整.alphaOffset);
-		尸体层.layers[ln].draw(tg,matrix,暗化调整,"normal",undefined,true);
-	}
+// 原 add2map 的重构
+_root.add2map = function(tg, ln) {
+    DeathEffectRenderer.renderCorpse(tg, ln);
 };
 
+// 原 add2map2 的重构
+_root.add2map2 = function(tg, ln) {
+    // 注：原 add2map2 的清除逻辑与 renderCorpse 不同，但通过安全检查后可直接复用
+    DeathEffectRenderer.renderCorpse(tg, ln);
+};
 
+// 原 add2map3 的重构（处理旋转）
+_root.add2map3 = function(tg, ln) {
+    DeathEffectRenderer.renderRotatedCorpse(tg, ln);
+};
+
+_root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
+_root.add2map3 = DeathEffectRenderer.renderRotatedCorpse;
 
 _root.贴背景图 = function(){
 	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用

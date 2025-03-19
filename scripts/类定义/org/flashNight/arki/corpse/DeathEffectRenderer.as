@@ -1,40 +1,42 @@
-﻿class org.flashNight.arki.corpse.DeathEffectRenderer {
+﻿import org.flashNight.arki.spatial.transform.*;
+import org.flashNight.sara.util.*;
+import flash.geom.*;
+
+class org.flashNight.arki.corpse.DeathEffectRenderer {
     // 常量定义
     private static var DARKEN_FACTOR:Number = 0.3;
     private static var MIN_SCALE:Number = 0.5;
     
     /**
      * 渲染尸体效果（标准）
-     * @param root 游戏根对象（_root）
      * @param target 目标影片剪辑
      * @param layerIndex 层索引
      */
-    public static function renderCorpse(root:MovieClip, target:MovieClip, layerIndex:Number):Void {
+    public static function renderCorpse(target:MovieClip, layerIndex:Number):Void {
         // 清除旧的标志与文字
         DeathEffectRenderer.clearLegacyClips(target);
-        if (!root.帧计时器.是否死亡特效) return;
+        if (!_root.帧计时器.是否死亡特效) return;
         
         var renderPos:Object = DeathEffectRenderer.calculateGlobalPosition(target);
         
-        if (root.血腥开关) {
-            DeathEffectRenderer.drawDarkenedBody(root, target, layerIndex, renderPos);
+        if (_root.血腥开关) {
+            DeathEffectRenderer.drawDarkenedBody(target, layerIndex, renderPos);
         } else {
-            DeathEffectRenderer.playDisappearEffect(root, renderPos);
+            DeathEffectRenderer.playDisappearEffect(renderPos);
         }
     }
     
     /**
      * 渲染带旋转的尸体效果
-     * @param root 游戏根对象（_root）
      * @param target 目标影片剪辑
      * @param layerIndex 层索引
      */
-    public static function renderRotatedCorpse(root:MovieClip, target:MovieClip, layerIndex:Number):Void {
-        if (!root.帧计时器.是否死亡特效) return;
+    public static function renderRotatedCorpse(target:MovieClip, layerIndex:Number):Void {
+        if (!_root.帧计时器.是否死亡特效) return;
         
         var offset:Vector = SceneCoordinateManager.effectOffset;
         var transform:Object = DeathEffectRenderer.calculateTransform(target, offset);
-        var gameWorld:MovieClip = root.gameworld;
+        var gameWorld:MovieClip = _root.gameworld;
         
         gameWorld.deadbody.layers[layerIndex].draw(
             target,
@@ -72,8 +74,8 @@
     /**
      * 根据目标影片剪辑与位置绘制暗化的尸体
      */
-    private static function drawDarkenedBody(root:MovieClip, target:MovieClip, layerIndex:Number, pos:Object):Void {
-        var gameWorld:MovieClip = root.gameworld;
+    private static function drawDarkenedBody(target:MovieClip, layerIndex:Number, pos:Object):Void {
+        var gameWorld:MovieClip = _root.gameworld;
         gameWorld.deadbody.globalToLocal(pos);
         var matrix:Matrix = new Matrix(
             target._xscale / 100, 0,
@@ -93,10 +95,10 @@
     /**
      * 播放尸体消失特效
      */
-    private static function playDisappearEffect(root:MovieClip, pos:Object):Void {
-        var gameWorld:MovieClip = root.gameworld;
+    private static function playDisappearEffect(pos:Object):Void {
+        var gameWorld:MovieClip = _root.gameworld;
         gameWorld.效果.globalToLocal(pos);
-        root.效果("尸体消失", pos.x, pos.y, 100);
+        _root.效果("尸体消失", pos.x, pos.y, 100);
     }
     
     /**
