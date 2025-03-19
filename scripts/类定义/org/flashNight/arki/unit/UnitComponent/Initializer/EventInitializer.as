@@ -13,5 +13,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
         WeatherEventComponent.initialize(target);
         // 初始化死亡事件组件
         KillEventComponent.initialize(target);
+        DeathEventComponent.initialize(target);
     }
 }

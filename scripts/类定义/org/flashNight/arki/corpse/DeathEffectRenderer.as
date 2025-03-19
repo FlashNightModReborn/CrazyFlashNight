@@ -44,7 +44,6 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
      */
     public static function renderCorpse(target:MovieClip, layerIndex:Number):Void {
         // 清除旧的标志与文字
-        DeathEffectRenderer.clearLegacyClips(target);
         if (!EffectSystem.isDeathEffect) return;
         DeathEffectRenderer.drawDarkenedBody(target, layerIndex);
     }
@@ -74,24 +73,6 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     
     // ------------------ 私有工具方法 ------------------
 
-    /**
-     * 清除目标影片剪辑中的旧标志和文字。
-     * 当前仅处理 ["人物文字信息", "新版人物文字信息"] 两种标识。
-     *
-     * @param {MovieClip} target - 目标影片剪辑。
-     * @return {Void}
-     * @private
-     */
-    private static function clearLegacyClips(target:MovieClip):Void {
-        // 旧版代码示例（可能包含其他标志）： 
-        // var clips:Array = ["暴走标志", "远古标志", "亚种标志", "人物文字信息", "新版人物文字信息"];
-        var clips:Array = ["人物文字信息", "新版人物文字信息"];
-        for (var i:Number = 0; i < clips.length; i++) {
-            if (target[clips[i]]) {
-                target[clips[i]].removeMovieClip();
-            }
-        }
-    }
     
     /**
      * 根据目标影片剪辑及其位置，绘制暗化后的尸体。

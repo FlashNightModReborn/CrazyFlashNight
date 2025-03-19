@@ -238,9 +238,15 @@ _root.子弹生命周期 = function()
             var dispatcher:EventDispatcher = hitTarget.dispatcher;
             dispatcher.publish("hit", hitTarget, shooter, this, collisionResult, damageResult);
 
-            if(!this.近战检测 && !this.爆炸检测 && hitTarget.hp <= 0)
+            if(hitTarget.hp <= 0)
             {
-                dispatcher.publish("kill", hitTarget);
+                if(!this.近战检测 && !this.爆炸检测)
+                {
+                    dispatcher.publish("kill", hitTarget);
+                }
+                else {
+                    dispatcher.publish("death", hitTarget);
+                }
             }
 
             damageResult.triggerDisplay(hitTarget._x, hitTarget._y);
