@@ -1,5 +1,6 @@
 ﻿import org.flashNight.sara.util.*;
 import org.flashNight.gesh.object.*;
+import org.flashNight.arki.spatial.move.*;
 import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 
