@@ -2325,15 +2325,15 @@
             <Direction>右</Direction>
             <x0>1070</x0>
             <y0>360</y0>
-            <x1>1090</x1>
-            <y1>390</y1>
+            <x1>1100</x1>
+            <y1>400</y1>
         </Door>
     </Environment>
     <Environment>
         <BackgroundURL>自来水厂仓库.swf</BackgroundURL>
         <Alignment>true</Alignment>
         <Xmin>10</Xmin>
-        <Xmax>1280</Xmax>
+        <Xmax>1270</Xmax>
         <Ymin>310</Ymin>
         <Ymax>530</Ymax>
         <Width>1287</Width>
@@ -2360,8 +2360,8 @@
         </Collision>
         <Collision>
             <Point>1150,340</Point>
-            <Point>1260,420</Point>
-            <Point>1260,340</Point>
+            <Point>1280,530</Point>
+            <Point>1280,340</Point>
         </Collision>
     </Environment>
 </EnvironmentSettings>
