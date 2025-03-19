@@ -16,8 +16,6 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     
     /** @private {Number} 暗化因子 */
     private static var DARKEN_FACTOR:Number = 0.3;
-    /** @private {Number} 最小缩放比例 */
-    private static var MIN_SCALE:Number = 0.5;
     /** @private {Number} 角度转弧度常量（角度 * DEG_TO_RAD = 弧度） */
     private static var DEG_TO_RAD:Number = Math.PI / 180;
 
@@ -35,64 +33,24 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
 
     /**
      * 渲染标准尸体效果。
-     * 先清除目标影片剪辑中的旧标志与文字，若效果系统处于尸体效果状态，
      * 则绘制暗化后的尸体图像。
+     *
+     * 优化说明：
+     *  1. 预先创建 Matrix 对象 reusableMatrix，避免重复 new 操作。
+     *  2. 更新 Matrix 对象的属性（a、b、c、d、tx、ty）以反映 target 当前状态。
+     *  3. as2 为单线程，因此复用变量无需担忧异步污染
      *
      * @param {MovieClip} target - 目标影片剪辑。
      * @param {Number} layerIndex - 层索引。
      * @return {Void}
      */
     public static function renderCorpse(target:MovieClip, layerIndex:Number):Void {
-        // 清除旧的标志与文字
-        if (!EffectSystem.isDeathEffect) return;
-        DeathEffectRenderer.drawDarkenedBody(target, layerIndex);
-    }
-    
-    /**
-     * 渲染带旋转的尸体效果。
-     * 当效果系统处于尸体效果状态时，根据目标影片剪辑的旋转与缩放状态，
-     * 计算旋转矩阵，并绘制旋转后的尸体。
-     *
-     * @param {MovieClip} target - 目标影片剪辑。
-     * @param {Number} layerIndex - 层索引。
-     * @return {Void}
-     */
-    public static function renderRotatedCorpse(target:MovieClip, layerIndex:Number):Void {
         if (!EffectSystem.isDeathEffect) return;
         
-        _root.gameworld.deadbody.layers[layerIndex].draw(
-            target,
-            DeathEffectRenderer.calculateTransform(target),
-            DeathEffectRenderer.createDarkenCT(target.transform.colorTransform),
-            "normal",
-            undefined,
-            true
-        );
-    }
-    
-    
-    // ------------------ 私有工具方法 ------------------
-
-    
-    /**
-     * 根据目标影片剪辑及其位置，绘制暗化后的尸体。
-     * 利用复用的 Matrix 对象减少内存分配，每次调用前更新矩阵属性。
-     *
-     * 优化说明：
-     *  1. 预先创建 Matrix 对象 reusableMatrix，避免重复 new 操作。
-     *  2. 更新 Matrix 对象的属性（a、b、c、d、tx、ty）以反映 target 当前状态。
-     *  3. 此方法适用于单线程同步调用，如 draw() 内部异步存储传入矩阵引用则需谨慎。
-     *
-     * @param {MovieClip} target - 目标影片剪辑。
-     * @param {Number} layerIndex - 层索引。
-     * @return {Void}
-     * @private
-     */
-    private static function drawDarkenedBody(target:MovieClip, layerIndex:Number):Void {
         var gameWorld:MovieClip = _root.gameworld;
         var effectOffset:Vector = SceneCoordinateManager.effectOffset;
         
-        // 更新 reusableMatrix 的属性
+        // 更新 reusableMatrix 的属性（复用 Matrix 对象减少内存分配）
         reusableMatrix.a  = target._xscale / 100;
         reusableMatrix.b  = 0;
         reusableMatrix.c  = 0;
@@ -112,19 +70,62 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     }
     
     /**
-     * 播放尸体消失特效。
-     * 将全局坐标转换为局部坐标后，触发效果系统的“尸体消失”特效。
+     * 渲染带旋转和翻转的尸体效果。
+     * 当效果系统处于尸体效果状态时，根据目标影片剪辑的旋转角度、缩放符号（用于翻转）以及全局偏移，
+     * 构造一个 2×3 仿射变换矩阵 (Matrix)，再将目标图像绘制到死尸图层上。
      *
-     * @param {Object} pos - 包含 x 和 y 属性的位置对象。
-     * @return {Void}
-     * @private
+     * 矩阵形式（Flash Matrix 内部顺序）：
+     *     | a  c  tx |
+     * M = | b  d  ty |
+     * 
+     * 其中 (a, b, c, d) 共同描述旋转 + 翻转（±1）变换，(tx, ty) 描述平移偏移。
+     *
+     * @param {MovieClip} target - 要渲染的影片剪辑
+     * @param {Number} layerIndex - 渲染到的尸体图层索引
      */
-    private static function playDisappearEffect(pos:Object):Void {
-        var gameWorld:MovieClip = _root.gameworld;
-        gameWorld.效果.globalToLocal(pos);
-        EffectSystem.Effect("尸体消失", pos.x, pos.y, 100);
+    public static function renderRotatedCorpse(target:MovieClip, layerIndex:Number):Void {
+        if (!EffectSystem.isDeathEffect) return;
+
+        // 将目标的角度（度）转换为弧度，以便 Math.cos/sin 计算
+        var rotationRadians:Number = target._rotation * DEG_TO_RAD;
+        // 全局效果偏移量，用于解决效果与尸体层的偏移问题
+        var offset:Vector = SceneCoordinateManager.effectOffset;
+
+        // 构造旋转 + 翻转矩阵元素
+        // 根据目标的 _xscale 和 _yscale 符号，计算水平/垂直翻转因子 (±1)
+        // 1 - 2*(expr) 利用布尔到数值隐式转换：expr 为 true → 1，false → 0
+        // signX = +1 表示正常朝向，-1 表示水平翻转
+        // signY = +1 表示正常朝向，-1 表示垂直翻转
+        // a = cosθ * signX —— X 轴单位向量在变换后的 X 分量
+        // b = sinθ * signY —— X 轴单位向量在变换后的 Y 分量
+        // c = -sinθ * signY —— Y 轴单位向量在变换后的 X 分量（与 b 对称取负）
+        // d = cosθ * signX —— Y 轴单位向量在变换后的 Y 分量（与 a 对称）
+        var r_cos:Number = Math.cos(rotationRadians) * (1 - 2 * (target._xscale < 0));
+        var r_sin:Number = Math.sin(rotationRadians) * (1 - 2 * (target._yscale < 0));
+
+        reusableTransformMatrix.a  = r_cos;
+        reusableTransformMatrix.b  = r_sin;
+        reusableTransformMatrix.c  = -r_sin;
+        reusableTransformMatrix.d  = r_cos;
+        // 平移分量：目标坐标 + 全局偏移
+        reusableTransformMatrix.tx = target._x + offset.x;
+        reusableTransformMatrix.ty = target._y + offset.y;
+
+        // 将目标 MovieClip 按照计算好的矩阵绘制到指定尸体层
+        _root.gameworld.deadbody.layers[layerIndex].draw(
+            target,
+            reusableTransformMatrix,
+            DeathEffectRenderer.createDarkenCT(target.transform.colorTransform),
+            "normal",
+            undefined,
+            true
+        );
     }
+
     
+    
+    // ------------------ 私有工具方法 ------------------
+
     /**
      * 根据原始 ColorTransform 快速生成暗化版的 ColorTransform 并进行缓存。
      * 使用一次性位运算构造唯一数字 key，避免字符串拼接带来的开销。
@@ -158,46 +159,5 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
             originalCT.blueOffset,
             originalCT.alphaOffset
         );
-    }
-    
-    /**
-     * 根据目标影片剪辑计算旋转后的矩阵。
-     * 利用复用的 Matrix 对象 reusableTransformMatrix，计算旋转角度、正弦余弦及缩放比例，
-     * 并确保缩放不低于最小值 MIN_SCALE。
-     *
-     * 计算过程：
-     *   - theta = target._rotation * DEG_TO_RAD
-     *   - cosTheta = Math.cos(theta)
-     *   - sinTheta = Math.sin(theta)
-     *   - scaleX = max(|target._xscale| / 100, MIN_SCALE)
-     *   - scaleY = max(|target._yscale| / 100, MIN_SCALE)
-     *   - 矩阵各元素：
-     *         a = cosTheta * scaleX
-     *         b = sinTheta * scaleY
-     *         c = -sinTheta * scaleX
-     *         d = cosTheta * scaleY
-     *         tx = target._x + offset.x
-     *         ty = target._y + offset.y
-     *
-     * @param {MovieClip} target - 目标影片剪辑。
-     * @return {Matrix} 计算后的旋转矩阵。
-     * @private
-     */
-    private static function calculateTransform(target:MovieClip):Matrix {
-        var theta:Number = target._rotation * DEG_TO_RAD;
-        var offset:Vector = SceneCoordinateManager.effectOffset;
-        var cosTheta:Number = Math.cos(theta);
-        var sinTheta:Number = Math.sin(theta);
-        var scaleX:Number = Math.max(Math.abs(target._xscale) / 100, MIN_SCALE);
-        var scaleY:Number = Math.max(Math.abs(target._yscale) / 100, MIN_SCALE);
-        
-        reusableTransformMatrix.a  = cosTheta * scaleX;
-        reusableTransformMatrix.b  = sinTheta * scaleY;
-        reusableTransformMatrix.c  = -sinTheta * scaleX;
-        reusableTransformMatrix.d  = cosTheta * scaleY;
-        reusableTransformMatrix.tx = target._x + offset.x;
-        reusableTransformMatrix.ty = target._y + offset.y;
-
-        return reusableTransformMatrix;
     }
 }
