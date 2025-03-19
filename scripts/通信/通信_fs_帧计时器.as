@@ -16,6 +16,8 @@ import org.flashNight.arki.key.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*
 import org.flashNight.arki.bullet.Factory.*;
 import org.flashNight.arki.spatial.transform.*;
+import org.flashNight.arki.component.Effect.*;
+
 
 _root.帧计时器 = {};
 ColliderFactoryRegistry.init();
@@ -57,7 +59,6 @@ _root.帧计时器.初始化任务栈 = function() {
     this.光照等级数据 = []; // 存储短期内的天气情况
     this.当前小时 = null;
     
-    this.是否死亡特效 = true;
 
     this.kalmanFilter = new SimpleKalmanFilter1D(this.帧率, 0.5, 1);
     
@@ -316,7 +317,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             EffectSystem.maxScreenEffectCount = 20;
             _root.面积系数 = 300000;
             _root.同屏打击数字特效上限 = 25;
-            this.是否死亡特效 = true;
+            EffectSystem.isDeathEffect = true;
             _root._quality = this.预设画质;
             _root.天气系统.光照等级更新阈值 = 0.1;
             ShellSystem.setMaxShellCountLimit(25);
@@ -331,7 +332,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             EffectSystem.maxScreenEffectCount = 15;
             _root.面积系数 = 450000; 
             _root.同屏打击数字特效上限 = 18;
-            this.是否死亡特效 = true;
+            EffectSystem.isDeathEffect = true;
             _root._quality = this.预设画质 === 'LOW' ? this.预设画质 : 'MEDIUM';
             _root.天气系统.光照等级更新阈值 = 0.2;
             ShellSystem.setMaxShellCountLimit(18);
@@ -346,7 +347,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             EffectSystem.maxScreenEffectCount = 10;
             _root.面积系数 = 600000; //刷佣兵数量砍半
             _root.同屏打击数字特效上限 = 12;
-            this.是否死亡特效 = false;
+            EffectSystem.isDeathEffect = false;
             _root.天气系统.光照等级更新阈值 = 0.5;
             _root._quality = 'LOW';
             ShellSystem.setMaxShellCountLimit(12);
@@ -361,7 +362,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             EffectSystem.maxScreenEffectCount = 5;  // 最低上限
             _root.面积系数 = 3000000;  //刷佣兵为原先十分之一
             _root.同屏打击数字特效上限 = 10;
-            this.是否死亡特效 = false;
+            EffectSystem.isDeathEffect = false;
             _root.天气系统.光照等级更新阈值 = 1;
             _root._quality = 'LOW';
             ShellSystem.setMaxShellCountLimit(10);

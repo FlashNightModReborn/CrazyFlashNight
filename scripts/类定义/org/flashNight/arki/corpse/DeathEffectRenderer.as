@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.spatial.transform.*;
+import org.flashNight.arki.component.Effect.*;
 import org.flashNight.sara.util.*;
 import flash.geom.*;
 
@@ -15,15 +16,18 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     public static function renderCorpse(target:MovieClip, layerIndex:Number):Void {
         // 清除旧的标志与文字
         DeathEffectRenderer.clearLegacyClips(target);
-        if (!_root.帧计时器.是否死亡特效) return;
+        if (!EffectSystem.isDeathEffect) return;
         
         var renderPos:Object = DeathEffectRenderer.calculateGlobalPosition(target);
-        
+        DeathEffectRenderer.drawDarkenedBody(target, layerIndex, renderPos);
+
+        /*
         if (_root.血腥开关) {
             DeathEffectRenderer.drawDarkenedBody(target, layerIndex, renderPos);
         } else {
             DeathEffectRenderer.playDisappearEffect(renderPos);
         }
+        */
     }
     
     /**
@@ -32,7 +36,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
      * @param layerIndex 层索引
      */
     public static function renderRotatedCorpse(target:MovieClip, layerIndex:Number):Void {
-        if (!_root.帧计时器.是否死亡特效) return;
+        if (!EffectSystem.isDeathEffect) return;
         
         var offset:Vector = SceneCoordinateManager.effectOffset;
         var transform:Object = DeathEffectRenderer.calculateTransform(target, offset);
@@ -100,7 +104,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     private static function playDisappearEffect(pos:Object):Void {
         var gameWorld:MovieClip = _root.gameworld;
         gameWorld.效果.globalToLocal(pos);
-        _root.效果("尸体消失", pos.x, pos.y, 100);
+        EffectSystem.Effect("尸体消失", pos.x, pos.y, 100);
     }
 
     // 添加缓存对象，用于保存已创建的 ColorTransform 对象

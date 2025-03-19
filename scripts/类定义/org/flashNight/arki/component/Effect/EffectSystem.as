@@ -37,6 +37,9 @@ class org.flashNight.arki.component.Effect.EffectSystem
     /** 随机数引擎（用于特效触发概率计算） */
     private static var RandomNumberEngine:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 
+
+    public static var isDeathEffect:Boolean = true;
+
     // ------------------------------
     // 1. 初始化效果池
     // ------------------------------
@@ -194,7 +197,7 @@ class org.flashNight.arki.component.Effect.EffectSystem
         {
             EffectSystem.decrementEffectCount();
 
-            if (!_root.帧计时器.是否死亡特效 || forceDestroy) {
+            if (!EffectSystem.isDeathEffect || forceDestroy) {
                 this.old_removeMovieClip();
             } else {
                 var effectPool:Array = _root.gameworld.effectPools[this.effectType];
