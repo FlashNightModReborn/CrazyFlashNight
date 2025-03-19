@@ -1,4 +1,16 @@
 ﻿_root.eval解析器 = {};
+
+_root.eval解析器.解析路径 = function(propertyPath){
+    return org.flashNight.gesh.string.EvalParser.parsePath(propertyPath);
+}
+_root.eval解析器.设置属性值 = function(obj, propertyPath, value) {
+    return org.flashNight.gesh.string.EvalParser.setPropertyValue(obj, propertyPath, value);
+}
+_root.eval解析器.解析属性值 = function(obj, propertyPath) {
+    return org.flashNight.gesh.string.EvalParser.getPropertyValue(obj, propertyPath);
+}
+
+/*
 _root.eval解析器.解析路径 = function(propertyPath) 
 {
     var pathParts = [];
@@ -232,3 +244,4 @@ _root.eval解析器.split = function(str, re, limit) {
         return str.split(re, limit);
     }
 };
+*/
