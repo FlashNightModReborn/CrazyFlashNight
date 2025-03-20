@@ -15,6 +15,7 @@ import org.flashNight.arki.bullet.Factory.BulletFactory;
 import org.flashNight.arki.component.Collider.*;    // 碰撞系统
 import org.flashNight.arki.component.Damage.*;      // 伤害计算
 import org.flashNight.arki.component.Effect.*;      // 特效组件
+import org.flashNight.arki.component.StatHandler.*; // 状态系统
 
 // 4. 单位组件
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*; // 目标缓存
@@ -222,8 +223,10 @@ _root.子弹生命周期 = function()
 
             
             // 命中率计算略，原代码有提到根据命中率计算闪避
-            var dodgeState = this.伤害类型 == "真伤" ? "未躲闪": _root.躲闪状态计算(hitTarget,_root.根据命中计算闪避结果(shooter, hitTarget, this.命中率),this);
-
+            var dodgeState = this.伤害类型 == "真伤" ? "未躲闪": 
+            DodgeHandler.calculateDodgeState(hitTarget,
+            DodgeHandler.calcDodgeResult(shooter, hitTarget, this.命中率),this);
+            
             // 调用伤害结算函数
             if(this.击中时触发函数) this.击中时触发函数();
 

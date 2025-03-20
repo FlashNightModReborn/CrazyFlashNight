@@ -18,7 +18,6 @@ class org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer {
      */
     public static function initializeAttributes():Void {
         InfoLoader.getInstance().onLoad(function(data:Object):Void {
-            // 假设你在 InfoLoader 中已将 AttributeLoader 注册为 "attributeData"
             attributeMap = data.attributeData;
             trace("子弹属性数据已加载到 BulletInitializer.attributeMap");
         });

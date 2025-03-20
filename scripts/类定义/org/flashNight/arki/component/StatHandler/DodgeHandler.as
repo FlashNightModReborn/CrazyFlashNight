@@ -23,6 +23,8 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
     // 重量参考常量
     public static var JUMP_BOUNCE_BASE_WEIGHT:Number = 100;     // 跳弹基准重量
     public static var PENETRATION_BASE_WEIGHT:Number = 20;      // 过穿基准重量
+    public static var BOUNCE_PENETRATION_RANGE_WEIGHT:Number = JUMP_BOUNCE_BASE_WEIGHT - PENETRATION_BASE_WEIGHT;
+
 
     private static var RandomNumberEngine:LinearCongruentialEngine = LinearCongruentialEngine.getInstance();
 
@@ -30,25 +32,55 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
 
     /**
      * 根据重量判断躲闪类型（跳弹/过穿/躲闪），对应 _root.躲闪状态校验
-     * @param weight  重量
-     * @param level   等级
+     * @param weight 重量
+     * @param level  等级
      * @return 躲闪状态字符串
      */
-    public static function checkDodgeState(weight:Number, level:Number):String
-    {
-        if (RandomNumberEngine.successRate(level - weight))
-        {
+    public static function checkDodgeState(weight:Number, level:Number):String {
+        // 1. 生成一个 [0, 1] 范围内的随机数
+        var r:Number = RandomNumberEngine.nextFloat();
+
+        // 2. 计算躲闪概率，并归一化到 [0, 1]，使用一行表达式：
+        //    先计算 (level - weight)：
+        //       - 如果小于 0，则归一化结果为 0；
+        //       - 如果大于 100，则归一化结果为 1；
+        //       - 否则，归一化为 (level - weight) / 100
+        var dodgeProb:Number = ((dodgeProb = level - weight) < 0)
+                                ? 0
+                                : ((dodgeProb > 100) ? 1 : (dodgeProb / 100));
+
+        // 3. 如果随机数在躲闪概率以内，则直接返回“躲闪”
+        if (r <= dodgeProb) {
             return DodgeStatus.DODGE;
-        }
-        else if (RandomNumberEngine.successRate(100 * (weight - PENETRATION_BASE_WEIGHT) / (JUMP_BOUNCE_BASE_WEIGHT - PENETRATION_BASE_WEIGHT)))
-        {
-            return DodgeStatus.JUMP_BOUNCE;
-        }
-        else
-        {
-            return DodgeStatus.PENETRATION;
+        } else {
+            // 4. 否则，对剩余概率空间 [dodgeProb, 1] 归一化，
+            //    同时直接内联计算跳弹概率，并利用同一寄存器 r 做中间计算：
+            //
+            //    - 左侧表达式 (r - dodgeProb) / (1 - dodgeProb)
+            //      将原始随机数 r 从整体 [0,1] 空间映射到 [0,1] 范围，
+            //      其中 [0, dodgeProb] 已用于躲闪判断，剩余部分用来判断跳弹/过穿。
+            //
+            //    - 右侧表达式计算跳弹概率：
+            //        先将 r 赋值为 (weight - PENETRATION_BASE_WEIGHT)，
+            //          * 如果小于 0（即 weight 小于等于 PENETRATION_BASE_WEIGHT），跳弹概率为 0；
+            //          * 如果 weight 大于等于 JUMP_BOUNCE_BASE_WEIGHT，则跳弹概率为 1；
+            //          * 否则跳弹概率为 (weight - PENETRATION_BASE_WEIGHT) 除以 (JUMP_BOUNCE_BASE_WEIGHT - PENETRATION_BASE_WEIGHT)
+            //
+            //    - 如果归一化后的随机数小于等于跳弹概率，则判定为“跳弹”，否则为“过穿”
+            if (((r - dodgeProb) / (1 - dodgeProb)) <= (((r = weight - PENETRATION_BASE_WEIGHT) < 0)
+                                                    ? 0
+                                                    : (weight >= JUMP_BOUNCE_BASE_WEIGHT ? 1 : r / (JUMP_BOUNCE_BASE_WEIGHT - PENETRATION_BASE_WEIGHT)))) {
+                // _root.发布消息("跳弹");
+                return DodgeStatus.JUMP_BOUNCE;
+            } else {
+                // _root.发布消息("过穿");
+                return DodgeStatus.PENETRATION;
+            }
         }
     }
+
+
+
 
     /**
      * 具体的躲闪状态计算逻辑（对应 _root.躲闪状态计算）
@@ -71,9 +103,11 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
             }
         }
 
+        // _root.发布消息(targetMC + " " + dodgeResult + " " + bulletMC)
+
         if (dodgeResult)
         {
-            validateAndFixTargetStats(targetMC);
+            // validateAndFixTargetStats(targetMC);
             return checkDodgeState(targetMC.重量, targetMC.等级);
         }
         else if (targetMC.受击反制)
