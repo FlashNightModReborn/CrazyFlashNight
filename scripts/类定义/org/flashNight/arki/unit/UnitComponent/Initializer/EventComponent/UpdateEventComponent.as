@@ -1,6 +1,6 @@
 ﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/KillEventComponent.as
-import org.flashNight.neur.Event.EventDispatcher;
-import org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater;
+import org.flashNight.neur.Event.*;
+import org.flashNight.arki.unit.UnitComponent.Updater.*;
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEventComponent {
     /**
@@ -14,7 +14,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         
         // 主角换装不会销毁自身，因此直接使用相同的标签会导致生命周期函数多次设置
         // 利用版本号进行区分
-        
+
         var label:String = "UpdateEventComponent" + target.version;
         if(target.updateEventComponentID) {
             //_root.发布消息("移除任务: " + target.updateEventComponentID)
@@ -28,6 +28,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     }
 
     public static function onUpdate(target:MovieClip):Void {
-        //_root.发布消息(_root.帧计时器.当前帧数 + ": update 事件 " + target);
+        ImpactUpdater.update(target);
+        InformationComponentUpdater.update(target);
     }
 }

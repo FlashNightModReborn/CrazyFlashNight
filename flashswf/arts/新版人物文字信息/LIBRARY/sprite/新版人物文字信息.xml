@@ -1,67 +1,13 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1741011582" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/新版人物文字信息" itemID="65c9a1af-000005fc" linkageExportForAS="true" linkageIdentifier="新版人物文字信息" lastModified="1742436763" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="新版人物文字信息" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Script Layer" color="#888BCD" outline="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#888BCD" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[// 获取父级对象（自机）
-var self:Object = _parent;
-var _this:MovieClip = this;
-
-// 获取血槽的初始位置和长度
-var bloodBarX:Number = this.头顶血槽.血槽底._x;
-var bloodBarLength:Number = this.头顶血槽.血槽底._width;
-
-
-
-
+                <script><![CDATA[
 this._alpha = _root.天气系统.人物信息透明度;
-// 设置 onEnterFrame 事件处理函数
-this.onEnterFrame = function() {
-    // 设置透明度和可见性
-    this._visible = self.状态 == "登场" ? false : this._alpha > 0;
-
-    // 更新血槽长度
-    this.头顶血槽.血槽条._width = self.hp / self.hp满血值 * bloodBarLength;
-
-    // 计算剩余冲击力
-    var remainingImpactForce:Number = self.remainingImpactForce;
-
-    if (self.浮空 || self.倒地 || remainingImpactForce >= self.韧性上限) {
-        remainingImpactForce = self.韧性上限;
-    }
-    else {
-        // 使用帧计时器获取当前帧数
-        var currentFrame:Number = _root.帧计时器.当前帧数;
-
-        if (!isNaN(self.lastHitTime)) {
-            var intervalFrames:Number = currentFrame - self.lastHitTime; // 受击间隔（帧数）
-
-            // 将冲击残余时间从秒转换为帧数（30帧/秒）
-            var decayThresholdFrames:Number = _root.冲击残余时间 * 30; // e.g., 5秒 * 30 = 150帧
-
-            // 若受击间隔超过设定时间（帧数），计算衰减
-            if (intervalFrames > decayThresholdFrames) {
-                // 计算衰减比率
-                // 原公式: (2000 * 冲击残余时间 - interval) / (2000 * 冲击残余时间)
-                // 假设 2000 ms 对应 60帧（2秒），因此调整为：
-                var decayRate:Number = (60 * _root.冲击残余时间 - intervalFrames) / (60 * _root.冲击残余时间);
-                remainingImpactForce = Math.max(0, self.remainingImpactForce * decayRate);
-            }
-        }
-    }
-
-    // 更新韧性条的位置
-    this.头顶血槽.韧性条._x = bloodBarX - remainingImpactForce / self.韧性上限 * bloodBarLength;
-
-    // 在霸体状态下改变韧性条底部颜色
-    this.头顶血槽.刚体遮罩._visible = (self.刚体 || self.man.刚体标签) ? true : false;
-    
-    // 更新 lastHitTime 为当前帧数
-    self.lastHitTime = _root.帧计时器.当前帧数;
-};
 ]]></script>
               </Actionscript>
               <elements/>
@@ -75,7 +21,7 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#99E2A2" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#99E2A2">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

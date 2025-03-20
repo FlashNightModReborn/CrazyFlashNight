@@ -1,4 +1,7 @@
-﻿class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
+﻿import org.flashNight.arki.component.StatHandler.*;
+import org.flashNight.arki.unit.UnitComponent.Updater.*;
+
+class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
   
     // 利用静态属性的表驱动方式管理血条色彩更新逻辑
     private static var colorActions:Object = initActions();
@@ -40,5 +43,7 @@
         } else {
             colorActions["default"](bar);
         }
+
+        InformationComponentUpdater.update(hitTarget);
     }
 }
