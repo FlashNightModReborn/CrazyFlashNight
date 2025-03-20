@@ -12,20 +12,18 @@ class org.flashNight.arki.unit.UnitComponent.Updater.ImpactUpdater {
             // 使用帧计时器获取当前帧数
             var currentFrame:Number = _root.帧计时器.当前帧数;
 
-            if (!isNaN(target.lastHitTime)) {
-                var intervalFrames:Number = currentFrame - target.lastHitTime; // 受击间隔（帧数）
+            var intervalFrames:Number = currentFrame - target.lastHitTime; // 受击间隔（帧数）
 
-                // 将冲击残余时间从秒转换为帧数（30帧/秒）
-                var decayThresholdFrames:Number = ImpactHandler.IMPACT_DECAY_TIME * 30; // e.g., 5秒 * 30 = 150帧
+            // 将冲击残余时间从秒转换为帧数（30帧/秒）
+            var decayThresholdFrames:Number = ImpactHandler.IMPACT_DECAY_TIME * 30; // e.g., 5秒 * 30 = 150帧
 
-                // 若受击间隔超过设定时间（帧数），计算衰减
-                if (intervalFrames > decayThresholdFrames) {
-                    // 计算衰减比率
-                    // 原公式: (2000 * 冲击残余时间 - interval) / (2000 * 冲击残余时间)
-                    // 假设 2000 ms 对应 60帧（2秒），因此调整为：
-                    var decayRate:Number = (60 * ImpactHandler.IMPACT_DECAY_TIME - intervalFrames) / (60 * ImpactHandler.IMPACT_DECAY_TIME);
-                    remainingImpactForce = Math.max(0, target.remainingImpactForce * decayRate);
-                }
+            // 若受击间隔超过设定时间（帧数），计算衰减
+            if (intervalFrames > decayThresholdFrames) {
+                // 计算衰减比率
+                // 原公式: (2000 * 冲击残余时间 - interval) / (2000 * 冲击残余时间)
+                // 假设 2000 ms 对应 60帧（2秒），因此调整为：
+                var decayRate:Number = (60 * ImpactHandler.IMPACT_DECAY_TIME - intervalFrames) / (60 * ImpactHandler.IMPACT_DECAY_TIME);
+                remainingImpactForce = Math.max(0, target.remainingImpactForce * decayRate);
             }
         }
 

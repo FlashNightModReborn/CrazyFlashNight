@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="新版人物文字信息" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Script Layer" color="#888BCD" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#888BCD" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -76,11 +76,11 @@ this._alpha = _root.天气系统.人物信息透明度;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#F48A15">
+        <DOMLayer name="Layer 7" color="#F48A15" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/血槽韧性条" name="头顶血槽" centerPoint3DX="21.7" centerPoint3DY="16.75">
+                <DOMSymbolInstance libraryItemName="sprite/血槽韧性条" name="头顶血槽" selected="true" centerPoint3DX="21.7" centerPoint3DY="16.75">
                   <matrix>
                     <Matrix ty="14"/>
                   </matrix>

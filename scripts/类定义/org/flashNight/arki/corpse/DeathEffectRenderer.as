@@ -22,7 +22,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
     // ------------------ 对象复用及缓存 ------------------
     
     /** @private {Matrix} 可复用的矩阵对象，用于绘制标准尸体效果 */
-    private static var reusableMatrix:Matrix = new Matrix();
+    private static var reusableMatrix:Matrix = new Matrix();    // 默认 b 和 c 为 0
     /** @private {Matrix} 可复用的矩阵对象，用于计算旋转后的矩阵 */
     private static var reusableTransformMatrix:Matrix = new Matrix();
     /** @private {Object} 缓存暗化 ColorTransform 对象，key 为位运算生成的唯一数字 */
@@ -52,8 +52,8 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
         
         // 更新 reusableMatrix 的属性（复用 Matrix 对象减少内存分配）
         reusableMatrix.a  = target._xscale / 100;
-        reusableMatrix.b  = 0;
-        reusableMatrix.c  = 0;
+        // reusableMatrix.b  = 0;
+        // reusableMatrix.c  = 0;
         reusableMatrix.d  = target._yscale / 100;
         reusableMatrix.tx = target._x + effectOffset.x;
         reusableMatrix.ty = target._y + effectOffset.y;
