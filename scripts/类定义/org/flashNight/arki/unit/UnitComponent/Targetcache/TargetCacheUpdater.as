@@ -45,6 +45,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
         var isAllRequest:Boolean = (requestType == _ALL_TYPE);
         // 判断请求类型是否为“敌人”
         var isEnemyRequest:Boolean = (requestType == _ENEMY_TYPE);
+
+        // _root.发布消息("frame: " + _root.帧计时器.当前帧数);
         
         // 根据请求类型确定实际要收集的阵营：
         // - 如果是“全体”，则不分阵营

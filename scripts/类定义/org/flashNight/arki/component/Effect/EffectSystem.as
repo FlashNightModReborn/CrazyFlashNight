@@ -86,7 +86,7 @@ class org.flashNight.arki.component.Effect.EffectSystem
             forceTrigger
         ) {
             var gameWorld:MovieClip = _root.gameworld;
-            if (!gameWorld.effectPools) initializeEffectPool();
+            // if (!gameWorld.effectPools) initializeEffectPool();
 
             var effectPool:Array = gameWorld.effectPools[effectType];
             var effect;

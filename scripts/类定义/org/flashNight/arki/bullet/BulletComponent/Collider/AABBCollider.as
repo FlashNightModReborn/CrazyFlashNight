@@ -163,6 +163,7 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
      * @return 包含边界坐标的 Object：left, right, top, bottom
      */
     private static function getUnitAreaCoordinates(unit:MovieClip):Object {
+        _root.发布消息(unit.area);
         var unitRect:Object = unit.area.getRect(_root.gameworld);
         return {
             left: unitRect.xMin,
@@ -221,11 +222,13 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         //if (this._currentFrame == frame) return;
 
         // this._currentFrame = frame;
-        var coords:Object = getUnitAreaCoordinates(unit);
-        this.left = coords.left;
-        this.right = coords.right;
-        this.top = coords.top;
-        this.bottom = coords.bottom;
+        var unitRect:Object = unit.area.getRect(_root.gameworld);
+        
+        // 直接赋值边界坐标，避免创建临时对象
+        this.left   = unitRect.xMin;
+        this.right  = unitRect.xMax;
+        this.top    = unitRect.yMin;
+        this.bottom = unitRect.yMax;
     }
 
     /**
