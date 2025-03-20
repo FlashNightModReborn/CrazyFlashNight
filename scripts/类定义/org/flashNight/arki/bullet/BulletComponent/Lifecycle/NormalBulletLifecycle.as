@@ -41,14 +41,27 @@ class org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle
         // 发射者不存在时不销毁（异常情况处理）
         if (shooter == undefined) return false;
 
-        // 射程判定逻辑：仅对非远距离子弹进行射程检测
-        var dx:Number = shooter._x - target._x;
-        var dy:Number = shooter._y - target._y; 
-        if(!target.远距离不消失 &&
-            (dx > rangeThreshold || dx < -rangeThreshold ||
-             dy > rangeThreshold || dy < -rangeThreshold)) {
+        // 射程判定逻辑：仅对需要进行射程检测的子弹进行判断
+        // 当子弹类型不具备“远距离不消失”的特性时，检查其水平和垂直位移是否超过预设的射程阈值
+
+        // 计算子弹从发射位置到当前的位置在水平方向上的位移
+        var dx:Number = target.shootX - target._x;
+        // 计算子弹从发射位置到当前的位置在垂直方向上的位移
+        var dy:Number = target.shootY - target._y; 
+
+        // 判断：如果目标不是“远距离不消失”类型，并且水平方向或垂直方向上的位移超出了射程阈值
+        // 这里使用位运算:
+        //    (dx > rangeThreshold ^ dx < -rangeThreshold)
+        //      通过异或运算，确保 dx 超出正阈值或者小于负阈值时返回 true（因为两者不可能同时为真）
+        //    (dy > rangeThreshold ^ dy < -rangeThreshold)
+        //      同理判断 dy 是否超出正负射程阈值
+        // 使用按位或 | 将两个方向的判断结果合并，只要有一个方向超出射程阈值就返回 true
+        if (!target.远距离不消失 && 
+            ((dx > rangeThreshold ^ dx < -rangeThreshold) | 
+            (dy > rangeThreshold ^ dy < -rangeThreshold))) {
             return true;
         }
+
         // 地图碰撞检测
         var isCollidedWithMap:Boolean = this.checkMapCollision(target);
         // 标记地图碰撞状态

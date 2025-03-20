@@ -172,12 +172,14 @@ class org.flashNight.arki.component.StatHandler.DodgeHandler
         // 1. 根据等级计算出闪避率
         var dodgeRate:Number = calcDodgeRateByLevel(shooter.等级, target.等级, target.躲闪率, inputHitRate);
 
+        /*
         // 2. 若结果为 NaN，则进行异常值修正
         if (isNaN(dodgeRate))
         {
             fixShooterAndTargetStats(shooter, target);
             dodgeRate = calcDodgeRateByLevel(shooter.等级, target.等级, target.躲闪率, shooter.命中率);
         }
+        */
 
         // 3. 最终通过 RandomNumberEngine.successRate(dodgeRate) 来判断是否成功闪避
         return (dodgeRate > DODGE_RATE_LIMIT) && RandomNumberEngine.successRate(dodgeRate);
