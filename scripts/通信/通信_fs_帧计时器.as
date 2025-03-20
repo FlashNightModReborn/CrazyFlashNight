@@ -753,7 +753,7 @@ _root.帧计时器.添加生命周期任务 = function(对象, 标签名, 动作
     var 任务ID = 对象.任务标识[标签名];
     var 间隔帧数 = Math.ceil(间隔时间 * this.毫秒每帧);
 
-    // _root.发布消息(任务ID + " " + 对象.任务标识[标签名] + " " + 对象)
+    // _root.发布消息(任务ID + " " + 标签名 + " " + 对象)
 
     // 提取额外参数（动态参数）
     var 参数数组 = arguments.length > 4 ? ArgumentsUtil.sliceArgs(arguments, 4) : [];

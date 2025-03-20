@@ -15,6 +15,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
         KillEventComponent.initialize(target);
         DeathEventComponent.initialize(target);
 
-        // UpdateEventComponent.initialize(target);
+        UpdateEventComponent.initialize(target);
     }
 }
