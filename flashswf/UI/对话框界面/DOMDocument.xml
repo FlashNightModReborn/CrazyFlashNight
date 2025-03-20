@@ -128,6 +128,10 @@
           <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪/Revision 4" itemID="6577c619-0000070b"/>
           <DOMFolderItem name="新地图素材/女仆黑/弹药" itemID="6577dc9d-00000575"/>
           <DOMFolderItem name="杂项" itemID="665b5cb2-00001fa1"/>
+          <DOMFolderItem name="治安官.svg" itemID="67dc4ca1-000009a1"/>
+          <DOMFolderItem name="治安官.svg/Layer 1" itemID="67dc4ca1-000009a2"/>
+          <DOMFolderItem name="主唱3.svg" itemID="67dc4ba0-00000973"/>
+          <DOMFolderItem name="主唱3.svg/Layer 1" itemID="67dc4ba0-00000974"/>
      </folders>
      <media>
           <DOMBitmapItem name="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" itemID="67812173-00000959" sourceExternalFilepath="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" sourceLastImported="1736515955" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" bitmapDataHRef="M 13 1741519841.dat" frameRight="4680" frameBottom="5160"/>
@@ -1152,7 +1156,7 @@
           <Include href="shape/Symbol 1623.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009a9" lastModified="1706113051"/>
           <Include href="shape/Symbol 1624.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009aa" lastModified="1704196122"/>
           <Include href="shape/Symbol 1625.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ab" lastModified="1704196122"/>
-          <Include href="shape/Symbol 1626.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ac" lastModified="1704196122"/>
+          <Include href="shape/Symbol 1626.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ac" lastModified="1742490913"/>
           <Include href="shape/Symbol 1628.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ae" lastModified="1704196122"/>
           <Include href="shape/Symbol 1629.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009af" lastModified="1704196122"/>
           <Include href="shape/Symbol 2640.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-00000c49" lastModified="1741282797"/>
@@ -1431,7 +1435,7 @@
           <Include href="对话框UI/对话-小F.xml" itemIcon="1" loadImmediate="false" itemID="659fe248-00001f63" lastModified="1704976968"/>
           <Include href="对话框UI/对话-幸存老兵.xml" itemIcon="1" loadImmediate="false" itemID="659fe270-00001f91" lastModified="1704977009"/>
           <Include href="对话框UI/对话-摇滚学姐.xml" itemIcon="1" loadImmediate="false" itemID="66be0e2b-00001033" lastModified="1723731499"/>
-          <Include href="对话框UI/对话-主唱.xml" itemIcon="1" loadImmediate="false" itemID="659fe322-00002069" lastModified="1704977186"/>
+          <Include href="对话框UI/对话-主唱.xml" itemIcon="1" loadImmediate="false" itemID="659fe322-00002069" lastModified="1742490603"/>
           <Include href="对话框UI/对话-主角模板.xml" loadImmediate="false" itemID="662fd6a4-00000c50" lastModified="1714663186"/>
           <Include href="对话框UI/黑铁会外交部长-部件/外交部长-脑袋.xml" loadImmediate="false" itemID="666080e1-000004db" lastModified="1717600548"/>
           <Include href="对话框UI/黑铁会外交部长-部件/外交部长-上身.xml" loadImmediate="false" itemID="666080e1-000004da" lastModified="1717599888"/>
@@ -1819,6 +1823,7 @@
           <Include href="普通.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_20.xml" loadImmediate="false" itemID="67bc27cb-00000fdf" lastModified="1740384203"/>
           <Include href="普通.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_21.xml" loadImmediate="false" itemID="67bc27cb-00000fe0" lastModified="1740384203"/>
           <Include href="普通.svg_0/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_22.xml" loadImmediate="false" itemID="67bc27cb-00000fe1" lastModified="1740384203"/>
+          <Include href="前治安官.xml" itemIcon="1" loadImmediate="false" itemID="67dc4d21-00000a15" lastModified="1742490914"/>
           <Include href="失落.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc2b49-00001071" lastModified="1740385097"/>
           <Include href="失落.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc2b49-00001072" lastModified="1740385097"/>
           <Include href="失落.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc2b49-00001073" lastModified="1740385097"/>
@@ -1957,6 +1962,73 @@
           <Include href="元件 5.xml" itemIcon="1" loadImmediate="false" itemID="67b17ec9-000021bc" lastModified="1739685577"/>
           <Include href="圆柱.xml" loadImmediate="false" itemID="6780d65b-00000160" lastModified="1736496731"/>
           <Include href="杂项/细铁.xml" loadImmediate="false" itemID="666080e1-000004dc" lastModified="1717237580"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67dc4ca1-000009db" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67dc4ca1-000009dc" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67dc4ca1-000009dd" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="67dc4ca1-000009de" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="67dc4ca1-000009df" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="67dc4ca1-000009e0" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="67dc4ca1-000009e1" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="67dc4ca1-000009e2" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7.xml" loadImmediate="false" itemID="67dc4ca1-000009e3" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_8.xml" loadImmediate="false" itemID="67dc4ca1-000009e4" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_9.xml" loadImmediate="false" itemID="67dc4ca1-000009e5" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_10.xml" loadImmediate="false" itemID="67dc4ca1-000009e6" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_11.xml" loadImmediate="false" itemID="67dc4ca1-000009e7" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_12.xml" loadImmediate="false" itemID="67dc4ca1-000009e8" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_13.xml" loadImmediate="false" itemID="67dc4ca1-000009e9" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_14.xml" loadImmediate="false" itemID="67dc4ca1-000009ea" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_15.xml" loadImmediate="false" itemID="67dc4ca1-000009eb" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_16.xml" loadImmediate="false" itemID="67dc4ca1-000009ec" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_17.xml" loadImmediate="false" itemID="67dc4ca1-000009ed" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_18.xml" loadImmediate="false" itemID="67dc4ca1-000009ee" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_19.xml" loadImmediate="false" itemID="67dc4ca1-000009ef" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_20.xml" loadImmediate="false" itemID="67dc4ca1-000009f0" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_21.xml" loadImmediate="false" itemID="67dc4ca1-000009f1" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_22.xml" loadImmediate="false" itemID="67dc4ca1-000009f2" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_23.xml" loadImmediate="false" itemID="67dc4ca1-000009f3" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_24.xml" loadImmediate="false" itemID="67dc4ca1-000009f4" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_25.xml" loadImmediate="false" itemID="67dc4ca1-000009f5" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_26.xml" loadImmediate="false" itemID="67dc4ca1-000009f6" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_27.xml" loadImmediate="false" itemID="67dc4ca1-000009f7" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_28.xml" loadImmediate="false" itemID="67dc4ca1-000009f8" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_29.xml" loadImmediate="false" itemID="67dc4ca1-000009f9" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_30.xml" loadImmediate="false" itemID="67dc4ca1-000009fa" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_31.xml" loadImmediate="false" itemID="67dc4ca1-000009fb" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_32.xml" loadImmediate="false" itemID="67dc4ca1-000009fc" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_33.xml" loadImmediate="false" itemID="67dc4ca1-000009fd" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_34.xml" loadImmediate="false" itemID="67dc4ca1-000009fe" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_35.xml" loadImmediate="false" itemID="67dc4ca1-000009ff" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_36.xml" loadImmediate="false" itemID="67dc4ca1-00000a00" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_37.xml" loadImmediate="false" itemID="67dc4ca1-00000a01" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_38.xml" loadImmediate="false" itemID="67dc4ca1-00000a02" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_39.xml" loadImmediate="false" itemID="67dc4ca1-00000a03" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_40.xml" loadImmediate="false" itemID="67dc4ca1-00000a04" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_41.xml" loadImmediate="false" itemID="67dc4ca1-00000a05" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_42.xml" loadImmediate="false" itemID="67dc4ca1-00000a06" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_43.xml" loadImmediate="false" itemID="67dc4ca1-00000a07" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_44.xml" loadImmediate="false" itemID="67dc4ca1-00000a08" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_45.xml" loadImmediate="false" itemID="67dc4ca1-00000a09" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_46.xml" loadImmediate="false" itemID="67dc4ca1-00000a0a" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_47.xml" loadImmediate="false" itemID="67dc4ca1-00000a0b" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_48.xml" loadImmediate="false" itemID="67dc4ca1-00000a0c" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_49.xml" loadImmediate="false" itemID="67dc4ca1-00000a0d" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_50.xml" loadImmediate="false" itemID="67dc4ca1-00000a0e" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_51.xml" loadImmediate="false" itemID="67dc4ca1-00000a0f" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_52.xml" loadImmediate="false" itemID="67dc4ca1-00000a10" lastModified="1742490785"/>
+          <Include href="治安官.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_53.xml" loadImmediate="false" itemID="67dc4ca1-00000a11" lastModified="1742490785"/>
+          <Include href="主唱.xml" itemIcon="1" loadImmediate="false" itemID="67dc4beb-0000098f" lastModified="1742490604"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67dc4ba1-00000981" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67dc4ba1-00000982" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67dc4ba1-00000983" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="67dc4ba1-00000984" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="67dc4ba1-00000985" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="67dc4ba1-00000986" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="67dc4ba1-00000987" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="67dc4ba1-00000988" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_7.xml" loadImmediate="false" itemID="67dc4ba1-00000989" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_8.xml" loadImmediate="false" itemID="67dc4ba1-0000098a" lastModified="1742490529"/>
+          <Include href="主唱3.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_9.xml" loadImmediate="false" itemID="67dc4ba1-0000098b" lastModified="1742490529"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
