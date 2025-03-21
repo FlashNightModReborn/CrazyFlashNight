@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽底" itemID="65c9a8c3-00000624" lastModified="1707753328">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽底" itemID="65c9a8c3-00000624" lastModified="1742557286">
   <timeline>
     <DOMTimeline name="血槽底">
       <layers>
@@ -9,16 +9,16 @@
                 <DOMShape>
                   <fills>
                     <FillStyle index="1">
-                      <SolidColor color="#333333"/>
+                      <SolidColor color="#666666"/>
                     </FillStyle>
                     <FillStyle index="2">
-                      <SolidColor color="#666666"/>
+                      <SolidColor alpha="0.658823529411765"/>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="2" edges="!900 72|900 120!900 120|0 120!0 120|0 72"/>
-                    <Edge fillStyle1="1" edges="!0 72|0 0!0 0|900 0!900 0|900 72"/>
-                    <Edge fillStyle0="1" fillStyle1="2" edges="!0 72|900 72"/>
+                    <Edge fillStyle1="2" edges="!0 72|0 0!0 0|900 0!900 0|900 72"/>
+                    <Edge fillStyle1="1" edges="!900 72|900 120!900 120|0 120!0 120|0 72"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!0 72|900 72"/>
                   </edges>
                 </DOMShape>
               </elements>

@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽韧性条" itemID="65c9a3a2-0000060a" lastModified="1742550777" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽韧性条" itemID="65c9a3a2-0000060a" lastModified="1742560036" lastUniqueIdentifier="5">
   <timeline>
     <DOMTimeline name="血槽韧性条">
       <layers>
@@ -123,9 +123,9 @@ stop();
           <frames>
             <DOMFrame index="0" duration="256" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="残余血槽条" name="残余血槽条" centerPoint3DX="-22.5" centerPoint3DY="0.25">
+                <DOMSymbolInstance libraryItemName="残余血槽条" name="残余血槽条" blendMode="screen" centerPoint3DX="-22.5" centerPoint3DY="0.05">
                   <matrix>
-                    <Matrix tx="-22.5" ty="0.25"/>
+                    <Matrix tx="-22.5" ty="0.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
