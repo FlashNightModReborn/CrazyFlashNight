@@ -726,7 +726,7 @@ _root.载入新佣兵库数据 = function(人数, 等级下限, 等级上限, �
 	// {
 	// 	list = _root.mercs_list;
 	// }
-	list = _root.mercs_list;
+	var list = _root.mercs_list;
 	_root.可雇佣兵 = [];
 	
 	var 迭代器 = 0;
@@ -741,50 +741,38 @@ _root.载入新佣兵库数据 = function(人数, 等级下限, 等级上限, �
 	}
 	for (var _loc7_ in list)
 	{
-		var _loc8_ = list[_loc7_];
-		if(seen[_loc8_.id] && seen[_loc8_.id] == _loc8_.name){
+		var rawMercData = list[_loc7_];
+		if(seen[rawMercData.id] && seen[rawMercData.id] == rawMercData.name){
 			continue;
 		}
-		var _loc9_ = [];
-		_loc9_.push(_loc8_.level);//0
-		_loc9_.push(_loc8_.name);//1
-		_loc9_.push(_loc8_.id);//2
-		_loc9_.push(_loc8_.height);//3
-		_loc9_.push(_loc8_.face == -1 ? "" : _root.脸型库[_loc8_.face]);//4
-		_loc9_.push(_loc8_.hair == -1 ? "" : _root.发型库[_loc8_.hair]);//5
-		_loc9_.push(_loc8_.equipment.head == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.head]);//6
-		_loc9_.push(_loc8_.equipment.body == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.body]);//7
-		_loc9_.push(_loc8_.equipment.hand == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.hand]);//8
-		_loc9_.push(_loc8_.equipment.leg == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.leg]);//9
-		_loc9_.push(_loc8_.equipment.foot == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.foot]);//10
-		_loc9_.push(_loc8_.equipment.neck == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.neck]);//11
-		_loc9_.push(_loc8_.equipment.primary == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.primary]);//12
-		_loc9_.push(_loc8_.equipment.secondary1 == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.secondary1]);//13
-		_loc9_.push(_loc8_.equipment.secondary2 == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.secondary2]);//14
-		_loc9_.push(_loc8_.equipment.melee == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.melee]);//15
-		_loc9_.push(_loc8_.equipment.gerenade == -1 ? "" : _root.id物品名对应表[_loc8_.equipment.gerenade]);//16
-		_loc9_.push(_loc8_.gender == 1 ? "男" : "女");//17
-		//_loc9_.push(_loc8_.level * _root.基础身价值);//18
-		_loc9_.push(_root.计算佣兵金币价格(_loc8_.level));//18
-		_loc9_.push({是否杂交:false});//19
-		if(_loc8_.price){
-			_loc9_[19].价格倍率 = _loc8_.price;
+		var mercData = new Array(20);
+		mercData[0] = rawMercData.level;//0
+		mercData[1] = rawMercData.name;//1
+		mercData[2] = rawMercData.id;//2
+		mercData[3] = rawMercData.height;//3
+		mercData[4] = rawMercData.face == null ? "" : _root.脸型库[rawMercData.face];//4
+		mercData[5] = rawMercData.hair == null ? "" : _root.发型库[rawMercData.hair];//5
+		mercData[6] = rawMercData.equipment.head == null ? "" : rawMercData.equipment.head;//6
+		mercData[7] = rawMercData.equipment.body == null ? "" : rawMercData.equipment.body;//7
+		mercData[8] = rawMercData.equipment.hand == null ? "" : rawMercData.equipment.hand;//8
+		mercData[9] = rawMercData.equipment.leg == null ? "" : rawMercData.equipment.leg;//9
+		mercData[10] = rawMercData.equipment.foot == null ? "" : rawMercData.equipment.foot;//10
+		mercData[11] = rawMercData.equipment.neck == null ? "" : rawMercData.equipment.neck;//11
+		mercData[12] = rawMercData.equipment.primary == null ? "" : rawMercData.equipment.primary;//12
+		mercData[13] = rawMercData.equipment.secondary1 == null ? "" : rawMercData.equipment.secondary1;//13
+		mercData[14] = rawMercData.equipment.secondary2 == null ? "" : rawMercData.equipment.secondary2;//14
+		mercData[15] = rawMercData.equipment.melee == null ? "" : rawMercData.equipment.melee;//15
+		mercData[16] = rawMercData.equipment.gerenade == null ? "" : rawMercData.equipment.gerenade;//16
+		mercData[17] = rawMercData.gender == 1 ? "男" : "女";//17
+		mercData[18] = _root.计算佣兵金币价格(rawMercData.level);//18
+		mercData[19] = {是否杂交:false};//19
+		if(rawMercData.price){
+			mercData[19].价格倍率 = rawMercData.price;
 		}
-		if(_loc8_.enhancement){
-			_loc9_[19].装备强化度 = _loc8_.enhancement;
-			// _loc9_[19].装备强化度数组 = [];
-			// _loc9_[19].装备强化度数组[6] = _loc9_[19].装备强化度.头部装备;
-			// _loc9_[19].装备强化度数组[7] = _loc9_[19].装备强化度.上装装备;
-			// _loc9_[19].装备强化度数组[8] = _loc9_[19].装备强化度.手部装备;
-			// _loc9_[19].装备强化度数组[9] = _loc9_[19].装备强化度.下装装备;
-			// _loc9_[19].装备强化度数组[10] = _loc9_[19].装备强化度.脚部装备;
-			// _loc9_[19].装备强化度数组[11] = _loc9_[19].装备强化度.颈部装备;
-			// _loc9_[19].装备强化度数组[12] = _loc9_[19].装备强化度.长枪;
-			// _loc9_[19].装备强化度数组[13] = _loc9_[19].装备强化度.手枪;
-			// _loc9_[19].装备强化度数组[14] = _loc9_[19].装备强化度.手枪2;
-			// _loc9_[19].装备强化度数组[15] = _loc9_[19].装备强化度.刀;
+		if(rawMercData.enhancement){
+			mercData[19].装备强化度 = rawMercData.enhancement;
 		}
-		_root.可雇佣兵.push(_loc9_);
+		_root.可雇佣兵.push(mercData);
 	}
 	// _root.可雇佣兵去重 = [];
 	// var seen = {}; 
