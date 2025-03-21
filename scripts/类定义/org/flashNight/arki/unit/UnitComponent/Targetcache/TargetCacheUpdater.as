@@ -14,7 +14,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
     private static var _allyVersion:Number = 0;
     
     // 配置常量
-    // private static var _SORT_KEY:String = "right"; // 排序使用的关键字
+    // private static var _SORT_KEY:String = "left"; // 排序使用的关键字
     private static var _ENEMY_TYPE:String = "敌人";  // 敌人类型标识
     private static var _ALLY_TYPE:String = "友军";   // 友军类型标识
     private static var _ALL_TYPE:String = "全体";
@@ -114,11 +114,11 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
             var i:Number = 1;
             do {
                 var key:Object = list[i];
-                var keyVal:Number = key.aabbCollider.right;
+                var keyVal:Number = key.aabbCollider.left;
                 var j:Number = i - 1;
                 do {
-                    // 若 j 有效且前一个元素的 right 大于当前 key 的 right，则后移
-                    if (j >= 0 && list[j].aabbCollider.right > keyVal) {
+                    // 若 j 有效且前一个元素的 left 大于当前 key 的 left，则后移
+                    if (j >= 0 && list[j].aabbCollider.left > keyVal) {
                         list[j + 1] = list[j--];
                     } else {
                         break;
