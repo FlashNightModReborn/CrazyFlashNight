@@ -572,7 +572,7 @@ _root.帧计时器.移除任务 = function(taskID:Number):Void {
 // 添加任务函数
 _root.帧计时器.添加任务 = function(action, interval, repeatCount) {
     var taskID:Number = ++this.任务ID计数器;
-    var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
+    var intervalFrames:Number = (interval * this.毫秒每帧 + 0.9999999999) | 0;
     
     // 提取额外参数（动态参数）
     var parameters:Array = arguments.length > 3 ? ArgumentsUtil.sliceArgs(arguments, 3) : [];
@@ -606,7 +606,7 @@ _root.帧计时器.添加单次任务 = function(action, interval)
     else 
     {
         var taskID:Number = ++this.任务ID计数器;
-        var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
+        var intervalFrames:Number = (interval * this.毫秒每帧 + 0.9999999999) | 0;
         
         // 创建Task实例 (单次执行 repeatCount=1)
         var task:Task = new Task(taskID, intervalFrames, 1);
@@ -629,7 +629,7 @@ _root.帧计时器.添加单次任务 = function(action, interval)
 _root.帧计时器.添加循环任务 = function(action, interval) 
 {
     var taskID:Number = ++this.任务ID计数器;
-    var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
+    var intervalFrames:Number = (interval * this.毫秒每帧 + 0.9999999999) | 0;
 
     var parameters:Array = arguments.length > 2 ? ArgumentsUtil.sliceArgs(arguments, 2) : [];
 
@@ -659,7 +659,7 @@ _root.帧计时器.添加或更新任务 = function(obj, labelName, action, inte
     }
 
     var taskID:Number = obj.任务标识[labelName];
-    var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
+    var intervalFrames:Number = (interval * this.毫秒每帧 + 0.9999999999) | 0;
     
     var parameters:Array = arguments.length > 4 ? ArgumentsUtil.sliceArgs(arguments, 4) : [];
     
@@ -671,7 +671,7 @@ _root.帧计时器.添加或更新任务 = function(obj, labelName, action, inte
         task.action = Delegate.createWithParams(obj, action, parameters);
         task.intervalFrames = intervalFrames;
         task.parameters = parameters;
-        task.repeatCount = 1;  // 这里默认做单次，依原逻辑可自行调整
+        // task.repeatCount = 1;  // 这里默认做单次，依原逻辑可自行调整
 
         // 根据 intervalFrames 判断如何调度
         if (intervalFrames === 0) {
@@ -725,7 +725,7 @@ _root.帧计时器.添加生命周期任务 = function(obj, labelName, action, i
     }
 
     var taskID:Number = obj.任务标识[labelName];
-    var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
+    var intervalFrames:Number = (interval * this.毫秒每帧 + 0.9999999999) | 0;
 
     var parameters:Array = arguments.length > 4 ? ArgumentsUtil.sliceArgs(arguments, 4) : [];
     var boundAction:Function = Delegate.createWithParams(obj, action, parameters);
