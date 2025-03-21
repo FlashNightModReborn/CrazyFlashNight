@@ -27,7 +27,7 @@ ColliderFactoryRegistry.init();
  */
 _root.帧计时器.初始化任务栈 = function() {  
     // 初始化各种任务相关的表和参数
-    this.任务哈希表 = {}; // 频繁更新的任务利用键值对单独维护
+    this.taskTable = {}; // 频繁更新的任务利用键值对单独维护
     this.当前帧数 = 0; 
     this.任务ID计数器 = 0;
 
@@ -517,27 +517,25 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
 
 _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     var tasks = this.ScheduleTimer.tick();
-    // this.server.sendServerMessage("schedule tasks");
     if (tasks != null) {
         var node = tasks.getFirst();
         while (node != null) {
             var nextNode = node.next;
             var taskID = node.taskID;
-            var 任务 = this.任务哈希表[taskID];
-            if (任务) {
-                任务.动作();
-                // this.server.sendServerMessage(taskID + " " + 任务.重复次数)
+            var task:Task = this.taskTable[taskID];
+            if (task) {
+                task.action();
                 // 处理任务重复逻辑
-                if (任务.重复次数 === 1) {
-                    delete this.任务哈希表[taskID];
-                } else if (任务.重复次数 === true || 任务.重复次数 > 1) {
-                    if (任务.重复次数 !== true) {
-                        任务.重复次数 -= 1;
+                if (task.repeatCount === 1) {
+                    delete this.taskTable[taskID];
+                } else if (task.repeatCount === true || task.repeatCount > 1) {
+                    if (task.repeatCount !== true) {
+                        task.repeatCount -= 1;
                     }
-                    任务.待执行帧数 = 任务.间隔帧数;
-                    任务.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, 任务.待执行帧数);
+                    task.pendingFrames = task.intervalFrames;
+                    task.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, task.pendingFrames);
                 } else {
-                    delete this.任务哈希表[taskID];
+                    delete this.taskTable[taskID];
                 }
             }
             node = nextNode;
@@ -546,333 +544,290 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
 
     // 处理零帧任务
     for (var taskID in this.zeroFrameTasks) {
-        var 任务 = this.zeroFrameTasks[taskID];
-        任务.动作();
-        if (任务.重复次数 !== true) {
-            任务.重复次数 -= 1;
-            if (任务.重复次数 <= 0) {
+        var task:Task = this.zeroFrameTasks[taskID];
+        task.action();
+        if (task.repeatCount !== true) {
+            task.repeatCount -= 1;
+            if (task.repeatCount <= 0) {
                 delete this.zeroFrameTasks[taskID];
             }
         }
     }
 }, _root.帧计时器);
 
-_root.帧计时器.移除任务 = function(任务ID)
-{
-    var 任务 = this.任务哈希表[任务ID];
-    // this.server.sendServerMessage("remove task " + 任务ID);
-    if (任务) 
-    {
-        var 节点 = 任务.节点;
-        this.ScheduleTimer.removeTaskByNode(节点);
-        delete this.任务哈希表[任务ID];  // Remove from hash table
-    } else if (this.zeroFrameTasks[任务ID]) {
-        delete this.zeroFrameTasks[任务ID]; // Remove from zero-frame tasks
+
+_root.帧计时器.移除任务 = function(taskID:Number):Void {
+    var task:Task = this.taskTable[taskID];
+    if (task) {
+        var node:TaskIDNode = task.node;
+        this.ScheduleTimer.removeTaskByNode(node);
+        delete this.taskTable[taskID];  // 从哈希表中移除任务
+    } else if (this.zeroFrameTasks[taskID]) {
+        delete this.zeroFrameTasks[taskID]; // 从零帧任务中移除任务
     }
 };
 
 
 
 // 添加任务函数
-_root.帧计时器.添加任务 = function(动作, 间隔时间, 重复次数) {
-    var 任务ID = ++this.任务ID计数器;
-    var 间隔帧数 = Math.ceil(间隔时间 * this.毫秒每帧);
+_root.帧计时器.添加任务 = function(action, interval, repeatCount) {
+    var taskID:Number = ++this.任务ID计数器;
+    var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
     
     // 提取额外参数（动态参数）
-    var 参数数组 = arguments.length > 3 ? ArgumentsUtil.sliceArgs(arguments, 3) : [];
-    // this.server.sendServerMessage("add task " + 参数数组 + " " + 间隔时间 + " " + 重复次数);
+    var parameters:Array = arguments.length > 3 ? ArgumentsUtil.sliceArgs(arguments, 3) : [];
     // 创建任务对象
-    var 任务 = {
-        id: 任务ID,
-        间隔帧数: 间隔帧数,
-        重复次数: 重复次数 === undefined || 重复次数 === null ? 1 : 重复次数
-    };
+    var task:Task = new Task(taskID, intervalFrames, repeatCount);
 
-    任务.动作 = Delegate.createWithParams(任务, 动作, 参数数组);
+    task.action = Delegate.createWithParams(task, action, parameters);
 
-    if (间隔帧数 <= 0) {
-        this.zeroFrameTasks[任务ID] = 任务; // 立即执行任务
+    if (intervalFrames <= 0) {
+        this.zeroFrameTasks[taskID] = task; // 立即执行任务
     } else {
-        任务.待执行帧数 = 间隔帧数;
-        任务.节点 = this.ScheduleTimer.evaluateAndInsertTask(任务ID, 间隔帧数);  // 调度任务
-        this.任务哈希表[任务ID] = 任务; // 将任务存储在哈希表中
+        task.pendingFrames = intervalFrames;
+        task.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, intervalFrames);  // 调度任务
+        this.taskTable[taskID] = task; // 将任务存储在哈希表中
     }
 
-    return 任务ID; // 返回任务 ID
+    return taskID; // 返回任务 ID
 };
 
 
-
-
-_root.帧计时器.添加单次任务 = function(动作, 间隔时间) 
+_root.帧计时器.添加单次任务 = function(action, interval) 
 {
-    var 参数数组 = arguments.length > 2 ? ArgumentsUtil.sliceArgs(arguments, 2) : [];
-    // this.server.sendServerMessage("add once task " + 参数数组 + " " + 间隔时间);
-    // 检查间隔时间是否小于或等于0
-    if (间隔时间 <= 0) {
-        // 使用 Delegate.createWithParams 预绑定参数
-        var 绑定动作 = Delegate.createWithParams(null, 动作, 参数数组);
-        绑定动作(); // 执行预绑定的动作函数
+    var parameters:Array = arguments.length > 2 ? ArgumentsUtil.sliceArgs(arguments, 2) : [];
 
-
-        return null; // 返回特殊值，表示任务已立即执行
-    } else {
-        // 任务ID生成
-        var 任务ID = ++this.任务ID计数器;
-        var 间隔帧数 = Math.ceil(间隔时间 * this.毫秒每帧);
-
-        // 创建任务对象
-        var 任务 = {
-            id: 任务ID,
-            间隔帧数: 间隔帧数,
-            重复次数: 1
-        };
+    // 如果间隔时间 <= 0，直接执行
+    if (interval <= 0) {
+        var boundAction:Function = Delegate.createWithParams(null, action, parameters);
+        boundAction(); 
+        return null; // 返回null，表示已立即执行
+    } 
+    else 
+    {
+        var taskID:Number = ++this.任务ID计数器;
+        var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
         
-        任务.动作 = Delegate.createWithParams(任务, 动作, 参数数组);
+        // 创建Task实例 (单次执行 repeatCount=1)
+        var task:Task = new Task(taskID, intervalFrames, 1);
+        task.action = Delegate.createWithParams(task, action, parameters);
+        task.parameters = parameters;
 
-        // 判断是否需要立即执行
-        if (间隔帧数 <= 0) {
-            this.zeroFrameTasks[任务ID] = 任务; // 立即执行任务
+        if (intervalFrames <= 0) {
+            // 这时也属于立即执行，但保留原有“零帧任务”逻辑
+            this.zeroFrameTasks[taskID] = task;
         } else {
-            任务.待执行帧数 = 间隔帧数;
-            任务.节点 = this.ScheduleTimer.evaluateAndInsertTask(任务ID, 间隔帧数); // 调度任务
-            this.任务哈希表[任务ID] = 任务; // 将任务存储在哈希表中
+            task.pendingFrames = intervalFrames;
+            task.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, intervalFrames);
+            this.taskTable[taskID] = task;
         }
 
-        return 任务ID; // 返回任务ID
+        return taskID; 
     }
 };
 
+_root.帧计时器.添加循环任务 = function(action, interval) 
+{
+    var taskID:Number = ++this.任务ID计数器;
+    var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
 
+    var parameters:Array = arguments.length > 2 ? ArgumentsUtil.sliceArgs(arguments, 2) : [];
 
-
-_root.帧计时器.添加循环任务 = function(动作, 间隔时间) {
-    // 任务ID生成
-    var 任务ID = ++this.任务ID计数器;
-    var 间隔帧数 = Math.ceil(间隔时间 * this.毫秒每帧);
-
-    // 提取额外参数（动态参数）
-    var 参数数组 = arguments.length > 2 ? ArgumentsUtil.sliceArgs(arguments, 2) : [];
-    // this.server.sendServerMessage("add loop task " + 参数数组 + " " + 间隔时间);
-    // 创建任务对象
-    var 任务 = {
-        id: 任务ID,
-        间隔帧数: 间隔帧数,
-        重复次数: true  // 循环任务的标志
-    };
-
-    任务.动作 = Delegate.createWithParams(任务, 动作, 参数数组);
-
-    // 判断是否需要立即执行
-    if (间隔帧数 <= 0) {
-        this.zeroFrameTasks[任务ID] = 任务; // 立即执行任务
-    } else {
-        任务.待执行帧数 = 间隔帧数;
-        任务.节点 = this.ScheduleTimer.evaluateAndInsertTask(任务ID, 间隔帧数); // 调度任务
-        this.任务哈希表[任务ID] = 任务; // 将任务存储在哈希表中
-    }
-
-    return 任务ID; // 返回任务ID
-};
-
-
-_root.帧计时器.添加或更新任务 = function(对象, 标签名, 动作, 间隔时间) {
-    if(!对象) return;
-    if (!对象.任务标识) 对象.任务标识 = {};
-    if (!对象.任务标识[标签名]) {
-        对象.任务标识[标签名] = ++this.任务ID计数器;
-    }
-
-    var 任务ID = 对象.任务标识[标签名];
-    var 间隔帧数 = Math.ceil(间隔时间 * this.毫秒每帧);
+    // 创建Task实例（repeatCount = true 表示无限循环）
+    var task:Task = new Task(taskID, intervalFrames, true);
+    task.action = Delegate.createWithParams(task, action, parameters);
+    task.parameters = parameters;
     
-    // 提取额外参数（动态参数）
-    var 参数数组 = arguments.length > 4 ? ArgumentsUtil.sliceArgs(arguments, 4) : [];
-    // this.server.sendServerMessage("update " + 任务ID + " " + 标签名 + 参数数组 + " " + 间隔时间);
-    // 获取任务，从任务哈希表或者 zeroFrameTasks
-    var 任务 = this.任务哈希表[任务ID] || this.zeroFrameTasks[任务ID];
-    if (任务) {
-        // 更新现有任务
-        任务.动作 = Delegate.createWithParams(对象, 动作, 参数数组);
-        任务.间隔帧数 = 间隔帧数;
-        任务.参数数组 = 参数数组;
+    // 判断是放入 zeroFrameTasks 还是 taskTable
+    if (intervalFrames <= 0) {
+        this.zeroFrameTasks[taskID] = task; 
+    } else {
+        task.pendingFrames = intervalFrames;
+        task.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, intervalFrames);
+        this.taskTable[taskID] = task;
+    }
 
-        if (间隔帧数 === 0) {
-            // 将任务移到 zeroFrameTasks
-            if (this.任务哈希表[任务ID]) {
-                this.ScheduleTimer.removeTaskByNode(任务.节点);
-                delete 任务.节点;
-                delete this.任务哈希表[任务ID];
-                this.zeroFrameTasks[任务ID] = 任务;
+    return taskID;
+};
+
+_root.帧计时器.添加或更新任务 = function(obj, labelName, action, interval) 
+{
+    if (!obj) return;
+    if (!obj.任务标识) obj.任务标识 = {};
+    if (!obj.任务标识[labelName]) {
+        obj.任务标识[labelName] = ++this.任务ID计数器;
+    }
+
+    var taskID:Number = obj.任务标识[labelName];
+    var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
+    
+    var parameters:Array = arguments.length > 4 ? ArgumentsUtil.sliceArgs(arguments, 4) : [];
+    
+    // 查找现有任务
+    var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
+
+    if (task) {
+        // 更新现有任务的各种属性
+        task.action = Delegate.createWithParams(obj, action, parameters);
+        task.intervalFrames = intervalFrames;
+        task.parameters = parameters;
+        task.repeatCount = 1;  // 这里默认做单次，依原逻辑可自行调整
+
+        // 根据 intervalFrames 判断如何调度
+        if (intervalFrames === 0) {
+            if (this.taskTable[taskID]) {
+                this.ScheduleTimer.removeTaskByNode(task.node);
+                delete task.node;
+                delete this.taskTable[taskID];
             }
-        } else {
-            if (this.zeroFrameTasks[任务ID]) {
-                // 从 zeroFrameTasks 移动到任务哈希表
-                delete this.zeroFrameTasks[任务ID];
-                任务.待执行帧数 = 间隔帧数;
-                任务.节点 = this.ScheduleTimer.evaluateAndInsertTask(任务ID, 间隔帧数);
-                this.任务哈希表[任务ID] = 任务;
+            this.zeroFrameTasks[taskID] = task;
+        } 
+        else 
+        {
+            if (this.zeroFrameTasks[taskID]) {
+                delete this.zeroFrameTasks[taskID];
+                task.pendingFrames = intervalFrames;
+                task.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, intervalFrames);
+                this.taskTable[taskID] = task;
             } else {
-                // 重新调度任务
-                任务.待执行帧数 = 间隔帧数;
-                this.ScheduleTimer.rescheduleTaskByNode(任务.节点, 间隔帧数);
+                // 已在 taskTable，则进行重新调度
+                task.pendingFrames = intervalFrames;
+                this.ScheduleTimer.rescheduleTaskByNode(task.node, intervalFrames);
             }
         }
-    } else {
-        // 如果任务不存在，创建新任务
-        任务 = {
-            id: 任务ID,
-            间隔帧数: 间隔帧数,
-            重复次数: 1,
-            参数数组: 参数数组
-        };
+    } 
+    else 
+    {
+        // 不存在则创建新任务
+        task = new Task(taskID, intervalFrames, 1);
+        task.action = Delegate.createWithParams(obj, action, parameters);
+        task.parameters = parameters;
 
-        任务.动作 = Delegate.createWithParams(对象, 动作, 参数数组);
-
-        if (间隔帧数 === 0) {
-            this.zeroFrameTasks[任务ID] = 任务;
+        if (intervalFrames === 0) {
+            this.zeroFrameTasks[taskID] = task;
         } else {
-            任务.待执行帧数 = 间隔帧数;
-            任务.节点 = this.ScheduleTimer.evaluateAndInsertTask(任务ID, 间隔帧数);
-            this.任务哈希表[任务ID] = 任务;
+            task.pendingFrames = intervalFrames;
+            task.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, intervalFrames);
+            this.taskTable[taskID] = task;
         }
     }
 
-    return 任务ID;
+    return taskID;
 };
 
 
-
-_root.帧计时器.添加生命周期任务 = function(对象, 标签名, 动作, 间隔时间) {
-    if(!对象) return;
-    if (!对象.任务标识) 对象.任务标识 = {};
-    if (!对象.任务标识[标签名]) {
-        对象.任务标识[标签名] = ++this.任务ID计数器;
+_root.帧计时器.添加生命周期任务 = function(obj, labelName, action, interval) 
+{
+    if (!obj) return;
+    if (!obj.任务标识) obj.任务标识 = {};
+    if (!obj.任务标识[labelName]) {
+        obj.任务标识[labelName] = ++this.任务ID计数器;
     }
 
-    var 任务ID = 对象.任务标识[标签名];
-    var 间隔帧数 = Math.ceil(间隔时间 * this.毫秒每帧);
+    var taskID:Number = obj.任务标识[labelName];
+    var intervalFrames:Number = Math.ceil(interval * this.毫秒每帧);
 
-    // _root.发布消息(任务ID + " " + 标签名 + " " + 对象)
+    var parameters:Array = arguments.length > 4 ? ArgumentsUtil.sliceArgs(arguments, 4) : [];
+    var boundAction:Function = Delegate.createWithParams(obj, action, parameters);
 
-    // 提取额外参数（动态参数）
-    var 参数数组 = arguments.length > 4 ? ArgumentsUtil.sliceArgs(arguments, 4) : [];
-    // this.server.sendServerMessage("life " + 任务ID + " " + 标签名 + 参数数组 + " " + 间隔时间);
-    // 使用 Delegate.createWithParams 预绑定参数
-    var 绑定动作 = Delegate.createWithParams(对象, 动作, 参数数组);
+    // 查找是否已有同名任务
+    var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
+    if (task) {
+        // 更新已存在的任务
+        task.action = boundAction;
+        task.intervalFrames = intervalFrames;
+        task.parameters = parameters;
+        task.repeatCount = true; // 生命周期任务设定无限循环
 
-    // 获取或创建任务
-    var 任务 = this.任务哈希表[任务ID] || this.zeroFrameTasks[任务ID];
-    if (任务) {
-        // 更新现有任务
-        任务.动作 = 绑定动作;
-        任务.间隔帧数 = 间隔帧数;
-        任务.参数数组 = 参数数组;
-        任务.重复次数 = true; // 无限循环
-
-        if (间隔帧数 === 0) {
-            if (this.任务哈希表[任务ID]) {
-                // 移动任务到 zeroFrameTasks
-                this.ScheduleTimer.removeTaskByNode(任务.节点);
-                delete 任务.节点;
-                delete this.任务哈希表[任务ID];
-                this.zeroFrameTasks[任务ID] = 任务;
+        if (intervalFrames === 0) {
+            if (this.taskTable[taskID]) {
+                this.ScheduleTimer.removeTaskByNode(task.node);
+                delete task.node;
+                delete this.taskTable[taskID];
             }
+            this.zeroFrameTasks[taskID] = task;
         } else {
-            if (this.zeroFrameTasks[任务ID]) {
-                // 从 zeroFrameTasks 移到任务哈希表
-                delete this.zeroFrameTasks[任务ID];
-                任务.待执行帧数 = 间隔帧数;
-                任务.节点 = this.ScheduleTimer.evaluateAndInsertTask(任务ID, 间隔帧数);
-                this.任务哈希表[任务ID] = 任务;
+            if (this.zeroFrameTasks[taskID]) {
+                delete this.zeroFrameTasks[taskID];
+                task.pendingFrames = intervalFrames;
+                task.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, intervalFrames);
+                this.taskTable[taskID] = task;
             } else {
-                // 重新调度任务
-                任务.待执行帧数 = 间隔帧数;
-                this.ScheduleTimer.rescheduleTaskByNode(任务.节点, 间隔帧数);
+                task.pendingFrames = intervalFrames;
+                this.ScheduleTimer.rescheduleTaskByNode(task.node, intervalFrames);
             }
         }
-    } else {
-        // 创建新任务
-        任务 = {
-            id: 任务ID,
-            动作: 绑定动作,
-            间隔帧数: 间隔帧数,
-            重复次数: true, // 无限循环
-            参数数组: 参数数组
-        };
+    } 
+    else 
+    {
+        // 新创建任务
+        task = new Task(taskID, intervalFrames, true); // repeatCount = true
+        task.action = boundAction;
+        task.parameters = parameters;
 
-        if (间隔帧数 === 0) {
-            this.zeroFrameTasks[任务ID] = 任务;
+        if (intervalFrames === 0) {
+            this.zeroFrameTasks[taskID] = task;
         } else {
-            任务.待执行帧数 = 间隔帧数;
-            任务.节点 = this.ScheduleTimer.evaluateAndInsertTask(任务ID, 间隔帧数);
-            this.任务哈希表[任务ID] = 任务;
+            task.pendingFrames = intervalFrames;
+            task.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, intervalFrames);
+            this.taskTable[taskID] = task;
         }
     }
 
-    // 设置卸载回调函数
-    _root.常用工具函数.设置卸载回调(对象, function() {
-        _root.帧计时器.移除任务(任务ID);
-        delete this.任务标识[标签名];
+    // 设置卸载回调
+    _root.常用工具函数.设置卸载回调(obj, function() {
+        _root.帧计时器.移除任务(taskID);
+        delete this.任务标识[labelName];
     });
 
-    return 任务ID;
+    return taskID;
+};
+
+_root.帧计时器.定位任务 = function(taskID:Number):Task {  
+    return this.taskTable[taskID] || this.zeroFrameTasks[taskID] || null;
 };
 
 
+_root.帧计时器.延迟执行任务 = function(taskID:Number, delayTime):Boolean {  
+    var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
 
-
-_root.帧计时器.定位任务 = function(任务ID)
-{  
-    return this.任务哈希表[任务ID] || this.zeroFrameTasks[任务ID] || null;
-};
-
-
-
-_root.帧计时器.延迟执行任务 = function(任务ID, 延迟时间) 
-{  
-    var 任务 = this.任务哈希表[任务ID] || this.zeroFrameTasks[任务ID];
-
-    if (任务) 
-    {  
-        var 延迟帧数;
-        if (isNaN(延迟时间))
-        {
-            任务.待执行帧数 = 延迟时间 === true ? Infinity : 任务.间隔帧数;
-        }
-        else
-        {
-            延迟帧数 = Math.ceil(延迟时间 * this.毫秒每帧);
-            任务.待执行帧数 += 延迟帧数;
-        }
-
-        if (任务.待执行帧数 <= 0) {
-            // Should be a zero-frame task
-            if (this.任务哈希表[任务ID]) {
-                // Move to zeroFrameTasks
-                this.ScheduleTimer.removeTaskByNode(任务.节点);
-                delete 任务.节点;
-                delete this.任务哈希表[任务ID];
-                this.zeroFrameTasks[任务ID] = 任务;
-            }
-            // Else, already in zeroFrameTasks
+    if (task) {  
+        var delayFrames:Number;
+        if (isNaN(delayTime)) {
+            // 当 delayTime 非数字时，根据传入是否为 true 判断
+            task.pendingFrames = (delayTime === true) ? Infinity : task.intervalFrames;
         } else {
-            // Should be in ScheduleTimer
-            if (this.zeroFrameTasks[任务ID]) {
-                // Move to 任务哈希表 and schedule
-                delete this.zeroFrameTasks[任务ID];
-                任务.节点 = this.ScheduleTimer.evaluateAndInsertTask(任务ID, 任务.待执行帧数);
-                this.任务哈希表[任务ID] = 任务;
+            delayFrames = Math.ceil(delayTime * this.毫秒每帧);
+            task.pendingFrames += delayFrames;
+        }
+
+        if (task.pendingFrames <= 0) {
+            // 应该是零帧任务
+            if (this.taskTable[taskID]) {
+                // 从调度队列中移除任务，转移到 zeroFrameTasks
+                this.ScheduleTimer.removeTaskByNode(task.node);
+                delete task.node;
+                delete this.taskTable[taskID];
+                this.zeroFrameTasks[taskID] = task;
+            }
+        } else {
+            // 应在 ScheduleTimer 中调度
+            if (this.zeroFrameTasks[taskID]) {
+                // 从零帧任务移至taskTable并重新调度
+                delete this.zeroFrameTasks[taskID];
+                task.node = this.ScheduleTimer.evaluateAndInsertTask(taskID, task.pendingFrames);
+                this.taskTable[taskID] = task;
             } else {
-                // Reschedule in ScheduleTimer
-                this.ScheduleTimer.rescheduleTaskByNode(任务.节点, 任务.待执行帧数);
+                // 任务已在调度队列中，重新调度
+                this.ScheduleTimer.rescheduleTaskByNode(task.node, task.pendingFrames);
             }
         }
 
-        return true; // Delay set successfully
+        return true; // 延迟设置成功
     }  
-    return false; // Task not found, delay set failed
+    return false; // 未找到任务，延迟设置失败
 };
+
 
 EventBus.getInstance().subscribe("SceneChanged", StaticInitializer.onSceneChanged, StaticInitializer); 
 

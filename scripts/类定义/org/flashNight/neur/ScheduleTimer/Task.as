@@ -89,7 +89,7 @@ class org.flashNight.neur.ScheduleTimer.Task {
     public function Task(id:Number, intervalFrames:Number, repeatCount) {
         this.id = id;
         this.intervalFrames = intervalFrames;
-        // 处理默认参数逻辑（对应原始代码中的 repeatCount === undefined 判断）
-        this.repeatCount = (repeatCount === undefined) ? 1 : repeatCount;
+        // 使用双等号同时处理 undefined 和 null
+        this.repeatCount = (repeatCount == null) ? 1 : repeatCount;
     }
 }
