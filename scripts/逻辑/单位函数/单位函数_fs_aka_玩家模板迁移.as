@@ -189,6 +189,13 @@ _root.刷新人物装扮 = function(目标){
 	var 目标人物 = _root.gameworld[目标];
 
 	StaticInitializer.initializeUnit(目标人物);
+	_root.发布消息(目标人物.新版人物文字信息 + " || " + 目标人物.人物文字信息);
+	if(!目标人物.新版人物文字信息){
+		目标人物.新版人物文字信息 = 目标人物.人物文字信息;	
+		目标人物.新版人物文字信息._name = "新版人物文字信息";
+		目标人物.人物文字信息 = null;
+	}
+
 
 	var 是主角:Boolean = false;
 	var 头部装备:String;

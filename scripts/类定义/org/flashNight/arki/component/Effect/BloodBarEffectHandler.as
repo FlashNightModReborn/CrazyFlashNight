@@ -24,26 +24,24 @@ class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
      * @param state 血条状态，例如 "常态"
      */
     public static function updateStatus(hitTarget:MovieClip, state:String):Void {
-        var bar:MovieClip;
         var state:String = hitTarget.barColorState;
-        
-        // 根据是否存在新版人物文字信息选择对应的血条
-        if (hitTarget.新版人物文字信息 != undefined) {
-            bar = hitTarget.新版人物文字信息.头顶血槽;
-        } else {
-            bar = hitTarget.人物文字信息.头顶血槽;
-        }
+        var hpBar:MovieClip = hitTarget.新版人物文字信息.头顶血槽;
+        var hpBarBottom:MovieClip = hpBar.血槽底;
+        var bloodBarLength:Number = hpBarBottom._width;
         // 显示并播放血条动画
-        bar._visible = true;
-        bar.gotoAndPlay(2);
+        hpBar._visible = true;
+        hpBar.gotoAndPlay(2);
       
         // 根据状态更新血条颜色（表驱动方式）
         if (colorActions[state] != undefined) {
-            colorActions[state](bar);
+            colorActions[state](hpBar);
         } else {
-            colorActions["default"](bar);
+            colorActions["default"](hpBar);
         }
 
-        InformationComponentUpdater.update(hitTarget);
+        // 计算实际血槽条的宽度
+        var actualHpWidth:Number = hitTarget.hp / hitTarget.hp满血值 * bloodBarLength;
+        hpBar.血槽条._width = actualHpWidth;
+        hitTarget.hpUnchangedCounter = 0;
     }
 }

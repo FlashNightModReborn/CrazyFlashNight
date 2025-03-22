@@ -16,12 +16,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
         var actualHpWidth:Number = target.hp / target.hp满血值 * bloodBarLength;
         hpBar.血槽条._width = actualHpWidth;
 
-        // 新增：检测连续更新时实际血槽宽度是否未发生变化
-        if (actualHpWidth == target.previousActualHpWidth) {
-            target.hpUnchangedCounter++;
-        } else {
-            target.hpUnchangedCounter = 0;
-        }
+        target.hpUnchangedCounter++;
 
         target.previousActualHpWidth = actualHpWidth;
 
