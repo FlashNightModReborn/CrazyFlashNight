@@ -4018,4 +4018,41 @@
       <defence>0</defence>
     </equipped>
   </item>
+  <item>
+    <id>8047</id>
+    <name>折叠小刀</name>
+    <displayname>折叠小刀</displayname>
+    <icon>周波匕首</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>短兵</actiontype>
+    <weight>0</weight>
+    <price>2000</price>
+    <description>一种常见于审判日前社会混混手里的武器，但在审判日后是人人都会需要的救命工具。</description>
+    <level>1</level>
+    <data>
+      <power>10</power>
+    </data>
+    <equipped>
+      <dressup>刀-周波匕首</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>8048</id>
+    <name>板砖</name>
+    <displayname>板砖</displayname>
+    <icon>周波匕首</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <weight>2</weight>
+    <price>500</price>
+    <description>没什么好说的，就是一块板砖。</description>
+    <level>1</level>
+    <data>
+      <power>20</power>
+    </data>
+    <equipped>
+      <dressup>刀-周波匕首</dressup>
+    </equipped>
+  </item>
 </root>
