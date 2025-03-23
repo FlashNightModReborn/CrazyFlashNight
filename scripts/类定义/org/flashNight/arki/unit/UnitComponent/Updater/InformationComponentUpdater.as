@@ -12,41 +12,50 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
         var bloodBarX:Number = hpBarBottom._x;
         var bloodBarLength:Number = hpBarBottom._width;
 
-        // 计算实际血槽条的宽度
+        target.hpUnchangedCounter++;
+
+        // 计算实际血槽宽度
         var actualHpWidth:Number = target.hp / target.hp满血值 * bloodBarLength;
         hpBar.血槽条._width = actualHpWidth;
 
-        target.hpUnchangedCounter++;
-
-        target.previousActualHpWidth = actualHpWidth;
-
-        // 根据连续未变化的次数调整更新速度
-        // 游戏帧率：30帧/秒，update每4帧执行一次 => 每秒7.5次update
-        // 每次update间隔：4/30 ≈ 0.1333秒
-
-        // 设置衰减开始条件：target.hpUnchangedCounter >= 15
-        // 15次update ≈ 15 * 0.1333 ≈ 2秒
-        // 即血量连续2秒未变化后，开始衰减残余血槽条，提供视觉提示
-
-        // 设置衰减速度：currentSpeed = 0.2
-        // 目标：在接下来的3秒内完成衰减（差值衰减到初始差值的1%以下）
-        // 3秒内update次数：3 / 0.1333 ≈ 22.5次，取23次
-        // 衰减公式：(1 - currentSpeed)^23 < 0.01
-        // 解得 currentSpeed > 1 - 0.01^(1/23) ≈ 0.1996
-        // 因此 currentSpeed = 0.2 可确保3秒内衰减完成，总计2+3=5秒，与冲击力衰减时间匹配
-
-        var currentSpeed:Number = (target.hpUnchangedCounter >= 15) ? 0.2 : 0;
-
-        // 更新残余血槽条的宽度
+        // 核心动画逻辑 --------------------------------------------------------
+        var currentCounter:Number = target.hpUnchangedCounter;
         var residualHpWidth:Number = target.residualHpWidth;
-        if (residualHpWidth > actualHpWidth) {
-            residualHpWidth -= (residualHpWidth - actualHpWidth) * currentSpeed;
-            if (residualHpWidth < actualHpWidth) {
-                residualHpWidth = actualHpWidth; // 防止过减
-            }
-        } else {
-            residualHpWidth = actualHpWidth; // 如果血量增加，直接同步
+
+        // 情况1：血量增加时立即同步
+        if (actualHpWidth > residualHpWidth) {
+            residualHpWidth = actualHpWidth;
         }
+        // 情况2：需要衰减且处于动画区间
+        else if (residualHpWidth > actualHpWidth) {
+            // 动画区间：16-39次更新（共24次）
+            if (currentCounter >= 16 && currentCounter <= 39) {
+                // 在动画起点记录初始状态
+                if (currentCounter == 16) {
+                    target._animStartResidual = residualHpWidth;
+                    target._animStartActual = actualHpWidth;
+                }
+                
+                // 计算二次缓出进度（t ∈ [0,1]）
+                var t:Number = (currentCounter - 15) / 24; // 16→0.0417, 39→1.0
+                var progress:Number = t * (2 - t); // 二次缓出公式：t*(2-t)
+
+                // 计算动画插值
+                residualHpWidth = target._animStartResidual - 
+                    (target._animStartResidual - target._animStartActual) * progress;
+                
+                // 精度保护（避免浮点误差）
+                if (residualHpWidth - actualHpWidth < 0.1) {
+                    residualHpWidth = actualHpWidth;
+                }
+            }
+            // 情况3：动画超时强制完成
+            else if (currentCounter > 39) {
+                residualHpWidth = actualHpWidth;
+            }
+        }
+
+        // 更新状态
         target.residualHpWidth = residualHpWidth;
         hpBar.残余血槽条._width = residualHpWidth;
 
