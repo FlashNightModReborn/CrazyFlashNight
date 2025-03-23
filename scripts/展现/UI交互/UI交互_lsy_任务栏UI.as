@@ -151,7 +151,7 @@ _root.任务栏UI函数.显示任务明细 = function(index){
 		}
 	}else{
 		物品需求图标.itemType.text = "提交物品";
-		物品展示框.itemInfo = "无需提交物品";
+		物品需求图标.物品展示框.itemInfo = "无需提交物品";
 		物品需求图标.完成标志._visible = true;
 		物品需求图标.完成标志.gotoAndPlay(1);
 	}
