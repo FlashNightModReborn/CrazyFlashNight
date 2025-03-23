@@ -329,7 +329,7 @@ _root.物品图标注释 = function(name, value){
 
 	var 完整文本 = 文本数据.join('');
 	var 字数 = 完整文本.length;
-	var 每字平均宽度 = 0.06;// 根据实际情况调整
+	var 每字平均宽度 = 0.5;// 根据实际情况调整
 	var 最大宽度 = 500;// 根据实际情况调整
 	var 计算宽度 = Math.max(150, Math.min(字数 * 每字平均宽度, 最大宽度));
 
@@ -380,10 +380,9 @@ _root.学习界面技能图标注释 = function(对应数组号){
 
 
 _root.注释 = function(宽度, 内容){
-	_root.注释框._visible = 1;
+	_root.注释框._visible = true;
 	_root.注释框.文本框.htmlText = 内容;
 	_root.注释框.文本框._width = 宽度;
-
 
 	/*
 	var 宽度增量:Number = _root.注释框.文本框._width * 0.25;
