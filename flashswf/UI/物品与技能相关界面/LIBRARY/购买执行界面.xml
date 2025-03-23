@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1740247712" lastUniqueIdentifier="9">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="购买执行界面" itemID="677cd804-00000291" lastModified="1742721795" lastUniqueIdentifier="9">
   <timeline>
     <DOMTimeline name="购买执行界面">
       <layers>
@@ -167,7 +167,8 @@ function 计算售卖总价(数量)
 	if (this.物品强化度 > 1)
 	{
 		text1 += " + " + this.物品强化度;
-		var 强化加成 = _root.物品UI函数.计算强化收益(this.总价, this.物品强化度);
+		//var 强化加成 = _root.物品UI函数.计算强化收益(this.总价, this.物品强化度);
+		var 强化加成 = _root.物品UI函数.计算强化收益(原总价, this.物品强化度);
 		text3 += "强化加成 " + 强化加成;
 		this.leveltext.htmlText = text3;
 		this.总价 += 强化加成;
