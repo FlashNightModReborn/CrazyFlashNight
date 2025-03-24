@@ -14,6 +14,9 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
 
         target.hpUnchangedCounter++;
 
+        if(target.hpUnchangedCounter > 50) {
+            hpBar._alpha = (75 - target.hpUnchangedCounter) * 4;
+        }
         // 计算实际血槽宽度
         var actualHpWidth:Number = target.hp / target.hp满血值 * bloodBarLength;
         hpBar.血槽条._width = actualHpWidth;
@@ -60,7 +63,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
         hpBar.残余血槽条._width = residualHpWidth;
 
         // 更新韧性条的位置
-        hpBar.韧性条._x = bloodBarX - target.remainingImpactForce / target.韧性上限 * bloodBarLength;
+        hpBar.韧性条._width = bloodBarLength - target.remainingImpactForce / target.韧性上限 * bloodBarLength;
         // 在霸体状态下改变韧性条底部颜色
         hpBar.刚体遮罩._visible = !!(target.刚体 || target.man.刚体标签);
     }
