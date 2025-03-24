@@ -1,6 +1,8 @@
 ﻿// 路径: org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/KillEventComponent.as
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.unit.UnitComponent.Updater.*;
+import org.flashNight.arki.component.StatHandler.*;
+
 
 class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEventComponent {
     /**
