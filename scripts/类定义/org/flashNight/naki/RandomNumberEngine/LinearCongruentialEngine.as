@@ -2,7 +2,7 @@
 
 class org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine extends BaseRandomNumberEngine {
     // 静态单例实例
-    private static var instance:LinearCongruentialEngine;
+    public static var instance:LinearCongruentialEngine;
 
     // 实例变量
     private var a:Number = 1192433993;   // 乘数

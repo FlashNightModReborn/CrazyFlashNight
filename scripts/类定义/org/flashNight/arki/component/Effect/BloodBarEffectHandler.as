@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.unit.UnitComponent.Updater.*;
+import org.flashNight.naki.RandomNumberEngine.*;
 
 class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
   
@@ -25,12 +26,18 @@ class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
      */
     public static function updateStatus(hitTarget:MovieClip, state:String):Void {
         var state:String = hitTarget.barColorState;
-        var hpBar:MovieClip = hitTarget.新版人物文字信息.头顶血槽;
+        var ic:MovieClip = hitTarget.新版人物文字信息;
+        var hpBar:MovieClip = ic.头顶血槽;
         var hpBarBottom:MovieClip = hpBar.血槽底;
         var bloodBarLength:Number = hpBarBottom._width;
         // 显示并播放血条动画
         hpBar._visible = true;
         hpBar.gotoAndPlay(2);
+
+        var seed:Number;
+
+        ic._y += ((seed = LinearCongruentialEngine.instance.next()) % 2 * 0.5) * Math.sin(seed * 0.65), 
+        ic._x += ((seed * 0.5 % 3 << 1) * 0.15 + 0.3) * Math.cos(seed * 0.35 + 1.6);
       
         // 根据状态更新血条颜色（表驱动方式）
         if (colorActions[state] != undefined) {
