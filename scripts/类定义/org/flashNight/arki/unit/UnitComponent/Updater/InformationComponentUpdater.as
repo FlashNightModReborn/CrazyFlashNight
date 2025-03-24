@@ -1,14 +1,16 @@
 ﻿import org.flashNight.neur.Event.*;
+import org.flashNight.arki.component.StatHandler.*;
+import org.flashNight.arki.component.Effect.*;
 
 class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater {
 
     // -------------------
     // 常量定义
     // -------------------
-    private static var ANIM_START:Number = 16;
-    private static var ANIM_END:Number = 37;
-    private static var FADE_OUT_START:Number = 50;
-    private static var FADE_OUT_END:Number   = 75;
+    private static var ANIM_START:Number   = Math.round(2 * 30 / 4);  // 2秒开始 = 15
+    private static var ANIM_END:Number     = Math.round(5 * 30 / 4);  // 5秒结束 = 38
+    private static var FADE_OUT_START:Number = Math.round(7 * 30 / 4);  // 7秒开始 = 53
+    private static var FADE_OUT_END:Number   = Math.round(10 * 30 / 4); // 10秒结束 = 75
 
     /**
      * 当HP发生变化时调用，重置相关计数器与动画起始状态
@@ -60,16 +62,16 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
         // HP 上升则残余血条被遮盖，无需同步
         // HP 下降：在动画区间内做二次缓出插值
         if (residualHpWidth > actualHpWidth) {
-            if (currentCounter >= ANIM_START && currentCounter <= ANIM_END) {
-                var t:Number = (currentCounter - ANIM_START) / (ANIM_END - ANIM_START);
+            if (currentCounter >= InformationComponentUpdater.ANIM_START && currentCounter <= InformationComponentUpdater.ANIM_END) {
+                var t:Number = (currentCounter - InformationComponentUpdater.ANIM_START) / (InformationComponentUpdater.ANIM_END - InformationComponentUpdater.ANIM_START);
                 var progress:Number = t * (2 - t);
                 residualHpWidth = target._animStartResidual - 
                     (target._animStartResidual - target._animStartActual) * progress;
-                if (Math.abs(residualHpWidth - actualHpWidth) < 0.1) {
+                if (Math.abs(residualHpWidth - actualHpWidth) < 5) {
                     residualHpWidth = actualHpWidth;
                 }
             }
-            else if (currentCounter > ANIM_END) {
+            else if (currentCounter > InformationComponentUpdater.ANIM_END) {
                 residualHpWidth = actualHpWidth;
             }
 
@@ -86,7 +88,17 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
         }
 
         // ------------------- 更新韧性与刚体遮罩 -------------------
-        hpBar.韧性条._width = bloodBarLength - (target.remainingImpactForce / target.韧性上限) * bloodBarLength;
+
+        if(target.remainingImpactForce < target.韧性上限 / ImpactHandler.IMPACT_STAGGER_COEFFICIENT / target.躲闪率) {
+            
+            if(target.barColorState != "常态") {
+                target.barColorState = "常态";
+                BloodBarEffectHandler.updateColor(target);
+            }
+        } 
+
+        hpBar.韧性条._width = bloodBarLength * (1 - Math.sqrt(target.remainingImpactForce / target.韧性上限));
+
         hpBar.刚体遮罩._visible = !!(target.刚体 || target.man.刚体标签);
     }
 }

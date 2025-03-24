@@ -24,7 +24,7 @@ class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
      * @param hitTarget 被击对象
      * @param state 血条状态，例如 "常态"
      */
-    public static function updateStatus(hitTarget:MovieClip, state:String):Void {
+    public static function updateStatus(hitTarget:MovieClip):Void {
         var state:String = hitTarget.barColorState;
         var ic:MovieClip = hitTarget.新版人物文字信息;
         var hpBar:MovieClip = ic.头顶血槽;
@@ -38,17 +38,26 @@ class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
 
         ic._y += ((seed = LinearCongruentialEngine.instance.next()) % 2 * 0.5) * Math.sin(seed * 0.65), 
         ic._x += ((seed * 0.5 % 3 << 1) * 0.15 + 0.3) * Math.cos(seed * 0.35 + 1.6);
-      
-        // 根据状态更新血条颜色（表驱动方式）
-        if (colorActions[state] != undefined) {
-            colorActions[state](hpBar);
-        } else {
-            colorActions["default"](hpBar);
-        }
 
         // 计算实际血槽条的宽度
         var actualHpWidth:Number = hitTarget.hp / hitTarget.hp满血值 * bloodBarLength;
         hpBar.血槽条._width = actualHpWidth;
         hitTarget.hpUnchangedCounter = 0;
+    }
+
+    public static function updateColor(hitTarget:MovieClip):Void
+    {
+        var state:String = hitTarget.barColorState;
+        var ic:MovieClip = hitTarget.新版人物文字信息;
+        var hpBar:MovieClip = ic.头顶血槽;
+
+        var action:Function = colorActions[state];
+      
+        // 根据状态更新血条颜色（表驱动方式）
+        if (action != undefined) {
+            action(hpBar);
+        } else {
+            colorActions["default"](hpBar);
+        }
     }
 }

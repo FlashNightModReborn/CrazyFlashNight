@@ -113,6 +113,7 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
         // 获取当前帧数
         var currentFrame:Number = _root.帧计时器.当前帧数;
         var intervalFrames:Number = currentFrame - target.lastHitTime;
+        target.韧性上限 = target.韧性系数 * target.hp / DamageResistanceHandler.defenseDamageRatio(target.防御力);
 
         // 当间隔超过衰减起始帧数时，开始计算衰减
         if (intervalFrames > IMPACT_DECAY_FRAME) {
