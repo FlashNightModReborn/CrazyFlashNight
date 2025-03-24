@@ -97,7 +97,11 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
             }
         } 
 
-        hpBar.韧性条._width = bloodBarLength * (1 - Math.sqrt(target.remainingImpactForce / target.韧性上限));
+        var w:Number = 0;
+        if(!(target.浮空 || target.倒地)) {
+            w = bloodBarLength * target.nonlinearMappingResilience;
+        }
+        hpBar.韧性条._width = w;
 
         hpBar.刚体遮罩._visible = !!(target.刚体 || target.man.刚体标签);
     }

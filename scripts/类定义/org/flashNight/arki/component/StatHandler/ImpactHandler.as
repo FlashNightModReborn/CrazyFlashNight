@@ -71,7 +71,7 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
         var currentFrame:Number = _root.帧计时器.当前帧数;
 
         // 计算韧性上限：考虑生命值、韧性系数及防御力影响
-        target.韧性上限 = target.韧性系数 * target.hp / DamageResistanceHandler.defenseDamageRatio(target.防御力);
+        // target.韧性上限 = target.韧性系数 * target.hp / DamageResistanceHandler.defenseDamageRatio(target.防御力);
 
         // 计算自上次受击以来的帧数间隔
         var intervalFrames:Number = currentFrame - target.lastHitTime;
@@ -114,6 +114,8 @@ class org.flashNight.arki.component.StatHandler.ImpactHandler {
         var currentFrame:Number = _root.帧计时器.当前帧数;
         var intervalFrames:Number = currentFrame - target.lastHitTime;
         target.韧性上限 = target.韧性系数 * target.hp / DamageResistanceHandler.defenseDamageRatio(target.防御力);
+        target.nonlinearMappingResilience = (1 - Math.sqrt(target.remainingImpactForce / target.韧性上限));
+
 
         // 当间隔超过衰减起始帧数时，开始计算衰减
         if (intervalFrames > IMPACT_DECAY_FRAME) {
