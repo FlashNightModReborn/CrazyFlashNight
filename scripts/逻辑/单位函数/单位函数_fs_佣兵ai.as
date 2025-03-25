@@ -1,4 +1,6 @@
-﻿_root.佣兵思考时间间隔 = 1.5 * _root.帧计时器.帧率;
+﻿import org.flashNight.naki.RandomNumberEngine.*;
+
+_root.佣兵思考时间间隔 = 1.5 * _root.帧计时器.帧率;
 
 
 _root.主角模板ai函数 = new Object();
@@ -231,33 +233,44 @@ _root.主角模板ai函数.技能攻击 = function()
 };
 
 
-_root.主角模板ai函数.根据等级取得随机技能 = function()
- {
-    var 当前时间 = getTimer();
-    var 攻击者X = _parent._x;
-    var 被攻击者X = _root.gameworld[_parent.攻击目标]._x;
-    var 随机技能 = null;
+_root.主角模板ai函数.根据等级取得随机技能 = function() {
+    var 当前时间:Number = getTimer();
+    var 当前角色 = _parent;
+    var 攻击目标 = 当前角色.攻击目标;
+    var 游戏世界 = _root.gameworld;
+    
+    // 防御性检查
+    if (!游戏世界[攻击目标] || !游戏世界[攻击目标]._x) return null;
 
-    _root.常用工具函数.洗牌(_parent.已学技能表);
-    
-    // 遍历重排序后的已学技能表
-    for (var i = 0; i < _parent.已学技能表.length; i++) {
-        var 临时技能 = _parent.已学技能表[i];
-        if (!临时技能) {
-            break; // 如果没有技能可选，跳出循环
+    // 预先计算关键参数
+    var 攻击者X:Number = 当前角色._x;
+    var 被攻击者X:Number = 游戏世界[攻击目标]._x;
+    var X轴距离:Number = Math.abs(攻击者X - 被攻击者X);
+
+    // 使用新抽样方法
+    var 候选技能池:Array = LinearCongruentialEngine.getInstance().reservoirSampleWithFilter(
+        当前角色.已学技能表,
+        1, // 只需1个技能
+        function(技能:Object):Boolean {
+            // 过滤条件函数封装
+            var 距离有效:Boolean = (X轴距离 >= 技能.距离min && X轴距离 <= 技能.距离max);
+            var 冷却就绪:Boolean = (isNaN(技能.上次使用时间) || 
+                (当前时间 - 技能.上次使用时间 > 技能.冷却 * 1000));
+            return 距离有效 && 冷却就绪;
         }
-        var X轴距离 = Math.abs(攻击者X - 被攻击者X);
-        if (X轴距离 >= 临时技能.距离min and X轴距离 <= 临时技能.距离max and (isNaN(临时技能.上次使用时间) or 当前时间 - 临时技能.上次使用时间 > 临时技能.冷却 * 1000)) 
-		{
-            随机技能 = 临时技能; // 找到符合条件的技能，更新随机技能变量
-            _parent.技能等级 = 随机技能.技能等级;
-            随机技能.上次使用时间 = 当前时间;
-            break; // 找到符合条件的技能，跳出循环
-        }
+    );
+
+    // 处理抽样结果
+    if (候选技能池.length > 0) {
+        var 选中技能:Object = 候选技能池[0];
+        当前角色.技能等级 = 选中技能.技能等级;
+        选中技能.上次使用时间 = 当前时间;
+        return 选中技能.技能名;
     }
-    
-    return 随机技能 ? 随机技能.技能名 : null;
+    return null;
 };
+
+
 
 
 

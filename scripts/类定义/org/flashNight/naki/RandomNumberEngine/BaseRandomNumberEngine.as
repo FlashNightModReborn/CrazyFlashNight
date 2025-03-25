@@ -135,6 +135,42 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         }
     }
 
+    /**
+     * 从流中随机选择 k 个样本，并对每个被选中的样本执行传入的函数
+     * @param stream: 数据流数组
+     * @param k: 选择样本数量
+     * @param filterFunc: 传入的处理函数，接收当前样本
+     * @return 返回最终的样本数组
+     */
+
+    public function reservoirSampleWithFilter(
+        stream:Array,       // 数据流
+        k:Number,           // 需要抽取的样本数
+        filterFunc:Function // 条件过滤函数(element:Object)->Boolean
+    ):Array {
+        var reservoir:Array = [];
+        var matchCount:Number = 0;
+
+        for (var i:Number = 0; i < stream.length; i++) {
+            var element = stream[i];
+            // 执行过滤函数判断是否纳入抽样池
+            if (filterFunc(element)) {
+                matchCount++;
+                // 水塘抽样核心逻辑
+                if (matchCount <= k) {
+                    reservoir.push(element);
+                } else {
+                    var j:Number = this.randomInteger(0, matchCount - 1);
+                    if (j < k) {
+                        reservoir[j] = element;
+                    }
+                }
+            }
+        }
+        return reservoir.slice(0, k); // 确保返回长度不超过k
+    }
+
+
     // 根据权重从数组中随机选择一个元素
     // @param array: 待选数组
     // @param weights: 权重数组
