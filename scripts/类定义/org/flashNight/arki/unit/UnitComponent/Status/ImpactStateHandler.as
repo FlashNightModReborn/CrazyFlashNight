@@ -42,7 +42,7 @@ class org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler {
                 }
                 hitTarget.remainingImpactForce = 0;
                 hitTarget.被击移动(hitDirection, bullet.水平击退速度, 0.5);
-            } else if (hitTarget.remainingImpactForce > hitTarget.韧性上限 / ImpactHandler.IMPACT_STAGGER_COEFFICIENT / hitTarget.躲闪率) {
+            } else if (hitTarget.remainingImpactForce > hitTarget.impactStaggerBoundary) {
                 // 冲击力处于中间范围，如非刚体则设为被击状态
                 if (!isRigid) {
                     hitTarget.状态改变("被击");
