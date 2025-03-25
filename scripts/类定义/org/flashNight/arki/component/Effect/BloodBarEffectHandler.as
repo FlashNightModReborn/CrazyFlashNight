@@ -11,10 +11,10 @@ class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
     private static function initActions():Object {
         var obj:Object = {};
         obj["常态"] = function(bar:MovieClip):Void {
-            ColorEffects.resetColor(bar);
+            ColorEffects.resetColorReuse(bar);
         };
         obj["default"] = function(bar:MovieClip):Void {
-            ColorEffects.darkenColor(bar);
+            ColorEffects.darkenColorReuse(bar);
         };
         return obj;
     }
@@ -43,13 +43,14 @@ class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
 
         // 计算实际血槽条的宽度
         var actualHpWidth:Number = hitTarget.hp / hitTarget.hp满血值 * bloodBarLength;
-        hpBar.血槽条._width = actualHpWidth;
+        var hpBarGreen:MovieClip = hpBar.血槽条;
+        hpBarGreen._width = actualHpWidth;
 
         if (hitTarget.hpUnchangedCounter != 0) {
             hitTarget.hpUnchangedCounter = 0;
             // 使用 ColorEffects 的亮化色彩方法
             // 随机亮化强度由 _root.随机整数(25,75) 生成
-            ColorEffects.lightenColor(hpBar, _root.随机整数(25,75));
+            ColorEffects.lightenColorReuseRandom(hpBarGreen);
         }
     }
 
@@ -61,14 +62,15 @@ class org.flashNight.arki.component.Effect.BloodBarEffectHandler {
         var state:String = hitTarget.barColorState;
         var ic:MovieClip = hitTarget.新版人物文字信息;
         var hpBar:MovieClip = ic.头顶血槽;
+        var hpBarGreen:MovieClip = hpBar.血槽条;
 
         var action:Function = colorActions[state];
       
         // 根据状态更新血条颜色（表驱动方式）
         if (action != undefined) {
-            action(hpBar);
+            action(hpBarGreen);
         } else {
-            colorActions["default"](hpBar);
+            colorActions["default"](hpBarGreen);
         }
     }
 }

@@ -45,6 +45,8 @@ class org.flashNight.arki.component.Effect.ColorEffects {
         var newGreenOff:Number = (isNaN(gOff)) ? ct.greenOffset : gOff;
         var newBlueOff:Number  = (isNaN(bOff)) ? ct.blueOffset : bOff;
         var newAlphaOff:Number = (isNaN(alphaOff)) ? ct.alphaOffset : alphaOff;
+
+        /*
         
         // 性能优化：若所有新值与当前值一致，则直接返回，避免重复赋值
         if (ct.redMultiplier   == newRedMul &&
@@ -57,6 +59,8 @@ class org.flashNight.arki.component.Effect.ColorEffects {
             ct.alphaOffset     == newAlphaOff) {
             return;
         }
+
+        */
         
         // 更新色彩变换对象的各属性
         ct.redMultiplier   = newRedMul;
@@ -149,5 +153,91 @@ class org.flashNight.arki.component.Effect.ColorEffects {
     public static function alphaColor(target:MovieClip, alphaIntensity:Number):Void {
         if (isNaN(alphaIntensity)) alphaIntensity = 75;
         setColor(target, NaN, NaN, NaN, NaN, NaN, NaN, NaN, -alphaIntensity);
+    }
+
+    //========================================================
+    // 2) 复用固定 ColorTransform 对象的方法（性能优化）
+    //
+    //   - 适用于「该 MovieClip 尚未设置任何自定义 transform」的情况。
+    //   - 所有强度参数写死为默认值，以实现“直接赋值静态对象”。
+    //   - 若需要变动强度，依旧需要使用上方 setColor(...) 等方法。
+    //========================================================
+
+    // 预定义若干静态的 ColorTransform，对应常用效果
+    private static var _IDENTITY_CT:ColorTransform   = new ColorTransform(1, 1, 1, 1,   0,   0,   0,   0);  // 重置/默认
+    private static var _HIT_CT:ColorTransform        = new ColorTransform(1, 1, 1, 1, -10, -40, -40,   0);  // 受击
+    private static var _RED_75_CT:ColorTransform     = new ColorTransform(1, 1, 1, 1,   0, -75, -75,   0);  // 红化(默认强度75)
+    private static var _LIGHTEN_75_CT:ColorTransform = new ColorTransform(1, 1, 1, 1,  75,  75,  75,   0);  // 亮化(默认75)
+    private static var _LIGHTEN_50_CT:ColorTransform = new ColorTransform(1, 1, 1, 1,  50,  50,  50,   0);  // 亮化(默认50)
+    private static var _LIGHTEN_25_CT:ColorTransform = new ColorTransform(1, 1, 1, 1,  25,  25,  25,   0);  // 亮化(默认25)
+    private static var _DARKEN_75_CT:ColorTransform  = new ColorTransform(1, 1, 1, 1, -75, -75, -75,   0);  // 暗化(默认75)
+    private static var _ALPHA_75_CT:ColorTransform   = new ColorTransform(1, 1, 1, 1,   0,   0,   0, -75);  // 透明(默认75)
+
+
+    /**
+     * resetColorReuse
+     * 重置色彩的复用对象版本：直接给目标赋 _IDENTITY_CT
+     */
+    public static function resetColorReuse(target:MovieClip):Void {
+        // 假设目标尚未自定义 transform，可以直接赋值
+        target.transform.colorTransform = _IDENTITY_CT;
+    }
+
+    /**
+     * resetAlphaReuse
+     * 重置透明度的复用对象版本：
+     * 由于 alpha=1 offset=0 与原始是同一个 IDENTITY_CT，所以可与 resetColorReuse 相同
+     */
+    public static function resetAlphaReuse(target:MovieClip):Void {
+        // 同样使用 _IDENTITY_CT，因为它本身 alphaMultiplier=1, alphaOffset=0
+        target.transform.colorTransform = _IDENTITY_CT;
+    }
+
+    /**
+     * redEffectReuse
+     * 红化色彩（固定强度 75）版本：直接赋 _RED_75_CT
+     */
+    public static function redEffectReuse(target:MovieClip):Void {
+        target.transform.colorTransform = _RED_75_CT;
+    }
+
+    /**
+     * hitEffectReuse
+     * 受击色彩（固定 -10,-40,-40）版本：直接赋 _HIT_CT
+     */
+    public static function hitEffectReuse(target:MovieClip):Void {
+        target.transform.colorTransform = _HIT_CT;
+    }
+
+    /**
+     * lightenColorReuse
+     * 亮化（固定强度 75）版本：直接赋 _LIGHTEN_75_CT
+     */
+    public static function lightenColorReuse(target:MovieClip):Void {
+        target.transform.colorTransform = _LIGHTEN_75_CT;
+    }
+
+    /**
+     * lightenColorReuse
+     * 亮化（随机固定强度 75 50 25）版本：直接赋 _LIGHTEN_75_CT
+     */
+    public static function lightenColorReuseRandom(target:MovieClip):Void {
+        target.transform.colorTransform = ColorEffects["_LIGHTEN_" + (25 * (3 - random(3))) + "_CT"];
+    }
+
+    /**
+     * darkenColorReuse
+     * 暗化（固定强度 75）版本：直接赋 _DARKEN_75_CT
+     */
+    public static function darkenColorReuse(target:MovieClip):Void {
+        target.transform.colorTransform = _DARKEN_75_CT;
+    }
+
+    /**
+     * alphaColorReuse
+     * 透明色彩（固定强度 75）版本：直接赋 _ALPHA_75_CT
+     */
+    public static function alphaColorReuse(target:MovieClip):Void {
+        target.transform.colorTransform = _ALPHA_75_CT;
     }
 }
