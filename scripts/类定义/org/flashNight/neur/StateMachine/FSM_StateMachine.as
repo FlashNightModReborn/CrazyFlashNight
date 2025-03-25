@@ -1,8 +1,8 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
-import org.flashNight.neur.StateMachine.Machine;
+import org.flashNight.neur.StateMachine.IMachine;
 import org.flashNight.neur.StateMachine.Transitions;
 
-class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status implements Machine{
+class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status implements IMachine{
     private var statusDict:Object; // 状态列表
     private var statusCount:Number; // 状态总数
     private var activeState:FSM_Status; // 当前状态

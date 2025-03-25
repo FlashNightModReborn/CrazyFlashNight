@@ -1,7 +1,7 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
 
-class org.flashNight.neur.StateMachine.FSM_Enemy extends FSM_StateMachine{
+class org.flashNight.arki.StateMaunitchine.UnitAI.UnitAI extends FSM_StateMachine{
 
     public var interval:Number = 4; // 每4帧一次action
     public var idle_time:Number = 16; // 停止状态持续17次action（即68帧）
@@ -16,7 +16,7 @@ class org.flashNight.neur.StateMachine.FSM_Enemy extends FSM_StateMachine{
         this.AddStatus("攻击",new FSM_Status(this.attack, null, null));
         this.AddStatus("跟随",new FSM_Status(this.follow, this.follow_enter, null));
         this.AddStatus("停止",new FSM_Status(null, this.idle_enter, null));
-        this.AddStatus("随机移动",new FSM_Status(null, this.wander_enter,n ull));
+        this.AddStatus("随机移动",new FSM_Status(null, this.wander_enter,null));
         this.AddStatus("暂停",new FSM_Status(null, null, null));
 
         //过渡线
@@ -123,14 +123,12 @@ class org.flashNight.neur.StateMachine.FSM_Enemy extends FSM_StateMachine{
             self.右行 = false;
             self.上行 = false;
             self.下行 = false;
-            if (data.diff_x < 0)
-            {
+            if (data.diff_x < 0){
                 var face = self.left ? "左" : "右";
                 self.方向改变(face);
             }
             self.状态改变(self.攻击模式 + "攻击");
-            if (data.target.hp <= 0)
-            {
+            if (data.target.hp <= 0){
                 self.攻击目标 = "无";
             }
         }else if(this.superMachine.actionCount % 2 == 0){
@@ -156,25 +154,18 @@ class org.flashNight.neur.StateMachine.FSM_Enemy extends FSM_StateMachine{
         var X距离 = random(300) - 100;
         var Y距离 = 50;
         var X目标 = data.player._x;
-        if (Math.abs(data.x - X目标) > X距离)
-        {
+        if (Math.abs(data.x - X目标) > X距离){
             var Y目标 = _root.Ymin + random(_root.Ymax - _root.Ymin);
             self.左行 = data.x > X目标;
             self.右行 = data.x < X目标;
-        }
-        else
-        {
+        }else{
             self.左行 = false;
             self.右行 = false;
             // 在跟随范围内 = true;
-        }
-        if (Math.abs(data.z - Y目标) > Y距离)
-        {
+        }if (Math.abs(data.z - Y目标) > Y距离){
             self.上行 = data.z > Y目标;
             self.下行 = data.z < Y目标;
-        }
-        else
-        {
+        }else{
             self.上行 = false;
             self.下行 = false;
         }

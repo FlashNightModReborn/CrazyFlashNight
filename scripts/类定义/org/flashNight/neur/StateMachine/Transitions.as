@@ -28,7 +28,7 @@ class org.flashNight.neur.StateMachine.Transitions {
         for(var i:Number = 0; i < list.length; i++){
             var transition = list[i];
             if(!transition.active) continue;
-            if(transition.func.call(status) == true){
+            if(transition.func.call(status) === true){
                 return transition.target;
             }
         }

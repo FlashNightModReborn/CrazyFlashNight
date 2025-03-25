@@ -235,3 +235,10 @@ _root.初始化敌人ai = function(){
 	this.寻找攻击目标 = _root.敌人ai函数.寻找攻击目标;
 	this.随机移动 = _root.敌人ai函数.随机移动;
 }
+
+/*
+_root.初始化思考标签 = function(){
+	this._name = "思考标签";
+	this.stop();
+}
+*/

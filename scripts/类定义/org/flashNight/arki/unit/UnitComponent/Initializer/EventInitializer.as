@@ -14,8 +14,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
         // 初始化死亡事件组件
         KillEventComponent.initialize(target);
         DeathEventComponent.initialize(target);
-
+        // 初始化血量相关事件组件
         HPEventComponent.initialize(target);
+        // 初始化敌人ai组件
 
         UpdateEventComponent.initialize(target);
     }

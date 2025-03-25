@@ -410,6 +410,7 @@ _root.敌人函数.初始化单位 = function(target){
 }
 
 
+/*
 _root.初始化可操控敌人模板 = function()
 {
 	this.循环切换攻击模式 = _root.主角函数.循环切换攻击模式;
@@ -591,6 +592,7 @@ _root.初始化可操控敌人模板 = function()
 	方向改变(方向);
 	gotoAndStop(状态);
 };
+*/
 
 //#change:主角-牛仔
 

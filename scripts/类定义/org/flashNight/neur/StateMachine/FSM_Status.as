@@ -1,10 +1,10 @@
-﻿import org.flashNight.neur.StateMachine.Status;
-import org.flashNight.neur.StateMachine.Machine;
+﻿import org.flashNight.neur.StateMachine.IStatus;
+import org.flashNight.neur.StateMachine.IMachine;
 import org.flashNight.neur.StateMachine.Transitions;
 
-class org.flashNight.neur.StateMachine.FSM_Status implements Status {
+class org.flashNight.neur.StateMachine.FSM_Status implements IStatus {
 	public var name:String; // 状态名称
-    public var superMachine:Machine; // 上级状态机
+    public var superMachine:IMachine; // 上级状态机
     public var active:Boolean; // 该状态是否激活
     public var data:Object; // 数据黑板
     public var transitions:Transitions; // 过渡线
