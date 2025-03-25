@@ -1,0 +1,180 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="特效素材/打击伤害数字" itemID="656983a5-000002a1" linkageExportForAS="true" linkageIdentifier="打击伤害数字" lastModified="1706446521">
+  <timeline>
+    <DOMTimeline name="打击伤害数字" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#B93CFD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+
+switch (控制字符串)
+{
+	case "初始化子弹" :
+		this._visible = false;// 初始化时不显示
+		this.stop();
+		break;
+	/*case "数字特效2" :
+		_root.敌方打击伤害数字色彩(this);
+	case "数字特效1" :*/
+
+	default :
+		this.play();
+}
+//_root.发布调试消息(控制字符串 + "：" + 数字);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[//播放完毕后隐藏回到可用数字池
+this._visible = false;
+this.stop();
+_root.gameworld.可用数字池.push(this);
+_root.当前打击数字特效总数 -= 1;
+//_root.发布调试消息("回收，特效总数: " + _root.当前打击数字特效总数 + "可用容量: " + _root.gameworld.可用数字池.length);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2 (depth 1)" color="#9B42CE" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMDynamicText selected="true" fontRenderingMode="device" width="229" height="39.45" variableName="数字">
+                  <matrix>
+                    <Matrix a="1.31759643554688" d="1.31759643554688" tx="-241.65" ty="-136"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>12234</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" rotation="true" size="28" bitmapSize="560" face="Arial-Black" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="229" height="39.45" variableName="数字">
+                  <matrix>
+                    <Matrix a="1.06866455078125" d="1.06866455078125" tx="-196" ty="-131.1"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>12234</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" rotation="true" size="28" bitmapSize="560" face="Arial-Black" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="229" height="39.45" variableName="数字">
+                  <matrix>
+                    <Matrix tx="-183.4" ty="-129.75"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>12234</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" rotation="true" size="28" bitmapSize="560" face="Arial-Black" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="3" blurY="3" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="229" height="39.45" variableName="数字">
+                  <matrix>
+                    <Matrix a="0.9290771484375" d="0.9290771484375" tx="-170.4" ty="-135.85"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>12234</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" rotation="true" size="28" bitmapSize="560" face="Arial-Black" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="229" height="39.45" variableName="数字">
+                  <matrix>
+                    <Matrix a="0.90557861328125" d="0.90557861328125" tx="-166.1" ty="-137.9"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>12234</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" rotation="true" size="28" bitmapSize="560" face="Arial-Black" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="2" blurY="2" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMDynamicText fontRenderingMode="device" width="229" height="39.45" variableName="数字">
+                  <matrix>
+                    <Matrix a="0.3280029296875" d="0.3280029296875" tx="-88.7" ty="-136.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="114.5" y="19.65"/>
+                  </transformationPoint>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>12234</characters>
+                      <textAttrs>
+                        <DOMTextAttrs alignment="center" aliasText="false" rotation="true" size="28" bitmapSize="560" face="Arial-Black" fillColor="#FFCC00"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                  <filters>
+                    <GlowFilter blurX="1" blurY="1" color="#000000" strength="10"/>
+                  </filters>
+                </DOMDynamicText>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,72 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="龙破军霜/刀-龙破军霜" itemID="65f704da-0000226e" linkageExportForAS="true" linkageIdentifier="刀-龙破军霜" lastModified="1721580528">
+  <timeline>
+    <DOMTimeline name="刀-龙破军霜">
+      <layers>
+        <DOMLayer name="Layer 1" color="#7956D9" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龙破军霜/Symbol 13" name="刀口位置3" centerPoint3DX="-8.75" centerPoint3DY="305.25">
+                  <matrix>
+                    <Matrix a="2.16000366210938" d="4.06199645996094" tx="-21.25" ty="292.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7E5BE6" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龙破军霜/Symbol 13" name="刀口位置2" centerPoint3DX="-13.75" centerPoint3DY="233.75">
+                  <matrix>
+                    <Matrix a="1.94100952148438" d="2.8590087890625" tx="-26.25" ty="221.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#6ED3A7" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龙破军霜/Symbol 13" name="刀口位置1" centerPoint3DX="-12.75" centerPoint3DY="121.25">
+                  <matrix>
+                    <Matrix a="1.5" d="4.50120544433594" tx="-25.25" ty="108.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A4A95F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="龙破军霜/龙破军霜" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

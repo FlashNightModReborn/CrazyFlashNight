@@ -1,0 +1,89 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="炎魔斩/炎魔斩 new/图标-炎魔斩new" itemID="6559f07d-00000891" linkageExportForAS="true" linkageIdentifier="图标-炎魔斩new" lastModified="1731792469" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="图标-炎魔斩new" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;-23&lt;/guideline&gt;&lt;guideline direction="v"&gt;55&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Action Layer" color="#FFFF00" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <Actionscript>
+                <script><![CDATA[stop ();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Mask Layer 2" color="#FFFF00" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/未命名文件夹 1/shape 85" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Masked Layer 3 - 2" color="#FFFF00" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩 new/炎魔斩 new" centerPoint3DX="7.3" centerPoint3DY="-4.5">
+                  <matrix>
+                    <Matrix a="0.098480224609375" b="-0.098480224609375" c="0.098480224609375" d="0.098480224609375" tx="-6.95" ty="-7.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="61.45" y="79.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="电感切割刃/光圈图标" blendMode="multiply" centerPoint3DX="-0.2" centerPoint3DY="0.05">
+                  <matrix>
+                    <Matrix a="0.7010498046875" d="0.7010498046875" tx="-12.65" ty="-12.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="18.05" y="17.85"/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0" greenMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩 new/炎魔斩 new" centerPoint3DX="-139.15" centerPoint3DY="-22.65">
+                  <matrix>
+                    <Matrix a="0" b="-0.253814697265625" c="0.253814697265625" d="0" tx="-55.65" ty="-5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="58.7" y="127.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

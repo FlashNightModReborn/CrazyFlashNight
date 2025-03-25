@@ -1,0 +1,139 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/爆炸联弹" itemID="65a892eb-000005e1" linkageExportForAS="true" linkageIdentifier="爆炸联弹" lastModified="1723477057" lastUniqueIdentifier="4">
+  <timeline>
+    <DOMTimeline name="爆炸联弹" currentFrame="1">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#B93CFD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#9B42CE" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[子弹属性 = _root.嵌套子弹属性初始化(this, "近战联弹");
+爆炸范围 = 150;
+子弹属性.子弹速度 = 0;
+子弹属性.击倒率 = 1;
+子弹属性.Z轴攻击范围 = 爆炸范围;
+子弹属性.击中地图效果 = "";
+stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+
+if (flag == undefined)
+{
+	this.子弹区域area._height = this.area._height + 爆炸范围;
+	this.子弹区域area._width = this.area._width + 爆炸范围;
+	this.area.removeMovieClip();//信息传递完毕后再回收
+	_root.子弹区域shoot传递(子弹属性);
+
+	for (var i = 0; i < this.area.单元体列表.length; ++i)
+	{
+		var 单元体 = this.area.单元体列表[i];// 获取单元体的位置
+		var point = {x:单元体._x, y:单元体._y};
+		_root.pointToGameworld(point,单元体);// 坐标转换到gameworld
+		
+		var 爆炸 = _root.gameworld.attachMovie("联弹爆炸", "explosion" + i, _root.gameworld.getNextHighestDepth());
+		爆炸._x = point.x;
+		爆炸._y = point.y;
+
+		_root.回收单元体(单元体);
+	}
+	flag = true;
+}
+else
+{
+	this.removeMovieClip();
+}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="爆炸传递area" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="联弹/联弹area" name="子弹区域area" centerPoint3DX="7.5" centerPoint3DY="7.5">
+                  <matrix>
+                    <Matrix a="0.399993896484375" d="0.399993896484375" tx="-5" ty="-5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="area" color="#9FE08C" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="联弹/联弹area" name="area" centerPoint3DX="7.5" centerPoint3DY="7.5">
+                  <matrix>
+                    <Matrix a="0.399993896484375" d="0.399993896484375" tx="-5" ty="-5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	this.y_基准 = this._y;// area的初始大小  
+	this.单元体列表 = [];
+	this.原始坐标x = _parent._x;
+	this.原始坐标y = _parent._y;
+	this.原始方向 = _parent._rotation;
+	this.运动方向系数 = _parent.xmov < 0 ? -1 : 1;
+	_parent.ymov += _parent.子弹散射度 * Math.abs(_parent.xmov) / 100;
+	var 子弹种类 = _parent.子弹种类.split("-")[1];// 联弹的数据格式  
+	for (var i = 0; (i < _parent.霰弹值); ++i)
+	{
+		var 单元体:MovieClip = _root.创建单元体(_parent, 子弹种类);
+		单元体._rotation = _root.随机偏移(_parent.子弹散射度);
+		this.单元体列表.push(单元体);
+	}
+
+	this.onEnterFrame = function()
+	{
+		var y_min:Number = Infinity;
+		var y_max:Number = -Infinity;
+		_parent.ymov += 1.2;
+		_parent._rotation = Math.atan2(_parent.ymov, _parent.xmov) * 180 / Math.PI;//角度取速度方向
+
+		for (var j = this.单元体列表.length - 1; j >= 0; --j)
+		{
+			var 单元体:MovieClip = this.单元体列表[j];
+			单元体._y += _parent.xmov * Math.sin(单元体._rotation * Math.PI / 180) * this.运动方向系数;// 处理运动逻辑
+
+			if ((单元体._y * Math.cos(_parent._rotation * Math.PI / 180) + _parent._y > _parent.Z轴坐标) and this.单元体列表.length > 1)
+			{
+				_parent.gotoAndStop("消失");
+			}
+			y_max = Math.max(单元体._y, y_max);
+			y_min = Math.min(单元体._y, y_min);
+		}
+		this._y = y_min;// 更新碰撞箱的大小与位置以与视觉相符
+		this._height = Math.max(this.y_基准 * -2, y_max - y_min);
+	};
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

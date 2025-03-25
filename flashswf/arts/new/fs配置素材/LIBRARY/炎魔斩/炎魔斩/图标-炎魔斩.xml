@@ -1,0 +1,89 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="炎魔斩/炎魔斩/图标-炎魔斩" itemID="65f6fc6b-00002097" linkageExportForAS="true" linkageIdentifier="图标-炎魔斩" lastModified="1731792452">
+  <timeline>
+    <DOMTimeline name="图标-炎魔斩">
+      <layers>
+        <DOMLayer name="Script Layer" color="#A6A7B6">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#B35CC1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩/Symbol 2948" centerPoint3DX="12" centerPoint3DY="12">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#60DB5D" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#A3C585" parentLayerIndex="2" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩/刀-炎魔斩" centerPoint3DX="24.05" centerPoint3DY="235.1">
+                  <matrix>
+                    <Matrix a="0.191314697265625" b="-0.191314697265625" c="0.191314697265625" d="0.191314697265625" tx="-28.05" ty="-26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#F5BF48" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩/Symbol 16" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩/刀-炎魔斩" centerPoint3DX="-4.9" centerPoint3DY="263.1">
+                  <matrix>
+                    <Matrix a="0" b="-0.3187255859375" c="0.3187255859375" d="0" tx="-57" ty="1.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

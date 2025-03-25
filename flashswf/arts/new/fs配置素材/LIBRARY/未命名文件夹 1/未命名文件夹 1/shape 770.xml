@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="未命名文件夹 1/未命名文件夹 1/shape 770" itemID="6551c2d1-00002031" symbolType="graphic" lastModified="1443854754">
+  <timeline>
+    <DOMTimeline name="shape 770">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape selected="true" isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.02069091796875" d="0.02069091796875"/>
+                        </matrix>
+                        <GradientEntry ratio="0"/>
+                        <GradientEntry alpha="0" ratio="0.815686274509804"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 -240|240 240!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

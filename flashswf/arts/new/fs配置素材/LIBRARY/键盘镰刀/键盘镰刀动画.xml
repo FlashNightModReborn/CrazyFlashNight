@@ -1,0 +1,1201 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="键盘镰刀/键盘镰刀动画" itemID="65547cb7-00005e45" lastModified="1721580822" lastUniqueIdentifier="9">
+  <timeline>
+    <DOMTimeline name="键盘镰刀动画" currentFrame="14">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="8" keyMode="9728" soundName="sound 233">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 113" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.13702392578125" b="-0.478622436523438" c="0.478622436523438" d="-0.13702392578125" tx="112.25" ty="85.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.128890991210938" b="-0.480850219726563" c="0.480850219726563" d="-0.128890991210938" tx="111.75" ty="87.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.47930908203125" b="-0.141647338867188" c="0.141647338867188" d="0.47930908203125" tx="112.55" ty="83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.4786376953125" b="-0.143875122070313" c="0.143875122070313" d="0.4786376953125" tx="112.85" ty="81.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.47796630859375" b="0.14306640625" c="0.14306640625" d="-0.47796630859375" tx="112.55" ty="87.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 112" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.498184204101563" b="0.0099945068359375" c="-0.0099945068359375" d="0.498184204101563" tx="110.15" ty="28.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.497955322265625" b="0.0184478759765625" c="-0.0184478759765625" d="0.497955322265625" tx="110.5" ty="29.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0057830810546875" b="0.500213623046875" c="-0.500213623046875" d="-0.0057830810546875" tx="170.35" ty="80.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00347900390625" b="0.500244140625" c="-0.500244140625" d="-0.00347900390625" tx="170.65" ty="78.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0040435791015625" b="-0.499374389648438" c="-0.499374389648438" d="0.0040435791015625" tx="170.15" ty="90.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 111" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.135604858398438" b="-0.478744506835938" c="0.478744506835938" d="-0.135604858398438" tx="122.75" ty="82.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.127471923828125" b="-0.480926513671875" c="0.480926513671875" d="-0.127471923828125" tx="122.2" ty="84.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.479461669921875" b="-0.140228271484375" c="0.140228271484375" d="0.479461669921875" tx="115.65" ty="93.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.478790283203125" b="-0.142440795898438" c="0.142440795898438" d="0.478790283203125" tx="116.05" ty="91.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.478118896484375" b="0.141647338867188" c="0.141647338867188" d="-0.478118896484375" tx="115.6" ty="77.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 582" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.171783447265625" b="-0.476730346679688" c="-0.476730346679688" d="-0.171783447265625" tx="205.95" ty="86.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 582" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.174209594726563" b="-0.475845336914063" c="-0.475845336914063" d="-0.174209594726563" tx="205.8" ty="87.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 582" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170944213867188" b="-0.476486206054688" c="-0.476486206054688" d="-0.170944213867188" tx="205.65" ty="86"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 582" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00079345703125" b="-0.5059814453125" c="-0.5059814453125" d="0.00079345703125" tx="206.75" ty="85.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 110" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0044708251953125" b="0.500900268554688" c="-0.500900268554688" d="0.0044708251953125" tx="111.95" ty="79.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0040130615234375" b="0.500885009765625" c="-0.500885009765625" d="-0.0040130615234375" tx="111.55" ty="81.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0040130615234375" b="0.500900268554688" c="-0.500900268554688" d="0.0040130615234375" tx="111.5" ty="79.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0063323974609375" b="0.500869750976563" c="-0.500869750976563" d="0.0063323974609375" tx="111.75" ty="77.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0057373046875" b="-0.499969482421875" c="-0.499969482421875" d="-0.0057373046875" tx="111.35" ty="91.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.002197265625" b="-0.50726318359375" c="-0.50726318359375" d="0.002197265625" tx="113" ty="90"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0003662109375" b="-0.50726318359375" c="-0.50726318359375" d="-0.0003662109375" tx="112.75" ty="90.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0028839111328125" b="-0.506759643554688" c="-0.506759643554688" d="0.0028839111328125" tx="112.85" ty="89.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00079345703125" b="-0.5059814453125" c="-0.5059814453125" d="0.00079345703125" tx="112.45" ty="90"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 109" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="9" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.485519409179688" b="0.139190673828125" c="0.139190673828125" d="-0.485519409179688" tx="152.05" ty="88.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.484786987304688" b="0.14166259765625" c="0.14166259765625" d="-0.484786987304688" tx="151.8" ty="89.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 108" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="9" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.483566284179688" b="0.140548706054688" c="0.140548706054688" d="-0.483566284179688" tx="156.65" ty="77.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.482818603515625" b="0.143035888671875" c="0.143035888671875" d="-0.482818603515625" tx="156.5" ty="78.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 107" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="9" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 581" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.002197265625" b="-0.50726318359375" c="-0.50726318359375" d="0.002197265625" tx="154.25" ty="86.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 581" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0003662109375" b="-0.50726318359375" c="-0.50726318359375" d="-0.0003662109375" tx="154" ty="87.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 581" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0028839111328125" b="-0.506759643554688" c="-0.506759643554688" d="0.0028839111328125" tx="153.95" ty="86.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 581" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00079345703125" b="-0.5059814453125" c="-0.5059814453125" d="0.00079345703125" tx="153.75" ty="86.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 106" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="9" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.002197265625" b="-0.50726318359375" c="-0.50726318359375" d="0.002197265625" tx="209.45" ty="88.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0003662109375" b="-0.50726318359375" c="-0.50726318359375" d="-0.0003662109375" tx="209.2" ty="90.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0028839111328125" b="-0.506759643554688" c="-0.506759643554688" d="0.0028839111328125" tx="209.15" ty="88.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00079345703125" b="-0.5059814453125" c="-0.5059814453125" d="0.00079345703125" tx="208.8" ty="89.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 105" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="9" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 580" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.002197265625" b="-0.50726318359375" c="-0.50726318359375" d="0.002197265625" tx="203.7" ty="83.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 580" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0003662109375" b="-0.50726318359375" c="-0.50726318359375" d="-0.0003662109375" tx="203.5" ty="85.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 580" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0028839111328125" b="-0.506759643554688" c="-0.506759643554688" d="0.0028839111328125" tx="203.4" ty="83.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 580" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00079345703125" b="-0.5059814453125" c="-0.5059814453125" d="0.00079345703125" tx="203.1" ty="83.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 104" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="11" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.455459594726563" b="-0.218948364257813" c="-0.218948364257813" d="-0.455459594726563" tx="173.25" ty="124.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00079345703125" b="-0.5059814453125" c="-0.5059814453125" d="0.00079345703125" tx="231.9" ty="129.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 103" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.477676391601563" b="0.150009155273438" c="-0.150009155273438" d="-0.477676391601563" tx="113.55" ty="86.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 584" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.455459594726563" b="-0.218948364257813" c="-0.218948364257813" d="-0.455459594726563" tx="161.15" ty="122.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 584" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00079345703125" b="-0.5059814453125" c="-0.5059814453125" d="0.00079345703125" tx="224.9" ty="139.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 102" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0026702880859375" b="-0.501129150390625" c="0.501129150390625" d="-0.0026702880859375" tx="56" ty="90.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.45489501953125" b="-0.21661376953125" c="-0.21661376953125" d="-0.45489501953125" tx="169.65" ty="113.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.00103759765625" b="-0.504531860351563" c="-0.504531860351563" d="-0.00103759765625" tx="220.3" ty="128.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 101" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.4779052734375" b="0.1485595703125" c="-0.1485595703125" d="-0.4779052734375" tx="110.25" ty="76.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="10" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 583" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.500656127929688" b="-0.0668792724609375" c="-0.0668792724609375" d="-0.500656127929688" tx="160.35" ty="119.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 583" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.00079345703125" b="-0.5059814453125" c="-0.5059814453125" d="0.00079345703125" tx="210.7" ty="101.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 100" color="#FFFF00" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.00408935546875" b="0.501419067382813" c="-0.501419067382813" d="0.00408935546875" tx="111.65" ty="80.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="5" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 97" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 582" symbolType="graphic" centerPoint3DX="203.65" centerPoint3DY="83.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="206.55" ty="86.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 96" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 582" symbolType="graphic" centerPoint3DX="205.25" centerPoint3DY="81.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.009613037109375" b="-0.507888793945313" c="-0.50714111328125" d="0.0041351318359375" tx="208.1" ty="84.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" centerPoint3DX="71.2" centerPoint3DY="85.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="111.85" ty="89.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 95" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 567" symbolType="graphic" centerPoint3DX="72.9" centerPoint3DY="85.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.009613037109375" b="-0.507888793945313" c="-0.50714111328125" d="0.0041351318359375" tx="113.45" ty="89.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 581" symbolType="graphic" centerPoint3DX="131.15" centerPoint3DY="85.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="153.15" ty="86.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 94" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 581" symbolType="graphic" centerPoint3DX="132.8" centerPoint3DY="84.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.009613037109375" b="-0.507888793945313" c="-0.50714111328125" d="0.0041351318359375" tx="154.75" ty="85.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" centerPoint3DX="178.6" centerPoint3DY="79.5" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="208.45" ty="89.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 93" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 569" symbolType="graphic" centerPoint3DX="180.3" centerPoint3DY="78.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.009613037109375" b="-0.507888793945313" c="-0.50714111328125" d="0.0041351318359375" tx="209.95" ty="88.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 580" symbolType="graphic" centerPoint3DX="177.75" centerPoint3DY="79.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="202.8" ty="84.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 92" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 580" symbolType="graphic" centerPoint3DX="179.35" centerPoint3DY="78.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.009613037109375" b="-0.507888793945313" c="-0.50714111328125" d="0.0041351318359375" tx="204.3" ty="82.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" centerPoint3DX="218.9" centerPoint3DY="104.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="231.65" ty="129.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 91" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 570" symbolType="graphic" centerPoint3DX="220.05" centerPoint3DY="103.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.009613037109375" b="-0.507888793945313" c="-0.50714111328125" d="0.0041351318359375" tx="232.3" ty="128.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 584" symbolType="graphic" centerPoint3DX="218.5" centerPoint3DY="132.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="224.5" ty="139.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 90" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 584" symbolType="graphic" centerPoint3DX="219.2" centerPoint3DY="131" loop="loop">
+                  <matrix>
+                    <Matrix a="0.009613037109375" b="-0.507888793945313" c="-0.50714111328125" d="0.0041351318359375" tx="225.05" ty="138.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 89" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" centerPoint3DX="213.05" centerPoint3DY="103.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0113983154296875" b="-0.506332397460938" c="-0.50555419921875" d="0.0023193359375" tx="220.65" ty="127.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 88" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 568" symbolType="graphic" centerPoint3DX="211.9" centerPoint3DY="105.05" loop="loop">
+                  <matrix>
+                    <Matrix a="0.001983642578125" b="-0.49969482421875" c="-0.505935668945313" d="-0.00238037109375" tx="219.95" ty="128.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 87" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/sprite 588" centerPoint3DX="208.75" centerPoint3DY="113.6">
+                  <matrix>
+                    <Matrix a="-0.223907470703125" b="-0.448745727539063" c="-0.454391479492188" d="0.236465454101563" tx="230.75" ty="131.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="14" blurY="14" color="#E34AED" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 583" symbolType="graphic" centerPoint3DX="191.75" centerPoint3DY="92" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="210.55" ty="102.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 86" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/shape 583" symbolType="graphic" centerPoint3DX="193.25" centerPoint3DY="90.7" loop="loop">
+                  <matrix>
+                    <Matrix a="0.009613037109375" b="-0.507888793945313" c="-0.50714111328125" d="0.0041351318359375" tx="211.85" ty="100.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 85" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 84" color="#FFFF00">
+          <frames>
+            <DOMFrame index="0" duration="13" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/sprite 586" centerPoint3DX="207.85" centerPoint3DY="113.05">
+                  <matrix>
+                    <Matrix a="0.009613037109375" b="-0.507888793945313" c="-0.50714111328125" d="0.0041351318359375" tx="217.3" ty="140"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="14" blurY="14" color="#E34BED" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="镰刀光刃" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/sprite 586" centerPoint3DX="207.9" centerPoint3DY="114.9">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="216.8" ty="140.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="14" blurY="14" color="#E34BED" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="键盘镰刀/sprite 588" centerPoint3DX="206.55" centerPoint3DY="158.85">
+                  <matrix>
+                    <Matrix a="0.0001678466796875" b="-0.501266479492188" c="-0.50750732421875" d="-0.000640869140625" tx="216.5" ty="183.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="14" blurY="14" color="#E34AED" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="镰刀光刃" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

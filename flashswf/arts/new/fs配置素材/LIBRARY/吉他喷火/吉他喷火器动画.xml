@@ -1,0 +1,1638 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吉他喷火/吉他喷火器动画" itemID="65545ff5-000049c6" lastModified="1732453115" lastUniqueIdentifier="8">
+  <timeline>
+    <DOMTimeline name="吉他喷火器动画" currentFrame="14" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-8&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="控制层" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" name="变形开始" labelType="name" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+
+
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" name="变形结束" labelType="name" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="11" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" keyMode="9728" soundName="sound 233">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 55 复制" color="#FFFF00" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="10" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/机枪弹容指示器" name="机枪弹容指示器">
+                  <matrix>
+                    <Matrix tx="26.9" ty="73.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.85" y="1.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/机枪弹容指示器" name="机枪弹容指示器">
+                  <matrix>
+                    <Matrix tx="27.05" ty="74.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.85" y="1.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/机枪弹容指示器" name="机枪弹容指示器" centerPoint3DX="35.5" centerPoint3DY="82">
+                  <matrix>
+                    <Matrix tx="25.65" ty="80.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.85" y="1.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/机枪弹容指示器" name="机枪弹容指示器" centerPoint3DX="35.15" centerPoint3DY="82.1">
+                  <matrix>
+                    <Matrix tx="25.3" ty="80.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="9.85" y="1.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 52 复制" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="13.75" ty="60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 51 复制" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="9.85" ty="65.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 50 复制" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="27.65" ty="56.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 48  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507339477539063" b="0.004852294921875" c="-0.004852294921875" d="0.507339477539063" tx="14.65" ty="60.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0015411376953125" c="0.0015411376953125" d="0.507369995117188" tx="8.65" ty="61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.00244140625" c="-0.00244140625" d="0.507369995117188" tx="11.5" ty="58.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0018463134765625" c="0.0018463134765625" d="0.507369995117188" tx="13.35" ty="60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="15.1" ty="59"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="15.3" ty="60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="15.2" ty="60.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="15.3" ty="61.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="13.6" ty="60.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="78.9" ty="71"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 47  复制 2" color="#FFFF00" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507339477539063" b="0.004852294921875" c="-0.004852294921875" d="0.507339477539063" tx="11.05" ty="63.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0015411376953125" c="0.0015411376953125" d="0.507369995117188" tx="5.1" ty="65.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.00244140625" c="-0.00244140625" d="0.507369995117188" tx="6.9" ty="62.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0018463134765625" c="0.0018463134765625" d="0.507369995117188" tx="8.8" ty="64.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="11.15" ty="63.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="11.35" ty="64.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="11.35" ty="64.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="11.5" ty="66"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="9.8" ty="65.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="51.75" ty="50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 46  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507339477539063" b="0.004852294921875" c="-0.004852294921875" d="0.507339477539063" tx="28" ty="61.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0015411376953125" c="0.0015411376953125" d="0.507369995117188" tx="22" ty="62.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.00244140625" c="-0.00244140625" d="0.507369995117188" tx="24.95" ty="57.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0018463134765625" c="0.0018463134765625" d="0.507369995117188" tx="26.85" ty="59.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="29.05" ty="55.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="29.15" ty="56.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="29.15" ty="56.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="29.35" ty="57.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="27.55" ty="56.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="78.9" ty="71"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 45  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507339477539063" b="0.004852294921875" c="-0.004852294921875" d="0.507339477539063" tx="57.7" ty="52.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0015411376953125" c="0.0015411376953125" d="0.507369995117188" tx="51.65" ty="53.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.00244140625" c="-0.00244140625" d="0.507369995117188" tx="51.65" ty="50.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0018463134765625" c="0.0018463134765625" d="0.507369995117188" tx="53.5" ty="51.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="53.4" ty="49.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="53.55" ty="50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="53.4" ty="50.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="53.5" ty="51.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="51.75" ty="50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="56.7" ty="52.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 44  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507339477539063" b="0.004852294921875" c="-0.004852294921875" d="0.507339477539063" tx="80.5" ty="73.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0015411376953125" c="0.0015411376953125" d="0.507369995117188" tx="74.7" ty="74.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.00244140625" c="-0.00244140625" d="0.507369995117188" tx="76.9" ty="70.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0018463134765625" c="0.0018463134765625" d="0.507369995117188" tx="78.95" ty="71.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="80.25" ty="69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="80.45" ty="70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="80.55" ty="70.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="80.6" ty="71.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="78.95" ty="70.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="103.85" ty="55.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 43  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 476" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.598739624023438" b="-0.00213623046875" c="0.001800537109375" d="0.5048828125" tx="17.05" ty="80.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="72.2" ty="77.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 42  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 475" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5048828125" b="-0.001800537109375" c="0.001800537109375" d="0.5048828125" tx="31.2" ty="78.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.507339477539063" b="0.004852294921875" c="-0.004852294921875" d="0.507339477539063" tx="80.5" ty="73.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0015411376953125" c="0.0015411376953125" d="0.507369995117188" tx="74.7" ty="74.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.00244140625" c="-0.00244140625" d="0.507369995117188" tx="76.9" ty="70.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0018463134765625" c="0.0018463134765625" d="0.507369995117188" tx="78.95" ty="71.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="80.25" ty="69.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="80.45" ty="70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="80.55" ty="70.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="80.6" ty="71.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="78.95" ty="70.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="9.8" ty="59.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 41  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 474" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5048828125" b="-0.001800537109375" c="0.001800537109375" d="0.5048828125" tx="13.55" ty="77.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507339477539063" b="0.004852294921875" c="-0.004852294921875" d="0.507339477539063" tx="58.4" ty="54.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0015411376953125" c="0.0015411376953125" d="0.507369995117188" tx="52.4" ty="55.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.00244140625" c="-0.00244140625" d="0.507369995117188" tx="54.7" ty="51.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0018463134765625" c="0.0018463134765625" d="0.507369995117188" tx="56.6" ty="53.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="58.05" ty="50.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="58.2" ty="51.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="58.1" ty="51.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="58.2" ty="52.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="56.5" ty="51.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="20.9" ty="72"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 40  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 473" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5048828125" b="-0.001800537109375" c="0.001800537109375" d="0.5048828125" tx="67.55" ty="65.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507339477539063" b="0.004852294921875" c="-0.004852294921875" d="0.507339477539063" tx="99.4" ty="58.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0015411376953125" c="0.0015411376953125" d="0.507369995117188" tx="93.45" ty="59"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.00244140625" c="-0.00244140625" d="0.507369995117188" tx="99.05" ty="55.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0018463134765625" c="0.0018463134765625" d="0.507369995117188" tx="101" ty="56.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="105.25" ty="54.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="105.45" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="105.35" ty="54.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="105.45" ty="55.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="103.65" ty="54.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 39  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 471" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5048828125" b="-0.001800537109375" c="0.001800537109375" d="0.5048828125" tx="82.3" ty="82.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.390289306640625" b="-0.322708129882813" c="0.322708129882813" d="0.390289306640625" tx="74.05" ty="82.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.386184692382813" b="-0.327590942382813" c="0.327590942382813" d="0.386184692382813" tx="68.35" ty="83.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.489639282226563" b="-0.126785278320313" c="0.126785278320313" d="0.489639282226563" tx="70.05" ty="78.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.488555908203125" b="-0.13092041015625" c="0.13092041015625" d="0.488555908203125" tx="72.15" ty="79.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="73.45" ty="76.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="73.65" ty="77.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="73.8" ty="77.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="73.85" ty="78.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="72.3" ty="77.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 38  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507339477539063" b="0.004852294921875" c="-0.004852294921875" d="0.507339477539063" tx="11.5" ty="61.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0015411376953125" c="0.0015411376953125" d="0.507369995117188" tx="5.5" ty="63"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.00244140625" c="-0.00244140625" d="0.507369995117188" tx="7.9" ty="58.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="-0.0018463134765625" c="0.0018463134765625" d="0.507369995117188" tx="9.8" ty="60.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507354736328125" b="0.0041046142578125" c="-0.0041046142578125" d="0.507354736328125" tx="11.2" ty="58.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507369995117188" b="0.001922607421875" c="-0.001922607421875" d="0.507369995117188" tx="11.35" ty="59.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="11.3" ty="59.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="11.45" ty="60.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="9.7" ty="59.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 37  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 472" centerPoint3DX="88.6" centerPoint3DY="83.1">
+                  <matrix>
+                    <Matrix a="0.5048828125" b="-0.001800537109375" c="0.001800537109375" d="0.5048828125" tx="82.3" ty="82.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#DD7B0E" strength="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.50732421875" b="-0.0008087158203125" c="0.0008087158203125" d="0.50732421875" tx="22.45" ty="64.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.000732421875" c="0.000732421875" d="0.507308959960938" tx="22.6" ty="66"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="-0.0044403076171875" c="0.0044403076171875" d="0.507308959960938" tx="20.95" ty="72.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/sprite 495">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="46.45" ty="92.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 36  复制 2" color="#FFFF00" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 470" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5048828125" b="-0.001800537109375" c="0.001800537109375" d="0.5048828125" tx="60.05" ty="64.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="6" motionTweenScale="false" keyMode="8192">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 489" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.006256103515625" b="0.50726318359375" c="-0.50726318359375" d="-0.006256103515625" tx="54.55" ty="71.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 489" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0063018798828125" b="0.50726318359375" c="-0.50726318359375" d="-0.0063018798828125" tx="54.7" ty="73"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 489" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0025634765625" b="0.507278442382813" c="-0.507278442382813" d="-0.0025634765625" tx="53.15" ty="78.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="吉他喷火/shape 489" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.507308959960938" b="0.00091552734375" c="-0.00091552734375" d="0.507308959960938" tx="46.55" ty="82.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

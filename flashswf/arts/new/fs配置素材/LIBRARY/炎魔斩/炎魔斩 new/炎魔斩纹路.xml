@@ -1,0 +1,27 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="炎魔斩/炎魔斩 new/炎魔斩纹路" itemID="6678cfb1-00000599" lastModified="1719193521" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="炎魔斩纹路">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="炎魔斩/炎魔斩alter/炎魔剑待机剑身" selected="true">
+                  <matrix>
+                    <Matrix a="-0.87371826171875" b="3.0517578125e-005" c="-3.0517578125e-005" d="-0.963851928710938" tx="28.55" ty="189.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="32.65" y="196.6"/>
+                  </transformationPoint>
+                  <color>
+                    <Color blueMultiplier="0.91015625" greenMultiplier="0.91015625" redOffset="9"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
