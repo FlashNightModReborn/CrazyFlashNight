@@ -53,11 +53,11 @@
           <DOMFolderItem name="主角动画层" itemID="66577cd4-00002e52"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
-          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
-          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
-          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
           <DOMFontItem name="Font 86" itemID="6577b697-00000757" font="MicrosoftYaHei" size="0" id="86" embeddedCharacters=".Lv"/>
+          <DOMFontItem name="Font 93" itemID="6577b697-00000759" font="MicrosoftYaHei" size="0" id="93" embeddedCharacters="体霸"/>
+          <DOMFontItem name="Font 631" itemID="6577b697-0000075b" font="TimesNewRomanPS-BoldMT" size="0" id="631" embeddedCharacters=" .;=_aenprtu"/>
+          <DOMFontItem name="Font 632" itemID="6577b697-0000075d" font="SimSun" size="0" id="632" embeddedCharacters="击枪联长"/>
+          <DOMFontItem name="Font 633" itemID="6577b697-0000075f" font="MS-PGothic" size="0" id="633" embeddedCharacters="否射是机"/>
      </fonts>
      <media>
           <DOMBitmapItem name="image/bitmap1263.png" itemID="67764730-00002060" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/image/bitmap1263.png" sourceLastImported="1736862750" externalFileCRC32="1229271075" externalFileSize="302" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap1263.png" bitmapDataHRef="M 109 1702343951.dat" frameRight="4800" frameBottom="4800"/>
@@ -104,15 +104,15 @@
           <DOMSoundItem name="sound/sound641.mp3" itemID="67764734-00002089" linkageExportForAS="true" linkageIdentifier="9mmclip2.wav" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/sound641.wav" sourceLastImported="1736862758" externalFileCRC32="296318466" externalFileSize="125164" href="sound/sound641.wav" soundDataHRef="M 58 1702344344.dat" format="44kHz 16bit Stereo" sampleCount="31280" exportFormat="5"/>
           <DOMSoundItem name="sound/sound642.mp3" itemID="67764734-0000208a" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/sound642.wav" sourceLastImported="1736862758" externalFileCRC32="1226158872" externalFileSize="184024" href="sound/sound642.wav" soundDataHRef="M 59 1702344344.dat" format="44kHz 16bit Stereo" sampleCount="45995" exportFormat="5"/>
           <DOMSoundItem name="sound/soundfootstep.wav" itemID="67764734-0000208b" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/soundfootstep.wav" sourceLastImported="1736862759" externalFileCRC32="3770162224" externalFileSize="96624" href="sound/soundfootstep.wav" soundDataHRef="M 98 1720595161.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5"/>
-          <DOMSoundItem name="sound/soundfootstep_female.wav" itemID="668e44cf-00000b65" sourceExternalFilepath="./LIBRARY/sound/soundfootstep_female.wav" sourceLastImported="1736862759" externalFileCRC32="1746597399" externalFileSize="96624" href="sound/soundfootstep_female.wav" soundDataHRef="M 100 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5"/>
-          <DOMSoundItem name="sound/soundfootstep_female1.wav" itemID="668e44cf-00000b69" sourceExternalFilepath="./LIBRARY/sound/soundfootstep_female1.wav" sourceLastImported="1736862760" externalFileCRC32="1383320771" externalFileSize="96624" href="sound/soundfootstep_female1.wav" soundDataHRef="M 101 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5"/>
+          <DOMSoundItem name="sound/soundfootstep_female.wav" itemID="668e44cf-00000b65" sourceExternalFilepath="../things0/LIBRARY/sound/soundfootstep_female.wav" sourceLastImported="1736862759" externalFileCRC32="1746597399" externalFileSize="96624" href="sound/soundfootstep_female.wav" soundDataHRef="M 100 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5"/>
+          <DOMSoundItem name="sound/soundfootstep_female1.wav" itemID="668e44cf-00000b69" sourceExternalFilepath="../things0/LIBRARY/sound/soundfootstep_female1.wav" sourceLastImported="1736862760" externalFileCRC32="1383320771" externalFileSize="96624" href="sound/soundfootstep_female1.wav" soundDataHRef="M 101 1720599759.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5"/>
           <DOMSoundItem name="sound/soundfootstep1.wav" itemID="67764734-0000208c" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/soundfootstep1.wav" sourceLastImported="1736862760" externalFileCRC32="4009725321" externalFileSize="96624" href="sound/soundfootstep1.wav" soundDataHRef="M 99 1720595703.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5"/>
-          <DOMSoundItem name="sound/soundgrenade.wav" itemID="669fe92e-0000078e" sourceExternalFilepath="./LIBRARY/sound/soundgrenade.wav" sourceLastImported="1736862760" externalFileCRC32="1175887922" externalFileSize="77308" href="sound/soundgrenade.wav" soundDataHRef="M 108 1721755950.dat" format="44kHz 16bit Stereo" sampleCount="19316" exportFormat="5"/>
+          <DOMSoundItem name="sound/soundgrenade.wav" itemID="669fe92e-0000078e" sourceExternalFilepath="../things0/LIBRARY/sound/soundgrenade.wav" sourceLastImported="1736862760" externalFileCRC32="1175887922" externalFileSize="77308" href="sound/soundgrenade.wav" soundDataHRef="M 108 1721755950.dat" format="44kHz 16bit Stereo" sampleCount="19316" exportFormat="5"/>
           <DOMSoundItem name="sound/soundjump.wav" itemID="67764734-0000208d" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/soundjump.wav" sourceLastImported="1736862761" externalFileCRC32="3842452313" externalFileSize="96624" href="sound/soundjump.wav" soundDataHRef="M 102 1720606609.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5"/>
-          <DOMSoundItem name="sound/soundland.wav" itemID="6694b433-00001324" sourceExternalFilepath="./LIBRARY/sound/soundland.wav" sourceLastImported="1736862761" externalFileCRC32="3408891900" externalFileSize="96624" href="sound/soundland.wav" soundDataHRef="M 104 1721021491.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5"/>
+          <DOMSoundItem name="sound/soundland.wav" itemID="6694b433-00001324" sourceExternalFilepath="../things0/LIBRARY/sound/soundland.wav" sourceLastImported="1736862761" externalFileCRC32="3408891900" externalFileSize="96624" href="sound/soundland.wav" soundDataHRef="M 104 1721021491.dat" format="44kHz 16bit Stereo" sampleCount="24145" exportFormat="5"/>
           <DOMSoundItem name="sound/soundroll.wav" itemID="67764734-0000208e" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/soundroll.wav" sourceLastImported="1736862762" externalFileCRC32="3095977398" externalFileSize="126804" href="sound/soundroll.wav" soundDataHRef="M 103 1721021416.dat" format="44kHz 16bit Stereo" sampleCount="31690" exportFormat="5"/>
-          <DOMSoundItem name="sound/spear_1.wav" itemID="6651f31c-00000654" sourceExternalFilepath="./LIBRARY/sound/spear_1.wav" sourceLastImported="1736862762" externalFileCRC32="976728135" externalFileSize="10538" href="sound/spear_1.wav" soundDataHRef="M 155 1716646684.dat" format="44kHz 16bit Mono" sampleCount="5247" exportFormat="5"/>
-          <DOMSoundItem name="sound/spear_2.wav" itemID="6651f31c-00000658" sourceExternalFilepath="./LIBRARY/sound/spear_2.wav" sourceLastImported="1736862762" externalFileCRC32="1350765403" externalFileSize="8870" href="sound/spear_2.wav" soundDataHRef="M 156 1716646684.dat" format="44kHz 16bit Mono" sampleCount="4413" exportFormat="5"/>
+          <DOMSoundItem name="sound/spear_1.wav" itemID="6651f31c-00000654" sourceExternalFilepath="../things0/LIBRARY/sound/spear_1.wav" sourceLastImported="1736862762" externalFileCRC32="976728135" externalFileSize="10538" href="sound/spear_1.wav" soundDataHRef="M 155 1716646684.dat" format="44kHz 16bit Mono" sampleCount="5247" exportFormat="5"/>
+          <DOMSoundItem name="sound/spear_2.wav" itemID="6651f31c-00000658" sourceExternalFilepath="../things0/LIBRARY/sound/spear_2.wav" sourceLastImported="1736862762" externalFileCRC32="1350765403" externalFileSize="8870" href="sound/spear_2.wav" soundDataHRef="M 156 1716646684.dat" format="44kHz 16bit Mono" sampleCount="4413" exportFormat="5"/>
           <DOMSoundItem name="sound/spear_3.wav" itemID="67764734-0000208f" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/spear_3.wav" sourceLastImported="1736862763" externalFileCRC32="981466127" externalFileSize="14208" href="sound/spear_3.wav" soundDataHRef="M 157 1716646684.dat" format="44kHz 16bit Mono" sampleCount="7082" exportFormat="5"/>
           <DOMSoundItem name="sound/spear_4.wav" itemID="67764734-00002090" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/spear_4.wav" sourceLastImported="1736862763" externalFileCRC32="500057052" externalFileSize="15062" href="sound/spear_4.wav" soundDataHRef="M 158 1716646684.dat" format="44kHz 16bit Mono" sampleCount="7509" exportFormat="5"/>
           <DOMSoundItem name="sound/spear_5.wav" itemID="67764734-00002091" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/spear_5.wav" sourceLastImported="1736862764" externalFileCRC32="456359009" externalFileSize="17694" href="sound/spear_5.wav" soundDataHRef="M 159 1716646684.dat" format="44kHz 16bit Mono" sampleCount="8825" exportFormat="5"/>
@@ -147,15 +147,15 @@
           <DOMSoundItem name="sound/兽王拳4.wav" itemID="67764735-000020ae" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/兽王拳4.wav" sourceLastImported="1736862773" externalFileCRC32="1616320344" externalFileSize="33298" href="sound/兽王拳4.wav" soundDataHRef="M 115 1718451433.dat" format="44kHz 16bit Mono" sampleCount="16627" exportFormat="5"/>
           <DOMSoundItem name="sound/兽王拳5.wav" itemID="67764735-000020af" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/兽王拳5.wav" sourceLastImported="1736862774" externalFileCRC32="1822538686" externalFileSize="57564" href="sound/兽王拳5.wav" soundDataHRef="M 116 1718451433.dat" format="44kHz 16bit Mono" sampleCount="28760" exportFormat="5"/>
           <DOMSoundItem name="sound/兽王拳气功.wav" itemID="67764735-000020b0" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/兽王拳气功.wav" sourceLastImported="1736862774" externalFileCRC32="791035816" externalFileSize="63124" href="sound/兽王拳气功.wav" soundDataHRef="M 117 1718451433.dat" format="44kHz 16bit Mono" sampleCount="31540" exportFormat="5"/>
-          <DOMSoundItem name="sound/兽王爪击1.wav" itemID="666d7c53-00000656" sourceExternalFilepath="./LIBRARY/sound/兽王爪击1.wav" sourceLastImported="1736862774" externalFileCRC32="2506255141" externalFileSize="33434" href="sound/兽王爪击1.wav" soundDataHRef="M 118 1718451433.dat" format="44kHz 16bit Mono" sampleCount="16695" exportFormat="5"/>
-          <DOMSoundItem name="sound/兽王爪击2.wav" itemID="666d7c53-0000065a" sourceExternalFilepath="./LIBRARY/sound/兽王爪击2.wav" sourceLastImported="1736862775" externalFileCRC32="4091455986" externalFileSize="21872" href="sound/兽王爪击2.wav" soundDataHRef="M 119 1718451433.dat" format="44kHz 16bit Mono" sampleCount="10914" exportFormat="5"/>
-          <DOMSoundItem name="sound/兽王爪击3.wav" itemID="666d7c53-0000065e" sourceExternalFilepath="./LIBRARY/sound/兽王爪击3.wav" sourceLastImported="1736862775" externalFileCRC32="416730440" externalFileSize="15864" href="sound/兽王爪击3.wav" soundDataHRef="M 120 1718451433.dat" format="44kHz 16bit Mono" sampleCount="7910" exportFormat="5"/>
-          <DOMSoundItem name="sound/兽王爪击4.wav" itemID="666d7c53-00000662" sourceExternalFilepath="./LIBRARY/sound/兽王爪击4.wav" sourceLastImported="1736862776" externalFileCRC32="2649636885" externalFileSize="20756" href="sound/兽王爪击4.wav" soundDataHRef="M 121 1718451433.dat" format="44kHz 16bit Mono" sampleCount="10356" exportFormat="5"/>
-          <DOMSoundItem name="sound/兽王爪击5.wav" itemID="666d7c53-00000666" sourceExternalFilepath="./LIBRARY/sound/兽王爪击5.wav" sourceLastImported="1736862776" externalFileCRC32="2974026957" externalFileSize="11392" href="sound/兽王爪击5.wav" soundDataHRef="M 122 1718451433.dat" format="44kHz 16bit Mono" sampleCount="5674" exportFormat="5"/>
-          <DOMSoundItem name="sound/猩红凶斩.wav" itemID="669b8bee-00000707" sourceExternalFilepath="./LIBRARY/sound/猩红凶斩.wav" sourceLastImported="1736862777" externalFileCRC32="449263898" externalFileSize="295944" href="sound/猩红凶斩.wav" soundDataHRef="M 130 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="73975" exportFormat="5"/>
-          <DOMSoundItem name="sound/猩红凶斩蓄力.wav" itemID="669b8bee-0000070b" sourceExternalFilepath="./LIBRARY/sound/猩红凶斩蓄力.wav" sourceLastImported="1736862777" externalFileCRC32="3881485061" externalFileSize="378796" href="sound/猩红凶斩蓄力.wav" soundDataHRef="M 131 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="94688" exportFormat="5"/>
+          <DOMSoundItem name="sound/兽王爪击1.wav" itemID="666d7c53-00000656" sourceExternalFilepath="../things0/LIBRARY/sound/兽王爪击1.wav" sourceLastImported="1736862774" externalFileCRC32="2506255141" externalFileSize="33434" href="sound/兽王爪击1.wav" soundDataHRef="M 118 1718451433.dat" format="44kHz 16bit Mono" sampleCount="16695" exportFormat="5"/>
+          <DOMSoundItem name="sound/兽王爪击2.wav" itemID="666d7c53-0000065a" sourceExternalFilepath="../things0/LIBRARY/sound/兽王爪击2.wav" sourceLastImported="1736862775" externalFileCRC32="4091455986" externalFileSize="21872" href="sound/兽王爪击2.wav" soundDataHRef="M 119 1718451433.dat" format="44kHz 16bit Mono" sampleCount="10914" exportFormat="5"/>
+          <DOMSoundItem name="sound/兽王爪击3.wav" itemID="666d7c53-0000065e" sourceExternalFilepath="../things0/LIBRARY/sound/兽王爪击3.wav" sourceLastImported="1736862775" externalFileCRC32="416730440" externalFileSize="15864" href="sound/兽王爪击3.wav" soundDataHRef="M 120 1718451433.dat" format="44kHz 16bit Mono" sampleCount="7910" exportFormat="5"/>
+          <DOMSoundItem name="sound/兽王爪击4.wav" itemID="666d7c53-00000662" sourceExternalFilepath="../things0/LIBRARY/sound/兽王爪击4.wav" sourceLastImported="1736862776" externalFileCRC32="2649636885" externalFileSize="20756" href="sound/兽王爪击4.wav" soundDataHRef="M 121 1718451433.dat" format="44kHz 16bit Mono" sampleCount="10356" exportFormat="5"/>
+          <DOMSoundItem name="sound/兽王爪击5.wav" itemID="666d7c53-00000666" sourceExternalFilepath="../things0/LIBRARY/sound/兽王爪击5.wav" sourceLastImported="1736862776" externalFileCRC32="2974026957" externalFileSize="11392" href="sound/兽王爪击5.wav" soundDataHRef="M 122 1718451433.dat" format="44kHz 16bit Mono" sampleCount="5674" exportFormat="5"/>
+          <DOMSoundItem name="sound/猩红凶斩.wav" itemID="669b8bee-00000707" sourceExternalFilepath="../things0/LIBRARY/sound/猩红凶斩.wav" sourceLastImported="1736862777" externalFileCRC32="449263898" externalFileSize="295944" href="sound/猩红凶斩.wav" soundDataHRef="M 130 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="73975" exportFormat="5"/>
+          <DOMSoundItem name="sound/猩红凶斩蓄力.wav" itemID="669b8bee-0000070b" sourceExternalFilepath="../things0/LIBRARY/sound/猩红凶斩蓄力.wav" sourceLastImported="1736862777" externalFileCRC32="3881485061" externalFileSize="378796" href="sound/猩红凶斩蓄力.wav" soundDataHRef="M 131 1721469934.dat" format="44kHz 16bit Stereo" sampleCount="94688" exportFormat="5"/>
           <DOMSoundItem name="sound/旋风腿.wav" itemID="67764735-000020b1" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/旋风腿.wav" sourceLastImported="1736862777" externalFileCRC32="1896122393" externalFileSize="37124" href="sound/旋风腿.wav" soundDataHRef="M 98 1718449581.dat" format="44kHz 16bit Mono" sampleCount="18540" exportFormat="5"/>
-          <DOMSoundItem name="sound/砸地.wav" itemID="669a08bf-00000681" sourceExternalFilepath="./LIBRARY/sound/砸地.wav" sourceLastImported="1736862778" externalFileCRC32="1877839248" externalFileSize="568168" href="sound/砸地.wav" soundDataHRef="M 108 1721370815.dat" format="44kHz 16bit Stereo" sampleCount="142031" exportFormat="5"/>
+          <DOMSoundItem name="sound/砸地.wav" itemID="669a08bf-00000681" sourceExternalFilepath="../things0/LIBRARY/sound/砸地.wav" sourceLastImported="1736862778" externalFileCRC32="1877839248" externalFileSize="568168" href="sound/砸地.wav" soundDataHRef="M 108 1721370815.dat" format="44kHz 16bit Stereo" sampleCount="142031" exportFormat="5"/>
           <DOMSoundItem name="sound/长刀.wav" itemID="67764735-000020b2" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/长刀.wav" sourceLastImported="1736862778" externalFileCRC32="2768059894" externalFileSize="48636" href="sound/长刀.wav" soundDataHRef="M 111 1706686860.dat" format="44kHz 16bit Mono" sampleCount="24296" exportFormat="5"/>
           <DOMSoundItem name="sound/长刀1.wav" itemID="67764735-000020b3" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/长刀1.wav" sourceLastImported="1736862779" externalFileCRC32="3476962494" externalFileSize="55636" href="sound/长刀1.wav" soundDataHRef="M 152 1716646215.dat" format="44kHz 16bit Mono" sampleCount="27796" exportFormat="5"/>
           <DOMSoundItem name="sound/长刀2.wav" itemID="67764735-000020b4" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/长刀2.wav" sourceLastImported="1736862779" externalFileCRC32="2103027167" externalFileSize="39802" href="sound/长刀2.wav" soundDataHRef="M 153 1716646215.dat" format="44kHz 16bit Mono" sampleCount="19879" exportFormat="5"/>
@@ -163,7 +163,7 @@
           <DOMSoundItem name="sound/爪击1.wav" itemID="67764736-000020b6" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/爪击1.wav" sourceLastImported="1736862780" externalFileCRC32="2033810228" externalFileSize="29108" href="sound/爪击1.wav" soundDataHRef="M 141 1715095112.dat" format="44kHz 16bit Mono" sampleCount="14532" exportFormat="5"/>
           <DOMSoundItem name="sound/爪击2.wav" itemID="67764736-000020b7" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/爪击2.wav" sourceLastImported="1736862780" externalFileCRC32="1359985060" externalFileSize="20938" href="sound/爪击2.wav" soundDataHRef="M 142 1715095112.dat" format="44kHz 16bit Mono" sampleCount="10447" exportFormat="5"/>
           <DOMSoundItem name="sound/爪击3.wav" itemID="67764736-000020b8" sourceExternalFilepath="C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/things0/LIBRARY/sound/爪击3.wav" sourceLastImported="1736862781" externalFileCRC32="3961941549" externalFileSize="27412" href="sound/爪击3.wav" soundDataHRef="M 143 1715095112.dat" format="44kHz 16bit Mono" sampleCount="13684" exportFormat="5"/>
-          <DOMSoundItem name="sound/重武器.wav" itemID="65b9f98c-000005f0" sourceExternalFilepath="./LIBRARY/sound/重武器.wav" sourceLastImported="1736862781" externalFileCRC32="2943343212" externalFileSize="27420" href="sound/重武器.wav" soundDataHRef="M 112 1706686860.dat" format="44kHz 16bit Mono" sampleCount="13688" exportFormat="5"/>
+          <DOMSoundItem name="sound/重武器.wav" itemID="65b9f98c-000005f0" sourceExternalFilepath="../things0/LIBRARY/sound/重武器.wav" sourceLastImported="1736862781" externalFileCRC32="2943343212" externalFileSize="27420" href="sound/重武器.wav" soundDataHRef="M 112 1706686860.dat" format="44kHz 16bit Mono" sampleCount="13688" exportFormat="5"/>
      </media>
      <symbols>
           <Include href="1.特效文件夹/06.青蓝色系/雷电电/Symbol 22.xml" loadImmediate="false" itemID="654ba156-00002640" lastModified="1696643875"/>
@@ -1049,7 +1049,7 @@
           <Include href="sprite/Symbol 2019.xml" loadImmediate="false" itemID="6577efbc-0000080c" lastModified="1706255914"/>
           <Include href="sprite/兵器攻击.xml" loadImmediate="false" itemID="65def257-00001090" lastModified="1730463990"/>
           <Include href="sprite/持械待机.xml" loadImmediate="false" itemID="6693d49e-00000af1" lastModified="1720966607"/>
-          <Include href="sprite/丑陋无比的连按方向奔跑键控.xml" loadImmediate="false" itemID="66587e46-00000645" lastModified="1717075708"/>
+          <Include href="sprite/丑陋无比的连按方向奔跑键控.xml" loadImmediate="false" itemID="66587e46-00000645" lastModified="1742889188"/>
           <Include href="sprite/大地震.xml" itemID="668be732-00000660" lastModified="1720444962"/>
           <Include href="sprite/弹壳.xml" itemID="64d9ee41-00000a13" lastModified="1693577774"/>
           <Include href="sprite/弹壳贴图.xml" loadImmediate="false" itemID="64d9fd11-00001953" lastModified="1692007732"/>
@@ -1110,7 +1110,7 @@
           <Include href="sprite/旋转刀光.xml" loadImmediate="false" itemID="65e00fb2-0000092f" lastModified="1709186799"/>
           <Include href="sprite/血槽底.xml" loadImmediate="false" itemID="65c9a8c3-00000624" lastModified="1707753328"/>
           <Include href="sprite/血槽韧性条.xml" loadImmediate="false" itemID="65c9a3a2-0000060a" lastModified="1707755072"/>
-          <Include href="sprite/佣兵npc.xml" itemID="668be6be-00000638" lastModified="1721321200"/>
+          <Include href="sprite/佣兵npc.xml" itemID="668be6be-00000638" lastModified="1742886322"/>
           <Include href="sprite/元件 1.xml" loadImmediate="false" itemID="66078dbd-00000693" lastModified="1711771069"/>
           <Include href="sprite/元件 2.xml" loadImmediate="false" itemID="66078dc1-00000698" lastModified="1711771073"/>
           <Include href="sprite/元件 3.xml" loadImmediate="false" itemID="66078dc5-0000069c" lastModified="1711771077"/>
@@ -1322,7 +1322,7 @@
           <Include href="重复项目文件夹/Symbol 70.xml" loadImmediate="false" itemID="66a1fb3c-00001f67" lastModified="1718634470"/>
           <Include href="重复项目文件夹/Symbol 71.xml" loadImmediate="false" itemID="66a1fb3c-00001f66" lastModified="1718938968"/>
           <Include href="重复项目文件夹/气流.xml" loadImmediate="false" itemID="674099cc-000008b1" lastModified="1732287107"/>
-          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1737228503"/>
+          <Include href="主角-男.xml" itemID="665305af-00000da4" lastModified="1742886792"/>
           <Include href="主角动画层/手枪2攻击.xml" loadImmediate="false" itemID="66576c39-00002e31" lastModified="1720908276"/>
           <Include href="主角动画层/手枪2站立.xml" loadImmediate="false" itemID="66576852-000009ed" lastModified="1720908276"/>
           <Include href="主角动画层/手枪攻击.xml" loadImmediate="false" itemID="6657384b-0000061d" lastModified="1720908276"/>
@@ -1340,7 +1340,7 @@
           <Include href="组合拳幻影4‘.xml" loadImmediate="false" itemID="674dba4f-00000597" lastModified="1733147216"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;465&lt;/guideline&gt;&lt;guideline direction="v"&gt;338&lt;/guideline&gt;&lt;guideline direction="v"&gt;220&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Layer 1" color="#DEEE3E" current="true" isSelected="true">
                          <frames>
@@ -1401,7 +1401,7 @@
                               </DOMFrame>
                               <DOMFrame index="3" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 617" selected="true" centerPoint3DX="114.75" centerPoint3DY="184.65">
+                                        <DOMSymbolInstance libraryItemName="sprite/Symbol 617" centerPoint3DX="114.75" centerPoint3DY="184.65">
                                              <matrix>
                                                   <Matrix tx="50.25" ty="147.95"/>
                                              </matrix>
@@ -1816,6 +1816,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2296538" publishTime="1742889207"/>
+          <PublishItem publishSize="2295987" publishTime="1742889166"/>
+          <PublishItem publishSize="2295987" publishTime="1742889121"/>
+          <PublishItem publishSize="2295987" publishTime="1742889012"/>
+          <PublishItem publishSize="2296446" publishTime="1742888723"/>
+          <PublishItem publishSize="2295987" publishTime="1742888530"/>
+          <PublishItem publishSize="2296452" publishTime="1742886378"/>
           <PublishItem publishSize="2286189" publishTime="1741598949"/>
           <PublishItem publishSize="2286151" publishTime="1741590875"/>
           <PublishItem publishSize="2286115" publishTime="1741590179"/>
@@ -1829,12 +1836,5 @@
           <PublishItem publishSize="3503532" publishTime="1735804718"/>
           <PublishItem publishSize="3503573" publishTime="1735804613"/>
           <PublishItem publishSize="3503575" publishTime="1735804571"/>
-          <PublishItem publishSize="3491097" publishTime="1733566459"/>
-          <PublishItem publishSize="3490865" publishTime="1733565408"/>
-          <PublishItem publishSize="3483137" publishTime="1733563870"/>
-          <PublishItem publishSize="3485781" publishTime="1733404029"/>
-          <PublishItem publishSize="3314667" publishTime="1733071198"/>
-          <PublishItem publishSize="3314672" publishTime="1733070871"/>
-          <PublishItem publishSize="3307837" publishTime="1733059147"/>
      </publishHistory>
 </DOMDocument>

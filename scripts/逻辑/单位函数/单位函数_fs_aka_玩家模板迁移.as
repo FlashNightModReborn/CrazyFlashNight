@@ -1403,12 +1403,10 @@ _root.主角函数.方向改变 = function(新方向){
 	if (新方向 === "右"){
 		方向 = "右";
 		this._xscale = myxscale;
-		人物文字信息._xscale = 100;
 		新版人物文字信息._xscale = 100;
 	}else if (新方向 === "左"){
 		方向 = "左";
 		this._xscale = -myxscale;
-		人物文字信息._xscale = -100;
 		新版人物文字信息._xscale = -100;
 	}
 };
@@ -2164,7 +2162,6 @@ _root.主角函数.死亡检测 = function()
 			}if (是佣兵){
 				_root.佣兵是否出战信息[佣兵是否出战信息id] = -1;
 				_root.佣兵信息界面.排列佣兵图标();
-				this.人物文字信息._visible = false;
 				this.新版人物文字信息._visible = false;
 				_root.add2map(this,2);
 				this.removeMovieClip();
@@ -2176,7 +2173,6 @@ _root.主角函数.死亡检测 = function()
 				_root.gameworld[产生源].僵尸型敌人场上实际人数--;
 				_root.gameworld[产生源].僵尸型敌人总个数--;
 				计算经验值();
-				this.人物文字信息._visible = false;
 				this.新版人物文字信息._visible = false;
 				_root.add2map(this,2);
 				this.removeMovieClip();

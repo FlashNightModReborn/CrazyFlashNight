@@ -2,6 +2,8 @@
 import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
+import org.flashNight.gesh.object.*;
+
 
 _root.删佣兵 = function(佣兵ID)
 {
@@ -446,15 +448,7 @@ _root.创建佣兵实体对象 = function(佣兵数据, X, Y)
 	佣兵对象.性别 = 佣兵数据[17];
 	佣兵对象.等级 = 佣兵数据[0];
 
-	// 随机设置佣兵的方向
-	if (_root.成功率(50))
-	{
-		佣兵对象.方向 = "左";
-	}
-	else
-	{
-		佣兵对象.方向 = "右";
-	}
+
 
 	// 设置佣兵对象的佣兵数据
 	佣兵对象.佣兵数据 = 佣兵数据;
@@ -475,14 +469,10 @@ _root.创建佣兵实体对象 = function(佣兵数据, X, Y)
 
 	var nx:Number = 佣兵对象.人物文字信息._x;
 	var ny:Number = 佣兵对象.人物文字信息._y;
-	佣兵对象.人物文字信息.unloadMovie();
-	佣兵对象.attachMovie("新版人物文字信息","新版人物文字信息",佣兵对象.getNextHighestDepth(),{_x:nx,_y:ny});
-	if(佣兵对象.方向 == "左"){
-		佣兵对象.新版人物文字信息._xscale = -100;
-	}
-	else{
-		佣兵对象.新版人物文字信息._xscale = 100;
-	}
+
+	// 随机设置佣兵的方向
+	var 方向 = _root.随机整数(0, 1) == 0 ? "左" : "右";
+	佣兵对象.方向 = 方向;
 
 
 	return 佣兵对象;// 返回创建的佣兵对象
