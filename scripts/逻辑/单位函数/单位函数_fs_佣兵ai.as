@@ -5,120 +5,122 @@ _root.佣兵思考时间间隔 = 1.5 * _root.帧计时器.帧率;
 
 _root.主角模板ai函数 = new Object();
 
-_root.主角模板ai函数.思考 = function()
-{
-	if (_root.暂停)
-	{
-		gotoAndPlay(_parent.命令);
-		return;
-	}
-	if (_parent.hp <= 0)
-	{
-		if (_root.血腥开关 == false)
-		{
-			_parent.状态改变("击倒");
-		}
-		else
-		{
-			_parent.状态改变("血腥死");
-		}
-		return;
-	}
-	if (_parent.操控编号 != -1 and _root.控制目标全自动 == false)
-	{
-		this.gotoAndPlay("不思考");
-		return;
-	}
-	_parent.随机切换攻击模式();
-	var 游戏世界 = _root.gameworld;
-
-	_parent.命令 = _root.命令;
-	switch (_parent.攻击模式)
-	{
-		case "空手" :
-			_parent.x轴攻击范围 = 90;
-			_parent.y轴攻击范围 = 20;
-			_parent.x轴保持距离 = 100;
-			break;
-		case "兵器" :
-			_parent.x轴攻击范围 = 150;
-			_parent.y轴攻击范围 = 20;
-			_parent.x轴保持距离 = 150;
-			break;
-		case "长枪" :
-		case "手枪" :
-		case "手枪2" :
-		case "双枪" :
-			_parent.x轴攻击范围 = 400;
-			_parent.y轴攻击范围 = 20;
-			_parent.x轴保持距离 = 200;
-			break;
-		case "手雷" :
-			_parent.x轴攻击范围 = 300;
-			_parent.y轴攻击范围 = 10;
-			_parent.x轴保持距离 = 200;
-			break;
-		default :// 写了再说
-			break;
-	}//使用血包流程，血量越低使用血包概率越高
-	var 当前时间:Number = _root.帧计时器.当前帧数;
-	if (_parent.血包数量 > 0 and 当前时间 - _parent.上次使用血包时间 > _parent.血包使用间隔)
-	{
-		var 自机肉度 = _parent.hp / _root.防御减伤比(_parent.防御力);
-		var 敌机肉度 = 游戏世界[_parent.攻击目标].hp / _root.防御减伤比(游戏世界[_parent.攻击目标].防御力);
-		敌机肉度 = isNaN(敌机肉度) ? 自机肉度 / 5 : 敌机肉度;
-		var 强弱修正系数 = 敌机肉度 / 自机肉度;
-		var 喝血系数 = 100 + 强弱修正系数 * 2 - _parent.血包恢复比例 * (100 - _parent.血包恢复比例) / 100;
-		var 损血补正:Number = _parent.hp满血值 * 喝血系数 / 100;
-		var 使用血包概率 = Math.min((损血补正 - _parent.hp) * 100 / _parent.hp满血值 * 强弱修正系数, 喝血系数);//_root.发布调试消息("使用血包概率为 " + 使用血包概率 +"  损血补正 " + 损血补正 + "自机肉度" + 自机肉度 + "敌机肉度" + 敌机肉度);
-		if (_root.成功率(使用血包概率) and _parent.hp满血值 > _parent.hp * (100 + _parent.血包恢复比例 / 8) / 100 or (游戏世界.允许通行 and _parent.hp满血值 > _parent.hp))
-		{
-			_parent.血包数量 -= 1;
-			var 佣兵血量缓存:Number = _parent.hp;
-			_root.佣兵使用血包(_parent._name);
-			_parent.上次使用血包时间 = 当前时间;
-			_root.发布消息(_parent.名字 + "[" + 佣兵血量缓存 + "/" + _parent.hp满血值 + "] 紧急治疗后还剩[" + _parent.血包数量 + "]个治疗包");
-		}
-	}
-
-
-	_parent.攻击目标 = "无";
-	寻找攻击目标();
-	if (_parent.是否为敌人 == false)
-	{
-		if (_root.集中攻击目标 == "无")
-		{
-			if (_parent.攻击目标 == "无")
-			{
-				gotoAndPlay(_parent.命令);
-			}
-			else
-			{
-				gotoAndStop("攻击");
-				play();
-			}
-		}
-		else
-		{
-			_parent.攻击目标 = _root.集中攻击目标;
-			gotoAndStop("攻击");
-			play();
-		}
-	}
-	else if (_parent.是否为敌人 == true)
-	{
-		if (_parent.攻击目标 == "无")
-		{
-			gotoAndStop("跟随");
-			play();
-		}
-		else
-		{
-			gotoAndStop("攻击");
-			play();
-		}
-	}
+_root.主角模板ai函数.思考 = function() {
+    // ────────────── 1. 早期退出条件 ──────────────
+    // 若处于暂停状态，则直接执行当前命令并退出
+    if (_root.暂停) {
+        gotoAndPlay(_parent.命令);
+        return;
+    }
+    // 若生命值不足，立即切换到死亡或击倒状态
+    if (_parent.hp <= 0) {
+        _parent.状态改变(_root.血腥开关 == false ? "击倒" : "血腥死");
+        return;
+    }
+    // 若角色被玩家控制且不是全自动控制，直接跳转至“不思考”状态
+    if (_parent.操控编号 != -1 && _root.控制目标全自动 == false) {
+        this.gotoAndPlay("不思考");
+        return;
+    }
+    
+    // ────────────── 2. 攻击模式设置 ──────────────
+    // 随机切换攻击模式，并将当前命令同步到父对象
+    _parent.随机切换攻击模式();
+    _parent.命令 = _root.命令;
+    var 游戏世界 = _root.gameworld;
+    
+    // 根据攻击模式设定攻击范围与保持距离（魔法数字可后续提取为常量）
+    switch (_parent.攻击模式) {
+        case "空手":
+            _parent.x轴攻击范围 = 90;
+            _parent.y轴攻击范围 = 20;
+            _parent.x轴保持距离 = 100;
+            break;
+        case "兵器":
+            _parent.x轴攻击范围 = 150;
+            _parent.y轴攻击范围 = 20;
+            _parent.x轴保持距离 = 150;
+            break;
+        case "长枪":
+        case "手枪":
+        case "手枪2":
+        case "双枪":
+            _parent.x轴攻击范围 = 400;
+            _parent.y轴攻击范围 = 20;
+            _parent.x轴保持距离 = 200;
+            break;
+        case "手雷":
+            _parent.x轴攻击范围 = 300;
+            _parent.y轴攻击范围 = 10;
+            _parent.x轴保持距离 = 200;
+            break;
+        default:
+            // 其他模式后续补充
+            break;
+    }
+    
+    // ────────────── 3. 血包使用逻辑 ──────────────
+    // 当满足间隔和拥有血包条件时，计算是否需要使用血包
+    var 当前时间:Number = _root.帧计时器.当前帧数;
+    if (_parent.血包数量 > 0 && 当前时间 - _parent.上次使用血包时间 > _parent.血包使用间隔) {
+        // 计算己方肉度：考虑防御减伤比
+        var 自机肉度:Number = _parent.hp / _root.防御减伤比(_parent.防御力);
+        // 安全计算敌方肉度，如目标不存在则取己方肉度的1/5作为参考
+        var enemy = 游戏世界[_parent.攻击目标];
+        var 敌机肉度:Number = (enemy && enemy.hp != undefined) ? enemy.hp / _root.防御减伤比(enemy.防御力) : NaN;
+        if (isNaN(敌机肉度)) {
+            敌机肉度 = 自机肉度 / 5;
+        }
+        // 根据双方肉度确定强弱修正与恢复系数
+        var 强弱修正系数:Number = 敌机肉度 / 自机肉度;
+        var 喝血系数:Number = 100 + 强弱修正系数 * 2 - _parent.血包恢复比例 * (100 - _parent.血包恢复比例) / 100;
+        var 损血补正:Number = _parent.hp满血值 * 喝血系数 / 100;
+        // 计算使用血包的概率（取上限值）
+        var 使用血包概率:Number = Math.min((损血补正 - _parent.hp) * 100 / _parent.hp满血值 * 强弱修正系数, 喝血系数);
+        
+        // 若成功率检测通过且满足血量条件，或游戏世界允许通行且血量未满，则使用血包
+        if (
+            (_root.成功率(使用血包概率) && _parent.hp满血值 > _parent.hp * (100 + _parent.血包恢复比例 / 8) / 100) ||
+            (游戏世界.允许通行 && _parent.hp满血值 > _parent.hp)
+        ) {
+            _parent.血包数量--;
+            var 佣兵血量缓存:Number = _parent.hp;
+            _root.佣兵使用血包(_parent._name);
+            _parent.上次使用血包时间 = 当前时间;
+            _root.发布消息(_parent.名字 + "[" + 佣兵血量缓存 + "/" + _parent.hp满血值 + "] 紧急治疗后还剩[" + _parent.血包数量 + "]个治疗包");
+        }
+    }
+    
+    // ────────────── 4. 攻击目标选择与行为决策 ──────────────
+    // 重置攻击目标后进行搜索
+    _parent.攻击目标 = "无";
+    寻找攻击目标();
+    
+    // 根据是否为敌人以及是否有集中目标来决定后续动作
+    if (!_parent.是否为敌人) {
+        if (_root.集中攻击目标 == "无") {
+            if (_parent.攻击目标 == "无") {
+                gotoAndPlay(_parent.命令);
+            } else {
+                gotoAndStop("攻击");
+                play();
+            }
+        } else {
+            _parent.攻击目标 = _root.集中攻击目标;
+            gotoAndStop("攻击");
+            play();
+        }
+    } else { // 若为敌人，则根据目标是否存在选择跟随或攻击
+        if (_parent.攻击目标 == "无") {
+            gotoAndStop("跟随");
+            play();
+        } else {
+            gotoAndStop("攻击");
+            play();
+        }
+    }
 };
+
 
 _root.主角模板ai函数.攻击 = function(x轴攻击范围, y轴攻击范围, x轴保持距离)
 {
