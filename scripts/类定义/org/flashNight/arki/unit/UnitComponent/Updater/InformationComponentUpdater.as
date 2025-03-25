@@ -51,9 +51,20 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
             dispatcher.publish("HPChanged", target, actualHpWidth);
         } else {
             target.hpUnchangedCounter++;
+
+            if(target.remainingImpactForce < target.韧性上限 / ImpactHandler.IMPACT_STAGGER_COEFFICIENT / target.躲闪率) {
+                if(target.barColorState != "常态") {
+                    target.barColorState = "常态";
+                }
+            } 
+            BloodBarEffectHandler.updateColor(target);
         }
 
-        
+        // ------------------- 更新韧性与刚体遮罩 -------------------
+
+
+        hpBar.韧性条._width = !(target.浮空 || target.倒地) ? bloodBarLength * target.nonlinearMappingResilience : 0;
+        hpBar.刚体遮罩._visible = !!(target.刚体 || target.man.刚体标签);
 
         // ------------------- 残余血槽动画逻辑 -------------------
         var currentCounter:Number = target.hpUnchangedCounter;
@@ -86,23 +97,5 @@ class org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater
         } else {
             hpBar._alpha = 100;
         }
-
-        // ------------------- 更新韧性与刚体遮罩 -------------------
-
-        if(target.remainingImpactForce < target.韧性上限 / ImpactHandler.IMPACT_STAGGER_COEFFICIENT / target.躲闪率) {
-            
-            if(target.barColorState != "常态") {
-                target.barColorState = "常态";
-                BloodBarEffectHandler.updateColor(target);
-            }
-        } 
-
-        var w:Number = 0;
-        if(!(target.浮空 || target.倒地)) {
-            w = bloodBarLength * target.nonlinearMappingResilience;
-        }
-        hpBar.韧性条._width = w;
-
-        hpBar.刚体遮罩._visible = !!(target.刚体 || target.man.刚体标签);
     }
 }

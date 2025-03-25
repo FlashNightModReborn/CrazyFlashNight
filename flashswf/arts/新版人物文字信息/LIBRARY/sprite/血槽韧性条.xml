@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽韧性条" itemID="65c9a3a2-0000060a" lastModified="1742805843" lastUniqueIdentifier="5">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/血槽韧性条" itemID="65c9a3a2-0000060a" lastModified="1742868006" lastUniqueIdentifier="7">
   <timeline>
-    <DOMTimeline name="血槽韧性条" currentFrame="300">
+    <DOMTimeline name="血槽韧性条" currentFrame="105">
       <layers>
         <DOMLayer name="Labels Layer" color="#6788CD">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#F27FAC" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#F27FAC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -30,16 +30,6 @@
 stop();
 ]]></script>
               </Actionscript>
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 3" color="#2ABBDE">
-          <frames>
-            <DOMFrame index="0" duration="300" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="300" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -63,7 +53,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="血槽条" color="#88E458" autoNamed="false">
+        <DOMLayer name="血槽条" color="#88E458" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="300" keyMode="9728">
               <elements>
