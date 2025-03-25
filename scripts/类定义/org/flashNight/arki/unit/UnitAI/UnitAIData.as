@@ -55,14 +55,16 @@
         this.xdistance = self.x轴保持距离;
     }
 
-    public function update():Void{
+    public function updateSelf():Void{
         this.state = self.状态;
         this.x = self._x;
         this.y = self._y;
         this.z = self.Z轴坐标;
         this.right = self.方向 === "右";
         this.left = self.方向 === "左";
-        //
+    }
+    
+    public function updateTarget():Void{
         var target:MovieClip = this.target;
         if(target != null){
             this.tx = target._x;

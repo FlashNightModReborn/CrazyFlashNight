@@ -36,7 +36,8 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         return this.activeState;
     }
     public function setActiveState(state:FSM_Status):Void{
-        this.activeState = state;
+        if(state == null) this.activeState = this.defaultState;
+        else this.activeState = state;
     }
     public function getLastState():FSM_Status{
         return this.lastState;

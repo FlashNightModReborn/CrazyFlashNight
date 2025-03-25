@@ -165,23 +165,6 @@ _root.敌人ai函数.寻找攻击目标 = function()
 	}
 }
 
-_root.敌人ai函数.随机移动 = function(随机移动时间)
-{
-	function pause3()
-	{
-		_parent.上行 = 0;
-		_parent.下行 = 0;
-		_parent.左行 = 0;
-		_parent.右行 = 0;
-	}
-	_parent.上行 = random(2);
-	_parent.下行 = random(2);
-	_parent.左行 = random(2);
-	_parent.右行 = random(2);
-	clearTimeout(pauseInterval3);
-	pauseInterval3 = setTimeout(pause3, 随机移动时间);
-}
-
 
 //敌人佣兵
 _root.敌人ai函数.思考_佣兵 = function()
