@@ -55,6 +55,11 @@
     <SubStage id="0">
         <BasicInformation>
             <Background>flashswf/backgrounds/gk6_2_BG.swf</Background>
+            <BGM>
+                <Command>play</Command>
+                <Title>dyingsociety</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <SpawnPoint>
             <Point id="0">
