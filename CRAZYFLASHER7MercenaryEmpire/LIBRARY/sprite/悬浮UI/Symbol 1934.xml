@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1934" itemID="6597607e-00000a56" lastModified="1742901345">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1934" itemID="6597607e-00000a56" lastModified="1742901597">
   <timeline>
-    <DOMTimeline name="Symbol 1934" currentFrame="55">
+    <DOMTimeline name="Symbol 1934">
       <layers>
         <DOMLayer name="Labels Layer" color="#A6E482">
           <frames>
@@ -113,6 +113,10 @@ function 强化上限检测(){
 		if (_root.主线任务进度 < 75)
 		{
 			强化度上限 = 7;
+		}
+		if (_root.主角被动技能.铁匠 && _root.主角被动技能.铁匠.启用 && _root.主角被动技能.铁匠.等级 >= 10)
+		{
+			强化度上限 += 1;
 		}
 		上限提示 = "当前阶段的上限为" + 强化度上限 + "级，强化等级已经达到当前阶段的上限，不可继续强化！推进流程可获得更高级别的强化技术。<BR>";
 	}
