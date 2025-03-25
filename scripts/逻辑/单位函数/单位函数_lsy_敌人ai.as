@@ -236,9 +236,10 @@ _root.初始化敌人ai = function(){
 	this.随机移动 = _root.敌人ai函数.随机移动;
 }
 
-/*
-_root.初始化思考标签 = function(){
-	this._name = "思考标签";
-	this.stop();
+
+_root.初始化思考标签 = function(target){
+	target._name = "思考标签";
+	target.stop();
+	target._visible = false;
 }
-*/
+

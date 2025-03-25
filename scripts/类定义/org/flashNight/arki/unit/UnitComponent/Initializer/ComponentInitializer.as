@@ -13,6 +13,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.ComponentInitializer {
         if (!target.dispatcher) {
             target.dispatcher = new LifecycleEventDispatcher(target);
         }
+        if(!target.unitAI){
+            UnitAIInitializer.initialize(target);
+        }
 
         EventCoordinator.addUnloadCallback(target, function():Void {
             StaticDeinitializer.deInitializeUnit(target);

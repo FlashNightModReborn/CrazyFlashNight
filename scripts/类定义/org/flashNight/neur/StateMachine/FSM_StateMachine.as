@@ -29,6 +29,9 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         }
     }
 
+    public function getDefaultState():FSM_Status{
+        return this.defaultState;
+    }
     public function getActiveState():FSM_Status{
         return this.activeState;
     }

@@ -23,6 +23,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
             _root.帧计时器.移除任务(target.updateEventComponentID);
         }
         
+        // 以4帧为间隔加入生命周期任务
         target.updateEventComponentID = _root.帧计时器.添加生命周期任务(target, label, function (t:MovieClip)
         {
             this.dispatcher.publish("UpdateEventComponent", t);
@@ -32,5 +33,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
     public static function onUpdate(target:MovieClip):Void {
         ImpactUpdater.update(target);
         InformationComponentUpdater.update(target);
+        target.unitAI.update();
     }
 }
