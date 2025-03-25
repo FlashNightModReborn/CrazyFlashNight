@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1934" itemID="6597607e-00000a56" lastModified="1735470868">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1934" itemID="6597607e-00000a56" lastModified="1742901345">
   <timeline>
-    <DOMTimeline name="Symbol 1934">
+    <DOMTimeline name="Symbol 1934" currentFrame="55">
       <layers>
         <DOMLayer name="Labels Layer" color="#A6E482">
           <frames>
@@ -191,7 +191,7 @@ _root.全部翻译(this);
 		强化度转换按钮._visible = 0;
 		return undefined;
 	}
-	if (icon1.value.level >= 13 || icon2.value.level >= 13)
+	if (icon1.value.level > 13 || icon2.value.level > 13)
 	{
 		是否可强化度转换 = false;
 		提示 = _root.获得翻译("强化等级已经超过最大，不可强化度转换！") + "<BR>";
