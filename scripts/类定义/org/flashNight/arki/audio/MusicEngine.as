@@ -44,7 +44,7 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
         this.AddStatus("mute", muteState);
         
         // 添加转换：淡入完成后切换到播放状态
-        this.transitions.AddTransition("fadein", "playing", function():Boolean {
+        this.transitions.push("fadein", "playing", function():Boolean {
             var state = this.getActiveState();
             if (state.isComplete != undefined && state.isComplete()) {
                 return true;
@@ -53,7 +53,7 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
         });
         
         // 转换：淡出完成后尝试切换到下一首背景音乐
-        this.transitions.AddTransition("fadeout", "fadein", function():Boolean {
+        this.transitions.push("fadeout", "fadein", function():Boolean {
             var state = this.getActiveState();
             if (currentClip != null && currentClip !== "" && state.isComplete()) {
                 return true;
@@ -61,7 +61,7 @@ class org.flashNight.arki.audio.MusicEngine extends FSM_StateMachine implements 
             return false;
         });
         // 转换：淡出完成后切换到空闲状态
-        this.transitions.AddTransition("fadeout", "idle", function():Boolean {
+        this.transitions.push("fadeout", "idle", function():Boolean {
             var state = this.getActiveState();
             if (state.isComplete != undefined && state.isComplete()) {
                 return true;

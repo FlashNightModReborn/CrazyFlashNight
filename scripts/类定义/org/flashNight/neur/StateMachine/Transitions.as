@@ -9,13 +9,28 @@ class org.flashNight.neur.StateMachine.Transitions {
         this.lists = new Object();
     }
 
-    public function AddTransition(current:String,target:String,func:Function):Void{
+    // 为一个子状态新增一条优先级最低的过渡线
+    public function push(current:String,target:String,func:Function):Void{
         var list = this.lists[current];
         if(list == null){
             list = new Array();
             this.lists[current] = list;
         }
         list.push({
+            target:target,
+            active:true,
+            func:func
+        });
+    }
+
+    // 为一个子状态新增一条优先级最高的过渡线
+    public function unshift(current:String,target:String,func:Function):Void{
+        var list = this.lists[current];
+        if(list == null){
+            list = new Array();
+            this.lists[current] = list;
+        }
+        list.unshift({
             target:target,
             active:true,
             func:func

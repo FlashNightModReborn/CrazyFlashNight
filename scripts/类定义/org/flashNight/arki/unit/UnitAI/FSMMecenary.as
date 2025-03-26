@@ -28,20 +28,20 @@ class org.flashNight.arki.unit.UnitAI.FSMMecenary extends FSM_StateMachine{
         this.AddStatus("Walking",new FSM_Status(null, this.walk_enter,null));
 
         //过渡线
-        this.transitions.AddTransition("Idle","Thinking",function(){
+        this.transitions.push("Idle","Thinking",function(){
             return this.actionCount >= FSMMecenary.IDLE_TIME;
         });
-        this.transitions.AddTransition("Walking","Thinking",function(){
+        this.transitions.push("Walking","Thinking",function(){
             return this.actionCount >= FSMMecenary.WALK_TIME;
         });
 
         // 检测到思考标签时结束睡眠状态进入思考状态
-        this.transitions.AddTransition("Sleeping","Thinking",function(){
+        this.transitions.push("Sleeping","Thinking",function(){
             return data.self.思考标签 != null && _root.暂停 !== true;
         });
         // 所有状态在游戏暂停时及思考标签不存在时均会过渡到睡眠状态
-        this.transitions.AddTransition("Idle","Sleeping", this.sleepCheck);
-        this.transitions.AddTransition("Walking","Sleeping", this.sleepCheck);
+        this.transitions.push("Idle","Sleeping", this.sleepCheck);
+        this.transitions.push("Walking","Sleeping", this.sleepCheck);
     }
 
 

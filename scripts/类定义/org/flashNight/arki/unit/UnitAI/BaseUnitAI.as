@@ -4,7 +4,6 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
 
     // 自身引用
     public var self:MovieClip;
-
     public var type:String;
 
     // 状态机实例
