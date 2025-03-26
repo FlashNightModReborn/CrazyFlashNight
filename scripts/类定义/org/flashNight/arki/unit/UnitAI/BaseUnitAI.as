@@ -17,18 +17,18 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
         this.data = new UnitAIData(this.self);
         switch(this.type){
             case "Enemy":
-                this.stateMachine = new FSMEnemy(this.data);
+                this.stateMachine = new EnemyBehavior(this.data);
                 break;
             case "Mecenary":
-                this.stateMachine = new FSMMecenary(this.data);
+                this.stateMachine = new MecenaryBehavior(this.data);
                 break;
             default:
                 this.type = "Enemy";
-                this.stateMachine = new FSMEnemy(this.data);
+                this.stateMachine = new EnemyBehavior(this.data);
                 break;
         }
         
-        this.stateMachine.setActiveState(this.stateMachine.getDefaultState());
+        this.stateMachine.activate();
     }
 
     //更新函数

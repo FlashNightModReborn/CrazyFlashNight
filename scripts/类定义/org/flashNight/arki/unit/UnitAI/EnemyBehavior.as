@@ -1,26 +1,23 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
 
+import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
-// 单位基础状态机
+// 敌人基础状态机，继承单位状态机基类
 
-class org.flashNight.arki.unit.UnitAI.FSMEnemy extends FSM_StateMachine{
+class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
     public static var IDLE_TIME:Number = 16; // 停止状态持续17次action（即68帧）
     public static var WANDER_TIME:Number = 50; // 随机移动状态持续50次action（即200帧）
     public static var PAUSE_TIME:Number = 5; // 跟随状态持续5次action（即20帧）
 
-    // 数据黑板
-    public var data:UnitAIData;
+    public function EnemyBehavior(_data:UnitAIData){
+        super(_data);
 
-    public function FSMEnemy(_data:UnitAIData){
-        super(null,null.null);
-        this.data = _data;
+        // 状态列表 
+        // 已存在的包括基类的睡眠状态（默认状态）
 
-        // 状态列表
-        // 睡眠状态（默认状态）
-        this.AddStatus("Sleeping",new FSM_Status(null, this.sleep_enter, null));
         // 思考状态，结算进入状态函数后一定会跳转至其他状态
         this.AddStatus("Thinking",new FSM_Status(null, this.think, null));
         // 追击状态
@@ -40,34 +37,22 @@ class org.flashNight.arki.unit.UnitAI.FSMEnemy extends FSM_StateMachine{
             return random(data.self.随机移动机率) == 0;
         });
         this.transitions.push("Idle","Thinking",function(){
-            return this.actionCount >= FSMEnemy.IDLE_TIME;
+            return this.actionCount >= EnemyBehavior.IDLE_TIME;
         });
         this.transitions.push("Wandering","Thinking",function(){
-            return this.actionCount >= FSMEnemy.WANDER_TIME;
+            return this.actionCount >= EnemyBehavior.WANDER_TIME;
         });
         this.transitions.push("Following","Thinking",function(){
-            return this.actionCount >= FSMEnemy.PAUSE_TIME;
+            return this.actionCount >= EnemyBehavior.PAUSE_TIME;
         });
 
         // 检测到思考标签时结束睡眠状态进入思考状态
-        this.transitions.push("Sleeping","Thinking",function(){
-            return data.self.思考标签 != null && _root.暂停 !== true;
-        });
-        // 所有状态在游戏暂停时及思考标签不存在时均会过渡到睡眠状态
-        this.transitions.push("Chasing","Sleeping", this.sleepCheck);
-        this.transitions.push("Following","Sleeping", this.sleepCheck);
-        this.transitions.push("Idle","Sleeping", this.sleepCheck);
-        this.transitions.push("Wandering","Sleeping", this.sleepCheck);
+        this.transitions.push("Sleeping","Thinking",this.wakeupCheck);
     }
 
 
 
     // 具体执行函数
-    // 检查是否启用ai
-    public function sleepCheck(){
-        return data.self.思考标签 == null || _root.暂停 === true;
-    }
-
     //思考
     public function think():Void{
         data.updateSelf(); // 更新自身坐标
@@ -156,13 +141,6 @@ class org.flashNight.arki.unit.UnitAI.FSMEnemy extends FSM_StateMachine{
             self.上行 = data.z > playery;
             self.下行 = data.z < playery;
         }
-    }
-    //睡眠及各个停止函数通用
-    public function sleep_enter():Void{
-        data.self.左行 = false;
-        data.self.右行 = false;
-        data.self.上行 = false;
-        data.self.下行 = false;
     }
     //随机移动
     public function wander_enter():Void{

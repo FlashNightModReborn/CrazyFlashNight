@@ -1,25 +1,22 @@
 ﻿import org.flashNight.neur.StateMachine.FSM_Status;
 import org.flashNight.neur.StateMachine.FSM_StateMachine;
 
+import org.flashNight.arki.unit.UnitAI.BaseUnitBehavior;
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
-// 场景中佣兵与可雇佣敌人NPC的状态机
+// 场景中佣兵与可雇佣敌人NPC的状态机，继承单位状态机基类
 
-class org.flashNight.arki.unit.UnitAI.FSMMecenary extends FSM_StateMachine{
+class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
 
     public static var IDLE_TIME:Number = 10; // 停止状态持续10次action（即40帧）
     public static var WALK_TIME:Number = 5; // 移动状态持续5次action（即20帧）
 
-    // 数据黑板
-    public var data:UnitAIData;
+    public function MecenaryBehavior(_data:UnitAIData){
+        super(_data);
 
-    public function FSMMecenary(_data:UnitAIData){
-        super(null,null.null);
-        this.data = _data;
+        // 状态列表 
+        // 已存在的包括基类的睡眠状态（默认状态）
 
-        // 状态列表
-        // 睡眠状态（默认状态）
-        this.AddStatus("Sleeping",new FSM_Status(null, this.sleep_enter, null));
         // 思考状态，结算进入状态函数后一定会跳转至其他状态
         this.AddStatus("Thinking",new FSM_Status(null, this.think, null));
         // 空闲状态
@@ -29,29 +26,19 @@ class org.flashNight.arki.unit.UnitAI.FSMMecenary extends FSM_StateMachine{
 
         //过渡线
         this.transitions.push("Idle","Thinking",function(){
-            return this.actionCount >= FSMMecenary.IDLE_TIME;
+            return this.actionCount >= MecenaryBehavior.IDLE_TIME;
         });
         this.transitions.push("Walking","Thinking",function(){
-            return this.actionCount >= FSMMecenary.WALK_TIME;
+            return this.actionCount >= MecenaryBehavior.WALK_TIME;
         });
 
         // 检测到思考标签时结束睡眠状态进入思考状态
-        this.transitions.push("Sleeping","Thinking",function(){
-            return data.self.思考标签 != null && _root.暂停 !== true;
-        });
-        // 所有状态在游戏暂停时及思考标签不存在时均会过渡到睡眠状态
-        this.transitions.push("Idle","Sleeping", this.sleepCheck);
-        this.transitions.push("Walking","Sleeping", this.sleepCheck);
+        this.transitions.push("Sleeping","Thinking",this.wakeupCheck);
     }
 
 
 
     // 具体执行函数
-    // 检查是否启用ai
-    public function sleepCheck(){
-        return data.self.思考标签 == null || _root.暂停 === true;
-    }
-
     //思考
     public function think():Void{
         data.updateSelf(); // 更新自身坐标
@@ -101,12 +88,5 @@ class org.flashNight.arki.unit.UnitAI.FSMMecenary extends FSM_StateMachine{
             self.上行 = data.diff_z < 0;
             self.下行 = data.diff_z > 0;
         }
-    }
-    //睡眠及各个停止函数通用
-    public function sleep_enter():Void{
-        data.self.左行 = false;
-        data.self.右行 = false;
-        data.self.上行 = false;
-        data.self.下行 = false;
     }
 }
