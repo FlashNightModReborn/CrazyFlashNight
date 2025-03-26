@@ -1,43 +1,70 @@
-﻿_root.装备生命周期函数.wa90变形款初始化 = function(反射对象, 参数对象) 
+﻿_root.装备生命周期函数.wa90变形款初始化 = function(reflector:Object, paramObj:Object) 
 {
-   反射对象.animationDuration = 参数对象.animationDuration ? 参数对象.animationDuration : 15;
-   反射对象.currentFrame = 1;
-   反射对象.animationTarget = 参数对象.animationTarget ? 参数对象.animationTarget : "动画";
-   反射对象.instanceContainer = 参数对象.instanceContainer ? 参数对象.instanceContainer : "长枪_引用";
+   reflector.animationDuration = paramObj.animationDuration ? paramObj.animationDuration : 15;
+   reflector.currentFrame = 1;
+   reflector.animationTarget = paramObj.animationTarget ? paramObj.animationTarget : "动画";
+   reflector.instanceContainer = paramObj.instanceContainer ? paramObj.instanceContainer : "长枪_引用";
+   reflector.funcParam = paramObj.funcParam ? paramObj.funcParam : {攻击模式:"长枪"};
 
-   var target:MovieClip = 反射对象.自机[反射对象.instanceContainer][反射对象.animationTarget];
+   var target:MovieClip = reflector.自机[reflector.instanceContainer][reflector.animationTarget];
    // 初始化动画状态
-   target.gotoAndStop(反射对象.currentFrame);
-   var af:String = 参数对象.actionFunc ? 参数对象.actionFunc : "是否使用长枪";
+   target.gotoAndStop(reflector.currentFrame);
+   var af:String = paramObj.actionFunc ? paramObj.actionFunc : "自机状态检测";
    // 状态判断函数
-   反射对象.actionFunc = _root.装备生命周期函数[af];
+   reflector.actionFunc = _root.装备生命周期函数[af];
+
+   reflector.funcType = paramObj.funcType ? paramObj.funcType : "FIRST_MATCH";
 };
 
-_root.装备生命周期函数.wa90变形款周期 = function(反射对象, 参数对象) 
+_root.装备生命周期函数.wa90变形款周期 = function(reflector:Object, paramObj:Object) 
 {
-   _root.装备生命周期函数.移除异常周期函数(反射对象);
+   _root.装备生命周期函数.移除异常周期函数(reflector);
    
-   if(反射对象.actionFunc()) 
+   if (reflector.actionFunc(reflector, reflector.funcParam))
    {
-      if(反射对象.currentFrame < 反射对象.animationDuration) 
+      if(reflector.currentFrame < reflector.animationDuration) 
       {
-         反射对象.currentFrame++;
+         reflector.currentFrame++;
       }
    }
    else 
    {
-      if(反射对象.currentFrame > 1) 
+      if(reflector.currentFrame > 1) 
       {
-         反射对象.currentFrame--;
+         reflector.currentFrame--;
       }
    }
-   var target:MovieClip = 反射对象.自机[反射对象.instanceContainer][反射对象.animationTarget];
+   var target:MovieClip = reflector.自机[reflector.instanceContainer][reflector.animationTarget];
    // 同步动画帧
-   target.gotoAndStop(反射对象.currentFrame);
+   target.gotoAndStop(reflector.currentFrame);
 };
 
 
-_root.装备生命周期函数.是否使用长枪 = function(反射对象)
+_root.装备生命周期函数.自机状态检测 = function(reflector:Object, funcParam:Object) 
 {
-   return (反射对象.自机.攻击模式 === "长枪");
+    switch(reflector.funcType) 
+    {
+        case "ANY_MATCH": // 任意条件满足即返回true
+            for (var k in funcParam) {
+                if (reflector.自机[k] === funcParam[k]) {
+                    return true;
+                }
+            }
+            return false;
+            
+        case "ALL_MATCH": // 全部条件满足才返回true
+            for (var k in funcParam) {
+                if (reflector.自机[k] !== funcParam[k]) {
+                    return false;
+                }
+            }
+            return true;
+            
+        case "FIRST_MATCH": // 默认模式：按顺序检查，第一个遇到的属性决定结果
+        default:
+            for (var k in funcParam) {
+                return (reflector.自机[k] === funcParam[k]);
+            }
+            return false;
+    }
 };
