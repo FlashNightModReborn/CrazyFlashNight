@@ -1,70 +1,52 @@
-﻿_root.装备生命周期函数.wa90变形款初始化 = function(reflector:Object, paramObj:Object) 
+﻿/**
+ * wa90专用初始化
+ */
+_root.装备生命周期函数.wa90变形款初始化 = function(reflector:Object, paramObj:Object) 
 {
-   reflector.animationDuration = paramObj.animationDuration ? paramObj.animationDuration : 15;
-   reflector.currentFrame = 1;
-   reflector.animationTarget = paramObj.animationTarget ? paramObj.animationTarget : "动画";
-   reflector.instanceContainer = paramObj.instanceContainer ? paramObj.instanceContainer : "长枪_引用";
-   reflector.funcParam = paramObj.funcParam ? paramObj.funcParam : {攻击模式:"长枪"};
+    // 可以先对 paramObj 做一些wa90专属的默认参数处理
+    paramObj = paramObj || {};
 
-   var target:MovieClip = reflector.自机[reflector.instanceContainer][reflector.animationTarget];
-   // 初始化动画状态
-   target.gotoAndStop(reflector.currentFrame);
-   var af:String = paramObj.actionFunc ? paramObj.actionFunc : "自机状态检测";
-   // 状态判断函数
-   reflector.actionFunc = _root.装备生命周期函数[af];
+    // 针对wa90的默认值
+    if (paramObj.animationDuration == undefined) {
+        paramObj.animationDuration = 15;
+    }
+    if (paramObj.animationTarget == undefined) {
+        paramObj.animationTarget = "动画";
+    }
+    if (paramObj.instanceContainer == undefined) {
+        paramObj.instanceContainer = "长枪_引用";
+    }
+    if (paramObj.actionFunc == undefined) {
+        paramObj.actionFunc = "自机状态检测";
+    }
+    if (paramObj.actionFuncParam == undefined) {
+        paramObj.actionFuncParam = {
+            matchConditions:{ 攻击模式:"长枪", wa90变形:true },
+            funcType:"ALL_MATCH"
+        };
+    }
+    if (paramObj.updateFunc == undefined) {
+        paramObj.updateFunc = "自机状态检测";
+    }
+    if (paramObj.updateFuncParam == undefined) {
+        paramObj.updateFuncParam = {
+            matchConditions: { 攻击模式:"长枪" },
+            funcType: "FIRST_MATCH",
+            triggerKey: "武器变形键",
+            triggerFunc: "反转自机属性",
+            triggerFuncParam: "wa90变形"
+        };
+    }
 
-   reflector.funcType = paramObj.funcType ? paramObj.funcType : "FIRST_MATCH";
+    // 调用通用初始化
+    _root.装备生命周期函数.通用变形初始化(reflector, paramObj);
 };
 
+/**
+ * wa90专用周期逻辑
+ */
 _root.装备生命周期函数.wa90变形款周期 = function(reflector:Object, paramObj:Object) 
 {
-   _root.装备生命周期函数.移除异常周期函数(reflector);
-   
-   if (reflector.actionFunc(reflector, reflector.funcParam))
-   {
-      if(reflector.currentFrame < reflector.animationDuration) 
-      {
-         reflector.currentFrame++;
-      }
-   }
-   else 
-   {
-      if(reflector.currentFrame > 1) 
-      {
-         reflector.currentFrame--;
-      }
-   }
-   var target:MovieClip = reflector.自机[reflector.instanceContainer][reflector.animationTarget];
-   // 同步动画帧
-   target.gotoAndStop(reflector.currentFrame);
-};
-
-
-_root.装备生命周期函数.自机状态检测 = function(reflector:Object, funcParam:Object) 
-{
-    switch(reflector.funcType) 
-    {
-        case "ANY_MATCH": // 任意条件满足即返回true
-            for (var k in funcParam) {
-                if (reflector.自机[k] === funcParam[k]) {
-                    return true;
-                }
-            }
-            return false;
-            
-        case "ALL_MATCH": // 全部条件满足才返回true
-            for (var k in funcParam) {
-                if (reflector.自机[k] !== funcParam[k]) {
-                    return false;
-                }
-            }
-            return true;
-            
-        case "FIRST_MATCH": // 默认模式：按顺序检查，第一个遇到的属性决定结果
-        default:
-            for (var k in funcParam) {
-                return (reflector.自机[k] === funcParam[k]);
-            }
-            return false;
-    }
+    // 直接调用通用周期
+    _root.装备生命周期函数.通用变形周期(reflector, paramObj);
 };
