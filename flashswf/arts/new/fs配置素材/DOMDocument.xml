@@ -4,7 +4,7 @@
           <DOMFolderItem name="2.音效文件夹/爆炸" itemID="656c296a-0000103c" isExpanded="true"/>
           <DOMFolderItem name="53式步骑枪" itemID="659ea370-00000ca4"/>
           <DOMFolderItem name="sprite" itemID="667d1fff-00000d61"/>
-          <DOMFolderItem name="wa90" itemID="6559d3b1-000002db"/>
+          <DOMFolderItem name="wa90" itemID="6559d3b1-000002db" isExpanded="true"/>
           <DOMFolderItem name="wa90/Graphic" itemID="5e86cc75-00001260"/>
           <DOMFolderItem name="电感切割刃" itemID="655c5883-00000334"/>
           <DOMFolderItem name="火药燃气液压打桩机" itemID="655175a5-000006e2"/>
@@ -37,17 +37,17 @@
      </folders>
      <media>
           <DOMSoundItem name=" 副本" itemID="6576afed-000002c0" sourceExternalFilepath="./LIBRARY/ 副本" sourceLastImported="1444283124" href=" 副本" soundDataHRef="M 8 1700035794.dat" format="11kHz 16bit Mono" sampleCount="8037" exportFormat="0" exportBits="7" dataLength="9195" cachedSampleCount="5472"/>
-          <DOMBitmapItem name="未命名文件夹 1/ 副本" itemID="6576afed-000002bf" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/ 副本" sourceLastImported="1443854838" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/ 副本" bitmapDataHRef="M 1 1699845152.dat" frameRight="3620" frameBottom="1080"/>
-          <DOMBitmapItem name="未命名文件夹 1/未命名文件夹 1/ 副本" itemID="6576afed-000002be" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/未命名文件夹 1/ 副本" sourceLastImported="1443854838" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/未命名文件夹 1/ 副本" bitmapDataHRef="M 2 1699857105.dat" frameRight="3620" frameBottom="1080"/>
-          <DOMBitmapItem name="未命名文件夹 1/1/ 副本" itemID="6576afed-000002bb" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/1/ 副本" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/1/ 副本" bitmapDataHRef="M 5 1699868113.dat" frameRight="1680" frameBottom="2400"/>
-          <DOMBitmapItem name="火药燃气液压打桩机/未命名文件夹 1/1/ 副本" itemID="6576afed-000002ba" sourceExternalFilepath="./LIBRARY/火药燃气液压打桩机/未命名文件夹 1/1/ 副本" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="火药燃气液压打桩机/未命名文件夹 1/1/ 副本" bitmapDataHRef="M 7 1699868129.dat" frameRight="1680" frameBottom="2400"/>
-          <DOMBitmapItem name="wa90/ 副本" itemID="6576afed-000002b9" sourceExternalFilepath="./LIBRARY/wa90/ 副本.png" sourceLastImported="1597477665" sourcePlatform="macintosh" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="wa90/ 副本.png" bitmapDataHRef="M 8 1700385166.dat" frameRight="13760" frameBottom="7200"/>
+          <DOMBitmapItem name="未命名文件夹 1/ 副本" itemID="6576afed-000002bf" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/ 副本" sourceLastImported="1443854838" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/ 副本" bitmapDataHRef="M 1 1699845152.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="未命名文件夹 1/未命名文件夹 1/ 副本" itemID="6576afed-000002be" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/未命名文件夹 1/ 副本" sourceLastImported="1443854838" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/未命名文件夹 1/ 副本" bitmapDataHRef="M 2 1699857105.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="未命名文件夹 1/1/ 副本" itemID="6576afed-000002bb" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/1/ 副本" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/1/ 副本" bitmapDataHRef="M 5 1699868113.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="火药燃气液压打桩机/未命名文件夹 1/1/ 副本" itemID="6576afed-000002ba" sourceExternalFilepath="./LIBRARY/火药燃气液压打桩机/未命名文件夹 1/1/ 副本" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="火药燃气液压打桩机/未命名文件夹 1/1/ 副本" bitmapDataHRef="M 7 1699868129.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="wa90/ 副本" itemID="6576afed-000002b9" sourceExternalFilepath="./LIBRARY/wa90/ 副本.png" sourceLastImported="1597477665" sourcePlatform="macintosh" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="wa90/ 副本.png" bitmapDataHRef="M 8 1700385166.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMSoundItem name=" 副本 2" itemID="6576afed-000002c8" sourceExternalFilepath="./LIBRARY/ 副本 2" sourceLastImported="1444283124" href=" 副本 2" soundDataHRef="M 8 1700035794.dat" format="11kHz 16bit Mono" sampleCount="8037" exportFormat="0" exportBits="7" dataLength="9195" cachedSampleCount="5472"/>
           <DOMBitmapItem name="未命名文件夹 1/ 副本 2" itemID="6576afed-000002c7" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/ 副本 2" sourceLastImported="1443854838" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/ 副本 2" bitmapDataHRef="M 1 1699845152.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="未命名文件夹 1/未命名文件夹 1/ 副本 2" itemID="6576afed-000002c6" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/未命名文件夹 1/ 副本 2" sourceLastImported="1443854838" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/未命名文件夹 1/ 副本 2" bitmapDataHRef="M 2 1699857105.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="wa90/ 副本 2" itemID="6576afed-000002c1" sourceExternalFilepath="./LIBRARY/wa90/ 副本 2.png" sourceLastImported="1597477665" sourcePlatform="macintosh" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="wa90/ 副本 2.png" bitmapDataHRef="M 8 1700385166.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="未命名文件夹 1/1/ 副本 2" itemID="6576afed-000002bd" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/1/ 副本 2" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/1/ 副本 2" bitmapDataHRef="M 6 1699868113.dat" frameRight="1680" frameBottom="2400"/>
-          <DOMBitmapItem name="火药燃气液压打桩机/未命名文件夹 1/1/ 副本 2" itemID="6576afed-000002bc" sourceExternalFilepath="./LIBRARY/火药燃气液压打桩机/未命名文件夹 1/1/ 副本 2" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="火药燃气液压打桩机/未命名文件夹 1/1/ 副本 2" bitmapDataHRef="M 8 1699868129.dat" frameRight="1680" frameBottom="2400"/>
+          <DOMBitmapItem name="未命名文件夹 1/1/ 副本 2" itemID="6576afed-000002bd" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/1/ 副本 2" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/1/ 副本 2" bitmapDataHRef="M 6 1699868113.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="火药燃气液压打桩机/未命名文件夹 1/1/ 副本 2" itemID="6576afed-000002bc" sourceExternalFilepath="./LIBRARY/火药燃气液压打桩机/未命名文件夹 1/1/ 副本 2" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="火药燃气液压打桩机/未命名文件夹 1/1/ 副本 2" bitmapDataHRef="M 8 1699868129.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMSoundItem name=" 副本 3" itemID="6576afed-000002d0" sourceExternalFilepath="./LIBRARY/ 副本 3" sourceLastImported="1444283124" href=" 副本 3" soundDataHRef="M 8 1700035794.dat" format="11kHz 16bit Mono" sampleCount="8037" exportFormat="0" exportBits="7" dataLength="9195" cachedSampleCount="5472"/>
           <DOMBitmapItem name="未命名文件夹 1/ 副本 3" itemID="6576afed-000002cf" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/ 副本 3" sourceLastImported="1443854838" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/ 副本 3" bitmapDataHRef="M 1 1699845152.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="未命名文件夹 1/未命名文件夹 1/ 副本 3" itemID="6576afed-000002ce" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/未命名文件夹 1/ 副本 3" sourceLastImported="1443854838" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/未命名文件夹 1/ 副本 3" bitmapDataHRef="M 2 1699857105.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
@@ -60,7 +60,7 @@
           <DOMBitmapItem name="火药燃气液压打桩机/未命名文件夹 1/1/ 副本 5" itemID="6576afed-000002ca" sourceExternalFilepath="./LIBRARY/火药燃气液压打桩机/未命名文件夹 1/1/ 副本 5" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="火药燃气液压打桩机/未命名文件夹 1/1/ 副本 5" bitmapDataHRef="M 7 1699868129.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="未命名文件夹 1/1/ 副本 6" itemID="6576afed-000002cd" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/1/ 副本 6" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/1/ 副本 6" bitmapDataHRef="M 6 1699868113.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="火药燃气液压打桩机/未命名文件夹 1/1/ 副本 6" itemID="6576afed-000002cc" sourceExternalFilepath="./LIBRARY/火药燃气液压打桩机/未命名文件夹 1/1/ 副本 6" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="火药燃气液压打桩机/未命名文件夹 1/1/ 副本 6" bitmapDataHRef="M 8 1699868129.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
-          <DOMBitmapItem name="bitmap1263.png" itemID="6576d4de-00000de6" sourceExternalFilepath="./LIBRARY/bitmap1263.png" sourceLastImported="1702286558" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="bitmap1263.png" bitmapDataHRef="M 48 1702286598.dat" frameRight="4800" frameBottom="4800"/>
+          <DOMBitmapItem name="bitmap1263.png" itemID="6576d4de-00000de6" sourceExternalFilepath="./LIBRARY/bitmap1263.png" sourceLastImported="1702286558" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="bitmap1263.png" bitmapDataHRef="M 48 1702286598.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="wa90/gun.png" itemID="60abe308-00000021" sourceExternalFilepath="./LIBRARY/wa90/gun.png" sourceLastImported="1597477665" sourcePlatform="macintosh" allowSmoothing="true" originalCompressionType="lossless" quality="50" href="wa90/gun.png" bitmapDataHRef="M 8 1700385166.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="火药燃气液压打桩机/未命名文件夹 1/1/image 1193" itemID="560f79ad-000004aa" sourceExternalFilepath="./LIBRARY/火药燃气液压打桩机/未命名文件夹 1/1/image 1193" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="火药燃气液压打桩机/未命名文件夹 1/1/image 1193" bitmapDataHRef="M 7 1699868129.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
           <DOMBitmapItem name="未命名文件夹 1/1/image 1193" itemID="655334d6-00000233" sourceExternalFilepath="./LIBRARY/未命名文件夹 1/1/image 1193" sourceLastImported="1443854765" allowSmoothing="true" useImportedJPEGData="false" originalCompressionType="lossless" quality="100" href="未命名文件夹 1/1/image 1193" bitmapDataHRef="M 5 1699868113.dat" frameRight="1680" frameBottom="2400"/>
@@ -107,8 +107,8 @@
           <DOMSoundItem name="2.音效文件夹/爆炸/爆炸 大 05.mp3" itemID="656c2960-00001004" sourceExternalFilepath="./LIBRARY/2.音效文件夹/爆炸/爆炸 大 05.mp3" sourceLastImported="1699970393" href="2.音效文件夹/爆炸/爆炸 大 05.mp3" soundDataHRef="M 72 1705567592.dat" format="44kHz 16bit Stereo" sampleCount="338688" exportFormat="1" exportBits="7" dataLength="91523" exportNative="true" cacheFormat="5kHz 8bit Stereo" cachedSampleCount="42336"/>
           <DOMSoundItem name="测试.mp3" itemID="658ac77d-00000d3a" linkageExportForAS="true" linkageIdentifier="测试魔法.mp3" sourceExternalFilepath="./LIBRARY/测试.mp3" sourceLastImported="1703593853" href="测试.mp3" soundDataHRef="M 67 1702286599.dat" format="11kHz 16bit Mono" sampleCount="43776" exportFormat="5" exportBits="7" dataLength="7904" exportNative="true" cachedSampleCount="21888"/>
           <DOMSoundItem name="测试火焰.mp3" itemID="658ac9c8-00000d41" linkageExportForAS="true" linkageIdentifier="测试火焰.mp3" sourceExternalFilepath="./LIBRARY/测试火焰.mp3" sourceLastImported="1702286558" href="测试火焰.mp3" soundDataHRef="M 49 1702286599.dat" format="11kHz 16bit Mono" sampleCount="14400" exportFormat="5" exportBits="7" dataLength="2600" exportNative="true" cachedSampleCount="7200"/>
-          <DOMBitmapItem name="位图 71" itemID="65a88724-000005a0" sourceExternalFilepath="./LIBRARY/位图 71.png" sourceLastImported="1705543457" externalFileCRC32="3938681241" externalFileSize="221195" originalCompressionType="lossless" quality="50" href="位图 71.png" bitmapDataHRef="M 71 1705543460.dat" frameRight="12800" frameBottom="6220"/>
-          <DOMBitmapItem name="位图 73" itemID="663494f5-00000ee3" sourceExternalFilepath="./LIBRARY/位图 73.png" sourceLastImported="1714722033" originalCompressionType="lossless" quality="50" href="位图 73.png" bitmapDataHRef="M 73 1714722037.dat" frameRight="11600" frameBottom="8700"/>
+          <DOMBitmapItem name="位图 71" itemID="65a88724-000005a0" sourceExternalFilepath="./LIBRARY/位图 71.png" sourceLastImported="1705543457" externalFileCRC32="3938681241" externalFileSize="221195" originalCompressionType="lossless" quality="50" href="位图 71.png" bitmapDataHRef="M 71 1705543460.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="位图 73" itemID="663494f5-00000ee3" sourceExternalFilepath="./LIBRARY/位图 73.png" sourceLastImported="1714722033" originalCompressionType="lossless" quality="50" href="位图 73.png" bitmapDataHRef="M 73 1714722037.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
           <Include href="53式步骑枪/53式步骑枪.xml" itemID="659e146e-000007c4" lastModified="1704953208"/>
@@ -161,9 +161,10 @@
           <Include href="wa90/Symbol 10.xml" itemIcon="1" loadImmediate="false" itemID="60abf9c4-000012a0" lastModified="1621883605"/>
           <Include href="wa90/Symbol 11.xml" itemIcon="1" loadImmediate="false" itemID="60abfa2c-000012a6" lastModified="1621883436"/>
           <Include href="wa90/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="60abfaa5-000012c5" lastModified="1621883557"/>
-          <Include href="wa90/wa90变形款.xml" itemID="6559d321-000002d5" lastModified="1742896115"/>
-          <Include href="wa90/wa90动画.xml" loadImmediate="false" itemID="6559d54c-0000032c" lastModified="1742896500"/>
+          <Include href="wa90/wa90变形款.xml" itemID="6559d321-000002d5" lastModified="1742978592"/>
+          <Include href="wa90/wa90动画.xml" loadImmediate="false" itemID="6559d54c-0000032c" lastModified="1742983513"/>
           <Include href="wa90/wa管.xml" itemIcon="1" loadImmediate="false" itemID="60abd6f7-00002942" lastModified="1700386803"/>
+          <Include href="wa90/激光遮罩.xml" loadImmediate="false" itemID="67e3d076-00002160" lastModified="1742983286"/>
           <Include href="wa90/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="60abd43a-00002933" lastModified="1621873722"/>
           <Include href="wa90/图标-wa90.xml" itemID="6559de84-0000042e" lastModified="1700388617"/>
           <Include href="wa90/消音器.xml" itemIcon="1" loadImmediate="false" itemID="60abd2e4-0000291f" lastModified="1621887798"/>
@@ -798,6 +799,14 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="548044" publishTime="1742983517"/>
+          <PublishItem publishSize="548101" publishTime="1742983427"/>
+          <PublishItem publishSize="548017" publishTime="1742983040"/>
+          <PublishItem publishSize="547997" publishTime="1742982730"/>
+          <PublishItem publishSize="548047" publishTime="1742982648"/>
+          <PublishItem publishSize="548053" publishTime="1742982579"/>
+          <PublishItem publishSize="547922" publishTime="1742979073"/>
+          <PublishItem publishSize="547919" publishTime="1742978969"/>
           <PublishItem publishSize="549058" publishTime="1742896504"/>
           <PublishItem publishSize="549054" publishTime="1742896392"/>
           <PublishItem publishSize="549285" publishTime="1727360137"/>
@@ -810,13 +819,5 @@
           <PublishItem publishSize="540867" publishTime="1719475969"/>
           <PublishItem publishSize="540867" publishTime="1719475958"/>
           <PublishItem publishSize="532971" publishTime="1719299259"/>
-          <PublishItem publishSize="532956" publishTime="1719298854"/>
-          <PublishItem publishSize="532955" publishTime="1719296509"/>
-          <PublishItem publishSize="531531" publishTime="1719280416"/>
-          <PublishItem publishSize="531839" publishTime="1719211677"/>
-          <PublishItem publishSize="531839" publishTime="1719207783"/>
-          <PublishItem publishSize="531801" publishTime="1719207646"/>
-          <PublishItem publishSize="531803" publishTime="1719207605"/>
-          <PublishItem publishSize="531787" publishTime="1719207426"/>
      </publishHistory>
 </DOMDocument>

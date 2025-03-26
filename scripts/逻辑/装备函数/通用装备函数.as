@@ -172,8 +172,10 @@ _root.装备生命周期函数.通用变形初始化 = function(reflector:Object
         funcType: "FIRST_MATCH",
         triggerKey: "武器变形键",
         triggerFunc: "反转自机属性",
-        triggerFuncParam: "通用变形中"
+        triggerFuncParam: {toggleProperty :"通用变形中"}
     };
+
+    if(p.updateloadExecution) _root.装备生命周期函数[p.updateFuncParam.triggerFunc](reflector, p.updateFuncParam.triggerFuncParam);
 };
 
 
@@ -184,7 +186,7 @@ _root.装备生命周期函数.通用变形周期 = function(reflector:Object, p
 
     // 2) 自机状态更新
     //    这一步内部会去做按键检测等触发逻辑
-    _root.装备生命周期函数.自机状态更新(reflector, reflector.updateFuncParam);
+    reflector.updateFunc(reflector, reflector.updateFuncParam);
 
     // 3) 如果满足状态判断函数 => 帧数递增, 否则递减
     if (reflector.actionFunc(reflector, reflector.actionFuncParam))
@@ -258,5 +260,5 @@ _root.装备生命周期函数.自机状态更新 = function(reflector:Object, f
 
 _root.装备生命周期函数.反转自机属性 = function(reflector:Object, funcParam:Object) 
 {
-    reflector.自机[funcParam] = !reflector.自机[funcParam];
+    reflector.自机[funcParam.toggleProperty] = !reflector.自机[funcParam.toggleProperty];
 };
