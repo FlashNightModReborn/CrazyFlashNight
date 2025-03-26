@@ -225,4 +225,4 @@ _root.初始化思考标签 = function(target){
 	target.stop();
 	target._visible = false;
 }
-
+// _root.初始化思考标签(this);

@@ -273,6 +273,37 @@ _root.敌人函数.掉落物品 = function(item){
 	}
 }
 
+_root.敌人函数.击飞 = function(){
+	this.浮空 = true;
+	this.man.落地 = false;
+	this.man.垂直速度 = this.起跳速度;
+	this.man.起始Y = this._y;
+	this.man.onEnterFrame = function(){
+		if(_parent.硬直中 == false){
+			_parent._y += 垂直速度;
+			垂直速度 += _root.重力加速度;
+			if(_parent._y >= _parent.Z轴坐标){
+				_parent._y = 起始Y;
+				落地 = true;
+				delete this.onEnterFrame;
+				_parent.状态改变("倒地");
+			}
+		}
+	};
+	this.man.onUnload = function(){
+		_parent.浮空 = false;
+	}
+}
+
+_root.敌人函数.倒地 = function(){
+	this._y = this.Z轴坐标;
+	this.倒地 = true;
+	this.格斗架势 = true;
+	this.man.onUnload = function(){
+		_parent.倒地 = false;
+	}
+}
+
 
 _root.初始化敌人模板 = function(){
 	//以下14个是原版敌人的必要函数
