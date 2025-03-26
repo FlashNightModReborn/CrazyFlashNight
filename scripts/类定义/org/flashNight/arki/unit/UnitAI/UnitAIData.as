@@ -69,12 +69,11 @@
         if(target != null){
             this.tx = target._x;
             this.ty = target._y;
-            this.tz = target.Z轴坐标;
+            this.tz = isNaN(target.Z轴坐标) ? target._y : target.Z轴坐标;
             //
-            this.diff_x = target._x - self._x;
-            if(this.left) this.diff_x = -this.diff_x;
-            this.diff_y = target._y - self._y;
-            this.diff_z = target.Z轴坐标 - self.Z轴坐标;
+            this.diff_x = this.tx - this.x;
+            this.diff_y = this.ty - this.y;
+            this.diff_z = this.tz - this.z;
             this.absdiff_x = Math.abs(this.diff_x);
             this.absdiff_z = Math.abs(this.diff_z);
         }else{

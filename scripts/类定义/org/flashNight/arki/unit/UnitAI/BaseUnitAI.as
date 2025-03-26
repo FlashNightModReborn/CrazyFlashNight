@@ -1,23 +1,34 @@
-﻿// import org.flashNight.neur.StateMachine.FSM_Status;
-// import org.flashNight.neur.StateMachine.FSM_StateMachine;
-
-import org.flashNight.arki.unit.UnitAI.FSMEnemy;
-import org.flashNight.arki.unit.UnitAI.UnitAIData;
+﻿import org.flashNight.arki.unit.UnitAI.*;
 
 class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
 
     // 自身引用
     public var self:MovieClip;
 
+    public var type:String;
+
     // 状态机实例
     public var stateMachine;
     // 数据黑板，UnitAIData
     public var data:UnitAIData;
 
-    public function BaseUnitAI(_self:MovieClip){
+    public function BaseUnitAI(_self:MovieClip, _type:String){
         this.self = _self;
+        this.type = _type;
         this.data = new UnitAIData(this.self);
-        this.stateMachine = new FSMEnemy(this.data);
+        switch(this.type){
+            case "Enemy":
+                this.stateMachine = new FSMEnemy(this.data);
+                break;
+            case "Mecenary":
+                this.stateMachine = new FSMMecenary(this.data);
+                break;
+            default:
+                this.type = "Enemy";
+                this.stateMachine = new FSMEnemy(this.data);
+                break;
+        }
+        
         this.stateMachine.setActiveState(this.stateMachine.getDefaultState());
     }
 

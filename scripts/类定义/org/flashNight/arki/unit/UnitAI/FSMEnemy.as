@@ -3,6 +3,8 @@ import org.flashNight.neur.StateMachine.FSM_StateMachine;
 
 import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
+// 单位基础状态机
+
 class org.flashNight.arki.unit.UnitAI.FSMEnemy extends FSM_StateMachine{
 
     public static var IDLE_TIME:Number = 16; // 停止状态持续17次action（即68帧）
@@ -52,18 +54,20 @@ class org.flashNight.arki.unit.UnitAI.FSMEnemy extends FSM_StateMachine{
             return data.self.思考标签 != null && _root.暂停 !== true;
         });
         // 所有状态在游戏暂停时及思考标签不存在时均会过渡到睡眠状态
-        var sleep_function = function(){
-            return data.self.思考标签 == null || _root.暂停 === true;
-        }
-        this.transitions.AddTransition("Chasing","Sleeping", sleep_function);
-        this.transitions.AddTransition("Following","Sleeping", sleep_function);
-        this.transitions.AddTransition("Idle","Sleeping", sleep_function);
-        this.transitions.AddTransition("Wandering","Sleeping", sleep_function);
+        this.transitions.AddTransition("Chasing","Sleeping", this.sleepCheck);
+        this.transitions.AddTransition("Following","Sleeping", this.sleepCheck);
+        this.transitions.AddTransition("Idle","Sleeping", this.sleepCheck);
+        this.transitions.AddTransition("Wandering","Sleeping", this.sleepCheck);
     }
 
 
 
     // 具体执行函数
+    // 检查是否启用ai
+    public function sleepCheck(){
+        return data.self.思考标签 == null || _root.暂停 === true;
+    }
+
     //思考
     public function think():Void{
         data.updateSelf(); // 更新自身坐标
@@ -105,8 +109,9 @@ class org.flashNight.arki.unit.UnitAI.FSMEnemy extends FSM_StateMachine{
             self.上行 = false;
             self.下行 = false;
             if (data.diff_x < 0){
-                var face = self.left ? "左" : "右";
-                self.方向改变(face);
+                self.方向改变("左");
+            }else if(data.diff_x > 0){
+                self.方向改变("右");
             }
             self.状态改变(self.攻击模式 + "攻击");
             if (data.target.hp <= 0){
@@ -131,22 +136,25 @@ class org.flashNight.arki.unit.UnitAI.FSMEnemy extends FSM_StateMachine{
         data.updateSelf(); // 更新自身坐标
         var self = data.self;
         var X距离 = random(200) + 100;
-        var Y距离 = random(50) + 50;
-        var X目标 = data.player._x;
-        var Y目标 = data.player._y;
-        if (Math.abs(data.x - X目标) > X距离){
-            self.左行 = data.x > X目标;
-            self.右行 = data.x < X目标;
-        }else{
-            self.左行 = false;
-            self.右行 = false;
-            // 在跟随范围内 = true;
-        }if (Math.abs(data.z - Y目标) > Y距离){
-            self.上行 = data.z > Y目标;
-            self.下行 = data.z < Y目标;
-        }else{
-            self.上行 = false;
-            self.下行 = false;
+        var Y距离 = 50;
+        var playerx = data.player._x;
+        var playery = data.player._y;
+
+        self.左行 = false;
+        self.右行 = false;
+        self.上行 = false;
+        self.下行 = false;
+        if (Math.abs(data.x - playerx) > X距离){
+            self.左行 = data.x > playerx;
+            self.右行 = data.x < playerx;
+            var randz = _root.Ymin + random(_root.Ymax - _root.Ymin);
+            if(Math.abs(data.z - randz) > Y距离){
+                self.上行 = data.z > randz;
+                self.下行 = data.z < randz;
+            }
+        }else if (Math.abs(data.z - playery) > Y距离){
+            self.上行 = data.z > playery;
+            self.下行 = data.z < playery;
         }
     }
     //睡眠及各个停止函数通用
