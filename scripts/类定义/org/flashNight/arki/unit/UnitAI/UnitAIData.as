@@ -14,7 +14,7 @@
 
     // 攻击目标引用
     public var target:MovieClip;
-    public var target_name:String;
+    // public var target_name:String; // 暂未启用
 
     // 攻击目标坐标
     public var tx:Number;
@@ -47,7 +47,7 @@
         this.state = self.状态;
         // this.attackmode = self.攻击模式;
         this.target = null;
-        this.target_name = null;
+        // this.target_name = null;
         this.player = _root.gameworld[_root.控制目标];
         //初始化ai参数
         this.xrange = self.x轴攻击范围;

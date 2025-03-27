@@ -35,4 +35,5 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
     public function update():Void{
         this.stateMachine.onAction();
     }
+    
 }

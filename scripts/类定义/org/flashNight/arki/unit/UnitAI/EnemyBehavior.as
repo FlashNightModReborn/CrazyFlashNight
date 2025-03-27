@@ -8,9 +8,11 @@ import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
 class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
-    public static var IDLE_TIME:Number = 16; // 停止状态持续17次action（即68帧）
-    public static var WANDER_TIME:Number = 50; // 随机移动状态持续50次action（即200帧）
-    public static var PAUSE_TIME:Number = 5; // 跟随状态持续5次action（即20帧）
+    public static var IDLE_TIME:Number = 16; // 停止状态持续17次action（即68帧）。计划在ai进一步重构后废弃
+    public static var WANDER_TIME:Number = 50; // 随机移动状态持续50次action（即200帧）。计划在ai进一步重构后废弃
+    public static var FOLLOW_TIME:Number = 5; // 跟随状态持续5次action（即20帧）
+
+    public static var CHASE_TIME:Number = 15; // 为了解决思考间隔变短导致的停止/随机移动几率大大上升，追击状态持续15次action（即60帧）后再开始判断停止或随机移动。计划在ai进一步重构后废弃
 
     public function EnemyBehavior(_data:UnitAIData){
         super(_data);
@@ -21,7 +23,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         // 思考状态，结算进入状态函数后一定会跳转至其他状态
         this.AddStatus("Thinking",new FSM_Status(null, this.think, null));
         // 追击状态
-        this.AddStatus("Chasing",new FSM_Status(this.chase, null, null));
+        this.AddStatus("Chasing",new FSM_Status(this.chase, null, this.chase_exit));
         // 跟随状态
         this.AddStatus("Following",new FSM_Status(null, this.follow_enter, null));
         // 空闲状态
@@ -31,10 +33,10 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
         //过渡线
         this.transitions.push("Chasing","Idle",function(){
-            return random(data.self.停止机率) == 0;
+            return this.actionCount >= EnemyBehavior.CHASE_TIME && random(data.self.停止机率) == 0;
         });
         this.transitions.push("Chasing","Wandering",function(){
-            return random(data.self.随机移动机率) == 0;
+            return this.actionCount >= EnemyBehavior.CHASE_TIME && random(data.self.随机移动机率) == 0;
         });
         this.transitions.push("Idle","Thinking",function(){
             return this.actionCount >= EnemyBehavior.IDLE_TIME;
@@ -43,7 +45,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             return this.actionCount >= EnemyBehavior.WANDER_TIME;
         });
         this.transitions.push("Following","Thinking",function(){
-            return this.actionCount >= EnemyBehavior.PAUSE_TIME;
+            return this.actionCount >= EnemyBehavior.FOLLOW_TIME;
         });
 
         // 检测到思考标签时结束睡眠状态进入思考状态
@@ -57,8 +59,8 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
     public function think():Void{
         data.updateSelf(); // 更新自身坐标
         //search target
-        if (!data.target){
-            data.self.攻击目标 = "无";
+        var chaseTarget = data.self.攻击目标;
+        if (!chaseTarget || chaseTarget == "无"){
             var 遍历敌人表 = _root.帧计时器.获取敌人缓存(data.self,5);
             var 敌人距离表 = new Array();
             for (var i:Number = 0; i < 遍历敌人表.length; i++){
@@ -71,7 +73,10 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
                 data.target = target;
                 data.self.攻击目标 = target._name;
             }
-        }else if (data.target.hp <= 0){
+        }else{
+            data.target = _root.gameworld[chaseTarget];
+        }
+        if (data.target.hp <= 0){
             data.target = null;
             data.self.攻击目标 = "无";
         }
@@ -82,6 +87,10 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
     //追击
     public function chase():Void{
+        // 与攻击目标参数一致
+        if(data.target._name != data.self.攻击目标){
+            data.target = _root.gameworld[data.self.攻击目标];
+        }
         // 更新自身与攻击目标的坐标及差值
         data.updateSelf();
         data.updateTarget();
@@ -93,21 +102,21 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             self.右行 = false;
             self.上行 = false;
             self.下行 = false;
+            self.攻击目标 = data.target.hp <= 0 ? "无" : data.target._name;
             if (data.diff_x < 0){
                 self.方向改变("左");
             }else if(data.diff_x > 0){
                 self.方向改变("右");
             }
             self.状态改变(self.攻击模式 + "攻击");
-            if (data.target.hp <= 0){
-                self.攻击目标 = "无";
-            }
         }else{
             var sm = this.superMachine;
             if(sm.actionCount % 2 == 0){
                 //每2次action判定追击方向
-                if (data.state != self.攻击模式 + "跑" && random(3) == 0){
-                    self.状态改变(self.攻击模式 + "跑");
+                if (data.state != self.攻击模式 + "跑" && data.absdiff_x > 100 & data.absdiff_z > 50){
+                    if(random(3) == 0){
+                        self.状态改变(self.攻击模式 + "跑");
+                    }
                 }
                 self.上行 = data.diff_z < 0;
                 self.下行 = data.diff_z > 0;
@@ -115,6 +124,12 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
                 self.右行 = data.x < data.tx - data.xdistance;
             }
         }
+    }
+    //丢失攻击目标
+    public function chase_exit():Void{
+        // _root.发布消息(data.self._name + " lose target");
+        data.target = null;
+        data.self.攻击目标 = "无";
     }
     //跟随
     public function follow_enter():Void{
