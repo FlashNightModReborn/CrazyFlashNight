@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料内容整体" itemID="673b5bd8-00001a8a" lastModified="1739162884" lastUniqueIdentifier="28">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="材料内容整体" itemID="673b5bd8-00001a8a" lastModified="1743104626" lastUniqueIdentifier="28">
   <timeline>
     <DOMTimeline name="材料内容整体">
       <layers>
@@ -8,7 +8,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="材料大全/图标壳/图标壳" name="图标壳" centerPoint3DX="167.55" centerPoint3DY="52.6">
                   <matrix>
-                    <Matrix a="3" d="3" tx="167.55" ty="52.6"/>
+                    <Matrix a="2.625" d="2.625" tx="167.55" ty="52.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -23,7 +23,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文字" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="文字" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -34,12 +34,6 @@
                   <textRuns>
                     <DOMTextRun>
                       <characters>简介</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" lineSpacing="0" size="9" bitmapSize="180" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" lineSpacing="0" size="9" bitmapSize="180" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -57,33 +51,15 @@
                         <DOMTextAttrs aliasText="false" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
                   </textRuns>
                 </DOMDynamicText>
-                <DOMDynamicText name="简介" selected="true" fontRenderingMode="device" width="302.45" height="129.8" lineType="multiline">
+                <DOMDynamicText name="简介" fontRenderingMode="device" width="302.45" height="129.8" lineType="multiline">
                   <matrix>
                     <Matrix tx="121.15" ty="108.3"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
-                      <characters>详细</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" lineSpacing="1" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters>信息</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" lineSpacing="1" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
+                      <characters>详细信息</characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" lineSpacing="1" bitmapSize="240" face="FZRUIZH_JW--GB1-0" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -94,7 +70,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -122,7 +98,7 @@
                     <Point/>
                   </transformationPoint>
                   <color>
-                    <Color alphaMultiplier="0.30078125"/>
+                    <Color alphaMultiplier="0.8984375"/>
                   </color>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="通用UI-滑动按钮栏/滑动按钮栏" centerPoint3DX="32" centerPoint3DY="137.5">

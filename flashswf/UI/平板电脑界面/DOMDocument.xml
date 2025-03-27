@@ -31,9 +31,9 @@
           <DOMSoundItem name="音效/humloop.wav" itemID="67018308-000002e5" sourceExternalFilepath="./LIBRARY/音效/humloop.wav" sourceLastImported="1728152325" externalFileCRC32="3096538644" externalFileSize="710684" href="音效/humloop.wav" soundDataHRef="M 10 1728152328.dat" format="44kHz 16bit Mono" sampleCount="352800" exportFormat="1" exportBits="16"/>
           <DOMSoundItem name="音效/intro1.wav" itemID="67017acc-00000284" sourceExternalFilepath="./LIBRARY/音效/intro1.wav" sourceLastImported="1728152783" externalFileCRC32="3024815699" externalFileSize="220632" href="音效/intro1.wav" soundDataHRef="M 7 1728150220.dat" format="44kHz 16bit Mono" sampleCount="107332" exportFormat="1" exportBits="16"/>
           <DOMSoundItem name="音效/switch.wav" itemID="67017acc-0000028c" sourceExternalFilepath="./LIBRARY/音效/switch.wav" sourceLastImported="1728150154" externalFileCRC32="2140885567" externalFileSize="77084" href="音效/switch.wav" soundDataHRef="M 9 1728150220.dat" format="44kHz 16bit Mono" sampleCount="36000" exportFormat="1" exportBits="16"/>
-          <DOMBitmapItem name="位图 2" itemID="66fd9aad-00000303" sourceExternalFilepath="./LIBRARY/位图 2.png" sourceLastImported="1727896233" externalFileCRC32="1728961032" externalFileSize="158926" originalCompressionType="lossless" quality="50" href="位图 2.png" bitmapDataHRef="M 2 1727896237.dat" frameRight="22000" frameBottom="22000"/>
-          <DOMBitmapItem name="位图 3" itemID="66ff4c0f-00000379" sourceExternalFilepath="./LIBRARY/位图 3.png" sourceLastImported="1728007183" externalFileCRC32="1605208807" externalFileSize="79776" originalCompressionType="lossless" quality="50" href="位图 3.png" bitmapDataHRef="M 3 1728007183.dat" frameRight="13400" frameBottom="13400"/>
-          <DOMBitmapItem name="位图 4" itemID="66ff5376-000003d0" sourceExternalFilepath="./LIBRARY/位图 4.png" sourceLastImported="1728009078" externalFileCRC32="3448879271" externalFileSize="89351" originalCompressionType="lossless" quality="50" href="位图 4.png" bitmapDataHRef="M 4 1728009078.dat" frameRight="22000" frameBottom="22000"/>
+          <DOMBitmapItem name="位图 2" itemID="66fd9aad-00000303" sourceExternalFilepath="./LIBRARY/位图 2.png" sourceLastImported="1727896233" externalFileCRC32="1728961032" externalFileSize="158926" originalCompressionType="lossless" quality="50" href="位图 2.png" bitmapDataHRef="M 2 1727896237.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="位图 3" itemID="66ff4c0f-00000379" sourceExternalFilepath="./LIBRARY/位图 3.png" sourceLastImported="1728007183" externalFileCRC32="1605208807" externalFileSize="79776" originalCompressionType="lossless" quality="50" href="位图 3.png" bitmapDataHRef="M 3 1728007183.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
+          <DOMBitmapItem name="位图 4" itemID="66ff5376-000003d0" sourceExternalFilepath="./LIBRARY/位图 4.png" sourceLastImported="1728009078" externalFileCRC32="3448879271" externalFileSize="89351" originalCompressionType="lossless" quality="50" href="位图 4.png" bitmapDataHRef="M 4 1728009078.dat" frameLeft="-115200" frameTop="-115200" frameRight="-115200" frameBottom="-115200"/>
      </media>
      <symbols>
           <Include href="NPC名字.xml" loadImmediate="false" itemID="670b38cd-000003ad" lastModified="1729075524"/>
@@ -54,17 +54,17 @@
           <Include href="WPlogo/补间 9.xml" itemIcon="1" loadImmediate="false" itemID="66c4ca79-00001ce8" lastModified="1724172921"/>
           <Include href="WPlogo/补间 10.xml" itemIcon="1" loadImmediate="false" itemID="66c4ca79-00001cea" lastModified="1724172921"/>
           <Include href="按钮背景.xml" loadImmediate="false" itemID="67690708-000002e5" lastModified="1734936328"/>
-          <Include href="材料大全/材料简介.xml" loadImmediate="false" itemID="673b5b68-00001a83" lastModified="1734956893"/>
-          <Include href="材料大全/材料简介底色.xml" loadImmediate="false" itemID="673b5b63-00001a81" lastModified="1734956879"/>
-          <Include href="材料大全/材料简介上栏.xml" loadImmediate="false" itemID="673b5b54-00001a7e" lastModified="1731943252"/>
+          <Include href="材料大全/材料简介.xml" loadImmediate="false" itemID="673b5b68-00001a83" lastModified="1743104567"/>
+          <Include href="材料大全/材料简介底色.xml" loadImmediate="false" itemID="673b5b63-00001a81" lastModified="1743104637"/>
+          <Include href="材料大全/材料简介上栏.xml" loadImmediate="false" itemID="673b5b54-00001a7e" lastModified="1743104632"/>
           <Include href="材料大全/材料图.xml" loadImmediate="false" itemID="673b57fb-00001a23" lastModified="1731943037"/>
           <Include href="材料大全/材料图底色.xml" loadImmediate="false" itemID="673b58e2-00001a3d" lastModified="1731942892"/>
           <Include href="材料大全/材料图框.xml" loadImmediate="false" itemID="673b5873-00001a35" lastModified="1731942528"/>
           <Include href="材料大全/材料图虚线.xml" loadImmediate="false" itemID="673b58a0-00001a39" lastModified="1731942578"/>
           <Include href="材料大全/图标壳/图标壳.xml" loadImmediate="false" itemID="67691f78-000011ad" lastModified="1734942584"/>
           <Include href="材料大全/图标壳/图标壳-基本款.xml" loadImmediate="false" itemID="67691f7c-000011ae" lastModified="1734943382"/>
-          <Include href="材料大全详细介绍.xml" loadImmediate="false" itemID="673b5c48-00001a9a" lastModified="1731943496"/>
-          <Include href="材料内容整体.xml" loadImmediate="false" itemID="673b5bd8-00001a8a" lastModified="1739162884"/>
+          <Include href="材料大全详细介绍.xml" loadImmediate="false" itemID="673b5c48-00001a9a" lastModified="1743104643"/>
+          <Include href="材料内容整体.xml" loadImmediate="false" itemID="673b5bd8-00001a8a" lastModified="1743104626"/>
           <Include href="测试按钮.xml" itemIcon="0" loadImmediate="false" itemID="6700c619-00000b85" lastModified="1728104139"/>
           <Include href="叉.xml" loadImmediate="false" itemID="66fc3dd1-00005698" lastModified="1728151365"/>
           <Include href="叉整体.xml" loadImmediate="false" itemID="66fc3ef6-000056b5" lastModified="1728151368"/>
@@ -147,7 +147,7 @@
           <Include href="面板/平板整体UI右下线框.xml" loadImmediate="false" itemID="66c4b3e7-00001990" lastModified="1724167143"/>
           <Include href="面板/平板整体UI圆点.xml" loadImmediate="false" itemID="66c4aa9c-000017aa" lastModified="1724164764"/>
           <Include href="面板/平板整体UI中心球2.xml" loadImmediate="false" itemID="66c4b3a4-0000198b" lastModified="1724167076"/>
-          <Include href="平板背景.xml" loadImmediate="false" itemID="66f84083-0000036b" lastModified="1734935208"/>
+          <Include href="平板背景.xml" loadImmediate="false" itemID="66f84083-0000036b" lastModified="1743104269"/>
           <Include href="平板背景空闲.xml" loadImmediate="false" itemID="66fd03a6-0000584f" lastModified="1728151356"/>
           <Include href="平板电脑界面.xml" itemID="6700bfa9-00000943" lastModified="1734959691"/>
           <Include href="通用UI-滑动按钮栏/按钮-单元体.xml" loadImmediate="false" itemID="67690685-000002e3" lastModified="1734938306"/>
@@ -535,6 +535,13 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="177089" publishTime="1743104576"/>
+          <PublishItem publishSize="177092" publishTime="1743104476"/>
+          <PublishItem publishSize="177092" publishTime="1743104465"/>
+          <PublishItem publishSize="177092" publishTime="1743104408"/>
+          <PublishItem publishSize="177067" publishTime="1743104273"/>
+          <PublishItem publishSize="177075" publishTime="1743104239"/>
+          <PublishItem publishSize="177066" publishTime="1743104146"/>
           <PublishItem publishSize="176741" publishTime="1739162887"/>
           <PublishItem publishSize="177158" publishTime="1734958669"/>
           <PublishItem publishSize="177143" publishTime="1734958549"/>
@@ -548,12 +555,5 @@
           <PublishItem publishSize="176383" publishTime="1734957830"/>
           <PublishItem publishSize="177130" publishTime="1734957196"/>
           <PublishItem publishSize="177139" publishTime="1734957143"/>
-          <PublishItem publishSize="177112" publishTime="1734957061"/>
-          <PublishItem publishSize="177111" publishTime="1734956995"/>
-          <PublishItem publishSize="177104" publishTime="1734956920"/>
-          <PublishItem publishSize="177092" publishTime="1734955667"/>
-          <PublishItem publishSize="177089" publishTime="1734955595"/>
-          <PublishItem publishSize="177093" publishTime="1734955527"/>
-          <PublishItem publishSize="177094" publishTime="1734955470"/>
      </publishHistory>
 </DOMDocument>
