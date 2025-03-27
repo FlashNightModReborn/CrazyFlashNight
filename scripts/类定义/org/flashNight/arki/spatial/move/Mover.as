@@ -254,4 +254,42 @@ class org.flashNight.arki.spatial.move.Mover {
         // 7. 调整显示层次，确保实体正确显示
         entity.swapDepths(entity._y);
     }
+
+    /**
+     * 检测给定全局坐标点是否合法（即是否未与地图发生碰撞）
+     * 
+     * @param globalX 点的全局X坐标（相对于主场景）
+     * @param globalY 点的全局Y坐标（相对于主场景）
+     * @return Boolean 如果点未发生碰撞（合法）返回 true，否则返回 false
+     */
+    public static function isPointValid(globalX:Number, globalY:Number):Boolean {
+        // 使用地图的 hitTest 方法检测碰撞，返回取反结果
+        return !_root.gameworld.地图.hitTest(globalX, globalY, true);
+    }
+
+    /**
+     * 检测影片剪辑的当前位置是否合法（其自身坐标点是否与地图碰撞）
+     * 
+     * @param mc 要检测的影片剪辑（将检测其注册点的位置）
+     * @return Boolean 如果未碰撞返回 true，否则返回 false
+     */
+    public static function isMovieClipPositionValid(mc:MovieClip):Boolean {
+        // 创建包含本地坐标 (0,0) 的点对象（即影片剪辑的注册点）
+        var localPoint:Vector = new Vector(0,0);
+        
+        // 将本地坐标转换为全局坐标（考虑所有父级的位移/缩放/旋转）
+        mc.localToGlobal(localPoint);
+        
+        return !_root.gameworld.地图.hitTest(localPoint.x, localPoint.y, true);
+    }
+
+    /**
+     * 检测给定的影片剪辑是否与地图碰撞
+     *
+     * @param clip MovieClip 作为碰撞箱
+     * @return Boolean 如果碰撞箱与地图碰撞，返回 true；否则返回 false
+     */
+    public static function isMovieClipValid(clip:MovieClip):Boolean {
+        return !clip.hitTest(_root.gameworld.地图, true);
+    }
 }

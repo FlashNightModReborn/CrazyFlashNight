@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/纵向联弹" itemID="67e4a8eb-00002ab1" linkageExportForAS="true" linkageIdentifier="纵向联弹" lastModified="1743045959" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="联弹/纵向机枪联弹" itemID="67e4c547-000044ea" linkageExportForAS="true" linkageIdentifier="纵向机枪联弹" lastModified="1743045959" lastUniqueIdentifier="1">
   <timeline>
-    <DOMTimeline name="纵向联弹">
+    <DOMTimeline name="纵向机枪联弹">
       <layers>
         <DOMLayer name="Labels Layer" color="#B93CFD">
           <frames>
@@ -34,7 +34,7 @@
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="联弹/联弹area" name="area" centerPoint3DX="19.5" centerPoint3DY="7.5">
+                <DOMSymbolInstance libraryItemName="联弹/联弹area" name="area" selected="true" centerPoint3DX="19.5" centerPoint3DY="7.5">
                   <matrix>
                     <Matrix a="0.399993896484375" d="0.399993896484375" tx="7" ty="-5"/>
                   </matrix>

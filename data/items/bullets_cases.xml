@@ -176,6 +176,15 @@
         </shell>
     </bullet>
     <bullet>
+        <name>纵向机枪联弹-加强普通子弹</name>
+        <shell>
+            <casing>加强弹壳</casing>
+            <xOffset>60</xOffset>
+            <simulationMethod>标准</simulationMethod>
+            <yOffset>0</yOffset>
+        </shell>
+    </bullet>
+    <bullet>
         <name>麻醉子弹</name>
         <shell>
             <casing>手枪弹壳</casing>

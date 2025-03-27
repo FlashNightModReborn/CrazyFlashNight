@@ -1,5 +1,5 @@
 ﻿import org.flashNight.sara.util.*;
-
+import org.flashNight.arki.spatial.move.*;
 _root.单元体计数 = 0;
 
 _root.创建单元体 = function(子弹:MovieClip, 子弹种类:String) {
@@ -212,6 +212,7 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     
     // 提取子弹种类（假设格式为 “XXX-子弹种类”）
     clip.子弹种类 = clip._parent.子弹种类.split("-")[1];
+	clip.count = 1;
     
     // 加载时只创建一个单元体（用于模拟点射）
     var 单元体:MovieClip = _root.创建单元体(clip._parent, clip.子弹种类);
@@ -227,12 +228,14 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
 		var x_min:Number = Infinity;
 		var x_max:Number = -Infinity
 		var x_update:Boolean = false;
+		var isHitMap:Boolean = false;
+		var bullet:MovieClip = this._parent;
         
         // 如果当前创建的单元体数未达到预定总数，则每帧创建一个新的单元体
-        if (this.单元体列表.length < this._parent.霰弹值) {
+        if (this.count < this._parent.霰弹值) {
             var newUnit:MovieClip = _root.创建单元体(this._parent, this.子弹种类);
-            newUnit._rotation = _root.随机偏移(this._parent.子弹散射度);
-			newUnit._x += this._parent._x - this.原始坐标x;
+            newUnit._rotation = _root.随机偏移(bullet.子弹散射度);
+			newUnit._x += this._parent._x - this.原始坐标x + _root.随机偏移(bullet.子弹散射度 + bullet.霰弹值 + this.count);
 			newUnit._y += this._parent._y - this.原始坐标y;
             this.单元体列表.push(newUnit);
 
@@ -241,16 +244,22 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
 			bullet._y = this.原始坐标y;
 
 			x_update = true;
+			this.count++;
         }
+
+		if(Mover.isMovieClipValid(this)) isHitMap = true;
+
         
         // 遍历所有单元体，更新它们的坐标
         for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
             var 单元体:MovieClip = this.单元体列表[j];
             // 根据父对象 xmov、单元体的旋转及运动方向系数更新单元体的 y 坐标
             单元体._y += this._parent.xmov * Math.sin(单元体._rotation * Math.PI / 180) * this.运动方向系数;
-            
+
+			var isHitGround = (单元体._y * Math.cos(this._parent._rotation * Math.PI / 180) + this._parent._y > this._parent.Z轴坐标);
+            var isHIt = isHitMap && !Mover.isMovieClipPositionValid(单元体)
             // 检查是否超出父对象设定的 Z 轴坐标限制
-            if ((单元体._y * Math.cos(this._parent._rotation * Math.PI / 180) + this._parent._y > this._parent.Z轴坐标) &&
+            if (isHIt || isHitGround &&
                 (this.单元体列表.length > 1)) {
                 _root.回收单元体(单元体);
                 this.单元体列表.splice(j, 1);
