@@ -81,7 +81,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             data.self.攻击目标 = "无";
         }
         //
-        var newstate:String = data.target != null ? "Chasing" : "Following";
+        var newstate:String = data.target ? "Chasing" : "Following";
         this.superMachine.ChangeState(newstate);
     }
 

@@ -67,4 +67,16 @@ class org.flashNight.neur.StateMachine.FSM_StateMachine extends FSM_Status imple
         this.ChangeState(statename);
         this.activeState.onAction();
     }
+
+    public function destroy():Void{
+        super.destroy();
+        //销毁所有子状态机
+        for(var statename in this.statusDict){
+            this.statusDict[statename].destroy();
+        }
+        this.statusDict = null;
+        this.activeState = null;
+        this.lastState = null;
+        this.defaultState = null;
+        }
 }

@@ -304,6 +304,21 @@ _root.敌人函数.倒地 = function(){
 	}
 }
 
+_root.敌人函数.尝试拾取 = function(){
+	var 拾取对象 = _root.gameworld[this.拾取目标];
+	this.拾取目标 = "无";
+	if (!拾取对象.area){
+		return;
+	}
+	if (this.是否为敌人 === false){
+		if (_root.物品栏.背包.getFirstVacancy() > -1){
+			_root.pickupItemManager.pickup(拾取对象, this, false);
+		}
+	}else{
+		拾取对象.gotoAndPlay("消失");
+	}
+}
+
 
 _root.初始化敌人模板 = function(){
 	//以下14个是原版敌人的必要函数
@@ -328,6 +343,8 @@ _root.初始化敌人模板 = function(){
 	this.宠物属性初始化 = this.宠物属性初始化 ? this.宠物属性初始化 : _root.敌人函数.宠物属性初始化;
 	this.掉落物判定 = _root.敌人函数.掉落物判定;
 	this.掉落物品 = _root.敌人函数.掉落物品;
+	
+	if(this.允许拾取 === true) this.尝试拾取 = _root.敌人函数.尝试拾取;
 	
 	//敌人属性表涉及的参数，共18项
 	if(!this.兵种) _root.发布消息("警告：敌人未加载兵种信息！")
@@ -391,6 +408,7 @@ _root.初始化敌人模板 = function(){
 	免疫击退 = 免疫击退 ? true : false;
 	锁定方向 = 锁定方向 ? true : false;
 	奔跑速度倍率 = !isNaN(奔跑速度倍率) ? 奔跑速度倍率 : 2;
+	允许拾取 = 允许拾取 ? true : false;
 	
 	//以下是自动初始化的必要参数
 	攻击目标 = "无";

@@ -6,6 +6,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.UnitAIInitializer {
             if(target.兵种 != "主角-男"){
                 if(target.佣兵数据 != null){
                     target.unitAI = new BaseUnitAI(target, "Mecenary");
+                }else if(target.允许拾取 === true){
+                    target.unitAI = new BaseUnitAI(target, "PickupEnemy");
                 }else{
                     target.unitAI = new BaseUnitAI(target, "Enemy");
                 }

@@ -19,6 +19,9 @@ class org.flashNight.arki.unit.UnitAI.BaseUnitAI{
             case "Enemy":
                 this.stateMachine = new EnemyBehavior(this.data);
                 break;
+            case "PickupEnemy":
+                this.stateMachine = new PickupEnemyBehavior(this.data);
+                break;
             case "Mecenary":
                 this.stateMachine = new MecenaryBehavior(this.data);
                 break;
