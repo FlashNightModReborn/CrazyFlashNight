@@ -99,24 +99,28 @@
                         <Interval>200</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种2</Type>
                         <Interval>200</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种3</Type>
                         <Interval>200</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种4</Type>
                         <Interval>200</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种5</Type>
@@ -129,12 +133,28 @@
                         <Interval>200</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="7">
                         <Type>兵种8</Type>
                         <Interval>200</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="8">
+                        <Type>兵种400</Type>
+                        <Interval>400</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>25</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="9">
+                        <Type>兵种401</Type>
+                        <Interval>400</Interval>
+                        <Quantity>4</Quantity>
+                        <Level>25</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -149,12 +169,14 @@
                         <Interval>500</Interval>
                         <Quantity>10</Quantity>
                         <Level>22</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种13</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>22</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种39</Type>
@@ -162,6 +184,31 @@
                         <Quantity>10</Quantity>
                         <Level>22</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种39</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种401</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种400</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>25</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -177,6 +224,7 @@
                         <Quantity>5</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种10</Type>
@@ -184,18 +232,49 @@
                         <Quantity>5</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种7</Type>
                         <Interval>500</Interval>
                         <Quantity>15</Quantity>
                         <Level>26</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种39</Type>
                         <Interval>500</Interval>
                         <Quantity>15</Quantity>
                         <Level>26</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种400</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种401</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种393</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="7">
+                        <Type>兵种394</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -211,6 +290,7 @@
                         <Quantity>15</Quantity>
                         <Level>27</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种10</Type>
@@ -218,6 +298,31 @@
                         <Quantity>15</Quantity>
                         <Level>27</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种394</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种394</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种394</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                        <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -231,6 +336,7 @@
                         <Interval>50</Interval>
                         <Quantity>1</Quantity>
                         <Level>10</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种9</Type>
@@ -238,6 +344,7 @@
                         <Quantity>8</Quantity>
                         <Level>28</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种10</Type>
@@ -245,6 +352,14 @@
                         <Quantity>8</Quantity>
                         <Level>28</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种11</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>30</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -259,12 +374,14 @@
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
                         <Level>12</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种7</Type>
                         <Interval>500</Interval>
                         <Quantity>12</Quantity>
                         <Level>29</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种39</Type>
@@ -272,6 +389,21 @@
                         <Quantity>12</Quantity>
                         <Level>29</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种11</Type>
+                        <Interval>500</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种394</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -291,7 +423,14 @@
                         <Type>兵种42</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
-                        <Level>10</Level>
+                        <Level>30</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种394</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>35</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
@@ -305,7 +444,8 @@
                         <Type>兵种11</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
-                        <Level>16</Level>
+                        <Level>20</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种10</Type>
@@ -318,7 +458,35 @@
                         <Type>兵种42</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
-                        <Level>20</Level>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种393</Type>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种394</Type>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种400</Type>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种401</Type>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
@@ -335,6 +503,7 @@
                         <Quantity>8</Quantity>
                         <Level>32</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种10</Type>
@@ -342,12 +511,14 @@
                         <Quantity>8</Quantity>
                         <Level>32</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种11</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种13</Type>
@@ -355,6 +526,21 @@
                         <Quantity>8</Quantity>
                         <Level>32</Level>
                         <SpawnIndex>2</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种42</Type>
+                        <Interval>600</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种394</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>5</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -372,9 +558,9 @@
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种42</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>30</Level>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="1">
@@ -383,6 +569,7 @@
                         <Quantity>8</Quantity>
                         <Level>33</Level>
                         <SpawnIndex>0</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种10</Type>
@@ -390,6 +577,7 @@
                         <Quantity>8</Quantity>
                         <Level>33</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -407,9 +595,16 @@
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种42</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>40</Level>
+                        <Interval>600</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种393</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>10</Quantity>
+                        <Level>45</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
@@ -424,6 +619,7 @@
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
+                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种42</Type>
@@ -434,8 +630,8 @@
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种42</Type>
-                        <Interval>500</Interval>
-                        <Quantity>1</Quantity>
+                        <Interval>2500</Interval>
+                        <Quantity>5</Quantity>
                         <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
