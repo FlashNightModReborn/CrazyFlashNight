@@ -73,3 +73,4 @@ _root.装备生命周期函数.wa90变形款触发函数 = function(reflector:Ob
     var instance:MovieClip = target[paramObj.toggleProperty] ? paramObj.trueInstance : paramObj.falseInstance;
     reflector.instance = instance;
 };
+

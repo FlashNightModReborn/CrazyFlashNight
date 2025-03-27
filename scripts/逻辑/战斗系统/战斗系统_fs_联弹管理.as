@@ -1,4 +1,6 @@
-﻿_root.单元体计数 = 0;
+﻿import org.flashNight.sara.util.*;
+
+_root.单元体计数 = 0;
 
 _root.创建单元体 = function(子弹:MovieClip, 子弹种类:String) {
     _root.单元体计数++;
@@ -12,6 +14,26 @@ _root.回收单元体 = function(单元体:MovieClip) {
 _root.子弹衰竭计数 = function(子弹:MovieClip) {
     return (子弹.霰弹值 + 子弹.子弹散射度) / 25;// 让衰减在前期更为剧烈  
 }
+
+// 定义在 _root.联弹系统 对象中
+_root.联弹系统.爆炸联弹预处理 = function(clip:MovieClip):Void {
+    // 初始化子弹属性，传入当前 clip 及 "近战联弹" 类型
+    clip.子弹属性 = _root.嵌套子弹属性初始化(clip, "近战联弹");
+    
+    // 设置爆炸范围
+    clip.爆炸范围 = 150;
+    
+    // 配置子弹属性：设置子弹速度为 0、击倒率为 1，
+    // 同时将 Z 轴攻击范围设为爆炸范围，并取消击中地图效果
+    clip.子弹属性.子弹速度 = 0;
+    clip.子弹属性.击倒率 = 1;
+    clip.子弹属性.Z轴攻击范围 = clip.爆炸范围;
+    clip.子弹属性.击中地图效果 = "";
+    
+    // 停止当前影片剪辑的播放
+    clip.stop();
+};
+
 
 _root.嵌套子弹属性初始化 = function(子弹元件:MovieClip,子弹种类:String){
 	var 子弹属性 = {
@@ -43,3 +65,332 @@ _root.嵌套子弹属性初始化 = function(子弹元件:MovieClip,子弹种类
 	return 子弹属性;
 }
 
+_root.联弹系统 = {};
+
+// 定义在 _root.联弹系统 内部
+_root.联弹系统.联弹消失 = function(clip:MovieClip):Void {
+    // 停止当前播放，防止继续播放后续帧动画
+    clip.stop();
+    // 设置标记为 true，表示联弹处于消失状态
+    clip.flag = true;
+    
+    // 判断条件：如果霰弹值小于等于1，或者已经击中地图，则直接移除该 MovieClip
+    if (clip.霰弹值 <= 1 || clip.击中地图) {
+        clip.removeMovieClip();
+    } else {
+        // 否则，重置到第一帧（可用于循环播放消失动画或重置状态）
+        clip.gotoAndStop(1);
+    }
+};
+
+
+
+_root.联弹系统.爆炸联弹消失 = function(clip:MovieClip):Void {
+    // 停止当前影片剪辑的播放
+    clip.stop();
+    
+    // 如果未标记过，则执行信息传递和爆炸效果
+    if (clip.flag == undefined) {
+        // 调整子弹区域的尺寸，加上爆炸范围
+        clip.子弹区域area._height = clip.area._height + clip.爆炸范围;
+        clip.子弹区域area._width  = clip.area._width + clip.爆炸范围;
+        
+        // 信息传递完毕后，移除原始的 area 影片剪辑
+        clip.area.removeMovieClip();
+        
+        // 将子弹属性传递给子弹区域处理函数
+        _root.子弹区域shoot传递(clip.子弹属性);
+        
+        // 遍历 area 内的所有单元体，生成爆炸效果
+        for (var i:Number = 0; i < clip.area.单元体列表.length; i++) {
+            var 单元体:MovieClip = clip.area.单元体列表[i];
+            // 记录单元体当前位置
+            var point:Object = { x: 单元体._x, y: 单元体._y };
+            // 坐标转换到 gameworld 坐标系
+            _root.pointToGameworld(point, 单元体);
+            
+            // 在 gameworld 中添加联弹爆炸效果
+            var 爆炸:MovieClip = _root.gameworld.attachMovie("联弹爆炸", "explosion" + i, _root.gameworld.getNextHighestDepth());
+            爆炸._x = point.x;
+            爆炸._y = point.y;
+            
+            // 回收该单元体
+            _root.回收单元体(单元体);
+        }
+        // 标记处理完毕
+        clip.flag = true;
+    } else {
+        // 如果已处理过，直接移除影片剪辑
+        clip.removeMovieClip();
+    }
+};
+
+
+
+// 定义在 _root.联弹系统 对象内部
+_root.联弹系统.横向联弹初始化 = function(clip:MovieClip):Void {
+    // 初始化衰竭计数器（衰竭值由霰弹值与子弹衰竭计数综合决定）
+    clip.衰竭计数器 = clip._parent.霰弹值 * -1 - _root.子弹衰竭计数(clip._parent) * 3;
+    
+    // 初始化子弹单元体列表
+    clip.单元体列表 = [];
+    
+    // 根据父对象 xmov 的方向确定运动系数
+    clip.运动方向系数 = clip._parent.xmov < 0 ? -1 : 1;
+    
+    // 保存初始 y 坐标，作为后续碰撞箱大小的基准
+    clip.y_基准 = clip._y;
+    
+    // 根据父对象的旋转角度计算余弦值（用于后续位置判断）
+    clip.余弦值 = Math.cos(clip._parent._rotation * Math.PI / 180);
+    
+    // 提取子弹种类（注意：这里假设子弹种类的格式为 “XXX-子弹种类”）
+    var 子弹种类:String = clip._parent.子弹种类.split("-")[1];
+    
+    // 根据霰弹值生成对应的子弹单元体，同时判断 flag 未定义时才生成
+    for (var i:Number = 0; (i < clip._parent.霰弹值) && (clip._parent.flag == undefined); i++) {
+        var 单元体:MovieClip = _root.创建单元体(clip._parent, 子弹种类);
+        // 设置单元体的初始偏转（用于散射效果）
+        单元体._rotation = _root.随机偏移(clip._parent.子弹散射度);
+        clip.单元体列表.push(单元体);
+    }
+    
+    // 设置 onEnterFrame 每帧更新子弹单元体的运动逻辑
+    clip.onEnterFrame = function():Void {
+        // 累加衰竭计数
+        clip.衰竭计数器 += _root.子弹衰竭计数(clip._parent);
+        var y_min:Number = Infinity;
+        var y_max:Number = -Infinity;
+        
+        // 倒序遍历单元体列表，便于安全地删除不再需要的单元体
+        for (var j:Number = clip.单元体列表.length - 1; j >= 0; j--) {
+            var 单元体:MovieClip = clip.单元体列表[j];
+            // 根据父对象 xmov、单元体的旋转及运动方向系数更新单元体的 y 坐标
+            单元体._y += clip._parent.xmov * Math.sin(单元体._rotation * Math.PI / 180) * clip.运动方向系数;
+            
+            // 判断是否达到回收条件：
+            //   1. 衰竭计数器达到一定值
+            //   2. 单元体超出父对象的 Z 轴坐标限制
+            // 并且确保列表中至少保留一个单元体
+            if (((clip.衰竭计数器 >= clip._parent.霰弹值 * -1) || 
+                 (单元体._y * clip.余弦值 + clip._parent._y > clip._parent.Z轴坐标)) &&
+                (clip.单元体列表.length > 1)) {
+                
+                // 回收单元体（例如放回对象池）
+                _root.回收单元体(单元体);
+                // 从列表中删除该单元体，同时调整索引
+                clip.单元体列表.splice(j--, 1);
+                // 同步减少父对象中的霰弹值
+                clip._parent.霰弹值--;
+                continue;
+            }
+            
+            // 计算所有单元体的最小和最大 y 值，用于更新碰撞箱
+            y_max = Math.max(单元体._y, y_max);
+            y_min = Math.min(单元体._y, y_min);
+        }
+        // 更新当前 clip 的 y 坐标和高度，使碰撞箱与视觉效果相符
+        clip._y = y_min;
+        clip._height = Math.max(clip.y_基准 * -2, y_max - y_min);
+    };
+};
+
+// 定义在 _root.联弹系统 对象内部
+_root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
+    // 保存当前 clip 的初始 y 坐标作为碰撞箱基准，并初始化单元体列表
+    clip.y_基准 = clip._y;
+	clip.x_基准 = clip._x;
+    clip.单元体列表 = [];
+    
+    // 保存父对象的初始坐标与旋转信息
+    clip.原始坐标x = clip._parent._x;
+    clip.原始坐标y = clip._parent._y;
+    clip.原始方向 = clip._parent._rotation;
+    
+    // 根据父对象 xmov 的方向确定运动系数
+    clip.运动方向系数 = clip._parent.xmov < 0 ? -1 : 1;
+    
+    // 提取子弹种类（假设格式为 “XXX-子弹种类”）
+    clip.子弹种类 = clip._parent.子弹种类.split("-")[1];
+    
+    // 加载时只创建一个单元体（用于模拟点射）
+    var 单元体:MovieClip = _root.创建单元体(clip._parent, clip.子弹种类);
+
+    // 设置单元体的初始偏转（可以产生一定散射效果）
+    单元体._rotation = _root.随机偏移(clip._parent.子弹散射度);
+    clip.单元体列表.push(单元体);
+    
+    // 设置每帧执行的更新逻辑
+    clip.onEnterFrame = function():Void {
+        var y_min:Number = Infinity;
+        var y_max:Number = -Infinity;
+		var x_min:Number = Infinity;
+		var x_max:Number = -Infinity
+		var x_update:Boolean = false;
+        
+        // 如果当前创建的单元体数未达到预定总数，则每帧创建一个新的单元体
+        if (this.单元体列表.length < this._parent.霰弹值) {
+            var newUnit:MovieClip = _root.创建单元体(this._parent, this.子弹种类);
+            newUnit._rotation = _root.随机偏移(this._parent.子弹散射度);
+			newUnit._x += this._parent._x - this.原始坐标x;
+			newUnit._y += this._parent._y - this.原始坐标y;
+            this.单元体列表.push(newUnit);
+
+			var bullet:MovieClip = this._parent;
+			bullet._x = this.原始坐标x;
+			bullet._y = this.原始坐标y;
+
+			x_update = true;
+        }
+        
+        // 遍历所有单元体，更新它们的坐标
+        for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
+            var 单元体:MovieClip = this.单元体列表[j];
+            // 根据父对象 xmov、单元体的旋转及运动方向系数更新单元体的 y 坐标
+            单元体._y += this._parent.xmov * Math.sin(单元体._rotation * Math.PI / 180) * this.运动方向系数;
+            
+            // 检查是否超出父对象设定的 Z 轴坐标限制
+            if ((单元体._y * Math.cos(this._parent._rotation * Math.PI / 180) + this._parent._y > this._parent.Z轴坐标) &&
+                (this.单元体列表.length > 1)) {
+                _root.回收单元体(单元体);
+                this.单元体列表.splice(j, 1);
+                continue;
+            }
+
+			if(x_update) {
+				单元体._x += bullet.xmov * Math.cos(单元体._rotation * Math.PI / 180) * this.运动方向系数;
+			}
+            
+            // 记录所有单元体的最小与最大 y 坐标（用于更新碰撞箱）
+            y_max = Math.max(单元体._y, y_max);
+            y_min = Math.min(单元体._y, y_min);
+			x_max = Math.max(单元体._x, x_max);
+			x_min = Math.min(单元体._x, x_min);
+        }
+        
+        // 更新当前 clip 的碰撞箱：位置和高度与视觉效果保持一致
+        this._y = y_min;
+        this._height = Math.max(this.y_基准 * -2, y_max - y_min);
+		this._x = x_min;
+		this._width = Math.max(this.x_基准 * -2, x_max - x_min);
+    };
+};
+
+
+// 定义在 _root.联弹系统 对象中
+_root.联弹系统.滑翔联弹初始化 = function(clip:MovieClip):Void {
+    // 保存初始坐标、角度和尺寸信息
+    clip.y_基准 = clip._y;               // 用于后续更新碰撞箱的基准
+    clip.单元体列表 = [];               // 初始化单元体列表
+    clip.原始坐标x = clip._parent._x;    // 保存父对象原始 x 坐标
+    clip.原始坐标y = clip._parent._y;    // 保存父对象原始 y 坐标
+    clip.原始方向 = clip._parent._rotation; // 保存父对象原始旋转角度
+    
+    // 根据父对象 xmov 的正负确定运动方向
+    clip.运动方向系数 = clip._parent.xmov < 0 ? -1 : 1;
+    // 计算下滑速度，根据子弹散射度与 xmov 绝对值决定
+    clip.下滑速度 = clip._parent.子弹散射度 * Math.abs(clip._parent.xmov) / 100;
+    
+    // 提取子弹种类（格式为 "xxx-子弹种类"）
+    var 子弹种类:String = clip._parent.子弹种类.split("-")[1];
+    
+    // 循环创建单元体，只有在父对象 flag 未定义时才生成
+    for (var i:Number = 0; (i < clip._parent.霰弹值) && (clip._parent.flag == undefined); ++i) {
+        var 单元体:MovieClip = _root.创建单元体(clip._parent, 子弹种类);
+        // 为单元体设置一个随机偏移的旋转角度，实现散射效果
+        单元体._rotation = _root.随机偏移(clip._parent.子弹散射度);
+        clip.单元体列表.push(单元体);
+    }
+    
+    // 每帧更新处理逻辑
+    clip.onEnterFrame = function():Void {
+        var y_min:Number = Infinity;
+        var y_max:Number = -Infinity;
+        
+        // 更新父对象的 ymov，使下坠速度渐进（模拟滑翔角时下坠的迟缓）
+        this._parent.ymov += Math.max(0.1, (this.下滑速度 - this._parent.ymov) * this.下滑速度 * 0.05);
+        // 根据当前的 xmov 与 ymov 更新父对象的旋转角度
+        this._parent._rotation = Math.atan2(this._parent.ymov, this._parent.xmov) * 180 / Math.PI;
+        
+        // 遍历所有单元体，更新它们的 y 坐标
+        for (var j:Number = this.单元体列表.length - 1; j >= 0; --j) {
+            var 单元体:MovieClip = this.单元体列表[j];
+            单元体._y += this._parent.xmov * Math.sin(单元体._rotation * Math.PI / 180) * this.运动方向系数;
+            
+            // 判断条件：当单元体的 y 坐标经过旋转变换后超出父对象 Z 轴坐标，并且列表中至少保留一个单元体时
+            if ((单元体._y * Math.cos(this._parent._rotation * Math.PI / 180) + this._parent._y > this._parent.Z轴坐标) && this.单元体列表.length > 1) {
+                // 回收该单元体（例如放入对象池中以便复用）
+                _root.回收单元体(单元体);
+                // 从列表中移除该单元体，并调整索引
+                this.单元体列表.splice(j--, 1);
+                // 同步减少父对象中的霰弹值
+                this._parent.霰弹值--;
+                continue;
+            }
+            
+            // 更新所有单元体的最小和最大 y 值
+            y_max = Math.max(单元体._y, y_max);
+            y_min = Math.min(单元体._y, y_min);
+        }
+        // 根据单元体的 y 值范围更新当前 clip 的位置与高度，确保碰撞箱与视觉效果相符
+        this._y = y_min;
+        this._height = Math.max(this.y_基准 * -2, y_max - y_min);
+    };
+};
+
+
+// 定义在 _root.联弹系统 对象内
+_root.联弹系统.爆炸联弹初始化 = function(clip:MovieClip):Void {
+    // 保存 area 的初始 y 坐标，作为后续碰撞箱尺寸更新的基准
+    clip.y_基准 = clip._y;
+    // 初始化单元体列表
+    clip.单元体列表 = [];
+    // 保存父对象的原始坐标和旋转角度
+    clip.原始坐标x = clip._parent._x;
+    clip.原始坐标y = clip._parent._y;
+    clip.原始方向 = clip._parent._rotation;
+    // 根据父对象 xmov 的正负确定运动方向
+    clip.运动方向系数 = clip._parent.xmov < 0 ? -1 : 1;
+    
+    // 调整父对象的垂直移动速度：根据子弹散射度和 xmov 的绝对值
+    clip._parent.ymov += clip._parent.子弹散射度 * Math.abs(clip._parent.xmov) / 100;
+    
+    // 提取子弹种类（格式如 "xxx-子弹种类"）
+    var 子弹种类:String = clip._parent.子弹种类.split("-")[1];
+    // 根据父对象的霰弹值生成单元体
+    for (var i:Number = 0; i < clip._parent.霰弹值; i++) {
+        var 单元体:MovieClip = _root.创建单元体(clip._parent, 子弹种类);
+        // 为单元体设置一个随机偏移角度，实现散射效果
+        单元体._rotation = _root.随机偏移(clip._parent.子弹散射度);
+        clip.单元体列表.push(单元体);
+    }
+    
+    // 设置每帧执行的更新逻辑
+    clip.onEnterFrame = function():Void {
+        var y_min:Number = Infinity;
+        var y_max:Number = -Infinity;
+        
+        // 每帧增加父对象的垂直速度，模拟下坠加速效果
+        this._parent.ymov += 1.2;
+        // 根据当前 xmov 和 ymov 计算父对象的旋转角度（角度指向速度方向）
+        this._parent._rotation = Math.atan2(this._parent.ymov, this._parent.xmov) * 180 / Math.PI;
+        
+        // 遍历所有单元体，更新它们的 y 坐标
+        for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
+            var 单元体:MovieClip = this.单元体列表[j];
+            单元体._y += this._parent.xmov * Math.sin(单元体._rotation * Math.PI / 180) * this.运动方向系数;
+            
+            // 判断单元体是否超出父对象定义的 Z 轴坐标（并且确保列表中至少保留一个单元体）
+            if ((单元体._y * Math.cos(this._parent._rotation * Math.PI / 180) + this._parent._y > this._parent.Z轴坐标) && this.单元体列表.length > 1) {
+                // 如果超出，则通知父对象进入“消失”状态
+                this._parent.gotoAndStop("消失");
+            }
+            // 同时记录所有单元体的最大与最小 y 值
+            y_max = Math.max(单元体._y, y_max);
+            y_min = Math.min(单元体._y, y_min);
+        }
+        // 根据单元体的 y 范围更新当前 clip 的位置和高度，使碰撞箱与视觉效果匹配
+        this._y = y_min;
+        this._height = Math.max(this.y_基准 * -2, y_max - y_min);
+    };
+};
