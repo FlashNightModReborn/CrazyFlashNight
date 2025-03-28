@@ -48,102 +48,105 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      *   - playerBulletField: String, 玩家界面中需要更新的子弹数属性，如 "子弹数" 或 "子弹数_2"
      * @return Boolean       返回是否处于持续射击状态
      */
-    
     public static function continuousShoot(core:Object, attackMode:String, shootSpeed:Number, params:Object):Boolean {
-        // 内联展开：利用 Dictionary.getStaticUID 为 params 建立或获取缓存配置
+        // 缓存常用全局对象和属性引用
+        var root:Object = _root;
+        var man:Object  = core.man;
+        var controlTarget:Object = root.控制目标;
+
+        // 利用 Dictionary.getStaticUID 为 params 建立或获取缓存配置
         var uid:Number = Dictionary.getStaticUID(params);
         var config:Object = _paramsCache[uid];
         if (!config) {
             config = {
-                // 将需要频繁访问的字段放入缓存
-                shootingStateName:    params.shootingStateName,
-                actionFlagName:       params.actionFlagName,
-                prefix:               params.prefix,
-                bulletAttrKeys:       params.bulletAttrKeys,
-                shootBulletAttrKey:   params.shootBulletAttrKey,
-                taskName:             params.taskName,
-                playerBulletField:    params.playerBulletField,
-
-                // 预处理1：拆分 gunPath，并缓存
-                gunPathArray:         params.gunPath.split("."),
-
-                // 预处理2：拼接固定字符串
-                baseShootFrame:       "射击" + params.prefix
+                shootingStateName:  params.shootingStateName,
+                actionFlagName:     params.actionFlagName,
+                prefix:             params.prefix,
+                bulletAttrKeys:     params.bulletAttrKeys,
+                shootBulletAttrKey: params.shootBulletAttrKey,
+                taskName:           params.taskName,
+                playerBulletField:  params.playerBulletField,
+                gunPathArray:       params.gunPath.split("."),
+                baseShootFrame:     "射击" + params.prefix
             };
             _paramsCache[uid] = config;
         }
 
-        // 执行前置逻辑
+        // 缓存配置中的关键字段到局部变量
+        var shootStateName:String = config.shootingStateName;
+        var actionFlagName:String = config.actionFlagName;
+        var bulletAttrKeys:Array = config.bulletAttrKeys;
+        var len:Number = bulletAttrKeys.length;
+
+        // 初始状态设定
         core.射击最大后摇中 = false;
-        if(!core.man.射击许可标签) {
-            core[config.shootingStateName] = false;
-            _root.帧计时器.移除任务(core[config.taskName]);
+        if (!man.射击许可标签) {
+            core[shootStateName] = false;
+            root.帧计时器.移除任务(core[config.taskName]);
             return false;
         }
 
-        // 重置各指定子弹属性的角度偏移
-        var bulletAttrKeys:Array = config.bulletAttrKeys;
-        var len:Number = bulletAttrKeys.length;
-        for(var i:Number = 0; i < len; i++) {
-            var key:String = bulletAttrKeys[i];
-            core.man[key].角度偏移 = 0;
-        }
-
-        // 默认动画帧名称
+        // 根据当前状态预设角度偏移和动画帧名称
+        var offset:Number = 0;
         var jumpFrameName:String = config.baseShootFrame;
-
-        // 如果当前是控制目标，且不处于上下移动射击状态
-        if(_root.控制目标 === core._name && !core.上下移动射击) {
-            if(core.下行) {
-                for(var j:Number = 0; j < len; j++) {
-                    core.man[bulletAttrKeys[j]].角度偏移 = 30;
-                }
+        var isControlTarget:Boolean = (controlTarget === core._name);
+        if (isControlTarget && !core.上下移动射击) {
+            if (core.下行) {
+                offset = 30;
                 jumpFrameName = "下射击" + config.prefix;
-            } else if(core.上行) {
-                for(var k:Number = 0; k < len; k++) {
-                    core.man[bulletAttrKeys[k]].角度偏移 = -30;
-                }
+            } else if (core.上行) {
+                offset = -30;
                 jumpFrameName = "上射击" + config.prefix;
             }
         }
+        // 更新所有需要重置的子弹属性角度偏移
+        for (var i:Number = 0; i < len; i++) {
+            man[bulletAttrKeys[i]].角度偏移 = offset;
+        }
 
-        // 主循环：判断动作标记并执行射击逻辑
-        core[config.shootingStateName] = false;
-        if(core[config.actionFlagName]) {
-            core.man.gotoAndPlay(jumpFrameName);
+        // 预计算需要调用的函数和属性名
+        var shootMethodName:String  = attackMode + "射击";
+        var magazineCapName:String  = attackMode + "弹匣容量";
+        var shootCountName:String   = attackMode + "射击次数";
 
-            // 利用缓存的 gunPathArray 获取枪口位置引用
-            var gunRef:Object = core.man;
-            var path:Array = config.gunPathArray;
-            var pathLen:Number = path.length;
-            for(var p:Number = 0; p < pathLen; p++) {
-                gunRef = gunRef[path[p]];
+        // 执行射击逻辑
+        core[shootStateName] = false;
+        if (core[actionFlagName]) {
+            man.gotoAndPlay(jumpFrameName);
+
+            // 利用缓存的 gunPathArray 快速获取枪口位置引用
+            var gunRef:Object = man;
+            var gunPath:Array = config.gunPathArray;
+            var pathLen:Number = gunPath.length;
+            for (var p:Number = 0; p < pathLen; p++) {
+                gunRef = gunRef[gunPath[p]];
             }
 
-            // 调用具体的射击方法（方法名由 attackMode 与 "射击" 拼接而成）
-            var shootBulletKey:String = config.shootBulletAttrKey;
-            core[config.shootingStateName] = core[attackMode + "射击"](gunRef, core.man[shootBulletKey]);
+            // 调用具体射击方法，并将结果缓存
+            core[shootStateName] = core[shootMethodName](gunRef, man[config.shootBulletAttrKey]);
 
-            // 根据射击次数更新弹匣剩余子弹
-            var magazineRemaining:Number = core[attackMode + "弹匣容量"] - core[attackMode + "射击次数"][core[attackMode]];
-            if(_root.控制目标 === core._name) {
-                _root.玩家信息界面.玩家必要信息界面[config.playerBulletField] = magazineRemaining;
+            // 更新弹匣剩余子弹数量
+            var magazineRemaining:Number = core[magazineCapName] - core[shootCountName][core[attackMode]];
+            if (isControlTarget) {
+                root.玩家信息界面.玩家必要信息界面[config.playerBulletField] = magazineRemaining;
             }
-            if(magazineRemaining <= 0) {
-                core[config.shootingStateName] = false;
+            if (magazineRemaining <= 0) {
+                core[shootStateName] = false;
             }
-            core.射击最大后摇中 = core[config.shootingStateName];
-            if(shootSpeed > 300) {
-                _root.帧计时器.添加或更新任务(core, "结束射击后摇", function(target:Object):Void {
+            core.射击最大后摇中 = core[shootStateName];
+            if (shootSpeed > 300) {
+                // 延迟任务：结束后摇状态
+                root.帧计时器.添加或更新任务(core, "结束射击后摇", function(target:Object):Void {
                     target.射击最大后摇中 = false;
                 }, 300, core);
             }
         }
 
-        if(core[config.shootingStateName]) {
+        // 根据当前状态返回是否仍在持续射击中，并清理任务
+        if (core[shootStateName]) {
             return true;
         }
-        _root.帧计时器.移除任务(core[config.taskName]);
+        root.帧计时器.移除任务(core[config.taskName]);
         return false;
     }
 }
