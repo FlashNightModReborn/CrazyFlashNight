@@ -16,88 +16,105 @@
 	}
 }
 
+// 内核函数：抽象出持续射击的共同逻辑
+_root.主角函数.持续射击内核 = function(自机, 攻击模式, 射击速度, 参数){
+    // 参数说明：
+    // 参数.shootingStateName   : 射击状态属性名（例如 "主手射击中" 或 "副手射击中"）
+    // 参数.actionFlagName      : 发射动作判断属性（例如 "动作A" 或 "动作B"）
+    // 参数.prefix              : 帧名后缀（主手为空，副手为 "2"）
+    // 参数.bulletAttrKeys      : 需要重置角度偏移的子弹属性数组（主手为 ["子弹属性"]，副手为 ["子弹属性", "子弹属性2"]）
+    // 参数.shootBulletAttrKey  : 射击时传入的子弹属性键（主手 "子弹属性"，副手 "子弹属性2"）
+    // 参数.gunPath             : 枪口位置的路径（主手 "枪.枪.装扮.枪口位置"，副手 "枪2.枪.装扮.枪口位置"）
+    // 参数.taskName            : 帧计时器中对应的任务名称（主手 "keepshooting"，副手 "keepshooting2"）
+    // 参数.playerBulletField   : 玩家界面更新的子弹数属性（主手 "子弹数"，副手 "子弹数_2"）
+
+    自机.射击最大后摇中 = false;
+    if(!自机.man.射击许可标签){
+        自机[参数.shootingStateName] = false;
+        _root.帧计时器.移除任务(自机[参数.taskName]);
+        return false;
+    }
+    
+    // 重置所有指定子弹属性的角度偏移
+    for(var i = 0; i < 参数.bulletAttrKeys.length; i++){
+        var key = 参数.bulletAttrKeys[i];
+        自机.man[key].角度偏移 = 0;
+    }
+    
+    // 默认帧名
+    var 跳转帧名 = "射击" + 参数.prefix;
+    if(_root.控制目标 === 自机._name && !自机.上下移动射击){
+        if(自机.下行){
+            for(var i = 0; i < 参数.bulletAttrKeys.length; i++){
+                var key = 参数.bulletAttrKeys[i];
+                自机.man[key].角度偏移 = 30;
+            }
+            跳转帧名 = "下射击" + 参数.prefix;
+        } else if(自机.上行){
+            for(var i = 0; i < 参数.bulletAttrKeys.length; i++){
+                var key = 参数.bulletAttrKeys[i];
+                自机.man[key].角度偏移 = -30;
+            }
+            跳转帧名 = "上射击" + 参数.prefix;
+        }
+    }
+    
+    // 预设射击状态为 false
+    自机[参数.shootingStateName] = false;
+    if(自机[参数.actionFlagName]){
+        自机.man.gotoAndPlay(跳转帧名);
+        // 根据传入的枪口路径，获取实际枪口位置
+        var gunRef = 自机.man;
+        var parts = 参数.gunPath.split(".");
+        for(var j = 0; j < parts.length; j++){
+            gunRef = gunRef[parts[j]];
+        }
+        // 调用射击方法，传入枪口位置和对应的子弹属性
+        自机[参数.shootingStateName] = 自机[攻击模式 + "射击"](gunRef, 自机.man[参数.shootBulletAttrKey]);
+        var 弹匣余弹量 = 自机[攻击模式 + "弹匣容量"] - 自机[攻击模式 + "射击次数"][自机[攻击模式]];
+        if(_root.控制目标 === 自机._name)
+            _root.玩家信息界面.玩家必要信息界面[参数.playerBulletField] = 弹匣余弹量;
+        if(弹匣余弹量 <= 0)
+            自机[参数.shootingStateName] = false;
+        自机.射击最大后摇中 = 自机[参数.shootingStateName];
+        if(射击速度 > 300){
+            _root.帧计时器.添加或更新任务(自机, "结束射击后摇", function(自机){ 自机.射击最大后摇中 = false; }, 300, 自机);
+        }
+    }
+    
+    if(自机[参数.shootingStateName])
+        return true;
+    _root.帧计时器.移除任务(自机[参数.taskName]);
+    return false;
+};
+
+// 主手射击包装函数
 _root.主角函数.主手持续射击 = function(自机, 攻击模式, 射击速度){
-	自机.射击最大后摇中 = false;
-	if(!自机.man.射击许可标签){
-		自机.主手射击中 = false;
-		_root.帧计时器.移除任务(自机.keepshooting);
-		return false;
-	}
-	自机.man.子弹属性.角度偏移 = 0;
-	var 跳转帧名 = "射击";
-	if (_root.控制目标 === 自机._name && !自机.上下移动射击)
-	{
-		if (自机.下行)
-		{
-			自机.man.子弹属性.角度偏移 = 30;
-			跳转帧名 = "下射击";
-		}
-		else if (自机.上行)
-		{
-			自机.man.子弹属性.角度偏移 = -30;
-			跳转帧名 = "上射击";
-		}
-	}
-	自机.主手射击中 = false;
-	if(自机.动作A){
-		自机.man.gotoAndPlay(跳转帧名);
-		自机.主手射击中 = 自机[攻击模式 + "射击"](自机.man.枪.枪.装扮.枪口位置, 自机.man.子弹属性);
-		var 弹匣余弹量 = 自机[攻击模式 + "弹匣容量"] - 自机[攻击模式 + "射击次数"][自机[攻击模式]];
-		if (_root.控制目标 === 自机._name) _root.玩家信息界面.玩家必要信息界面.子弹数 = 弹匣余弹量;
-		if (弹匣余弹量 <= 0) 自机.主手射击中 = false;
-		自机.射击最大后摇中 = 自机.主手射击中;
-		if(射击速度 > 300){
-			_root.帧计时器.添加或更新任务(自机, "结束射击后摇", function(自机){自机.射击最大后摇中 = false;}, 300, 自机);
-		}
-	}
+    return _root.主角函数.持续射击内核(自机, 攻击模式, 射击速度, {
+        shootingStateName: "主手射击中",
+        actionFlagName: "动作A",
+        prefix: "",
+        bulletAttrKeys: ["子弹属性"],
+        shootBulletAttrKey: "子弹属性",
+        gunPath: "枪.枪.装扮.枪口位置",
+        taskName: "keepshooting",
+        playerBulletField: "子弹数"
+    });
+};
 
-	if(自机.主手射击中) return true;
-	_root.帧计时器.移除任务(自机.keepshooting);
-	return false;
-}
-
+// 副手射击包装函数
 _root.主角函数.副手持续射击 = function(自机, 攻击模式, 射击速度){
-	自机.射击最大后摇中 = false;
-	if(!自机.man.射击许可标签){
-		自机.副手射击中 = false;
-		_root.帧计时器.移除任务(自机.keepshooting2);
-		return false;
-	}
-	自机.man.子弹属性.角度偏移 = 0;
-	自机.man.子弹属性2.角度偏移 = 0;
-	var 跳转帧名 = "射击2";
-	if (_root.控制目标 === 自机._name && !自机.上下移动射击)
-	{
-		if (自机.下行)
-		{
-			自机.man.子弹属性.角度偏移 = 30;
-			自机.man.子弹属性2.角度偏移 = 30;
-			跳转帧名 = "下射击2";
-		}
-		else if (自机.上行)
-		{
-			自机.man.子弹属性.角度偏移 = -30;
-			自机.man.子弹属性2.角度偏移 = -30;
-			跳转帧名 = "上射击2";
-		}
-	}
-	自机.副手射击中 = false;
-	if(自机.动作B){
-		自机.man.gotoAndPlay(跳转帧名);
-		自机.副手射击中 = 自机[攻击模式 + "射击"](自机.man.枪2.枪.装扮.枪口位置, 自机.man.子弹属性2);
-		var 弹匣余弹量 = 自机[攻击模式 + "弹匣容量"] - 自机[攻击模式 + "射击次数"][自机[攻击模式]];
-		if (_root.控制目标 === 自机._name) _root.玩家信息界面.玩家必要信息界面.子弹数_2 = 弹匣余弹量;
-		if (弹匣余弹量 <= 0) 自机.副手射击中 = false;
-		自机.射击最大后摇中 = 自机.副手射击中;
-		if(射击速度 > 300){
-			_root.帧计时器.添加或更新任务(自机, "结束射击后摇", function(自机){自机.射击最大后摇中 = false;}, 300, 自机);
-		}
-	}
-
-	if(自机.副手射击中) return true;
-	_root.帧计时器.移除任务(自机.keepshooting2);
-	return false;
-}
+    return _root.主角函数.持续射击内核(自机, 攻击模式, 射击速度, {
+        shootingStateName: "副手射击中",
+        actionFlagName: "动作B",
+        prefix: "2",
+        bulletAttrKeys: ["子弹属性", "子弹属性2"],
+        shootBulletAttrKey: "子弹属性2",
+        gunPath: "枪2.枪.装扮.枪口位置",
+        taskName: "keepshooting2",
+        playerBulletField: "子弹数_2"
+    });
+};
 
 
 _root.主角函数.开始换弹 = function()
