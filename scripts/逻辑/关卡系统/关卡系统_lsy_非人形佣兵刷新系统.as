@@ -102,7 +102,7 @@ _root.创建可雇用敌人实体对象 = function(佣兵数据, X, Y)
 
 	_root.计算可雇用敌人价格(佣兵对象);
 	
-	佣兵对象.删除可雇用敌人 = function(){
+	佣兵对象.删除可雇用单位 = function(){
 		_root.gameworld.可雇用敌人在场数量--;
 		this.removeMovieClip();
 	}

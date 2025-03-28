@@ -2757,3 +2757,78 @@ _root.初始化玩家模板 = function(){
 	方向改变(方向);
 	gotoAndStop(状态);
 };
+
+
+
+_root.初始化佣兵NPC模板 = function(){
+	this.获取佣兵装备属性 = _root.主角函数.获取佣兵装备属性;
+
+	this.动画完毕 = _root.主角函数.动画完毕;
+	//
+	this.方向改变 = _root.主角函数.方向改变;
+	this.移动 = _root.主角函数.移动;
+	// this.跳跃上下移动 = _root.主角函数.跳跃上下移动;
+	// this.被击移动 = _root.主角函数.被击移动;
+	this.强制移动 = _root.主角函数.强制移动;
+	this.非主角外观刷新 = _root.主角函数.非主角外观刷新;
+	this.状态改变 = _root.主角函数.状态改变;
+
+	this.根据等级初始数值 = _root.主角函数.根据等级初始数值;
+	this.行走 = _root.主角函数.行走;
+
+	// this.死亡检测 = _root.主角函数.死亡检测;
+
+	this.装载生命周期函数 = _root.主角函数.装载生命周期函数;
+	this.完成生命周期函数装载 = _root.主角函数.完成生命周期函数装载;
+	
+	this.删除可雇用单位 = function(){
+		this.removeMovieClip();
+	}
+
+	最小经验值 = 1;
+	最大经验值 = 1;
+	hp_min = 200;
+	hp_max = 1000;
+	mp_min = 100;
+	mp_max = 600;
+	速度_min = 40;
+	速度_max = 60;
+	空手攻击力_min = 10;
+	空手攻击力_max = 150;
+	被击硬直度_min = 1000;
+	被击硬直度_max = 200;
+	躲闪率_min = 10;
+	躲闪率_max = 2;
+	基本防御力_min = 10;
+	基本防御力_max = 400;
+	内力 = 65 + Math.floor(等级 * 0.56);
+	if (!this.装备防御力) this.装备防御力 = 0;
+
+	//新加属性
+	重量 = 0;
+	命中率 = 10;
+	韧性系数 = 1;
+
+	操控编号 = -1;
+
+	状态 = 攻击模式 + "站立";
+	方向 = 方向 ? 方向 : "右";
+	击中效果 = 击中效果 ? 击中效果 : "飙血";
+	Z轴坐标 = this._y;
+	浮空 = false;
+	倒地 = false;
+	硬直中 = false;
+
+	身高转换值 = _root.身高百分比转换(this.身高);
+	this._xscale = 身高转换值;
+	this._yscale = 身高转换值;
+	myxscale = this._xscale;
+	this.swapDepths(this._y + random(10) - 5);
+
+	//状态机类型为佣兵NPC
+	this.unitAIType = "Mecenary";
+
+	根据等级初始数值(等级);
+	方向改变(方向);
+	gotoAndStop(状态);
+};
