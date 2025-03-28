@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 2370" itemID="6577efbc-000008cb" linkageExportForAS="true" linkageIdentifier="敌人-暴走改造僵尸" lastModified="1722577207">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-暴走基因虫" itemID="67e615d7-000008dd" lastModified="1743135168">
   <timeline>
-    <DOMTimeline name="Symbol 2370" currentFrame="112">
+    <DOMTimeline name="敌人-暴走基因虫" currentFrame="83">
       <layers>
-        <DOMLayer name="Labels Layer" color="#707DF5">
+        <DOMLayer name="Labels Layer" color="#73CF5F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#F943B0">
+        <DOMLayer name="Script Layer" color="#8EBB79">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -539,24 +539,24 @@ if(_root.控制目标 == this._name)
    身高 = _root.身高;
    _root.刷新人物装扮(this._name);
 }
-最小经验值 = 200;
+最小经验值 = 400;
 最大经验值 = 9000;
-hp_min = 20000;
+hp_min = 10000;
 hp_max = 20000;
-速度_min = 20;
-速度_max = 35;
-空手攻击力_min = 50;
-空手攻击力_max = 200;
+速度_min = 30;
+速度_max = 60;
+空手攻击力_min = 200;
+空手攻击力_max = 400;
 被击硬直度_min = 1000;
 被击硬直度_max = 200;
-躲闪率_min = 100;
-躲闪率_max = 30;
+躲闪率_min = 30;
+躲闪率_max = 10;
 if(称号 == undefined)
 {
    称号 = "";
 }
-基本防御力_min = 200;
-基本防御力_max = 400;
+基本防御力_min = 100;
+基本防御力_max = 300;
 装备防御力 = 0;
 身高转换值 = _root.身高百分比转换(this.身高);
 this._xscale = 身高转换值;
@@ -619,13 +619,13 @@ myxscale = this._xscale;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#AAB9CB">
+        <DOMLayer name="Layer 3" color="#525BF9" locked="true">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2369" name="人物文字信息" centerPoint3DX="58.5" centerPoint3DY="-147.65">
+                <DOMSymbolInstance libraryItemName="Symbol 2369" name="人物文字信息" centerPoint3DX="58.5" centerPoint3DY="-98.65">
                   <matrix>
-                    <Matrix tx="1" ty="-170.8"/>
+                    <Matrix tx="1" ty="-121.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -638,11 +638,11 @@ myxscale = this._xscale;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#AC64C3" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#B7A5BB" locked="true">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2362" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="Symbol 2379" symbolType="button">
                   <matrix>
                     <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
                   </matrix>
@@ -680,7 +680,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#54FA9D">
+        <DOMLayer name="Layer 5" color="#C45A7B" locked="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -711,50 +711,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#C0DD4D">
+        <DOMLayer name="Layer 6" color="#4AC17D">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 21" centerPoint3DX="111.6" centerPoint3DY="-39.05">
-                  <matrix>
-                    <Matrix a="6.51220703125" d="0.72247314453125" tx="81.6" ty="-120.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   if(this._currentframe == 1)
-   {
-      if(this.hitTest(_root.gameworld[_parent.攻击目标].area) and Math.abs(_parent._y - _root.gameworld[_parent.攻击目标].Z轴坐标) <= _parent.y轴攻击范围)
-      {
-         play();
-         if(random(_parent.攻击欲望) == 0)
-         {
-            _parent.近战招式 = "a0";
-            _parent.状态改变("近战");
-         }
-      }
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="29" duration="98" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 7" color="#D394AE">
-          <frames>
-            <DOMFrame index="0" duration="29" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 19" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>
@@ -769,7 +730,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#B78982">
+        <DOMLayer name="Layer 7" color="#BD9042" locked="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -792,14 +753,7 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" duration="98" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 9" color="#E3F262">
-          <frames>
-            <DOMFrame index="0" duration="95" keyMode="9728">
+            <DOMFrame index="29" duration="66" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="95" duration="9" keyMode="9728">
@@ -825,11 +779,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#56C1B1">
+        <DOMLayer name="Layer 8" color="#D2B86E" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 15" name="man" centerPoint3DX="37.15" centerPoint3DY="18.1">
+                <DOMSymbolInstance libraryItemName="Symbol 1599" name="man" centerPoint3DX="42.55" centerPoint3DY="-24">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -848,9 +802,9 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="9" duration="10" keyMode="9728">
+            <DOMFrame index="9" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 37" name="man" centerPoint3DX="27.35" centerPoint3DY="18.65">
+                <DOMSymbolInstance libraryItemName="Symbol 1607" name="man" centerPoint3DX="44.05" centerPoint3DY="-23.8">
                   <matrix>
                     <Matrix tx="-18.05" ty="-58.35"/>
                   </matrix>
@@ -863,49 +817,12 @@ on(rollOut){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="19" duration="10" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 38" name="man" selected="true" centerPoint3DX="58.3" centerPoint3DY="16.6">
-                  <matrix>
-                    <Matrix tx="-18.05" ty="-58.35"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="29" duration="8" keyMode="9728">
+            <DOMFrame index="29" duration="12" keyMode="9728">
               <elements/>
-            </DOMFrame>
-            <DOMFrame index="37" duration="4" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 40" name="man" centerPoint3DX="273.7" centerPoint3DY="-92.55">
-                  <matrix>
-                    <Matrix a="-1" tx="88.6" ty="-170.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-}
-onClipEvent(unload){
-}
-]]></script>
-                  </Actionscript>
-                  <filters>
-                    <AdjustColorFilter/>
-                  </filters>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
             <DOMFrame index="41" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 41" name="man" centerPoint3DX="60.4" centerPoint3DY="13.15">
+                <DOMSymbolInstance libraryItemName="Symbol 1635" name="man" selected="true" centerPoint3DX="149.3" centerPoint3DY="18.65">
                   <matrix>
                     <Matrix tx="6.45" ty="-63.5"/>
                   </matrix>
@@ -923,7 +840,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="61" duration="10" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 15" name="man" centerPoint3DX="37.15" centerPoint3DY="18.1">
+                <DOMSymbolInstance libraryItemName="Symbol 1599" name="man" selected="true" centerPoint3DX="42.55" centerPoint3DY="-24">
                   <matrix>
                     <Matrix tx="-19.05" ty="-57.85"/>
                   </matrix>
@@ -948,7 +865,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="71" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 42" name="man" centerPoint3DX="70.75" centerPoint3DY="18.35">
+                <DOMSymbolInstance libraryItemName="Symbol 1636" name="man" centerPoint3DX="75.15" centerPoint3DY="-28.8">
                   <matrix>
                     <Matrix tx="10.5" ty="-62"/>
                   </matrix>
@@ -969,7 +886,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 43" name="man" centerPoint3DX="51.7" centerPoint3DY="74.25">
+                <DOMSymbolInstance libraryItemName="Symbol 1637" name="man" selected="true" centerPoint3DX="54.7" centerPoint3DY="46.8">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -1014,7 +931,7 @@ onClipEvent(load){
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 46" name="man" centerPoint3DX="487.8" centerPoint3DY="262.8">
+                <DOMSymbolInstance libraryItemName="Symbol 1638" name="man" centerPoint3DX="470.7" centerPoint3DY="220.15">
                   <matrix>
                     <Matrix tx="409.1" ty="177.8"/>
                   </matrix>
@@ -1040,7 +957,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="95" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 47" name="man" centerPoint3DX="56.2" centerPoint3DY="75.95">
+                <DOMSymbolInstance libraryItemName="Symbol 1639" name="man" centerPoint3DX="61.6" centerPoint3DY="33.6">
                   <matrix>
                     <Matrix d="1.00039672851563"/>
                   </matrix>
@@ -1061,7 +978,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 202" centerPoint3DX="234.45" centerPoint3DY="78.45">
+                <DOMSymbolInstance libraryItemName="Symbol 2380" centerPoint3DX="148.45" centerPoint3DY="40.4">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>
@@ -1071,7 +988,7 @@ onClipEvent(unload){
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
    _root.播放音效("僵尸0" + (random(6) + 1) + ".wav");
-   gotoAndPlay("a" + random(3));
+   gotoAndPlay("a" + random(1));
 }
 ]]></script>
                   </Actionscript>
@@ -1086,13 +1003,13 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#23FC8C">
+        <DOMLayer name="Layer 9" color="#33DFFA">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 2361" centerPoint3DX="46.5" centerPoint3DY="46.65">
                   <matrix>
-                    <Matrix d="0.538467407226563" tx="-0.5" ty="-0.35"/>
+                    <Matrix a="1.35040283203125" d="0.727142333984375" tx="-0.5" ty="-0.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

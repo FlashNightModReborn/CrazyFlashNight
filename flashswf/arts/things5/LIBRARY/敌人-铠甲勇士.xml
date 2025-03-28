@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-铠甲勇士" itemID="66bf53ea-00001781" linkageExportForAS="true" linkageIdentifier="敌人-铠甲勇士" lastModified="1734964141">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-铠甲勇士" itemID="66bf53ea-00001781" linkageExportForAS="true" linkageIdentifier="敌人-铠甲勇士" lastModified="1743135110">
   <timeline>
-    <DOMTimeline name="敌人-铠甲勇士" currentFrame="120">
+    <DOMTimeline name="敌人-铠甲勇士">
       <layers>
         <DOMLayer name="Labels Layer" color="#8748C2">
           <frames>
@@ -152,49 +152,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#ADC7E2" locked="true">
-          <frames>
-            <DOMFrame index="0" duration="130" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 696" symbolType="button">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="6.9327392578125" tx="-26.45" ty="-162.7"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-   if(_root.控制目标 == this._name and this.hp > 0)
-   {
-      gotoAndStop("被击");
-   }
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.gameworld[_root.控制目标].攻击目标 = this._name;
-      _root.控制目标全自动 = true;
-   }
-}
-on(press, release, rollOver){
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.鼠标.gotoAndStop("手型攻击");
-   }
-}
-on(rollOut){
-   _root.鼠标.gotoAndStop("手型普通");
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="130" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 5" color="#D870E8" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#D870E8" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="98" keyMode="9728">
               <elements>
@@ -318,7 +276,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 19" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>
@@ -524,7 +482,7 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#5558D6" current="true" isSelected="true">
+        <DOMLayer name="Layer 11" color="#5558D6">
           <frames>
             <DOMFrame index="0" duration="105" keyMode="9728">
               <elements>

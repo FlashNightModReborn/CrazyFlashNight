@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 569" itemID="6577efbc-00000412" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1734950716" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1743135141" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="Symbol 569">
+    <DOMTimeline name="敌人-粉红头发御姐">
       <layers>
         <DOMLayer name="Labels Layer" color="#77AB72" outline="true" useOutlineView="true">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#F66DBF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="Script Layer" color="#F66DBF" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -260,7 +260,7 @@ function Phoenix()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#8259BD" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 3" color="#8259BD" locked="true">
           <frames>
             <DOMFrame index="0" duration="120" keyMode="9728">
               <elements>
@@ -279,49 +279,7 @@ function Phoenix()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#B86ECC" locked="true" outline="true" useOutlineView="true">
-          <frames>
-            <DOMFrame index="0" duration="120" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 503" symbolType="button">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-   if(_root.控制目标 == this._name and this.hp > 0)
-   {
-      gotoAndStop("被击");
-   }
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.gameworld[_root.控制目标].攻击目标 = this._name;
-      _root.控制目标全自动 = true;
-   }
-}
-on(press, release, rollOver){
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.鼠标.gotoAndStop("手型攻击");
-   }
-}
-on(rollOut){
-   _root.鼠标.gotoAndStop("手型普通");
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="120" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 5" color="#91F0D2" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#91F0D2" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -434,7 +392,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 19" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>
@@ -498,7 +456,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#D98C95" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 10" color="#D98C95">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

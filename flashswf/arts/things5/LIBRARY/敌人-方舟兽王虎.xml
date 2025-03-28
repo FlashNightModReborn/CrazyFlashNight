@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 2347" itemID="6577efbc-000008be" linkageExportForAS="true" linkageIdentifier="敌人-方舟兽王虎" lastModified="1734950766">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-方舟兽王虎" itemID="67e615cd-000008d8" linkageExportForAS="true" linkageIdentifier="敌人-方舟兽王虎" lastModified="1743135155">
   <timeline>
-    <DOMTimeline name="Symbol 2347">
+    <DOMTimeline name="敌人-方舟兽王虎">
       <layers>
         <DOMLayer name="Labels Layer" color="#84F2FC" outline="true" useOutlineView="true">
           <frames>
@@ -81,7 +81,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#6482B6" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#6482B6" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -287,42 +287,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#A772C1" outline="true" useOutlineView="true">
-          <frames>
-            <DOMFrame index="0" duration="88" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 23" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="88" duration="7" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 23" name="area" centerPoint3DX="-51.1" centerPoint3DY="-19.15">
-                  <matrix>
-                    <Matrix a="5.72386169433594" d="1.68096923828125" tx="-63.6" ty="-31.65"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="95" duration="32" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 6" color="#159BDC" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#159BDC" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1796" centerPoint3DX="-22.55" centerPoint3DY="25.95">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-22.55" centerPoint3DY="25.95">
                   <matrix>
                     <Matrix tx="-25.05" ty="23.45"/>
                   </matrix>
@@ -534,7 +503,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#A314ED" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 11" color="#A314ED">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

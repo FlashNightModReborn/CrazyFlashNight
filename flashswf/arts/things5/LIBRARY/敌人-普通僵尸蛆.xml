@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-普通僵尸蛆" itemID="66bf5250-0000177e" linkageExportForAS="true" linkageIdentifier="敌人-普通僵尸蛆" lastModified="1737826038">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-普通僵尸蛆" itemID="66bf5250-0000177e" linkageExportForAS="true" linkageIdentifier="敌人-普通僵尸蛆" lastModified="1743135080">
   <timeline>
     <DOMTimeline name="敌人-普通僵尸蛆">
       <layers>
@@ -87,7 +87,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BA86FD" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#BA86FD">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -151,49 +151,7 @@ if (!身高)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#71FCC8" outline="true" useOutlineView="true">
-          <frames>
-            <DOMFrame index="0" duration="120" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1700" symbolType="button">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="1.87815856933594" tx="-26.45" ty="-36.4"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-   if(_root.控制目标 == this._name and this.hp > 0)
-   {
-      gotoAndStop("被击");
-   }
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.gameworld[_root.控制目标].攻击目标 = this._name;
-      _root.控制目标全自动 = true;
-   }
-}
-on(press, release, rollOver){
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.鼠标.gotoAndStop("手型攻击");
-   }
-}
-on(rollOut){
-   _root.鼠标.gotoAndStop("手型普通");
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="120" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B54BE6" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#B54BE6" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -228,7 +186,7 @@ on(rollOut){
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 19" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-33.5" centerPoint3DY="18.85">
                   <matrix>
                     <Matrix tx="-36" ty="16.35"/>
                   </matrix>

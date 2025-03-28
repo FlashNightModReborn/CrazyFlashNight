@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Symbol 2152" itemID="6577efbc-00000874" linkageExportForAS="true" linkageIdentifier="敌人-方舟兽王" lastModified="1734950785" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-方舟兽王" itemID="67e615cf-000008d9" linkageExportForAS="true" linkageIdentifier="敌人-方舟兽王" lastModified="1743135161" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="Symbol 2152">
+    <DOMTimeline name="敌人-方舟兽王">
       <layers>
         <DOMLayer name="Labels Layer" color="#AED60F">
           <frames>
@@ -271,49 +271,7 @@ else if(是否史诗(名字) == true)
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#F3E52B" locked="true">
-          <frames>
-            <DOMFrame index="0" duration="120" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1797" symbolType="button">
-                  <matrix>
-                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[on(press){
-   if(_root.控制目标 == this._name and this.hp > 0)
-   {
-      gotoAndStop("被击");
-   }
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.gameworld[_root.控制目标].攻击目标 = this._name;
-      _root.控制目标全自动 = true;
-   }
-}
-on(press, release, rollOver){
-   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
-   {
-      _root.鼠标.gotoAndStop("手型攻击");
-   }
-}
-on(rollOut){
-   _root.鼠标.gotoAndStop("手型普通");
-}
-]]></script>
-                  </Actionscript>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="120" duration="7" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 5" color="#CEDB4A" locked="true">
+        <DOMLayer name="Layer 5" color="#CEDB4A" locked="true" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -344,11 +302,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#E6BE04" locked="true">
+        <DOMLayer name="Layer 6" color="#E6BE04" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 1796" name="ai" centerPoint3DX="-29.3" centerPoint3DY="23">
+                <DOMSymbolInstance libraryItemName="思考标签" centerPoint3DX="-29.3" centerPoint3DY="23">
                   <matrix>
                     <Matrix tx="-31.8" ty="20.5"/>
                   </matrix>
@@ -363,7 +321,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#E308EF" locked="true">
+        <DOMLayer name="Layer 7" color="#E308EF" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -401,7 +359,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 8" color="#BFEADA" locked="true">
+        <DOMLayer name="Layer 8" color="#BFEADA" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -468,7 +426,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#CFF401" locked="true">
+        <DOMLayer name="Layer 10" color="#CFF401" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -567,7 +525,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#77BAA0" current="true" isSelected="true">
+        <DOMLayer name="Layer 12" color="#77BAA0">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
