@@ -20,31 +20,16 @@ _root.主角函数.开始射击 = function(){
 
 // 主手持续射击包装函数
 _root.主角函数.主手持续射击 = function(core, attackMode, shootSpeed){
-    return ShootCore.continuousShoot(core, attackMode, shootSpeed, {
-        shootingStateName: "主手射击中",
-        actionFlagName: "动作A",
-        prefix: "",
-        bulletAttrKeys: ["子弹属性"],
-        shootBulletAttrKey: "子弹属性",
-        gunPath: "枪.枪.装扮.枪口位置",
-        taskName: "keepshooting",
-        playerBulletField: "子弹数"
-    });
+    return ShootCore.continuousShoot(core, attackMode, shootSpeed, 
+           ShootCore.primaryParams);
 };
 
 // 副手持续射击包装函数
 _root.主角函数.副手持续射击 = function(core, attackMode, shootSpeed){
-    return ShootCore.continuousShoot(core, attackMode, shootSpeed, {
-        shootingStateName: "副手射击中",
-        actionFlagName: "动作B",
-        prefix: "2",
-        bulletAttrKeys: ["子弹属性", "子弹属性2"],
-        shootBulletAttrKey: "子弹属性2",
-        gunPath: "枪2.枪.装扮.枪口位置",
-        taskName: "keepshooting2",
-        playerBulletField: "子弹数_2"
-    });
+    return ShootCore.continuousShoot(core, attackMode, shootSpeed, 
+           ShootCore.secondaryParams);
 };
+
 
 
 _root.主角函数.开始换弹 = function()
