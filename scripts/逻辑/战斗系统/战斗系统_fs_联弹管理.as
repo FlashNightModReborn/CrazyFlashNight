@@ -197,9 +197,9 @@ _root.联弹系统.横向联弹初始化 = function(clip:MovieClip):Void {
 
 // 定义在 _root.联弹系统 对象内部
 _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
-    // 保存当前 clip 的初始 y 坐标作为碰撞箱基准，并初始化单元体列表
+    // 保存当前 clip 的初始坐标作为碰撞箱基准，并初始化单元体列表
     clip.y_基准 = clip._y;
-	clip.x_基准 = clip._x;
+    clip.x_基准 = clip._x;
     clip.单元体列表 = [];
     
     // 保存父对象的初始坐标与旋转信息
@@ -212,78 +212,96 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     
     // 提取子弹种类（假设格式为 “XXX-子弹种类”）
     clip.子弹种类 = clip._parent.子弹种类.split("-")[1];
-	clip.count = 1;
+    clip.count = 1;
     
     // 加载时只创建一个单元体（用于模拟点射）
-    var 单元体:MovieClip = _root.创建单元体(clip._parent, clip.子弹种类);
-
-    // 设置单元体的初始偏转（可以产生一定散射效果）
-    单元体._rotation = _root.随机偏移(clip._parent.子弹散射度);
-    clip.单元体列表.push(单元体);
+    var firstUnit:MovieClip = _root.创建单元体(clip._parent, clip.子弹种类);
+    firstUnit._rotation = _root.随机偏移(clip._parent.子弹散射度);
+    clip.单元体列表.push(firstUnit);
     
-    // 设置每帧执行的更新逻辑
+    // 每帧执行的更新逻辑
     clip.onEnterFrame = function():Void {
-        var y_min:Number = Infinity;
-        var y_max:Number = -Infinity;
-		var x_min:Number = Infinity;
-		var x_max:Number = -Infinity
-		var x_update:Boolean = false;
-		var isHitMap:Boolean = false;
-		var bullet:MovieClip = this._parent;
+        // 缓存常用局部变量
+        var parentMC:MovieClip = this._parent;
+        var bulletSpeedX:Number = parentMC.xmov;
+        var parentX:Number = parentMC._x;
+        var parentY:Number = parentMC._y;
+        var originalX:Number = this.原始坐标x;
+        var originalY:Number = this.原始坐标y;
+        var countTotal:Number = parentMC.霰弹值;
+		var directionalCoefficient:Number = this.运动方向系数;
+        var deltaX:Number = directionalCoefficient * (parentX - originalX);
+        var deltaY:Number = parentY - originalY;
+        var radFactor:Number = Math.PI / 180;
+        var parentRotation:Number = parentMC._rotation;
+        var parentRotRad:Number = parentRotation * radFactor;
+        var parentCos:Number = Math.cos(parentRotRad);
+        var hitZ:Number = parentMC.Z轴坐标;
         
-        // 如果当前创建的单元体数未达到预定总数，则每帧创建一个新的单元体
-        if (this.count < this._parent.霰弹值) {
-            var newUnit:MovieClip = _root.创建单元体(this._parent, this.子弹种类);
-            newUnit._rotation = _root.随机偏移(bullet.子弹散射度);
-			newUnit._x += this._parent._x - this.原始坐标x + _root.随机偏移(bullet.子弹散射度 + bullet.霰弹值 + this.count);
-			newUnit._y += this._parent._y - this.原始坐标y;
-            this.单元体列表.push(newUnit);
-
-			var bullet:MovieClip = this._parent;
-			bullet._x = this.原始坐标x;
-			bullet._y = this.原始坐标y;
-
-			x_update = true;
-			this.count++;
-        }
-
-		if(Mover.isMovieClipValid(this)) isHitMap = true;
-
+		// 如果当前创建的单元体数未达到预定总数，则每帧创建一个新的单元体
+		var x_update:Boolean = (this.count < countTotal);
         
-        // 遍历所有单元体，更新它们的坐标
+        // 检查地图碰撞状态，仅调用一次
+        var isHitMap:Boolean = Mover.isMovieClipValid(this);
+        
+        // 初始化碰撞箱的局部变量
+        var y_min:Number = Infinity, y_max:Number = -Infinity;
+        var x_min:Number = Infinity, x_max:Number = -Infinity;
+        
+        // 遍历所有单元体，更新位置并记录坐标范围
         for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
-            var 单元体:MovieClip = this.单元体列表[j];
-            // 根据父对象 xmov、单元体的旋转及运动方向系数更新单元体的 y 坐标
-            单元体._y += this._parent.xmov * Math.sin(单元体._rotation * Math.PI / 180) * this.运动方向系数;
-
-			var isHitGround = (单元体._y * Math.cos(this._parent._rotation * Math.PI / 180) + this._parent._y > this._parent.Z轴坐标);
-            var isHIt = isHitMap && !Mover.isMovieClipPositionValid(单元体)
-            // 检查是否超出父对象设定的 Z 轴坐标限制
-            if (isHIt || isHitGround &&
-                (this.单元体列表.length > 1)) {
-                _root.回收单元体(单元体);
+            var unit:MovieClip = this.单元体列表[j];
+            // 缓存单元体旋转，并转换为弧度
+            var unitRot:Number = unit._rotation;
+            var unitRad:Number = unitRot * radFactor;
+            var sinVal:Number = Math.sin(unitRad);
+            var cosVal:Number = Math.cos(unitRad);
+            
+            // 更新单元体的 y 坐标
+            unit._y += bulletSpeedX * sinVal * directionalCoefficient;
+            
+            // 如果本帧有新子弹创建，则更新 x 坐标
+            if (x_update) {
+                unit._x += bulletSpeedX * cosVal * directionalCoefficient;
+            }
+            
+            // 进行碰撞检测：判断是否超出父对象设定的 Z 轴限制
+            var isHitGround:Boolean = (unit._y * parentCos + parentY > hitZ);
+            var isHIt:Boolean = isHitMap && !Mover.isMovieClipPositionValid(unit);
+            if ((isHIt || isHitGround) && (this.单元体列表.length > 1)) {
+                _root.回收单元体(unit);
                 this.单元体列表.splice(j, 1);
                 continue;
             }
-
-			if(x_update) {
-				单元体._x += bullet.xmov * Math.cos(单元体._rotation * Math.PI / 180) * this.运动方向系数;
-			}
             
-            // 记录所有单元体的最小与最大 y 坐标（用于更新碰撞箱）
-            y_max = Math.max(单元体._y, y_max);
-            y_min = Math.min(单元体._y, y_min);
-			x_max = Math.max(单元体._x, x_max);
-			x_min = Math.min(单元体._x, x_min);
+            // 更新 x、y 坐标范围
+            if (unit._y > y_max) { y_max = unit._y; }
+            if (unit._y < y_min) { y_min = unit._y; }
+            if (unit._x > x_max) { x_max = unit._x; }
+            if (unit._x < x_min) { x_min = unit._x; }
         }
+
+		if(x_update) {
+            var newUnit:MovieClip = _root.创建单元体(parentMC, this.子弹种类);
+            newUnit._rotation = _root.随机偏移(parentMC.子弹散射度);
+            // 新创建子弹的位置：基于父对象与原始坐标的差值，加上随机偏移
+            newUnit._x += deltaX + _root.随机偏移(parentMC.子弹散射度 + countTotal + this.count);
+            newUnit._y += deltaY;
+            this.单元体列表.push(newUnit);
+            // 重置父对象位置为初始值
+            parentMC._x = originalX;
+            parentMC._y = originalY;
+			this.count++;
+		}
         
-        // 更新当前 clip 的碰撞箱：位置和高度与视觉效果保持一致
+        // 更新当前 clip 的碰撞箱，使其与所有子弹的视觉位置相符
         this._y = y_min;
         this._height = Math.max(this.y_基准 * -2, y_max - y_min);
-		this._x = x_min;
-		this._width = Math.max(this.x_基准 * -2, x_max - x_min);
+        this._x = x_min;
+        this._width = Math.max(this.x_基准 * -2, x_max - x_min);
     };
 };
+
 
 
 // 定义在 _root.联弹系统 对象中
