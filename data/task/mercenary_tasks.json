@@ -340,7 +340,7 @@
       "finish_requirements": ["僵尸逆袭#简单"],
       "finish_conversation": "$ZOMBIE_INVASION_FINISH",
       "finish_npc": "前治安官",
-      "recommended_level": "11-25",
+      "recommended_level": "11-15",
       "restricted_level": 10,
       "deposit": 1000,
       "Kdeposit": 0,
@@ -358,7 +358,8 @@
 
       "challenge": {
         "difficulty":"修罗",
-        "description":"这些大家伙是从哪冒出来的？"
+        "description":"这些大家伙是从哪冒出来的？",
+        "recommended_level": "20-25"
       },
 
       "chain": "委托"
@@ -404,7 +405,7 @@
       "finish_requirements": ["堕落城的骚动#简单"],
       "finish_conversation": "$SMASHING_GIG_FINISH",
       "finish_npc": "学生妹",
-      "recommended_level": "25-35",
+      "recommended_level": "25-30",
       "restricted_level": 10,
       "deposit": 10000,
       "Kdeposit": 0,
@@ -420,7 +421,8 @@
 
       "challenge": {
         "difficulty":"修罗",
-        "description":"新的打手来到了会场。"
+        "description":"新的打手来到了会场。",
+        "recommended_level": "30-35"
       },
 
       "chain": "委托"
@@ -437,7 +439,7 @@
       "finish_requirements": ["夺取材料#简单"],
       "finish_conversation": "$GEM_HUNT_REVOLUTIONISTS_FINISH",
       "finish_npc": "宝石线人",
-      "recommended_level": "20-40",
+      "recommended_level": "20-30",
       "restricted_level": 8,
       "deposit": 1000,
       "Kdeposit": 0,
@@ -452,7 +454,9 @@
         
       "challenge": {
         "difficulty":"修罗",
-        "description":"但是，军阀强者不会眼睁睁看着你得手的。"
+        "description":"但是，军阀强者不会眼睁睁看着你得手的。",
+        "recommended_level": "30-40",
+        "rewards_text":"掉落的强化石数量大幅提升"
       },
 
       "chain": "委托"
