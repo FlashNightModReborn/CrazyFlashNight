@@ -530,7 +530,7 @@
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种42</Type>
-                        <Interval>600</Interval>
+                        <Interval>1200</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
@@ -546,7 +546,7 @@
             </SubWave>
             <SubWave id="9">
                 <WaveInformation>
-                    <Duration>30</Duration>
+                    <Duration>40</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -558,8 +558,8 @@
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种42</Type>
-                        <Interval>600</Interval>
-                        <Quantity>3</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>2</Quantity>
                         <Level>45</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
@@ -583,7 +583,7 @@
             </SubWave>
             <SubWave id="10">
                 <WaveInformation>
-                    <Duration>30</Duration>
+                    <Duration>60</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -595,7 +595,7 @@
                     </Enemy>
                     <Enemy id="1">
                         <Type>兵种42</Type>
-                        <Interval>600</Interval>
+                        <Interval>1200</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
                         <DifficultyMin>修罗</DifficultyMin>
@@ -630,8 +630,8 @@
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种42</Type>
-                        <Interval>2500</Interval>
-                        <Quantity>5</Quantity>
+                        <Interval>1200</Interval>
+                        <Quantity>3</Quantity>
                         <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
