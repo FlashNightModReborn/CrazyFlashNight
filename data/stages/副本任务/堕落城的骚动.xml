@@ -644,7 +644,7 @@
                         <Type>兵种50</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>60</Level>
+                        <Level>35</Level>
                         <SpawnIndex>0</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
                     <Parameters>
@@ -696,7 +696,7 @@
                         <Type>兵种51</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>60</Level>
+                        <Level>35</Level>
                         <SpawnIndex>2</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
                     <Parameters>
@@ -748,7 +748,7 @@
                         <Type>兵种52</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>50</Level>
+                        <Level>35</Level>
                         <SpawnIndex>1</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
                     <Parameters>
@@ -775,7 +775,7 @@
                         <Type>兵种59</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
@@ -804,13 +804,12 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
-                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种58</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
@@ -839,13 +838,12 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
-                        <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种40</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
-                        <Level>20</Level>
+                        <Level>30</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
@@ -926,40 +924,24 @@
                         <Type>兵种50</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>60</Level>
+                        <Level>50</Level>
                         <SpawnIndex>0</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
-                    <Parameters>
-                        <宠物属性>
-                            <导弹烈炎炮>true</导弹烈炎炮>
-                        </宠物属性>
-                    </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种51</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>60</Level>
+                        <Level>50</Level>
                         <SpawnIndex>2</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
-                    <Parameters>
-                        <宠物属性>
-                            <弹射弧光斩>true</弹射弧光斩>
-                        </宠物属性>
-                    </Parameters>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种52</Type>
-                        <Interval>100</Interval>
+                        <Type>兵种59</Type>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
-                        <Level>60</Level>
-                        <SpawnIndex>1</SpawnIndex>
+                        <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
-                        <Parameters>
-                            <宠物属性>
-                                <广域裂空斩>true</广域裂空斩>
-                            </宠物属性>
-                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -1035,7 +1017,7 @@
                     <Enemy id="3">
                         <Type>兵种259</Type>
                         <Interval>2000</Interval>
-                        <Quantity>5</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>45</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
@@ -1051,6 +1033,13 @@
                         <Interval>2000</Interval>
                         <Quantity>5</Quantity>
                         <Level>45</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种58</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
@@ -1092,62 +1081,29 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种58</Type>
+                        <Type>兵种259</Type>
                         <Interval>2000</Interval>
                         <Quantity>1</Quantity>
-                        <Level>30</Level>
+                        <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种40</Type>
-                        <Interval>3000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>30</Level>
-                        <DifficultyMin>修罗</DifficultyMin>
-                    </Enemy>
-                    <Enemy id="6">
-                        <Type>兵种59</Type>
-                        <Interval>1000</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>30</Level>
-                        <DifficultyMin>修罗</DifficultyMin>
-                    </Enemy>
-                    <Enemy id="7">
-                        <Type>兵种50</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>60</Level>
-                        <SpawnIndex>0</SpawnIndex>
-                        <DifficultyMin>修罗</DifficultyMin>
-                    <Parameters>
-                        <宠物属性>
-                            <导弹烈炎炮>true</导弹烈炎炮>
-                        </宠物属性>
-                    </Parameters>
-                    </Enemy>
-                    <Enemy id="8">
-                        <Type>兵种51</Type>
-                        <Interval>100</Interval>
-                        <Quantity>1</Quantity>
-                        <Level>60</Level>
-                        <SpawnIndex>2</SpawnIndex>
-                        <DifficultyMin>修罗</DifficultyMin>
-                    <Parameters>
-                        <宠物属性>
-                            <弹射弧光斩>true</弹射弧光斩>
-                        </宠物属性>
-                    </Parameters>
-                    </Enemy>
-                    <Enemy id="9">
                         <Type>兵种52</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
-                        <Level>60</Level>
+                        <Level>50</Level>
                         <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>兵种40</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                         <Parameters>
                             <宠物属性>
-                                <广域裂空斩>true</广域裂空斩>
+                                <冲腿龙息>true</冲腿龙息>
                             </宠物属性>
                         </Parameters>
                     </Enemy>
