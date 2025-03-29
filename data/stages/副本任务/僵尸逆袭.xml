@@ -161,7 +161,7 @@
             <SubWave id="1">
                 <WaveInformation>
                     <Duration>60</Duration>
-                    <FinishRequirement>5</FinishRequirement>
+                    <FinishRequirement>3</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -215,7 +215,7 @@
             <SubWave id="2">
                 <WaveInformation>
                     <Duration>60</Duration>
-                    <FinishRequirement>5</FinishRequirement>
+                    <FinishRequirement>3</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -265,14 +265,14 @@
                     <Enemy id="6">
                         <Type>兵种393</Type>
                         <Interval>500</Interval>
-                        <Quantity>5</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>30</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="7">
                         <Type>兵种394</Type>
                         <Interval>500</Interval>
-                        <Quantity>5</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>30</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
@@ -605,7 +605,14 @@
                     <Enemy id="4">
                         <Type>兵种394</Type>
                         <Interval>500</Interval>
-                        <Quantity>5</Quantity>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种393</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
                         <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
