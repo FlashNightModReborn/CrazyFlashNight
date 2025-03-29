@@ -145,14 +145,14 @@
                     <Enemy id="8">
                         <Type>兵种400</Type>
                         <Interval>400</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>5</Quantity>
                         <Level>25</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="9">
                         <Type>兵种401</Type>
                         <Interval>400</Interval>
-                        <Quantity>4</Quantity>
+                        <Quantity>5</Quantity>
                         <Level>25</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
@@ -361,6 +361,22 @@
                         <Level>30</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种9</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种10</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
                 </EnemyGroup>
             </SubWave>
             <SubWave id="5">
@@ -531,7 +547,7 @@
                     <Enemy id="4">
                         <Type>兵种42</Type>
                         <Interval>1200</Interval>
-                        <Quantity>2</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
@@ -539,7 +555,21 @@
                         <Type>兵种394</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
-                        <Level>40</Level>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种403</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>35</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种401</Type>
+                        <Interval>400</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>35</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
@@ -596,7 +626,7 @@
                     <Enemy id="1">
                         <Type>兵种42</Type>
                         <Interval>1200</Interval>
-                        <Quantity>3</Quantity>
+                        <Quantity>1</Quantity>
                         <Level>45</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
@@ -604,6 +634,13 @@
                         <Type>兵种393</Type>
                         <Interval>2000</Interval>
                         <Quantity>10</Quantity>
+                        <Level>45</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种403</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>2</Quantity>
                         <Level>45</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
@@ -631,6 +668,27 @@
                     <Enemy id="2">
                         <Type>兵种42</Type>
                         <Interval>1200</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>50</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种403</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>50</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种401</Type>
+                        <Interval>1200</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>50</Level>
+                        <DifficultyMin>修罗</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>兵种11</Type>
+                        <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
