@@ -328,7 +328,7 @@
             </SubWave>
             <SubWave id="4">
                 <WaveInformation>
-                    <Duration>40</Duration>
+                    <Duration>60</Duration>
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
@@ -357,7 +357,7 @@
                     <Enemy id="3">
                         <Type>兵种11</Type>
                         <Interval>500</Interval>
-                        <Quantity>5</Quantity>
+                        <Quantity>3</Quantity>
                         <Level>30</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
@@ -381,7 +381,7 @@
             </SubWave>
             <SubWave id="5">
                 <WaveInformation>
-                    <Duration>60</Duration>
+                    <Duration>90</Duration>
                     <FinishRequirement>5</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
