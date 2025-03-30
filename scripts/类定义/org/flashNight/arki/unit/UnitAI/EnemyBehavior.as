@@ -112,16 +112,16 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         }else{
             var sm = this.superMachine;
             if(sm.actionCount % 2 == 0){
-                //每2次action判定追击方向
-                if (data.state != self.攻击模式 + "跑" && data.absdiff_x > 100 & data.absdiff_z > 50){
-                    if(random(3) == 0){
-                        self.状态改变(self.攻击模式 + "跑");
-                    }
-                }
+                //每奇数次action判定追击方向
                 self.上行 = data.diff_z < 0;
                 self.下行 = data.diff_z > 0;
                 self.左行 = data.x > data.tx + data.xdistance;
                 self.右行 = data.x < data.tx - data.xdistance;
+            }else if (data.state != self.攻击模式 + "跑"){
+                //每偶数次action判定是否起跑
+                if(data.absdiff_x > 120 & data.absdiff_z > 60 && random(3) == 0){
+                    self.状态改变(self.攻击模式 + "跑");
+                }
             }
         }
     }

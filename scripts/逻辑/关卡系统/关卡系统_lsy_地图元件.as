@@ -107,6 +107,12 @@ _root.初始化出生点 = function(){
 	}
 	//将碰撞箱附加到地图
 	var gameworld = _root.gameworld;
+
+	if(this.开门 == null){
+		this.开门 = function(){
+			gotoAndPlay("开门");
+		}
+	}
 	if(this.area){
 		var rect = this.area.getRect(gameworld);
 		var 地图 = gameworld.地图;
