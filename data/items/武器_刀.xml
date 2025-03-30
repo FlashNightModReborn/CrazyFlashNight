@@ -4018,11 +4018,11 @@
       <defence>0</defence>
     </equipped>
   </item>
-  <item>
+<item>
     <id>8047</id>
     <name>折叠小刀</name>
     <displayname>折叠小刀</displayname>
-    <icon>周波匕首</icon>
+    <icon>折叠小刀</icon>
     <type>武器</type>
     <use>刀</use>
     <actiontype>短兵</actiontype>
@@ -4034,14 +4034,14 @@
       <power>10</power>
     </data>
     <equipped>
-      <dressup>刀-周波匕首</dressup>
+      <dressup>刀-折叠小刀</dressup>
     </equipped>
   </item>
-  <item>
+      <item>
     <id>8048</id>
     <name>板砖</name>
     <displayname>板砖</displayname>
-    <icon>周波匕首</icon>
+    <icon>砖头</icon>
     <type>武器</type>
     <use>刀</use>
     <weight>2</weight>
@@ -4052,7 +4052,7 @@
       <power>20</power>
     </data>
     <equipped>
-      <dressup>刀-周波匕首</dressup>
+      <dressup>刀-砖头</dressup>
     </equipped>
   </item>
 </root>
