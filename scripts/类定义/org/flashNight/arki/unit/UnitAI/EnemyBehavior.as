@@ -23,11 +23,11 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         // 思考状态，结算进入状态函数后一定会跳转至其他状态
         this.AddStatus("Thinking",new FSM_Status(null, this.think, null));
         // 追击状态
-        this.AddStatus("Chasing",new FSM_Status(this.chase, null, this.chase_exit));
+        this.AddStatus("Chasing",new FSM_Status(this.chase, null, null));
         // 跟随状态
         this.AddStatus("Following",new FSM_Status(null, this.follow_enter, null));
         // 空闲状态
-        this.AddStatus("Idle",new FSM_Status(null, this.sleep_enter, null));
+        this.AddStatus("Idle",new FSM_Status(null, this.idle_enter, null));
         // 随机移动状态
         this.AddStatus("Wandering",new FSM_Status(null, this.wander_enter,null));
 
@@ -55,7 +55,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
 
     // 具体执行函数
-    //思考
+    // 思考
     public function think():Void{
         data.updateSelf(); // 更新自身坐标
         //search target
@@ -85,7 +85,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         this.superMachine.ChangeState(newstate);
     }
 
-    //追击
+    // 追击
     public function chase():Void{
         // 与攻击目标参数一致
         if(data.target._name != data.self.攻击目标){
@@ -125,13 +125,10 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             }
         }
     }
-    //丢失攻击目标
-    public function chase_exit():Void{
-        // _root.发布消息(data.self._name + " lose target");
-        data.target = null;
-        data.self.攻击目标 = "无";
-    }
-    //跟随
+    // 丢失攻击目标
+    // public function chase_exit():Void{
+    // }
+    // 跟随
     public function follow_enter():Void{
         data.updateSelf(); // 更新自身坐标
         var self = data.self;
@@ -157,8 +154,21 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             self.下行 = data.z < playery;
         }
     }
-    //随机移动
+    // 停止
+    public function idle_enter():Void{
+        // 丢失攻击目标
+        data.target = null;
+        data.self.攻击目标 = "无";
+        data.self.左行 = false;
+        data.self.右行 = false;
+        data.self.上行 = false;
+        data.self.下行 = false;
+    }
+    // 随机移动
     public function wander_enter():Void{
+        // 丢失攻击目标
+        data.target = null;
+        data.self.攻击目标 = "无";
         data.updateSelf(); // 更新自身坐标
         var randy = random(_root.Ymax - _root.Ymin) + _root.Ymin;
         var randx = random(_root.Xmax - _root.Xmin) + _root.Xmin;
@@ -167,5 +177,4 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         data.self.上行 = randy < data.self.y;
         data.self.下行 = randy > data.self.y;
     }
-
 }
