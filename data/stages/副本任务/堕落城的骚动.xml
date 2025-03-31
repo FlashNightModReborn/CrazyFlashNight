@@ -71,8 +71,22 @@
             </Point>
             <Point id="2">
                 <x>1510</x>
-                <y>430</y>
+                <y>431</y>
                 <Identifier>出生点-聚光灯</Identifier>
+            </Point>
+            <Point id="3">
+                <x>1300</x>
+                <y>480</y>
+                <QuantityMax>3</QuantityMax>
+                <BiasX>100</BiasX>
+                <BiasY>25</BiasY>
+            </Point>
+            <Point id="4">
+                <x>850</x>
+                <y>485</y>
+                <QuantityMax>3</QuantityMax>
+                <BiasX>100</BiasX>
+                <BiasY>25</BiasY>
             </Point>
         </SpawnPoint>
         <Wave>
@@ -372,10 +386,14 @@
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种354</Type>
-                        <Interval>500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>28</Level>
+                        <SpawnIndex>3</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -574,7 +592,11 @@
                         <Interval>600</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>4</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -638,7 +660,11 @@
                         <Type>兵种354</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
+                        <SpawnIndex>3</SpawnIndex>
                         <Level>30</Level>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种50</Type>
@@ -690,7 +716,11 @@
                         <Type>兵种354</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
+                        <SpawnIndex>4</SpawnIndex>
                         <Level>30</Level>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种51</Type>
@@ -742,7 +772,11 @@
                         <Type>兵种354</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
+                        <SpawnIndex>3</SpawnIndex>
                         <Level>30</Level>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种52</Type>
@@ -887,7 +921,11 @@
                         <Type>兵种354</Type>
                         <Interval>3000</Interval>
                         <Quantity>2</Quantity>
+                        <SpawnIndex>3</SpawnIndex>
                         <Level>40</Level>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -964,9 +1002,13 @@
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种354</Type>
-                        <Interval>300</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>2</Quantity>
+                        <SpawnIndex>4</SpawnIndex>
                         <Level>40</Level>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>
@@ -1015,7 +1057,11 @@
                         <Interval>2000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <SpawnIndex>4</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种58</Type>
