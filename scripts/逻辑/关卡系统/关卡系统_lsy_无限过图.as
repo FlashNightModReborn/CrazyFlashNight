@@ -199,6 +199,9 @@ _root.开启生存模式 = function(模式) {
         if (出生点列表[i].Identifier) {
             出生点 = 游戏世界.attachMovie(出生点列表[i].Identifier, "door" + i, 游戏世界.getNextHighestDepth(), {_x: 出生点列表[i].x, _y: 出生点列表[i].y});
             出生点.swapDepths(出生点列表[i].y);
+			if (出生点列表[i].Parameters) {
+				_root.无限过图解析额外参数(出生点, 出生点列表[i].Parameters);
+			}
         } else {
             出生点 = 游戏世界.createEmptyMovieClip("door" + i, 游戏世界.getNextHighestDepth());
         }
