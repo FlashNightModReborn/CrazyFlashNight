@@ -172,9 +172,9 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         data.updateSelf(); // 更新自身坐标
         var randy = random(_root.Ymax - _root.Ymin) + _root.Ymin;
         var randx = random(_root.Xmax - _root.Xmin) + _root.Xmin;
-        data.self.左行 = randx < data.self.x;
+        data.self.左行 = randx < data.x;
         data.self.右行 = !data.self.左行;
-        data.self.上行 = randy < data.self.y;
-        data.self.下行 = randy > data.self.y;
+        data.self.上行 = randy < data.z;
+        data.self.下行 = randy > data.z;
     }
 }
