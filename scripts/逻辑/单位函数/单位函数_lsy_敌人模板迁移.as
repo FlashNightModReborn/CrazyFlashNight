@@ -10,8 +10,7 @@ _root.敌人函数 = new Object();
 
 //以下14个是原版敌人的必要函数
 
-_root.敌人函数.根据等级初始数值 = function(等级值)
-{
+_root.敌人函数.根据等级初始数值 = function(等级值){
 	hp满血值 = _root.根据等级计算值(hp_min, hp_max, 等级值) * _root.难度等级;
 	空手攻击力 = _root.根据等级计算值(空手攻击力_min, 空手攻击力_max, 等级值) * _root.难度等级;
 	行走X速度 = _root.根据等级计算值(速度_min, 速度_max, 等级值) / 10;
@@ -26,8 +25,7 @@ _root.敌人函数.根据等级初始数值 = function(等级值)
 	hp = !isNaN(hp) ? hp : hp满血值;
 };
 
-_root.敌人函数.宠物属性初始化 = function(等级值)
-{
+_root.敌人函数.宠物属性初始化 = function(等级值){
 	if(宠物属性){
 		for(var key in 宠物属性){
 			if(_root.战宠进阶函数[key] && _root.战宠进阶函数[key].单位进阶执行){
@@ -39,64 +37,40 @@ _root.敌人函数.宠物属性初始化 = function(等级值)
 	hp = !isNaN(hp) ? hp : hp满血值;
 };
 
-_root.敌人函数.行走 = function()
-{
-	if (this.右行 == 1 || this.左行 == 1 || this.上行 == 1 || this.下行 == 1)
-	{
-		if (状态 != 攻击模式 + "跑")
-		{
-			if (this.右行 == 1)
-			{
+_root.敌人函数.行走 = function(){
+	if (this.右行 || this.左行 || this.上行 || this.下行){
+		var nextstate = 攻击模式 + "跑";
+		if (this.状态 !== nextstate){
+			nextstate = 攻击模式 + "行走";
+			if (this.右行){
 				方向改变("右");
-				状态改变(攻击模式 + "行走");
 				移动("右",行走X速度);
-			}
-			else if (this.左行 == 1)
-			{
+			}else if (this.左行){
 				方向改变("左");
-				状态改变(攻击模式 + "行走");
 				移动("左",行走X速度);
 			}
-			if (this.下行 == 1)
-			{
-				状态改变(攻击模式 + "行走");
+			if (this.下行){
 				移动("下",行走Y速度);
-			}
-			else if (this.上行 == 1)
-			{
-				状态改变(攻击模式 + "行走");
+			}else if (this.上行){
 				移动("上",行走Y速度);
 			}
-		}
-		else
-		{
-			if (this.右行 == 1)
-			{
+		}else{
+			if (this.右行){
 				方向改变("右");
-				状态改变(攻击模式 + "跑");
 				移动("右",跑X速度);
-			}
-			else if (this.左行 == 1)
-			{
+			}else if (this.左行){
 				方向改变("左");
-				状态改变(攻击模式 + "跑");
 				移动("左",跑X速度);
 			}
-			if (this.下行 == 1)
-			{
-				状态改变(攻击模式 + "跑");
+			if (this.下行){
 				移动("下",跑Y速度);
-			}
-			else if (this.上行 == 1)
-			{
-				状态改变(攻击模式 + "跑");
+			}else if (this.上行){
 				移动("上",跑Y速度);
 			}
 		}
-	}
-	else
-	{
-		状态改变(攻击模式 + "站立");
+		this.状态改变(nextstate);
+	}else{
+		this.状态改变(攻击模式 + "站立");
 	}
 };
 
@@ -106,20 +80,16 @@ _root.敌人函数.移动 = function(移动方向, 速度) {
 
 
 
-_root.敌人函数.被击移动 = function(移动方向, 速度, 摩擦力)
-{
+_root.敌人函数.被击移动 = function(移动方向, 速度, 摩擦力){
 	if(免疫击退) return;
-	移动钝感硬直(_root.钝感硬直时间);
-	减速度 = 摩擦力;
-	speed = 速度;
-	this.onEnterFrame = function()
-	{
-		if (!硬直中)
-		{
+	this.移动钝感硬直(_root.钝感硬直时间);
+	this.减速度 = 摩擦力;
+	this.speed = 速度;
+	this.onEnterFrame = function(){
+		if (!硬直中){
 			speed -= 减速度;
 			this.移动(移动方向,speed);
-			if (speed <= 0)
-			{
+			if (speed <= 0){
 				delete this.onEnterFrame;
 			}
 		}
@@ -144,7 +114,7 @@ _root.敌人函数.方向改变 = function(新方向){
 
 _root.敌人函数.状态改变 = function(新状态名){
 	旧状态 = 状态;//记录上一个状态名
-	状态 = 新状态名;
+	this.状态 = 新状态名;
 	this.gotoAndStop(新状态名);
 };
 
@@ -275,6 +245,7 @@ _root.敌人函数.掉落物品 = function(item){
 }
 
 _root.敌人函数.击飞浮空 = function(){
+	if(this.flyID != null) return;
 	this.浮空 = true;
 	this.倒地 = false;
 	this.man.落地 = false;
@@ -289,9 +260,11 @@ _root.敌人函数.击飞浮空 = function(){
 			target._y = target.Z轴坐标;
 			target.浮空 = false;
 			_root.帧计时器.移除任务(target.flyID);
-			target.状态改变("倒地");
+			target.flyID = null;
+			if(target.状态 == "击倒"){
+				target.状态改变("倒地");
+			}
 		}
-		// _root.发布消息("击飞浮空", target._y, target.垂直速度, target.落地, target.起始Y, target.硬直中, target.flyID);
 	}, 1, this);
 }
 
@@ -726,16 +699,13 @@ _root.敌人二级函数.Z轴追踪移动 = function(最大移动距离){
 
 //根据攻击目标的位置计算移动角度，可限制角度的最大值。首次实装于方舟爪豪
 //大于最大角度则返回最大角度，攻击目标在身后则返回角度限制下的随机值
-_root.敌人二级函数.计算攻击角度 = function(最大角度)
-{
-	if (!最大角度 || 最大角度 <= 0)
-	{
+_root.敌人二级函数.计算攻击角度 = function(最大角度){
+	if (!最大角度 || 最大角度 <= 0){
 		return 0;
 	}
 	var 水平距离 = _root.gameworld[_parent.攻击目标]._x - _parent._x;
 	水平距离 = _parent.方向 === "左" ? -水平距离 : 水平距离;
-	if (水平距离 <= 0)
-	{
+	if (水平距离 <= 0){
 		return 2 * Math.random() * 最大角度 - 最大角度;
 	}
 	var 垂直距离 = _root.gameworld[_parent.攻击目标].Z轴坐标 - _parent.Z轴坐标;
@@ -746,14 +716,12 @@ _root.敌人二级函数.计算攻击角度 = function(最大角度)
 }
 
 //以固定角度移动，可能需要同时限制转向。首次实装于方舟爪豪
-_root.敌人二级函数.固定角度移动 = function(速度, 角度)
-{
+_root.敌人二级函数.固定角度移动 = function(速度, 角度){
 	if (!攻击时移动) 攻击时移动 = _root.敌人二级函数.攻击时移动;
 	攻击时移动(速度 * Math.cos(角度 * Math.PI / 180));
 	var 垂直速度 = 速度 * Math.sin(角度 * Math.PI / 180);
 	var 垂直方向 = "上";
-	if (垂直速度 < 0)
-	{
+	if (垂直速度 < 0){
 		垂直速度 = -垂直速度;
 		垂直方向 = "下";
 	}
