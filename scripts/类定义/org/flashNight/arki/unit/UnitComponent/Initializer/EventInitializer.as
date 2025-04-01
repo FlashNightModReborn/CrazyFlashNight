@@ -19,5 +19,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer {
         // 初始化敌人ai组件
 
         UpdateEventComponent.initialize(target);
+
+        ReloadEventComponent.initialize(target);
     }
 }

@@ -1,6 +1,7 @@
 ﻿// 文件路径：org/flashNight/arki/unit/Action/Shoot/ShootCore.as
 
-import org.flashNight.naki.DataStructures.Dictionary; // 确保能正确导入 Dictionary 类
+import org.flashNight.naki.DataStructures.*;
+import org.flashNight.neur.Event.*;
 
 class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
@@ -48,7 +49,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      *   - playerBulletField: String, 玩家界面中需要更新的子弹数属性，如 "子弹数" 或 "子弹数_2"
      * @return Boolean       返回是否处于持续射击状态
      */
-    public static function continuousShoot(core:Object, attackMode:String, shootSpeed:Number, params:Object):Boolean {
+    public static function continuousShoot(core:MovieClip, attackMode:String, shootSpeed:Number, params:Object):Boolean {
         // 缓存常用全局对象和属性引用
         var root:Object = _root;
         var man:Object  = core.man;
@@ -90,6 +91,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var offset:Number = 0;
         var jumpFrameName:String = config.baseShootFrame;
         var isControlTarget:Boolean = (controlTarget === core._name);
+        var dispatcher:EventDispatcher = core.dispatcher;
         if (isControlTarget && !core.上下移动射击) {
             if (core.下行) {
                 offset = 30;
@@ -127,13 +129,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
             // 更新弹匣剩余子弹数量
             var magazineRemaining:Number = core[magazineCapName] - core[shootCountName][core[attackMode]];
-            if (isControlTarget) {
-                root.玩家信息界面.玩家必要信息界面[config.playerBulletField] = magazineRemaining;
-            }
-            if (magazineRemaining <= 0) {
-                core[shootStateName] = false;
-            }
-            core.射击最大后摇中 = core[shootStateName];
+            dispatcher.publish("ReloadEvent", core, shootStateName, magazineRemaining, config.playerBulletField);
             if (shootSpeed > 300) {
                 // 延迟任务：结束后摇状态
                 root.帧计时器.添加或更新任务(core, "结束射击后摇", function(target:Object):Void {
