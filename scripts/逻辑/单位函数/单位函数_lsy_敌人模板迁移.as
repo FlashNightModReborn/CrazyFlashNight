@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.arki.spatial.move.*;
+import org.flashNight.aven.Coordinator.*;
 
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();
@@ -278,18 +279,22 @@ _root.敌人函数.击飞浮空 = function(){
 	this.man.落地 = false;
 	this.man.垂直速度 = this.起跳速度;
 	this.man.起始Y = this._y;
-	this.man.onEnterFrame = function(){
-		if(_parent.硬直中 == false){
-			_parent._y += this.垂直速度;
-			this.垂直速度 += _root.重力加速度;
-			if(_parent._y >= _parent.Z轴坐标){
-				_parent._y = this.起始Y;
-				this.落地 = true;
-				delete this.onEnterFrame;
-				_parent.状态改变("倒地");
+
+	this.flyID = _root.帧计时器.添加生命周期任务(this, "击飞浮空", function(target:MovieClip){
+		if(target._parent.硬直中 == false){
+			target._parent._y += target.垂直速度;
+			target.垂直速度 += _root.重力加速度;
+			if(target._parent._y >= target._parent.Z轴坐标){
+				target._parent._y = target.起始Y;
+				target.落地 = true;
+				_root.帧计时器.移除任务(target.flyID);
+				target._parent.状态改变("倒地");
 			}
 		}
-	};
+
+		_root.发布消息("击飞浮空", target._parent._y, target.垂直速度, target.落地, target.起始Y, target._parent.硬直中, target.flyID);
+	}, 1, this);
+
 	this.man.onUnload = function(){
 		_parent.浮空 = false;
 	}
