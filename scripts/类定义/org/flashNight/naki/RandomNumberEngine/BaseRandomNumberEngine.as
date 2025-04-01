@@ -109,30 +109,6 @@ class org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine {
         return 1 + (nextFloat() * (fluctuationRange * 2) - fluctuationRange) / 100;
     }
 
-    /**
-     * 根据指定范围生成一个粉噪音式的波动乘数
-     * 使用低通滤波器平滑白噪音，产生更平滑的波动效果
-     * 默认低频平滑系数设置为 0.9（平滑档位），无需额外参数调节
-     * @param fluctuationRange: 波动范围百分比
-     * @return 粉噪音效果的波动乘数
-     */
-    public function randomPinkFluctuation(fluctuationRange:Number):Number {
-        // 利用函数自身的静态属性存储上一次的输出值，实现低通滤波效果
-        if (arguments.callee.prevMultiplier == undefined) {
-            arguments.callee.prevMultiplier = 1;
-        }
-        // 生成一个白噪音波动值，范围为 [1 - fluctuationRange/100, 1 + fluctuationRange/100]
-        var whiteNoise:Number = (nextFloat() * (fluctuationRange * 2) - fluctuationRange) / 100;
-        var currentWhite:Number = 1 + whiteNoise;
-        // 默认低通平滑系数，数值越高变化越平滑（平滑档位）
-        var alpha:Number = 0.9;
-        // 应用一阶低通滤波器公式：平滑输出 = alpha * 上次输出 + (1 - alpha) * 当前白噪音值
-        var pinkValue:Number = alpha * arguments.callee.prevMultiplier + (1 - alpha) * currentWhite;
-        // 更新上一次的输出值
-        arguments.callee.prevMultiplier = pinkValue;
-        return pinkValue;
-    }
-
 
     // 从数组中获取一个随机元素
     // @param array: 待选数组

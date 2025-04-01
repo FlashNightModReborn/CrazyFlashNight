@@ -178,7 +178,7 @@ class org.flashNight.arki.spatial.move.Mover {
                     )
                 );
 
-                _root.发布消息(entity.起始Y)
+                // _root.发布消息(entity.起始Y)
 
             } else {
                 // 对于水平移动（"左" 或 "右"），仅更新 _x 坐标
