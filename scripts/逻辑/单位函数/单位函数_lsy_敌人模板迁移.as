@@ -273,18 +273,18 @@ _root.敌人函数.掉落物品 = function(item){
 	}
 }
 
-_root.敌人函数.击飞 = function(){
+_root.敌人函数.击飞浮空 = function(){
 	this.浮空 = true;
 	this.man.落地 = false;
 	this.man.垂直速度 = this.起跳速度;
 	this.man.起始Y = this._y;
 	this.man.onEnterFrame = function(){
 		if(_parent.硬直中 == false){
-			_parent._y += 垂直速度;
-			垂直速度 += _root.重力加速度;
+			_parent._y += this.垂直速度;
+			this.垂直速度 += _root.重力加速度;
 			if(_parent._y >= _parent.Z轴坐标){
-				_parent._y = 起始Y;
-				落地 = true;
+				_parent._y = this.起始Y;
+				this.落地 = true;
 				delete this.onEnterFrame;
 				_parent.状态改变("倒地");
 			}
@@ -295,7 +295,7 @@ _root.敌人函数.击飞 = function(){
 	}
 }
 
-_root.敌人函数.倒地 = function(){
+_root.敌人函数.击飞倒地 = function(){
 	this._y = this.Z轴坐标;
 	this.倒地 = true;
 	this.格斗架势 = true;
@@ -340,6 +340,8 @@ _root.初始化敌人模板 = function(){
 	//以下是新增或新整合的函数
 	this.死亡检测 = _root.敌人函数.死亡检测;
 	this.强制移动 = _root.敌人函数.强制移动;
+	this.击飞浮空 = _root.敌人函数.击飞浮空;
+	this.击飞倒地 = _root.敌人函数.击飞倒地;
 	this.宠物属性初始化 = this.宠物属性初始化 ? this.宠物属性初始化 : _root.敌人函数.宠物属性初始化;
 	this.掉落物判定 = _root.敌人函数.掉落物判定;
 	this.掉落物品 = _root.敌人函数.掉落物品;

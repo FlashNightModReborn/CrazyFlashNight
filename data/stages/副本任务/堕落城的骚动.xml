@@ -75,18 +75,18 @@
                 <Identifier>出生点-聚光灯</Identifier>
             </Point>
             <Point id="3">
-                <x>1300</x>
-                <y>480</y>
-                <QuantityMax>3</QuantityMax>
+                <x>850</x>
+                <y>490</y>
+                <QuantityMax>4</QuantityMax>
                 <BiasX>100</BiasX>
-                <BiasY>25</BiasY>
+                <BiasY>40</BiasY>
             </Point>
             <Point id="4">
-                <x>850</x>
-                <y>485</y>
-                <QuantityMax>3</QuantityMax>
+                <x>1350</x>
+                <y>495</y>
+                <QuantityMax>4</QuantityMax>
                 <BiasX>100</BiasX>
-                <BiasY>25</BiasY>
+                <BiasY>40</BiasY>
             </Point>
         </SpawnPoint>
         <Wave>
@@ -362,20 +362,32 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种259</Type>
-                        <Interval>500</Interval>
+                        <Interval>2500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种260</Type>
-                        <Interval>500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种353</Type>
@@ -386,10 +398,10 @@
                     </Enemy>
                     <Enemy id="6">
                         <Type>兵种354</Type>
-                        <Interval>1000</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>2</Quantity>
                         <Level>28</Level>
-                        <SpawnIndex>3</SpawnIndex>
+                        <SpawnIndex>4</SpawnIndex>
                         <DifficultyMin>修罗</DifficultyMin>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -575,10 +587,14 @@
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种260</Type>
-                        <Interval>600</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种259</Type>
@@ -586,10 +602,14 @@
                         <Quantity>3</Quantity>
                         <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种354</Type>
-                        <Interval>600</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>4</SpawnIndex>
@@ -646,21 +666,29 @@
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种259</Type>
-                        <Interval>500</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种260</Type>
-                        <Interval>500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种354</Type>
-                        <Interval>500</Interval>
+                        <Interval>2000</Interval>
                         <Quantity>1</Quantity>
-                        <SpawnIndex>3</SpawnIndex>
+                        <SpawnIndex>4</SpawnIndex>
                         <Level>30</Level>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -702,21 +730,29 @@
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种259</Type>
-                        <Interval>500</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种260</Type>
-                        <Interval>500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种354</Type>
-                        <Interval>500</Interval>
+                        <Interval>2000</Interval>
                         <Quantity>1</Quantity>
-                        <SpawnIndex>4</SpawnIndex>
+                        <SpawnIndex>3</SpawnIndex>
                         <Level>30</Level>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -758,21 +794,29 @@
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种259</Type>
-                        <Interval>500</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种260</Type>
-                        <Interval>500</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种354</Type>
-                        <Interval>500</Interval>
+                        <Interval>2000</Interval>
                         <Quantity>1</Quantity>
-                        <SpawnIndex>3</SpawnIndex>
+                        <SpawnIndex>4</SpawnIndex>
                         <Level>30</Level>
                         <Parameters>
                             <登场动画>索降</登场动画>
@@ -838,6 +882,10 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种58</Type>
@@ -872,6 +920,10 @@
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种40</Type>
@@ -901,15 +953,23 @@
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种259</Type>
-                        <Interval>3000</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种260</Type>
-                        <Interval>3000</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种353</Type>
@@ -990,15 +1050,23 @@
                 <EnemyGroup>
                     <Enemy id="1">
                         <Type>兵种259</Type>
-                        <Interval>300</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="2">
                         <Type>兵种260</Type>
-                        <Interval>300</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
+                        <SpawnIndex>3</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种354</Type>
@@ -1040,21 +1108,29 @@
                     </Enemy>
                     <Enemy id="3">
                         <Type>兵种259</Type>
-                        <Interval>2000</Interval>
+                        <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="4">
                         <Type>兵种260</Type>
-                        <Interval>2000</Interval>
+                        <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种354</Type>
-                        <Interval>2000</Interval>
+                        <Interval>1250</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
                         <SpawnIndex>4</SpawnIndex>
@@ -1114,6 +1190,10 @@
                         <Quantity>1</Quantity>
                         <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
+                        <SpawnIndex>4</SpawnIndex>
+                        <Parameters>
+                            <登场动画>索降</登场动画>
+                        </Parameters>
                     </Enemy>
                     <Enemy id="5">
                         <Type>兵种52</Type>

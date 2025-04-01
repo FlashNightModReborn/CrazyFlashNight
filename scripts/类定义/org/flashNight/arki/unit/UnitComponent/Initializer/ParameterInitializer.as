@@ -16,6 +16,7 @@
         if (isNaN(target.hpUnchangedCounter)) target.hpUnchangedCounter = 0;
         if (isNaN(target.icX)) target.icX = ic._x;
         if (isNaN(target.icY)) target.icY = ic._y;
+        if (target.状态 == "登场") ic._visible = false;
 
         // 主角专用
         if(target._name === _root.控制目标) {
