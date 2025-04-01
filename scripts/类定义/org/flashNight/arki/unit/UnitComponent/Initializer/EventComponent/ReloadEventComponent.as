@@ -10,34 +10,26 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.ReloadEv
         if(target.兵种 != "主角-男") return;
 
         var dispatcher:EventDispatcher = target.dispatcher;
-        var func:Function = updateBulletOrigin;
+        var func:Function;
 
-
-        /*
         if(_root.控制目标 === target._name) {
             func = ReloadEventComponent.updateHeroBullet;
-            _root.发布消息(target + " " + "updateHeroBullet")
         } else {
-            func = ReloadEventComponent.updateBullet;
-            _root.发布消息(target + " " + "updateBullet")
+            func = ReloadEventComponent.updateNpcBullet;
         }
-        */
-        dispatcher.subscribeSingle("ReloadEvent", func, target);
+
+        dispatcher.subscribeSingle("updateBullet", func, target);
     }
 
     public static function updateHeroBullet(target:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String):Void
     {
         _root.玩家信息界面.玩家必要信息界面[playerBulletField] = magazineRemaining;
-        ReloadEventComponent.updateBullet(target, shootStateName, magazineRemaining, playerBulletField);
+        ReloadEventComponent.updateNpcBullet(target, shootStateName, magazineRemaining);
     }
 
-    public static function updateBullet(target:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String):Void
+    public static function updateNpcBullet(target:MovieClip, shootStateName:String, magazineRemaining:Number):Void
     {
-        if (magazineRemaining <= 0) {
-            target[shootStateName] = false;
-        }
-
-        target.射击最大后摇中 = target[shootStateName];
+        target.射击最大后摇中 = target[shootStateName] = (magazineRemaining > 0 && target[shootStateName]);
     }
 
     public static function updateBulletOrigin(target:MovieClip, shootStateName:String, magazineRemaining:Number, playerBulletField:String):Void
@@ -45,10 +37,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.ReloadEv
         if (_root.控制目标 === target._name) {
             _root.玩家信息界面.玩家必要信息界面[playerBulletField] = magazineRemaining;
         }
-        if (magazineRemaining <= 0) {
-            target[shootStateName] = false;
-        }
-
-        target.射击最大后摇中 = target[shootStateName];
+        target.射击最大后摇中 = target[shootStateName] = (magazineRemaining > 0 && target[shootStateName]);
     }
 }

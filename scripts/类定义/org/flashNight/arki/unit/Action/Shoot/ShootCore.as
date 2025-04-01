@@ -129,7 +129,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
 
             // 更新弹匣剩余子弹数量
             var magazineRemaining:Number = core[magazineCapName] - core[shootCountName][core[attackMode]];
-            dispatcher.publish("ReloadEvent", core, shootStateName, magazineRemaining, config.playerBulletField);
+            dispatcher.publish("updateBullet", core, shootStateName, magazineRemaining, config.playerBulletField);
             if (shootSpeed > 300) {
                 // 延迟任务：结束后摇状态
                 root.帧计时器.添加或更新任务(core, "结束射击后摇", function(target:Object):Void {

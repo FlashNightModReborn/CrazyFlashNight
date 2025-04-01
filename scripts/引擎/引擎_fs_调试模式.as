@@ -1,9 +1,15 @@
 ﻿_root.调试模式 = false;
 //_root.调试模式 = true;
 
-_root.发布消息 = function(消息) 
+_root.发布消息 = function() 
 {
-    if (_root.调试模式) 
+	var 消息 = "";
+    for (var i = 0; i < arguments.length; i++) {
+        if (i > 0) 消息 += " "; // 参数间用空格分隔
+        消息 += arguments[i];
+    }
+	
+	if (_root.调试模式) 
 	{
         _root.发布调试消息(消息);
     } 
