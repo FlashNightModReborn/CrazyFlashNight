@@ -276,34 +276,28 @@ _root.敌人函数.掉落物品 = function(item){
 
 _root.敌人函数.击飞浮空 = function(){
 	this.浮空 = true;
+	this.倒地 = false;
 	this.man.落地 = false;
-	this.man.垂直速度 = this.起跳速度;
-	this.man.起始Y = this._y;
+	this.垂直速度 = this.起跳速度;
 
 	this.flyID = _root.帧计时器.添加生命周期任务(this, "击飞浮空", function(target:MovieClip){
-		if(target._parent.硬直中 == false){
-			target._parent._y += target.垂直速度;
+		if(target.硬直中 == false){
+			target._y += target.垂直速度;
 			target.垂直速度 += _root.重力加速度;
-			if(target._parent._y >= target._parent.Z轴坐标){
-				target._parent._y = target.起始Y;
-				target.落地 = true;
-				_root.帧计时器.移除任务(target.flyID);
-				target._parent.状态改变("倒地");
-			}
 		}
-
-		_root.发布消息("击飞浮空", target._parent._y, target.垂直速度, target.落地, target.起始Y, target._parent.硬直中, target.flyID);
+		if(target._y >= target.Z轴坐标){
+			target._y = target.Z轴坐标;
+			target.浮空 = false;
+			_root.帧计时器.移除任务(target.flyID);
+			target.状态改变("倒地");
+		}
+		// _root.发布消息("击飞浮空", target._y, target.垂直速度, target.落地, target.起始Y, target.硬直中, target.flyID);
 	}, 1, this);
-
-	this.man.onUnload = function(){
-		_parent.浮空 = false;
-	}
 }
 
 _root.敌人函数.击飞倒地 = function(){
 	this._y = this.Z轴坐标;
 	this.倒地 = true;
-	this.格斗架势 = true;
 	this.man.onUnload = function(){
 		_parent.倒地 = false;
 	}
