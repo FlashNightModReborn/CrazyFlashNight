@@ -329,3 +329,27 @@ _root.加载共享场景 = function(加载场景名){
 	var 游戏世界 = _root.attachMovie(加载场景名,"gameworld",_root.getNextHighestDepth());
 	游戏世界.swapDepths(_root.gameworld层级定位器);
 }
+
+
+
+// 转换场景画面完全淡出时移除组件
+_root.清除游戏世界组件 = function(){
+	//彻底移除gameworld
+	_root.gameworld.swapDepths(_root.getNextHighestDepth());
+	_root.gameworld.removeMovieClip();
+	
+	//清除游戏世界相关组件
+	_root.gameworld层级定位器.removeMovieClip();
+	_root.层级管理器.检查层级范围();
+	_root.卸载后景();
+
+	//关闭UI
+	_root.卸载外部UI();
+	_root.卸载全屏UI();
+	_root.购买物品界面.关闭();
+	_root.仓库界面.关闭();
+	_root.商城主mc = null;
+	_root.关卡结束界面._visible = false;
+	_root.关卡结束界面.关卡是否结束 = false;
+	_root.新手引导界面.关闭指引();
+}
