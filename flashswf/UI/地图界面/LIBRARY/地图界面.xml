@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1743592652" lastUniqueIdentifier="177">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1743592853" lastUniqueIdentifier="177">
   <timeline>
-    <DOMTimeline name="地图界面" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;957&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="地图界面" currentFrame="1" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;957&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Script Layer" color="#D4FDCB">
           <frames>
@@ -1706,7 +1706,7 @@ if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 7
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="关闭按钮" color="#9933CC" autoNamed="false">
+        <DOMLayer name="关闭按钮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1715,7 +1715,7 @@ if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 7
               <elements>
                 <DOMSymbolInstance libraryItemName="元件 14" name="关闭按钮" symbolType="button">
                   <matrix>
-                    <Matrix a="2.05892944335938" d="2.06097412109375" tx="847.2" ty="486.5"/>
+                    <Matrix a="2.05892944335938" d="2.06097412109375" tx="847.2" ty="449.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.3" y="11.2"/>
@@ -1728,7 +1728,7 @@ if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 7
                 </DOMSymbolInstance>
                 <DOMStaticText fontRenderingMode="standard" width="44.2" height="31.6" autoExpand="true" isSelectable="false">
                   <matrix>
-                    <Matrix a="1.33271789550781" d="1.33271789550781" tx="895.45" ty="485.2"/>
+                    <Matrix a="1.33270263671875" d="1.33270263671875" tx="895.45" ty="448.2"/>
                   </matrix>
                   <textRuns>
                     <DOMTextRun>
@@ -1749,7 +1749,7 @@ if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 7
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="调整焦点按钮" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="调整焦点按钮" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2208,7 +2208,7 @@ if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 7
             </DOMFrame>
             <DOMFrame index="3" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="军阀焦点按钮" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="军阀焦点按钮" symbolType="button">
                   <matrix>
                     <Matrix a="1.44635009765625" d="1.44635009765625" tx="904.55" ty="115.25"/>
                   </matrix>
