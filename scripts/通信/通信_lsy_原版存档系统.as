@@ -52,6 +52,7 @@ _root.mydata数据组包 = function(){
     mydata[7] = 健身储存数据;
     mydata.inventory = 物品储存数据;
     mydata.collection = 收集品储存数据;
+    mydata.infrastructure = _root.基建系统.infrastructure;
 
     _root.mydata = mydata;
     // _root.playerData[_root.playerCurrent] = mydata;
@@ -228,7 +229,7 @@ _root.读取本地存盘 = function(){
     _root.mydata = 本地loadgame.data[存盘名];
     //先检查存盘是否异常
     ServerManager.getInstance().sendServerMessage("检查存盘异常");
-    _root.检查并迁移存档数据(_root.mydata);
+    _root.saveConvertor.convert(_root.mydata); // 检查并迁移存档数据
 }
 
 _root.读取存盘 = function()
@@ -356,6 +357,7 @@ _root.读取存盘 = function()
         材料:new DictCollection(_root.mydata.collection.材料),
         情报:new InformationCollection(_root.mydata.collection.情报)
     };
+    _root.基建系统.infrastructure = mydata.infrastructure;
 
     _root.主线任务进度 = Math.floor(Number(任务储存数据));
     _root.LoadPCTasks();
@@ -380,13 +382,11 @@ _root.新建角色 = function(){
     _root.mydata数据组包();
     _root.金钱 = 0;
     _root.虚拟币 = 0;
-    _root.宠物信息 = [];
-    _root.宠物信息.push([]);
-    _root.宠物信息.push([]);
-    _root.宠物信息.push([]);
-    _root.宠物信息.push([]);
-    _root.宠物信息.push([]);
+    _root.宠物信息 = [[],[],[],[],[]];
     _root.宠物领养限制 = 5;
+    //
+    _root.基建系统.infrastructure = {};
+    //
     _root.soundEffectManager.stopBGM();
     _root.淡出动画.淡出跳转帧("教学关卡");
     return true;

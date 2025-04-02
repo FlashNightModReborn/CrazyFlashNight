@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地门口" itemID="668aa11b-00005252" linkageExportForAS="true" linkageIdentifier="基地场景-基地门口" lastModified="1742195139" lastUniqueIdentifier="1">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/基地门口" itemID="668aa11b-00005252" linkageExportForAS="true" linkageIdentifier="基地场景-基地门口" lastModified="1743585946" lastUniqueIdentifier="1">
   <timeline>
     <DOMTimeline name="基地门口">
       <layers>
-        <DOMLayer name="as" color="#9933CC" autoNamed="false">
+        <DOMLayer name="as" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -96,7 +96,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#BB42D2" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#BB42D2" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -121,7 +121,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 6" color="#A20BFB" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 6" color="#A20BFB" locked="true" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -135,19 +135,6 @@ onClipEvent(load){
                   <color>
                     <Color alphaMultiplier="0"/>
                   </color>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 8" color="#D105DC" locked="true">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
@@ -175,7 +162,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#7C4EFD" locked="true">
+        <DOMLayer name="门" color="#7C4EFD" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -191,7 +178,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 11" color="#D4EB7C" locked="true">
+        <DOMLayer name="摄像头" color="#D4EB7C" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -207,7 +194,20 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#DE39D3">
+        <DOMLayer name="deadbody" color="#D105DC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#DE39D3" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

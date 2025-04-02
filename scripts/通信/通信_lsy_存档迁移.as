@@ -1,4 +1,6 @@
-﻿_root.物品栏数据迁移 = function(data){
+﻿_root.saveConvertor = new Object();
+
+_root.saveConvertor.convertInventory = function(data){
     var 旧背包 = data[2];
     var 旧仓库 = data[6];
     var 新物品栏 = _root.初始化物品栏();
@@ -76,10 +78,16 @@
     ServerManager.getInstance().sendServerMessage(str);
 }
 
+_root.saveConvertor.convertInfrastructure = function(data){
+    data.infrastructure = new Object();
+}
 
-_root.检查并迁移存档数据 = function(data){
+_root.saveConvertor.convert = function(data){
     //检查并迁移物品栏数据
     if(data[2] && !data.inventory){
-        _root.物品栏数据迁移(data);
+        _root.saveConvertor.convertInventory(data);
+    }
+    if(data.infrastructure == null){
+        _root.saveConvertor.convertInfrastructure(data)
     }
 }

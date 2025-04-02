@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+    <Infrastructure>
+        <Name>停机坪梯子</Name>
+        <Level id="0">
+            <Description>基地内部结构复杂，通道弯弯绕绕。你时不时看见赶时间的佣兵背着一身沉重的装备从屋顶一跃而下，直接跳到地面上。
+虽说大伙都是亡命之徒，但因为在家门口摔残废而被末日淘汰可太掉价了。也许在停机坪左侧架个梯子能解决问题？</Description>
+            <Material>
+                <Name>可塑式钢板</Name>
+                <Value>1</Value>
+            </Material>
+            <Material>
+                <Name>高级木料</Name>
+                <Value>2</Value>
+            </Material>
+        </Level>
+        <Level id="1">
+            <Description>通向基地车库的梯子架好了，不过仍然有人往通向废城的方向跳，据说还有人跳下去直接摔在僵尸脸上。
+要想在这一侧架设梯子，需要设计额外的折叠装置防止僵尸顺着爬上来。</Description>
+            <Material>
+                <Name>不锈钢材</Name>
+                <Value>2</Value>
+            </Material>
+            <Material>
+                <Name>高级木料</Name>
+                <Value>2</Value>
+            </Material>
+            <Material>
+                <Name>传动装置</Name>
+                <Value>1</Value>
+            </Material>
+        </Level>
+        <Level id="2">
+            <Description>你看到那几个佣兵仍然习惯性地无视两架梯子跳了下去。……反正膝盖是自己的。</Description>
+        </Level>
+    </Infrastructure>
+    <Infrastructure>
+        <Name>厨房XXX</Name>
+        <Level id="0">
+            <Description>描述0</Description>
+            <Material>
+                <Name>战术导轨</Name>
+                <Value>1</Value>
+            </Material>
+        </Level>
+        <Level id="1">
+            <Description>描述1</Description>
+        </Level>
+    </Infrastructure>
+</root>

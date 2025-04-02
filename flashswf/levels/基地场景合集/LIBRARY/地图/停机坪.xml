@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1742200515" lastUniqueIdentifier="7">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图/停机坪" itemID="668aa0dc-000051de" linkageExportForAS="true" linkageIdentifier="基地场景-基地房顶" lastModified="1743589305" lastUniqueIdentifier="7">
   <timeline>
     <DOMTimeline name="停机坪">
       <layers>
@@ -14,7 +14,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 1" color="#2CC7E3">
+        <DOMLayer name="Layer 1" color="#2CC7E3" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -33,7 +33,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#D8C47D">
+        <DOMLayer name="Layer 2" color="#D8C47D" locked="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -96,7 +96,29 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#30F174" outline="true" useOutlineView="true">
+        <DOMLayer name="Layer 7" color="#73FE1A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="梯子2" name="梯子2" centerPoint3DX="1432.85" centerPoint3DY="522.05">
+                  <matrix>
+                    <Matrix tx="1394.65" ty="397.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="38.2" y="124.3"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_root.基建系统.初始化基建元件(this,"停机坪梯子",[[2, "正常"]]);
+	this.swapDepths(this._y + 100);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#30F174" outline="true" current="true" isSelected="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -116,38 +138,44 @@ onClipEvent (load) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门10" centerPoint3DX="1559.5" centerPoint3DY="231.45">
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门10" selected="true" centerPoint3DX="1394.45" centerPoint3DY="441.5">
                   <matrix>
-                    <Matrix a="6.73692321777344" d="2.91160583496094" tx="1584.7" ty="283.35"/>
+                    <Matrix a="7.31272888183594" d="1.25515747070313" tx="1407.25" ty="460.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-10.45" y="19.95"/>
+                    <Point x="10.5" y="-19.95"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   切换场景("门1","基地门口","卷帘门",_root.右键);
-}
-onClipEvent(load){
-   是否从门加载主角 = true;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	是否从门加载主角 = true;
+	if (_root.基建系统.检查基建等级("停机坪梯子", 2))
+	{
+		this.onEnterFrame = function()
+		{
+			切换场景("门1","基地门口","",_root.下键);
+		};
+	}
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门11" centerPoint3DX="104" centerPoint3DY="279.2">
+                <DOMSymbolInstance libraryItemName="sprite/场景门" name="门11" centerPoint3DX="107" centerPoint3DY="283.2">
                   <matrix>
-                    <Matrix a="8.05679321289063" d="4.11199951171875" tx="143.65" ty="307.2"/>
+                    <Matrix a="3.66395568847656" d="2.96170043945313" tx="193.6" ty="280.25"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="-10.5" y="19.95"/>
+                    <Point x="11" y="19.95"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   切换场景("门1","基地车库","",_root.左键);
-}
-onClipEvent(load){
-   是否从门加载主角 = true;
-}
-]]></script>
+                    <script><![CDATA[onClipEvent (load) {
+	是否从门加载主角 = true;
+	if (_root.基建系统.检查基建等级("停机坪梯子", 1))
+	{
+		this.onEnterFrame = function()
+		{
+			切换场景("门1","基地车库","",_root.左键);
+		};
+	}
+}]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -188,20 +216,6 @@ onClipEvent(load){
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 7" color="#73FE1A">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="Layer 8" color="#E50CF7">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -247,9 +261,9 @@ onClipEvent(load){
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/文天彩蛋UI所用素材/元件 1" centerPoint3DX="179.7" centerPoint3DY="488.85">
+                <DOMSymbolInstance libraryItemName="UI重构/文天彩蛋UI所用素材/元件 1" centerPoint3DX="244.7" centerPoint3DY="488.85">
                   <matrix>
-                    <Matrix tx="141.95" ty="407.8"/>
+                    <Matrix tx="206.95" ty="407.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.75" y="77.95"/>
@@ -266,6 +280,27 @@ onClipEvent(load){
 	性别 = "男";
 	方向 = "左";
 	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="梯子1" color="#E50CF7" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="梯子1" name="梯子1" centerPoint3DX="153.5" centerPoint3DY="315.05">
+                  <matrix>
+                    <Matrix tx="93.5" ty="202.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="60" y="113"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	_root.基建系统.初始化基建元件(this,"停机坪梯子",[[1, "正常"]]);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -296,7 +331,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地图" color="#9FA94F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="地图" color="#9FA94F" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -322,19 +357,6 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 15" color="#8928E7">
-          <frames>
-            <DOMFrame index="0" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="Layer 16" color="#96E7A8">
           <frames>
             <DOMFrame index="0" keyMode="9728">
@@ -351,7 +373,20 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 17" color="#7948ED">
+        <DOMLayer name="deadbody" color="#8928E7" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="sprite/deadbody" name="deadbody">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="背景" color="#7948ED" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

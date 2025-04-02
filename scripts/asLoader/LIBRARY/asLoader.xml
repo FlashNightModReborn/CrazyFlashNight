@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1742367144">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="asLoader" itemID="65982cdb-00001469" linkageExportForAS="true" linkageIdentifier="asLoader" lastModified="1743587731">
   <timeline>
-    <DOMTimeline name="asLoader" currentFrame="2">
+    <DOMTimeline name="asLoader" currentFrame="77">
       <layers>
         <DOMLayer name="label" color="#9933CC" autoNamed="false">
           <frames>
@@ -92,6 +92,7 @@ function 打印加载内容(str){
 #include "../引擎/引擎_lsy_战宠系统.as"
 #include "../引擎/引擎_鸡蛋_lsy_物品系统.as"
 #include "../引擎/引擎_lsy_声音系统.as"
+#include "../引擎/引擎_lsy_基建系统.as"
 ]]></script>
               </Actionscript>
               <elements/>
@@ -482,7 +483,7 @@ stage_env_loader.loadStageEnvironment(
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="74" duration="6" keyMode="9728">
+            <DOMFrame index="74" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[import org.flashNight.gesh.xml.LoadXml.SceneEnvironmentLoader;
 var scene_env_loader:SceneEnvironmentLoader = SceneEnvironmentLoader.getInstance();
@@ -497,6 +498,42 @@ scene_env_loader.loadSceneEnvironment(
     }
 );
 ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="75" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[var infra_loader = org.flashNight.gesh.xml.LoadXml.InfrastructureLoader.getInstance();
+
+infra_loader.loadInfrastructure(
+    function(data:Object):Void {
+		trace("主程序：基建项目数据加载成功！");
+		var infrastructureDict = {};
+		var infrastructureList = [];
+		for(var i=0; i<data.Infrastructure.length; i++){
+			var project = data.Infrastructure[i];
+			if(project.Level != null){
+				if(!project.Level.length){
+					project.Level = [project.Level];
+				}
+				for(var i = 0; i < project.Level.length; i++){
+					var lvl = project.Level[i];
+					if(lvl.Material != null && !lvl.Material.length){
+						lvl.Material = [lvl.Material];
+					}
+				}
+			}
+			infrastructureDict[project.Name] = project;
+			infrastructureList.push(project.Name);
+		}
+		if(_root.基建系统 == null) _root.基建系统 = new Object();
+		_root.基建系统.dict = infrastructureDict;
+		_root.基建系统.nameList = infrastructureList;
+    },
+    function():Void {
+        trace("主程序：基建项目数据加载失败！");
+    }
+);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
