@@ -160,7 +160,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
      * 弹壳物理模拟函数 (原逻辑)
      */
     private static function shellPhysicsSimulation(弹壳:MovieClip):Void {
-        var engine = LinearCongruentialEngine.getInstance();
+        var engine = LinearCongruentialEngine.instance;
         弹壳.水平速度 = engine.randomFloatOffset(4);
         弹壳.垂直速度 = engine.randomFloat(-8, -20);
         弹壳.旋转速度 = engine.randomFloat(-10, 10);
@@ -173,28 +173,28 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
     /**
      * 弹壳物理运动函数 (原逻辑)
      */
-    private static function shellPhysics(弹壳:MovieClip):Void {
-        if (弹壳._y - 弹壳.Z轴坐标 < -5) {
-            弹壳.垂直速度 += 4;
-            弹壳._x += 弹壳.水平速度;
-            弹壳._y += 弹壳.垂直速度;
-            弹壳._rotation += 弹壳.旋转速度;
+    private static function shellPhysics(shell:MovieClip):Void {
+        var engine = LinearCongruentialEngine.instance;
+        if (shell._y - shell.Z轴坐标 < -5) {
+            shell._x += shell.水平速度;
+            shell._y += shell.垂直速度;
+            shell._rotation += shell.旋转速度;
         } else {
-            弹壳.垂直速度 = 弹壳.垂直速度 / -2 - _root.随机整数(0, 5);
-            弹壳._xscale = Math.max(Math.sin(弹壳._rotation * Math.PI / 180), 0.5) * 弹壳._xscale;
-            if (弹壳.垂直速度 < -10) {
-                弹壳.水平速度 += _root.随机浮点偏移(4);
-                弹壳.旋转速度 = 弹壳.旋转速度 * 1.5 + _root.随机浮点(0, 25);
-                弹壳._x += 弹壳.水平速度;
-                弹壳._y = 弹壳.Z轴坐标 - 6;
-                弹壳._rotation += 弹壳.旋转速度;
+            shell.垂直速度 = shell.垂直速度 / -2 - engine.randomIntegerStrict(0, 5);
+            shell._xscale *= ((Math.sin(shell._rotation * 0.0174533) + 1) * 0.5) * 0.5 + 0.5;
+            if (shell.垂直速度 < -10) {
+                shell.水平速度 += engine.randomFloatOffset(4);
+                shell.旋转速度 *= engine.randomFluctuation(50);
+                shell._x += shell.水平速度;
+                shell._y = shell.Z轴坐标 - 6;
+                shell._rotation += shell.旋转速度;
             } else {
                 // 弹壳落地，添加回收任务
-                _root.add2map3(弹壳, 2);
-                _root.帧计时器.移除任务(弹壳.任务ID);
-                _root.帧计时器.添加或更新任务(弹壳, "回收", function(壳:MovieClip) {
+                _root.add2map3(shell, 2);
+                _root.帧计时器.移除任务(shell.任务ID);
+                _root.帧计时器.添加或更新任务(shell, "回收", function(壳:MovieClip) {
                     recycleShell(壳);
-                }, 1, 弹壳);
+                }, 1, shell);
             }
         }
     }
