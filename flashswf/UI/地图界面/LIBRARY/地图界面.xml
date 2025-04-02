@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1743167970" lastUniqueIdentifier="177">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1743583543" lastUniqueIdentifier="177">
   <timeline>
-    <DOMTimeline name="地图界面" currentFrame="1">
+    <DOMTimeline name="地图界面" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;957&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
           <frames>
@@ -54,7 +54,7 @@ function TweenManager(parentClip) {
 
     var self = this;
     this.tweenClip.onEnterFrame = function() {
-        if (parentClip._currentframe == 2) {
+        if (parentClip._currentframe == parentClip.frame) {
             self.update();
         } else {
             self.destroy();
@@ -389,17 +389,66 @@ LayerManager.prototype.handleMouseMove = function() {
     }
 };
 
+// 在 Layer 原型上增加 destroy 方法，用于彻底移除相关影片剪辑
+Layer.prototype.destroy = function() {
+    trace("[Layer] destroy() -> Removing movie clips for layer: " + this.name);
+
+    // 移除组件的影片剪辑
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        if (component.removeMovieClip) {
+            component.removeMovieClip();
+        }
+    }
+
+    // 移除 NPC 的头像和闪光提示影片剪辑
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npc = this.npcs[j];
+        if (npc.avatar && npc.avatar.removeMovieClip) {
+            npc.avatar.removeMovieClip();
+			trace("remove " + npc.avatar);
+        }
+        if (npc.flashHint && npc.flashHint.removeMovieClip) {
+            npc.flashHint.removeMovieClip();
+			trace("remove " + npc.flashHint);
+        }
+    }
+
+    // 清空引用，避免内存泄漏
+    this.components = null;
+    this.npcs = null;
+    this.originalDepths = null;
+};
+
+
+
 /** 销毁 */
 LayerManager.prototype.destroy = function() {
     trace("[LayerManager] destroy() -> Destroying LayerManager.");
+
+    // 先清除所有事件绑定
     this.removeRollOverEvents();
     if (this.currentActiveLayer) {
+        // 如果当前存在激活状态，先解除激活（内部会调整深度等状态）
+        this.currentActiveLayer.deactivate(this.tweenManager);
         this.removeRollOutEvents(this.currentActiveLayer);
     }
+    
+    // 遍历所有 Layer，并调用其 destroy 方法彻底移除影片剪辑
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
+        if (typeof layer.destroy === "function") {
+            layer.destroy();
+        }
+    }
+    
+    // 清空 LayerManager 自身的引用
     this.layers = null;
     this.tweenManager = null;
     this.parentClip = null;
 };
+
+
 
 /** LayerUtils - 用于控制透明度的工具类 */
 var LayerUtils = {
@@ -436,59 +485,105 @@ function setDynamicTaskAvatars() {
     setTaskRelatedAvatar("学生妹头像", 40);
 }
 
-function setNpcFlashTips() {
-    var NPC闪光 = [
+// 共享的 NPC 闪光提示数据
+var NPCFlashData = {
+    flashNames: [
         "Pig_闪光提示", "Boy_闪光提示", "King_闪光提示",
         "The Girl_闪光提示", "Andy Law_闪光提示", "Shop Girl_闪光提示",
         "Blue_闪光提示", "酒保_闪光提示", "格格巫_闪光提示", "丽丽丝_闪光提示",
         "小F_闪光提示", "冷兵器商人_闪光提示", "宝石线人_闪光提示",
         "学生妹_闪光提示", "幸存老兵_闪光提示", "前治安官_闪光提示",
         "黑铁会外交部长_闪光提示", "舞女_闪光提示", "杀马特_闪光提示"
-    ];
+    ]
+};
 
-    var NPC映射 = new Object();
-    NPC映射["∞天ㄙ★使的剪∞"] = {
+NPCFlashData["mapping"]["∞天ㄙ★使的剪∞"] = {
         头像: "杀马特头像",
         闪光提示: "杀马特_闪光提示"
     };
-	
-	var d = -100;
 
-    for (var i = 0; i < NPC闪光.length; i++) {
-        if (_this[NPC闪光[i]]) {
-            _this[NPC闪光[i]]._visible = false;
-			trace(d);
-			_this[NPC闪光[i]].swapDepths(--d);
+function setNpcFlashTips() {
+    var flashNames = NPCFlashData.flashNames;
+    var mapping = NPCFlashData.mapping;
+    var d = -100;
+
+    // 遍历所有预定义的闪光提示，设置初始不可见，并调整深度
+    for (var i = 0; i < flashNames.length; i++) {
+        if (_this[flashNames[i]]) {
+            _this[flashNames[i]]._visible = false;
+            trace(d);
+            _this[flashNames[i]].swapDepths(--d);
         }
     }
-    for (var npcName in NPC映射) {
-        var specialKey = NPC映射[npcName].闪光提示;
+    // 处理特殊映射中的闪光提示
+    for (var npcName in mapping) {
+        var specialKey = mapping[npcName].闪光提示;
         if (_this[specialKey]) {
             _this[specialKey]._visible = false;
-			trace(d);
-			_this[specialKey].swapDepths(--d);
+            trace(d);
+            _this[specialKey].swapDepths(--d);
         }
     }
+    // 根据任务数据动态显示对应 NPC 的闪光提示
     if (_root.tasks_to_do && _root.taskCompleteCheck && _root.getTaskData) {
         for (var tIndex = 0; tIndex < _root.tasks_to_do.length; tIndex++) {
             if (_root.taskCompleteCheck(tIndex)) {
                 var taskData = _root.getTaskData(_root.tasks_to_do[tIndex].id);
                 var finishNpc = taskData.finish_npc;
-                if (NPC映射[finishNpc]) {
-                    var 特殊闪光提示 = NPC映射[finishNpc].闪光提示;
-                    if (_this[特殊闪光提示]) {
-                        _this[特殊闪光提示]._visible = true;
+                if (mapping[finishNpc]) {
+                    var specialFlash = mapping[finishNpc].闪光提示;
+                    if (_this[specialFlash]) {
+                        _this[specialFlash]._visible = true;
                     }
                 } else {
-                    var 标准闪光提示 = finishNpc + "_闪光提示";
-                    if (_this[标准闪光提示]) {
-                        _this[标准闪光提示]._visible = true;
+                    var standardFlash = finishNpc + "_闪光提示";
+                    if (_this[standardFlash]) {
+                        _this[standardFlash]._visible = true;
                     }
                 }
             }
         }
     }
 }
+
+function destroyNpcFlashTips() {
+    var flashNames = NPCFlashData.flashNames;
+    var mapping = NPCFlashData.mapping;
+
+    // 创建一个临时空影片剪辑，用于交换深度
+    var tempMC = _this.createEmptyMovieClip("tempDestroyer", 10086);
+
+    // 遍历所有预定义闪光提示，交换深度后删除
+    for (var i = 0; i < flashNames.length; i++) {
+        var flashClip = _this[flashNames[i]];
+        if (flashClip) {
+			tempMC.swapDepths(10086);
+            flashClip.swapDepths(tempMC);
+			var depth = flashClip.getDepth();
+            trace("remove " + flashNames[i] + " at depth " + depth);
+            flashClip.removeMovieClip();
+            flashClip._visible = false;
+        }
+    }
+
+    // 遍历特殊映射中的闪光提示，交换深度后删除
+    for (var npcName in mapping) {
+        var specialKey = mapping[npcName].闪光提示;
+        var specialClip = _this[specialKey];
+        if (specialClip) {
+			tempMC.swapDepths(10086);
+            specialClip.swapDepths(tempMC);
+			var depth = specialClip.getDepth();
+			trace("remove " + specialKey + " at depth " + depth);
+            specialClip.removeMovieClip();
+            specialClip._visible = false;
+        }
+    }
+
+    // 最后移除临时影片剪辑
+    tempMC.removeMovieClip();
+}
+
 
 /**
  * ============================================================================
@@ -581,11 +676,13 @@ this.destroy = function() {
     delete this.layerManager;
 
     delete this.onMouseMove;
+	
+	destroyNpcFlashTips();
 };
 
 /** 根据帧事件初始化和销毁 */
 this.onEnterFrame = function() {
-    if (this._currentframe == 2) {
+    if (this._currentframe == this.frame) {
         if (!this.initialized) {
             trace("[Main] onEnterFrame -> Initializing...");
             this.init();
@@ -599,6 +696,9 @@ this.onEnterFrame = function() {
         }
     }
 };
+
+this.frame = this._currentframe;
+stop();
 ]]></script>
               </Actionscript>
               <elements/>
@@ -653,7 +753,7 @@ function TweenManager(parentClip) {
 
     var self = this;
     this.tweenClip.onEnterFrame = function() {
-        if (parentClip._currentframe == 2) {
+        if (parentClip._currentframe == parentClip.frame) {
             self.update();
         } else {
             self.destroy();
@@ -988,17 +1088,65 @@ LayerManager.prototype.handleMouseMove = function() {
     }
 };
 
+
+// 在 Layer 原型上增加 destroy 方法，用于彻底移除相关影片剪辑
+Layer.prototype.destroy = function() {
+    trace("[Layer] destroy() -> Removing movie clips for layer: " + this.name);
+
+    // 移除组件的影片剪辑
+    for (var i = 0; i < this.components.length; i++) {
+        var component = this.components[i];
+        if (component.removeMovieClip) {
+            component.removeMovieClip();
+        }
+    }
+
+    // 移除 NPC 的头像和闪光提示影片剪辑
+    for (var j = 0; j < this.npcs.length; j++) {
+        var npc = this.npcs[j];
+        if (npc.avatar && npc.avatar.removeMovieClip) {
+            npc.avatar.removeMovieClip();
+        }
+        if (npc.flashHint && npc.flashHint.removeMovieClip) {
+            npc.flashHint.removeMovieClip();
+        }
+    }
+
+    // 清空引用，避免内存泄漏
+    this.components = null;
+    this.npcs = null;
+    this.originalDepths = null;
+};
+
+
+
 /** 销毁 */
 LayerManager.prototype.destroy = function() {
     trace("[LayerManager] destroy() -> Destroying LayerManager.");
+
+    // 先清除所有事件绑定
     this.removeRollOverEvents();
     if (this.currentActiveLayer) {
+        // 如果当前存在激活状态，先解除激活（内部会调整深度等状态）
+        this.currentActiveLayer.deactivate(this.tweenManager);
         this.removeRollOutEvents(this.currentActiveLayer);
     }
+    
+    // 遍历所有 Layer，并调用其 destroy 方法彻底移除影片剪辑
+    for (var i = 0; i < this.layers.length; i++) {
+        var layer = this.layers[i];
+        if (typeof layer.destroy === "function") {
+            layer.destroy();
+        }
+    }
+    
+    // 清空 LayerManager 自身的引用
     this.layers = null;
     this.tweenManager = null;
     this.parentClip = null;
 };
+
+
 
 /** LayerUtils - 用于控制透明度的工具类 */
 var LayerUtils = {
@@ -1026,49 +1174,99 @@ function setTaskRelatedAvatar(avatarName, requiredProgress) {
     }
 }
 
-function setNpcFlashTips() {
-    var NPC闪光 = [
+
+// 共享的 NPC 闪光提示数据
+var NPCFlashData = {
+    flashNames: [
         "general_闪光提示", "itinerant_闪光提示", "gazer_闪光提示",
         "surveyor_闪光提示", "director_闪光提示"
-    ];
-	
-	var d = -100;
+    ]
+};
 
-    for (var i = 0; i < NPC闪光.length; i++) {
-        if (_this[NPC闪光[i]]) {
-            _this[NPC闪光[i]]._visible = false;
-			trace(d);
-			_this[NPC闪光[i]].swapDepths(--d);
+function setNpcFlashTips() {
+    var flashNames = NPCFlashData.flashNames;
+    var mapping = NPCFlashData.mapping;
+    var d = -100;
+
+    // 遍历所有预定义的闪光提示，设置初始不可见，并调整深度
+    for (var i = 0; i < flashNames.length; i++) {
+        if (_this[flashNames[i]]) {
+            _this[flashNames[i]]._visible = false;
+            trace(d);
+            _this[flashNames[i]].swapDepths(--d);
         }
     }
-    for (var npcName in NPC映射) {
-        var specialKey = NPC映射[npcName].闪光提示;
+    // 处理特殊映射中的闪光提示
+    for (var npcName in mapping) {
+        var specialKey = mapping[npcName].闪光提示;
         if (_this[specialKey]) {
             _this[specialKey]._visible = false;
-			trace(d);
-			_this[specialKey].swapDepths(--d);
+            trace(d);
+            _this[specialKey].swapDepths(--d);
         }
     }
+    // 根据任务数据动态显示对应 NPC 的闪光提示
     if (_root.tasks_to_do && _root.taskCompleteCheck && _root.getTaskData) {
         for (var tIndex = 0; tIndex < _root.tasks_to_do.length; tIndex++) {
             if (_root.taskCompleteCheck(tIndex)) {
                 var taskData = _root.getTaskData(_root.tasks_to_do[tIndex].id);
                 var finishNpc = taskData.finish_npc;
-                if (NPC映射[finishNpc]) {
-                    var 特殊闪光提示 = NPC映射[finishNpc].闪光提示;
-                    if (_this[特殊闪光提示]) {
-                        _this[特殊闪光提示]._visible = true;
+                if (mapping[finishNpc]) {
+                    var specialFlash = mapping[finishNpc].闪光提示;
+                    if (_this[specialFlash]) {
+                        _this[specialFlash]._visible = true;
                     }
                 } else {
-                    var 标准闪光提示 = finishNpc + "_闪光提示";
-                    if (_this[标准闪光提示]) {
-                        _this[标准闪光提示]._visible = true;
+                    var standardFlash = finishNpc + "_闪光提示";
+                    if (_this[standardFlash]) {
+                        _this[standardFlash]._visible = true;
                     }
                 }
             }
         }
     }
 }
+
+function destroyNpcFlashTips() {
+    var flashNames = NPCFlashData.flashNames;
+    var mapping = NPCFlashData.mapping;
+
+    // 创建一个临时空影片剪辑，用于交换深度
+    var tempMC = _this.createEmptyMovieClip("tempDestroyer", 10086);
+
+    // 遍历所有预定义闪光提示，交换深度后删除
+    for (var i = 0; i < flashNames.length; i++) {
+        var flashClip = _this[flashNames[i]];
+        if (flashClip) {
+			tempMC.swapDepths(10086);
+            flashClip.swapDepths(tempMC);
+			var depth = flashClip.getDepth();
+            trace("remove " + flashNames[i] + " at depth " + depth);
+            flashClip.removeMovieClip();
+            flashClip._visible = false;
+        }
+    }
+
+    // 遍历特殊映射中的闪光提示，交换深度后删除
+    for (var npcName in mapping) {
+        var specialKey = mapping[npcName].闪光提示;
+        var specialClip = _this[specialKey];
+        if (specialClip) {
+			tempMC.swapDepths(10086);
+            specialClip.swapDepths(tempMC);
+			var depth = specialClip.getDepth();
+			trace("remove " + specialKey + " at depth " + depth);
+            specialClip.removeMovieClip();
+            specialClip._visible = false;
+        }
+    }
+
+    // 最后移除临时影片剪辑
+    tempMC.removeMovieClip();
+}
+
+
+
 
 /**
  * ============================================================================
@@ -1085,7 +1283,7 @@ this.init = function() {
     var layers = [];
 
     var MilitaryJunta = new Layer("军阀",
-        [this.基地大厅, this.佣兵酒吧, this.基地车库, this.基地门口, this.医务室, this.宿舍],
+        [this.军阀基地, this.靶场, this.军阀帐篷],
         [
             { avatar: this.genral头像, name: "general头像" },
             { avatar: this.gazer头像, name: "gazer头像" },
@@ -1119,11 +1317,13 @@ this.destroy = function() {
     delete this.layerManager;
 
     delete this.onMouseMove;
+	
+	destroyNpcFlashTips();
 };
 
 /** 根据帧事件初始化和销毁 */
 this.onEnterFrame = function() {
-    if (this._currentframe == 2) {
+    if (this._currentframe == this.frame) {
         if (!this.initialized) {
             trace("[Main] onEnterFrame -> Initializing...");
             this.init();
@@ -1137,7 +1337,8 @@ this.onEnterFrame = function() {
         }
     }
 };
-]]></script>
+this.frame = this._currentframe;
+stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1149,7 +1350,7 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="换图" color="#4FFF4F" locked="true" autoNamed="false">
+        <DOMLayer name="换图" color="#4FFF4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -1165,6 +1366,8 @@ this.onEnterFrame = function() {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(press){
+	this.destroy();
+	this.initialized = false;
 	gotoAndStop(4);
 }]]></script>
                   </Actionscript>
@@ -1176,6 +1379,12 @@ this.onEnterFrame = function() {
                   <textRuns>
                     <DOMTextRun>
                       <characters>其他阵营</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
                       <textAttrs>
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
@@ -1195,7 +1404,10 @@ this.onEnterFrame = function() {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on(press){
+	this.destroy();
+	this.initialized = false;
 	gotoAndStop(2);
+	
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -1470,8 +1682,57 @@ this.onEnterFrame = function() {
                         <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
                       </textAttrs>
                     </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
                   </textRuns>
                 </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="关闭按钮" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="4" keyMode="9728">
+              <elements>
+                <DOMStaticText fontRenderingMode="standard" width="44.2" height="31.6" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="935.2" ty="471.55"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>关闭</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="军阀焦点按钮" symbolType="button">
+                  <matrix>
+                    <Matrix a="1.44635009765625" d="1.44635009765625" tx="903.95" ty="472.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.65" y="4.6"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	gotoAndStop(1);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
@@ -2014,16 +2275,16 @@ this.onEnterFrame = function() {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="A兵团" color="#9933CC" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="基地屋顶" color="#4F80FF" parentLayerIndex="7" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="基地屋顶npc" color="#4F80FF" parentLayerIndex="8" autoNamed="false">
+        <DOMLayer name="A兵团" color="#9933CC" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="基地屋顶" color="#4F80FF" parentLayerIndex="8" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="基地屋顶npc" color="#4F80FF" parentLayerIndex="9" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="8" autoNamed="false">
+        <DOMLayer name="基地屋顶" color="#9933CC" parentLayerIndex="9" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2060,8 +2321,8 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地一层" color="#FF4F4F" parentLayerIndex="7" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="基地车库npc" color="#4F80FF" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="基地一层" color="#FF4F4F" parentLayerIndex="8" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="基地车库npc" color="#4F80FF" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2136,7 +2397,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地车库" color="#FF4F4F" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="基地车库" color="#FF4F4F" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2173,7 +2434,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地门口" color="#4FFF4F" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="基地门口" color="#4FFF4F" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2210,7 +2471,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地大厅npc" color="#808080" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="基地大厅npc" color="#808080" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2317,7 +2578,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="基地大厅" color="#9933CC" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="基地大厅" color="#9933CC" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2354,7 +2615,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="医务室npc" color="#808080" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="医务室npc" color="#808080" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2397,7 +2658,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="医务室" color="#FF800A" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="医务室" color="#FF800A" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2434,7 +2695,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="宿舍" color="#FF4FFF" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="宿舍" color="#FF4FFF" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2471,7 +2732,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="佣兵酒吧npc" color="#FF4F4F" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="佣兵酒吧npc" color="#FF4F4F" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2514,7 +2775,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="佣兵酒吧" color="#4FFFFF" parentLayerIndex="11" autoNamed="false">
+        <DOMLayer name="佣兵酒吧" color="#4FFFFF" parentLayerIndex="12" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2551,8 +2812,8 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下一层" color="#4FFF4F" parentLayerIndex="7" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="地下一层npc" color="#31ECB9" parentLayerIndex="22" autoNamed="false">
+        <DOMLayer name="地下一层" color="#4FFF4F" parentLayerIndex="8" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="地下一层npc" color="#31ECB9" parentLayerIndex="23" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2611,7 +2872,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下一层" color="#4FFF4F" parentLayerIndex="22" autoNamed="false">
+        <DOMLayer name="地下一层" color="#4FFF4F" parentLayerIndex="23" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2648,7 +2909,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="健身房" color="#9933CC" parentLayerIndex="22" autoNamed="false">
+        <DOMLayer name="健身房" color="#9933CC" parentLayerIndex="23" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2685,7 +2946,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器库npc" color="#FF4FFF" parentLayerIndex="22" autoNamed="false">
+        <DOMLayer name="武器库npc" color="#FF4FFF" parentLayerIndex="23" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2728,7 +2989,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="武器库" color="#FF800A" parentLayerIndex="22" autoNamed="false">
+        <DOMLayer name="武器库" color="#FF800A" parentLayerIndex="23" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2765,8 +3026,8 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下二层" color="#9933CC" parentLayerIndex="7" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="地下二层npc" color="#FF4F4F" parentLayerIndex="28" autoNamed="false">
+        <DOMLayer name="地下二层" color="#9933CC" parentLayerIndex="8" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="地下二层npc" color="#FF4F4F" parentLayerIndex="29" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2785,7 +3046,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="实验室" color="#9933CC" parentLayerIndex="28" autoNamed="false">
+        <DOMLayer name="实验室" color="#9933CC" parentLayerIndex="29" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2822,7 +3083,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="走廊" color="#4FFFFF" parentLayerIndex="28" autoNamed="false">
+        <DOMLayer name="走廊" color="#4FFFFF" parentLayerIndex="29" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2859,7 +3120,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="食堂" color="#808080" parentLayerIndex="28" autoNamed="false">
+        <DOMLayer name="食堂" color="#808080" parentLayerIndex="29" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2896,15 +3157,15 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下水" color="#FF4FFF" parentLayerIndex="7" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="地下水npc" color="#4FFF4F" parentLayerIndex="33" autoNamed="false">
+        <DOMLayer name="地下水" color="#FF4FFF" parentLayerIndex="8" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="地下水npc" color="#4FFF4F" parentLayerIndex="34" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="地下水" color="#808080" parentLayerIndex="33" autoNamed="false">
+        <DOMLayer name="地下水" color="#808080" parentLayerIndex="34" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2941,8 +3202,8 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="军阀" color="#FF800A" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="军阀npc" color="#808080" parentLayerIndex="36" locked="true" autoNamed="false">
+        <DOMLayer name="军阀" color="#FF800A" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="军阀npc" color="#808080" parentLayerIndex="37" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -3001,7 +3262,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="闪光" color="#4F80FF" parentLayerIndex="36" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="闪光" color="#4F80FF" parentLayerIndex="37" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -3052,7 +3313,7 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="军阀" color="#4FFFFF" parentLayerIndex="36" autoNamed="false">
+        <DOMLayer name="军阀" color="#4FFFFF" parentLayerIndex="37" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -3066,6 +3327,21 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point x="372.8" y="179.95"/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.军阀可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("军阀基地");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
                   </filters>
@@ -3077,6 +3353,21 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point x="306.45" y="165.05"/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.军阀可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("军阀帐篷");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
                   </filters>
@@ -3088,6 +3379,21 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point x="386.8" y="219.75"/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on (release) {
+	if (_parent.军阀可选 == true)
+	{
+		_root.关卡结束界面._visible = 0;
+		_root.场景进入位置名 = "出生地";
+		_root.淡出动画.淡出跳转帧("靶场");
+		_parent.gotoAndStop(1);
+	}
+}
+onClipEvent (load) {
+	显示文字 = _root.获得翻译("");
+}
+]]></script>
+                  </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
                   </filters>
@@ -3096,14 +3402,14 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="背景" color="#EE56CF" autoNamed="false">
+        <DOMLayer name="背景" color="#EE56CF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
             </DOMFrame>
             <DOMFrame index="1" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="背景" centerPoint3DX="512.05" centerPoint3DY="289.05">
+                <DOMSymbolInstance libraryItemName="背景" selected="true" centerPoint3DX="512.05" centerPoint3DY="289.05">
                   <matrix>
                     <Matrix tx="0.1" ty="-1.45"/>
                   </matrix>
