@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1743583543" lastUniqueIdentifier="177">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图界面" itemID="6749c50f-00000907" linkageExportForAS="true" linkageIdentifier="地图界面" lastModified="1743592652" lastUniqueIdentifier="177">
   <timeline>
     <DOMTimeline name="地图界面" currentFrame="3" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;957&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Script Layer" color="#D4FDCB" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#D4FDCB">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1285,11 +1285,11 @@ this.init = function() {
     var MilitaryJunta = new Layer("军阀",
         [this.军阀基地, this.靶场, this.军阀帐篷],
         [
-            { avatar: this.genral头像, name: "general头像" },
+            { avatar: this.general头像, name: "general头像" },
             { avatar: this.gazer头像, name: "gazer头像" },
             { avatar: this.itinerant头像, name: "itinerant头像" },
             { avatar: this.surveyor头像, name: "surveyor头像" },
-            { avatar: this.director, name: "diorector头像" }
+            { avatar: this.director头像, name: "director头像" }
         ],
         "军阀可选"
     );
@@ -1338,7 +1338,19 @@ this.onEnterFrame = function() {
     }
 };
 this.frame = this._currentframe;
-stop();]]></script>
+stop();
+
+//额外
+if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this.军阀焦点按钮 = 1;
+		this.初始化按钮 = 1;
+	}
+	else
+	{
+		this.军阀焦点按钮 = 0;
+		this.初始化按钮 = 0;
+	}]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1701,31 +1713,12 @@ stop();]]></script>
             </DOMFrame>
             <DOMFrame index="1" duration="4" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="standard" width="44.2" height="31.6" autoExpand="true" isSelectable="false">
+                <DOMSymbolInstance libraryItemName="元件 14" name="关闭按钮" symbolType="button">
                   <matrix>
-                    <Matrix tx="935.2" ty="471.55"/>
-                  </matrix>
-                  <textRuns>
-                    <DOMTextRun>
-                      <characters>关闭</characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                    <DOMTextRun>
-                      <characters></characters>
-                      <textAttrs>
-                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FFFFFF"/>
-                      </textAttrs>
-                    </DOMTextRun>
-                  </textRuns>
-                </DOMStaticText>
-                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="军阀焦点按钮" symbolType="button">
-                  <matrix>
-                    <Matrix a="1.44635009765625" d="1.44635009765625" tx="903.95" ty="472.15"/>
+                    <Matrix a="2.05892944335938" d="2.06097412109375" tx="847.2" ty="486.5"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="6.65" y="4.6"/>
+                    <Point x="37.3" y="11.2"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
@@ -1733,11 +1726,30 @@ stop();]]></script>
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
+                <DOMStaticText fontRenderingMode="standard" width="44.2" height="31.6" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix a="1.33271789550781" d="1.33271789550781" tx="895.45" ty="485.2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>关闭</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="22" bitmapSize="440" face="SourceHanSerifSC-Heavy" fillColor="#FF0000"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="调整焦点按钮" color="#FF800A" autoNamed="false">
+        <DOMLayer name="调整焦点按钮" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -2196,7 +2208,7 @@ stop();]]></script>
             </DOMFrame>
             <DOMFrame index="3" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="军阀焦点按钮" symbolType="button">
+                <DOMSymbolInstance libraryItemName="UI重构/长条按钮" name="军阀焦点按钮" selected="true" symbolType="button">
                   <matrix>
                     <Matrix a="1.44635009765625" d="1.44635009765625" tx="904.55" ty="115.25"/>
                   </matrix>
@@ -2204,23 +2216,26 @@ stop();]]></script>
                     <Point x="6.65" y="4.6"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(press){
+                    <script><![CDATA[on (press) {
 	//军阀
-	this.军阀._visible = 1;
-	
-	this.军阀基地._alpha = 100;
-	this.军阀帐篷._alpha = 100;
-	this.靶场._alpha = 100;
-	this.军阀基地._visible = 1;
-	this.军阀帐篷._visible = 1;
-	this.靶场._visible = 1;
-	this.general头像._alpha = 100;
-	this.gazer头像._alpha = 100;
-	this.itinerant头像._alpha = 100;
-	this.suveyor头像._alpha = 100;
-	this.director头像._alpha = 100;
-	
-	this.军阀可选 = true;
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this.军阀._visible = 1;
+
+		this.军阀基地._alpha = 100;
+		this.军阀帐篷._alpha = 100;
+		this.靶场._alpha = 100;
+		this.军阀基地._visible = 1;
+		this.军阀帐篷._visible = 1;
+		this.靶场._visible = 1;
+		this.general头像._alpha = 100;
+		this.gazer头像._alpha = 100;
+		this.itinerant头像._alpha = 100;
+		this.suveyor头像._alpha = 100;
+		this.director头像._alpha = 100;
+
+		this.军阀可选 = true;
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -2232,23 +2247,26 @@ stop();]]></script>
                     <Point x="6.65" y="4.6"/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[on(press){
+                    <script><![CDATA[on (press) {
 	//军阀
-	this.军阀._visible = 1;
-	
-	this.军阀基地._alpha = 50;
-	this.军阀帐篷._alpha = 50;
-	this.靶场._alpha = 50;
-	this.军阀基地._visible = 1;
-	this.军阀帐篷._visible = 1;
-	this.靶场._visible = 1;
-	this.general头像._alpha = 30;
-	this.gazer头像._alpha = 30;
-	this.itinerant头像._alpha = 30;
-	this.suveyor头像._alpha = 30;
-	this.director头像._alpha = 30;
-	
-	this.军阀可选 = false;
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this.军阀._visible = 1;
+
+		this.军阀基地._alpha = 50;
+		this.军阀帐篷._alpha = 50;
+		this.靶场._alpha = 50;
+		this.军阀基地._visible = 1;
+		this.军阀帐篷._visible = 1;
+		this.靶场._visible = 1;
+		this.general头像._alpha = 30;
+		this.gazer头像._alpha = 30;
+		this.itinerant头像._alpha = 30;
+		this.suveyor头像._alpha = 30;
+		this.director头像._alpha = 30;
+
+		this.军阀可选 = false;
+	}
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -3202,8 +3220,8 @@ onClipEvent (load) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="军阀" color="#FF800A" autoNamed="false" open="false" layerType="folder"/>
-        <DOMLayer name="军阀npc" color="#808080" parentLayerIndex="37" locked="true" autoNamed="false">
+        <DOMLayer name="军阀" color="#FF800A" autoNamed="false" layerType="folder"/>
+        <DOMLayer name="军阀npc" color="#808080" parentLayerIndex="37" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -3217,6 +3235,18 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="general头像" name="general头像" centerPoint3DX="294.6" centerPoint3DY="181.95" exportAsBitmap="true">
                   <matrix>
@@ -3225,6 +3255,18 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="director头像" name="director头像" centerPoint3DX="234.45" centerPoint3DY="127.25" exportAsBitmap="true">
                   <matrix>
@@ -3233,6 +3275,18 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="surveyor头像" name="surveyor头像" centerPoint3DX="305.95" centerPoint3DY="281.95" exportAsBitmap="true">
                   <matrix>
@@ -3241,6 +3295,18 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="itinerant头像" name="itinerant头像" centerPoint3DX="176.6" centerPoint3DY="327.7" exportAsBitmap="true">
                   <matrix>
@@ -3249,20 +3315,24 @@ onClipEvent (load) {
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
-                </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 2157" name="Pig_闪光提示" centerPoint3DX="147.4" centerPoint3DY="305.45" isVisible="false">
-                  <matrix>
-                    <Matrix a="1.27279663085938" d="1.27279663085938" tx="111.5" ty="269.9"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
+                  </Actionscript>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="闪光" color="#4F80FF" parentLayerIndex="37" locked="true" autoNamed="false">
+        <DOMLayer name="闪光" color="#4F80FF" parentLayerIndex="37" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
@@ -3318,7 +3388,7 @@ onClipEvent (load) {
             <DOMFrame index="0" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="3" duration="2" keyMode="9728">
+            <DOMFrame index="3" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="军阀基地土地" name="军阀基地" centerPoint3DX="235.45" centerPoint3DY="177.75">
                   <matrix>
@@ -3329,18 +3399,26 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
+
 	if (_parent.军阀可选 == true)
 	{
 		_root.关卡结束界面._visible = 0;
 		_root.场景进入位置名 = "出生地";
-		_root.淡出动画.淡出跳转帧("军阀基地");
+		_root.淡出动画.淡出跳转帧("地图-军阀基地");
 		_parent.gotoAndStop(1);
 	}
 }
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
-}
-]]></script>
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -3355,26 +3433,34 @@ onClipEvent (load) {
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
+
 	if (_parent.军阀可选 == true)
 	{
 		_root.关卡结束界面._visible = 0;
 		_root.场景进入位置名 = "出生地";
-		_root.淡出动画.淡出跳转帧("军阀帐篷");
+		_root.淡出动画.淡出跳转帧("地图-军阀帐篷");
 		_parent.gotoAndStop(1);
 	}
 }
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
-}
-]]></script>
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="靶场" name="靶场" centerPoint3DX="233.45" centerPoint3DY="290.35">
+                <DOMSymbolInstance libraryItemName="靶场" name="靶场" centerPoint3DX="233.45" centerPoint3DY="297.35">
                   <matrix>
-                    <Matrix a="0.371780395507813" d="0.371780395507813" tx="89.65" ty="208.6"/>
+                    <Matrix a="0.371780395507813" d="0.371780395507813" tx="89.65" ty="215.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="386.8" y="219.75"/>
@@ -3385,14 +3471,21 @@ onClipEvent (load) {
 	{
 		_root.关卡结束界面._visible = 0;
 		_root.场景进入位置名 = "出生地";
-		_root.淡出动画.淡出跳转帧("靶场");
+		_root.淡出动画.淡出跳转帧("地图-靶场");
 		_parent.gotoAndStop(1);
 	}
 }
 onClipEvent (load) {
 	显示文字 = _root.获得翻译("");
-}
-]]></script>
+	if (_root.task_chains_progress.主线 and _root.task_chains_progress.主线 >= 75)
+	{
+		this._visible = 1;
+	}
+	else
+	{
+		this._visible = 0;
+	}
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter brightness="-30"/>
@@ -3409,7 +3502,7 @@ onClipEvent (load) {
             </DOMFrame>
             <DOMFrame index="1" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="背景" selected="true" centerPoint3DX="512.05" centerPoint3DY="289.05">
+                <DOMSymbolInstance libraryItemName="背景" centerPoint3DX="512.05" centerPoint3DY="289.05">
                   <matrix>
                     <Matrix tx="0.1" ty="-1.45"/>
                   </matrix>
