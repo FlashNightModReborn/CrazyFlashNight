@@ -193,86 +193,104 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             self.子弹属性 = ShootInitCore.generateBulletProps(parentRef, config.weaponType, weaponData, extraParams);
         }
     }
-    
+
     /**
      * 生成子弹属性对象（原 _生成子弹属性 函数）
+     * 保证功能不变的前提下对性能及代码结构进行了优化
      */
     public static function generateBulletProps(parentRef:Object, weaponType:String, weaponData:Array, extraParams:Object):Object {
-        var bulletProps:Object = new Object();
+        var bulletProps:Object = {};
+
+        // 缓存常用的对象属性，减少重复查找
+        var passiveSkills:Object = parentRef.被动技能;
+        var isEnemy:Boolean = Boolean(parentRef.是否为敌人);
+        
+        // 预生成武器类型判断结果
+        var isLongGun:Boolean = (weaponType == "长枪");
+        var isPistol:Boolean = (weaponType == "手枪" || weaponType == "手枪2");
+
+        // 缓存 weaponData 数组中各个关键数据，使用具名属性提高可读性
+        var wd:Object = {
+            霰弹值:         weaponData[1],
+            子弹散射度:     weaponData[2],
+            声音:           weaponData[8],
+            发射效果:       weaponData[9],
+            子弹种类:       weaponData[7],
+            子弹速度:       weaponData[6],
+            击中地图效果:   weaponData[10],
+            子弹威力Base:   weaponData[13],
+            Z轴攻击范围:    weaponData[12],
+            击倒率:        weaponData[14],
+            击中后子弹效果: weaponData[15]
+        };
+
+        // 设置基础属性
         bulletProps.发射者 = parentRef._name;
-        bulletProps.声音   = weaponData[8];
-        
-        bulletProps.霰弹值         = weaponData[1];
-        bulletProps.子弹散射度     = weaponData[2];
-        bulletProps.站立子弹散射度 = weaponData[2];
-        var 移动射击等级:Number = (parentRef.被动技能.移动射击 && parentRef.被动技能.移动射击.启用 && parentRef.被动技能.移动射击.等级)
-                                   ? parentRef.被动技能.移动射击.等级 : 0;
-        bulletProps.移动子弹散射度 = weaponData[2] + 10 - (移动射击等级 * 1);
-        
-        bulletProps.发射效果         = weaponData[9];
-        bulletProps.子弹种类         = weaponData[7];
-        bulletProps.子弹速度         = weaponData[6];
-        bulletProps.击中地图效果     = weaponData[10];
-        bulletProps.Z轴攻击范围      = weaponData[12];
-        bulletProps.击倒率           = weaponData[14];
-        bulletProps.击中后子弹的效果 = weaponData[15];
-        bulletProps.子弹敌我属性     = !parentRef.是否为敌人;
-        
-        var basePower:Number  = weaponData[13];
+        bulletProps.声音   = wd.声音;
+        bulletProps.霰弹值 = wd.霰弹值;
+        bulletProps.子弹散射度 = wd.子弹散射度;
+        bulletProps.站立子弹散射度 = wd.子弹散射度;
+
+        // 计算移动射击等级（如果启用则取等级，否则为0）
+        var 移动射击等级:Number = (passiveSkills.移动射击 && passiveSkills.移动射击.启用 && passiveSkills.移动射击.等级)
+                                ? passiveSkills.移动射击.等级 : 0;
+        bulletProps.移动子弹散射度 = wd.子弹散射度 + 10 - 移动射击等级;
+
+        bulletProps.发射效果       = wd.发射效果;
+        bulletProps.子弹种类       = wd.子弹种类;
+        bulletProps.子弹速度       = wd.子弹速度;
+        bulletProps.击中地图效果   = wd.击中地图效果;
+        bulletProps.Z轴攻击范围    = wd.Z轴攻击范围;
+        bulletProps.击倒率         = wd.击倒率;
+        bulletProps.击中后子弹的效果 = wd.击中后子弹效果;
+        bulletProps.子弹敌我属性   = !isEnemy;
+
+        // 计算子弹威力（基于枪械攻击被动技能及额外攻击加成）
+        var basePower:Number  = wd.子弹威力Base;
         var finalPower:Number = basePower;
-        if (parentRef.被动技能.枪械攻击 && parentRef.被动技能.枪械攻击.启用) {
-            if (weaponType == "长枪") {
-                finalPower = basePower * (1.5 + parentRef.被动技能.枪械攻击.等级 * 0.03) + 30;
+        if (passiveSkills.枪械攻击 && passiveSkills.枪械攻击.启用) {
+            var attackLevel:Number = passiveSkills.枪械攻击.等级;
+            if (isLongGun) {
+                finalPower = basePower * (1.5 + attackLevel * 0.03) + 30;
             } else {
-                finalPower = basePower * (1 + parentRef.被动技能.枪械攻击.等级 * 0.015) + 20;
+                finalPower = basePower * (1 + attackLevel * 0.015) + 20;
             }
         }
-        if (weaponType == "长枪" && parentRef.长枪额外攻击加成倍率) {
+        if (isLongGun && parentRef.长枪额外攻击加成倍率) {
             finalPower += basePower * parentRef.长枪额外攻击加成倍率;
         }
-        if ((weaponType == "手枪" || weaponType == "手枪2") && parentRef.短枪额外攻击加成倍率) {
+        if (isPistol && parentRef.短枪额外攻击加成倍率) {
             finalPower += basePower * parentRef.短枪额外攻击加成倍率;
         }
         bulletProps.子弹威力 = finalPower;
-        
-        if (extraParams.伤害类型) {
-            bulletProps.伤害类型 = extraParams.伤害类型;
-        } else if (parentRef[weaponType + "伤害类型"]) {
-            bulletProps.伤害类型 = parentRef[weaponType + "伤害类型"];
+
+        // 处理动态参数：伤害类型、魔法伤害属性、毒、吸血、击溃（击溃对应 bulletProps.血量上限击溃）
+        var optionalKeys:Array = ["伤害类型", "魔法伤害属性", "毒", "吸血", "击溃"];
+        for (var i:Number = 0; i < optionalKeys.length; i++) {
+            var key:String = optionalKeys[i];
+            var targetKey:String = (key == "击溃") ? "血量上限击溃" : key;
+            if (extraParams[key]) {
+                bulletProps[targetKey] = extraParams[key];
+            } else if (parentRef[weaponType + key]) {
+                bulletProps[targetKey] = parentRef[weaponType + key];
+            }
         }
-        if (extraParams.魔法伤害属性) {
-            bulletProps.魔法伤害属性 = extraParams.魔法伤害属性;
-        } else if (parentRef[weaponType + "魔法伤害属性"]) {
-            bulletProps.魔法伤害属性 = parentRef[weaponType + "魔法伤害属性"];
-        }
-        if (extraParams.毒) {
-            bulletProps.毒 = extraParams.毒;
-        } else if (parentRef[weaponType + "毒"]) {
-            bulletProps.毒 = parentRef[weaponType + "毒"];
-        }
-        if (extraParams.吸血) {
-            bulletProps.吸血 = extraParams.吸血;
-        } else if (parentRef[weaponType + "吸血"]) {
-            bulletProps.吸血 = parentRef[weaponType + "吸血"];
-        }
-        if (extraParams.击溃) {
-            bulletProps.血量上限击溃 = extraParams.击溃;
-        } else if (parentRef[weaponType + "击溃"]) {
-            bulletProps.血量上限击溃 = parentRef[weaponType + "击溃"];
-        }
-        
+
+        // 处理暴击逻辑，使用严格检查以确保不漏掉 false 以外的有效值
         var critValue:Object = (extraParams.暴击 !== undefined) ? extraParams.暴击 : parentRef[weaponType + "暴击"];
         if (critValue) {
             bulletProps.暴击 = ShootInitCore.createCritLogic(critValue);
         }
-        
+
+        // 处理斩杀属性，确保数值有效后转换为 Number
         var killValue:Object = (extraParams.斩杀 !== undefined) ? extraParams.斩杀 : parentRef[weaponType + "斩杀"];
         if (killValue && !isNaN(Number(killValue))) {
             bulletProps.斩杀 = Number(killValue);
         }
-        
+
         return bulletProps;
     }
+
     
     /**
      * 根据暴击参数生成暴击判断函数
