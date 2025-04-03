@@ -2688,6 +2688,36 @@
       <evasion>-5</evasion>
     </equipped>
   </item>
+    <item>
+    <id>8066</id>
+    <name>兰博2</name>
+    <displayname>RAMBO II</displayname>
+    <icon>兰博2</icon>
+    <type>武器</type>
+    <use>刀</use>
+    <actiontype>短兵</actiontype>
+    <weight>2</weight>
+    <price>95000</price>
+	 <skill>
+      <skillname>暴走</skillname>
+      <description>手持该武器时可以使用暴走。</description>
+      <cd>60000</cd>
+      <mp>200</mp>
+    </skill>
+    <description>一把饱经风霜的匕首，根据外观可知其原型为上世纪A国动作电影《RAMBO II》中主角使用的生存刀。
+	在二十一世纪初，尘都ZF为了解决日益严重的治安与DEATH MATCH带来的公共危害而建立了特别治安队。考虑到持械武装份子数量的增多，特别治安队的任务不能局限于镇压目标，需要在必要时刻持有短距离致命武器以应对可能的袭击。因此出于任务和威慑需要，尘都ZF向当地重工集团定制了一批以生存刀为基础的作战刀具，并广泛地配备给特别治安队使用。
+	与原型不同的是，这些刀具为了实用功能而大幅更改了原有设计。刀柄不再具有容纳功能，但可拆卸的指南针得到了保留。
+	在审判日来临之后，这些刀具也流落到尘都各区幸存者的手中，继续着其在“局部斗争”中的服役。</description>
+    <level>15</level>
+    <data>
+      <power>150</power>
+    </data>
+    <equipped>
+      <dressup>刀-兰博2</dressup>
+      <evasion>5</evasion>
+	  <criticalhit>10</criticalhit>
+    </equipped>
+  </item>
   <item>
     <id>636</id>
     <name>狼的末路</name>
