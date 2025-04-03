@@ -112,11 +112,16 @@ _root.敌人函数.方向改变 = function(新方向){
 	}
 };
 
-_root.敌人函数.状态改变 = function(新状态名){
-	旧状态 = 状态;//记录上一个状态名
-	this.状态 = 新状态名;
-	this.gotoAndStop(新状态名);
+_root.敌人函数.状态改变 = function(新状态名) {
+	if (this.状态 == 新状态名) {
+		// 已经处于该状态，跳过
+		return;
+	}
+	
+	// this.旧状态 = this.状态; // 记录上一个状态名
+	this.gotoAndStop(this.状态 = 新状态名);
 };
+
 
 _root.敌人函数.动画完毕 = function(){
 	if(hp <= 0){
