@@ -35,6 +35,7 @@
           <DOMFolderItem name="特效与子弹" itemID="65f92982-00002729"/>
           <DOMFolderItem name="图标" itemID="65f7d9b3-00002227"/>
           <DOMFolderItem name="未命名文件夹 1" itemID="65f4585a-0000012b"/>
+          <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="重复项目文件夹" itemID="66588745-00005c94"/>
           <DOMFolderItem name="重复项目文件夹1" itemID="665870f4-00002035"/>
           <DOMFolderItem name="重复项目文件夹1/ARMS指挥官" itemID="66588745-00005c66"/>
@@ -329,18 +330,24 @@
           <Include href="枪-手枪-FKBRNO.xml" itemID="66a4c9b9-00000556" lastModified="1722085366"/>
           <Include href="枪-手枪-FR506.xml" itemID="65f841ec-0000274c" lastModified="1718608979"/>
           <Include href="枪-手枪-Glock40.xml" itemID="66a4c506-000004d9" lastModified="1722085340"/>
+          <Include href="枪-手枪-MP5A3.xml" itemID="67dc0610-0000023e" lastModified="1742554378"/>
           <Include href="枪-手枪-N99.xml" itemID="66a4c70b-00000500" lastModified="1722085325"/>
           <Include href="枪-手枪-OPDW17.xml" itemID="65f81a2c-00000472" lastModified="1710759402"/>
           <Include href="枪-手枪-SIGP210.xml" itemID="66a4c9c8-00000557" lastModified="1722085314"/>
           <Include href="枪-手枪-SIGP220Elite.xml" itemID="66a4c9d1-00000558" lastModified="1722085296"/>
           <Include href="枪-手枪-T181S.xml" itemID="65f83eea-0000261e" lastModified="1710814385"/>
-          <Include href="枪-手枪-短HK53.xml" itemID="65f81eb8-00000803" lastModified="1710760327"/>
+          <Include href="枪-手枪-短HK53.xml" itemID="65f81eb8-00000803" lastModified="1742554382"/>
           <Include href="枪-手枪-无枪托ZUX197.xml" itemID="666eee2b-0000126d" lastModified="1718545963"/>
           <Include href="枪-长枪-061ABSR.xml" itemID="666eeeab-00001292" lastModified="1718551630"/>
-          <Include href="枪-长枪-HK53.xml" itemID="65f81ee5-00000804" lastModified="1718551599"/>
+          <Include href="枪-长枪-FAMAS.xml" itemID="67dcfe7c-00000546" lastModified="1742554288"/>
+          <Include href="枪-长枪-HK33KA3.xml" itemID="67dd3c79-00000639" lastModified="1742554366"/>
+          <Include href="枪-长枪-HK53.xml" itemID="65f81ee5-00000804" lastModified="1742554344"/>
           <Include href="枪-长枪-HSR10S.xml" itemID="65f902fa-000002ac" lastModified="1710818310"/>
           <Include href="枪-长枪-M1915Chauchat.xml" itemID="66a4c8c4-00000534" lastModified="1722075378"/>
           <Include href="枪-长枪-MMP80.xml" itemID="666eeef0-000012a0" lastModified="1718546200"/>
+          <Include href="枪-长枪-MP5A3.xml" itemID="67dc0605-0000023d" lastModified="1742554354"/>
+          <Include href="枪-长枪-Scout.xml" itemID="67dc0a06-00001616" lastModified="1742539123"/>
+          <Include href="枪-长枪-Scout10.xml" itemID="67dd0cee-00000569" lastModified="1742540476"/>
           <Include href="枪-长枪-T181.xml" itemID="65f82668-00000851" lastModified="1710814367"/>
           <Include href="枪-长枪-T181C.xml" itemID="65f83ecf-0000261d" lastModified="1710814381"/>
           <Include href="枪-长枪-ZUX197.xml" itemID="666eed59-00001250" lastModified="1718545854"/>
@@ -373,13 +380,19 @@
           <Include href="图标-ASSKICKER.xml" itemID="666ef4ee-000013be" lastModified="1718609036"/>
           <Include href="图标-Beretta90TWO.xml" itemID="66a4cbca-000005f5" lastModified="1722076139"/>
           <Include href="图标-BergmannM1910.xml" itemID="66a4cb69-000005dd" lastModified="1722076077"/>
+          <Include href="图标-FAMAS.xml" itemID="67dd33d1-0000062b" lastModified="1742550021"/>
           <Include href="图标-FKBRNO.xml" itemID="66a4cb34-000005c5" lastModified="1722075981"/>
           <Include href="图标-Glock40.xml" itemID="66a4cb02-000005ad" lastModified="1722075936"/>
+          <Include href="图标-HK33KA3.xml" itemID="67dd3c5f-00000638" lastModified="1742552167"/>
           <Include href="图标-M1915Chauchat.xml" itemID="66a4c968-00000549" lastModified="1722075553"/>
           <Include href="图标-MMP80.xml" itemID="666ef4c2-000013b0" lastModified="1718609032"/>
+          <Include href="图标-MP5A3.xml" itemID="67dd331c-000005fb" lastModified="1742549845"/>
           <Include href="图标-N99.xml" itemID="66a4caad-00000595" lastModified="1722075883"/>
           <Include href="图标-SIGP210.xml" itemID="66a4ca03-00000565" lastModified="1722075687"/>
           <Include href="图标-SIGP220Elite.xml" itemID="66a4ca50-0000057d" lastModified="1722075767"/>
+          <Include href="图标-SMP5A3.xml" itemID="67dd3375-00000613" lastModified="1742549928"/>
+          <Include href="图标-SteyrScout.xml" itemID="67dd31c0-000005ae" lastModified="1742549670"/>
+          <Include href="图标-SteyrScout10.xml" itemID="67dd3248-000005c9" lastModified="1742549626"/>
           <Include href="图标-ZUX197.xml" itemID="666ef3d3-00001386" lastModified="1718609028"/>
           <Include href="图标-试作型原种共生上装.xml" itemID="666b0316-0000083c" lastModified="1718609025"/>
           <Include href="图标-试作型原种共生手套.xml" itemID="666afd97-00000570" lastModified="1718609020"/>
@@ -388,14 +401,14 @@
           <Include href="图标-试作型原种共生鞋.xml" itemID="666afdd9-0000057c" lastModified="1718609005"/>
           <Include href="图标-无枪托ZUX197.xml" itemID="666ef411-00001394" lastModified="1718608999"/>
           <Include href="图标/fr506图标.xml" itemID="65f842bd-00002766" lastModified="1714667498"/>
-          <Include href="图标/hk53图标.xml" itemID="65f822f3-00000849" lastModified="1714665825"/>
+          <Include href="图标/hk53图标.xml" itemID="65f822f3-00000849" lastModified="1743662949"/>
           <Include href="图标/hsr10s图标.xml" itemID="65f9041a-000002e0" lastModified="1714665810"/>
           <Include href="图标/opdw图标.xml" itemID="65f7d720-00002220" lastModified="1714665779"/>
           <Include href="图标/t181C图标.xml" itemID="65f83ff0-00002660" lastModified="1714665643"/>
           <Include href="图标/t181S图标.xml" itemID="65f83fe9-0000265f" lastModified="1714665652"/>
           <Include href="图标/t181图标.xml" itemID="65f826de-00000866" lastModified="1714665636"/>
           <Include href="图标/X的归还图标.xml" itemID="65feb84d-00000388" lastModified="1714665522"/>
-          <Include href="图标/短hk53图标.xml" itemID="65f820c3-0000082e" lastModified="1718608993"/>
+          <Include href="图标/短hk53图标.xml" itemID="65f820c3-0000082e" lastModified="1743663033"/>
           <Include href="图标/天使铳的子弹图标.xml" itemID="65f84a4d-00002a3e" lastModified="1714665472"/>
           <Include href="图标/天使铳图标.xml" itemID="65f8469d-00002813" lastModified="1714665490"/>
           <Include href="图标/图标-Z军刀.xml" itemID="66745018-000009dc" lastModified="1718899402"/>
@@ -430,6 +443,8 @@
           <Include href="未命名文件夹 1/T181R.xml" loadImmediate="false" itemID="65f8f2dd-00000200" lastModified="1710813917"/>
           <Include href="未命名文件夹 1/夜行侦察鞋.xml" loadImmediate="false" itemID="65fd1047-000024fb" lastModified="1711083591"/>
           <Include href="未命名文件夹 1/周波剑.xml" loadImmediate="false" itemID="65f991ca-00002637" lastModified="1710854644"/>
+          <Include href="无AS链接/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005be" lastModified="1720533000"/>
+          <Include href="无AS链接/Symbol 13.xml" loadImmediate="false" itemID="668e7c1e-000005bf" lastModified="1720533000"/>
           <Include href="阴影.xml" loadImmediate="false" itemID="65ab9909-000003b3" lastModified="1705744649"/>
           <Include href="元件 1.xml" loadImmediate="false" itemID="6653d143-000001ea" lastModified="1716769091"/>
           <Include href="元件 2.xml" loadImmediate="false" itemID="66541b57-000006cc" lastModified="1716790445"/>
