@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标-SteyrScout10" itemID="67dd3248-000005c9" linkageExportForAS="true" linkageIdentifier="图标-SteyrScout10" lastModified="1742549626" lastUniqueIdentifier="16">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="图标-SteyrScout10" itemID="67dd3248-000005c9" linkageExportForAS="true" linkageIdentifier="图标-SteyrScout10" lastModified="1743665164" lastUniqueIdentifier="16">
   <timeline>
-    <DOMTimeline name="图标-SteyrScout10" currentFrame="1">
+    <DOMTimeline name="图标-SteyrScout10">
       <layers>
         <DOMLayer name="Script Layer" color="#F707E4" locked="true">
           <frames>
@@ -33,12 +33,12 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="枪-长枪-Scout10" centerPoint3DX="4.6" centerPoint3DY="3.25">
+                <DOMSymbolInstance libraryItemName="枪-长枪-Scout10" centerPoint3DX="5.85" centerPoint3DY="6.4">
                   <matrix>
-                    <Matrix a="0.142547607421875" b="0.1121826171875" c="-0.1121826171875" d="0.142547607421875" tx="-8.3" ty="-3"/>
+                    <Matrix a="0.194580078125" b="0.15313720703125" c="-0.15313720703125" d="0.194580078125" tx="-11.7" ty="-2.05"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="75.5" y="-17.7"/>
+                    <Point x="75.7" y="-17.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
