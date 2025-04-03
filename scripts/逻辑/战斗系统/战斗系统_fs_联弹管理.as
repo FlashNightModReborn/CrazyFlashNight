@@ -282,16 +282,28 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
         }
 
 		if(x_update) {
+            var globalDeltaX:Number = parentX - originalX;
+            var globalDeltaY:Number = parentY - originalY;
+
+            // 将全局位移转换到父MC的局部坐标系
+            var rad:Number = parentMC._rotation * Math.PI / 180;
+            var cosVal:Number = Math.cos(rad);
+            var sinVal:Number = Math.sin(rad);
+
+            var localDeltaX:Number = globalDeltaX * cosVal + globalDeltaY * sinVal;
+            var localDeltaY:Number = -globalDeltaX * sinVal + globalDeltaY * cosVal;
+
             var newUnit:MovieClip = _root.创建单元体(parentMC, this.子弹种类);
             newUnit._rotation = _root.随机偏移(parentMC.子弹散射度);
-            // 新创建子弹的位置：基于父对象与原始坐标的差值，加上随机偏移
-            newUnit._x += deltaX + _root.随机偏移(parentMC.子弹散射度 + countTotal + this.count);
-            newUnit._y += deltaY;
+            
+            // 直接在局部坐标系添加偏移（已包含旋转因素）
+            newUnit._x += directionalCoefficient * localDeltaX + _root.随机偏移(parentMC.子弹散射度 + countTotal + this.count);
+            newUnit._y += localDeltaY;
+            
             this.单元体列表.push(newUnit);
-            // 重置父对象位置为初始值
             parentMC._x = originalX;
             parentMC._y = originalY;
-			this.count++;
+            this.count++;
 		}
         
         // 更新当前 clip 的碰撞箱，使其与所有子弹的视觉位置相符
