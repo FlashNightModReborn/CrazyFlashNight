@@ -1,0 +1,1 @@
+var tester:org.flashNight.naki.DataStructures.TestAdjacencyListGraph = new org.flashNight.naki.DataStructures.TestAdjacencyListGraph();

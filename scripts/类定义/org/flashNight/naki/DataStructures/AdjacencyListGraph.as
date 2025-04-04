@@ -11,6 +11,23 @@
         this.isDirected = isDirected;
     }
 
+    private function _addDirectedEdge(u:Object, v:Object):Void {
+        var keyU:String = String(u);
+        var keyV:String = String(v);
+
+        // ensure the vertices exist
+        this.addVertex(keyU);
+        this.addVertex(keyV);
+
+        // add the edge
+        this.adjacencyList[keyU].push(keyV);
+
+        // if undirected, also add the reverse
+        if (!this.isDirected) {
+            this.adjacencyList[keyV].push(keyU);
+        }
+    }
+
     /**
      * 添加顶点
      * @param vertex 顶点名称（字符串或数字）
@@ -21,6 +38,7 @@
             this.adjacencyList[key] = [];
         }
     }
+    
 
     /**
      * 添加边
@@ -64,8 +82,8 @@
             }
         }
 
-        // 如果是无向图，且成功移除 u 到 v 的边，则移除 v 到 u 的边
-        if (!this.isDirected && removed) {
+        // 如果是无向图且 u 和 v 不相同，并且成功移除 u 到 v 的边，则移除 v 到 u 的边
+        if (!this.isDirected && removed && keyU != keyV) {
             if (this.adjacencyList.hasOwnProperty(keyV)) {
                 var reverseIndex:Number = this.arrayIndexOf(this.adjacencyList[keyV], keyU);
                 if (reverseIndex != -1) {
@@ -74,7 +92,6 @@
             }
         }
 
-        // 如果没有成功移除边，则返回 false
         return removed;
     }
 

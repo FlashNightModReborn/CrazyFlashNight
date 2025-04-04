@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.unit.Action.Shoot.*;
+import org.flashNight.arki.item.*;
 
 _root.主角函数.开始射击 = function(){
 	var 攻击模式 = _parent.攻击模式;
@@ -79,18 +80,58 @@ _root.主角函数.结束换弹 = function(){
 }
 
 _root.主角函数.刷新弹匣数显示 = function(){
-	if(_root.控制目标 != _parent._name) return;
-	var 攻击模式 = _parent.攻击模式;
-	if(攻击模式 === "双枪"){
-		_root.玩家信息界面.玩家必要信息界面.子弹数 = _parent.手枪弹匣容量 - _parent.手枪射击次数[_parent.手枪];
-		_root.玩家信息界面.玩家必要信息界面.弹夹数 = 主手剩余弹匣数;
-		_root.玩家信息界面.玩家必要信息界面.子弹数_2 = _parent.手枪2弹匣容量 - _parent.手枪2射击次数[_parent.手枪2];
-		_root.玩家信息界面.玩家必要信息界面.弹夹数_2 = 副手剩余弹匣数;
-	}else{
-		_root.玩家信息界面.玩家必要信息界面.子弹数 = _parent[攻击模式 + "弹匣容量"] - _parent[攻击模式 + "射击次数"][_parent[攻击模式]];
-		_root.玩家信息界面.玩家必要信息界面.弹夹数 = 剩余弹匣数;
-	}
-}
+    // 如果控制目标不匹配，则直接返回
+    if (_root.控制目标 != _parent._name) return;
+    
+    // 缓存UI引用
+    var ui = _root.玩家信息界面.玩家必要信息界面;
+    var mode = _parent.攻击模式;
+    var weapons = [];
+    
+    // 构造武器配置：每个对象包含武器实例、弹匣容量、已射击次数（预先计算好）、UI对应字段和剩余弹匣数
+    if(mode === "双枪"){
+        weapons.push({
+            weapon: _parent.手枪,
+            capacity: _parent.手枪弹匣容量,
+            shot: _parent.手枪射击次数[_parent.手枪],
+            uiBullet: "子弹数",
+            uiMag: "弹夹数",
+            magCount: 主手剩余弹匣数
+        });
+        weapons.push({
+            weapon: _parent.手枪2,
+            capacity: _parent.手枪2弹匣容量,
+            shot: _parent.手枪2射击次数[_parent.手枪2],
+            uiBullet: "子弹数_2",
+            uiMag: "弹夹数_2",
+            magCount: 副手剩余弹匣数
+        });
+    } else {
+        // 单武器情况：注意这里“射击次数”是个对象，需要预先取出正确的值
+        var singleShot = _parent[mode + "射击次数"][_parent[mode]];
+        weapons.push({
+            weapon: _parent.长枪,
+            capacity: _parent[mode + "弹匣容量"],
+            shot: singleShot,
+            uiBullet: "子弹数",
+            uiMag: "弹夹数",
+            magCount: 剩余弹匣数
+        });
+    }
+    
+    // 统一遍历每个武器配置，计算剩余子弹数并更新UI
+    for(var i = 0; i < weapons.length; i++){
+        var w = weapons[i];
+        var data = ItemUtil.getRawItemData(w.weapon);
+        // 根据bullet属性判断是否需要拆分计算
+        var cost = (data.data.bullet.indexOf("纵向") >= 0) ? data.data.split : 1;
+        var remaining = w.capacity - w.shot;
+        
+        ui[w.uiBullet] = cost * remaining;
+        ui[w.uiMag] = w.magCount;
+    }
+};
+
 
 
 // 初始化长枪射击函数

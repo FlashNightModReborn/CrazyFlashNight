@@ -738,12 +738,12 @@
     <description>格洛克18是由格洛克公司设计及生产的全自动手枪。格洛克18的标准弹匣为17发，亦有31或33发的大容量弹匣，但大容量弹匣少有普及。</description>
     <level>50</level>
     <data>
-      <capacity>100</capacity>
-      <split>1</split>
+      <capacity>25</capacity>
+      <split>4</split>
       <diffusion>7</diffusion>
-      <interval>40</interval>
+      <interval>150</interval>
       <velocity>40</velocity>
-      <bullet>加强普通子弹</bullet>
+      <bullet>纵向手枪联弹-加强普通子弹</bullet>
       <sound>re_SMG_mp5_sil.wav</sound>
       <muzzle>枪火</muzzle>
       <bullethit>火花</bullethit>

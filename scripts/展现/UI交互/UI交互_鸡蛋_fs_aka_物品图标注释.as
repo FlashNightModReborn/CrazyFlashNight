@@ -56,7 +56,9 @@ _root.物品图标注释 = function(name, value){
 			}
 			文本数据.push("<BR>");
 			文本数据.push("弹夹容量：");
-			文本数据.push(物品数据.data.capacity);
+			var magazineCapacity:Number = (物品数据.data.bullet.indexOf("纵向") >= 0) ? 物品数据.data.split : 1;
+
+			文本数据.push(物品数据.data.capacity * magazineCapacity);
 			文本数据.push("<BR>");
 			文本数据.push("子弹威力：");
 			文本数据.push(物品数据.data.power);
@@ -68,7 +70,7 @@ _root.物品图标注释 = function(name, value){
 				文本数据.push("<BR>");
 			}
 			文本数据.push("射速：");
-			文本数据.push(Math.floor(10000 / 物品数据.data.interval) * 0.1);
+			文本数据.push(Math.floor(10000 / 物品数据.data.interval) * 0.1 * magazineCapacity);
 			文本数据.push("发/秒<BR>");
 			文本数据.push("冲击力：" + Math.floor(500 / 物品数据.data.impact));
 			文本数据.push("<BR>");
