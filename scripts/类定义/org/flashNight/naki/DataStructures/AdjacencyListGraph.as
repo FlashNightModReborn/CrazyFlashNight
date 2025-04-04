@@ -64,8 +64,8 @@
             }
         }
 
-        // 如果是无向图，且成功移除 u 到 v 的边，则移除 v 到 u 的边
-        if (!this.isDirected && removed) {
+        // 如果是无向图且 u 和 v 不相同，并且成功移除 u 到 v 的边，则移除 v 到 u 的边
+        if (!this.isDirected && removed && keyU != keyV) {
             if (this.adjacencyList.hasOwnProperty(keyV)) {
                 var reverseIndex:Number = this.arrayIndexOf(this.adjacencyList[keyV], keyU);
                 if (reverseIndex != -1) {
@@ -74,7 +74,6 @@
             }
         }
 
-        // 如果没有成功移除边，则返回 false
         return removed;
     }
 
