@@ -60,6 +60,8 @@ class org.flashNight.naki.DataStructures.DAG extends org.flashNight.naki.DataStr
         return keys;
     }
 
+
+
     /**
      * 拓扑排序（Kahn算法实现）
      * @return 拓扑排序结果数组，若存在环返回null
@@ -155,18 +157,24 @@ class org.flashNight.naki.DataStructures.DAG extends org.flashNight.naki.DataStr
     public function findAllPaths(u:Object, v:Object):Array {
         var start:String = String(u);
         var end:String = String(v);
+
         var visited:Object = {};
         var paths:Array = [];
         var currentPath:Array = [];
-        
+
+        // Capture a reference to the DAG instance in a local variable:
+        var self:DAG = this;
+
         function dfs(current:String):Void {
             visited[current] = true;
             currentPath.push(current);
-            
+
             if (current == end) {
+                // We found a path from u to v
                 paths.push(currentPath.slice());
             } else {
-                var neighbors:Array = getNeighbors(current);
+                // Use self.getNeighbors(...) instead of getNeighbors(...)
+                var neighbors:Array = self.getNeighbors(current);
                 for (var i:Number = 0; i < neighbors.length; i++) {
                     var neighbor:String = String(neighbors[i]);
                     if (!visited[neighbor]) {
@@ -174,12 +182,15 @@ class org.flashNight.naki.DataStructures.DAG extends org.flashNight.naki.DataStr
                     }
                 }
             }
-            
+
+            // Backtrack
             currentPath.pop();
             visited[current] = false;
         }
-        
+
+        // Kick off DFS
         dfs(start);
         return paths;
     }
+
 }
