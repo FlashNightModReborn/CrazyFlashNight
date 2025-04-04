@@ -13,6 +13,9 @@ class org.flashNight.arki.task.TaskUtil{
     public static var tasks_of_npc:Object;
     public static var task_texts:Object;
 
+    public static var specialRequirements:Object;
+
+
     public static function getTaskData(index){
         return ObjectUtil.clone(tasks[index]);
     }
@@ -54,7 +57,22 @@ class org.flashNight.arki.task.TaskUtil{
         }
     }
 
-    public static function taskAvailable(index){
+    public static function checkItemRequirements(taskData):Boolean{
+        //目前逻辑为提交物品与持有物品不可兼容，优先判定提交物品
+        if(taskData.finish_submit_items.length > 0 && !containTaskItems(taskData.finish_submit_items)){
+            return false;
+        }else if(taskData.finish_contain_items.length > 0 && !containTaskItems(taskData.finish_contain_items)){
+            return false;
+        }
+        return true;
+    }
+
+    public static function checkSpecialRequirements(taskData):Boolean{
+        var args = taskData.special_requirements;
+        if(args.length > 0){
+            return specialRequirements[args[0]].check(args);
+        }
+        return true;
     }
 
     public static function containTaskItems(items:Array):Boolean{

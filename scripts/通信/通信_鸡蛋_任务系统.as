@@ -83,19 +83,19 @@ _root.GetTask = function(id){
 
 // 原名为taskFinished
 _root.taskCompleteCheck = function(index){
+	_root.任务完成提示._visible = false;
 	var taskData = TaskUtil.getTaskData(_root.tasks_to_do[index].id);
 	var requirements = _root.tasks_to_do[index].requirements;
 	if (requirements.stages.length != 0){
-		_root.任务完成提示._visible = false;
 		return false;
 	}
 
 	//目前逻辑为提交物品与持有物品不可兼容，优先判定提交物品
-	if(taskData.finish_submit_items.length > 0 && !TaskUtil.containTaskItems(taskData.finish_submit_items)){
-		_root.任务完成提示._visible = false;
+	if(!TaskUtil.checkItemRequirements(taskData)){
 		return false;
-	}else if(taskData.finish_contain_items.length > 0 && !TaskUtil.containTaskItems(taskData.finish_contain_items)){
-		_root.任务完成提示._visible = false;
+	}
+	//检查特殊需求
+	if(!TaskUtil.checkSpecialRequirements(taskData)){
 		return false;
 	}
 	_root.任务完成提示._visible = true;
@@ -384,3 +384,35 @@ _root.主线任务进度 = 0;
 
 
 //#func:_root.tesktest()
+
+
+
+// 特殊任务需求
+TaskUtil.specialRequirements = new Object();
+
+TaskUtil.specialRequirements.task = {
+	describe: function(args){
+		return "完成任务【" + TaskUtil.getTaskText(TaskUtil.getTaskData(args[1]).title)+"】";
+	},
+	check:function(args){
+		return _root.isTaskFinished(args[1]);
+	}
+}
+
+TaskUtil.specialRequirements.skill = {
+	describe: function(args){
+		return "技能【" + args[1] + "】达到" + args[2] + "级";
+	},
+	check:function(args){
+		return (_root.根据技能名查找主角技能等级(args[1]) > args[2] - 1);
+	}
+}
+
+TaskUtil.specialRequirements.infrastructure = {
+	describe: function(args){
+		return "基建项目【" + args[1] + "】达到" + args[2] + "级";
+	},
+	check:function(args){
+		return _root.基建系统.检查基建等级(args[1], args[2]);
+	}
+}
