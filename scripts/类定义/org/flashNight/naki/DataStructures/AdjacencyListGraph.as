@@ -11,6 +11,23 @@
         this.isDirected = isDirected;
     }
 
+    private function _addDirectedEdge(u:Object, v:Object):Void {
+        var keyU:String = String(u);
+        var keyV:String = String(v);
+
+        // ensure the vertices exist
+        this.addVertex(keyU);
+        this.addVertex(keyV);
+
+        // add the edge
+        this.adjacencyList[keyU].push(keyV);
+
+        // if undirected, also add the reverse
+        if (!this.isDirected) {
+            this.adjacencyList[keyV].push(keyU);
+        }
+    }
+
     /**
      * 添加顶点
      * @param vertex 顶点名称（字符串或数字）
