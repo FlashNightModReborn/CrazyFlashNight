@@ -15,6 +15,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEven
 
     public static function onKill(target:MovieClip):Void {
         target.状态改变("血腥死");
+        target.aabbCollider.getFactory().releaseCollider(target.aabbCollider);
+        target.aabbCollider = null;
         target.dispatcher.publish("death", target);
     }
 }

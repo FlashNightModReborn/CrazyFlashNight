@@ -1,0 +1,1 @@
+var tester:org.flashNight.gesh.json.LoadJson.TestBaseDAGLoader = new org.flashNight.gesh.json.LoadJson.TestBaseDAGLoader();
