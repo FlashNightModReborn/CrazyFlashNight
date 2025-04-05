@@ -1,7 +1,29 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!--已用ID：[51, 88, 94, 100, 117, 119, 130, 142, 151, 152, 158, 161, 189, 202, 215, 219, 225, 229, 234, 240, 245, 362, 398, 434, 441, 448, 456, 464, 469, 484, 495, 538, 542, 547, 553, 558, 576, 586, 591, 600, 605, 616, 644, 668, 674, 697, 699, 838, 842, 904, 908, 1529, 1534, 1539, 1549, 1551, 2613, 2619, 2624, 5515, 6053, 6059, 6082, 8016, 8022, 9008, 10003, 10007, 10015, 10029, 10045, 10080, 10090, 10114, 10503, 10507, 10515, 10529, 10545, 10580, 10590, 10614, 11003, 11007, 11015, 11029, 11045, 11080, 11090, 11114]
-预留ID区间：11115-11626-->
+预留ID区间：15402-15600-->
 <root>
+  <item>
+    <id>15401</id>
+    <name>黑犀手甲</name>
+    <displayname>黑犀手甲</displayname>
+    <icon>黑犀手甲</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <weight>10</weight>
+    <price>100000</price>
+    <description>黑犀铠甲。</description>
+    <level>60</level>
+    <equipped>
+      <dressup>男变装-黑犀手甲</dressup>
+      <hp>500</hp>
+      <mp>500</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>0</knifepower>
+      <punch>300</punch>
+      <defence>500</defence>
+    </equipped>
+  </item>
   <item>
     <id>10003</id>
     <name>二阶黑色皮手套</name>
@@ -1324,7 +1346,7 @@
     <use>手部装备</use>
     <actiontype>兽王崩拳</actiontype>
     <weight>1</weight>
-    <price>150000</price>
+    <price>100000</price>
     <description>&lt;font color="#ff00ff"&gt;百兽之王&lt;/font&gt;，无与伦比。虽不擅长持械，但空手格斗的能力可称天下无敌。</description>
     <skill>
       <skillname>旋风腿</skillname>
