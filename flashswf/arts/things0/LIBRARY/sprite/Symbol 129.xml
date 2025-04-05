@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 129" itemID="6577b699-000009ad" lastModified="1741888125" lastUniqueIdentifier="509">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/Symbol 129" itemID="6577b699-000009ad" lastModified="1743867001" lastUniqueIdentifier="512">
   <timeline>
-    <DOMTimeline name="Symbol 129" currentFrame="74" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;844&lt;/guideline&gt;&lt;guideline direction="v"&gt;1202&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="Symbol 129" currentFrame="388" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;844&lt;/guideline&gt;&lt;guideline direction="v"&gt;1202&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="连段标识" color="#A0826C" locked="true" autoNamed="false">
           <frames>
@@ -215,7 +215,145 @@
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="386" duration="65" keyMode="9728">
+            <DOMFrame index="386" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="387" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[function 消弹()
+{
+	var 消弹属性 = _root.消弹属性初始化(this.攻击点);
+	消弹属性.消弹方向 = _parent.方向 == "右" ? "左" : "右";
+	消弹属性.Z轴攻击范围 = 30;
+	消弹属性.区域定位area = this.攻击点;
+
+	_root.消除子弹(消弹属性);
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="388" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.攻击呐喊();
+消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="394" duration="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" selected="true" centerPoint3DX="-341.85" centerPoint3DY="26.8">
+                  <matrix>
+                    <Matrix a="2.71781921386719" d="2.71781921386719" tx="-376.8" ty="-8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	_parent.变招判定("破极拳2连招");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="400" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="404" duration="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.攻击呐喊();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="410" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="-341.85" centerPoint3DY="26.8">
+                  <matrix>
+                    <Matrix a="2.71781921386719" d="2.71781921386719" tx="-376.8" ty="-8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	_parent.变招判定("破极拳3连招");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="414" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.buff.限时赋值(1500, "韧性系数","倍率", 7, "增益");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="417" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.攻击呐喊();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="422" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="-341.85" centerPoint3DY="26.8">
+                  <matrix>
+                    <Matrix a="2.71781921386719" d="2.71781921386719" tx="-376.8" ty="-8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	_parent.变招判定("破极拳4连招");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="426" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="429" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.攻击呐喊();
+消弹();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="434" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" selected="true" centerPoint3DX="-341.85" centerPoint3DY="26.8">
+                  <matrix>
+                    <Matrix a="2.71781921386719" d="2.71781921386719" tx="-376.8" ty="-8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	_parent.变招判定("破极拳5连招");
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="438" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.buff.限时赋值(1500, "韧性系数","倍率", 7, "增益");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="441" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.攻击呐喊();
+消弹();]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -913,33 +1051,68 @@ _parent.攻击呐喊();]]></script>
             <DOMFrame index="385" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="386" duration="12" keyMode="9728">
+            <DOMFrame index="386" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="398" duration="14" keyMode="9728">
+            <DOMFrame index="387" duration="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.UpdateBigSmallState("普攻中","空手一段中");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="398" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="412" duration="12" keyMode="9728">
+            <DOMFrame index="400" duration="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.UpdateBigSmallState("普攻中","空手二段中");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="412" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="424" duration="12" keyMode="9728">
+            <DOMFrame index="414" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.UpdateBigSmallState("普攻中","空手三段中");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="424" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="436" duration="12" keyMode="9728">
+            <DOMFrame index="426" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.UpdateBigSmallState("普攻中","空手四段中");
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="436" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="438" duration="10" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.UpdateBigSmallState("普攻中","空手五段中");
 ]]></script>
               </Actionscript>
               <elements/>
@@ -3725,12 +3898,947 @@ _parent.攻击呐喊();]]></script>
             <DOMFrame index="380" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="386" duration="65" keyMode="9728">
+            <DOMFrame index="386" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="388" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="121.05" centerPoint3DY="-89.25">
+                  <matrix>
+                    <Matrix a="3.28146362304688" d="2.19602966308594" tx="121.75" ty="-89.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 7;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="389" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="390" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="202.65" centerPoint3DY="-147.9">
+                  <matrix>
+                    <Matrix a="3.28146362304688" d="2.19602966308594" tx="203.35" ty="-148.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 7;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="391" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="392" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="283.6" centerPoint3DY="-102.8">
+                  <matrix>
+                    <Matrix a="3.88140869140625" d="3.46922302246094" tx="284.45" ty="-104"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 3;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 50;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 12;
+	子弹属性.血量上限击溃 = 0.01;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="394" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="404" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="105.35" centerPoint3DY="-37.05">
+                  <matrix>
+                    <Matrix a="4.9300537109375" d="1.85537719726563" tx="106.4" ty="-37.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 7;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="405" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="406" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="216.6" centerPoint3DY="-23.35">
+                  <matrix>
+                    <Matrix a="4.23136901855469" d="2.71783447265625" tx="217.45" ty="-24.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 *3;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 40;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 12;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+		子弹属性.血量上限击溃 = 0.01;
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="407" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="408" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="198.1" centerPoint3DY="-17.15">
+                  <matrix>
+                    <Matrix a="3.67674255371094" d="3.63919067382813" tx="198.8" ty="-18.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 40;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 7;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="410" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="417" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="105.35" centerPoint3DY="-37.05">
+                  <matrix>
+                    <Matrix a="4.9300537109375" d="1.85537719726563" tx="106.4" ty="-37.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 7;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="418" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="419" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="216.6" centerPoint3DY="-23.35">
+                  <matrix>
+                    <Matrix a="4.23136901855469" d="2.71783447265625" tx="217.45" ty="-24.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 *3;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 40;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 12;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+		子弹属性.血量上限击溃 = 0.01;
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="420" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="421" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="198.1" centerPoint3DY="-17.15">
+                  <matrix>
+                    <Matrix a="3.67674255371094" d="3.63919067382813" tx="198.8" ty="-18.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 40;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 7;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="423" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="429" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="69.3" centerPoint3DY="-12.2">
+                  <matrix>
+                    <Matrix a="4.38037109375" d="3.65911865234375" tx="70.1" ty="-13.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 *3;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 30;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 12;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+		子弹属性.血量上限击溃 = 0.01;
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="430" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="431" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="140.8" centerPoint3DY="-70.55">
+                  <matrix>
+                    <Matrix a="4.23136901855469" d="2.71783447265625" tx="141.65" ty="-71.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 *1;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 40;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 12;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="432" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="433" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="111.5" centerPoint3DY="-17.15">
+                  <matrix>
+                    <Matrix a="3.67674255371094" d="1.94003295898438" tx="112.2" ty="-17.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.45"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 40;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 7;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="435" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="441" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="-59.8" centerPoint3DY="0.95">
+                  <matrix>
+                    <Matrix a="5.53178405761719" d="4.15505981445313" tx="-58.55" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.55"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力 * 5;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 70;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 20;
+	子弹属性.血量上限击溃 = 0.01;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="442" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="443" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="105.35" centerPoint3DY="-37.05">
+                  <matrix>
+                    <Matrix a="2.52987670898438" d="4.31787109375" tx="105.9" ty="-38.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 50;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 7;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="444" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="445" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用" name="攻击点" centerPoint3DX="40.4" centerPoint3DY="-37.05">
+                  <matrix>
+                    <Matrix a="3.57806396484375" d="4.60002136230469" tx="41.2" ty="-38.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.25" y="0.5"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+	子弹属性 = _root.子弹属性初始化(this);
+	
+	//以下部分只需要更改需要更改的属性,其余部分可注释掉
+	子弹属性.声音 = "";
+	子弹属性.霰弹值 = 3;
+	子弹属性.子弹散射度 = 0;
+	子弹属性.子弹种类 = "近战联弹";
+	子弹属性.子弹威力 =  _parent._parent.空手攻击力;
+	if (_parent._parent.被动技能.拳脚攻击 && _parent._parent.被动技能.拳脚攻击.启用)
+	{
+		子弹属性.子弹威力 *= 1 + _parent._parent.被动技能.拳脚攻击.等级 * 0.1;
+	}
+	if(_parent._parent.mp攻击加成){
+		子弹属性.子弹威力 += _parent._parent.mp攻击加成;
+	}
+	子弹属性.子弹速度 = 0;
+	子弹属性.Z轴攻击范围 = 70;
+	子弹属性.击倒率 = 1;
+	
+	子弹属性.水平击退速度 = 7;
+	//非常用
+	/*
+	子弹属性.垂直击退速度 = NaN;
+	子弹属性.发射效果 = "";
+	子弹属性.击中地图效果 = "火花".
+	子弹属性.击中后子弹的效果 = "".
+	子弹属性.命中率 = NaN.
+	子弹属性.固伤 = NaN;
+	子弹属性.百分比伤害 = NaN;
+	子弹属性.血量上限击溃 = NaN;
+	子弹属性.防御粉碎 = NaN;
+	*/
+	子弹属性.区域定位area = this.area;
+	/*
+	//已初始化内容，通常不需要重复赋值，可注释掉
+	子弹属性.发射者 = 子弹属性.发射者.
+	子弹属性.shootX = 子弹属性.shootX;
+	子弹属性.shootY = 子弹属性.shootY;
+	子弹属性.shootZ = 子弹属性.shootZ;
+	子弹属性.子弹敌我属性 = 子弹属性.子弹敌我属性;
+	*/
+	_root.子弹区域shoot传递(子弹属性);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="446" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="移动层" color="#FF4F4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="移动层" color="#FF4F4F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -4393,12 +5501,129 @@ _parent.攻击呐喊();]]></script>
             <DOMFrame index="383" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="386" duration="65" keyMode="9728">
+            <DOMFrame index="386" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="388" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" selected="true" centerPoint3DX="118.55" centerPoint3DY="244.75">
+                  <matrix>
+                    <Matrix a="2.16769409179688" d="2.16769409179688" tx="91.15" ty="217.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.攻击时移动(5,45);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="390" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="400" duration="4" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="404" duration="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
+                  <matrix>
+                    <Matrix a="2.16769409179688" d="2.16769409179688" tx="91.15" ty="217.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.攻击时移动(10,45);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="407" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="414" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="417" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
+                  <matrix>
+                    <Matrix a="2.16769409179688" d="2.16769409179688" tx="91.15" ty="217.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.攻击时移动(10,45);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="421" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="426" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="429" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
+                  <matrix>
+                    <Matrix a="2.16769409179688" d="2.16769409179688" tx="91.15" ty="217.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.攻击时移动(10,45);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="431" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="438" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="441" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 6" centerPoint3DX="118.55" centerPoint3DY="244.75">
+                  <matrix>
+                    <Matrix a="2.16769409179688" d="2.16769409179688" tx="91.15" ty="217.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _parent.攻击时移动(15,45);
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="446" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招层" color="#4FB28F" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="变招层" color="#4FB28F" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <elements/>
@@ -5130,7 +6355,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="429" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/气流" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-1.566162109375" b="0.67474365234375" c="-0.3956298828125" d="-0.918380737304688" tx="90.8" ty="-5.75"/>
                   </matrix>
@@ -5306,9 +6531,9 @@ _parent.攻击呐喊();]]></script>
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!851 -461[854 -459 2073 -553!2073 -553[3292 -647 5944 -633!5944 -633[5330 -675 4510 -767!4510 -767[3439 -888 2146 -683!2146 -683[853 -479 851 -476!851 -476[848 -473 848 -468!848 -468[848 -464 851 -461"/>
-                    <Edge fillStyle1="1" edges="!868 -208[868 -212 871 -215!871 -215[874 -217 2096 -208!2096 -208[3319 -201 5964 -399!5964 -399[5354 -314 4542 -165!4542 -165[3482 30 2178 -84!2178 -84[875 -197 872 -200!872 -200[869 -203 868 -208"/>
                     <Edge fillStyle0="1" edges="!848 -329[848 -325 851 -322!851 -322[854 -320 2068 -329!2068 -329[3282 -339 5944 -494!5944 -494[5335 -517 4415 -532!4415 -532[3494 -548 2174 -444!2174 -444[853 -340 851 -337!851 -337[848 -334 848 -329"/>
+                    <Edge fillStyle1="1" edges="!868 -208[868 -212 871 -215!871 -215[874 -217 2096 -208!2096 -208[3319 -201 5964 -399!5964 -399[5354 -314 4542 -165!4542 -165[3482 30 2178 -84!2178 -84[875 -197 872 -200!872 -200[869 -203 868 -208"/>
+                    <Edge fillStyle0="1" edges="!851 -461[854 -459 2073 -553!2073 -553[3292 -647 5944 -633!5944 -633[5330 -675 4510 -767!4510 -767[3439 -888 2146 -683!2146 -683[853 -479 851 -476!851 -476[848 -473 848 -468!848 -468[848 -464 851 -461"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -5339,8 +6564,8 @@ _parent.攻击呐喊();]]></script>
                   </fills>
                   <edges>
                     <Edge fillStyle0="1" edges="
-!1448 880[1448 885 1452 889!1452 889[1456 892 2993 880!2993 880[4529 866 7899 659!7899 659[7128 628 5964 608!5964 608[4798 587 3127 726!3127 726[1455 865 1452 869!1452 869[1448 873 1448 880!1448 694[1448 699 1452 703!1452 703[1456 706
- 2999 580!2999 580[4542 454 7899 473!7899 473[7122 417 6084 294!6084 294[4728 132 3091 406!3091 406[1455 679 1452 683!1452 683[1448 687 1448 694"/>
+!1448 694[1448 699 1452 703!1452 703[1456 706 2999 580!2999 580[4542 454 7899 473!7899 473[7122 417 6084 294!6084 294[4728 132 3091 406!3091 406[1455 679 1452 683!1452 683[1448 687 1448 694!1448 880[1448 885 1452 889!1452 889[1456 892
+ 2993 880!2993 880[4529 866 7899 659!7899 659[7128 628 5964 608!5964 608[4798 587 3127 726!3127 726[1455 865 1452 869!1452 869[1448 873 1448 880"/>
                     <Edge fillStyle1="1" edges="
 !1474 1042[1474 1036 1478 1032!1478 1032[1481 1030 3028 1042!3028 1042[4576 1051 7924 786!7924 786[7152 900 6124 1099!6124 1099[4783 1360 3132 1208!3132 1208[1483 1056 1479 1052!1479 1052[1475 1048 1474 1042"/>
                   </edges>
@@ -5359,8 +6584,8 @@ _parent.攻击呐喊();]]></script>
                     <Edge fillStyle1="1" edges="
 !6499 1099[5811 1360 4963 1208!4963 1208[4116 1056 4114 1052!4114 1052[4112 1048 4111 1042!4111 1042[4111 1036 4113 1032!4113 1032[4115 1030 4909 1042!4909 1042[5704 1051 7424 786!7424 786[7027 900 6499 1099"/>
                     <Edge fillStyle0="1" edges="
-!4960 726[4101 865 4100 869!4100 869[4098 873 4098 880!4098 880[4098 885 4100 889!4100 889[4102 892 4891 880!4891 880[5680 866 7411 659!7411 659[7015 628 6417 608!6417 608[5818 587 4960 726!4942 406[4101 679 4100 683!4100 683[4098 687
- 4098 694!4098 694[4098 699 4100 703!4100 703[4102 706 4894 580!4894 580[5687 454 7411 473!7411 473[7012 417 6479 294!6479 294[5782 132 4942 406"/>
+!4942 406[4101 679 4100 683!4100 683[4098 687 4098 694!4098 694[4098 699 4100 703!4100 703[4102 706 4894 580!4894 580[5687 454 7411 473!7411 473[7012 417 6479 294!6479 294[5782 132 4942 406!4960 726[4101 865 4100 869!4100 869[4098 873
+ 4098 880!4098 880[4098 885 4100 889!4100 889[4102 892 4891 880!4891 880[5680 866 7411 659!7411 659[7015 628 6417 608!6417 608[5818 587 4960 726"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -7755,16 +8980,18 @@ _parent.攻击呐喊();]]></script>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle1="1" strokeStyle="1" edges="
-!6544 2159[6608 2149 6674 2138!6674 2138[6602 2153 6530 2168!6530 2168[283 5675 836 -3167!836 -3167[709 4877 6502 2174"/>
                     <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!6502 2174[6516 2171 6530 2168!6530 2168[6537 2163 6544 2159!6544 2159[6533 2160 6522 2162"/>
+!6530 2168[6537 2163 6544 2159!6544 2159[6533 2160 6522 2162"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
 !6522 2162[6598 2118 6674 2071!6674 2071[6609 2116 6544 2159"/>
                     <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!6502 2174[6516 2171 6530 2168"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!6530 2168[6602 2153 6674 2138!6674 2138[6608 2149 6544 2159"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
 !6522 2162[6512 2167 6502 2174"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!6752 2014[738 3269 2232 -3498!2232 -3498[1327 2889 6752 2014!6502 2174[513 4238 1524 -3225!1524 -3225[816 3571 6522 2162"/>
+!6502 2174[513 4238 1524 -3225!1524 -3225[816 3571 6522 2162!6752 2014[738 3269 2232 -3498!2232 -3498[1327 2889 6752 2014!6530 2168[283 5675 836 -3167!836 -3167[709 4877 6502 2174"/>
                     <Edge cubics="!6522 2162(;6571,2134 6622,2103 6674,2071q6522 2162 6674 2071);"/>
                     <Edge cubics="!6674 2071(;6631,2100 6589,2128 6544,2159q6674 2071 6544 2159);"/>
                     <Edge cubics="!6752 2014(;2743,2850 1237,1013 2232,-3498q6752 2014Q738 3269q2232 -3498);"/>
@@ -7804,16 +9031,24 @@ _parent.攻击呐喊();]]></script>
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge fillStyle0="1" strokeStyle="1" edges="
-!4240 -2079[4260 -2138 4280 -2198!4280 -2198[4253 -2130 4225 -2062"/>
                     <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!4225 -2062[4232 -2071 4240 -2079"/>
+!4235 -2067[4237 -2073 4240 -2079"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
 !4240 -2079[4280 -2129 4323 -2181!4323 -2181[4278 -2124 4235 -2067"/>
                     <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
-!4235 -2067[4237 -2073 4240 -2079!4217 -2045[4226 -2056 4235 -2067!4225 -2062[4221 -2054 4217 -2045"/>
+!4217 -2045[4226 -2056 4235 -2067"/>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!4217 -2045[1096 2892 -2929 217!-2929 217[894 2497 4225 -2062!-2578 -373[837 1945 4301 -2270!4301 -2270[643 2476 -2578 -373!4235 -2067[1845 3434 -3402 738!-3402 738[1650 2913 4217 -2045"/>
+!4235 -2067[1845 3434 -3402 738!-3402 738[1650 2913 4217 -2045"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!4225 -2062[4221 -2054 4217 -2045"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!4217 -2045[1096 2892 -2929 217!-2929 217[894 2497 4225 -2062"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="
+!4225 -2062[4232 -2071 4240 -2079"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!4240 -2079[4260 -2138 4280 -2198!4280 -2198[4253 -2130 4225 -2062"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!-2578 -373[837 1945 4301 -2270!4301 -2270[643 2476 -2578 -373"/>
                     <Edge cubics="!4225 -2062(;4244,-2106 4262,-2152 4280,-2198q4225 -2062 4280 -2198);"/>
                     <Edge cubics="!4280 -2198(;4266,-2158 4253,-2120 4240,-2079q4280 -2198 4240 -2079);"/>
                     <Edge cubics="!4301 -2270(;1862,894 -430,1525 -2578,-373q4301 -2270Q643 2476q-2578 -373);"/>
@@ -15617,7 +16852,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="402" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" selected="true" centerPoint3DX="-29.45" centerPoint3DY="158.35">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/长枪" centerPoint3DX="-29.45" centerPoint3DY="158.35">
                   <matrix>
                     <Matrix a="-0.3992919921875" b="-0.89984130859375" c="0.89984130859375" d="-0.3992919921875" tx="39.65" ty="26.05"/>
                   </matrix>
@@ -15628,7 +16863,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/刀" name="刀" selected="true" centerPoint3DX="-124.55" centerPoint3DY="36.9">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/刀" name="刀" centerPoint3DX="-124.55" centerPoint3DY="36.9">
                   <matrix>
                     <Matrix a="-0.444580078125" b="0.7938232421875" c="0.7938232421875" d="0.444580078125" tx="-207.4" ty="-130.8"/>
                   </matrix>
@@ -15639,7 +16874,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" selected="true" centerPoint3DX="-72.95" centerPoint3DY="-0.4">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="-72.95" centerPoint3DY="-0.4">
                   <matrix>
                     <Matrix a="0.156494140625" b="0.818222045898438" c="0.818222045898438" d="-0.156494140625" tx="-113.9" ty="-57.3"/>
                   </matrix>
@@ -15650,7 +16885,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" selected="true" centerPoint3DX="-25.55" centerPoint3DY="-128.15">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 21" centerPoint3DX="-25.55" centerPoint3DY="-128.15">
                   <matrix>
                     <Matrix a="-0.54583740234375" b="-0.577865600585938" c="-0.577865600585938" d="0.54583740234375" tx="-30.55" ty="-74.15"/>
                   </matrix>
@@ -15661,7 +16896,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" selected="true" centerPoint3DX="-61.25" centerPoint3DY="-51.8">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 25" centerPoint3DX="-61.25" centerPoint3DY="-51.8">
                   <matrix>
                     <Matrix a="-0.66314697265625" b="0.484848022460938" c="0.484848022460938" d="0.66314697265625" tx="-84" ty="-24.65"/>
                   </matrix>
@@ -15672,7 +16907,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪2" selected="true" centerPoint3DX="-113" centerPoint3DY="60">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪2" centerPoint3DX="-113" centerPoint3DY="60">
                   <matrix>
                     <Matrix a="0.109375" b="0.993408203125" c="0.993408203125" d="-0.109375" tx="-56.15" ty="24.55"/>
                   </matrix>
@@ -15683,7 +16918,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 33" selected="true" centerPoint3DX="-104.65" centerPoint3DY="116.4">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 33" centerPoint3DX="-104.65" centerPoint3DY="116.4">
                   <matrix>
                     <Matrix a="-0.484420776367188" b="-0.698486328125" c="-0.698486328125" d="0.484420776367188" tx="-47.8" ty="55.4"/>
                   </matrix>
@@ -15694,7 +16929,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="sprite/Symbol 37" selected="true" centerPoint3DX="-10.15" centerPoint3DY="130.9">
+                <DOMSymbolInstance libraryItemName="sprite/Symbol 37" centerPoint3DX="-10.15" centerPoint3DY="130.9">
                   <matrix>
                     <Matrix a="-0.77301025390625" b="0.353302001953125" c="0.353302001953125" d="0.77301025390625" tx="-38.95" ty="12.15"/>
                   </matrix>
@@ -15705,7 +16940,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 46" selected="true" centerPoint3DX="-73.7" centerPoint3DY="-72.8">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 46" centerPoint3DX="-73.7" centerPoint3DY="-72.8">
                   <matrix>
                     <Matrix a="0.946762084960938" b="-0.130416870117188" c="0.130416870117188" d="0.946762084960938" tx="-103.7" ty="-112.5"/>
                   </matrix>
@@ -15716,7 +16951,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 50" selected="true" centerPoint3DX="-74.25" centerPoint3DY="89">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 50" centerPoint3DX="-74.25" centerPoint3DY="89">
                   <matrix>
                     <Matrix a="-0.853363037109375" b="0.0520172119140625" c="0.0520172119140625" d="0.853363037109375" tx="-28.25" ty="53.1"/>
                   </matrix>
@@ -15727,7 +16962,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" selected="true" centerPoint3DX="-112.55" centerPoint3DY="240">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" centerPoint3DX="-112.55" centerPoint3DY="240">
                   <matrix>
                     <Matrix a="-0.826416015625" b="0.100387573242188" c="0.100387573242188" d="0.826416015625" tx="-77.2" ty="203.55"/>
                   </matrix>
@@ -15738,7 +16973,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" selected="true" centerPoint3DX="-91.1" centerPoint3DY="181.95">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" centerPoint3DX="-91.1" centerPoint3DY="181.95">
                   <matrix>
                     <Matrix a="-0.699462890625" b="0.469482421875" c="0.469482421875" d="0.699462890625" tx="-134.85" ty="117.55"/>
                   </matrix>
@@ -15749,7 +16984,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 62" selected="true" centerPoint3DX="-26.5" centerPoint3DY="152.75">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 62" centerPoint3DX="-26.5" centerPoint3DY="152.75">
                   <matrix>
                     <Matrix a="-0.807647705078125" b="0.269760131835938" c="0.269760131835938" d="0.807647705078125" tx="-5.2" ty="72.85"/>
                   </matrix>
@@ -15760,7 +16995,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" selected="true" centerPoint3DX="92.5" centerPoint3DY="249.7">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 54" centerPoint3DX="92.5" centerPoint3DY="249.7">
                   <matrix>
                     <Matrix a="-0.76031494140625" b="0.352767944335938" c="0.352767944335938" d="0.76031494140625" tx="118.05" ty="205.45"/>
                   </matrix>
@@ -15771,7 +17006,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" selected="true" centerPoint3DX="60.95" centerPoint3DY="238.4">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 58" centerPoint3DX="60.95" centerPoint3DY="238.4">
                   <matrix>
                     <Matrix a="-0.352264404296875" b="0.770675659179688" c="0.770675659179688" d="0.352264404296875" tx="27.55" ty="168.45"/>
                   </matrix>
@@ -15782,7 +17017,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪" selected="true" centerPoint3DX="-43.55" centerPoint3DY="29.6">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/手枪" centerPoint3DX="-43.55" centerPoint3DY="29.6">
                   <matrix>
                     <Matrix a="0.17388916015625" b="0.983978271484375" c="0.983978271484375" d="-0.17388916015625" tx="13.2" ty="-5.8"/>
                   </matrix>
@@ -15793,7 +17028,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" selected="true" centerPoint3DX="-68.6" centerPoint3DY="-31.7">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 17" centerPoint3DX="-68.6" centerPoint3DY="-31.7">
                   <matrix>
                     <Matrix a="0.481414794921875" b="0.6785888671875" c="-0.6629638671875" d="0.470306396484375" tx="-31.85" ty="-91.75"/>
                   </matrix>
@@ -15804,7 +17039,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" selected="true" centerPoint3DX="-48.75" centerPoint3DY="-15.7">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 67" centerPoint3DX="-48.75" centerPoint3DY="-15.7">
                   <matrix>
                     <Matrix a="0.69903564453125" b="-0.404937744140625" c="-0.404937744140625" d="-0.69903564453125" tx="-94.15" ty="-47.35"/>
                   </matrix>
@@ -15815,7 +17050,7 @@ _parent.攻击呐喊();]]></script>
                     <BlurFilter blurX="20" blurY="0"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" selected="true" centerPoint3DX="-130.55" centerPoint3DY="-74.05">
+                <DOMSymbolInstance libraryItemName="余烬小队/余烬剑痴/Symbol 71" centerPoint3DX="-130.55" centerPoint3DY="-74.05">
                   <matrix>
                     <Matrix a="0.14129638671875" b="-0.784423828125" c="-0.784423828125" d="-0.14129638671875" tx="-132.65" ty="-107.6"/>
                   </matrix>
@@ -26291,7 +27526,7 @@ _parent.攻击呐喊();]]></script>
             </DOMFrame>
             <DOMFrame index="402" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="残影2" selected="true" centerPoint3DX="16" centerPoint3DY="31.05">
+                <DOMSymbolInstance libraryItemName="残影2" centerPoint3DX="16" centerPoint3DY="31.05">
                   <matrix>
                     <Matrix tx="-286.2" ty="-200.65"/>
                   </matrix>
@@ -60377,7 +61612,7 @@ _parent.攻击呐喊();]]></script>
                   </strokes>
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!4399 4560[5742 -257 4192 -2540!4192 -2540[#1791.66 #FFFF3A.D7 4399 4560!5021 4771[6364 -46 4814 -2329!4814 -2329[6641 31 5021 4771!4719 4560[6062 -257 4512 -2540!4512 -2540[6339 -180 4719 4560"/>
+!4719 4560[6062 -257 4512 -2540!4512 -2540[6339 -180 4719 4560!5021 4771[6364 -46 4814 -2329!4814 -2329[6641 31 5021 4771!4399 4560[5742 -257 4192 -2540!4192 -2540[#1791.66 #FFFF3A.D7 4399 4560"/>
                     <Edge cubics="!4399 4560(;5294,1349 5225,-1018 4192,-2540q4399 4560Q5742 -257q4192 -2540);"/>
                     <Edge cubics="!4192 -2540(;5466,-967 5535,1400 4399,4560q4192 -2540Q6103 -180q4399 4560);"/>
                     <Edge cubics="!4719 4560(;5614,1349 5545,-1018 4512,-2540q4719 4560Q6062 -257q4512 -2540);"/>
@@ -60407,7 +61642,7 @@ _parent.攻击呐喊();]]></script>
                   </strokes>
                   <edges>
                     <Edge fillStyle1="1" strokeStyle="1" edges="
-!4816 4821[6388 1624 5072 70!5072 70[6646 1679 4816 4821!4499 -80[6085 1518 4242 4669!4242 4669[5815 1470 4499 -80!4801 -76[6371 1533 4544 4674!4544 4674[6117 1477 4801 -76"/>
+!4816 4821[6388 1624 5072 70!5072 70[6646 1679 4816 4821!4801 -76[6371 1533 4544 4674!4544 4674[6117 1477 4801 -76!4499 -80[6085 1518 4242 4669!4242 4669[5815 1470 4499 -80"/>
                     <Edge cubics="!4242 4669(;5292,2538 5375,954 4499,-80q4242 4669Q5815 1470q4499 -80);"/>
                     <Edge cubics="!4544 4674(;5592,2544 5678,959 4801,-76q4544 4674Q6117 1477q4801 -76);"/>
                     <Edge cubics="!4801 -76(;5850,996 5763,2580 4544,4674q4801 -76Q6371 1533q4544 4674);"/>
@@ -63519,7 +64754,67 @@ _parent.攻击呐喊();]]></script>
             <DOMFrame index="372" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="386" duration="65" keyMode="9728">
+            <DOMFrame index="386" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="388" duration="2" keyMode="9728" soundName="sound/重武器.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="390" duration="11" keyMode="9728" soundName="爆炸/爆炸 较明亮 01.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="401" duration="3" keyMode="9728" soundName="sound/旋风腿.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="404" duration="13" keyMode="9728" soundName="爆炸/爆炸 较明亮 01.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="417" keyMode="9728" soundName="技能/裂地拳.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="418" duration="10" keyMode="9728" soundName="爆炸/爆炸 较明亮 01.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="428" keyMode="9728" soundName="技能/背摔.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="429" duration="9" keyMode="9728" soundName="爆炸/爆炸 较深邃 01.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="438" duration="3" keyMode="9728" soundName="技能/地震1.wav">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="441" duration="10" keyMode="9728" soundName="爆炸/爆炸 较深邃 02.mp3">
+              <SoundEnvelope>
+                <SoundEnvelopePoint level0="32768" level1="32768"/>
+              </SoundEnvelope>
               <elements/>
             </DOMFrame>
           </frames>
