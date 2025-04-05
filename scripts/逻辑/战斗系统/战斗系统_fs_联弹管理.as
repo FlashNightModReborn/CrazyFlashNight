@@ -195,33 +195,30 @@ _root.联弹系统.横向联弹初始化 = function(clip:MovieClip):Void {
     };
 };
 
-// 定义在 _root.联弹系统 对象内部
 _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
-    // 保存当前 clip 的初始坐标作为碰撞箱基准，并初始化单元体列表
+    // 保存初始坐标与单元体列表初始化
     clip.y_基准 = clip._y;
     clip.x_基准 = clip._x;
     clip.单元体列表 = [];
     
-    // 保存父对象的初始坐标与旋转信息
+    // 保存父对象初始坐标与旋转信息
     clip.原始坐标x = clip._parent._x;
     clip.原始坐标y = clip._parent._y;
     clip.原始方向 = clip._parent._rotation;
     
-    // 根据父对象 xmov 的方向确定运动系数
+    // 根据父对象 xmov 判断运动方向
     clip.运动方向系数 = clip._parent.xmov < 0 ? -1 : 1;
     
-    // 提取子弹种类（假设格式为 “XXX-子弹种类”）
+    // 提取子弹种类
     clip.子弹种类 = clip._parent.子弹种类.split("-")[1];
     clip.count = 1;
     
-    // 加载时只创建一个单元体（用于模拟点射）
+    // 创建第一个单元体
     var firstUnit:MovieClip = _root.创建单元体(clip._parent, clip.子弹种类);
     firstUnit._rotation = _root.随机偏移(clip._parent.子弹散射度);
     clip.单元体列表.push(firstUnit);
     
-    // 每帧执行的更新逻辑
     clip.onEnterFrame = function():Void {
-        // 缓存常用局部变量
         var parentMC:MovieClip = this._parent;
         var bulletSpeedX:Number = parentMC.xmov;
         var parentX:Number = parentMC._x;
@@ -229,88 +226,103 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
         var originalX:Number = this.原始坐标x;
         var originalY:Number = this.原始坐标y;
         var countTotal:Number = parentMC.霰弹值;
-		var directionalCoefficient:Number = this.运动方向系数;
-        var deltaX:Number = directionalCoefficient * (parentX - originalX);
-        var deltaY:Number = parentY - originalY;
+        var directionalCoefficient:Number = this.运动方向系数;
         var radFactor:Number = Math.PI / 180;
         var parentRotation:Number = parentMC._rotation;
         var parentRotRad:Number = parentRotation * radFactor;
         var parentCos:Number = Math.cos(parentRotRad);
         var hitZ:Number = parentMC.Z轴坐标;
         
-		// 如果当前创建的单元体数未达到预定总数，则每帧创建一个新的单元体
-		var x_update:Boolean = (this.count < countTotal);
-        
-        // 检查地图碰撞状态，仅调用一次
+        // 检查地图碰撞状态
         var isHitMap:Boolean = Mover.isMovieClipValid(this);
-        
-        // 初始化碰撞箱的局部变量
         var y_min:Number = Infinity, y_max:Number = -Infinity;
-        var x_min:Number = Infinity, x_max:Number = -Infinity;
-        
-        // 遍历所有单元体，更新位置并记录坐标范围
-        for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
-            var unit:MovieClip = this.单元体列表[j];
-            // 缓存单元体旋转，并转换为弧度
-            var unitRot:Number = unit._rotation;
-            var unitRad:Number = unitRot * radFactor;
-            var sinVal:Number = Math.sin(unitRad);
-            var cosVal:Number = Math.cos(unitRad);
-            
-            // 更新单元体的 y 坐标
-            unit._y += bulletSpeedX * sinVal * directionalCoefficient;
-            
-            // 如果本帧有新子弹创建，则更新 x 坐标
-            if (x_update) {
-                unit._x += bulletSpeedX * cosVal * directionalCoefficient;
-            }
-            
-            // 进行碰撞检测：判断是否超出父对象设定的 Z 轴限制
-            var isHitGround:Boolean = (unit._y * parentCos + parentY > hitZ);
-            var isHIt:Boolean = isHitMap && !Mover.isMovieClipPositionValid(unit);
-            if ((isHIt || isHitGround) && (this.单元体列表.length > 1)) {
-                _root.回收单元体(unit);
-                this.单元体列表.splice(j, 1);
-                continue;
-            }
-            
-            // 更新 x、y 坐标范围
-            if (unit._y > y_max) { y_max = unit._y; }
-            if (unit._y < y_min) { y_min = unit._y; }
-            if (unit._x > x_max) { x_max = unit._x; }
-            if (unit._x < x_min) { x_min = unit._x; }
-        }
+        var x_min:Number, x_max:Number;
 
-		if(x_update) {
+        // 判断是否需要进行X轴更新（即是否还需创建新子弹）
+        if(this.count < countTotal) {
+            // X轴需要更新时，预先计算增量并重置极值
+            var deltaXUpdate:Number = bulletSpeedX * directionalCoefficient;
+            x_min = Infinity;
+            x_max = -Infinity;
+            
+            // 遍历所有单元体，更新Y、X坐标和范围（无需内部判断x_update）
+            for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
+                var unit:MovieClip = this.单元体列表[j];
+                var unitRot:Number = unit._rotation;
+                var unitRad:Number = unitRot * radFactor;
+                var sinVal:Number = Math.sin(unitRad);
+                var cosVal:Number = Math.cos(unitRad);
+                
+                // 更新Y和X
+                unit._y += bulletSpeedX * sinVal * directionalCoefficient;
+                unit._x += deltaXUpdate * cosVal;
+                
+                var isHitGround:Boolean = (unit._y * parentCos + parentY > hitZ);
+                var isHIt:Boolean = isHitMap && !Mover.isMovieClipPositionValid(unit);
+                if ((isHIt || isHitGround) && (this.单元体列表.length > 1)) {
+                    _root.回收单元体(unit);
+                    this.单元体列表.splice(j, 1);
+                    continue;
+                }
+                
+                if (unit._y > y_max) y_max = unit._y;
+                if (unit._y < y_min) y_min = unit._y;
+                if (unit._x > x_max) x_max = unit._x;
+                if (unit._x < x_min) x_min = unit._x;
+            }
+
+            // 当X轴更新时，更新X碰撞箱并创建新的单元体
+            this._x = x_min;
+            this._width = Math.max(this.x_基准 * -2, x_max - x_min);
+            
+            // 计算新的单元体坐标（转换全局到父MC局部坐标系）
             var globalDeltaX:Number = parentX - originalX;
             var globalDeltaY:Number = parentY - originalY;
-
-            // 将全局位移转换到父MC的局部坐标系
             var rad:Number = parentMC._rotation * Math.PI / 180;
             var cosVal:Number = Math.cos(rad);
             var sinVal:Number = Math.sin(rad);
-
             var localDeltaX:Number = globalDeltaX * cosVal + globalDeltaY * sinVal;
             var localDeltaY:Number = -globalDeltaX * sinVal + globalDeltaY * cosVal;
-
+            
             var newUnit:MovieClip = _root.创建单元体(parentMC, this.子弹种类);
             newUnit._rotation = _root.随机偏移(parentMC.子弹散射度);
-            
-            // 直接在局部坐标系添加偏移（已包含旋转因素）
             newUnit._x += directionalCoefficient * localDeltaX + _root.随机偏移(parentMC.子弹散射度 + countTotal + this.count);
             newUnit._y += localDeltaY;
             
             this.单元体列表.push(newUnit);
+            // 重置父对象坐标为原始值
             parentMC._x = originalX;
             parentMC._y = originalY;
             this.count++;
-		}
+        } else {
+            // 当X轴不更新时，沿用当前碰撞箱数据，且只更新Y轴
+            x_min = this._x;
+            x_max = this._x + this._width;
+            for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
+                var unit:MovieClip = this.单元体列表[j];
+                var unitRot:Number = unit._rotation;
+                var unitRad:Number = unitRot * radFactor;
+                var sinVal:Number = Math.sin(unitRad);
+                
+                // 仅更新Y
+                unit._y += bulletSpeedX * sinVal * directionalCoefficient;
+                
+                var isHitGround:Boolean = (unit._y * parentCos + parentY > hitZ);
+                var isHIt:Boolean = isHitMap && !Mover.isMovieClipPositionValid(unit);
+                if ((isHIt || isHitGround) && (this.单元体列表.length > 1)) {
+                    _root.回收单元体(unit);
+                    this.单元体列表.splice(j, 1);
+                    continue;
+                }
+                
+                if (unit._y > y_max) y_max = unit._y;
+                if (unit._y < y_min) y_min = unit._y;
+            }
+        }
         
-        // 更新当前 clip 的碰撞箱，使其与所有子弹的视觉位置相符
+        // 始终更新Y轴碰撞箱
         this._y = y_min;
         this._height = Math.max(this.y_基准 * -2, y_max - y_min);
-        this._x = x_min;
-        this._width = Math.max(this.x_基准 * -2, x_max - x_min);
     };
 };
 
