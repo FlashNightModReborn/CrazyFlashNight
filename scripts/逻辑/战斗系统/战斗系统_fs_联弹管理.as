@@ -204,7 +204,6 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     // 保存父对象初始坐标与旋转信息
     clip.原始坐标x = clip._parent._x;
     clip.原始坐标y = clip._parent._y;
-    clip.原始方向 = clip._parent._rotation;
     
     // 根据父对象 xmov 判断运动方向
     clip.运动方向系数 = clip._parent.xmov < 0 ? -1 : 1;
@@ -221,44 +220,50 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
     clip.onEnterFrame = function():Void {
         var parentMC:MovieClip = this._parent;
         var bulletSpeedX:Number = parentMC.xmov;
-        var parentX:Number = parentMC._x;
-        var parentY:Number = parentMC._y;
-        var originalX:Number = this.原始坐标x;
-        var originalY:Number = this.原始坐标y;
         var countTotal:Number = parentMC.霰弹值;
         var directionalCoefficient:Number = this.运动方向系数;
         var radFactor:Number = Math.PI / 180;
-        var parentRotation:Number = parentMC._rotation;
-        var parentRotRad:Number = parentRotation * radFactor;
+        var parentRotRad:Number = parentMC._rotation * radFactor;
         var parentCos:Number = Math.cos(parentRotRad);
         var hitZ:Number = parentMC.Z轴坐标;
+        var currentParentY:Number = parentMC._y;
+        var unit:MovieClip;
         
         // 检查地图碰撞状态
         var isHitMap:Boolean = Mover.isMovieClipValid(this);
         var y_min:Number = Infinity, y_max:Number = -Infinity;
         var x_min:Number, x_max:Number;
+        var sinVal:Number;
+        var unitRad:Number;
+        var isHitGround:Boolean;
+        var isHIt:Boolean;
 
         // 判断是否需要进行X轴更新（即是否还需创建新子弹）
         if(this.count < countTotal) {
             // X轴需要更新时，预先计算增量并重置极值
             var deltaXUpdate:Number = bulletSpeedX * directionalCoefficient;
+            var originalX:Number = this.原始坐标x;
+            var originalY:Number = this.原始坐标y;
+            var cosVal:Number;
+
             x_min = Infinity;
             x_max = -Infinity;
+
+            var currentParentX:Number = parentMC._x;
             
             // 遍历所有单元体，更新Y、X坐标和范围（无需内部判断x_update）
             for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
-                var unit:MovieClip = this.单元体列表[j];
-                var unitRot:Number = unit._rotation;
-                var unitRad:Number = unitRot * radFactor;
-                var sinVal:Number = Math.sin(unitRad);
-                var cosVal:Number = Math.cos(unitRad);
+                unit = this.单元体列表[j];
+                unitRad = unit._rotation * radFactor;
+                sinVal = Math.sin(unitRad);
+                cosVal = Math.cos(unitRad);
                 
                 // 更新Y和X
                 unit._y += bulletSpeedX * sinVal * directionalCoefficient;
                 unit._x += deltaXUpdate * cosVal;
                 
-                var isHitGround:Boolean = (unit._y * parentCos + parentY > hitZ);
-                var isHIt:Boolean = isHitMap && !Mover.isMovieClipPositionValid(unit);
+                isHitGround = (unit._y * parentCos + currentParentY > hitZ);
+                isHIt = isHitMap && !Mover.isMovieClipPositionValid(unit);
                 if ((isHIt || isHitGround) && (this.单元体列表.length > 1)) {
                     _root.回收单元体(unit);
                     this.单元体列表.splice(j, 1);
@@ -276,11 +281,11 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
             this._width = Math.max(this.x_基准 * -2, x_max - x_min);
             
             // 计算新的单元体坐标（转换全局到父MC局部坐标系）
-            var globalDeltaX:Number = parentX - originalX;
-            var globalDeltaY:Number = parentY - originalY;
+            var globalDeltaX:Number = currentParentX - originalX;
+            var globalDeltaY:Number = currentParentY - originalY;
             var rad:Number = parentMC._rotation * Math.PI / 180;
-            var cosVal:Number = Math.cos(rad);
-            var sinVal:Number = Math.sin(rad);
+            cosVal = Math.cos(rad);
+            sinVal = Math.sin(rad);
             var localDeltaX:Number = globalDeltaX * cosVal + globalDeltaY * sinVal;
             var localDeltaY:Number = -globalDeltaX * sinVal + globalDeltaY * cosVal;
             
@@ -299,16 +304,14 @@ _root.联弹系统.纵向联弹初始化 = function(clip:MovieClip):Void {
             x_min = this._x;
             x_max = this._x + this._width;
             for (var j:Number = this.单元体列表.length - 1; j >= 0; j--) {
-                var unit:MovieClip = this.单元体列表[j];
-                var unitRot:Number = unit._rotation;
-                var unitRad:Number = unitRot * radFactor;
-                var sinVal:Number = Math.sin(unitRad);
+                unit = this.单元体列表[j];
+                sinVal = Math.sin(unit._rotation * radFactor);
                 
                 // 仅更新Y
                 unit._y += bulletSpeedX * sinVal * directionalCoefficient;
                 
-                var isHitGround:Boolean = (unit._y * parentCos + parentY > hitZ);
-                var isHIt:Boolean = isHitMap && !Mover.isMovieClipPositionValid(unit);
+                isHitGround = (unit._y * parentCos + currentParentY > hitZ);
+                isHIt = isHitMap && !Mover.isMovieClipPositionValid(unit);
                 if ((isHIt || isHitGround) && (this.单元体列表.length > 1)) {
                     _root.回收单元体(unit);
                     this.单元体列表.splice(j, 1);
