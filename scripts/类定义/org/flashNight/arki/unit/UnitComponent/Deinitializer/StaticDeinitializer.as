@@ -14,7 +14,11 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
     {
         if(!target._deInitialized)
         {
-            target.aabbCollider.getFactory().releaseCollider(target.aabbCollider);
+            if(target.aabbCollider)
+            {
+                target.aabbCollider.getFactory().releaseCollider(target.aabbCollider);
+            }
+            
             TargetCacheUpdater.removeUnit(target);
             // 卸载ai组件
             target.unitAI.destroy();
