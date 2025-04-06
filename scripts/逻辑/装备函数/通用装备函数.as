@@ -175,13 +175,10 @@ _root.装备生命周期函数.通用变形初始化 = function(reflector:Object
         triggerFuncParam: {toggleProperty :"通用变形中"}
     };
 
-    if(reflector.是否为主角) {
-        if(p.updateloadExecution && !_root.装备生命周期函数.globalParams[p.updateloadExecution]) {
+    if(p.updateloadExecution) {
+        for (var i = Number(p.updateloadExecution); i > 0; i--) {
             _root.装备生命周期函数[p.updateFuncParam.triggerFunc](reflector, p.updateFuncParam.triggerFuncParam);
-            _root.装备生命周期函数.globalParams[p.updateloadExecution] = true;
         }
-    } else {
-        if(p.updateloadExecution) _root.装备生命周期函数[p.updateFuncParam.triggerFunc](reflector, p.updateFuncParam.triggerFuncParam);
     }
 };
 
