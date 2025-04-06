@@ -1,38 +1,15 @@
 ﻿import org.flashNight.arki.unit.Action.Shoot.*;
 import org.flashNight.arki.item.*;
 
-_root.主角函数.开始射击 = function(){
-    // 缓存常用对象
-    var parent:MovieClip = _parent;
-    
-    // 快速返回：如果主手正在射击或正在换弹，直接退出
-    if (parent.主手射击中 || this.换弹标签) return;
-
-    // 预先缓存攻击模式及相关键
-    var interval:Number = this.射击速度;
-    var attackMode:String = parent.攻击模式;
-    
-    // 快速返回：弹夹已满，检查是否需要换弹
-    if (parent[attackMode + "射击次数"][parent[attackMode]] >= parent[attackMode + "弹匣容量"]) {
-        if (this.剩余弹匣数 > 0 || _root.控制目标 != parent._name) {
-            this.开始换弹();
-        }
-        return;
-    }
-    
-    // 快速返回：若射击许可标签为 false，则不执行后续逻辑
-    if (!this.射击许可标签) return;
-    
-    // 调用主手持续射击函数，获取是否继续射击的许可
-    if (this.主手持续射击(parent, attackMode, interval)) {
-        parent.keepshooting = _root.帧计时器.添加生命周期任务(parent, "开始射击", this.主手持续射击, interval, parent, attackMode, interval);
-        if (interval > 300) {
-            _root.帧计时器.添加或更新任务(parent, "结束射击后摇", function(自机){
-                自机.射击最大后摇中 = false;
-            }, 300, parent);
-        }
-    }
-}
+// 原 _root.主角函数.开始射击 替换为：
+_root.主角函数.开始射击 = function() {
+    ShootCore.startShooting(
+        this._parent, 
+        this,                 // 原主角函数对象（this）
+        ShootCore.primaryParams,
+        _root
+    );
+};
 
 
 // 主手持续射击包装函数
