@@ -44,6 +44,12 @@ _root.装备生命周期函数.wa90变形款初始化 = function(reflector:Objec
         };
     }
 
+
+    if(reflector.是否为主角) {
+        reflector.自机["wa90变形"] = !!_root.装备生命周期函数.globalParams["wa90变形"];
+        _root.发布消息(reflector.自机["wa90变形"])
+    }
+    
     reflector.instanceContainer = paramObj.updateFuncParam.triggerFuncParam.instanceContainer;
     reflector.toggleInstance = paramObj.updateFuncParam.triggerFuncParam.toggleInstance;
     // 调用通用初始化
