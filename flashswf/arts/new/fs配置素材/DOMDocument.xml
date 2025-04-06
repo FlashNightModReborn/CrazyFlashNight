@@ -113,10 +113,10 @@
      <symbols>
           <Include href="53式步骑枪/53式步骑枪.xml" itemID="659e146e-000007c4" lastModified="1704953208"/>
           <Include href="53式步骑枪/弹仓.xml" loadImmediate="false" itemID="659e932d-00000b3c" lastModified="1704891181"/>
-          <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/枪管.xml" loadImmediate="false" itemID="659ea149-00000b60" lastModified="1704953006"/>
           <Include href="53式步骑枪/枪机.xml" loadImmediate="false" itemID="659e9856-00000b4e" lastModified="1704953025"/>
           <Include href="53式步骑枪/枪身.xml" loadImmediate="false" itemID="659ea159-00000b64" lastModified="1704953133"/>
+          <Include href="53式步骑枪/调整层.xml" loadImmediate="false" itemID="659eb6ee-000005a7" lastModified="1704953093"/>
           <Include href="53式步骑枪/图标-53式步骑枪.xml" itemID="659eadd3-00000327" lastModified="1704901315"/>
           <Include href="area.xml" loadImmediate="false" itemID="657816a5-0000245b" lastModified="1702368933"/>
           <Include href="fs配置素材.xml" itemID="65517658-000006e6" lastModified="1743661950"/>
@@ -162,7 +162,7 @@
           <Include href="wa90/Symbol 11.xml" itemIcon="1" loadImmediate="false" itemID="60abfa2c-000012a6" lastModified="1621883436"/>
           <Include href="wa90/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="60abfaa5-000012c5" lastModified="1621883557"/>
           <Include href="wa90/wa90变形款.xml" itemID="6559d321-000002d5" lastModified="1742978592"/>
-          <Include href="wa90/wa90动画.xml" loadImmediate="false" itemID="6559d54c-0000032c" lastModified="1742983513"/>
+          <Include href="wa90/wa90动画.xml" loadImmediate="false" itemID="6559d54c-0000032c" lastModified="1743911198"/>
           <Include href="wa90/wa管.xml" itemIcon="1" loadImmediate="false" itemID="60abd6f7-00002942" lastModified="1700386803"/>
           <Include href="wa90/激光遮罩.xml" loadImmediate="false" itemID="67e3d076-00002160" lastModified="1742983286"/>
           <Include href="wa90/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="60abd43a-00002933" lastModified="1621873722"/>
@@ -795,6 +795,8 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="545944" publishTime="1743911245"/>
+          <PublishItem publishSize="545956" publishTime="1743911140"/>
           <PublishItem publishSize="546284" publishTime="1743044455"/>
           <PublishItem publishSize="546286" publishTime="1743038733"/>
           <PublishItem publishSize="546155" publishTime="1743038592"/>
@@ -813,7 +815,5 @@
           <PublishItem publishSize="549285" publishTime="1727360137"/>
           <PublishItem publishSize="550247" publishTime="1721575130"/>
           <PublishItem publishSize="551158" publishTime="1719556631"/>
-          <PublishItem publishSize="551553" publishTime="1719476359"/>
-          <PublishItem publishSize="540719" publishTime="1719476209"/>
      </publishHistory>
 </DOMDocument>
