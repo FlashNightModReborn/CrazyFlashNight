@@ -145,4 +145,96 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         root.帧计时器.移除任务(core[config.taskName]);
         return false;
     }
+
+    /**
+     * 处理射击的启动逻辑（主手/副手通用）
+     * 
+     * 职责：
+     * 1. 状态检查：射击中/换弹中状态快速返回
+     * 2. 弹匣容量验证：触发自动换弹逻辑
+     * 3. 射击许可检查：验证是否允许射击
+     * 4. 启动持续射击任务：通过帧计时器驱动射击循环
+     * 
+     * @param core         自机对象的 MovieClip 引用（通常为 this._parent）
+     * @param protagonist  主角功能对象（包含换弹标签、射击速度等属性）
+     * @param params       射击配置参数对象（主副手参数对象）
+     * @param root         全局根引用（用于访问帧计时器等系统）
+     * 
+     * @see ShootCore.continuousShoot  实际执行持续射击的核心逻辑
+     * @see ShootCore.primaryParams    主手射击的标准配置
+     * @see ShootCore.secondaryParams  副手射击的标准配置
+     * 
+     * @example 典型调用方式（主手）：
+     * ShootCore.startShooting(
+     *     _parent, 
+     *     this,
+     *     ShootCore.primaryParams,
+     *     _root
+     * );
+     * 
+     * @internal 关键流程说明：
+     * 1. 通过 params.shootingStateName 获取当前武器的射击状态字段名
+     * 2. 使用 attackMode 动态拼接弹匣容量字段（如"突击弹匣容量"）
+     * 3. 当弹匣打空且满足条件时，调用 protagonist.开始换弹()
+     * 4. 通过帧计时器添加持续射击任务，任务名由 params.taskName 定义
+     * 5. 长射击间隔（>300ms）时添加后摇状态解除任务
+     */
+    
+    public static function startShooting(
+        core:MovieClip,           // 自机对象（原 parent）
+        protagonist:Object,       // 原主角函数对象（原 this）
+        params:Object,            // 主副手参数（primaryParams/secondaryParams）
+        root:Object               // 全局根引用
+    ):Void {
+        // 若正在该状态射击中或正在换弹，直接返回
+        if (core[params.shootingStateName] || protagonist.换弹标签) return;
+
+        // 缓存攻击模式与射击速度
+        var attackMode:String = core.攻击模式;
+        var interval:Number = protagonist.射击速度;
+
+        // 弹匣容量与射击次数键名
+        var magazineCapName:String = attackMode + "弹匣容量";
+        var shootCountName:String = attackMode + "射击次数";
+
+        // 检查弹匣是否打空
+        if (core[shootCountName][core[attackMode]] >= core[magazineCapName]) {
+            // 若剩余弹匣>0 或非控制目标，触发换弹
+            if (protagonist.剩余弹匣数 > 0 || root.控制目标 != core._name) {
+                protagonist.开始换弹();
+            }
+            return;
+        }
+
+        // 检查射击许可标签
+        if (!protagonist.射击许可标签) return;
+
+        // 调用持续射击核心逻辑
+        if (ShootCore.continuousShoot(core, attackMode, interval, params)) {
+            // 添加持续射击任务到帧计时器
+            core[params.taskName] = root.帧计时器.添加生命周期任务(
+                core,
+                "开始射击",
+                ShootCore.continuousShoot, // 直接引用静态方法
+                interval,
+                core,
+                attackMode,
+                interval,
+                params
+            );
+
+            // 若射击间隔较长，添加后摇解除任务
+            if (interval > 300) {
+                root.帧计时器.添加或更新任务(
+                    core,
+                    "结束射击后摇",
+                    function(自机:MovieClip):Void {
+                        自机.射击最大后摇中 = false;
+                    },
+                    300,
+                    core
+                );
+            }
+        }
+    }
 }
