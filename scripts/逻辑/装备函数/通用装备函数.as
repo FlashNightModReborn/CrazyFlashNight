@@ -175,9 +175,17 @@ _root.装备生命周期函数.通用变形初始化 = function(reflector:Object
         triggerFuncParam: {toggleProperty :"通用变形中"}
     };
 
-    if(p.updateloadExecution) _root.装备生命周期函数[p.updateFuncParam.triggerFunc](reflector, p.updateFuncParam.triggerFuncParam);
+    if(reflector.是否为主角) {
+        if(p.updateloadExecution && !_root.装备生命周期函数.globalParams[p.updateloadExecution]) {
+            _root.装备生命周期函数[p.updateFuncParam.triggerFunc](reflector, p.updateFuncParam.triggerFuncParam);
+            _root.装备生命周期函数.globalParams[p.updateloadExecution] = true;
+        }
+    } else {
+        if(p.updateloadExecution) _root.装备生命周期函数[p.updateFuncParam.triggerFunc](reflector, p.updateFuncParam.triggerFuncParam);
+    }
 };
 
+_root.装备生命周期函数.globalParams = {};
 
 _root.装备生命周期函数.通用变形周期 = function(reflector:Object, paramObj:Object)
 {
@@ -260,5 +268,10 @@ _root.装备生命周期函数.自机状态更新 = function(reflector:Object, f
 
 _root.装备生命周期函数.反转自机属性 = function(reflector:Object, funcParam:Object) 
 {
-    reflector.自机[funcParam.toggleProperty] = !reflector.自机[funcParam.toggleProperty];
+    if(reflector.是否为主角) {
+        _root.装备生命周期函数.globalParams[funcParam.toggleProperty] = !_root.装备生命周期函数.globalParams[funcParam.toggleProperty];
+        reflector.自机[funcParam.toggleProperty] = _root.装备生命周期函数.globalParams[funcParam.toggleProperty]
+    } else {
+        reflector.自机[funcParam.toggleProperty] = !reflector.自机[funcParam.toggleProperty];
+    }
 };

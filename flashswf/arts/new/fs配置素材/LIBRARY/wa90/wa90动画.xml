@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wa90/wa90动画" itemID="6559d54c-0000032c" lastModified="1742983513">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="wa90/wa90动画" itemID="6559d54c-0000032c" lastModified="1743911198">
   <timeline>
-    <DOMTimeline name="wa90动画" currentFrame="14">
+    <DOMTimeline name="wa90动画" currentFrame="8">
       <layers>
         <DOMLayer name="图层 19" color="#FF4FFF">
           <frames>
@@ -18,7 +18,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="激光" color="#4F80FF" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="激光" color="#4F80FF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
@@ -233,78 +233,6 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="瞄准镜" color="#FF4FFF" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="3" keyMode="9728">
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="3" duration="2" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
-              <elements>
-                <DOMSymbolInstance libraryItemName="wa90/瞄具" symbolType="graphic" centerPoint3DX="169.9" centerPoint3DY="42.65" loop="loop">
-                  <matrix>
-                    <Matrix a="0.542007446289063" d="0.963211059570313" tx="129.3" ty="26.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="74.65" y="16.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="5" duration="3" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.0952"/>
-                  <Point x="0.1435" y="0.0802"/>
-                  <Point x="0.2175" y="0.1541"/>
-                  <Point x="0.3089" y="0.2455"/>
-                  <Point x="0.4173" y="0.3758"/>
-                  <Point x="0.4961" y="0.4961"/>
-                  <Point x="0.5996" y="0.6541"/>
-                  <Point x="0.6494" y="0.7472"/>
-                  <Point x="0.7378" y="0.8356"/>
-                  <Point x="0.8173" y="0.9152"/>
-                  <Point x="0.874" y="1"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
-              <elements>
-                <DOMSymbolInstance libraryItemName="wa90/瞄具" symbolType="graphic" centerPoint3DX="169.9" centerPoint3DY="20.25" loop="loop">
-                  <matrix>
-                    <Matrix a="0.542007446289063" d="1.18280029296875" tx="129.3"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="74.65" y="16.6"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
-              <elements>
-                <DOMSymbolInstance libraryItemName="wa90/瞄具" symbolType="graphic" centerPoint3DX="173.45" centerPoint3DY="22.5" loop="loop">
-                  <matrix>
-                    <Matrix a="1.3292236328125" d="1.3292236328125" tx="74.1"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="74.65" y="16.65"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-            <DOMFrame index="11" duration="4" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="wa90/瞄具" symbolType="graphic" centerPoint3DX="173.45" centerPoint3DY="25.7" loop="loop">
-                  <matrix>
-                    <Matrix a="1.3292236328125" d="1.3292236328125" tx="74.1" ty="3.2"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point x="74.65" y="16.65"/>
-                  </transformationPoint>
-                </DOMSymbolInstance>
-              </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="双脚架" color="#FF4F4F" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
@@ -358,6 +286,78 @@
                   </matrix>
                   <transformationPoint>
                     <Point y="0.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="瞄准镜" color="#FF4FFF" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="3" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="wa90/瞄具" symbolType="graphic" centerPoint3DX="173.45" centerPoint3DY="55.45" loop="loop">
+                  <matrix>
+                    <Matrix a="0.475967407226563" d="1.3292236328125" tx="137.8" ty="32.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.7" y="16.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.0952"/>
+                  <Point x="0.1435" y="0.0802"/>
+                  <Point x="0.2175" y="0.1541"/>
+                  <Point x="0.3089" y="0.2455"/>
+                  <Point x="0.4173" y="0.3758"/>
+                  <Point x="0.4961" y="0.4961"/>
+                  <Point x="0.5996" y="0.6541"/>
+                  <Point x="0.6494" y="0.7472"/>
+                  <Point x="0.7378" y="0.8356"/>
+                  <Point x="0.8173" y="0.9152"/>
+                  <Point x="0.874" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="wa90/瞄具" symbolType="graphic" centerPoint3DX="173.45" centerPoint3DY="55.45" loop="loop">
+                  <matrix>
+                    <Matrix a="1.3292236328125" d="1.3292236328125" tx="74.1" ty="32.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.65" y="16.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="wa90/瞄具" selected="true" symbolType="graphic" centerPoint3DX="173.45" centerPoint3DY="22.5" loop="loop">
+                  <matrix>
+                    <Matrix a="1.3292236328125" d="1.3292236328125" tx="74.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.65" y="16.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="wa90/瞄具" symbolType="graphic" centerPoint3DX="173.45" centerPoint3DY="25.7" loop="loop">
+                  <matrix>
+                    <Matrix a="1.3292236328125" d="1.3292236328125" tx="74.1" ty="3.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="74.65" y="16.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>
