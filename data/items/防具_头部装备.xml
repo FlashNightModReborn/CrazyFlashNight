@@ -3,6 +3,29 @@
 预留ID区间：15602-15800-->
 <root>
   <item>
+    <id>15602</id>
+    <name>自由骑士头甲</name>
+    <displayname>自由骑士头甲</displayname>
+    <icon>自由骑士头甲</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <weight>2</weight>
+    <price>100000</price>
+    <description>自由骑士铠甲。</description>
+    <level>60</level>
+    <helmet>true</helmet>
+    <equipped>
+      <dressup>男变装-自由骑士头甲</dressup>
+      <hp>370</hp>
+      <mp>500</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>250</knifepower>
+      <punch>0</punch>
+      <defence>700</defence>
+    </equipped>
+  </item>
+  <item>
     <id>15601</id>
     <name>黑犀头甲</name>
     <displayname>黑犀头甲</displayname>
@@ -14,7 +37,6 @@
     <description>黑犀铠甲。</description>
     <level>60</level>
     <helmet>true</helmet>
-    <helmet>false</helmet>
     <equipped>
       <dressup>男变装-黑犀头甲</dressup>
       <hp>500</hp>
@@ -2730,7 +2752,8 @@
       <dressup>男变装-远古忍者盔</dressup>
       <hp>350</hp>
       <mp>300</mp>
-      <knifepower>120</knifepower>
+      <damage>60</damage>
+      <knifepower>60</knifepower>
       <defence>600</defence>
       <bullet>0</bullet>
       <magicdefence>
@@ -3396,7 +3419,6 @@
     <description>芬里尔机甲。</description>
     <level>60</level>
     <helmet>true</helmet>
-    <helmet>false</helmet>
     <equipped>
       <dressup>男变装-芬里尔头甲</dressup>
       <hp>500</hp>

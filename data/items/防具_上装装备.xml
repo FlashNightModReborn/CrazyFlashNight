@@ -3,6 +3,28 @@
 预留ID区间：15202-15400-->
 <root>
   <item>
+    <id>15202</id>
+    <name>自由骑士胸甲</name>
+    <displayname>自由骑士胸甲</displayname>
+    <icon>自由骑士胸甲</icon>
+    <type>防具</type>
+    <use>上装装备</use>
+    <weight>8</weight>
+    <price>100000</price>
+    <description>自由骑士铠甲。</description>
+    <level>60</level>
+    <equipped>
+      <dressup>变装-自由骑士上装</dressup>
+      <hp>370</hp>
+      <mp>360</mp>
+      <damage>0</damage>
+      <gunpower>0</gunpower>
+      <knifepower>350</knifepower>
+      <punch>0</punch>
+      <defence>700</defence>
+    </equipped>
+  </item>
+  <item>
     <id>15201</id>
     <name>黑犀胸甲</name>
     <displayname>黑犀胸甲</displayname>
@@ -3748,7 +3770,8 @@
       <dressup>变装-远古忍者甲</dressup>
       <hp>350</hp>
       <mp>300</mp>
-      <knifepower>120</knifepower>
+      <damage>60</damage>
+      <knifepower>60</knifepower>
       <defence>600</defence>
       <bullet>0</bullet>
       <magicdefence>
