@@ -37,6 +37,7 @@ _root.装备生命周期函数.wa90变形款初始化 = function(reflector:Objec
             triggerFuncParam: {
                 toggleProperty : "wa90变形",
                 toggleInstance : "枪口位置",
+                toggleInstanceLabel : "wa90枪口位置",
                 trueInstance : "枪口位置1",
                 falseInstance : "枪口位置0",
                 instanceContainer : "长枪_引用"
@@ -46,12 +47,10 @@ _root.装备生命周期函数.wa90变形款初始化 = function(reflector:Objec
     
     reflector.instanceContainer = paramObj.updateFuncParam.triggerFuncParam.instanceContainer;
     reflector.toggleInstance = paramObj.updateFuncParam.triggerFuncParam.toggleInstance;
+    reflector.toggleInstanceLabel = paramObj.updateFuncParam.triggerFuncParam.toggleInstanceLabel;
+
     // 调用通用初始化
     _root.装备生命周期函数.通用变形初始化(reflector, paramObj);
-
-    if(reflector.是否为主角) {
-        _root.发布消息(reflector.自机["wa90变形"])
-    }
 };
 
 /**
@@ -59,22 +58,22 @@ _root.装备生命周期函数.wa90变形款初始化 = function(reflector:Objec
  */
 _root.装备生命周期函数.wa90变形款周期 = function(reflector:Object, paramObj:Object) 
 {
-    // 直接调用通用周期
+    // 1) 调用通用变形周期（处理动画帧数等基础逻辑）
     _root.装备生命周期函数.通用变形周期(reflector, paramObj);
+    
+    // 2) 同步实例切换（依赖于模板化初始化时设置的属性）
     var target:MovieClip = reflector.自机;
     var wa90:MovieClip = target[reflector.instanceContainer];
-    wa90[reflector.toggleInstance] = wa90[reflector.instance]
-    wa90.动画.激光._visible = target.攻击模式 == "长枪";
+    wa90[reflector.toggleInstance] = wa90[reflector[reflector.toggleInstanceLabel]];
+    
+    // 3) 利用模板组件切换函数，根据配置控制多个部件的显隐
+    _root.装备生命周期函数[paramObj.actionFunc](reflector, paramObj.actionFuncParam);
 };
+
 
 
 _root.装备生命周期函数.wa90变形款触发函数 = function(reflector:Object, paramObj:Object) 
 {
-    // 直接调用通用周期
-    _root.装备生命周期函数.反转自机属性(reflector, paramObj);
-    var target:MovieClip = reflector.自机;
-    var wa90:MovieClip = target[paramObj.instanceContainer];
-    var instance:MovieClip = target[paramObj.toggleProperty] ? paramObj.trueInstance : paramObj.falseInstance;
-    reflector.instance = instance;
+    _root.装备生命周期函数.通用变形触发函数(reflector, paramObj)
 };
 

@@ -272,3 +272,40 @@ _root.装备生命周期函数.反转自机属性 = function(reflector:Object, f
         reflector.自机[funcParam.toggleProperty] = !reflector.自机[funcParam.toggleProperty];
     }
 };
+
+
+_root.装备生命周期函数.通用变形触发函数 = function(reflector:Object, paramObj:Object) {
+    _root.装备生命周期函数.反转自机属性(reflector, paramObj);
+    
+    var target:MovieClip = reflector.自机;
+    var weapon:MovieClip = target[paramObj.instanceContainer];
+    var instance:String = target[paramObj.toggleProperty] ? paramObj.trueInstance : paramObj.falseInstance;
+    reflector[paramObj.toggleInstanceLabel] = instance;
+};
+
+_root.装备生命周期函数.模板组件切换 = function(reflector:Object, paramObj:Object) {
+    // 1. 获取目标影片剪辑及其容器
+    var target:MovieClip = reflector.自机;
+    var container:MovieClip = target[reflector.instanceContainer];
+    
+    // 2. 根据 XML 传入的参数确定使用的条件检测函数，默认使用 "自机状态检测"
+    var matchFuncName:String = paramObj.matchFunc || "自机状态检测";
+    var matchFunc:Function = _root.装备生命周期函数[matchFuncName];
+    
+    // 3. 构造条件对象，从 XML 中获取 matchConditions 和 funcType
+    var condition:Object = {
+        matchConditions: paramObj.matchConditions,
+        funcType: paramObj.funcType
+    };
+    
+    // 4. 进行条件检测，决定是否显示该部件
+    var isVisible:Boolean = matchFunc(reflector, condition);
+    
+    // 5. 从 XML 参数中获取需要控制的容器名称和部件名称，默认分别为 "动画" 和 "激光"
+    var containerName:String = paramObj.containerName || "动画";
+    var componentName:String = paramObj.componentName || "激光";
+    
+    // 6. 设置对应部件的 _visible 属性
+    container[containerName][componentName]._visible = isVisible;
+};
+
