@@ -39,6 +39,7 @@
             var cycle = attributes.cycle;    //周期函数
             var skill = attributes.skill;    //兼容主动战技
             var bullet = attributes.bullet;  //自动配置子弹 
+            var data = attributes.data;      //自动配置备用武器数据
 
             var 标签名 = 装备名称 + "_" + cycle.cycleRoutines + each; // 构建标签名，用于周期性任务的唯一标识
 
@@ -94,6 +95,12 @@
                 }
 
                 //_root.服务器.发布服务器消息("装载配置完成 " + _root.常用工具函数.对象转JSON(反射对象.子弹配置, true));
+            }
+
+
+            if(data)
+            {       
+                反射对象.data = data;
             }
 
             if(init)
