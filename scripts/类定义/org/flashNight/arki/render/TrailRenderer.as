@@ -47,14 +47,15 @@ class org.flashNight.arki.render.TrailRenderer {
     /**
      * 初始化可用拖影样式（颜色、透明度、线宽等）
      */
+
     private function _initStyles():Void {
         _styles = {
             预设: {
-                color: 0xFFFFFF,        // 填充颜色
-                lineColor: 0xFFFFFF,    // 边框颜色
-                lineWidth: 2,           // 边框线宽
-                fillOpacity: 100,       // 填充透明度（0~100）
-                lineOpacity: 100        // 边框透明度（0~100）
+                color: 0xFFFFFF,
+                lineColor: 0xFFFFFF,
+                lineWidth: 2,
+                fillOpacity: 100,
+                lineOpacity: 100
             },
             白色蓝框: {
                 color: 0xFFFFFF,
@@ -83,9 +84,108 @@ class org.flashNight.arki.render.TrailRenderer {
                 lineWidth: 2,
                 fillOpacity: 25,
                 lineOpacity: 25
+            },
+            金色余辉: {
+                color: 0xFFE066,
+                lineColor: 0xFFAA00,
+                lineWidth: 2,
+                fillOpacity: 60,
+                lineOpacity: 80
+            },
+            紫电残影: {
+                color: 0xBB66FF,
+                lineColor: 0x9933FF,
+                lineWidth: 2,
+                fillOpacity: 40,
+                lineOpacity: 70
+            },
+            烈焰残焰: {
+                color: 0xFF4400,
+                lineColor: 0xFF2200,
+                lineWidth: 2,
+                fillOpacity: 70,
+                lineOpacity: 80
+            },
+            冰蓝碎光: {
+                color: 0x99FFFF,
+                lineColor: 0x66CCFF,
+                lineWidth: 2,
+                fillOpacity: 40,
+                lineOpacity: 60
+            },
+            黑夜虚影: {
+                color: 0x222222,
+                lineColor: 0x444444,
+                lineWidth: 2,
+                fillOpacity: 30,
+                lineOpacity: 40
+            },
+            粉光幻影: {
+                color: 0xFFB7E8,
+                lineColor: 0xFF70C0,
+                lineWidth: 2,
+                fillOpacity: 50,
+                lineOpacity: 60
+            },
+            翠绿疾影: {
+                color: 0x66FF66,
+                lineColor: 0x33CC33,
+                lineWidth: 2,
+                fillOpacity: 50,
+                lineOpacity: 70
+            },
+            灰白残像: {
+                color: 0xCCCCCC,
+                lineColor: 0xAAAAAA,
+                lineWidth: 2,
+                fillOpacity: 40,
+                lineOpacity: 60
+            },
+            幽红幻刃: {
+                color: 0xFF3355,
+                lineColor: 0x990022,
+                lineWidth: 2,
+                fillOpacity: 60,
+                lineOpacity: 80
+            },
+            光翼尾痕: {
+                color: 0xFFFFFF,
+                lineColor: 0xE6E6FF,
+                lineWidth: 2,
+                fillOpacity: 80,
+                lineOpacity: 90
+            },
+            金属残影: {
+                color: 0xCCCCCC,
+                lineColor: 0x999999,
+                lineWidth: 2,
+                fillOpacity: 60,
+                lineOpacity: 80
+            },
+            烈日金焰: {
+                color: 0xFFDD00,
+                lineColor: 0xFF9900,
+                lineWidth: 2,
+                fillOpacity: 70,
+                lineOpacity: 90
+            },
+            翠影风舞: {
+                color: 0xA0FFB0,
+                lineColor: 0x40CC80,
+                lineWidth: 2,
+                fillOpacity: 50,
+                lineOpacity: 60
+            },
+            末日虚光: {
+                color: 0x330033,
+                lineColor: 0x990099,
+                lineWidth: 2,
+                fillOpacity: 35,
+                lineOpacity: 50
             }
         };
     }
+
 
     // --- 主功能入口 ---
 
