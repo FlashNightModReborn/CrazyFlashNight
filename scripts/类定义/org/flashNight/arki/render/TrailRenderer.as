@@ -1,4 +1,6 @@
-﻿class org.flashNight.arki.render.TrailRenderer
+﻿import org.flashNight.arki.render.*;
+
+class org.flashNight.arki.render.TrailRenderer
 {
     // 单例引用
     private static var _instance:TrailRenderer;
@@ -189,7 +191,7 @@
         var lineAlpha:Number = style.线条透明度 * (alphaValue / 100);
 
         // 交给残影系统做实际绘制（合批、渲染优化等由其内部实现）
-        _root.残影系统.绘制形状(
+        VectorAfterimageRenderer.instance.drawShape(
             quadPoints,
             style.颜色,
             style.线条颜色,

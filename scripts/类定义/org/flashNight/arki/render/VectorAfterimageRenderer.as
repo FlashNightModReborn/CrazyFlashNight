@@ -8,6 +8,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     private static var DEFAULT_SHADOW_COUNT:Number = 5;
     private static var FRAME_INTERVAL:Number = 1;
     private static var BASE_ALPHA:Number = 100;
+
+    public static var instance:VectorAfterimageRenderer = new VectorAfterimageRenderer();
     
     // 对象池管理
     private var _canvasPool:Array;
