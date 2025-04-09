@@ -45,7 +45,7 @@ class org.flashNight.arki.render.TrailRenderer {
      */
     private function TrailRenderer() {
         this._trackRecords = {};          // 创建轨迹记录容器
-        this._maxFrames = 5;              // 默认轨迹历史帧数限制
+        this._maxFrames = 3;              // 默认轨迹历史帧数限制
         this._movementThreshold = 5.0;    // 最小差异阈值（单位：像素）
         this._movementThresholdSqr = this._movementThreshold * this._movementThreshold;
     }
@@ -109,8 +109,8 @@ class org.flashNight.arki.render.TrailRenderer {
             return;
         }
         
-        // 超过 30 帧未更新，则清空历史轨迹（避免突变造成拖影跳变）
-        if (currentFrame - record._lastFrame > 30) {
+        // 超过 10 帧未更新，则清空历史轨迹（避免突变造成拖影跳变）
+        if (currentFrame - record._lastFrame > 10) {
             for (i = 0; i < len; i++) {
                 // 通过环形队列的 clear 方法重置数据
                 record[i].edge1.clear(edgeArray[i].edge1);

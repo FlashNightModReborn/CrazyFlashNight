@@ -178,7 +178,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     private function calculateCumulativeMatrix(target:MovieClip):Matrix {
         var matrix:Matrix = new Matrix();
         var current:MovieClip = target;
-        while (current && current != _root.gameworld) {
+        while (current && current != _root.gameworld.deadbody) {
             matrix.concat(current.transform.matrix);
             current = current._parent;
         }
