@@ -542,6 +542,19 @@
       <mp>0</mp>
       <defence>50</defence>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>通用刀光初始化</initRoutines>
+          <initParam>
+            <basicStyle>落日鎏金</basicStyle>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用刀光周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>420</id>
@@ -565,6 +578,19 @@
       <mp>100</mp>
       <defence>99</defence>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>通用刀光初始化</initRoutines>
+          <initParam>
+            <basicStyle>薄暮幽蓝</basicStyle>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用刀光周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>421</id>
@@ -741,6 +767,19 @@
       <mp>0</mp>
       <defence>0</defence>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>通用刀光初始化</initRoutines>
+          <initParam>
+            <basicStyle>烈焰残焰</basicStyle>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用刀光周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>427</id>
@@ -1139,6 +1178,19 @@
       <lazymiss>20</lazymiss>
       <damagetype>魔法</damagetype>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>通用刀光初始化</initRoutines>
+          <initParam>
+            <basicStyle>粉光幻影</basicStyle>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用刀光周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>564</id>
@@ -3826,6 +3878,19 @@
       <lazymiss>25</lazymiss>
       <damagetype>魔法</damagetype>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>通用刀光初始化</initRoutines>
+          <initParam>
+            <basicStyle>粉光幻影</basicStyle>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用刀光周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>1525</id>

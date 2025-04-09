@@ -50,11 +50,11 @@
         <lineOpacity>70</lineOpacity>
     </style>
     <style name="烈焰残焰">
-        <color>0xFF4400</color>
+        <color>0xFF2200</color>
         <lineColor>0xFF2200</lineColor>
         <lineWidth>2</lineWidth>
-        <fillOpacity>70</fillOpacity>
-        <lineOpacity>80</lineOpacity>
+        <fillOpacity>40</fillOpacity>
+        <lineOpacity>60</lineOpacity>
     </style>
     <style name="冰蓝碎光">
         <color>0xD9EEF0</color>
@@ -148,8 +148,8 @@
         <lineOpacity>60</lineOpacity>
     </style>
     <style name="薄暮幽蓝">
-        <color>0x5566AA</color>
-        <lineColor>0x334477</lineColor>
+        <color>0x6600FF</color>
+        <lineColor>0x6571F0</lineColor>
         <lineWidth>2</lineWidth>
         <fillOpacity>40</fillOpacity>
         <lineOpacity>55</lineOpacity>
@@ -238,4 +238,12 @@
         <fillOpacity>50</fillOpacity>
         <lineOpacity>70</lineOpacity>
     </style>
+    <style name="科技白蓝光">
+        <color>0xFFFFFF</color>             <!-- 内部主色：能量核心白 -->
+        <lineColor>0x4EC9FF</lineColor>     <!-- 边缘发光色：偏电蓝/青蓝，和护手色呼应 -->
+        <lineWidth>3</lineWidth>            <!-- 略微粗一些，突出轮廓感 -->
+        <fillOpacity>80</fillOpacity>       <!-- 让能量感更明显 -->
+        <lineOpacity>70</lineOpacity>       <!-- 发光外轮廓稍弱，避免抢镜 -->
+    </style>
+
 </trailStyles>
