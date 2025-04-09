@@ -1,6 +1,7 @@
 ﻿// 文件路径: org/flashNight/arki/render/VectorAfterimageRenderer.as
 import flash.geom.*;
 import org.flashNight.neur.Event.*;
+import org.flashNight.sara.util.*;
 
 /**
  * 矢量残影渲染器 - 为动态对象创建平滑渐隐的拖尾/残影效果
@@ -329,20 +330,19 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      */
     private function renderShape(canvas:MovieClip, points:Array, 
                                fillColor:Number, fillAlpha:Number):Void {
+        var len:Number = points.length;
+        if (len < 2) return;
         canvas.beginFill(fillColor || 0, fillAlpha || 100);
-        drawPath(canvas, points);
+
+        var i:Number = 1;
+        var p0:Vector = points[0];
+        var prev:Vector = p0;
+        canvas.moveTo(prev.x, prev.y);
+
+        do {
+            var p:Vector = points[i % len]; // 包括闭合那一笔
+            canvas.lineTo(p.x, p.y);
+        } while (++i <= len); // i = len 时，p = points[0]，闭合
         canvas.endFill();
-    }
-    
-    /**
-     * 绘制闭合路径
-     * @private
-     */
-    private function drawPath(canvas:MovieClip, points:Array):Void {
-        canvas.moveTo(points[0].x, points[0].y);
-        for (var i:Number = 1; i < points.length; i++) {
-            canvas.lineTo(points[i].x, points[i].y);
-        }
-        canvas.lineTo(points[0].x, points[0].y);
     }
 }
