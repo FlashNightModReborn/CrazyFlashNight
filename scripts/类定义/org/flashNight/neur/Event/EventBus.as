@@ -101,6 +101,7 @@ class org.flashNight.neur.Event.EventBus {
         var funcID:String = String(Dictionary.getStaticUID(callback));
 
         if (funcToID[funcID] != undefined) {
+            // _root.发布消息("No callback StaticUID");
             return;
         }
 

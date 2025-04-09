@@ -297,3 +297,22 @@ _root.装备生命周期函数.模板组件切换 = function(reflector:Object, p
 
     container[containerName][componentName]._visible = isVisible;
 };
+
+
+_root.装备生命周期函数.通用刀光初始化 = function(reflector, paramObj) 
+{
+   reflector.basicStyle = paramObj.basicStyle ? paramObj.basicStyle : "白色蓝框";
+
+};
+
+_root.装备生命周期函数.通用刀光周期 = function(reflector, paramObj) 
+{
+   _root.装备生命周期函数.移除异常周期函数(reflector);
+   var 自机 = reflector.自机;
+
+   if(_root.兵器使用检测(自机))
+   {
+      _root.刀光系统.刀引用绘制刀光(自机, 自机.刀_引用, reflector.basicStyle);
+   }
+
+};
