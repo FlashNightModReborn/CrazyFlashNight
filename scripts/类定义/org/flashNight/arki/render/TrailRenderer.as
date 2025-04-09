@@ -1,4 +1,6 @@
 ﻿import org.flashNight.arki.render.*;
+import org.flashNight.gesh.xml.LoadXml.*;
+import org.flashNight.gesh.object.*;
 
 /**
  * TrailRenderer 拖影渲染器（单例）
@@ -28,7 +30,6 @@ class org.flashNight.arki.render.TrailRenderer {
      * 私有构造函数，禁止外部直接创建实例，请使用 getInstance()
      */
     private function TrailRenderer() {
-        _initStyles();                // 初始化默认样式
         _trackRecords = {};          // 创建轨迹记录容器
         _maxFrames = 5;              // 默认轨迹历史帧数限制
     }
@@ -48,142 +49,25 @@ class org.flashNight.arki.render.TrailRenderer {
      * 初始化可用拖影样式（颜色、透明度、线宽等）
      */
 
-    private function _initStyles():Void {
-        _styles = {
-            预设: {
-                color: 0xFFFFFF,
-                lineColor: 0xFFFFFF,
-                lineWidth: 2,
-                fillOpacity: 100,
-                lineOpacity: 100
-            },
-            白色蓝框: {
-                color: 0xFFFFFF,
-                lineColor: 0x4FB6FF,
-                lineWidth: 2,
-                fillOpacity: 50,
-                lineOpacity: 50
-            },
-            红色透明: {
-                color: 0xFF6666,
-                lineColor: 0xFF6666,
-                lineWidth: 2,
-                fillOpacity: 50,
-                lineOpacity: 50
-            },
-            蓝色魅影: {
-                color: 0x4DE6FF,
-                lineColor: 0x4FB6FF,
-                lineWidth: 2,
-                fillOpacity: 50,
-                lineOpacity: 50
-            },
-            蓝色幽灵: {
-                color: 0x74EBFF,
-                lineColor: 0x74EBFF,
-                lineWidth: 2,
-                fillOpacity: 25,
-                lineOpacity: 25
-            },
-            金色余辉: {
-                color: 0xFFE066,
-                lineColor: 0xFFAA00,
-                lineWidth: 2,
-                fillOpacity: 60,
-                lineOpacity: 80
-            },
-            紫电残影: {
-                color: 0xBB66FF,
-                lineColor: 0x9933FF,
-                lineWidth: 2,
-                fillOpacity: 40,
-                lineOpacity: 70
-            },
-            烈焰残焰: {
-                color: 0xFF4400,
-                lineColor: 0xFF2200,
-                lineWidth: 2,
-                fillOpacity: 70,
-                lineOpacity: 80
-            },
-            冰蓝碎光: {
-                color: 0x99FFFF,
-                lineColor: 0x66CCFF,
-                lineWidth: 2,
-                fillOpacity: 40,
-                lineOpacity: 60
-            },
-            黑夜虚影: {
-                color: 0x222222,
-                lineColor: 0x444444,
-                lineWidth: 2,
-                fillOpacity: 30,
-                lineOpacity: 40
-            },
-            粉光幻影: {
-                color: 0xFFB7E8,
-                lineColor: 0xFF70C0,
-                lineWidth: 2,
-                fillOpacity: 50,
-                lineOpacity: 60
-            },
-            翠绿疾影: {
-                color: 0x66FF66,
-                lineColor: 0x33CC33,
-                lineWidth: 2,
-                fillOpacity: 50,
-                lineOpacity: 70
-            },
-            灰白残像: {
-                color: 0xCCCCCC,
-                lineColor: 0xAAAAAA,
-                lineWidth: 2,
-                fillOpacity: 40,
-                lineOpacity: 60
-            },
-            幽红幻刃: {
-                color: 0xFF3355,
-                lineColor: 0x990022,
-                lineWidth: 2,
-                fillOpacity: 60,
-                lineOpacity: 80
-            },
-            光翼尾痕: {
-                color: 0xFFFFFF,
-                lineColor: 0xE6E6FF,
-                lineWidth: 2,
-                fillOpacity: 80,
-                lineOpacity: 90
-            },
-            金属残影: {
-                color: 0xCCCCCC,
-                lineColor: 0x999999,
-                lineWidth: 2,
-                fillOpacity: 60,
-                lineOpacity: 80
-            },
-            烈日金焰: {
-                color: 0xFFDD00,
-                lineColor: 0xFF9900,
-                lineWidth: 2,
-                fillOpacity: 70,
-                lineOpacity: 90
-            },
-            翠影风舞: {
-                color: 0xA0FFB0,
-                lineColor: 0x40CC80,
-                lineWidth: 2,
-                fillOpacity: 50,
-                lineOpacity: 60
-            },
-            末日虚光: {
-                color: 0x330033,
-                lineColor: 0x990099,
-                lineWidth: 2,
-                fillOpacity: 35,
-                lineOpacity: 50
-            }
-        };
+    public function initStyles():Void {
+        var loader:TrailStylesLoader = TrailStylesLoader.getInstance();
+        var self = this;
+        loader.loadStyles(function(styles:Object):Void {
+            self._styles = styles
+            // root.服务器.发布服务器消息("loader " + loader);
+            //_root.服务器.发布服务器消息("TrailRenderer: 样式加载成功！" + ObjectUtil.toString(self._styles));
+        }, function():Void {
+            _root.服务器.发布服务器消息("TrailRenderer: 样式加载失败，使用默认样式！");
+            self._styles = {
+                预设: {
+                    color: 0xFFFFFF,
+                    lineColor: 0xFFFFFF,
+                    lineWidth: 2,
+                    fillOpacity: 100,
+                    lineOpacity: 100
+                }
+            };
+        });
     }
 
 

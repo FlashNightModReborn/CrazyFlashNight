@@ -30,36 +30,26 @@ class org.flashNight.gesh.xml.LoadXml.TrailStylesLoader extends BaseXMLLoader {
      */
     public function loadStyles(onLoadHandler:Function, onErrorHandler:Function):Void {
         this.load(function(data:Object):Void {
-            trace("TrailStylesLoader: 文件加载成功！");
-            this.styles = parseStyles(data);
-            trace("Parsed Styles: " + ObjectUtil.toString(this.styles)); // 调试输出
+            // _root.服务器.发布服务器消息("TrailStylesLoader: 文件加载成功！");
+            var s:Object = data.style;
+            var ts:Object = {};
+            for (var Key:String in s) {
+                var st:Object = s[Key];
+                ts[st.name] = {
+                    color: st.color,
+                    lineColor: st.lineColor,
+                    lineWidth: st.lineWidth,
+                    fillOpacity: st.fillOpacity,
+                    lineOpacity: st.lineOpacity
+                }
+            }
+            this.styles = ts;
+            // _root.服务器.发布服务器消息("Parsed Styles: " + ObjectUtil.toString(ts)); // 调试输出
             if (onLoadHandler != null) onLoadHandler(this.styles);
         }, function():Void {
-            trace("TrailStylesLoader: 文件加载失败！");
+            _root.服务器.发布服务器消息("TrailStylesLoader: 文件加载失败！");
             if (onErrorHandler != null) onErrorHandler();
         });
-    }
-
-    /**
-     * 解析 XML 数据为样式对象。
-     * @param data 解析后的 XML 数据。
-     * @return 样式对象。
-     */
-    private function parseStyles(data:Object):Object {
-        var styles:Object = {};
-        var styleNodes:Array = data.trailStyles.style;
-        for (var i:Number = 0; i < styleNodes.length; i++) {
-            var styleNode:Object = styleNodes[i];
-            var styleName:String = styleNode.attributes.name;
-            styles[styleName] = {
-                color: parseInt(styleNode.color, 16),
-                lineColor: parseInt(styleNode.lineColor, 16),
-                lineWidth: Number(styleNode.lineWidth),
-                fillOpacity: Number(styleNode.fillOpacity),
-                lineOpacity: Number(styleNode.lineOpacity)
-            };
-        }
-        return styles;
     }
 
     /**

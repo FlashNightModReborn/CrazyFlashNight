@@ -42,7 +42,7 @@ _root.刀光系统.绑定并绘制刀光 = function(mc:MovieClip, style:String) 
     }
     if (刀口集合.length > 0) {
         // 发射者ID可用影片剪辑名称区分
-        org.flashNight.arki.render.TrailRenderer.getInstance().addTrailData(mc._name, 刀口集合, style);
+        TrailRenderer.getInstance().addTrailData(mc._name, 刀口集合, style);
     }
 };
 
@@ -61,7 +61,7 @@ _root.刀光系统.刀引用绘制刀光 = function(自机:MovieClip, 影片剪�
     }
     if (刀口集合.length > 0) {
         // 将 自机._name 作为发射者ID
-        org.flashNight.arki.render.TrailRenderer.getInstance().addTrailData(自机._name, 刀口集合, 刀光样式名);
+        TrailRenderer.getInstance().addTrailData(自机._name, 刀口集合, 刀光样式名);
     }
 };
 
@@ -69,6 +69,7 @@ _root.刀光系统.刀引用绘制刀光 = function(自机:MovieClip, 影片剪�
 // 清理内存，转调 TrailRenderer
 //-----------------------------------------------------------------------
 _root.刀光系统.清理内存 = function(forceCleanAll:Boolean, maxInactiveFrames:Number) {
-    return org.flashNight.arki.render.TrailRenderer.getInstance().cleanMemory(forceCleanAll, maxInactiveFrames);
+    return TrailRenderer.getInstance().cleanMemory(forceCleanAll, maxInactiveFrames);
 };
 
+TrailRenderer.getInstance().initStyles();
