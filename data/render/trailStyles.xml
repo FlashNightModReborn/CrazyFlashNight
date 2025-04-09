@@ -57,11 +57,11 @@
         <lineOpacity>80</lineOpacity>
     </style>
     <style name="冰蓝碎光">
-        <color>0x99FFFF</color>
-        <lineColor>0x66CCFF</lineColor>
+        <color>0xD9EEF0</color>
+        <lineColor>0xA2E9F0</lineColor>
         <lineWidth>2</lineWidth>
-        <fillOpacity>40</fillOpacity>
-        <lineOpacity>60</lineOpacity>
+        <fillOpacity>20</fillOpacity>
+        <lineOpacity>40</lineOpacity>
     </style>
     <style name="黑夜虚影">
         <color>0x222222</color>
@@ -78,10 +78,10 @@
         <lineOpacity>60</lineOpacity>
     </style>
     <style name="翠绿疾影">
-        <color>0x66FF66</color>
+        <color>0xA6FFA6</color>
         <lineColor>0x33CC33</lineColor>
         <lineWidth>2</lineWidth>
-        <fillOpacity>50</fillOpacity>
+        <fillOpacity>35</fillOpacity>
         <lineOpacity>70</lineOpacity>
     </style>
     <style name="灰白残像">
@@ -92,11 +92,11 @@
         <lineOpacity>60</lineOpacity>
     </style>
     <style name="幽红幻刃">
-        <color>0xFF3355</color>
-        <lineColor>0x990022</lineColor>
-        <lineWidth>2</lineWidth>
-        <fillOpacity>60</fillOpacity>
-        <lineOpacity>80</lineOpacity>
+        <color>0xFF0000</color>
+        <lineColor>0xFF0000</lineColor>
+        <lineWidth>0.5</lineWidth>
+        <fillOpacity>20</fillOpacity>
+        <lineOpacity>25</lineOpacity>
     </style>
     <style name="光翼尾痕">
         <color>0xFFFFFF</color>
@@ -132,5 +132,110 @@
         <lineWidth>2</lineWidth>
         <fillOpacity>35</fillOpacity>
         <lineOpacity>50</lineOpacity>
+    </style>
+    <style name="晨曦暖光">
+        <color>0xFFEEBB</color>
+        <lineColor>0xFFCC88</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>70</fillOpacity>
+        <lineOpacity>85</lineOpacity>
+    </style>
+    <style name="星河流影">
+        <color>0x99AAFF</color>
+        <lineColor>0x6677CC</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>45</fillOpacity>
+        <lineOpacity>60</lineOpacity>
+    </style>
+    <style name="薄暮幽蓝">
+        <color>0x5566AA</color>
+        <lineColor>0x334477</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>40</fillOpacity>
+        <lineOpacity>55</lineOpacity>
+    </style>
+    <style name="樱霞碎梦">
+        <color>0xFF99AA</color>
+        <lineColor>0xDD7788</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>55</fillOpacity>
+        <lineOpacity>70</lineOpacity>
+    </style>
+    <style name="银月流光">
+        <color>0xDDDDFF</color>
+        <lineColor>0xBBBBEE</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>65</fillOpacity>
+        <lineOpacity>80</lineOpacity>
+    </style>
+    <style name="幽海深蓝">
+        <color>0x335588</color>
+        <lineColor>0x113366</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>30</fillOpacity>
+        <lineOpacity>50</lineOpacity>
+    </style>
+    <style name="落日鎏金">
+        <color>0xFFBB55</color>
+        <lineColor>0xFF8822</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>75</fillOpacity>
+        <lineOpacity>90</lineOpacity>
+    </style>
+    <style name="极光幻舞">
+        <color>0x66FFEE</color>
+        <lineColor>0x22CCBB</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>50</fillOpacity>
+        <lineOpacity>65</lineOpacity>
+    </style>
+    <style name="暗紫星辰">
+        <color>0x553377</color>
+        <lineColor>0x331155</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>35</fillOpacity>
+        <lineOpacity>45</lineOpacity>
+    </style>
+    <style name="青岚之影">
+        <color>0x77DDBB</color>
+        <lineColor>0x449988</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>55</fillOpacity>
+        <lineOpacity>70</lineOpacity>
+    </style>
+    <style name="霜雪微光">
+        <color>0xE0F8FF</color>
+        <lineColor>0xA0C8DD</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>60</fillOpacity>
+        <lineOpacity>75</lineOpacity>
+    </style>
+    <style name="琥珀流焰">
+        <color>0xFFAA33</color>
+        <lineColor>0xCC7711</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>70</fillOpacity>
+        <lineOpacity>85</lineOpacity>
+    </style>
+    <style name="迷雾淡灰">
+        <color>0xAABBCC</color>
+        <lineColor>0x8899AA</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>40</fillOpacity>
+        <lineOpacity>55</lineOpacity>
+    </style>
+    <style name="苍穹天青">
+        <color>0x55AAFF</color>
+        <lineColor>0x2277CC</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>45</fillOpacity>
+        <lineOpacity>65</lineOpacity>
+    </style>
+    <style name="碧影翡翠">
+        <color>0x44FF99</color>
+        <lineColor>0x11CC66</lineColor>
+        <lineWidth>2</lineWidth>
+        <fillOpacity>50</fillOpacity>
+        <lineOpacity>70</lineOpacity>
     </style>
 </trailStyles>

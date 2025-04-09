@@ -595,6 +595,19 @@
       <mp>90</mp>
       <defence>20</defence>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>通用刀光初始化</initRoutines>
+          <initParam>
+            <basicStyle>幽红幻刃</basicStyle>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用刀光周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>422</id>
@@ -625,6 +638,19 @@
       <mp>199</mp>
       <defence>1</defence>
     </equipped>
+    <lifecycle>
+      <attr_0>
+        <init>
+          <initRoutines>通用刀光初始化</initRoutines>
+          <initParam>
+            <basicStyle>翠绿疾影</basicStyle>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>通用刀光周期</cycleRoutines>
+        </cycle>
+      </attr_0>
+    </lifecycle>
   </item>
   <item>
     <id>423</id>
