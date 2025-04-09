@@ -20,9 +20,9 @@
           <DOMFolderItem name="0.防具相关/异形相关" itemID="6690efdb-000025dc"/>
           <DOMFolderItem name="0.防具相关/远古诛神" itemID="6690efcd-000025a7"/>
           <DOMFolderItem name="0.防具相关/诛神套装" itemID="6690e33e-00001172"/>
-          <DOMFolderItem name="1.枪械相关" itemID="6690e808-0000178c"/>
+          <DOMFolderItem name="1.枪械相关" itemID="6690e808-0000178c" isExpanded="true"/>
           <DOMFolderItem name="1.枪械相关/KRISS相关" itemID="6690e0e7-00000faa"/>
-          <DOMFolderItem name="1.枪械相关/手枪" itemID="6690e201-00001063"/>
+          <DOMFolderItem name="1.枪械相关/手枪" itemID="6690e201-00001063" isExpanded="true"/>
           <DOMFolderItem name="1.枪械相关/手枪/P90战术版" itemID="6690e0ce-00000f88"/>
           <DOMFolderItem name="1.枪械相关/手枪/UZI战术版" itemID="6690e023-00000eed" isExpanded="true"/>
           <DOMFolderItem name="1.枪械相关/手枪/极品UZI战术版" itemID="6690e016-00000ed1" isExpanded="true"/>
@@ -48,6 +48,10 @@
           <DOMFolderItem name="3.位图相关" itemID="6690e84b-000017e9"/>
           <DOMFolderItem name="3.音效相关" itemID="6690f591-00003200"/>
           <DOMFolderItem name="4.发型相关" itemID="6690f59e-00003201"/>
+          <DOMFolderItem name="Accessories" itemID="67f69611-0000255d"/>
+          <DOMFolderItem name="Accessories/Others" itemID="67f69611-0000255e"/>
+          <DOMFolderItem name="Accessories/Others/Images" itemID="67f69611-0000255f"/>
+          <DOMFolderItem name="Pins" itemID="67f69611-00002561"/>
           <DOMFolderItem name="shape" itemID="6751eae0-00001373"/>
           <DOMFolderItem name="待整理防具相关汇总" itemID="6690f7ce-000036b2"/>
           <DOMFolderItem name="方舟指挥官" itemID="6692cad4-000036bf"/>
@@ -71,17 +75,18 @@
           <DOMFolderItem name="消耗道具相关/4.礼包类" itemID="66a5ea18-000017d2"/>
           <DOMFolderItem name="消耗道具相关/4.礼包类/红包" itemID="66a5eaa9-000017dc"/>
           <DOMFolderItem name="消耗道具相关/4.礼包类/强化石" itemID="66a5eace-000017e3"/>
+          <DOMFolderItem name="杂七杂八" itemID="67f69611-00002563"/>
           <DOMFolderItem name="主角身体元件副本" itemID="67bc22a2-00001315"/>
      </folders>
      <fonts>
-          <DOMFontItem name="Font 28" itemID="668e7c19-000001d1" font="MicrosoftYaHei" size="0" id="28" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
-          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
-          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
-          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
-          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
-          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
-          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
           <DOMFontItem name="Font 4557" itemID="668e7c19-000001df" font="SimHei" size="0" id="4557" embeddedCharacters="ACEHIMPR"/>
+          <DOMFontItem name="Font 5441" itemID="668e7c19-000001dd" font="ArialMT" size="0" id="5441" embeddedCharacters=" -.01235:ACEGHIMNRSacdeilmnortwxz"/>
+          <DOMFontItem name="Font 5437" itemID="668e7c19-000001db" font="Arial-BoldMT" size="0" id="5437" embeddedCharacters=" ./01348ACDEGIKLMNOPRSTUYi"/>
+          <DOMFontItem name="Font 5407" itemID="668e7c19-000001d9" font="Verdana-Bold" size="0" id="5407" embeddedCharacters="-ACFNRS"/>
+          <DOMFontItem name="Font 621" itemID="668e7c19-000001d7" font="Masque" size="0" id="621" embeddedCharacters=" !ACEGLRST"/>
+          <DOMFontItem name="Font 323" itemID="668e7c19-000001d5" font="SimSun" size="0" id="323" embeddedCharacters="127AMPX上中之书仔令份会伴作信僵公关兵军凤击制剂前剑功加动升厂同命品囊团园图地基堂士声备套子字定密小尘尸层属工弹强彻德徽息情战手技抗报拼控提摇攻效文新无明普最未本果枪标样械气浮液滚火灰炎炸烟焰爆片牛物特生画白的盘知硬碎示秘移空站章箭精素级纸线翅胶能致花药虎血装证过近迹通里金铁铳链镜阀雷雾震项风飙飞黑鼠龙（）"/>
+          <DOMFontItem name="Font 259" itemID="668e7c19-000001d3" font="MicrosoftYaHei" size="0" id="259" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
+          <DOMFontItem name="Font 28" itemID="668e7c19-000001d1" font="MicrosoftYaHei" size="0" id="28" embeddedCharacters=",.INabcdefghijklmnoprstuvwy力援支火"/>
      </fonts>
      <media>
           <DOMBitmapItem name="3.位图相关/bitmap2934.png" itemID="678d1911-00000d2f" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap2934.png" sourceLastImported="1737536156" externalFileCRC32="1586711525" externalFileSize="4706" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap2934.png" bitmapDataHRef="M 118 1720533000.dat" frameRight="640" frameBottom="1020"/>
@@ -93,6 +98,7 @@
           <DOMBitmapItem name="3.位图相关/bitmap4719.png" itemID="678d1911-00000d4a" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4719.png" sourceLastImported="1737536156" externalFileCRC32="2125865175" externalFileSize="35928" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4719.png" bitmapDataHRef="M 174 1720533000.dat" frameRight="6460" frameBottom="4620"/>
           <DOMBitmapItem name="3.位图相关/bitmap4728.png" itemID="678d1911-00000d4b" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4728.png" sourceLastImported="1737536156" externalFileCRC32="365946419" externalFileSize="11610" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4728.png" bitmapDataHRef="M 175 1720533000.dat" frameRight="1260" frameBottom="2900"/>
           <DOMBitmapItem name="3.位图相关/bitmap4729.png" itemID="678d1911-00000d4c" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.位图相关/bitmap4729.png" sourceLastImported="1737536156" externalFileCRC32="3425454559" externalFileSize="17987" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="3.位图相关/bitmap4729.png" bitmapDataHRef="M 176 1720533000.dat" frameRight="2040" frameBottom="2780"/>
+          <DOMBitmapItem name="Accessories/Others/Images/Carbon fiber" itemID="5fb8226d-0000080f" sourceExternalFilepath="H:/Downloads/929696.jpg" sourceLastImported="1605902957" allowSmoothing="true" quality="50" href="Accessories/Others/Images/Carbon fiber.jpg" bitmapDataHRef="M 17 1744213521.dat" frameRight="38400" frameBottom="21600" isJPEG="true"/>
           <DOMSoundItem name="3.音效相关/sound4112.mp3" itemID="678d1912-00000d4f" sourceExternalFilepath="../../../../../../../../../Workspaces/Flash+An/resources/flashswf/arts/things/LIBRARY/3.音效相关/sound4112.wav" sourceLastImported="1737536156" externalFileCRC32="3528256149" externalFileSize="292176" href="3.音效相关/sound4112.wav" soundDataHRef="M 125 1720613915.dat" format="44kHz 16bit Stereo" sampleCount="71773" exportFormat="5"/>
           <DOMSoundItem name="3.音效相关/sound4274.mp3" itemID="66942786-00000e86" sourceExternalFilepath="../things/LIBRARY/3.音效相关/sound4274.wav" sourceLastImported="1737536156" externalFileCRC32="3801195410" externalFileSize="108952" href="3.音效相关/sound4274.wav" soundDataHRef="M 144 1720613916.dat" format="44kHz 16bit Stereo" sampleCount="27227" exportFormat="5"/>
           <DOMSoundItem name="3.音效相关/sound4764.mp3" itemID="668e7c1e-00000594" sourceExternalFilepath="../things/LIBRARY/3.音效相关/sound4764.mp3" sourceLastImported="1737536156" externalFileCRC32="708882135" externalFileSize="6247" href="3.音效相关/sound4764.mp3" soundDataHRef="M 197 1720613918.dat" format="22kHz 16bit Mono" sampleCount="34560" exportFormat="5" exportBits="7" dataLength="6247" exportNative="true" cachedSampleCount="8640"/>
@@ -714,9 +720,9 @@
           <Include href="1.枪械相关/手枪/Symbol 3827.xml" itemID="668e7c1e-00000f7a" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 4212.xml" itemID="668e7c1e-00001059" lastModified="1720533000"/>
           <Include href="1.枪械相关/手枪/Symbol 4213.xml" itemID="668e7c1e-0000105a" lastModified="1720776571"/>
-          <Include href="1.枪械相关/手枪/UZI战术版/Symbol 4209.xml" itemID="668e7c1e-00001056" lastModified="1720533000"/>
-          <Include href="1.枪械相关/手枪/UZI战术版/Symbol 4214.xml" itemID="668e7c1e-0000105b" lastModified="1720790626"/>
-          <Include href="1.枪械相关/手枪/极品UZI战术版/Symbol 4219.xml" itemID="668e7c1e-0000105e" lastModified="1720533000"/>
+          <Include href="1.枪械相关/手枪/UZI战术版/Symbol 4209.xml" itemID="668e7c1e-00001056" lastModified="1744213476"/>
+          <Include href="1.枪械相关/手枪/UZI战术版/Symbol 4214.xml" itemID="668e7c1e-0000105b" lastModified="1744213502"/>
+          <Include href="1.枪械相关/手枪/极品UZI战术版/Symbol 4219.xml" itemID="668e7c1e-0000105e" lastModified="1744213553"/>
           <Include href="1.枪械相关/手枪/极品UZI战术版/Symbol 4220.xml" itemID="668e7c1e-0000105f" lastModified="1720790643"/>
           <Include href="1.枪械相关/长枪/M134暴力版/枪-长枪-M134暴力版.xml" itemID="67413bb7-00002711" lastModified="1732353052"/>
           <Include href="1.枪械相关/长枪/M134暴力版/图标-M134暴力版.xml" itemID="67413bb9-00002712" lastModified="1732328377"/>
@@ -879,6 +885,8 @@
           <Include href="4.发型相关/Symbol 2185.xml" itemID="668e7c1e-00000b58" lastModified="1721740388"/>
           <Include href="4.发型相关/Symbol 2205.xml" itemID="668e7c1e-00000b6b" lastModified="1720533000"/>
           <Include href="4.发型相关/Symbol 2223.xml" itemID="668e7c1e-00000b7c" lastModified="1720533000"/>
+          <Include href="Pins/Pin3.xml" itemIcon="1" loadImmediate="false" itemID="609349e2-00001546" lastModified="1620265442"/>
+          <Include href="real mini uzi2.xml" loadImmediate="false" itemID="67f68ff4-000023ff" lastModified="1744212048"/>
           <Include href="shape/Symbol 860.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000ba4" lastModified="1722444119"/>
           <Include href="Symbol 533.xml" itemID="668e7c1e-000006ff" lastModified="1720614519"/>
           <Include href="待整理防具相关汇总/Symbol 84.xml" itemID="668e7c1e-000005f7" lastModified="1720533000"/>
@@ -2364,6 +2372,8 @@
           <Include href="消耗道具相关/Symbol 4294.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001087" lastModified="1720533000"/>
           <Include href="消耗道具相关/Symbol 4295.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001088" lastModified="1720533000"/>
           <Include href="消耗道具相关/Symbol 4296.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001089" lastModified="1720533000"/>
+          <Include href="杂七杂八/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00001019" lastModified="1710653981"/>
+          <Include href="杂七杂八/Symbol 3722.xml" loadImmediate="false" itemID="65f68a66-0000101a" lastModified="1710653981"/>
           <Include href="主角身体元件副本/男变装-裸体脚.xml" loadImmediate="false" itemID="67bc215a-00000de0" lastModified="1740382920"/>
           <Include href="主角身体元件副本/男变装-裸体屁股.xml" loadImmediate="false" itemID="67bc2158-00000ddf" lastModified="1740382918"/>
           <Include href="主角身体元件副本/男变装-裸体上臂.xml" loadImmediate="false" itemID="67bc2157-00000dde" lastModified="1740382918"/>
