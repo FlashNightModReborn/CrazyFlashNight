@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#B6A682" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#B6A682">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -37,11 +37,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="20" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" centerPoint3DX="83.35" centerPoint3DY="-173.55">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/npc商店名称UI" name="商店名" selected="true" centerPoint3DX="83.35" centerPoint3DY="-173.55">
                   <matrix>
                     <Matrix tx="19.35" ty="-183.3"/>
                   </matrix>

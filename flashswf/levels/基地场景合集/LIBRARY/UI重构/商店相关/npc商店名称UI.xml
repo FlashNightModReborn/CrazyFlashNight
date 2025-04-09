@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/商店相关/npc商店名称UI" itemID="668a5bba-000008f1" lastModified="1732205311" lastUniqueIdentifier="8">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/商店相关/npc商店名称UI" itemID="668a5bba-000008f1" lastModified="1744224634" lastUniqueIdentifier="8">
   <timeline>
     <DOMTimeline name="npc商店名称UI">
       <layers>
-        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -20,7 +20,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -55,7 +55,7 @@ else
                     <GlowFilter blurX="3" blurY="3" color="#000000" strength="5"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="UI重构/商店相关/技能教学图标UI" centerPoint3DX="-53.4" centerPoint3DY="7.8">
+                <DOMSymbolInstance libraryItemName="UI重构/商店相关/技能教学图标UI" selected="true" centerPoint3DX="-53.4" centerPoint3DY="7.8">
                   <matrix>
                     <Matrix a="0.995361328125" d="0.995361328125" tx="-63.1" ty="1.2"/>
                   </matrix>
@@ -64,7 +64,7 @@ else
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
-	if(_parent._parent.可学的技能 &&  _parent._parent.可学的技能.length > 0)
+	if(_parent._parent.可学的技能)
 	{
 		this._visible = 1;
 	}
