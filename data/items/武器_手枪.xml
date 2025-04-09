@@ -2,6 +2,98 @@
 <!--已用ID：[207, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 286, 287, 290, 291, 293, 297, 302, 303, 305, 307, 525, 528, 529, 530, 531, 623, 677, 678, 679, 682, 683, 684, 688, 712, 750, 751, 849, 850, 851, 1521, 1522, 1700, 2501, 2529, 5703, 6002, 6008, 6024, 6025, 6032, 6064, 6072, 6078, 8000, 8001, 8004, 8006, 8026, 8027, 8034, 8035, 8036, 8037, 8038, 8039, 8040, 8041, 12012, 12016, 12022, 12028, 12030, 12038, 12112, 12116, 12122, 12128, 12130, 12138, 13002, 13003, 13008, 13009, 13012, 13014, 13015, 22003, 22009, 22010, 22012, 22013]
 预留ID区间：17501-17700-->
 <root>
+<item>
+    <id>8200</id>
+    <name>MAC10</name>
+    <displayname>MAC10</displayname>
+    <icon>MAC10</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>3.8</weight>
+    <price>15600</price>
+    <description>大概在1964年左右，戈登·英格拉姆（Gordon B. Ingram）开始研制一种结构紧凑的小型冲锋枪，设计初衷是为飞行员、坦克乘员及汽车驾驶员提供一种便于携带的单兵自卫武器，也方便于秘密行动时隐蔽携带但火力迅猛的小型突击武器。他在1965年时设计了几个原型，在1966年至少有一种原型枪被A国陆军购买用于测试和评估。</description>
+    <level>6</level>
+    <data>
+      <capacity>32</capacity>
+      <split>1</split>
+      <diffusion>15</diffusion>
+      <interval>100</interval>
+      <velocity>30</velocity>
+      <bullet>普通子弹</bullet>
+      <sound>re_SMG_uzi.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>冲锋枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>75</power>
+      <impact>500</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-MAC10</dressup>
+    </equipped>
+  </item>
+  <item>
+    <id>8201</id>
+    <name>MAC10sil</name>
+    <displayname>MAC10消音版</displayname>
+    <icon>MAC10sil</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>4.5</weight>
+    <price>50000</price>
+    <description>大概在1964年左右，戈登·英格拉姆（Gordon B. Ingram）开始研制一种结构紧凑的小型冲锋枪，设计初衷是为飞行员、坦克乘员及汽车驾驶员提供一种便于携带的单兵自卫武器，也方便于秘密行动时隐蔽携带但火力迅猛的小型突击武器。他在1965年时设计了几个原型，在1966年至少有一种原型枪被A国陆军购买用于测试和评估。
+	MAC10专用的消音器在后半部分包裹有橡胶，用于充当护木握持。安装了消音器的MAC10的射击精度与易掌控度(相比原来)大幅提升，同时也没有失去便携的优点，因此这才是MAC10的完全状态。</description>
+    <level>12</level>
+    <data>
+      <capacity>32</capacity>
+      <split>1</split>
+      <diffusion>8</diffusion>
+      <interval>60</interval>
+      <velocity>45</velocity>
+      <bullet>普通子弹</bullet>
+      <sound>re_SMG_uzi_sil.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>冲锋枪通用弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>110</power>
+      <impact>500</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-MAC10sil</dressup>
+    </equipped>
+  </item>
+    <item>
+    <id>8202</id>
+    <name>TMPmerc</name>
+    <displayname>无名佣兵的TMP</displayname>
+    <icon>TMPmerc</icon>
+    <type>武器</type>
+    <use>手枪</use>
+    <weight>8</weight>
+    <price>120000</price>
+    <description>一把经过高度改造的TMP，安装了集成式的前置战术套件与双发式镭射指示器。枪本身的来源不明，但机匣左侧铭刻着大写的四个字母：HUNK。</description>
+    <level>30</level>
+    <data>
+      <capacity>250</capacity>
+      <split>1</split>
+      <diffusion>3</diffusion>
+      <interval>100</interval>
+      <velocity>60</velocity>
+      <bullet>加强普通子弹</bullet>
+      <sound>re_smg_tmp.wav</sound>
+      <muzzle>枪火</muzzle>
+      <bullethit>火花</bullethit>
+      <clipname>冲锋枪达姆弹弹药</clipname>
+      <bulletsize>50</bulletsize>
+      <power>200</power>
+      <impact>10</impact>
+    </data>
+    <equipped>
+      <dressup>枪-手枪-TMPmerc</dressup>
+	        <criticalhit>30</criticalhit>
+    </equipped>
+  </item>
   <item>
     <id>2529</id>
     <name>极品UZI的KING版</name>
