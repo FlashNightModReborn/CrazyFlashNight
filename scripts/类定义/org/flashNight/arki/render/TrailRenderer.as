@@ -167,8 +167,9 @@ class org.flashNight.arki.render.TrailRenderer {
     
     // --- 核心渲染逻辑 ---
     
+
     /**
-     * 渲染指定发射者的轨迹记录，自动处理轨迹平滑和透明衰减。
+     * 渲染指定发射者的轨迹记录，合并为连续多边形
      * 
      * @param record         当前发射者的历史轨迹记录（包含环形队列）
      * @param edgeArray      当前帧边缘点数组（用于遍历轨迹数量）
@@ -177,43 +178,77 @@ class org.flashNight.arki.render.TrailRenderer {
      */
     private function _renderTrails(record:Object, edgeArray:Array, styleName:String, currentFrame:Number):Void {
         var len:Number = edgeArray.length;
-        // 定义用于绘制四边形的四个顶点数组
-        var quadPoints:Array = [ {x:0, y:0}, {x:0, y:0}, {x:0, y:0}, {x:0, y:0} ];
         var i:Number, j:Number;
         
         for (i = 0; i < len; i++) {
             var traj:Object = record[i];
-            // 通过环形队列获取当前有效数据个数
             var count:Number = traj.edge1.count;
-            // 如果不足两帧数据，则无法构成四边形，直接跳过
-            if (count < 2 || traj.edge2.count < 2) continue;
+            if (count < 2 || traj.edge2.count < 2) continue; // 至少需要2个点才能形成有效轨迹
+
+            // 每 3 帧执行一次轨迹平滑处理
+            if (currentFrame % 1 == 0) {
+                this._catmullRomSmooth(traj.edge1);
+                this._catmullRomSmooth(traj.edge2);
+            }
+
+            // 创建合并多边形点集
+            var mergedPoints:Array = [];
+            var alphaArray:Array = []; // 存储每个点的独立透明度
             
-            // 每 3 帧执行一次轨迹平滑处理（简单移动平均算法）
-            if (currentFrame % 3 == 0) {
-                this._simpleSmooth(traj.edge1);
-                this._simpleSmooth(traj.edge2);
+            // 添加 edge1 的点（正序，从最早到最新）
+            for (j = 0; j < count; j++) {
+                var ptE1:Object = traj.edge1.get(j);
+                mergedPoints.push({x: ptE1.x, y: ptE1.y});
+                alphaArray.push(100 * Math.pow(0.7, j)); // 根据历史深度计算透明度
             }
             
-            // 遍历相邻帧，依次绘制四边形残影
-            for (j = 0; j < count - 1; j++) {
-                var ptE1A:Object = traj.edge1.get(j);
-                var ptE1B:Object = traj.edge1.get(j + 1);
-                var ptE2A:Object = traj.edge2.get(j);
-                var ptE2B:Object = traj.edge2.get(j + 1);
-                
-                // 指数衰减：越旧的帧越透明
-                var alphaFactor:Number = 100 * Math.pow(0.7, j);
-                
-                // 设定四边形顶点（顺时针排列）
-                quadPoints[0].x = ptE1A.x; quadPoints[0].y = ptE1A.y;
-                quadPoints[1].x = ptE1B.x; quadPoints[1].y = ptE1B.y;
-                quadPoints[2].x = ptE2B.x; quadPoints[2].y = ptE2B.y;
-                quadPoints[3].x = ptE2A.x; quadPoints[3].y = ptE2A.y;
-                
-                this._drawQuad(quadPoints, styleName, alphaFactor);
+            // 添加 edge2 的点（逆序，从最新到最早）
+            for (j = count - 1; j >= 0; j--) {
+                var ptE2:Object = traj.edge2.get(j);
+                mergedPoints.push({x: ptE2.x, y: ptE2.y});
+                alphaArray.push(100 * Math.pow(0.7, j));
             }
+            
+            // 闭合多边形（连接首尾点）
+            if (mergedPoints.length > 0) {
+                mergedPoints.push(mergedPoints[0]);
+                alphaArray.push(alphaArray[0]);
+            }
+            
+            // 绘制合并后的多边形
+            this._drawMergedTrail(mergedPoints, alphaArray, styleName);
         }
     }
+
+    /**
+     * 绘制合并后的多边形轨迹（改用贝塞尔+直线混合方式）
+     *
+     * @param points      多边形点数组（包含 edge1 正序 + edge2 逆序）
+     * @param alphaArray  每个点对应的透明度数组
+     * @param styleName   样式名称
+     */
+    private function _drawMergedTrail(points:Array, alphaArray:Array, styleName:String):Void {
+        if (points.length < 3) return; // 至少需要三个点
+        
+        var style:Object = this._styles[styleName] || this._styles["预设"];
+
+        // 先都用同一个透明度
+        var alphaValue:Number = alphaArray[0];
+        var fillAlpha:Number = style.fillOpacity * (alphaValue / 100);
+        var lineAlpha:Number = style.lineOpacity * (alphaValue / 100);
+
+        // 调用新方法：drawMixedShape(....)
+        VectorAfterimageRenderer.instance.drawMixedShape(
+            points,
+            style.color,
+            style.lineColor,
+            style.lineWidth,
+            fillAlpha,
+            lineAlpha,
+            true // 是否闭合
+        );
+    }
+
     
     /**
      * 简单轨迹平滑算法：使用相邻三个点的平均值减少轨迹抖动（对环形队列操作）
@@ -232,6 +267,73 @@ class org.flashNight.arki.render.TrailRenderer {
             pCurr.y = (pPrev.y + pCurr.y + pNext.y) / 3;
         }
     }
+
+    /**
+     * 基于Catmull-Rom样条的轨迹平滑算法
+     * @param ring 包含多个{x,y}坐标点的环形队列对象
+     * @param tension 曲线张力参数(0-1)，默认0.5
+     */
+    private function _catmullRomSmooth(ring:Object, tension:Number):Void {
+        if (tension == undefined) tension = 0.5;
+        var count:Number = ring.count;
+        if (count < 4) return; // Catmull-Rom需要至少4个点
+        
+        // 创建临时数组处理循环队列
+        var points:Array = [];
+        for (var i:Number = 0; i < count; i++) {
+            points.push(ring.get(i));
+        }
+        
+        // 扩展边界条件：将队列视为环形
+        points.unshift(ring.get(count-1)); // 首部添加末尾点
+        points.push(ring.get(0));          // 尾部添加首点
+        
+        // 遍历原始点集进行插值
+        var newPoints:Array = [];
+        for (i = 1; i < points.length-2; i++) {
+            var p0:Object = points[i-1];
+            var p1:Object = points[i];
+            var p2:Object = points[i+1];
+            var p3:Object = points[i+2];
+            
+            // 计算Catmull-Rom插值点（每段插入2个点）
+            for (var t:Number = 0.25; t < 1; t += 0.5) {
+                var x:Number = _catmullRom(p0.x, p1.x, p2.x, p3.x, t, tension);
+                var y:Number = _catmullRom(p0.y, p1.y, p2.y, p3.y, t, tension);
+                newPoints.push({x:x, y:y});
+            }
+        }
+        
+        // 更新环形队列（保留原始点数量）
+        ring.clear(newPoints[0]);
+        for (i = 1; i < newPoints.length; i++) {
+            ring.push(newPoints[i]);
+        }
+    }
+
+    /**
+     * Catmull-Rom插值公式
+     */
+    private function _catmullRom(p0:Number, p1:Number, p2:Number, p3:Number, t:Number, tension:Number):Number {
+        var t01:Number = Math.pow(_distance(p0, p1), tension);
+        var t12:Number = Math.pow(_distance(p1, p2), tension);
+        var t23:Number = Math.pow(_distance(p2, p3), tension);
+        
+        var m1:Number = (p2 - p1 + t12*((p1 - p0)/t01 - (p2 - p0)/(t01 + t12)));
+        var m2:Number = (p2 - p1 + t12*((p3 - p2)/t23 - (p3 - p1)/(t12 + t23)));
+        
+        var t2:Number = t*t;
+        var t3:Number = t2*t;
+        return (2*t3 - 3*t2 + 1)*p1 + (t3 - 2*t2 + t)*m1 + (-2*t3 + 3*t2)*p2 + (t3 - t2)*m2;
+    }
+
+    /**
+     * 两点间距离计算（用于张力参数计算）
+     */
+    private function _distance(a:Number, b:Number):Number {
+        return Math.sqrt((b - a)*(b - a));
+    }
+
     
     /**
      * 实际调用残影渲染系统绘制四边形。

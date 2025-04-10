@@ -100,6 +100,79 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
         renderShape(canvas, points, fillColor, fillAlpha);
     }
+
+    
+    /**
+     * 绘制“混合”形状：部分边使用 lineTo，部分边使用 curveTo
+     * 
+     * 假设用法：点集按顺序排列
+     *  - 首尾各用直线连接，中间所有段改用二次贝塞尔曲线进行平滑。
+     *  - 如果想要更灵活，比如指定哪些段是直线、哪些段是曲线，可进一步扩展。
+     *
+     * @param points    顶点数组(至少3个点)，格式[{x:Number,y:Number}, ...]
+     * @param fillColor 填充色(RGB)
+     * @param lineColor 线条色(RGB)
+     * @param lineWidth 线宽(像素)
+     * @param fillAlpha 填充透明度(0-100)
+     * @param lineAlpha 线条透明度(0-100)
+     * @param closePath 是否闭合图形（默认true，会把最后一点与第一点连起来）
+     */
+    public function drawMixedShape(points:Array,
+                                fillColor:Number,
+                                lineColor:Number,
+                                lineWidth:Number,
+                                fillAlpha:Number,
+                                lineAlpha:Number,
+                                closePath:Boolean):Void {
+        // 获取可用画布
+        var canvas:MovieClip = getAvailableCanvas();
+        if (!canvas || !points || points.length < 3) {
+            return;
+        }
+        
+        // 设置线条样式
+        setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
+        // 开始填充
+        canvas.beginFill(fillColor || 0, fillAlpha || 100);
+        
+        // 移动到第一个点
+        canvas.moveTo(points[0].x, points[0].y);
+
+        // 1) 首段：直接用 lineTo 连到第二个点
+        canvas.lineTo(points[1].x, points[1].y);
+        
+        // 2) 中间段：用二次贝塞尔曲线（curveTo）连接
+        //    - 这里的示例做法：从 points[1] 到 points[len-2]，都通过 curveTo 进行光滑过渡
+        //    - 给出一种简单的控制点计算方式：使用相邻点的中点或其它插值算法
+        var len:Number = points.length;
+        var i:Number;
+        for (i = 1; i < len - 2; i++) {
+            var curr:Object = points[i];
+            var next:Object = points[i+1];
+            
+            // 简单控制点：取 (curr.x + next.x)/2, (curr.y + next.y)/2
+            // 作为 curveTo 的 (controlX, controlY, anchorX, anchorY) 里的「controlX, controlY」
+            // 也可用更高级的算法(如Catmull-Rom)来自定义更平滑的控制点。
+            var cpx:Number = (curr.x + next.x) / 2;
+            var cpy:Number = (curr.y + next.y) / 2;
+            
+            // curveTo(controlX, controlY, anchorX, anchorY)
+            canvas.curveTo(curr.x, curr.y, cpx, cpy);
+        }
+        
+        // 3) 末段：线到倒数第一个点 -> 再线到最后一个点(或者直接 lineTo 最后一个点)
+        //    这里演示“末段也是线”：
+        canvas.lineTo(points[len - 1].x, points[len - 1].y);
+        
+        // 4) 是否闭合图形
+        if (closePath == undefined || closePath == true) {
+            canvas.lineTo(points[0].x, points[0].y);
+        }
+        
+        // 结束填充
+        canvas.endFill();
+    }
+
     
     /**
      * 复制MovieClip并生成残影效果
