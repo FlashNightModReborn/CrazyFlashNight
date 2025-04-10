@@ -11,6 +11,7 @@ import org.flashNight.sara.util.*;
  * 2. 自动对象池管理优化性能
  * 3. 可配置的残影数量/透明度/持续时间参数
  * 4. 自动渐隐动画与资源回收
+ * 5. 场景切换时可通过 onSceneChanged 方法主动重置状态
  * 
  * 使用示例：
  * // 绘制多边形残影
@@ -21,6 +22,9 @@ import org.flashNight.sara.util.*;
  * 
  * // 复制MovieClip并添加残影
  * VectorAfterimageRenderer.instance.drawClip(mc, {brightness:20});
+ *
+ * // 在场景切换时调用 onSceneChanged 重置内部状态
+ * _root.帧计时器.eventBus.subscribe("SceneChanged", VectorAfterimageRenderer.instance.onSceneChanged, VectorAfterimageRenderer.instance);
  */
 class org.flashNight.arki.render.VectorAfterimageRenderer {
 
@@ -94,9 +98,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      */
     public function drawShape(points:Array, fillColor:Number, lineColor:Number, 
                             lineWidth:Number, fillAlpha:Number, lineAlpha:Number):Void {
-        var canvas:MovieClip = getAvailableCanvas();
         if (!points || points.length < 3) return;
-        
+        var canvas:MovieClip = getAvailableCanvas();
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
         renderShape(canvas, points, fillColor, fillAlpha);
     }
@@ -124,52 +127,27 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
                                 fillAlpha:Number,
                                 lineAlpha:Number,
                                 closePath:Boolean):Void {
-        // 获取可用画布
+        if (!points || points.length < 3) return;
         var canvas:MovieClip = getAvailableCanvas();
-        if (!canvas || !points || points.length < 3) {
-            return;
-        }
-        
-        // 设置线条样式
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
-        // 开始填充
         canvas.beginFill(fillColor || 0, fillAlpha || 100);
         
-        // 移动到第一个点
         canvas.moveTo(points[0].x, points[0].y);
-
-        // 1) 首段：直接用 lineTo 连到第二个点
         canvas.lineTo(points[1].x, points[1].y);
         
-        // 2) 中间段：用二次贝塞尔曲线（curveTo）连接
-        //    - 这里的示例做法：从 points[1] 到 points[len-2]，都通过 curveTo 进行光滑过渡
-        //    - 给出一种简单的控制点计算方式：使用相邻点的中点或其它插值算法
         var len:Number = points.length;
-        var i:Number;
-        for (i = 1; i < len - 2; i++) {
+        for (var i:Number = 1; i < len - 2; i++) {
             var curr:Object = points[i];
             var next:Object = points[i+1];
-            
-            // 简单控制点：取 (curr.x + next.x)/2, (curr.y + next.y)/2
-            // 作为 curveTo 的 (controlX, controlY, anchorX, anchorY) 里的「controlX, controlY」
-            // 也可用更高级的算法(如Catmull-Rom)来自定义更平滑的控制点。
             var cpx:Number = (curr.x + next.x) / 2;
             var cpy:Number = (curr.y + next.y) / 2;
-            
-            // curveTo(controlX, controlY, anchorX, anchorY)
             canvas.curveTo(curr.x, curr.y, cpx, cpy);
         }
         
-        // 3) 末段：线到倒数第一个点 -> 再线到最后一个点(或者直接 lineTo 最后一个点)
-        //    这里演示“末段也是线”：
         canvas.lineTo(points[len - 1].x, points[len - 1].y);
-        
-        // 4) 是否闭合图形
         if (closePath == undefined || closePath == true) {
             canvas.lineTo(points[0].x, points[0].y);
         }
-        
-        // 结束填充
         canvas.endFill();
     }
 
@@ -194,6 +172,31 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         _currentCanvas = null;
     }
     
+    /**
+     * 【新增方法】当场景发生切换时，由外部事件订阅触发调用此方法，
+     * 用于重置所有异常保护相关状态，清理内部画布和任务（降低内部防护带来的性能开销）。
+     */
+    public function onSceneChanged():Void {
+        // 清除对象池中的所有画布及其渐隐任务
+        for (var i:Number = 0; i < _canvasPool.length; i++) {
+            var canvas:MovieClip = _canvasPool[i];
+            if (canvas.fadeTask) {
+                _root.帧计时器.移除任务(canvas.fadeTask);
+            }
+            canvas.removeMovieClip();
+        }
+        _canvasPool = [];
+        // 清除当前活跃画布
+        if (_currentCanvas) {
+            if (_currentCanvas.fadeTask) {
+                _root.帧计时器.移除任务(_currentCanvas.fadeTask);
+            }
+            _currentCanvas.removeMovieClip();
+            _currentCanvas = null;
+        }
+        // 其他需要重置的状态可在此添加...
+    }
+
 
     // ==================== 核心渲染逻辑 ====================
     
@@ -266,49 +269,17 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * 获取可用画布(优先从对象池获取)
      * @private
      * @return 可用MovieClip画布
-     * @note 自动处理容器变更和对象回收
      */
     private function getAvailableCanvas():MovieClip {
-        // 检查容器一致性
-        var newContainer:MovieClip = getCurrentContainer();
-        if (_currentCanvas && _currentCanvas._parent != newContainer) {
-            recycleCanvas(_currentCanvas);
-            _currentCanvas = null;
-        }
-        
-        // 返回当前活跃画布(如果可用)
         if (_currentCanvas) return _currentCanvas;
         
-        // 从对象池获取或创建新画布
         var canvas:MovieClip = _canvasPool.length ? 
             MovieClip(_canvasPool.pop()) : 
             createNewCanvas();
             
-        // 验证画布父容器
-        if(canvas._parent != newContainer) {
-            canvas.removeMovieClip();
-            canvas = createNewCanvas();
-        }
-        
-        // 初始化新画布
         _currentCanvas = canvas;
         initActiveCanvas(canvas);
         return canvas;
-    }
-    
-    /**
-     * 获取当前容器引用
-     * @private
-     * @return 当前有效的容器MovieClip
-     * @throws 当容器不存在时输出错误日志
-     */
-    private function getCurrentContainer():MovieClip {
-        if (_root.gameworld && _root.gameworld.deadbody) {
-            return _root.gameworld.deadbody;
-        } else {
-            trace("错误: _root.gameworld.deadbody 不存在");
-            return null;
-        }
     }
     
     /**
@@ -317,9 +288,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * @return 新创建的MovieClip画布
      */
     private function createNewCanvas():MovieClip {
-        var container:MovieClip = getCurrentContainer();
-        if (!container) return null;
-        
+        var container:MovieClip = _root.gameworld.deadbody;
         return container.createEmptyMovieClip(
             "canvas_" + getTimer(), 
             container.getNextHighestDepth()
@@ -346,10 +315,6 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             _shadowCount, 
             canvas
         );
-        
-        if (!canvas.fadeTask) {
-            trace("警告: 渐隐任务添加失败，检查 _root.帧计时器");
-        }
     }
     
     /**
@@ -358,14 +323,9 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * @param canvas 正在渐隐的画布
      */
     private function onFadeUpdate(canvas:MovieClip):Void {
-        if (!canvas) return;
-        
-        // 首次更新时释放当前画布引用
         if (canvas.cycleCount == 0 && _currentCanvas == canvas) {
             _currentCanvas = null;
         }
-        
-        // 检查是否完成所有渐隐周期
         if (++canvas.cycleCount >= _shadowCount) {
             recycleCanvas(canvas);
         } else {
@@ -408,14 +368,13 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         canvas.beginFill(fillColor || 0, fillAlpha || 100);
 
         var i:Number = 1;
-        var p0:Vector = points[0];
-        var prev:Vector = p0;
-        canvas.moveTo(prev.x, prev.y);
+        var p0:Object = points[0];
+        canvas.moveTo(p0.x, p0.y);
 
         do {
-            var p:Vector = points[i % len]; // 包括闭合那一笔
+            var p:Object = points[i % len];
             canvas.lineTo(p.x, p.y);
-        } while (++i <= len); // i = len 时，p = points[0]，闭合
+        } while (++i <= len);
         canvas.endFill();
     }
 }

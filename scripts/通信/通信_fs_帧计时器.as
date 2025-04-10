@@ -844,7 +844,6 @@ _root.帧计时器.添加主动战技cd = function(动作, 间隔时间){
 _root.帧计时器.eventBus.subscribe("SceneChanged", SceneCoordinateManager.update
 , SceneCoordinateManager); 
 
-
 _root.帧计时器.eventBus.subscribe("SceneChanged", function() {
     _root.帧计时器.kalmanFilter.reset(30,1);
     _root.帧计时器.PID.reset();
