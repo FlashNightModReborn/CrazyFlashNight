@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.render.*;
 import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.sara.util.*;
+import org.flashNight.neur.Event.*;
 
 //----------------------------------------------------
 // 刀光系统：只做“刀口采集与提交”，并调用 TrailRenderer 进行拖影管理
@@ -157,4 +158,6 @@ _root.刀光系统.清理内存 = function(forceCleanAll:Boolean, maxInactiveFra
     return TrailRenderer.getInstance().cleanMemory(forceCleanAll, maxInactiveFrames);
 };
 
-TrailRenderer.getInstance().initStyles();
+var trailRenderer:TrailRenderer = TrailRenderer.getInstance();
+trailRenderer.initStyles();
+EventBus.getInstance().subscribe("SceneChanged", trailRenderer.cleanMemory, trailRenderer); 

@@ -17,7 +17,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.*
 import org.flashNight.arki.bullet.Factory.*;
 import org.flashNight.arki.spatial.transform.*;
 import org.flashNight.arki.component.Effect.*;
-
+import org.flashNight.arki.render.*;
 
 _root.帧计时器 = {};
 ColliderFactoryRegistry.init();
@@ -372,6 +372,8 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
             // this.scrollDelay = 2;
             this.offsetTolerance = 80;
     }
+
+    TrailRenderer.getInstance().setQuality(新性能等级);
 };
 
 _root.帧计时器.执行性能调整(0);

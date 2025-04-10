@@ -7,13 +7,15 @@ import org.flashNight.gesh.object.*;
  * 
  * 用于记录并渲染攻击刀口、子弹轨迹等动态残影效果，
  * 支持样式配置、轨迹平滑处理、历史帧限制与自动内存清理。
- *
+ * 
  * 优化改进包括：
- * 1. 使用环形队列（Ring Buffer）替代 Array.shift() 操作，提升性能
- * 2. 坐标比较采用平方距离计算，避免频繁调用 Math.sqrt
- * 3. 缓存对象引用减少属性查找
- * 4. 初始化逻辑统一封装
- * 5. 阈值作为类属性，避免重复计算
+ * 1. 使用环形队列替代 Array.shift() 操作，提升性能；
+ * 2. 坐标比较采用平方距离计算，避免频繁调用 Math.sqrt；
+ * 3. 缓存对象引用减少属性查找；
+ * 4. 初始化逻辑统一封装；
+ * 5. 阈值作为类属性，避免重复计算；
+ * 6. 根据 _quality 动态调整历史帧数、数据采样、平滑处理与透明度计算，
+ *    实现进一步性能调控。
  */
 class org.flashNight.arki.render.TrailRenderer {
     // --- 静态变量 ---
@@ -21,21 +23,30 @@ class org.flashNight.arki.render.TrailRenderer {
     /** TrailRenderer 单例实例 */
     private static var _instance:TrailRenderer;
     
+    /**
+     * 拖影质量参数，共有四个取值：
+     * 0：最高画质（高敏感、最长历史轨迹、更精细平滑）
+     * 1：高画质
+     * 2：中等画质
+     * 3：低画质（低敏感、最短历史轨迹、数据采样、简单透明度计算）
+     */
+    private var _quality:Number = 2;
+    
     // --- 成员变量 ---
     
     /** 拖影样式表，按样式名称存储不同的视觉配置 */
     private var _styles:Object;
     
-    /** 轨迹记录表，以发射者ID（如影片剪辑名称）为键，记录历史轨迹点 */
+    /** 轨迹记录表，以发射者ID为键，记录历史轨迹点 */
     private var _trackRecords:Object;
     
-    /** 每条轨迹记录允许保留的最大历史帧数（默认 5） */
+    /** 每条轨迹记录允许保留的最大历史帧数（动态根据 _quality 调整） */
     private var _maxFrames:Number;
     
     /** 移动最小差异阈值（单位：像素） */
     private var _movementThreshold:Number;
     
-    /** 移动最小差异阈值的平方，用于避免 Math.sqrt 调用 */
+    /** 移动最小差异阈值的平方，用于避免频繁调用 Math.sqrt */
     private var _movementThresholdSqr:Number;
     
     // --- 构造与初始化 ---
@@ -44,9 +55,43 @@ class org.flashNight.arki.render.TrailRenderer {
      * 私有构造函数，禁止外部直接创建实例，请使用 getInstance()
      */
     private function TrailRenderer() {
-        this._trackRecords = {};          // 创建轨迹记录容器
-        this._maxFrames = 3;              // 默认轨迹历史帧数限制
-        this._movementThreshold = 5.0;    // 最小差异阈值（单位：像素）
+        // 默认使用中等画质时的设置
+        this._trackRecords = {};  
+        this._maxFrames = 3;  
+        this._movementThreshold = 5.0;
+        this._movementThresholdSqr = this._movementThreshold * this._movementThreshold;
+    }
+    
+    /**
+     * 设置拖影质量参数，同时根据质量调整阈值与历史帧数
+     * @param q 质量参数（0~3），数值越小画质越高
+     */
+    public function setQuality(q:Number):Void {
+        this._quality = q;
+        // 根据 _quality 调整移动阈值
+        switch(q) {
+            case 0: 
+                this._movementThreshold = 3.0; // 高敏感度
+                this._maxFrames = 5;           // 历史轨迹延长
+                break;
+            case 1: 
+                this._movementThreshold = 5.0;
+                this._maxFrames = 4;
+                break;
+            case 2: 
+                this._movementThreshold = 8.0;
+                this._maxFrames = 3;
+                break;
+            case 3: 
+                this._movementThreshold = 10.0; // 低敏感度
+                this._maxFrames = 2;            // 缩短历史轨迹
+                break;
+            default:
+                // 若传入未知值，则使用中等配置
+                this._movementThreshold = 5.0;
+                this._maxFrames = 3;
+                break;
+        }
         this._movementThresholdSqr = this._movementThreshold * this._movementThreshold;
     }
     
@@ -84,18 +129,21 @@ class org.flashNight.arki.render.TrailRenderer {
         });
     }
     
-    // --- 主功能入口 ---
-    
     /**
      * 添加并记录一个发射者当前帧的轨迹数据，并触发渲染。
-     * 如果当前输入点集与上一次记录末尾的数据变化非常小（低于设定阈值），则直接跳过更新与渲染，
-     * 从而节省性能消耗。
+     * 若当前输入点集与上一次记录末尾的数据变化非常小（低于设定阈值），则直接跳过更新与渲染，
+     * 从而节省性能消耗。同时，在最低画质下对数据进行采样以降低计算量。
      * 
      * @param emitterId   发射者唯一标识（例如影片剪辑的 _name）
      * @param edgeArray   边缘点数组，每项包含 edge1 和 edge2 坐标对象
      * @param styleName   拖影样式名称（必须存在于样式表中）
      */
     public function addTrailData(emitterId:String, edgeArray:Array, styleName:String):Void {
+        // 在低画质模式下，对输入边缘点数据进行采样（例如每隔一个采样一次）
+        if (this._quality == 3 && edgeArray.length > 0) {
+            edgeArray = this._subsampleEdges(edgeArray, 2);
+        }
+        
         var currentFrame:Number = _root.帧计时器.当前帧数;
         var trackRecords:Object = this._trackRecords; // 缓存引用，减少属性查找
         var record:Object = trackRecords[emitterId];
@@ -109,8 +157,8 @@ class org.flashNight.arki.render.TrailRenderer {
             return;
         }
         
-        // 超过 10 帧未更新，则清空历史轨迹（避免突变造成拖影跳变）
-        if (currentFrame - record._lastFrame > 10) {
+        // 超过一定帧数未更新，则清空历史轨迹（避免突变造成拖影跳变）
+        if (currentFrame - record._lastFrame > (10 - this._quality)) {
             for (i = 0; i < len; i++) {
                 // 通过环形队列的 clear 方法重置数据
                 record[i].edge1.clear(edgeArray[i].edge1);
@@ -120,7 +168,7 @@ class org.flashNight.arki.render.TrailRenderer {
             return;
         }
         
-        // 对比当前输入的轨迹数据与上一次记录的末尾数据，
+        // 对比当前输入的轨迹数据与上一次记录末尾的数据，
         // 如果对应点的变化幅度均低于设定阈值，则认为变化非常小，跳过更新与渲染
         var needUpdate:Boolean = false;
         for (i = 0; i < len; i++) {
@@ -165,11 +213,23 @@ class org.flashNight.arki.render.TrailRenderer {
         record._lastFrame = currentFrame;
     }
     
-    // --- 核心渲染逻辑 ---
+    /**
+     * 根据 _quality 设置进行数据采样
+     * @param edgeArray 原始边缘点数组，每项包含 edge1 与 edge2
+     * @param factor    采样因子（例如 2 表示每隔一个采样一次）
+     * @return 采样后的边缘点数组
+     */
+    private function _subsampleEdges(edgeArray:Array, factor:Number):Array {
+        var sampled:Array = [];
+        for (var i:Number = 0; i < edgeArray.length; i += factor) {
+            sampled.push(edgeArray[i]);
+        }
+        return sampled;
+    }
     
-
     /**
      * 渲染指定发射者的轨迹记录，合并为连续多边形
+     * 根据 _quality 不同选择不同的平滑处理及透明度计算策略。
      * 
      * @param record         当前发射者的历史轨迹记录（包含环形队列）
      * @param edgeArray      当前帧边缘点数组（用于遍历轨迹数量）
@@ -184,13 +244,19 @@ class org.flashNight.arki.render.TrailRenderer {
             var traj:Object = record[i];
             var count:Number = traj.edge1.count;
             if (count < 2 || traj.edge2.count < 2) continue; // 至少需要2个点才能形成有效轨迹
-
-            // 每 3 帧执行一次轨迹平滑处理
-            if (currentFrame % 1 == 0) {
-                this._catmullRomSmooth(traj.edge1);
-                this._catmullRomSmooth(traj.edge2);
+            
+            // 每 _quality 帧执行一次轨迹平滑处理
+            // 当 _quality 为 0 时避免除零错误，直接每帧进行平滑
+            if (this._quality == 0 || currentFrame % this._quality == 0) {
+                if (this._quality <= 1) {
+                    this._catmullRomSmooth(traj.edge1);
+                    this._catmullRomSmooth(traj.edge2);
+                } else {
+                    this._simpleSmooth(traj.edge1);
+                    this._simpleSmooth(traj.edge2);
+                }
             }
-
+            
             // 创建合并多边形点集
             var mergedPoints:Array = [];
             var alphaArray:Array = []; // 存储每个点的独立透明度
@@ -199,14 +265,23 @@ class org.flashNight.arki.render.TrailRenderer {
             for (j = 0; j < count; j++) {
                 var ptE1:Object = traj.edge1.get(j);
                 mergedPoints.push({x: ptE1.x, y: ptE1.y});
-                alphaArray.push(100 * Math.pow(0.7, j)); // 根据历史深度计算透明度
+                // 在最低画质下统一使用固定透明度，否则使用指数衰减
+                if (this._quality == 3) {
+                    alphaArray.push(50);
+                } else {
+                    alphaArray.push(100 * Math.pow(0.7, j));
+                }
             }
             
             // 添加 edge2 的点（逆序，从最新到最早）
             for (j = count - 1; j >= 0; j--) {
                 var ptE2:Object = traj.edge2.get(j);
                 mergedPoints.push({x: ptE2.x, y: ptE2.y});
-                alphaArray.push(100 * Math.pow(0.7, j));
+                if (this._quality == 3) {
+                    alphaArray.push(50);
+                } else {
+                    alphaArray.push(100 * Math.pow(0.7, j));
+                }
             }
             
             // 闭合多边形（连接首尾点）
@@ -215,13 +290,17 @@ class org.flashNight.arki.render.TrailRenderer {
                 alphaArray.push(alphaArray[0]);
             }
             
-            // 绘制合并后的多边形
-            this._drawMergedTrail(mergedPoints, alphaArray, styleName);
+            // 根据 _quality 选择不同的绘制路径
+            if (this._quality <= 1) {
+                this._drawMergedTrail(mergedPoints, alphaArray, styleName);
+            } else {
+                this._drawQuad(mergedPoints, styleName, 100);
+            }
         }
     }
-
+    
     /**
-     * 绘制合并后的多边形轨迹（改用贝塞尔+直线混合方式）
+     * 绘制合并后的多边形轨迹（采用贝塞尔与直线混合方式）
      *
      * @param points      多边形点数组（包含 edge1 正序 + edge2 逆序）
      * @param alphaArray  每个点对应的透明度数组
@@ -231,12 +310,12 @@ class org.flashNight.arki.render.TrailRenderer {
         if (points.length < 3) return; // 至少需要三个点
         
         var style:Object = this._styles[styleName] || this._styles["预设"];
-
-        // 先都用同一个透明度
+        
+        // 采用第一点透明度作为整体衰减因子
         var alphaValue:Number = alphaArray[0];
         var fillAlpha:Number = style.fillOpacity * (alphaValue / 100);
         var lineAlpha:Number = style.lineOpacity * (alphaValue / 100);
-
+        
         // 调用新方法：drawMixedShape(....)
         VectorAfterimageRenderer.instance.drawMixedShape(
             points,
@@ -248,7 +327,6 @@ class org.flashNight.arki.render.TrailRenderer {
             true // 是否闭合
         );
     }
-
     
     /**
      * 简单轨迹平滑算法：使用相邻三个点的平均值减少轨迹抖动（对环形队列操作）
@@ -267,36 +345,34 @@ class org.flashNight.arki.render.TrailRenderer {
             pCurr.y = (pPrev.y + pCurr.y + pNext.y) / 3;
         }
     }
-
+    
     /**
-     * 基于Catmull-Rom样条的轨迹平滑算法
-     * @param ring 包含多个{x,y}坐标点的环形队列对象
-     * @param tension 曲线张力参数(0-1)，默认0.5
+     * 基于 Catmull-Rom 样条的轨迹平滑算法
+     * @param ring 包含多个 {x,y} 坐标点的环形队列对象
+     * @param tension 曲线张力参数 (0-1)，默认 0.5
      */
     private function _catmullRomSmooth(ring:Object, tension:Number):Void {
         if (tension == undefined) tension = 0.5;
         var count:Number = ring.count;
-        if (count < 4) return; // Catmull-Rom需要至少4个点
+        if (count < 4) return; // Catmull-Rom 至少需要4个点
         
-        // 创建临时数组处理循环队列
+        // 将环形队列转换为普通数组，扩展边界条件视为环形
         var points:Array = [];
         for (var i:Number = 0; i < count; i++) {
             points.push(ring.get(i));
         }
+        points.unshift(ring.get(count - 1)); // 首部添加末尾点
+        points.push(ring.get(0));           // 尾部添加首点
         
-        // 扩展边界条件：将队列视为环形
-        points.unshift(ring.get(count-1)); // 首部添加末尾点
-        points.push(ring.get(0));          // 尾部添加首点
-        
-        // 遍历原始点集进行插值
+        // 插值生成新点
         var newPoints:Array = [];
-        for (i = 1; i < points.length-2; i++) {
-            var p0:Object = points[i-1];
+        for (i = 1; i < points.length - 2; i++) {
+            var p0:Object = points[i - 1];
             var p1:Object = points[i];
-            var p2:Object = points[i+1];
-            var p3:Object = points[i+2];
+            var p2:Object = points[i + 1];
+            var p3:Object = points[i + 2];
             
-            // 计算Catmull-Rom插值点（每段插入2个点）
+            // 每段插入两个插值点，间隔参数 t 取 0.25 与 0.75
             for (var t:Number = 0.25; t < 1; t += 0.5) {
                 var x:Number = _catmullRom(p0.x, p1.x, p2.x, p3.x, t, tension);
                 var y:Number = _catmullRom(p0.y, p1.y, p2.y, p3.y, t, tension);
@@ -304,41 +380,40 @@ class org.flashNight.arki.render.TrailRenderer {
             }
         }
         
-        // 更新环形队列（保留原始点数量）
+        // 更新环形队列，保留原始点数量
         ring.clear(newPoints[0]);
         for (i = 1; i < newPoints.length; i++) {
             ring.push(newPoints[i]);
         }
     }
-
+    
     /**
-     * Catmull-Rom插值公式
+     * Catmull-Rom 插值公式
      */
     private function _catmullRom(p0:Number, p1:Number, p2:Number, p3:Number, t:Number, tension:Number):Number {
         var t01:Number = Math.pow(_distance(p0, p1), tension);
         var t12:Number = Math.pow(_distance(p1, p2), tension);
         var t23:Number = Math.pow(_distance(p2, p3), tension);
         
-        var m1:Number = (p2 - p1 + t12*((p1 - p0)/t01 - (p2 - p0)/(t01 + t12)));
-        var m2:Number = (p2 - p1 + t12*((p3 - p2)/t23 - (p3 - p1)/(t12 + t23)));
+        var m1:Number = (p2 - p1 + t12 * ((p1 - p0) / t01 - (p2 - p0) / (t01 + t12)));
+        var m2:Number = (p2 - p1 + t12 * ((p3 - p2) / t23 - (p3 - p1) / (t12 + t23)));
         
-        var t2:Number = t*t;
-        var t3:Number = t2*t;
-        return (2*t3 - 3*t2 + 1)*p1 + (t3 - 2*t2 + t)*m1 + (-2*t3 + 3*t2)*p2 + (t3 - t2)*m2;
+        var t2:Number = t * t;
+        var t3:Number = t2 * t;
+        return (2 * t3 - 3 * t2 + 1) * p1 + (t3 - 2 * t2 + t) * m1 + (-2 * t3 + 3 * t2) * p2 + (t3 - t2) * m2;
     }
-
+    
     /**
-     * 两点间距离计算（用于张力参数计算）
+     * 计算两值间距离（用于张力参数计算）
      */
     private function _distance(a:Number, b:Number):Number {
-        return Math.sqrt((b - a)*(b - a));
+        return Math.sqrt((b - a) * (b - a));
     }
-
     
     /**
      * 实际调用残影渲染系统绘制四边形。
      * 
-     * @param quadPoints  组成四边形的四个顶点数组（顺时针排列）
+     * @param quadPoints  组成四边形的顶点数组（顺时针排列）
      * @param styleName   样式名称（用于获取样式配置）
      * @param alphaValue  当前透明衰减值（0~100）
      */
@@ -397,7 +472,7 @@ class org.flashNight.arki.render.TrailRenderer {
     }
     
     /**
-     * 初始化新的发射者轨迹记录，统一创建环形队列结构。
+     * 初始化新的发射者轨迹记录，统一创建环形队列结构
      * 
      * @param edgeArray    当前帧边缘点数组
      * @param currentFrame 当前帧数
@@ -419,23 +494,15 @@ class org.flashNight.arki.render.TrailRenderer {
     // --- 内存管理 ---
     
     /**
-     * 清理未活跃轨迹数据，释放内存。
+     * 清理未活跃轨迹数据，释放内存
      * 
-     * @param forceCleanAll    是否强制清除所有记录（默认 false）
-     * @param maxInactiveFrames 发射者若超过此帧数未更新则判定为闲置（默认 300）
      * @return 被清理的发射者数量
      */
-    public function cleanMemory(forceCleanAll:Boolean, maxInactiveFrames:Number):Number {
-        if (forceCleanAll == undefined) forceCleanAll = false;
-        if (maxInactiveFrames == undefined) maxInactiveFrames = 300;
-        var currentFrame:Number = _root.帧计时器.当前帧数;
+    public function cleanMemory():Number {
         var cleanedCount:Number = 0;
         for (var emitterId:String in this._trackRecords) {
-            var rec:Object = this._trackRecords[emitterId];
-            if (forceCleanAll || (currentFrame - rec._lastFrame > maxInactiveFrames)) {
                 delete this._trackRecords[emitterId];
                 cleanedCount++;
-            }
         }
         trace("[TrailRenderer] 已清理 " + cleanedCount + " 个闲置发射者轨迹");
         return cleanedCount;
