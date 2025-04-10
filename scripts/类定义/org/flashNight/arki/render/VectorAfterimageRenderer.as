@@ -1,29 +1,28 @@
-﻿// 文件路径: org/flashNight/arki/render/VectorAfterimageRenderer.as
-import flash.geom.*;
+﻿import flash.geom.*;
 import org.flashNight.neur.Event.*;
-import org.flashNight.sara.util.*;
+import org.flashNight.sara.util.ObjectPool;  // 引入对象池框架
 
 /**
- * 矢量残影渲染器 - 为动态对象创建平滑渐隐的拖尾/残影效果
+ * 矢量残影渲染器 - 为动态对象创建平滑渐隐的拖尾/残影效果（经过对象池优化）
  * 
  * 功能特性：
  * 1. 支持矢量图形(MovieClip)和自定义路径(Array)两种渲染模式
- * 2. 自动对象池管理优化性能
+ * 2. 使用对象池管理机制优化性能，减少频繁创建和销毁 MovieClip 的开销
  * 3. 可配置的残影数量/透明度/持续时间参数
- * 4. 自动渐隐动画与资源回收
- * 5. 场景切换时可通过 onSceneChanged 方法主动重置状态
- * 
+ * 4. 自动渐隐动画与资源回收，并通过对象池实现高效的资源重用
+ * 5. 场景切换时主动重置对象池，防止由于父级容器丢失而引起的错误
+ *
  * 使用示例：
  * // 绘制多边形残影
  * VectorAfterimageRenderer.instance.drawShape(
- *     [{x:0,y:0}, {x:50,y:30}, {x:30,y:50}], 
+ *     [{x:0, y:0}, {x:50, y:30}, {x:30, y:50}], 
  *     0xFF0000, 0x00FF00, 2, 80, 100
  * );
  * 
- * // 复制MovieClip并添加残影
+ * // 复制 MovieClip 并添加残影
  * VectorAfterimageRenderer.instance.drawClip(mc, {brightness:20});
  *
- * // 在场景切换时调用 onSceneChanged 重置内部状态
+ * // 在场景切换时调用 onSceneChanged 重置内部状态和对象池
  * _root.帧计时器.eventBus.subscribe("SceneChanged", VectorAfterimageRenderer.instance.onSceneChanged, VectorAfterimageRenderer.instance);
  */
 class org.flashNight.arki.render.VectorAfterimageRenderer {
@@ -33,10 +32,10 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     /** 默认残影数量 */
     private static var DEFAULT_SHADOW_COUNT:Number = 5;
     
-    /** 帧间隔基数(控制残影间距) */
+    /** 帧间隔基数（控制残影间距） */
     private static var FRAME_INTERVAL:Number = 1;
     
-    /** 基础透明度(0-100) */
+    /** 基础透明度（0-100） */
     private static var BASE_ALPHA:Number = 100;
     
     /** 单例实例 */
@@ -45,39 +44,99 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
 
     // ==================== 成员变量 ====================
     
-    /** 画布对象池(存储可重用的MovieClip) */
-    private var _canvasPool:Array;
+    /** 画布对象池，用于管理可重用的 MovieClip 画布 */
+    private var _canvasPool:ObjectPool;
     
-    /** 当前活跃画布(最新绘制未开始渐隐的画布) */
+    /** 当前活跃画布（最新绘制、尚未开始渐隐的画布） */
     private var _currentCanvas:MovieClip;
     
-    /** 残影总持续时间(毫秒) */
+    /** 残影总持续时间（毫秒） */
     private var _shadowDuration:Number;
     
     /** 透明度衰减步长 */
     private var _alphaDecay:Number;
     
-    /** 渐隐刷新间隔(毫秒) */
+    /** 渐隐刷新间隔（毫秒） */
     private var _refreshInterval:Number;
     
     /** 当前残影数量 */
     private var _shadowCount:Number;
     
 
-    // ==================== 公共方法 ====================
+    // ==================== 构造函数 ====================
     
     /**
-     * 构造函数 - 初始化渲染系统
+     * 构造函数 - 初始化渲染系统，并创建画布对象池
      */
     public function VectorAfterimageRenderer() {
-        _canvasPool = [];
+        // 配置系统核心参数
         configureSystem(DEFAULT_SHADOW_COUNT, FRAME_INTERVAL);
+        // 初始化画布对象池，父级容器为 _root.gameworld.deadbody
+        initCanvasPool();
     }
+    
+    // ==================== 对象池初始化 ====================
+    
+    /**
+     * 初始化画布对象池，使用 ObjectPool 框架管理 MovieClip 画布的创建与复用
+     * 注意：父级容器使用 _root.gameworld.deadbody
+     */
+    private function initCanvasPool():Void {
+        var self = this;
+        // 创建一个新的对象池，管理画布(MovieClip)的创建、重置和释放
+        _canvasPool = new ObjectPool(
+            // createFunc：创建新画布的函数
+            function(parent:MovieClip):MovieClip {
+                // 从父级容器创建一个空的 MovieClip
+                var mc:MovieClip = parent.createEmptyMovieClip("canvas_" + getTimer(), parent.getNextHighestDepth());
+                return mc;
+            },
+            // resetFunc：重置画布的函数，在获取对象时调用，this 指向被重置的画布
+            function():Void {
+                // 将画布设置为可见并初始化属性
+                this._visible = true;
+                this._alpha = VectorAfterimageRenderer.BASE_ALPHA;
+                this.cycleCount = 0;
+                // 移除之前可能存在的渐隐任务
+                if (this.fadeTask) {
+                    _root.帧计时器.移除任务(this.fadeTask);
+                }
+                // 设置渐隐任务
+                var callback:Function = Delegate.create(self, self.onFadeUpdate);
+                this.fadeTask = _root.帧计时器.添加任务(callback, self._refreshInterval, self._shadowCount, this);
+            },
+            // releaseFunc：释放画布时的自定义清理函数
+            function():Void {
+                // 移除渐隐任务，并清理画布状态
+                if (this.fadeTask) {
+                    _root.帧计时器.移除任务(this.fadeTask);
+                }
+                this._visible = false;
+                if (this.clear != undefined) {
+                    this.clear();
+                }
+            },
+            // 父级影片剪辑，用于创建画布的容器
+            _root.gameworld.deadbody,
+            // 对象池的最大容量
+            30,
+            // 预加载对象的数量
+            5,
+            // 是否启用懒加载模式
+            true,
+            // 是否启用原型模式（此处不启用，因为每个画布需要独立处理渐隐任务）
+            false,
+            // 原型初始化所需的额外参数（无）
+            []
+        );
+    }
+    
+    // ==================== 系统配置方法 ====================
     
     /**
      * 配置系统核心参数
-     * @param shadowCount 残影数量(建议3-10)
-     * @param frameInterval 帧间隔系数(值越大残影间距越大)
+     * @param shadowCount 残影数量（建议3-10）
+     * @param frameInterval 帧间隔系数（值越大残影间距越大）
      */
     public function configureSystem(shadowCount:Number, frameInterval:Number):Void {
         _shadowCount = shadowCount;
@@ -87,51 +146,46 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         _refreshInterval = _shadowDuration / (shadowCount * shadowCount);
     }
     
+    // ==================== 残影绘制方法 ====================
+    
     /**
      * 绘制矢量形状残影
-     * @param points 顶点数组(至少3个点)，格式[{x:Number,y:Number},...]
-     * @param fillColor 填充色(RGB)
-     * @param lineColor 线条色(RGB)
-     * @param lineWidth 线宽(像素)
-     * @param fillAlpha 填充透明度(0-100)
-     * @param lineAlpha 线条透明度(0-100)
+     * @param points 顶点数组（至少3个点），格式 [{x:Number, y:Number}, ...]
+     * @param fillColor 填充色（RGB）
+     * @param lineColor 线条色（RGB）
+     * @param lineWidth 线宽（像素）
+     * @param fillAlpha 填充透明度（0-100）
+     * @param lineAlpha 线条透明度（0-100）
      */
     public function drawShape(points:Array, fillColor:Number, lineColor:Number, 
-                            lineWidth:Number, fillAlpha:Number, lineAlpha:Number):Void {
+                               lineWidth:Number, fillAlpha:Number, lineAlpha:Number):Void {
         if (!points || points.length < 3) return;
         var canvas:MovieClip = getAvailableCanvas();
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
         renderShape(canvas, points, fillColor, fillAlpha);
     }
-
     
     /**
      * 绘制“混合”形状：部分边使用 lineTo，部分边使用 curveTo
-     * 
-     * 假设用法：点集按顺序排列
-     *  - 首尾各用直线连接，中间所有段改用二次贝塞尔曲线进行平滑。
-     *  - 如果想要更灵活，比如指定哪些段是直线、哪些段是曲线，可进一步扩展。
-     *
-     * @param points    顶点数组(至少3个点)，格式[{x:Number,y:Number}, ...]
-     * @param fillColor 填充色(RGB)
-     * @param lineColor 线条色(RGB)
-     * @param lineWidth 线宽(像素)
-     * @param fillAlpha 填充透明度(0-100)
-     * @param lineAlpha 线条透明度(0-100)
-     * @param closePath 是否闭合图形（默认true，会把最后一点与第一点连起来）
+     * @param points 顶点数组（至少3个点），格式 [{x:Number, y:Number}, ...]
+     * @param fillColor 填充色（RGB）
+     * @param lineColor 线条色（RGB）
+     * @param lineWidth 线宽（像素）
+     * @param fillAlpha 填充透明度（0-100）
+     * @param lineAlpha 线条透明度（0-100）
+     * @param closePath 是否闭合图形（默认 true，将最后一点与第一点连接）
      */
     public function drawMixedShape(points:Array,
-                                fillColor:Number,
-                                lineColor:Number,
-                                lineWidth:Number,
-                                fillAlpha:Number,
-                                lineAlpha:Number,
-                                closePath:Boolean):Void {
+                                   fillColor:Number,
+                                   lineColor:Number,
+                                   lineWidth:Number,
+                                   fillAlpha:Number,
+                                   lineAlpha:Number,
+                                   closePath:Boolean):Void {
         if (!points || points.length < 3) return;
         var canvas:MovieClip = getAvailableCanvas();
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
         canvas.beginFill(fillColor || 0, fillAlpha || 100);
-        
         canvas.moveTo(points[0].x, points[0].y);
         canvas.lineTo(points[1].x, points[1].y);
         
@@ -150,12 +204,11 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         }
         canvas.endFill();
     }
-
     
     /**
-     * 复制MovieClip并生成残影效果
-     * @param source 源MovieClip
-     * @param colorParams 颜色变换参数(依赖色彩引擎的格式)
+     * 复制 MovieClip 并生成残影效果
+     * @param source 源 MovieClip
+     * @param colorParams 颜色变换参数（依赖色彩引擎的格式）
      */
     public function drawClip(source:MovieClip, colorParams:Object):Void {
         var canvas:MovieClip = getAvailableCanvas();
@@ -163,52 +216,42 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         renderMovieClip(source, canvas, adjustedColor);
     }
     
+    // ==================== 状态重置方法 ====================
+    
     /**
-     * 重置渲染器(场景切换时调用)
-     * 清空对象池和当前引用，避免内存泄漏
+     * 重置渲染器（场景切换时调用）
+     * 清空对象池和当前引用，避免内存泄漏，同时重新初始化对象池，
+     * 因为在游戏中切换 gameworld 时，父级容器会发生变化。
      */
-    public function reset():Void {
-        _canvasPool = [];
+    public function onSceneChanged():Void {
+        // 清空当前的对象池及其所有画布
+        if (_canvasPool != undefined) {
+            _canvasPool.clearPool();
+        }
         _currentCanvas = null;
+        // 重新初始化对象池，确保使用新的父级容器 _root.gameworld.deadbody
+        initCanvasPool();
     }
     
     /**
-     * 【新增方法】当场景发生切换时，由外部事件订阅触发调用此方法，
-     * 用于重置所有异常保护相关状态，清理内部画布和任务（降低内部防护带来的性能开销）。
+     * 重置渲染器（与 reset 方法效果相同，可用于手动重置状态）
      */
-    public function onSceneChanged():Void {
-        // 清除对象池中的所有画布及其渐隐任务
-        for (var i:Number = 0; i < _canvasPool.length; i++) {
-            var canvas:MovieClip = _canvasPool[i];
-            if (canvas.fadeTask) {
-                _root.帧计时器.移除任务(canvas.fadeTask);
-            }
-            canvas.removeMovieClip();
-        }
-        _canvasPool = [];
-        // 清除当前活跃画布
-        if (_currentCanvas) {
-            if (_currentCanvas.fadeTask) {
-                _root.帧计时器.移除任务(_currentCanvas.fadeTask);
-            }
-            _currentCanvas.removeMovieClip();
-            _currentCanvas = null;
-        }
-        // 其他需要重置的状态可在此添加...
+    public function reset():Void {
+        // 调用 onSceneChanged 以清空旧对象池和画布
+        onSceneChanged();
     }
-
-
+    
     // ==================== 核心渲染逻辑 ====================
     
     /**
-     * 渲染MovieClip到目标画布
+     * 渲染 MovieClip 到目标画布
      * @private
      * @param source 源对象
      * @param canvas 目标画布
      * @param colorTransform 颜色变换对象
      */
     private function renderMovieClip(source:MovieClip, canvas:MovieClip, 
-                                   colorTransform:ColorTransform):Void {
+                                     colorTransform:ColorTransform):Void {
         canvas.clear();
         var ghost:MovieClip = duplicateClip(source, canvas);
         applyTransformation(source, ghost);
@@ -218,11 +261,11 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     }
     
     /**
-     * 复制MovieClip实例
+     * 复制 MovieClip 实例
      * @private
      * @param source 源对象
      * @param canvas 父级画布
-     * @return 复制的MovieClip实例
+     * @return 复制后的 MovieClip 实例
      */
     private function duplicateClip(source:MovieClip, canvas:MovieClip):MovieClip {
         var depth:Number = canvas.getNextHighestDepth();
@@ -262,59 +305,18 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         return matrix;
     }
     
-
     // ==================== 画布生命周期管理 ====================
     
     /**
-     * 获取可用画布(优先从对象池获取)
+     * 获取可用画布（优先返回当前活跃画布，否则从对象池中获取）
      * @private
-     * @return 可用MovieClip画布
+     * @return 可用的 MovieClip 画布
      */
     private function getAvailableCanvas():MovieClip {
-        if (_currentCanvas) return _currentCanvas;
-        
-        var canvas:MovieClip = _canvasPool.length ? 
-            MovieClip(_canvasPool.pop()) : 
-            createNewCanvas();
-            
+        if (_currentCanvas != null) return _currentCanvas;
+        var canvas:MovieClip = _canvasPool.getObject();
         _currentCanvas = canvas;
-        initActiveCanvas(canvas);
         return canvas;
-    }
-    
-    /**
-     * 创建新画布
-     * @private
-     * @return 新创建的MovieClip画布
-     */
-    private function createNewCanvas():MovieClip {
-        var container:MovieClip = _root.gameworld.deadbody;
-        return container.createEmptyMovieClip(
-            "canvas_" + getTimer(), 
-            container.getNextHighestDepth()
-        );
-    }
-    
-    /**
-     * 初始化活跃画布状态
-     * @private
-     * @param canvas 需要初始化的画布
-     */
-    private function initActiveCanvas(canvas:MovieClip):Void {
-        if (!canvas) return;
-        
-        canvas._visible = true;
-        canvas._alpha = BASE_ALPHA;
-        canvas.cycleCount = 0;
-        
-        // 设置渐隐任务
-        var callback:Function = Delegate.create(this, onFadeUpdate);
-        canvas.fadeTask = _root.帧计时器.添加任务(
-            callback, 
-            _refreshInterval, 
-            _shadowCount, 
-            canvas
-        );
     }
     
     /**
@@ -342,35 +344,40 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         _root.帧计时器.移除任务(canvas.fadeTask);
         canvas._visible = false;
         canvas.clear();
-        _canvasPool.push(canvas);
+        _canvasPool.releaseObject(canvas);
     }
     
-
     // ==================== 工具方法 ====================
     
     /**
      * 设置画布绘制样式
      * @private
+     * @param canvas 目标画布
+     * @param lineColor 线条颜色（RGB）
+     * @param lineWidth 线宽（像素）
+     * @param lineAlpha 线条透明度（0-100）
      */
     private function setupCanvasStyle(canvas:MovieClip, lineColor:Number, 
-                                    lineWidth:Number, lineAlpha:Number):Void {
+                                      lineWidth:Number, lineAlpha:Number):Void {
         canvas.lineStyle(lineWidth || 1, lineColor || 0xFF0000, lineAlpha || 100);
     }
     
     /**
      * 渲染填充形状
      * @private
+     * @param canvas 目标画布
+     * @param points 顶点数组
+     * @param fillColor 填充颜色（RGB）
+     * @param fillAlpha 填充透明度（0-100）
      */
     private function renderShape(canvas:MovieClip, points:Array, 
-                               fillColor:Number, fillAlpha:Number):Void {
+                                 fillColor:Number, fillAlpha:Number):Void {
         var len:Number = points.length;
         if (len < 2) return;
         canvas.beginFill(fillColor || 0, fillAlpha || 100);
-
         var i:Number = 1;
         var p0:Object = points[0];
         canvas.moveTo(p0.x, p0.y);
-
         do {
             var p:Object = points[i % len];
             canvas.lineTo(p.x, p.y);
