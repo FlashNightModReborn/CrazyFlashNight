@@ -2,6 +2,34 @@
 <!--已用ID：[51, 88, 94, 100, 117, 119, 130, 142, 151, 152, 158, 161, 189, 202, 215, 219, 225, 229, 234, 240, 245, 362, 398, 434, 441, 448, 456, 464, 469, 484, 495, 538, 542, 547, 553, 558, 576, 586, 591, 600, 605, 616, 644, 668, 674, 697, 699, 838, 842, 904, 908, 1529, 1534, 1539, 1549, 1551, 2613, 2619, 2624, 5515, 6053, 6059, 6082, 8016, 8022, 9008, 10003, 10007, 10015, 10029, 10045, 10080, 10090, 10114, 10503, 10507, 10515, 10529, 10545, 10580, 10590, 10614, 11003, 11007, 11015, 11029, 11045, 11080, 11090, 11114]
 预留ID区间：15402-15600-->
 <root>
+<item>
+    <id>2000</id>
+    <name>大圣手甲</name>
+    <displayname>点翠飞龙釬</displayname>
+    <icon>大圣手甲</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <actiontype>截拳</actiontype>
+    <weight>4</weight>
+    <price>9981</price>
+    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
+    <level>81</level>
+    <equipped>
+      <dressup>男变装-大圣手甲</dressup>
+      <hp>9981</hp>
+      <mp>9981</mp>
+      <force>81</force>
+      <damage>500</damage>
+      <gunpower>-500</gunpower>
+      <knifepower>500</knifepower>
+      <punch>500</punch>
+      <defence>9981</defence>
+      <vampirism>81</vampirism>
+        <magicdefence>
+        <全属性>81</全属性>
+      </magicdefence>
+    </equipped>
+  </item>
   <item>
     <id>15402</id>
     <name>自由骑士手甲</name>

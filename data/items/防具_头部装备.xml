@@ -3,6 +3,31 @@
 预留ID区间：15602-15800-->
 <root>
   <item>
+    <id>2002</id>
+    <name>大圣头甲</name>
+    <displayname>凤翅紫金冠</displayname>
+    <icon>大圣头甲</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <weight>4</weight>
+    <price>9981</price>
+    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
+    <level>81</level>
+    <equipped>
+      <dressup>男变装-大圣头甲</dressup>
+      <hp>9981</hp>
+      <mp>9981</mp>
+      <force>81</force>
+      <damage>500</damage>
+      <gunpower>-500</gunpower>
+      <knifepower>500</knifepower>
+      <defence>9981</defence>
+      <magicdefence>
+        <全属性>81</全属性>
+      </magicdefence>
+    </equipped>
+  </item>
+<item>
     <id>15602</id>
     <name>自由骑士头甲</name>
     <displayname>自由骑士头甲</displayname>

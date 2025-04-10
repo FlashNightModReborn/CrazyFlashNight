@@ -3,6 +3,31 @@
 预留ID区间：15802-16000-->
 <root>
   <item>
+    <id>2001</id>
+    <name>大圣下装</name>
+    <displayname>藕丝步云履</displayname>
+    <icon>大圣腿甲</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <weight>8</weight>
+    <price>9981</price>
+    <description> &lt;font color="#FF0000"&gt;“好！好！好！”&lt;/font&gt;</description>
+    <level>81</level>
+    <equipped>
+      <dressup>变装-大圣下装</dressup>
+      <hp>9981</hp>
+      <mp>9981</mp>
+      <force>81</force>
+      <damage>500</damage>
+      <gunpower>-500</gunpower>
+      <knifepower>500</knifepower>
+      <defence>9981</defence>
+      <magicdefence>
+        <全属性>81</全属性>
+      </magicdefence>
+    </equipped>
+  </item>
+<item>
     <id>15802</id>
     <name>自由骑士腿甲</name>
     <displayname>自由骑士腿甲</displayname>
