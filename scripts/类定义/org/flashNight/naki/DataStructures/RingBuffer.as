@@ -82,7 +82,7 @@ class org.flashNight.naki.DataStructures.RingBuffer {
     /**
      * 获取指定索引处的元素（支持负数索引，负数索引表示从队尾反向取值）
      * @param index 索引号（范围：0 到 size-1；负数索引自动转换，例如 -1 表示最后一个元素）
-     * @return 对应的元素，若队列为空则返回 undefined；索引越界则抛出 RangeError
+     * @return 对应的元素，若队列为空则返回 undefined；索引越界则抛出 Error
      */
     public function get(index:Number):Object {
         if (this._size == 0) return undefined;
@@ -91,7 +91,7 @@ class org.flashNight.naki.DataStructures.RingBuffer {
             index += this._size;
         }
         if (index < 0 || index >= this._size) {
-            throw new RangeError("Index " + index + " out of bounds [0-" + (this._size - 1) + "]");
+            throw new Error("Index " + index + " out of bounds [0-" + (this._size - 1) + "]");
         }
         // 计算逻辑起始位置：(cursor - size + capacity) mod capacity 为队列头位置
         var pos:Number = (this._cursor - this._size + index + this._capacity) % this._capacity;
