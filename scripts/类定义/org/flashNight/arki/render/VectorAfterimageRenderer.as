@@ -24,12 +24,16 @@ import org.flashNight.sara.util.ObjectPool;  // 引入对象池框架
  *
  * // 在场景切换时调用 onSceneChanged 重置内部状态和对象池
  * _root.帧计时器.eventBus.subscribe("SceneChanged", VectorAfterimageRenderer.instance.onSceneChanged, VectorAfterimageRenderer.instance);
+ * 
+ * 动态调整接口说明：
+ * 该接口允许在运行时调整残影数量，新创建的画布会按照最新配置生效，而
+ * 已在渐隐任务中的画布继续使用原有配置完成渐隐，确保视觉平滑过渡与性能稳定。
  */
 class org.flashNight.arki.render.VectorAfterimageRenderer {
 
     // ==================== 静态配置常量 ====================
     
-    /** 默认残影数量 */
+    /** 默认残影数量（初始默认值） */
     private static var DEFAULT_SHADOW_COUNT:Number = 5;
     
     /** 帧间隔基数（控制残影间距） */
@@ -37,7 +41,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     
     /** 基础透明度（0-100） */
     private static var BASE_ALPHA:Number = 100;
-    
+
     /** 单例实例 */
     public static var instance:VectorAfterimageRenderer = new VectorAfterimageRenderer();
     
@@ -53,8 +57,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     /** 残影总持续时间（毫秒） */
     private var _shadowDuration:Number;
     
-    /** 透明度衰减步长 */
-    private var _alphaDecay:Number;
+    /** 指数衰减因子 */
+    private var decayFactor:Number;
     
     /** 渐隐刷新间隔（毫秒） */
     private var _refreshInterval:Number;
@@ -69,7 +73,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * 构造函数 - 初始化渲染系统，并创建画布对象池
      */
     public function VectorAfterimageRenderer() {
-        // 配置系统核心参数
+        // 使用默认残影数量初始化系统参数
         configureSystem(DEFAULT_SHADOW_COUNT, FRAME_INTERVAL);
         // 初始化画布对象池，父级容器为 _root.gameworld.deadbody
         initCanvasPool();
@@ -142,8 +146,21 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         _shadowCount = shadowCount;
         var frameDuration:Number = _root.帧计时器.每帧毫秒;
         _shadowDuration = frameDuration * shadowCount * frameInterval;
-        _alphaDecay = BASE_ALPHA / shadowCount;
+        
+        // 计算指数衰减因子，使透明度在 _shadowCount 次更新后降到 1%
+        var targetAlphaRatio:Number = 0.01; // 目标透明度比例（可调整）
+        decayFactor = Math.pow(targetAlphaRatio, 1 / _shadowCount);
+        
         _refreshInterval = _shadowDuration / (shadowCount * shadowCount);
+    }
+    
+    /**
+     * 动态调整残影数量
+     * @param newShadowCount 新的残影数量配置（建议3-10）
+     * @note 此方法只影响后续创建的画布，已经在渐隐中的画布仍使用原有配置完成渐隐
+     */
+    public function setShadowCount(newShadowCount:Number):Void {
+        configureSystem(newShadowCount, FRAME_INTERVAL);
     }
     
     // ==================== 残影绘制方法 ====================
@@ -331,7 +348,12 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         if (++canvas.cycleCount >= _shadowCount) {
             recycleCanvas(canvas);
         } else {
-            canvas._alpha -= _alphaDecay;
+            // 使用指数衰减更新透明度
+            canvas._alpha = Math.round(canvas._alpha * decayFactor);
+            // 当透明度降到 0 或以下时提前回收画布
+            if (canvas._alpha <= 0) {
+                recycleCanvas(canvas);
+            }
         }
     }
     
