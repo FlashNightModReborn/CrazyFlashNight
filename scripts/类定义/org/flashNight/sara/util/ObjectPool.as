@@ -95,6 +95,7 @@ class org.flashNight.sara.util.ObjectPool {
      */
     public function setPoolCapacity(maxPoolSize:Number):Void {
         this.maxPoolSize = maxPoolSize;
+        // 如果当前池大小超过新容量，销毁多余对象
         while (this.topIndex > this.maxPoolSize) {
             this.topIndex--;
             var obj:MovieClip = this.pool[this.topIndex];

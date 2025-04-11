@@ -147,11 +147,13 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         var frameDuration:Number = _root.帧计时器.每帧毫秒;
         _shadowDuration = frameDuration * shadowCount * frameInterval;
         
-        // 计算指数衰减因子，使透明度在 _shadowCount 次更新后降到 1%
-        var targetAlphaRatio:Number = 0.01; // 目标透明度比例（可调整）
-        decayFactor = Math.pow(targetAlphaRatio, 1 / _shadowCount);
-        
+        // 计算指数衰减因子
+        decayFactor = Math.pow(0.01, 1 / _shadowCount);
         _refreshInterval = _shadowDuration / (shadowCount * shadowCount);
+        
+        // 更新对象池的最大容量为残影数量的两倍，确保足够的缓冲
+        var newMaxPoolSize:Number = Math.ceil(_shadowCount * 2);
+        _canvasPool.setPoolCapacity(newMaxPoolSize);
     }
     
     /**
@@ -363,10 +365,19 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * @param canvas 需要回收的画布
      */
     private function recycleCanvas(canvas:MovieClip):Void {
+        if (canvas.__isDestroyed) return; // 防止重复回收
+        
         _root.帧计时器.移除任务(canvas.fadeTask);
         canvas._visible = false;
         canvas.clear();
-        _canvasPool.releaseObject(canvas);
+        
+        // 显式检查池是否已满
+        if (_canvasPool.isPoolFull()) {
+            _canvasPool.releaseObject(canvas);
+        } else {
+            canvas.__isDestroyed = true;
+            canvas.removeMovieClip();
+        }
     }
     
     // ==================== 工具方法 ====================

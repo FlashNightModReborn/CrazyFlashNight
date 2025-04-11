@@ -1,4 +1,10 @@
-﻿/**
+﻿import org.flashNight.neur.ScheduleTimer.*;
+import org.flashNight.neur.Server.*; 
+import org.flashNight.neur.Event.*;
+import org.flashNight.naki.DataStructures.*;
+import org.flashNight.aven.Coordinator.*;
+
+/**
  * TaskManager.as
  * 任务调度管理器
  * 负责帧计时器中与任务调度相关的部分，提供添加、更新、删除、延迟任务等方法
@@ -39,7 +45,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
             var node:TaskIDNode = tasks.getFirst();
             while (node != null) {
                 var nextNode:TaskIDNode = node.next;
-                var taskID:Number = node.taskID;
+                var taskID:String = node.taskID;
                 var task:Task = this.taskTable[taskID];
                 if (task) {
                     task.action();
@@ -80,8 +86,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * @param parameters 动态参数数组（可选）
      * @return 任务ID
      */
-    public function addTask(action:Function, interval:Number, repeatCount, parameters:Array):Number {
-        var taskID:Number = ++this.taskIdCounter;
+    public function addTask(action:Function, interval:Number, repeatCount, parameters:Array):String {
+        var taskID:String = String(++this.taskIdCounter);
         var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         var task:Task = new Task(taskID, intervalFrames, repeatCount);
         // 利用 Delegate 封装回调和参数（假设 Delegate.createWithParams 存在）
@@ -103,13 +109,13 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * @param parameters 动态参数数组（可选）
      * @return 任务ID；若直接执行则返回 null
      */
-    public function addSingleTask(action:Function, interval:Number, parameters:Array):Number {
+    public function addSingleTask(action:Function, interval:Number, parameters:Array):String {
         if (interval <= 0) {
             var boundAction:Function = Delegate.createWithParams(null, action, parameters);
             boundAction();
             return null;
         } else {
-            var taskID:Number = ++this.taskIdCounter;
+            var taskID:String = String(++this.taskIdCounter);
             var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
             var task:Task = new Task(taskID, intervalFrames, 1);
             task.action = Delegate.createWithParams(task, action, parameters);
@@ -131,8 +137,8 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * @param parameters 动态参数数组（可选）
      * @return 任务ID
      */
-    public function addLoopTask(action:Function, interval:Number, parameters:Array):Number {
-        var taskID:Number = ++this.taskIdCounter;
+    public function addLoopTask(action:Function, interval:Number, parameters:Array):String {
+        var taskID:String = String(++this.taskIdCounter);
         var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         var task:Task = new Task(taskID, intervalFrames, true); // true 表示无限循环
         task.action = Delegate.createWithParams(task, action, parameters);
@@ -155,13 +161,13 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * @param parameters 动态参数数组（可选）
      * @return 任务ID
      */
-    public function addOrUpdateTask(obj:Object, labelName:String, action:Function, interval:Number, parameters:Array):Number {
+    public function addOrUpdateTask(obj:Object, labelName:String, action:Function, interval:Number, parameters:Array):String {
         if (!obj) return null;
-        if (!obj.任务标识) obj.任务标识 = {};
-        if (!obj.任务标识[labelName]) {
-            obj.任务标识[labelName] = ++this.taskIdCounter;
+        if (!obj.taskLabel) obj.taskLabel = {};
+        if (!obj.taskLabel[labelName]) {
+            obj.taskLabel[labelName] = ++this.taskIdCounter;
         }
-        var taskID:Number = obj.任务标识[labelName];
+        var taskID:String = obj.taskLabel[labelName];
         var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
         if (task) {
@@ -208,13 +214,13 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * @param parameters 动态参数数组（可选）
      * @return 任务ID
      */
-    public function addLifecycleTask(obj:Object, labelName:String, action:Function, interval:Number, parameters:Array):Number {
+    public function addLifecycleTask(obj:Object, labelName:String, action:Function, interval:Number, parameters:Array):String {
         if (!obj) return null;
-        if (!obj.任务标识) obj.任务标识 = {};
-        if (!obj.任务标识[labelName]) {
-            obj.任务标识[labelName] = ++this.taskIdCounter;
+        if (!obj.taskLabel) obj.taskLabel = {};
+        if (!obj.taskLabel[labelName]) {
+            obj.taskLabel[labelName] = ++this.taskIdCounter;
         }
-        var taskID:Number = obj.任务标识[labelName];
+        var taskID:String = obj.taskLabel[labelName];
         var intervalFrames:Number = ((interval * this.msPerFrame) + 0.9999999999) | 0;
         var boundAction:Function = Delegate.createWithParams(obj, action, parameters);
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
@@ -251,7 +257,11 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
                 this.taskTable[taskID] = task;
             }
         }
-        // 关于卸载回调的设置，由外部调用者或帧计时器统一管理
+        var self:TaskManager = this;
+        EventCoordinator.addUnloadCallback(obj, function():Void {
+            self.removeTask(taskID);
+            delete obj.taskLabel[labelName];
+        });
         return taskID;
     }
 
@@ -259,7 +269,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * 移除任务
      * @param taskID 要移除的任务ID
      */
-    public function removeTask(taskID:Number):Void {
+    public function removeTask(taskID:String):Void {
         var task:Task = this.taskTable[taskID];
         if (task) {
             this.scheduleTimer.removeTaskByNode(task.node);
@@ -274,7 +284,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * @param taskID 任务ID
      * @return 找到的 Task 实例或 null
      */
-    public function locateTask(taskID:Number):Task {
+    public function locateTask(taskID:String):Task {
         return this.taskTable[taskID] || this.zeroFrameTasks[taskID] || null;
     }
 
@@ -284,7 +294,7 @@ class org.flashNight.neur.ScheduleTimer.TaskManager {
      * @param delayTime 延迟时间（单位同 interval）
      * @return 延迟设置成功返回 true，否则 false
      */
-    public function delayTask(taskID:Number, delayTime):Boolean {
+    public function delayTask(taskID:String, delayTime):Boolean {
         var task:Task = this.taskTable[taskID] || this.zeroFrameTasks[taskID];
         if (task) {
             var delayFrames:Number;

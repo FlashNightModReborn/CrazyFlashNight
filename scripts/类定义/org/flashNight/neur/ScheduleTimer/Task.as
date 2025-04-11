@@ -21,9 +21,9 @@ class org.flashNight.neur.ScheduleTimer.Task {
     
     /**
      * 任务唯一标识符 (对应原始代码中的taskID)
-     * @type {Number}
+     * @type {String}
      */
-    public var id:Number;
+    public var id:String;
     
     /**
      * 任务执行间隔帧数 (对应原始"间隔帧数")
@@ -80,13 +80,13 @@ class org.flashNight.neur.ScheduleTimer.Task {
     
     /**
      * 构造函数
-     * @param {Number} id 任务ID，通过任务ID计数器生成
+     * @param {String} id 任务ID，通过任务ID计数器生成
      * @param {Number} intervalFrames 初始间隔帧数
      * @param {Number|Boolean} [repeatCount=1] 重复次数 
      *        - Number: 具体次数 
      *        - Boolean: true为无限循环
      */
-    public function Task(id:Number, intervalFrames:Number, repeatCount) {
+    public function Task(id:String, intervalFrames:Number, repeatCount) {
         this.id = id;
         this.intervalFrames = intervalFrames;
         // 使用双等号同时处理 undefined 和 null
