@@ -161,7 +161,7 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
             }
 
             var tr:TrailRenderer = TrailRenderer.getInstance();
-            tr.addTrailData(target._name, trail, style);
+            tr.addTrailData(target._name + target.version, trail, style);
         }
     };
 
@@ -231,7 +231,7 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
 
         if (trail.length > 0) {
             var tr:TrailRenderer = TrailRenderer.getInstance();
-            tr.addTrailData(target._name, trail, style);
+            tr.addTrailData(target._name + target.version, trail, style);
         }
     };
 
@@ -276,7 +276,7 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
 
         if (trail.length > 0) {
             var tr:TrailRenderer = TrailRenderer.getInstance();
-            tr.addTrailData(target._name, trail, style);
+            tr.addTrailData(target._name + target.version, trail, style);
         }
     }
 }
