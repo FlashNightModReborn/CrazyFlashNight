@@ -1,2 +1,1 @@
-var tester:org.flashNight.neur.ScheduleTimer.TaskManagerTester = new org.flashNight.neur.ScheduleTimer.TaskManagerTester();
-tester.runAllTests();
+org.flashNight.neur.ScheduleTimer.TaskManagerTester.runAllTests();
