@@ -1,4 +1,6 @@
-﻿_root.装备生命周期函数.初期特效初始化 = function(反射对象, 参数对象) 
+﻿import org.flashNight.arki.render.*;
+
+_root.装备生命周期函数.初期特效初始化 = function(反射对象, 参数对象) 
 {
    反射对象.子弹属性 = 反射对象.子弹配置.bullet_0;//通过反射对象传参通讯
    反射对象.成功率 = 参数对象.probability ? 参数对象.probability : 3;
@@ -312,7 +314,7 @@ _root.装备生命周期函数.通用刀光周期 = function(reflector, paramObj
 
    if(_root.兵器使用检测(自机))
    {
-      _root.刀光系统.刀引用绘制刀光(自机, 自机.刀_引用, reflector.basicStyle);
+      BladeMotionTrailsRenderer.processBladeTrail(自机, 自机.刀_引用, reflector.basicStyle)
    }
 
 };
