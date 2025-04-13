@@ -384,7 +384,7 @@ _root.帧计时器.执行性能调整 = function(新性能等级)
 
     TrailRenderer.getInstance().setQuality(新性能等级);
     BladeMotionTrailsRenderer.setPerformanceLevel(新性能等级);
-    VectorAfterimageRenderer.instance.setShadowCount(5 - 新性能等级);
+    // VectorAfterimageRenderer.instance.setShadowCount(5 - 新性能等级);
 };
 
 _root.帧计时器.执行性能调整(0);
