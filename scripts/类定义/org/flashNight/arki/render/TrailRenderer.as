@@ -335,7 +335,8 @@ class org.flashNight.arki.render.TrailRenderer {
             style.lineWidth,
             fillAlpha,
             lineAlpha,
-            true // 是否闭合
+            true,
+            5
         );
     }
     
@@ -443,7 +444,8 @@ class org.flashNight.arki.render.TrailRenderer {
             style.lineColor,
             style.lineWidth,
             fillAlpha,
-            lineAlpha
+            lineAlpha,
+            3
         );
     }
     
