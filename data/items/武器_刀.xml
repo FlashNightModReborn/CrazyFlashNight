@@ -10,13 +10,13 @@
     <type>武器</type>
     <use>刀</use>
     <actiontype>长枪</actiontype>
-    <weight>5</weight>
+    <weight>15</weight>
     <price>100000</price>
     <skill>
-      <skillname>突刺</skillname>
-      <description>手持该武器时可以使用突刺。</description>
-      <cd>7000</cd>
-      <mp>50</mp>
+      <skillname>狂瀑扎</skillname>
+      <description>装备全套黑犀铠甲且首次使用流星枪战技时，将身上的空手加成转化为冷兵器加成。再次使用时可释放狂瀑扎。</description>
+      <cd>5000</cd>
+      <mp>100</mp>
     </skill>
     <description>水之黑犀铠甲的主要作战兵器。</description>
     <level>60</level>
@@ -25,7 +25,7 @@
     </data>
     <equipped>
       <dressup>刀-流星枪</dressup>
-      <hp>0</hp>
+      <hp>300</hp>
       <mp>0</mp>
       <defence>200</defence>
     </equipped>
