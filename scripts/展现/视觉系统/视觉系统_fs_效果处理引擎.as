@@ -1,5 +1,9 @@
 ﻿import flash.geom.ColorTransform;
 import flash.filters.*;
+import org.flashNight.naki.DataStructures.*;
+import org.flashNight.arki.render.*;
+import org.flashNight.sara.util.*;
+
 
 _root.设置色彩 = function(对象, 红色乘数, 绿色乘数, 蓝色乘数, 红色偏移, 绿色偏移, 蓝色偏移, 透明乘数, 透明偏移)
 {
@@ -501,17 +505,33 @@ _root.HSVtoRGB = function(h, s, v)
 
 
 
-_root.绘制线框 = function(影片剪辑:MovieClip) {
-    if (影片剪辑) {
-        影片剪辑.clear();
-        影片剪辑.lineStyle(1, 0xFF0000, 100); // 红色线条，1像素宽，100% 不透明度
-
-        var rect:Object = 影片剪辑.getRect(影片剪辑);
-
-        影片剪辑.moveTo(rect.xMin, rect.yMin);
-        影片剪辑.lineTo(rect.xMax, rect.yMin);
-        影片剪辑.lineTo(rect.xMax, rect.yMax);
-        影片剪辑.lineTo(rect.xMin, rect.yMax);
-        影片剪辑.lineTo(rect.xMin, rect.yMin);
+_root.绘制线框 = function(mc:MovieClip) {
+    if (mc) {
+        // 获取当前 MovieClip 的边界信息
+        var rect:Object = mc.getRect(mc);
+        
+        // 计算三个已知点：左上 (p0)、右上 (p1)、右下 (p2)
+        var p0:Vector = new Vector(rect.xMin, rect.yMin);
+        var p1:Vector = new Vector(rect.xMax, rect.yMin);
+        var p2:Vector = new Vector(rect.xMax, rect.yMax);
+        
+        // 对这三个点先进行局部到全局的转换
+        mc.localToGlobal(p0);
+        mc.localToGlobal(p1);
+        mc.localToGlobal(p2);
+        
+        // 定位到目标 MovieClip（例如 _root.gameworld.deadbody）
+        var map:MovieClip = _root.gameworld.deadbody;
+        // 再进行全局到局部的转换
+        map.globalToLocal(p0);
+        map.globalToLocal(p1);
+        map.globalToLocal(p2);
+        
+        // 利用矩形对称性求得第四个点：p3 = p0 + (p2 - p1)
+        // 调用渲染器绘制线框
+        VectorAfterimageRenderer.instance.drawShape(
+            [p0, p1, p2, new Vector(p0.x + p2.x - p1.x, p0.y + p2.y - p1.y)],
+            0xFF0000, 0x00FF00, 2, 80, 100, 30
+        );
     }
 };
