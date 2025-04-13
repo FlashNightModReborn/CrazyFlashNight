@@ -330,34 +330,24 @@ _root.装备生命周期函数.通用拖影初始化 = function(reflector, param
 
 _root.装备生命周期函数.通用拖影周期 = function(reflector, paramObj) 
 {
-   _root.装备生命周期函数.移除异常周期函数(reflector);
-   if(_root.装备生命周期函数.自机状态检测(reflector, reflector.actionFuncParam))
-   {
+    _root.装备生命周期函数.移除异常周期函数(reflector);
+
+    if (_root.装备生命周期函数.自机状态检测(reflector, reflector.actionFuncParam))
+    {
         var self:MovieClip = reflector.自机;
         var target:MovieClip = self[reflector.装备类型 + "_引用"][reflector.target];
-        if(!(target && target._x != undefined)) return;
+        if (!(target && target._x != undefined)) return;
 
-        var rect:Object = target.getRect(target);
-        var pt1:Object = { x:0, y:0 };
-        var pt3:Object = { x:0, y:0 };
         var map:MovieClip = _root.gameworld.deadbody;
-        var trail:Array = [];
 
-        pt1.x = rect.xMin;
-        pt1.y = rect.yMax;
-        target.localToGlobal(pt1);
-        map.globalToLocal(pt1);
-        
-        pt3.x = rect.xMax;
-        pt3.y = rect.yMin;
-        target.localToGlobal(pt3);
-        map.globalToLocal(pt3);
+        // 直接获取 target 在 map 坐标系下的矩形
+        var rect:Object = target.getRect(map);
 
-        var edge1:Object = { x: pt1.x, y: pt1.y };
-        var edge2:Object = { x: pt3.x, y: pt3.y };
-        
-        trail.push({ edge1: edge1, edge2: edge2 });
-   
-        TrailRenderer.getInstance().addTrailData(self._name + self.version, trail, reflector.basicStyle)
-   }
+        var edge1:Object = { x: rect.xMin, y: rect.yMax };
+        var edge2:Object = { x: rect.xMax, y: rect.yMin };
+
+        var trail:Array = [{ edge1: edge1, edge2: edge2 }];
+
+        TrailRenderer.getInstance().addTrailData(self._name + self.version + reflector.标签名, trail, reflector.basicStyle);
+    }
 };
