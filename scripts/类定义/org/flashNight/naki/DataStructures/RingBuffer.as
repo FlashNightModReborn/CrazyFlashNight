@@ -10,7 +10,7 @@
  * 使用场景：
  * 数据缓存、轨迹记录、日志收集、实时数据显示等需要固定容量和高效循环写入的应用场合。
  */
-class org.flashNight.naki.DataStructures.RingBuffer {
+class org.flashNight.naki.DataStructures.RingBuffer  {
     // --------------------------
     // 内部状态变量
     // --------------------------
@@ -197,6 +197,24 @@ class org.flashNight.naki.DataStructures.RingBuffer {
         }
         return arr;
     }
+
+    /**
+     * 将队列中的数据项按逆序输出为数组（从最新到最旧）
+     * @return 逆序数组；若队列为空则返回空数组
+     */
+    public function toReversedArray():Array {
+        var arr:Array = [];
+        var s:Number = this._size;
+        if (s == 0) return arr;
+        var cap:Number = this._capacity;
+        // 从最新数据开始反向遍历
+        for (var i:Number = 0; i < s; i++) {
+            var idx:Number = (this._cursor - 1 - i + cap) % cap;
+            arr.push(this._buffer[idx]);
+        }
+        return arr;
+    }
+
     
     /**
      * 遍历队列中所有数据项，并调用回调函数。
