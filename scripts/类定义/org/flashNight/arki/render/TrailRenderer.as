@@ -194,10 +194,8 @@ class org.flashNight.arki.render.TrailRenderer
         if (currentFrame - record._lastFrame > (10 - quality)) {
             for (i = 0; i < len; i++) {
                 traj = record[i];
-                traj.edge1.clear();
-                traj.edge1.push(edgeArray[i].edge1);
-                traj.edge2.clear();
-                traj.edge2.push(edgeArray[i].edge2);
+                traj.edge1.replaceSingle(edgeArray[i].edge1);
+                traj.edge2.replaceSingle(edgeArray[i].edge2);
             }
             record._lastFrame = currentFrame;
             return;
@@ -379,7 +377,7 @@ class org.flashNight.arki.render.TrailRenderer
 
     /**
      * 简单平滑算法：利用相邻三个点的平均值减少轨迹抖动。
-     * 先将 RingBuffer 数据转换为数组，计算完后用 pushMany 统一更新数据。
+     * 先将 RingBuffer 数据转换为数组，计算完后用 reset 统一更新数据。
      * @param ring 包含多个 {x, y} 坐标点的 RingBuffer
      */
     private function _simpleSmooth(ring:RingBuffer):Void {
@@ -393,13 +391,12 @@ class org.flashNight.arki.render.TrailRenderer
             pts[i].y = (pts[i - 1].y + pts[i].y + pts[i + 1].y) / 3;
         }
 
-        ring.clear();
-        ring.pushMany(pts);
+        ring.reset(pts);
     }
 
     /**
      * 基于 Catmull-Rom 样条的平滑算法。
-     * 先将 RingBuffer 数据转换为数组后进行插值计算，再用 pushMany 更新原数据。
+     * 先将 RingBuffer 数据转换为数组后进行插值计算，再用 reset 更新原数据。
      * @param ring 包含多个 {x, y} 坐标点的 RingBuffer
      * @param tension 曲线张力参数，范围 0-1，默认 0.5
      */
@@ -468,8 +465,7 @@ class org.flashNight.arki.render.TrailRenderer
             }
         }
 
-        ring.clear();
-        ring.pushMany(newPoints);
+        ring.reset(newPoints);
     }
 
     /**

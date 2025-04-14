@@ -155,6 +155,60 @@ class org.flashNight.naki.DataStructures.RingBuffer  {
             this._cursor = 0;
         }
     }
+
+    /**
+     * 使用新数据重置 RingBuffer 的状态。
+     * @param newData 数据数组，若长度超过容量，则保留后面的部分
+     */
+    public function reset(newData:Array):Void {
+        if (newData == null) return;
+
+        // 若 newData 长度超过容量，则只保留最新数据
+        if (newData.length > this._capacity) {
+            newData = newData.slice(newData.length - this._capacity);
+        }
+        
+        var len:Number = newData.length;
+        // 更新内部存储数组：直接覆盖前 len 个数据，其余部分可以置为 undefined 或保留原数据（不影响逻辑）
+        for (var i:Number = 0; i < len; i++) {
+            this._buffer[i] = newData[i];
+        }
+        // 若 newData 少于容量，也可选择将剩余位置置为 undefined（视具体需求而定）
+        for (i = len; i < this._capacity; i++) {
+            this._buffer[i] = undefined;
+        }
+        
+        // 更新状态变量
+        this._head = 0;
+        this._size = len;
+        this._cursor = (len) % this._capacity;
+    }
+
+    /**
+     * 用指定的单个数据项替换 RingBuffer 中所有数据。
+     * 该方法先清空当前缓冲区，然后以最高效率将该单一数据项作为唯一数据存入，
+     * 更新状态变量使得队列仅包含这一项。
+     * @param item 要替换为的新数据项；如果 item 为 undefined，则不做操作
+     */
+    public function replaceSingle(item:Object):Void {
+        if (item === undefined) return;
+        
+        // 清空内部数组：仅清空逻辑，不需要设置每个元素为 undefined（也可根据需求选择清空全部数组）
+        // 这里选择直接重置状态变量，并将新数据填充到第一个位置
+        this._buffer[0] = item;
+        
+        // 根据容量，将其他位置置为 undefined（可选：如果不关心未使用区域，可以省略此步骤）
+        for (var i:Number = 1; i < this._capacity; i++) {
+            this._buffer[i] = undefined;
+        }
+        
+        // 更新 RingBuffer 内部状态：队头为 0，队尾指针为下一个位置（取模处理），数据数量为 1
+        this._head = 0;
+        this._cursor = 1 % this._capacity;
+        this._size = 1;
+    }
+
+
     
     /**
      * 移除并返回队列头部的数据项（先进先出）。
