@@ -154,7 +154,7 @@ _root.子弹生命周期 = function()
 
     if (_root.调试模式)
     {
-        AABBRenderer.renderAABB(areaAABB);
+        AABBRenderer.renderAABB(areaAABB, 0);
     }
     var gameWorld = _root.gameworld;
     var shooter = gameWorld[this.发射者名];
