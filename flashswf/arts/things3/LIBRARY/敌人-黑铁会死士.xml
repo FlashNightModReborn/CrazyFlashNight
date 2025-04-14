@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-黑铁会死士" itemID="67ac3e4f-0000062b" linkageExportForAS="true" linkageIdentifier="敌人-黑铁会死士" lastModified="1739341391">
   <timeline>
-    <DOMTimeline name="敌人-黑铁会死士">
+    <DOMTimeline name="敌人-黑铁会死士" currentFrame="51">
       <layers>
         <DOMLayer name="Labels Layer" color="#9D8EE9">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#8748C2" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#8748C2">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -296,7 +296,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#35E572">
+        <DOMLayer name="Layer 10" color="#35E572" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -537,7 +537,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="112" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="素材/Symbol 873" centerPoint3DX="261.15" centerPoint3DY="68.25">
+                <DOMSymbolInstance libraryItemName="素材/Symbol 873" selected="true" centerPoint3DX="261.15" centerPoint3DY="68.25">
                   <matrix>
                     <Matrix tx="8.5" ty="-72"/>
                   </matrix>

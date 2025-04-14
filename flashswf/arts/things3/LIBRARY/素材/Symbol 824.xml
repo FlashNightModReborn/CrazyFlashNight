@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 824" itemID="6577faef-000015a9" lastModified="1707062478">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/Symbol 824" itemID="6577faef-000015a9" lastModified="1744631268">
   <timeline>
     <DOMTimeline name="Symbol 824" currentFrame="17">
       <layers>
@@ -20,7 +20,7 @@
 			_root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
 			_root.gameworld[_parent.产生源].僵尸型敌人总个数--;
 			_parent.计算经验值();
-			if(_root.成功率(50)){
+			if(_root.成功率(25) and !_parent.影子单位){
 				_root.创建可拾取物("砍刀",1,_parent._x,_parent._y,true);
 			}
 		}
