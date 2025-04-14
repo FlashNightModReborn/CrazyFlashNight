@@ -154,7 +154,7 @@ _root.子弹生命周期 = function()
 
     if (_root.调试模式)
     {
-        AABBRenderer.renderAABB(areaAABB, 0);
+        AABBRenderer.renderAABB(areaAABB, 0, "line");
     }
     var gameWorld = _root.gameworld;
     var shooter = gameWorld[this.发射者名];
@@ -209,6 +209,12 @@ _root.子弹生命周期 = function()
             if(isPointSet) {
                 this.polygonCollider.updateFromBullet(this, detectionArea)
                 collisionResult = this.polygonCollider.checkCollision(unitArea, zOffset);
+            }
+
+            if (_root.调试模式)
+            {
+                AABBRenderer.renderAABB(areaAABB, zOffset, "thick");
+                AABBRenderer.renderAABB(unitArea, zOffset, "filled");
             }
 
             overlapRatio = collisionResult.overlapRatio;
