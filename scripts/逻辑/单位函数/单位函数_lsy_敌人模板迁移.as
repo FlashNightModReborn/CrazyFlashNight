@@ -153,6 +153,7 @@ _root.敌人函数.移动钝感硬直 = function(时间) {
 };
 
 _root.敌人函数.随机掉钱 = function(){
+	if(this.影子单位 || this.色彩单位) return;
 	if (!this.不掉钱 && random(_root.打怪掉钱机率) === 0){
 		var 金币时间倍率 = _root.天气系统.金币时间倍率;
 		//_root.发布消息("金币时间倍率" + 金币时间倍率);
@@ -222,6 +223,7 @@ _root.敌人函数.死亡检测 = function(){
 
 _root.敌人函数.掉落物判定 = function(){
 	if(!掉落物) return;
+	if(this.影子单位 || this.色彩单位) return;
 	if(掉落物.length > 0){
 		for(var i = 掉落物.length - 1; i > -1; i--){
 			掉落物品(掉落物[i]);
