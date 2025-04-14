@@ -111,6 +111,30 @@ class org.flashNight.sara.util.AABB {
     }
 
     /**
+     * 移动AABB（修改自身）
+     * 
+     * @param offset 移动向量（Vector实例）
+     */
+    public function move(offset:Vector):Void {
+        this.left += offset.x;
+        this.right += offset.x;
+        this.top += offset.y;
+        this.bottom += offset.y;
+    }
+
+    /**
+     * 移动AABB（不修改自身，返回新实例）
+     * 
+     * @param offset 移动向量（Vector实例）
+     * @return 新的AABB实例
+     */
+    public function moveNew(offset:Vector):AABB {
+        var newAABB:AABB = this.clone();
+        newAABB.move(offset);
+        return newAABB;
+    }
+
+    /**
      * 获取当前 AABB 与另一个 AABB 之间的最小平移向量（MTV）
      * 
      * @param other 另一个 AABB 实例

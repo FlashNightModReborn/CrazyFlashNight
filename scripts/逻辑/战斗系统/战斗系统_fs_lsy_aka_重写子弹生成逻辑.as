@@ -7,7 +7,8 @@ import org.flashNight.arki.bullet.BulletComponent.Movement.*;  // 移动逻辑
 import org.flashNight.arki.bullet.BulletComponent.Shell.*;     // 弹壳组件
 import org.flashNight.arki.bullet.BulletComponent.Type.*;      // 类型定义
 import org.flashNight.arki.bullet.BulletComponent.Utils.*;     // 工具类
-
+import org.flashNight.arki.render.*;
+import org.flashNight.arki.spatial.transform.*;
 // 2. 子弹工厂（具体类单独导入）
 import org.flashNight.arki.bullet.Factory.BulletFactory;
 
@@ -26,6 +27,7 @@ import org.flashNight.gesh.object.*;    // 对象管理
 import org.flashNight.naki.Sort.*;      // 排序算法
 import org.flashNight.neur.Event.*;     // 事件系统
 import org.flashNight.sara.util.*;      // 工具方法
+
  
 DamageManagerFactory.init();
 BulletInitializer.initializeAttributes();
@@ -152,7 +154,7 @@ _root.子弹生命周期 = function()
 
     if (_root.调试模式)
     {
-        _root.绘制线框(detectionArea);
+        AABBRenderer.renderAABB(areaAABB);
     }
     var gameWorld = _root.gameworld;
     var shooter = gameWorld[this.发射者名];
