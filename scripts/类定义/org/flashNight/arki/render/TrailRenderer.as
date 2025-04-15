@@ -1,7 +1,7 @@
 ﻿import org.flashNight.gesh.xml.LoadXml.*;
 import org.flashNight.gesh.object.*;
 import org.flashNight.naki.DataStructures.RingBuffer;
-import org.flashNight.arki.render.*;
+import org.flashNight.arki.render.VectorAfterimageRenderer;
 
 /**
  * TrailRenderer 拖影渲染器（单例）
@@ -13,10 +13,8 @@ import org.flashNight.arki.render.*;
  * 2. 复用（Reuse）：尽可能在需要的地方复用已创建的数据结构（如数组）而非频繁创建新对象，降低内存分配与 GC 压力；
  * 3. 变量声明提前（Hoisting Awareness）：显式在方法顶部声明需要的变量，避免 AS2 变量提升造成的潜在问题，也便于统一管理。
  *
- * 本版本相较原版本主要优化内容：
- * 1. addTrailData、_renderTrails 等方法中，将部分变量的声明移到更靠近使用处，并避免不必要的声明；
- * 2. 在平滑与绘制阶段，尽量复用临时数组或将其声明在方法外/顶部，以减少重复创建；
- * 3. 显式在方法顶部声明循环变量 i、局部对象等，减少因 AS2 变量提升可能带来的冲突或干扰。
+ * 本版本相较原版本的主要修改：使用 VectorAfterimageRenderer 的批量绘制接口（drawShapes 与 drawMixedShapes），
+ * 先将每条轨迹（多边形）收集到一个数组，再一次性调用批量绘制方法，以减少频繁切换画布的开销，提高性能。
  */
 class org.flashNight.arki.render.TrailRenderer
 {
@@ -147,8 +145,9 @@ class org.flashNight.arki.render.TrailRenderer
      * 添加并记录发射者当前帧的轨迹数据，并触发渲染操作。
      * 若当前输入点与上次记录末尾数据变化不足（低于设定阈值），则跳过更新与渲染，
      * 同时在低画质模式下对数据进行采样以降低计算量。
+     *
      * @param emitterId 发射者唯一标识（例如影片剪辑的 _name）
-     * @param edgeArray 当前帧边缘点数组，每项包含 edge1 与 edge2 坐标对象
+     * @param edgeArray 当前帧边缘点数组，每项包含 edge1 与 edge2 坐标对象，如：[{edge1:{x,y}, edge2:{x,y}}, ...]
      * @param styleName 拖影样式名称（须存在于样式表中）
      */
     public function addTrailData(emitterId:String, edgeArray:Array, styleName:String):Void {
@@ -238,7 +237,7 @@ class org.flashNight.arki.render.TrailRenderer
             trajUpdate.edge2.push(edgeArray[i].edge2);
         }
 
-        // 执行渲染操作
+        // 执行批量渲染操作
         this._renderTrails(record, edgeArray, styleName, currentFrame);
 
         // 更新最后活跃帧数
@@ -261,33 +260,36 @@ class org.flashNight.arki.render.TrailRenderer
     }
 
     /**
-     * 渲染指定发射者的轨迹记录，生成连续多边形。
-     * 根据画质参数选择不同的平滑处理与透明度计算策略。
+     * 渲染指定发射者的轨迹记录，生成连续多边形数组后一次性调用矢量残影渲染器的批量绘制方法。
+     *
+     * 根据画质参数选择不同的平滑处理策略，同时在收集完所有轨迹多边形后，决定调用：
+     *  - drawMixedShapes（可包含曲线插值，质量较高）
+     *  - drawShapes（主要是简单折线/多边形绘制）
+     *
      * @param record 当前发射者的历史轨迹记录（包含 RingBuffer 数据）
      * @param edgeArray 当前帧边缘点数组（用于确定轨迹数量）
      * @param styleName 拖影样式名称
      * @param currentFrame 当前帧数
      */
     private function _renderTrails(record:Object, edgeArray:Array, styleName:String, currentFrame:Number):Void {
-        // 在方法顶部显式声明局部变量
         var len:Number = edgeArray.length;
         var quality:Number = this._quality;
         var alphaValue:Number = (quality == 3) ? 50 : 100;
-        var i:Number;
-        var traj:Object;
-        var edge1Arr:Array;
-        var edge2Arr:Array;
-        var size1:Number;
-        var size2:Number;
 
+        // 用两个数组分别收集：需要使用 drawMixedShapes 的多边形集合（mixedPolygons）
+        // 和需要使用 drawShapes 的多边形集合（simplePolygons）
+        var mixedPolygons:Array = [];
+        var simplePolygons:Array = [];
+
+        var i:Number;
         for (i = 0; i < len; i++) {
-            traj = record[i];
+            var traj:Object = record[i];
 
             // 获取平滑前的所有点
-            edge1Arr = traj.edge1.toArray();
-            edge2Arr = traj.edge2.toArray();
-            size1 = edge1Arr.length;
-            size2 = edge2Arr.length;
+            var edge1Arr:Array = traj.edge1.toArray();
+            var edge2Arr:Array = traj.edge2.toArray();
+            var size1:Number = edge1Arr.length;
+            var size2:Number = edge2Arr.length;
 
             if (size1 < 2 || size2 < 2) {
                 continue;
@@ -315,63 +317,79 @@ class org.flashNight.arki.render.TrailRenderer
             mergedPoints = mergedPoints.concat(edge1Arr);
             mergedPoints = mergedPoints.concat(edge2Arr);
             if (mergedPoints.length > 0) {
+                // 闭合首尾
                 mergedPoints.push(mergedPoints[0]);
             }
 
-            // 根据画质调用不同绘制方法
+            // 根据画质区分：高画质(<=1) 使用 drawMixedShapes，低画质(>1) 使用 drawShapes
             if (quality <= 1) {
-                this._drawMergedTrail(mergedPoints, alphaValue, styleName);
+                // 收集到 mixedPolygons
+                if (mergedPoints.length >= 3) {
+                    mixedPolygons.push(mergedPoints);
+                }
             } else {
-                this._drawQuad(mergedPoints, styleName, alphaValue);
+                // 收集到 simplePolygons
+                if (mergedPoints.length >= 3) {
+                    simplePolygons.push(mergedPoints);
+                }
             }
+        }
+
+        // 批量绘制：一次调用 drawMixedShapes 或 drawShapes
+        if (mixedPolygons.length > 0) {
+            this._drawMixedTrailBatch(mixedPolygons, alphaValue, styleName);
+        }
+        if (simplePolygons.length > 0) {
+            this._drawSimpleTrailBatch(simplePolygons, styleName, alphaValue);
         }
     }
 
     /**
-     * 绘制合并后的多边形轨迹，采用贝塞尔与直线混合绘制方式。
-     * @param points 多边形点数组（edge1 正序 + edge2 反序 + 闭合首尾）
+     * 使用 VectorAfterimageRenderer 的 drawMixedShapes 方法，批量绘制混合曲线形状。
+     *
+     * @param polygonList 多个多边形数组（每个元素均为点集合）
      * @param alphaValue 透明度因子（0~100）
-     * @param styleName 样式名称（用于获取视觉配置）
+     * @param styleName 拖影样式名称
      */
-    private function _drawMergedTrail(points:Array, alphaValue:Number, styleName:String):Void {
-        if (points.length < 3) return;
+    private function _drawMixedTrailBatch(polygonList:Array, alphaValue:Number, styleName:String):Void {
+        if (polygonList.length == 0) return;
         var style:Object = this._styles[styleName] || this._styles["预设"];
         var fillAlpha:Number = style.fillOpacity * (alphaValue / 100);
         var lineAlpha:Number = style.lineOpacity * (alphaValue / 100);
 
-        // 调用渲染器绘制混合形状（可包含贝塞尔曲线）
-        VectorAfterimageRenderer.instance.drawMixedShape(
-            points,
-            style.color,
-            style.lineColor,
-            style.lineWidth,
-            fillAlpha,
-            lineAlpha,
-            true,
-            5
+        VectorAfterimageRenderer.instance.drawMixedShapes(
+            polygonList,
+            style.color,        // 填充颜色
+            style.lineColor,    // 线条颜色
+            style.lineWidth,    // 线宽
+            fillAlpha,          // 填充透明度
+            lineAlpha,          // 线条透明度
+            true,               // 是否闭合每个形状
+            5                   // 残影数量（此处可根据需要自行调整或使用默认值）
         );
     }
 
     /**
-     * 绘制多边形（或四边形）轨迹。
-     * @param quadPoints 多边形或四边形顶点数组（顺或逆时针排列，支持首尾闭合）
-     * @param styleName 样式名称，用于获取视觉配置
-     * @param alphaValue 当前透明衰减值（0~100）
+     * 使用 VectorAfterimageRenderer 的 drawShapes 方法，批量绘制简单折线/多边形。
+     *
+     * @param polygonList 多个多边形数组（每个元素均为点集合）
+     * @param styleName 拖影样式名称
+     * @param alphaValue 透明度因子（0~100）
      */
-    private function _drawQuad(quadPoints:Array, styleName:String, alphaValue:Number):Void {
-        if (quadPoints.length < 3) return;
+    private function _drawSimpleTrailBatch(polygonList:Array, styleName:String, alphaValue:Number):Void {
+        if (polygonList.length == 0) return;
         var style:Object = this._styles[styleName] || this._styles["预设"];
         var fillAlpha:Number = style.fillOpacity * (alphaValue / 100);
         var lineAlpha:Number = style.lineOpacity * (alphaValue / 100);
 
-        VectorAfterimageRenderer.instance.drawShape(
-            quadPoints,
-            style.color,
-            style.lineColor,
-            style.lineWidth,
-            fillAlpha,
-            lineAlpha,
-            3
+        VectorAfterimageRenderer.instance.drawShapes(
+            polygonList,
+            style.color,        // 填充颜色
+            style.lineColor,    // 线条颜色
+            style.lineWidth,    // 线宽
+            fillAlpha,          // 填充透明度
+            lineAlpha,          // 线条透明度
+            3                   // 残影数量（此处示例写 3，可根据需要调整）
         );
     }
 
@@ -445,7 +463,9 @@ class org.flashNight.arki.render.TrailRenderer
             t23 = Math.pow(d23, tension);
 
             // 对 p1~p2 之间插值
-            for (t = 0.25; t < 1; t += 0.5) {
+            var stepList:Array = [0.25, 0.75]; // 这里插入两个点
+            for (var s:Number = 0; s < stepList.length; s++) {
+                t = stepList[s];
                 t2 = t * t;
                 t3 = t2 * t;
                 h1 = 2 * t3 - 3 * t2 + 1;
@@ -471,6 +491,7 @@ class org.flashNight.arki.render.TrailRenderer
     /**
      * 初始化新的发射者轨迹记录。
      * 为每个边缘点单独创建 RingBuffer 存储其历史轨迹数据。
+     *
      * @param edgeArray 当前帧边缘点数组，每项包含 edge1 与 edge2 坐标对象
      * @param currentFrame 当前帧数
      * @return 初始化后的记录对象，包含各边缘的 RingBuffer 数据及最后活跃帧数
@@ -495,6 +516,8 @@ class org.flashNight.arki.render.TrailRenderer
     /**
      * 清理未活跃的发射者轨迹数据，释放内存。
      * @return 被清理的发射者数量
+     *
+     * 此处示例直接全部清理，如需区分“活跃”与“非活跃”可自行添加逻辑判断。
      */
     public function cleanMemory():Number {
         var cleanedCount:Number = 0;

@@ -280,32 +280,32 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
                                     closePath:Boolean, shadowCount:Number):Void {
         // 如果 shapes 为空或无效，直接返回
         if (shapes == undefined || shapes.length == 0) return;
-        
+    
         // 如果 shadowCount 未传入，使用默认值
         if (shadowCount == undefined) shadowCount = _defaultShadowCount;
-        
+    
         // 如果 closePath 未传入，默认为 true
         if (closePath == undefined) closePath = true;
-        
+    
         // 从对象池获取或创建一个画布
         var canvas:MovieClip = getAvailableCanvas(shadowCount);
-        
+    
         // 为所有形状统一设置线条样式，减少重复调用
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
-        
+    
         // 遍历每个形状进行绘制
         for (var i:Number = 0; i < shapes.length; i++) {
             var points:Array = shapes[i];
             // 跳过无效或点数不足的形状
             if (points == undefined || points.length < 3) continue;
-            
+        
             // 开始填充绘制
             canvas.beginFill(fillColor || 0, fillAlpha || 100);
             canvas.moveTo(points[0].x, points[0].y);
-            
+        
             // 绘制首段直线
             canvas.lineTo(points[1].x, points[1].y);
-            
+        
             // 对中间点使用曲线插值绘制
             var len:Number = points.length;
             for (var j:Number = 1; j < len - 2; j++) {
@@ -315,19 +315,20 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
                 var cpy:Number = (curr.y + next.y) / 2; // 控制点 y 坐标
                 canvas.curveTo(curr.x, curr.y, cpx, cpy);
             }
-            
+        
             // 绘制最后一段直线
             canvas.lineTo(points[len - 1].x, points[len - 1].y);
-            
+        
             // 根据 closePath 参数决定是否闭合路径
             if (closePath) {
                 canvas.lineTo(points[0].x, points[0].y);
             }
-            
+        
             // 结束填充
             canvas.endFill();
         }
     }
+
 
     
     /**
