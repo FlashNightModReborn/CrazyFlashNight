@@ -259,6 +259,76 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         }
         canvas.endFill();
     }
+
+    /**
+     * 批量绘制多个混合形状残影（部分直线，部分曲线）
+     * 
+     * 该方法支持一次性绘制多个混合形状，通过减少画布创建和样式设置的次数来优化性能。
+     * 每个形状的绘制逻辑与 drawMixedShape 一致：首尾段使用直线连接，中间点通过曲线插值绘制。
+     * 
+     * @param shapes 多个形状的点集合数组，每个子数组代表一个形状，例如 [[{x:0, y:0}, {x:50, y:10}], [{x:60, y:60}, {x:80, y:80}]]
+     * @param fillColor 填充颜色（RGB 值，例如 0xFF0000）
+     * @param lineColor 线条颜色（RGB 值，例如 0x00FF00）
+     * @param lineWidth 线条宽度（单位：像素，默认 1）
+     * @param fillAlpha 填充透明度（0-100，默认 100）
+     * @param lineAlpha 线条透明度（0-100，默认 100）
+     * @param closePath 是否闭合每个形状的路径（布尔值，默认 true）
+     * @param shadowCount 可选的残影数量配置，若未传入则使用默认值 _defaultShadowCount
+     */
+    public function drawMixedShapes(shapes:Array, fillColor:Number, lineColor:Number, 
+                                    lineWidth:Number, fillAlpha:Number, lineAlpha:Number, 
+                                    closePath:Boolean, shadowCount:Number):Void {
+        // 如果 shapes 为空或无效，直接返回
+        if (shapes == undefined || shapes.length == 0) return;
+        
+        // 如果 shadowCount 未传入，使用默认值
+        if (shadowCount == undefined) shadowCount = _defaultShadowCount;
+        
+        // 如果 closePath 未传入，默认为 true
+        if (closePath == undefined) closePath = true;
+        
+        // 从对象池获取或创建一个画布
+        var canvas:MovieClip = getAvailableCanvas(shadowCount);
+        
+        // 为所有形状统一设置线条样式，减少重复调用
+        setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
+        
+        // 遍历每个形状进行绘制
+        for (var i:Number = 0; i < shapes.length; i++) {
+            var points:Array = shapes[i];
+            // 跳过无效或点数不足的形状
+            if (points == undefined || points.length < 3) continue;
+            
+            // 开始填充绘制
+            canvas.beginFill(fillColor || 0, fillAlpha || 100);
+            canvas.moveTo(points[0].x, points[0].y);
+            
+            // 绘制首段直线
+            canvas.lineTo(points[1].x, points[1].y);
+            
+            // 对中间点使用曲线插值绘制
+            var len:Number = points.length;
+            for (var j:Number = 1; j < len - 2; j++) {
+                var curr:Object = points[j];
+                var next:Object = points[j + 1];
+                var cpx:Number = (curr.x + next.x) / 2; // 控制点 x 坐标
+                var cpy:Number = (curr.y + next.y) / 2; // 控制点 y 坐标
+                canvas.curveTo(curr.x, curr.y, cpx, cpy);
+            }
+            
+            // 绘制最后一段直线
+            canvas.lineTo(points[len - 1].x, points[len - 1].y);
+            
+            // 根据 closePath 参数决定是否闭合路径
+            if (closePath) {
+                canvas.lineTo(points[0].x, points[0].y);
+            }
+            
+            // 结束填充
+            canvas.endFill();
+        }
+    }
+
     
     /**
      * 复制 MovieClip 并生成残影效果
