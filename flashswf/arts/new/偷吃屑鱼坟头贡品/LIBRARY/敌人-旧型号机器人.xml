@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人" itemID="665c898d-00000de3" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人" lastModified="1717382208" lastUniqueIdentifier="44">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-旧型号机器人" itemID="665c898d-00000de3" linkageExportForAS="true" linkageIdentifier="敌人-旧型号机器人" lastModified="1744702977" lastUniqueIdentifier="45">
   <timeline>
     <DOMTimeline name="敌人-旧型号机器人">
       <layers>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#A4EFED" locked="true" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="代码层" color="#A4EFED" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -310,7 +310,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="索敌层" color="#AE8C5A" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="索敌层" color="#AE8C5A" locked="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
@@ -473,13 +473,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="怪物通用模板/通用ai元件/逻辑ai详情元件" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签 短" selected="true" centerPoint3DX="-40.75" centerPoint3DY="18.95">
                   <matrix>
-                    <Matrix tx="-36" ty="16.35"/>
+                    <Matrix tx="-43.25" ty="16.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

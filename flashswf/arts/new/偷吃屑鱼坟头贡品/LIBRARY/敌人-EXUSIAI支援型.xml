@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-EXUSIAI支援型" itemID="66587ded-00005037" linkageExportForAS="true" linkageIdentifier="敌人-EXUSIAI支援型" lastModified="1717081137" lastUniqueIdentifier="47">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-EXUSIAI支援型" itemID="66587ded-00005037" linkageExportForAS="true" linkageIdentifier="敌人-EXUSIAI支援型" lastModified="1744703000" lastUniqueIdentifier="48">
   <timeline>
     <DOMTimeline name="敌人-EXUSIAI支援型">
       <layers>
@@ -491,13 +491,13 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" locked="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹2/逻辑ai详情元件" centerPoint3DX="-33.5" centerPoint3DY="18.85">
+                <DOMSymbolInstance libraryItemName="思考标签 短" centerPoint3DX="-42.5" centerPoint3DY="5">
                   <matrix>
-                    <Matrix tx="-36" ty="16.35"/>
+                    <Matrix tx="-45" ty="2.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -538,7 +538,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
