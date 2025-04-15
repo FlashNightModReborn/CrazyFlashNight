@@ -2,6 +2,7 @@
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.Server.*;
+import org.flashNight.arki.render.*;
 
 /**
  * AABBCollider 类
@@ -229,6 +230,8 @@ class org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider extends A
         this.right  = unitRect.xMax;
         this.top    = unitRect.yMin;
         this.bottom = unitRect.yMax;
+
+        if(_root.调试模式) AABBRenderer.renderAABB(this, 0, "unhit")
     }
 
     /**

@@ -142,8 +142,10 @@ _root.子弹生命周期 = function()
 
     var detectionArea:MovieClip;
     var areaAABB:ICollider = this.aabbCollider;
-    var bullet_rotation:Number = this._rotation; // 本地化避免多次访问造成getter开销
+    var bullet_rotation:Number = this._rotation; // 本地化以减少多次访问 getter 的开销
     var isPointSet:Boolean = this.联弹检测 && (bullet_rotation != 0 && bullet_rotation != 180);
+    var bulletZOffset:Number = this.Z轴坐标;
+    var bulletZRange:Number  = this.Z轴攻击范围;
 
     if (this.透明检测 && !this.子弹区域area) {
         areaAABB.updateFromTransparentBullet(this);
@@ -154,17 +156,19 @@ _root.子弹生命周期 = function()
 
     if (_root.调试模式)
     {
-        AABBRenderer.renderAABB(areaAABB, 0, "line");
+        // 绘制当前碰撞箱，并显示以子弹 Z轴坐标为基准的 z 轴攻击范围上下边界
+        AABBRenderer.renderAABB(areaAABB, 0, "line", bulletZRange);
     }
+    
     var gameWorld = _root.gameworld;
     var shooter = gameWorld[this.发射者名];
     var unitMap:Array;
     if(this.友军伤害) {
-        unitMap = TargetCacheManager.getCachedAll(shooter,1);
+        unitMap = TargetCacheManager.getCachedAll(shooter, 1);
     }
     else
     {
-        unitMap = TargetCacheManager.getCachedEnemy(shooter,1);
+        unitMap = TargetCacheManager.getCachedEnemy(shooter, 1);
     }
 
     this.shouldGeneratePostHitEffect = true;
@@ -180,9 +184,10 @@ _root.子弹生命周期 = function()
     for (var i:Number = 0; i < len ; ++i)
     {
         hitTarget = this.hitTarget = unitMap[i];
-        zOffset = this.Z轴坐标 - hitTarget.Z轴坐标;
+        // 计算子弹与目标在 z 轴上的相对偏移值
+        zOffset = bulletZOffset - hitTarget.Z轴坐标;
 
-        if (Math.abs(zOffset) >= this.Z轴攻击范围)
+        if (Math.abs(zOffset) >= bulletZRange)
         {
             continue;
         }
@@ -191,8 +196,6 @@ _root.子弹生命周期 = function()
             overlapRatio = 1;
 
             unitArea = hitTarget.aabbCollider;
-            // unitArea.updateFromUnitArea(hitTarget);
-            
             collisionResult = areaAABB.checkCollision(unitArea, zOffset);
 
             if(!collisionResult.isColliding)
@@ -207,7 +210,7 @@ _root.子弹生命周期 = function()
                 }
             }
             if(isPointSet) {
-                this.polygonCollider.updateFromBullet(this, detectionArea)
+                this.polygonCollider.updateFromBullet(this, detectionArea);
                 collisionResult = this.polygonCollider.checkCollision(unitArea, zOffset);
             }
 
@@ -220,22 +223,15 @@ _root.子弹生命周期 = function()
             overlapRatio = collisionResult.overlapRatio;
             overlapCenter = collisionResult.overlapCenter;
 
-            //击中
+            // 命中处理
             this.hitCount++;
-
-            // ------------------------兼容区------------------------------
-            this.附加层伤害计算 = 0; 
+            this.附加层伤害计算 = 0;
             this.命中对象 = hitTarget;
 
-            // ------------------------兼容区------------------------------
-
-            
-            // 命中率计算略，原代码有提到根据命中率计算闪避
             var dodgeState = this.伤害类型 == "真伤" ? "未躲闪": 
             DodgeHandler.calculateDodgeState(hitTarget,
-            DodgeHandler.calcDodgeResult(shooter, hitTarget, this.命中率),this);
+                DodgeHandler.calcDodgeResult(shooter, hitTarget, this.命中率), this);
             
-            // 调用伤害结算函数
             if(this.击中时触发函数) this.击中时触发函数();
 
             var damageResult:DamageResult = DamageCalculator.calculateDamage(
@@ -244,7 +240,7 @@ _root.子弹生命周期 = function()
                 hitTarget, 
                 overlapRatio, 
                 dodgeState
-            )
+            );
 
             var dispatcher:EventDispatcher = hitTarget.dispatcher;
             dispatcher.publish("hit", hitTarget, shooter, this, collisionResult, damageResult);
@@ -264,7 +260,7 @@ _root.子弹生命周期 = function()
 
             if (this.近战检测 && !this.不硬直)
             {
-                shooter.硬直(shooter.man,_root.钝感硬直时间);
+                shooter.硬直(shooter.man, _root.钝感硬直时间);
             }
             else if(!this.穿刺检测)
             {
@@ -273,7 +269,6 @@ _root.子弹生命周期 = function()
         }
 
         if(this.pierceLimit && this.pierceLimit < this.hitCount) {
-            // _root.发布消息(this.pierceLimit + " 强制消失 " + this.hitCount)
             this.shouldDestroy = function() {
                 return true;
             };
@@ -282,13 +277,13 @@ _root.子弹生命周期 = function()
     }
 
     if(this.shouldGeneratePostHitEffect && this.hitCount > 0){
-        EffectSystem.Effect(this.击中后子弹的效果,this._x,this._y,shooter._xscale);
+        EffectSystem.Effect(this.击中后子弹的效果, this._x, this._y, shooter._xscale);
     }
 
-    // 调用更新运动逻辑
+    // 更新子弹运动逻辑
     this.updateMovement(this);
 
-    // 检查是否需要销毁
+    // 销毁检测及后续处理
     if (this.shouldDestroy(this)) {
         areaAABB.getFactory().releaseCollider(areaAABB);
 
@@ -310,7 +305,6 @@ _root.子弹生命周期 = function()
         return;
     }
 };
-
 
 
 _root.子弹区域shoot表演 = _root.子弹区域shoot;

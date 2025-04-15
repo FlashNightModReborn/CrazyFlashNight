@@ -8,92 +8,69 @@ import org.flashNight.arki.spatial.transform.*;
 /**
  * AABBRenderer 类
  *
- * 用于可视化调试 AABB 碰撞器（AABBCollider）的边界框绘制。
- * 当前版本采用职责分离思想，将数据收集（顶点坐标及样式配置）与绘制逻辑拆分为两个独立的方法：
- *   - collectAABBData()：负责从碰撞器中提取绘制所需的几何数据和样式设置，并根据传入的 mode 参数配置不同样式
- *   - drawCollectedData()：负责根据收集的数据调用绘图接口实现实际渲染
+ * 主要功能：
+ *   1. 用于可视化调试 AABBCollider（轴对齐边界框）碰撞器的边界框绘制。
+ *   2. 提供多种绘制模式，以快速区分不同的碰撞状态（线框、粗线框、填充、未命中等）。
+ *   3. 当 zRange > 0 时，基于 “主 AABB + y 轴平移/伸缩” 来可视化
+ *      zOffset ± zRange 的上下边界，避免与主 AABB 形状脱节。
  *
- * 同时保留 renderAABB() 作为快捷入口，一次性完成数据收集与绘制操作，并增加 mode 参数以支持三种调试样式：
- *   - "line"   : 仅线框模式（默认），用于显示子弹的碰撞箱，持续帧数为 1
- *   - "thick"  : 粗线框模式，用于显示发生碰撞的子弹碰撞箱，持续帧数为 30（线宽加粗）
- *   - "filled" : 填充模式，用于显示被命中的单位碰撞箱，持续帧数为 30
+ * 使用要点：
+ *   - 若项目中 Z 轴与屏幕坐标系 (x,y) 的对应方式有特殊需求，
+ *     可在 shiftVerticesForZ 方法中自定义映射规则（平移、缩放、倾斜等）。
  */
 class org.flashNight.arki.render.AABBRenderer {
 
     /**
-     * 渲染传入的 AABBCollider 对象对应的轴对齐边界框。
+     * 渲染传入的 AABBCollider 对象对应的轴对齐边界框，并可选地可视化 z 轴范围。
      *
-     * 渲染流程：
-     *   1. 调用 collectAABBData() 收集绘制所需的几何数据和样式配置，
-     *      根据 mode 参数调整不同的绘制样式
-     *   2. 调用 drawCollectedData() 根据收集的数据执行实际绘制
-     *
-     * @param iCollider 需要调试绘制的 AABBCollider 对象（必须实现 ICollider 接口）
+     * @param iCollider 需要调试绘制的 AABBCollider 对象（实现 ICollider 接口）
      * @param zOffset   高度偏移量，用于在渲染时区分碰撞检测的高度（z 轴偏移）
-     * @param mode      绘制模式控制字符串，可选值：
-     *                    "line"   - 仅绘制线框（默认，持续帧数 1）
-     *                    "thick"  - 绘制粗线框（持续帧数 30）
-     *                    "filled" - 绘制填充模式（持续帧数 30）
-     *                  如果该参数为空，则默认为 "line" 模式。
+     * @param mode      绘制模式控制字符串（"line"、"thick"、"filled"、"unhit" 等）
+     * @param zRange    子弹的 Z 轴攻击范围。若 0 则不绘制 zRange 辅助边界。
      */
-    public static function renderAABB(iCollider:ICollider, zOffset:Number, mode:String):Void {
+    public static function renderAABB(iCollider:ICollider, 
+                                      zOffset:Number, 
+                                      mode:String, 
+                                      zRange:Number):Void 
+    {
         if (iCollider == null) return;
+
         if (mode == null || mode == "") {
-            mode = "line"; // 默认模式为仅线框模式
+            mode = "line"; // 默认模式为线框模式
+        }
+        if (zRange == null) {
+            zRange = 0;   // 若不传该参数，则设为 0 表示不绘制 zRange
         }
         
-        // 1. 收集绘制数据（几何数据和样式配置），根据 mode 调整各参数
-        var data:Object = collectAABBData(iCollider, zOffset, mode);
+        // 1. 收集绘制数据（几何数据和样式配置）
+        var data:Object = collectAABBData(iCollider, zOffset, mode, zRange);
         
-        // 2. 根据收集的数据执行绘制操作
+        // 2. 绘制
         drawCollectedData(data);
     }
     
     /**
-     * 收集用于绘制 AABB 边界框的几何数据和样式配置，
-     * 并根据 mode 参数配置不同的绘制样式。
-     *
-     * 详细说明：
-     *   - 首先根据传入的碰撞器 iCollider 提取经过 zOffset 调整后的 AABB，
-     *     同时应用全局效果偏移（SceneCoordinateManager.effectOffset）
-     *   - 根据 AABB 的 left、right、top、bottom 属性计算出矩形四个顶点的坐标，
-     *     顶点顺序依次为 [左上, 右上, 右下, 左下]
-     *   - 预设绘图样式参数如下：
-     *         fillColor : 0xFF0000（红色）
-     *         lineColor : 0x00FF00（绿色）
-     *         lineWidth : 默认 2 像素
-     *         fillAlpha : 默认 80（填充透明度）
-     *         lineAlpha : 默认 100（线条透明度）
-     *         shadowCount : 默认 30（残影持续帧数）
-     *   - 根据 mode 参数调整样式：
-     *         "line"   - 仅线框：填充透明度设为 0；残影持续帧数设为 1
-     *         "thick"  - 粗线框：填充透明度设为 0；线条宽度设为 4 像素；残影持续帧数设为 30
-     *         "filled" - 填充模式：保持填充效果，残影持续帧数设为 30
-     *
-     * @param iCollider 需要调试绘制的碰撞器对象（实现 ICollider 接口）
-     * @param zOffset   高度偏移量，用于确保渲染时的正确位置
-     * @param mode      绘制模式控制字符串
-     * @return 一个 Object 对象，包含以下属性：
-     *         - vertices: Array — 顶点数组，顺序依次为 [左上, 右上, 右下, 左下]
-     *         - fillColor: Number — 填充颜色（十六进制表示，如 0xFF0000）
-     *         - lineColor: Number — 线条颜色（十六进制表示，如 0x00FF00）
-     *         - lineWidth: Number — 线条宽度（单位像素）
-     *         - fillAlpha: Number — 填充透明度
-     *         - lineAlpha: Number — 线条透明度
-     *         - shadowCount: Number — 残影持续帧数（控制显示帧数）
+     * 收集用于绘制 AABB 边界框的几何数据，包含：
+     *   - mainAABB: 当前 zOffset 的主 AABB
+     *   - minZAABB / maxZAABB: 分别表示 zOffset - zRange / zOffset + zRange 的边界
+     *                          (通过对主 AABB 的顶点做 y 轴平移/变换来实现)
      */
-    public static function collectAABBData(iCollider:ICollider, zOffset:Number, mode:String):Object {
-        // 获取经过 zOffset 调整后的 AABB，并应用全局效果偏移
-        var collider:AABB = iCollider.getAABB(zOffset).moveNew(SceneCoordinateManager.effectOffset);
+    public static function collectAABBData(iCollider:ICollider, 
+                                           zOffset:Number, 
+                                           mode:String, 
+                                           zRange:Number):Object
+    {
+        // =============== 1. 获取主 AABB ===============
+        var collider:AABB = iCollider.getAABB(zOffset)
+                                      .moveNew(SceneCoordinateManager.effectOffset);
         
-        // 计算矩形四个顶点的坐标
-        var p0:Vector = new Vector(collider.left, collider.top);
-        var p1:Vector = new Vector(collider.right, collider.top);
-        var p2:Vector = new Vector(collider.right, collider.bottom);
-        var p3:Vector = new Vector(collider.left, collider.bottom);
+        // 计算矩形四个顶点的坐标（左上、右上、右下、左下）
+        var p0:Vector = new Vector(collider.left,   collider.top);
+        var p1:Vector = new Vector(collider.right,  collider.top);
+        var p2:Vector = new Vector(collider.right,  collider.bottom);
+        var p3:Vector = new Vector(collider.left,   collider.bottom);
         
-        // =============== 默认绘图样式配置 ===============
-        // 可以在这里换成你项目适合的默认值
+        // ================== 默认绘图样式配置 ===================
         var fillColor:Number   = 0xFF0000;  // 填充色：红色
         var lineColor:Number   = 0x00FF00;  // 线条色：绿色
         var lineWidth:Number   = 2;         // 线条宽度
@@ -101,39 +78,45 @@ class org.flashNight.arki.render.AABBRenderer {
         var lineAlpha:Number   = 100;       // 线条透明度 (0~100)
         var shadowCount:Number = 30;        // 残影持续帧数
         
-        // =============== 根据 mode 调整样式配置 ===============
+        // =============== 2. 根据 mode 调整主要 AABB 的样式 ===============
         switch(mode) {
             case "line":
-                // 线框模式：示例采用青色线，较细，短暂出现
-                lineColor   = 0x00FFFF;   // 青色
-                lineWidth   = 2;          // 较细
-                fillAlpha   = 0;          // 无填充
-                lineAlpha   = 100;        // 完全不透明的线
-                shadowCount = 5;          // 比原来略长，但仍然很短
+                lineColor   = 0x00FFFF; // 青色线
+                lineWidth   = 2;
+                fillAlpha   = 0;
+                lineAlpha   = 100;
+                shadowCount = 5;
                 break;
             
             case "thick":
-                // 粗线框模式：示例采用亮黄色，线更粗，残影稍长
-                lineColor   = 0xFFFF00;   // 亮黄色
-                lineWidth   = 6;          // 粗线条
-                fillAlpha   = 0;          // 无填充
-                lineAlpha   = 80;         // 稍微透明一点的线
-                shadowCount = 20;         // 中等残影帧数
+                lineColor   = 0xFFFF00; // 亮黄色线
+                lineWidth   = 6;
+                fillAlpha   = 0;
+                lineAlpha   = 80;
+                shadowCount = 20;
                 break;
             
             case "filled":
-                // 填充模式：示例保持红线红填充，线条稍微加粗，填充半透明
-                fillColor   = 0xFF0000;   // 红色填充
-                lineColor   = 0xFF0000;   // 线条也用红色
-                lineWidth   = 3;          // 适中
-                fillAlpha   = 60;         // 半透明
-                lineAlpha   = 100;        // 线条不透明
-                shadowCount = 30;         // 较长的残影帧数
+                fillColor   = 0xFF0000;
+                lineColor   = 0xFF0000;
+                lineWidth   = 3;
+                fillAlpha   = 60;
+                lineAlpha   = 100;
+                shadowCount = 30;
+                break;
+            
+            case "unhit":
+                fillColor   = 0x00FF00;
+                lineColor   = 0x00FF00;
+                lineWidth   = 2;
+                fillAlpha   = 20;  
+                lineAlpha   = 100;
+                shadowCount = 10;
                 break;
             
             default:
-                // 其他情况回退为最基础的线框模式
-                lineColor   = 0x00FF00;
+                fillColor   = 0x0000FF;
+                lineColor   = 0x0000FF;
                 lineWidth   = 2;
                 fillAlpha   = 0;
                 lineAlpha   = 100;
@@ -141,35 +124,137 @@ class org.flashNight.arki.render.AABBRenderer {
                 break;
         }
         
-        // 返回包含所有绘制所需数据的对象
+        // =============== 3. 组装主要 AABB 的绘制信息 ===============
+        var mainVertices:Array = [p0, p1, p2, p3];
+        var mainData:Object = {
+            vertices:   mainVertices,
+            fillColor:  fillColor,
+            lineColor:  lineColor,
+            lineWidth:  lineWidth,
+            fillAlpha:  fillAlpha,
+            lineAlpha:  lineAlpha,
+            shadowCount:shadowCount
+        };
+        
+        // =============== 4. 基于主 AABB 顶点计算 minZ/maxZ AABB（若 zRange>0） ===============
+        var minZData:Object = null;
+        var maxZData:Object = null;
+        if(zRange > 0) {
+            // 你可以在此处自定义：zRange 在屏幕上相当于多少像素？缩放还是平移？
+            // 示例：假设 “1 的 zRange = 1 像素的 y 位移”，
+            //       zOffset + zRange 往 y 轴下方平移
+            //       zOffset - zRange 往 y 轴上方平移
+            
+            // 可酌情加入一个缩放系数
+            var Z_TO_Y_SCALE:Number = 1; 
+            
+            // 下边界：zOffset - zRange => 相对主 AABB 向上移动
+            var minZVertices:Array = shiftVerticesForZ(mainVertices, -zRange * Z_TO_Y_SCALE);
+            
+            // 上边界：zOffset + zRange => 向下移动
+            var maxZVertices:Array = shiftVerticesForZ(mainVertices, zRange * Z_TO_Y_SCALE);
+            
+            // 这里的样式与之前大同小异（灰色线、半透明等）
+            var zRangeLineColor:Number = 0x999999; 
+            var zRangeLineWidth:Number = 1;
+            var zRangeFillAlpha:Number = 0;
+            var zRangeLineAlpha:Number = 60; // 半透明
+            var zRangeShadowCount:Number = 10;
+            
+            minZData = {
+                vertices: minZVertices,
+                fillColor: 0x000000,
+                lineColor: zRangeLineColor,
+                lineWidth: zRangeLineWidth,
+                fillAlpha: zRangeFillAlpha,
+                lineAlpha: zRangeLineAlpha,
+                shadowCount: zRangeShadowCount
+            };
+            
+            maxZData = {
+                vertices: maxZVertices,
+                fillColor: 0x000000,
+                lineColor: zRangeLineColor,
+                lineWidth: zRangeLineWidth,
+                fillAlpha: zRangeFillAlpha,
+                lineAlpha: zRangeLineAlpha,
+                shadowCount: zRangeShadowCount
+            };
+        }
+        
+        // =============== 5. 返回包含主 AABB + zRange AABB 的综合数据 ===============
         return {
-            vertices: [p0, p1, p2, p3],
-            fillColor: fillColor,
-            lineColor: lineColor,
-            lineWidth: lineWidth,
-            fillAlpha: fillAlpha,
-            lineAlpha: lineAlpha,
-            shadowCount: shadowCount
+            mainAABB: mainData,  // 当前 zOffset AABB
+            minZAABB: minZData,  // zOffset - zRange
+            maxZAABB: maxZData   // zOffset + zRange
         };
     }
 
     
     /**
-     * 根据提供的绘制数据对象，调用 VectorAfterimageRenderer 进行 AABB 边界框的绘制操作。
-     * 本方法职责单一，仅负责将已收集的绘制数据交由绘图接口执行渲染。
+     * 将一组矩形顶点在 y 轴方向做平移或其他变换，可用于近似表示 zOffset ± zRange。
      *
-     * @param data 包含顶点数组以及绘制样式配置的 Object 对象，
-     *             具体结构请参见 collectAABBData() 方法的返回值说明。
+     * @param vertices 原始矩形的四顶点 (Array of Vector)
+     * @param yShift   要在 y 轴上平移的像素数 (正值表示往下, 负值表示往上)
+     * @return Array   新的顶点数组 (不会修改原先的 vertices)
+     */
+    private static function shiftVerticesForZ(vertices:Array, yShift:Number):Array {
+        var newVerts:Array = [];
+        var len:Number = vertices.length;
+        for(var i:Number = 0; i < len; i++) {
+            var v:Vector = vertices[i];
+            // 如果你需要额外做“缩放”、“倾斜”或“梯形变形”，
+            // 也可在此处替换成更复杂的运算
+            newVerts.push(new Vector(v.x, v.y + yShift));
+        }
+        return newVerts;
+    }
+    
+    
+    /**
+     * 根据提供的数据对象，分别绘制 mainAABB / minZAABB / maxZAABB。
      */
     public static function drawCollectedData(data:Object):Void {
-        VectorAfterimageRenderer.instance.drawShape(
-            data.vertices,
-            data.fillColor,
-            data.lineColor,
-            data.lineWidth,
-            data.fillAlpha,
-            data.lineAlpha,
-            data.shadowCount
-        );
+        // 1) 主 AABB
+        var main:Object = data.mainAABB;
+        if(main != null) {
+            VectorAfterimageRenderer.instance.drawShape(
+                main.vertices,
+                main.fillColor,
+                main.lineColor,
+                main.lineWidth,
+                main.fillAlpha,
+                main.lineAlpha,
+                main.shadowCount
+            );
+        }
+
+        // 2) zOffset - zRange
+        if(data.minZAABB != null) {
+            var minData:Object = data.minZAABB;
+            VectorAfterimageRenderer.instance.drawShape(
+                minData.vertices,
+                minData.fillColor,
+                minData.lineColor,
+                minData.lineWidth,
+                minData.fillAlpha,
+                minData.lineAlpha,
+                minData.shadowCount
+            );
+        }
+
+        // 3) zOffset + zRange
+        if(data.maxZAABB != null) {
+            var maxData:Object = data.maxZAABB;
+            VectorAfterimageRenderer.instance.drawShape(
+                maxData.vertices,
+                maxData.fillColor,
+                maxData.lineColor,
+                maxData.lineWidth,
+                maxData.fillAlpha,
+                maxData.lineAlpha,
+                maxData.shadowCount
+            );
+        }
     }
 }
