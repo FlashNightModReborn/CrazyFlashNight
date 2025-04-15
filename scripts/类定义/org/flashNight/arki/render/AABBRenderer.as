@@ -212,12 +212,13 @@ class org.flashNight.arki.render.AABBRenderer {
     
     
     /**
-     * 根据提供的数据对象，分别绘制 mainAABB / minZAABB / maxZAABB。
+     * 根据提供的数据对象，分别绘制 mainAABB 以及 zRange 边界（minZAABB 与 maxZAABB）。
+     * 当 minZAABB 与 maxZAABB 均存在且样式相同时，调用 drawShapes 进行合并优化绘制。
      */
     public static function drawCollectedData(data:Object):Void {
-        // 1) 主 AABB
+        // 1) 绘制主 AABB
         var main:Object = data.mainAABB;
-        if(main != null) {
+        if (main != null) {
             VectorAfterimageRenderer.instance.drawShape(
                 main.vertices,
                 main.fillColor,
@@ -228,33 +229,50 @@ class org.flashNight.arki.render.AABBRenderer {
                 main.shadowCount
             );
         }
-
-        // 2) zOffset - zRange
-        if(data.minZAABB != null) {
-            var minData:Object = data.minZAABB;
-            VectorAfterimageRenderer.instance.drawShape(
-                minData.vertices,
-                minData.fillColor,
-                minData.lineColor,
-                minData.lineWidth,
-                minData.fillAlpha,
-                minData.lineAlpha,
-                minData.shadowCount
+        
+        // 2) 绘制辅助 zRange 边界
+        // 如果同时存在 minZAABB 和 maxZAABB，并且样式相同，则使用 drawShapes 优化绘制
+        if (data.minZAABB != null && data.maxZAABB != null) {
+            // 这里假定两个辅助边界使用相同的样式配置（由 collectAABBData 构造时保证）
+            var commonStyle:Object = data.minZAABB;
+            // 组合两组顶点数组
+            var shapes:Array = [ data.minZAABB.vertices, data.maxZAABB.vertices ];
+            VectorAfterimageRenderer.instance.drawShapes(
+                shapes,
+                commonStyle.fillColor,
+                commonStyle.lineColor,
+                commonStyle.lineWidth,
+                commonStyle.fillAlpha,
+                commonStyle.lineAlpha,
+                commonStyle.shadowCount
             );
-        }
-
-        // 3) zOffset + zRange
-        if(data.maxZAABB != null) {
-            var maxData:Object = data.maxZAABB;
-            VectorAfterimageRenderer.instance.drawShape(
-                maxData.vertices,
-                maxData.fillColor,
-                maxData.lineColor,
-                maxData.lineWidth,
-                maxData.fillAlpha,
-                maxData.lineAlpha,
-                maxData.shadowCount
-            );
+        } else {
+            // 若只有其中一个存在，则分别调用 drawShape 绘制
+            if (data.minZAABB != null) {
+                var minData:Object = data.minZAABB;
+                VectorAfterimageRenderer.instance.drawShape(
+                    minData.vertices,
+                    minData.fillColor,
+                    minData.lineColor,
+                    minData.lineWidth,
+                    minData.fillAlpha,
+                    minData.lineAlpha,
+                    minData.shadowCount
+                );
+            }
+            if (data.maxZAABB != null) {
+                var maxData:Object = data.maxZAABB;
+                VectorAfterimageRenderer.instance.drawShape(
+                    maxData.vertices,
+                    maxData.fillColor,
+                    maxData.lineColor,
+                    maxData.lineWidth,
+                    maxData.fillAlpha,
+                    maxData.lineAlpha,
+                    maxData.shadowCount
+                );
+            }
         }
     }
+
 }

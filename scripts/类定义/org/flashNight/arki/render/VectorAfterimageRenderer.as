@@ -5,42 +5,50 @@ import org.flashNight.sara.util.ObjectPool;
 /**
  * 矢量残影渲染器（极致复用版）
  * 
- * 此版本通过单一对象池管理所有画布，并在取用时根据指定的残影数量(shadowCount)
- * 对画布进行初始化（包括计算残影持续时间、指数衰减因子、刷新间隔等参数），
- * 实现不同配置间的极致复用与高效资源利用，同时保留与旧接口的兼容性。
+ * 此类实现了两个主要优化方向：
+ * 1. 合并形状绘制：提供批量绘制接口，通过合并多个形状的点集，
+ *    只调用一次 beginFill/endFill，降低绘制开销。
+ * 2. 最小化事件监听器：利用统一任务管理，对所有画布的渐隐动画进行处理，
+ *    目前依然采用 _root.帧计时器 添加任务的方式，但在结构上便于后续集中管理。
  * 
  * 功能特性：
- * 1. 支持矢量图形(MovieClip)和自定义路径(Array)两种残影渲染模式
- * 2. 单一对象池管理所有画布，支持多种残影配置动态切换
- * 3. 每个画布在获取时根据指定的残影数量自动计算配置参数（残影持续时间、衰减因子、刷新间隔）
- * 4. 智能画布复用：同一配置下若存在当前活跃画布则优先复用，降低对象池访问次数
- * 5. 渐隐动画完成后自动回收画布资源，确保内存和性能最优
- * 6. 与原有接口兼容，默认残影数量可通过 configureSystem/setShadowCount 动态调整
+ * - 支持 MovieClip 残影、混合形状残影（部分直线部分曲线）和自定义路径残影的绘制。
+ * - 单一对象池管理多个绘图画布，支持不同残影数量配置动态切换与复用。
+ * - 每个画布根据指定残影数量自动计算残影持续时间、衰减因子、刷新间隔等参数。
+ * - 渐隐动画完成后自动回收画布，确保内存利用与性能最优。
  * 
  * 使用示例：
- * // 使用默认残影数量绘制多边形残影
+ * // 绘制单个形状残影（使用默认残影数量）
  * VectorAfterimageRenderer.instance.drawShape(
  *     [{x:0, y:0}, {x:50, y:30}, {x:30, y:50}],
  *     0xFF0000, 0x00FF00, 2, 80, 100
  * );
  * 
- * // 指定残影数量为8来绘制多边形残影
- * VectorAfterimageRenderer.instance.drawShape(
- *     [{x:0, y:0}, {x:50, y:30}, {x:30, y:50}],
- *     0xFF0000, 0x00FF00, 2, 80, 100, 8
+ * // 批量合并多个形状进行绘制
+ * var shape1:Array = [{x:0, y:0}, {x:30, y:20}, {x:20, y:40}];
+ * var shape2:Array = [{x:40, y:40}, {x:60, y:60}, {x:50, y:80}];
+ * VectorAfterimageRenderer.instance.drawShapes(
+ *     [shape1, shape2],
+ *     0x00FF00, 0x0000FF, 1, 70, 100, 5
  * );
- *
+ * 
+ * // 绘制混合形状残影（部分直线，部分曲线）
+ * VectorAfterimageRenderer.instance.drawMixedShape(
+ *     [{x:0, y:0}, {x:50, y:10}, {x:80, y:50}, {x:30, y:80}],
+ *     0xFFFF00, 0xFF00FF, 2, 80, 100, true, 5
+ * );
+ * 
  * // 复制 MovieClip 并添加残影效果，使用默认残影数量
  * VectorAfterimageRenderer.instance.drawClip(mc, {brightness:20});
- *
- * // 场景切换时调用 onSceneChanged 重置所有内部状态和对象池
+ * 
+ * // 场景切换时调用 onSceneChanged 重置所有状态和对象池
  * _root.帧计时器.eventBus.subscribe("SceneChanged", VectorAfterimageRenderer.instance.onSceneChanged, VectorAfterimageRenderer.instance);
  */
 class org.flashNight.arki.render.VectorAfterimageRenderer {
 
     // ==================== 静态配置常量 ====================
     
-    /** 默认残影数量（初始默认值，建议3-10） */
+    /** 默认残影数量（初始默认值，建议 3-10） */
     private static var DEFAULT_SHADOW_COUNT:Number = 5;
     
     /** 基础透明度（0-100） */
@@ -56,7 +64,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     
     /**
      * 当前活跃画布集合（以 shadowCount 为键），记录各配置下正在使用的画布，
-     * 用于智能复用（同一配置下优先复用已有画布）。
+     * 用于智能复用（同一配置下优先复用已有画布）
      */
     private var _currentCanvasByConfig:Object;
     
@@ -66,24 +74,30 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      */
     private var _config:Object;
     
-    /** 默认残影数量，当调用接口时未传入 shadowCount 则使用该值 */
+    /** 默认残影数量（当调用接口时若未传入 shadowCount 则使用该值） */
     private var _defaultShadowCount:Number;
     
-    
+    /** 存储所有参与渐隐动画的画布（便于后续统一处理） */
+    private var _fadingCanvases:Array;
+
     // ==================== 构造函数 ====================
     
     /**
-     * 构造函数 - 初始化默认配置并创建共享对象池
+     * 构造函数 - 初始化默认配置参数、对象池及渐隐画布集合
      */
     public function VectorAfterimageRenderer() {
         _defaultShadowCount = DEFAULT_SHADOW_COUNT;
         _config = {};
+        _fadingCanvases = [];
+        
         // 预先计算默认配置参数
         var frameDuration:Number = _root.帧计时器.每帧毫秒;
         var shadowDuration:Number = frameDuration * _defaultShadowCount;
         var decayFactor:Number = Math.pow(0.01, 1 / _defaultShadowCount);
         var refreshInterval:Number = shadowDuration / (_defaultShadowCount * _defaultShadowCount);
         _config[_defaultShadowCount] = { shadowDuration: shadowDuration, decayFactor: decayFactor, refreshInterval: refreshInterval };
+        
+        // 初始化对象池
         initCanvasPool();
     }
     
@@ -94,16 +108,15 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * 使用单一对象池管理所有画布，父级容器为 _root.gameworld.deadbody
      */
     private function initCanvasPool():Void {
-        var self = this;
         _canvasPool = new ObjectPool(
             // createFunc：创建新的 MovieClip 画布
             function(parent:MovieClip):MovieClip {
                 var mc:MovieClip = parent.createEmptyMovieClip("canvas_" + getTimer(), parent.getNextHighestDepth());
                 return mc;
             },
-            // resetFunc：本例不作特殊重置，取用后会通过 initializeCanvas 手动初始化
+            // resetFunc：取用时无特殊重置操作，由 initializeCanvas 方法完成初始化
             function():Void {},
-            // releaseFunc：释放画布时的自定义清理函数
+            // releaseFunc：释放画布时执行的清理操作
             function():Void {
                 if (this.fadeTask) {
                     _root.帧计时器.移除任务(this.fadeTask);
@@ -113,7 +126,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
                     this.clear();
                 }
             },
-            // 父级影片剪辑，用于创建画布的容器
+            // 父级容器为 _root.gameworld.deadbody
             _root.gameworld.deadbody,
             // 对象池最大容量
             30,
@@ -121,7 +134,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
             5,
             // 是否启用懒加载
             true,
-            // 是否启用原型模式（不启用，因为每个画布需独立初始化渐隐任务）
+            // 是否启用原型模式（关闭，因为每个画布需单独初始化渐隐任务）
             false,
             // 额外参数
             []
@@ -133,7 +146,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     
     /**
      * 配置默认残影数量
-     * @param shadowCount 默认残影数量，后续绘制调用时若未指定则使用该值（建议3-10）
+     * @param shadowCount 默认残影数量，后续调用绘制接口时若未传入，则使用该值（建议 3-10）
      */
     public function configureSystem(shadowCount:Number):Void {
         _defaultShadowCount = shadowCount;
@@ -148,8 +161,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     
     /**
      * 动态调整默认残影数量
-     * @param newShadowCount 新的默认残影数量配置（建议3-10），此参数只影响后续创建的画布，
-     *                       已经在渐隐过程中的画布继续采用原有配置完成动画
+     * @param newShadowCount 新的默认残影数量配置（建议 3-10），此参数只影响新创建画布，
+     *                       已处渐隐过程中的画布依旧按照原配置完成动画
      */
     public function setShadowCount(newShadowCount:Number):Void {
         configureSystem(newShadowCount);
@@ -158,18 +171,43 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     // ==================== 残影绘制方法 ====================
     
     /**
-     * 绘制矢量形状残影
-     * @param points 顶点数组（至少包含3个点），格式：[{x:Number, y:Number}, ...]
+     * 合并多个形状并绘制
+     * @param shapes 多个形状的点集合数组，每个数组代表一个形状
      * @param fillColor 填充色（RGB）
      * @param lineColor 线条色（RGB）
      * @param lineWidth 线宽（像素）
      * @param fillAlpha 填充透明度（0-100）
      * @param lineAlpha 线条透明度（0-100）
-     * @param shadowCount (可选) 残影数量配置，不传则使用默认值
+     * @param shadowCount (可选) 残影数量配置，若未传入则采用默认值
+     */
+    public function drawShapes(shapes:Array, fillColor:Number, lineColor:Number, 
+                               lineWidth:Number, fillAlpha:Number, lineAlpha:Number, shadowCount:Number):Void {
+        if (shapes.length == 0) return;
+        if (shadowCount == undefined) shadowCount = _defaultShadowCount;
+        var canvas:MovieClip = getAvailableCanvas(shadowCount);
+        setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
+        
+        // 合并所有形状的点集
+        var mergedPoints:Array = [];
+        for (var i:Number = 0; i < shapes.length; i++) {
+            mergedPoints = mergedPoints.concat(shapes[i]);
+        }
+        renderShape(canvas, mergedPoints, fillColor, fillAlpha);
+    }
+    
+    /**
+     * 绘制单个矢量形状残影
+     * @param points 顶点数组（至少包含 3 个点），格式：[{x:Number, y:Number}, ...]
+     * @param fillColor 填充色（RGB）
+     * @param lineColor 线条色（RGB）
+     * @param lineWidth 线宽（像素）
+     * @param fillAlpha 填充透明度（0-100）
+     * @param lineAlpha 线条透明度（0-100）
+     * @param shadowCount (可选) 残影数量配置，若未传入则使用默认值
      */
     public function drawShape(points:Array, fillColor:Number, lineColor:Number, 
                                lineWidth:Number, fillAlpha:Number, lineAlpha:Number, shadowCount:Number):Void {
-        if (!points || points.length < 3) return;
+        if (points.length < 3) return;
         if (shadowCount == undefined) shadowCount = _defaultShadowCount;
         var canvas:MovieClip = getAvailableCanvas(shadowCount);
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
@@ -177,41 +215,46 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     }
     
     /**
-     * 绘制混合形状（部分边直线，部分边曲线）
-     * @param points 顶点数组（至少包含3个点），格式：[{x:Number, y:Number}, ...]
+     * 绘制混合形状残影（部分直线，部分曲线）
+     * 该方法在绘制时先执行直线连接，再根据连续点生成曲线插值，
+     * 最后根据需要决定是否闭合路径。
+     * @param points 顶点数组（至少包含 3 个点），格式：[{x:Number, y:Number}, ...]
      * @param fillColor 填充色（RGB）
      * @param lineColor 线条色（RGB）
      * @param lineWidth 线宽（像素）
      * @param fillAlpha 填充透明度（0-100）
      * @param lineAlpha 线条透明度（0-100）
-     * @param closePath 是否闭合图形（默认 true）
-     * @param shadowCount (可选) 残影数量配置，不传则使用默认值
+     * @param closePath 是否闭合图形（布尔值，默认 true）
+     * @param shadowCount (可选) 残影数量配置，若未传入则使用默认值
      */
-    public function drawMixedShape(points:Array,
-                                   fillColor:Number,
-                                   lineColor:Number,
-                                   lineWidth:Number,
-                                   fillAlpha:Number,
-                                   lineAlpha:Number,
-                                   closePath:Boolean,
-                                   shadowCount:Number):Void {
-        if (!points || points.length < 3) return;
+    public function drawMixedShape(points:Array, fillColor:Number, lineColor:Number, 
+                                    lineWidth:Number, fillAlpha:Number, lineAlpha:Number, closePath:Boolean, shadowCount:Number):Void {
+        if (points == undefined || points.length < 3) return;
         if (shadowCount == undefined) shadowCount = _defaultShadowCount;
+        // 若 closePath 参数未传入，则默认闭合路径
+        if (closePath == undefined) closePath = true;
         var canvas:MovieClip = getAvailableCanvas(shadowCount);
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
+        
+        // 开始填充绘制
         canvas.beginFill(fillColor || 0, fillAlpha || 100);
         canvas.moveTo(points[0].x, points[0].y);
+        // 先绘制前两点直线
         canvas.lineTo(points[1].x, points[1].y);
+        
         var len:Number = points.length;
+        // 对中间点采用曲线插值绘制
         for (var i:Number = 1; i < len - 2; i++) {
             var curr:Object = points[i];
-            var next:Object = points[i+1];
+            var next:Object = points[i + 1];
             var cpx:Number = (curr.x + next.x) / 2;
             var cpy:Number = (curr.y + next.y) / 2;
             canvas.curveTo(curr.x, curr.y, cpx, cpy);
         }
+        // 绘制最后一段直线
         canvas.lineTo(points[len - 1].x, points[len - 1].y);
-        if (closePath == undefined || closePath == true) {
+        // 根据 closePath 参数判断是否闭合路径
+        if (closePath) {
             canvas.lineTo(points[0].x, points[0].y);
         }
         canvas.endFill();
@@ -219,9 +262,10 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     
     /**
      * 复制 MovieClip 并生成残影效果
+     * 同时应用源对象的变换矩阵和颜色变换（依赖色彩引擎）
      * @param source 源 MovieClip 对象
-     * @param colorParams 颜色调整参数（依赖色彩引擎格式）
-     * @param shadowCount (可选) 残影数量配置，不传则使用默认值
+     * @param colorParams 颜色调整参数对象
+     * @param shadowCount (可选) 残影数量配置，若未传入则采用默认值
      */
     public function drawClip(source:MovieClip, colorParams:Object, shadowCount:Number):Void {
         if (shadowCount == undefined) shadowCount = _defaultShadowCount;
@@ -234,14 +278,17 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     
     /**
      * 重置渲染器状态（用于场景切换或手动重置）
-     * 清空所有对象池中画布及当前活跃画布，避免内存泄漏，并重新初始化父容器下的新对象池
+     * 清空对象池中的画布和当前活跃画布，避免内存泄漏，并重新初始化对象池
      */
     public function onSceneChanged():Void {
         if (_canvasPool != undefined) {
             _canvasPool.clearPool();
         }
         _currentCanvasByConfig = {};
+        // 重新初始化对象池
         initCanvasPool();
+        // 清空渐隐画布集合
+        _fadingCanvases = [];
     }
     
     /**
@@ -254,9 +301,9 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     // ==================== 画布生命周期管理与复用 ====================
     
     /**
-     * 根据指定的残影数量，从对象池中获取一个可用画布，并初始化其状态
-     * @param shadowCount 需要使用的残影数量配置
-     * @return 初始化后的 MovieClip 画布
+     * 从对象池中获取一个可用画布，并初始化指定残影数量
+     * @param shadowCount 残影数量配置
+     * @return 已初始化的 MovieClip 画布
      */
     private function getAvailableCanvas(shadowCount:Number):MovieClip {
         if (_currentCanvasByConfig[shadowCount] != undefined && _currentCanvasByConfig[shadowCount] != null) {
@@ -265,11 +312,13 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         var canvas:MovieClip = _canvasPool.getObject();
         initializeCanvas(canvas, shadowCount);
         _currentCanvasByConfig[shadowCount] = canvas;
+        // 添加到渐隐管理数组中（便于全局统一管理）
+        _fadingCanvases.push(canvas);
         return canvas;
     }
     
     /**
-     * 初始化画布，将其配置为指定残影数量，设置初始属性及渐隐任务
+     * 初始化画布，将其配置为指定残影数量，并注册渐隐任务
      * @param canvas 目标 MovieClip 画布对象
      * @param shadowCount 指定的残影数量配置
      */
@@ -279,7 +328,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         canvas.cycleCount = 0;
         canvas.shadowCount = shadowCount;
         
-        // 获取或生成当前配置的参数
+        // 获取或生成当前残影配置参数
         var configObj:Object = _config[shadowCount];
         if (configObj == undefined) {
             var frameDuration:Number = _root.帧计时器.每帧毫秒;
@@ -294,23 +343,23 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         if (canvas.fadeTask) {
             _root.帧计时器.移除任务(canvas.fadeTask);
         }
-        // 添加渐隐任务，通过 Delegate 绑定 onFadeUpdate 方法，并传入当前配置的刷新间隔
+        // 绑定 onFadeUpdate 方法，添加渐隐任务（后续可替换为统一管理的 ENTER_FRAME 监听器）
         var callback:Function = Delegate.create(this, onFadeUpdate);
         canvas.fadeTask = _root.帧计时器.添加任务(callback, configObj.refreshInterval, shadowCount, canvas);
     }
     
     /**
-     * 渐隐动画回调
-     * 每次调用更新画布透明度，并根据配置判断是否完成渐隐回收
-     * @param canvas 当前正在渐隐的 MovieClip 画布对象
+     * 渐隐动画回调：更新画布透明度，判断是否结束渐隐并回收画布
+     * @param canvas 当前参与渐隐的 MovieClip 画布对象
      */
     private function onFadeUpdate(canvas:MovieClip):Void {
         var configObj:Object = _config[canvas.shadowCount];
-        // 若画布仍是当前活跃画布，则首次渐隐时解除绑定（允许后续绘制获取新画布）
+        // 若为首次渐隐，解除当前活跃画布绑定，允许后续继续使用新画布
         if (canvas.cycleCount == 0 && _currentCanvasByConfig[canvas.shadowCount] == canvas) {
             _currentCanvasByConfig[canvas.shadowCount] = null;
         }
         canvas.cycleCount++;
+        // 如果达到指定次数或透明度过低，则回收画布
         if (canvas.cycleCount >= canvas.shadowCount) {
             recycleCanvas(canvas);
         } else {
@@ -322,7 +371,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     }
     
     /**
-     * 回收画布，将其从当前使用中移除，并放回对象池或销毁（当池已满时）
+     * 回收画布：从当前使用中移除画布并放回对象池或销毁（当池满时）
      * @param canvas 需要回收的 MovieClip 画布对象
      */
     private function recycleCanvas(canvas:MovieClip):Void {
@@ -332,6 +381,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         if (canvas.clear != undefined) {
             canvas.clear();
         }
+        // 移除当前活跃画布绑定
         if (_currentCanvasByConfig[canvas.shadowCount] == canvas) {
             _currentCanvasByConfig[canvas.shadowCount] = null;
         }
@@ -346,10 +396,10 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     // ==================== 工具方法 ====================
     
     /**
-     * 设置画布的绘制样式，例如线条宽度、颜色及透明度
+     * 设置画布绘制样式（线条宽度、颜色、透明度）
      * @param canvas 目标 MovieClip 画布对象
      * @param lineColor 线条颜色（RGB）
-     * @param lineWidth 线条宽度（像素）
+     * @param lineWidth 线宽（像素）
      * @param lineAlpha 线条透明度（0-100）
      */
     private function setupCanvasStyle(canvas:MovieClip, lineColor:Number, lineWidth:Number, lineAlpha:Number):Void {
@@ -379,8 +429,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     }
     
     /**
-     * 复制 MovieClip 并生成残影效果
-     * 同时应用源对象的变换矩阵与颜色变换
+     * 复制 MovieClip 并生成残影效果，同时应用变换矩阵和颜色变换
      * @param source 源 MovieClip 对象
      * @param canvas 目标 MovieClip 画布对象
      * @param colorTransform 颜色变换对象
@@ -398,18 +447,21 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * 复制 MovieClip 实例
      * @param source 源 MovieClip 对象
      * @param canvas 父级画布对象
-     * @return 复制后的 MovieClip 实例
+     * @return 返回复制后的 MovieClip 实例
      */
     private function duplicateClip(source:MovieClip, canvas:MovieClip):MovieClip {
         var depth:Number = canvas.getNextHighestDepth();
         var ghostName:String = "ghost_" + depth;
+        // duplicateMovieClip 只能复制到源所在容器，此处复制后将副本移入 canvas 下
         source.duplicateMovieClip(ghostName, depth);
-        return canvas[ghostName];
+        var ghost:MovieClip = source._parent[ghostName];
+        ghost.swapDepths(canvas.getNextHighestDepth());
+        ghost._parent = canvas;
+        return ghost;
     }
     
     /**
-     * 应用变换矩阵，将源 MovieClip 的位置和缩放应用到目标 MovieClip，
-     * 不含旋转等其它变换（如有需要可进行扩展）
+     * 应用变换矩阵，将源 MovieClip 的位置和缩放赋给目标 MovieClip（旋转等变换可扩展）
      * @param source 源 MovieClip 对象
      * @param target 目标 MovieClip 对象
      */
@@ -424,7 +476,7 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     /**
      * 计算从当前 MovieClip 到根容器 _root.gameworld.deadbody 的累积变换矩阵
      * @param target 起始 MovieClip 对象
-     * @return 累积后的 Matrix 对象
+     * @return 返回累计后的 Matrix 对象
      */
     private function calculateCumulativeMatrix(target:MovieClip):Matrix {
         var matrix:Matrix = new Matrix();
