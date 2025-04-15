@@ -222,6 +222,19 @@
             <PlayerX>90</PlayerX>
             <PlayerY>645</PlayerY>
         </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>1050</x>
+                <y>420</y>
+                <Identifier>资源箱</Identifier>
+                <Parameters>
+                    <内部物>普通手雷</内部物>
+                    <数量>3</数量>
+                    <等级>1</等级>
+                    <名字>木箱</名字>
+                </Parameters>
+            </Instance>
+        </Instances>
         <SpawnPoint>
             <Point id="0">
                 <x>1125</x>
