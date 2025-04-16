@@ -1931,13 +1931,13 @@ _root.主角函数.初始化掉落物 = function(){
 		return;
 	}
 	this.掉落物 = [];
-	if (this.长枪 != "" && this.长枪 != undefined && this.长枪 != "黄金QBZ的Andy版" && this.长枪 != "M134暴力版的PIG版"){
+	if (this.长枪 != "" && this.长枪 != undefined){
 		this.掉落物.push({名字:this.长枪, 概率:100});
 	}
-	if (this.手枪 != "" && this.手枪 != undefined && this.手枪 != "极品UZI的KING版"){
+	if (this.手枪 != "" && this.手枪 != undefined){
 		this.掉落物.push({名字:this.手枪, 概率:100});
 	}
-	if (this.手枪2 != "" && this.手枪2 != undefined && this.手枪2 != "极品UZI的KING版"){
+	if (this.手枪2 != "" && this.手枪2 != undefined){
 		this.掉落物.push({名字:this.手枪2, 概率:100});
 	}
 	if (this.刀 != "" && this.刀 != undefined){
