@@ -1,21 +1,30 @@
-﻿import org.flashNight.arki.render.TrailRenderer;
+﻿import org.flashNight.arki.render.*;
+import org.flashNight.sara.util.*;
 
 /**
- * BladeMotionTrailsRenderer
+ * BladeMotionTrailsRenderer 刀口残影渲染器
  * 
- * 本类用于计算并渲染刀口残影，提供三种不同性能档位：
- *   - PERFORMANCE_LEVEL_HIGH：高性能（复杂计算，全局中轴投影+收缩）
- *   - PERFORMANCE_LEVEL_MEDIUM：中性能（简化计算，每个刀口本地收缩）
- *   - PERFORMANCE_LEVEL_LOW：低性能（直接使用坐标，不做额外计算）
+ * 本类用于计算并渲染刀口残影效果，根据不同的性能需求提供三种计算方式：
+ *   - PERFORMANCE_LEVEL_HIGH：高性能实现（复杂计算，全局中轴处理与收缩）
+ *   - PERFORMANCE_LEVEL_MEDIUM：中性能实现（局部计算，每个刀口独立收缩）
+ *   - PERFORMANCE_LEVEL_LOW：低性能实现（直接使用坐标，不做额外计算）
  * 
- * 使用前请调用 setPerformanceLevel() 指定所需性能等级。
+ * 调用前请先调用 setPerformanceLevel() 指定所需性能等级。所有处理均为静态方法，
+ * 本类不允许被实例化。
  */
 class org.flashNight.arki.render.BladeMotionTrailsRenderer {
 
+    // ---------------------------
     // 性能等级常量
-    public static var PERFORMANCE_LEVEL_HIGH:Number = 0;
+    // ---------------------------
+    public static var PERFORMANCE_LEVEL_HIGH:Number   = 0;
     public static var PERFORMANCE_LEVEL_MEDIUM:Number = 1;
-    public static var PERFORMANCE_LEVEL_LOW:Number = 2;
+    public static var PERFORMANCE_LEVEL_LOW:Number    = 2;
+
+    /**
+     * 当前选定的刀口残影计算方法（默认为高性能实现）
+     */
+    public static var processBladeTrail:Function = processBladeTrailHigh;
 
     /**
      * 私有构造函数，禁止外部实例化。
@@ -50,172 +59,159 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
     // ---------------------------
     // 核心残影计算接口
     // ---------------------------
-    /**
-     * 当前选定的刀口残影计算方法（默认为高性能实现）
-     */
-    public static var processBladeTrail:Function = processBladeTrailHigh;
 
     /**
-     * 高性能实现：
-     *  - 收集每个刀口的 p0, p1, mid, halfWidth 数据
-     *  - 对所有刀口计算全局中轴（以首尾 mid 构造中轴），再按中轴进行收缩处理
-     *  - 同时拼接有效刀口数字构成唯一标识，避免因刀口数量不同而引起数据冲突
-     *
-     * @param target  发射者 MovieClip
-     * @param mc      包含刀口位置（命名为“刀口位置1”至“刀口位置5”）的 MovieClip
-     * @param style   渲染样式参数
+     * 高性能实现
+     * 
+     * 计算流程：
+     * 1. 遍历“刀口位置1”至“刀口位置5”，对每个有效刀口：
+     *    - 直接获取刀口在目标坐标系下的边界矩形；
+     *    - 根据矩形计算 p1（左下角）与 p3（右上角），再由 p3.x 与 p1.y 构成 p0；
+     *    - 计算中点 mid 以及 p0 与 p1 之间的直线距离，得到半宽 halfWidth；
+     * 2. 以所有刀口中第一个与最后一个的 mid 构造全局中轴，
+     *    对每个刀口的 mid 计算沿中轴的投影，再根据收缩因子进行全局收缩，计算出新的边缘位置；
+     * 3. 根据所有有效刀口的位序构造唯一标识，调用 TrailRenderer 的 addTrailData() 进行残影渲染。
+     * 
+     * @param target  发射者 MovieClip，用于标识残影的来源
+     * @param mc      包含刀口位置（“刀口位置1”至“刀口位置5”）的 MovieClip，提供刀口数据
+     * @param style   渲染样式参数，决定残影的视觉效果
      */
     private static function processBladeTrailHigh(target:MovieClip, mc:MovieClip, style:String):Void {
-        var map:MovieClip = _root.gameworld.deadbody;
-        var rawData:Array = [];
-        var trail:Array = [];
+        var map:MovieClip = _root.gameworld.deadbody; // 目标坐标系参考对象
+        var rawData:Array = [];       // 存放每个刀口计算的数据 { p0, p1, mid, halfWidth }
+        var trail:Array = [];         // 用于最终存储的残影边缘数据 { edge1, edge2 }
+        var validIndexes:Array = [];  // 收集有效刀口的序号，后续用于构造唯一标识
+
+        // 声明循环内重复使用的临时变量（提前声明，避免循环内重复 var 声明）
         var current:MovieClip;
         var rect:Object;
-        var p0:Object, p1:Object, p3:Object, mid:Object;
-        var dx:Number, dy:Number, halfWidth:Number;
+        var p1:Vector, p3:Vector, p0:Vector, mid:Vector;
+        var halfWidth:Number;
+        var i:Number;
 
-        // 用于保存有效刀口位序拼接成的标识字符串
-        var bladeID:String = "";
-
-        // -----------------------------
-        // 1) 收集每个刀口的碰撞盒数据
-        // -----------------------------
-        for (var i:Number = 1; i <= 5; i++) {
+        // 遍历刀口位置 1 ~ 5
+        for(i = 1; i <= 5; i++) {
             current = mc["刀口位置" + i];
             if (current && current._x != undefined) {
-                // 累加有效的刀口数字到标识字符串中
-                bladeID += i.toString();
-
-                // 直接获取 current 在 map 坐标系下的矩形
+                validIndexes.push(i);
                 rect = current.getRect(map);
-
-                // 计算 p1（矩形左上角）与 p3（矩形右下角），p0 取 p3.x 与 p1.y 构成
-                p1 = { x: rect.xMin, y: rect.yMax };
-                p3 = { x: rect.xMax, y: rect.yMin };
-                p0 = { x: p3.x, y: p1.y };
-
-                mid = { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 };
-
-                dx = p1.x - p0.x;
-                dy = p1.y - p0.y;
-                halfWidth = Math.sqrt(dx * dx + dy * dy) * 0.5;
-
-                rawData.push({
-                    p0: { x: p0.x, y: p0.y },
-                    p1: { x: p1.x, y: p1.y },
-                    mid: { x: mid.x, y: mid.y },
-                    halfWidth: halfWidth
-                });
+                // 计算 p1（矩形左下角）和 p3（矩形右上角）
+                p1 = new Vector(rect.xMin, rect.yMax);
+                p3 = new Vector(rect.xMax, rect.yMin);
+                // 由 p3.x 与 p1.y 构造 p0（右下角）
+                p0 = new Vector(p3.x, p1.y);
+                // 计算中点
+                mid = p0.plusNew(p1).multNew(0.5);
+                // 计算半宽
+                halfWidth = p0.distance(p1) * 0.5;
+                rawData.push({ p0: p0, p1: p1, mid: mid, halfWidth: halfWidth });
             }
         }
 
-        // -----------------------------
-        // 2) 全局中轴处理与刀光边缘计算
-        // -----------------------------
+        if(rawData.length == 0) {
+            return; // 无有效刀口数据，直接返回
+        }
+
+        // 全局中轴计算：以首尾 blade 的中点构造中轴向量
         var len:Number = rawData.length;
-        if (len > 0) {
-            // 以首尾 mid 构造中轴
-            var start:Object = rawData[0].mid;
-            var end:Object   = rawData[len - 1].mid;
-
-            var d:Object = { x: end.x - start.x, y: end.y - start.y };
-            var dLen:Number = Math.sqrt(d.x * d.x + d.y * d.y);
-            if (dLen == 0) {
-                d.x = 1; d.y = 0; dLen = 1;
-            }
-            var ux:Number = d.x / dLen;
-            var uy:Number = d.y / dLen;
-
-            // 全局收缩因子
-            var contractionFactor:Number = 0.3;
-            var v:Object = { x: 0, y: 0 };
-            var m_ideal:Object = { x: 0, y: 0 };
-            var offset:Number, projectionLength:Number;
-            var ox:Number, oy:Number;
-
-            for (var j:Number = 0; j < len; j++) {
-                var data:Object = rawData[j];
-                // 计算当前 mid 到起始点的向量投影长度
-                v.x = data.mid.x - start.x;
-                v.y = data.mid.y - start.y;
-                projectionLength = v.x * ux + v.y * uy;
-
-                // 得到理想中轴点
-                m_ideal.x = start.x + ux * projectionLength;
-                m_ideal.y = start.y + uy * projectionLength;
-
-                offset = Math.max(data.halfWidth * contractionFactor, 5);
-                ox = offset * ux;
-                oy = offset * uy;
-
-                var new_p0:Object = { x: m_ideal.x - ox, y: m_ideal.y - oy };
-                var new_p1:Object = { x: m_ideal.x + ox, y: m_ideal.y + oy };
-                trail.push({ edge1: new_p0, edge2: new_p1 });
-            }
-
-            // 将 bladeID 拼接到 key 后面，作为唯一标识
-            var key:String = target._name + target.version + bladeID;
-            var tr:TrailRenderer = TrailRenderer.getInstance();
-            tr.addTrailData(key, trail, style);
+        var start:Vector = rawData[0].mid;
+        var end:Vector   = rawData[len - 1].mid;
+        var d:Vector = end.minusNew(start);
+        var dLen:Number = d.magnitude();
+        if(dLen == 0) {
+            d = new Vector(1, 0); // 防止零向量情况
+            dLen = 1;
         }
+        var unitAxis:Vector = d.multNew(1 / dLen); // 中轴单位向量
+
+        // 全局收缩因子及临时变量
+        var contractionFactor:Number = 0.3;
+        var v:Vector;
+        var projectionLength:Number;
+        var m_ideal:Vector;
+        var offset:Number;
+        var j:Number;
+
+        // 对每个刀口数据，根据全局中轴进行收缩处理
+        for(j = 0; j < len; j++) {
+            var data:Object = rawData[j];
+            v = data.mid.minusNew(start);
+            projectionLength = v.dot(unitAxis);
+            m_ideal = start.plusNew(unitAxis.multNew(projectionLength));
+            offset = data.halfWidth * contractionFactor;
+            // 保持最小收缩偏移
+            if(offset < 5) {
+                offset = 5;
+            }
+            var new_p0:Vector = m_ideal.minusNew(unitAxis.multNew(offset));
+            var new_p1:Vector = m_ideal.plusNew(unitAxis.multNew(offset));
+            trail.push({ edge1: new_p0, edge2: new_p1 });
+        }
+
+        // 利用数组收集有效刀口序号，再使用 join() 拼接成唯一标识字符串
+        var bladeID:String = validIndexes.join("");
+        var key:String = target._name + target.version + bladeID;
+        var tr:TrailRenderer = TrailRenderer.getInstance();
+        tr.addTrailData(key, trail, style);
     }
 
     /**
-     * 中性能实现：
-     *  - 对每个刀口直接计算 p0、p1、mid 和 halfWidth
-     *  - 根据刀口方向计算单位向量，再以 mid 点沿该方向双向偏移，得到局部收缩后的边缘
-     *  - 同时拼接有效刀口数字构成唯一标识
-     *
-     * @param target  发射者 MovieClip
-     * @param mc      包含刀口位置的 MovieClip（命名为“刀口位置1”至“刀口位置4”）
-     * @param style   渲染样式参数
+     * 中性能实现
+     * 
+     * 计算流程：
+     * 1. 遍历“刀口位置1”至“刀口位置4”，对每个有效刀口：
+     *    - 直接获取刀口在目标坐标系下的矩形；
+     *    - 计算 p1（左下角）、p3（右上角）、由 p3.x 与 p1.y 构成 p0 及其中点 mid；
+     *    - 根据 p0 与 p1 的直线计算单位向量，再以中点沿该方向进行局部收缩，
+     *      得到新的边缘数据；
+     * 2. 利用有效刀口的序号构造唯一标识，调用 TrailRenderer 的 addTrailData() 进行渲染。
+     * 
+     * @param target  发射者 MovieClip，用于标识残影的来源
+     * @param mc      包含刀口位置（“刀口位置1”至“刀口位置4”）的 MovieClip，提供刀口数据
+     * @param style   渲染样式参数，决定残影的视觉效果
      */
     private static function processBladeTrailMedium(target:MovieClip, mc:MovieClip, style:String):Void {
-        var map:MovieClip = _root.gameworld.deadbody;
+        var map:MovieClip = _root.gameworld.deadbody; // 目标坐标系参考对象
         var trail:Array = [];
+        var validIndexes:Array = [];
+
+        // 声明循环内使用的临时变量
         var current:MovieClip;
         var rect:Object;
-        var p0:Object, p1:Object, p3:Object, mid:Object;
-        var dx:Number, dy:Number, dist:Number, halfWidth:Number;
-        // 局部收缩系数
-        var localContraction:Number = 0.4;
+        var p1:Vector, p3:Vector, p0:Vector, mid:Vector;
+        var direction:Vector, dist:Number;
+        var halfWidth:Number;
+        var offset:Number;
+        var i:Number;
+        var localContraction:Number = 0.4; // 局部收缩因子
 
-        // 用于保存有效刀口位序字符串
-        var bladeID:String = "";
-
-        // 遍历所有可能的刀口位置（“刀口位置1”至“刀口位置4”）
-        for (var i:Number = 1; i <= 4; i++) {
+        // 遍历刀口位置 1 ~ 4
+        for(i = 1; i <= 4; i++) {
             current = mc["刀口位置" + i];
-            if (current && current._x != undefined) {
-                bladeID += i.toString();
-
-                // 直接获取 current 在 map 坐标系下的矩形
+            if(current && current._x != undefined) {
+                validIndexes.push(i);
                 rect = current.getRect(map);
-
-                p1 = { x: rect.xMin, y: rect.yMax };
-                p3 = { x: rect.xMax, y: rect.yMin };
-                p0 = { x: p3.x, y: p1.y };
-                mid = { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 };
-
-                dx = p1.x - p0.x;
-                dy = p1.y - p0.y;
-                dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist == 0) {
-                    dx = 1; dy = 0; dist = 1;
+                p1 = new Vector(rect.xMin, rect.yMax);
+                p3 = new Vector(rect.xMax, rect.yMin);
+                p0 = new Vector(p3.x, p1.y);
+                mid = p0.plusNew(p1).multNew(0.5);
+                direction = p1.minusNew(p0);
+                dist = direction.magnitude();
+                if(dist == 0) {
+                    direction = new Vector(1, 0); // 防止零向量情况
+                    dist = 1;
                 }
-                var ux:Number = dx / dist;
-                var uy:Number = dy / dist;
+                direction = direction.multNew(1 / dist); // 单位化方向向量
                 halfWidth = dist * 0.5;
-                var offset:Number = halfWidth * localContraction;
-
-                var new_p0:Object = { x: mid.x - ux * offset, y: mid.y - uy * offset };
-                var new_p1:Object = { x: mid.x + ux * offset, y: mid.y + uy * offset };
-
+                offset = halfWidth * localContraction;
+                var new_p0:Vector = mid.minusNew(direction.multNew(offset));
+                var new_p1:Vector = mid.plusNew(direction.multNew(offset));
                 trail.push({ edge1: new_p0, edge2: new_p1 });
             }
         }
 
-        if (trail.length > 0) {
+        if(trail.length > 0) {
+            var bladeID:String = validIndexes.join("");
             var key:String = target._name + target.version + bladeID;
             var tr:TrailRenderer = TrailRenderer.getInstance();
             tr.addTrailData(key, trail, style);
@@ -223,36 +219,43 @@ class org.flashNight.arki.render.BladeMotionTrailsRenderer {
     }
 
     /**
-     * 低性能实现：
-     *  - 直接从每个刀口的碰撞盒获取 p1 与 p3 坐标，
-     *    不进行额外的计算，适用于资源受限环境
-     *  - 同时拼接有效刀口数字构成唯一标识
-     *
-     * @param target  发射者 MovieClip
-     * @param mc      包含刀口位置的 MovieClip（命名为“刀口位置1”至“刀口位置3”）
-     * @param style   渲染样式参数
+     * 低性能实现
+     * 
+     * 计算流程：
+     * 1. 遍历“刀口位置1”至“刀口位置3”，对每个有效刀口：
+     *    - 直接获取刀口在目标坐标系下的边界矩形；
+     *    - 分别将矩形的左下角作为 edge1，右上角作为 edge2；
+     * 2. 利用有效刀口的序号构造唯一标识，调用 TrailRenderer 的 addTrailData() 进行残影渲染。
+     * 
+     * @param target  发射者 MovieClip，用于标识残影的来源
+     * @param mc      包含刀口位置（“刀口位置1”至“刀口位置3”）的 MovieClip，提供刀口数据
+     * @param style   渲染样式参数，决定残影的视觉效果
      */
     private static function processBladeTrailLow(target:MovieClip, mc:MovieClip, style:String):Void {
-        var map:MovieClip = _root.gameworld.deadbody;
+        var map:MovieClip = _root.gameworld.deadbody; // 目标坐标系参考对象
         var trail:Array = [];
+        var validIndexes:Array = [];
+
+        // 声明临时变量
         var current:MovieClip;
         var rect:Object;
-        var edge1:Object, edge2:Object;
-        var bladeID:String = "";
+        var edge1:Vector, edge2:Vector;
+        var i:Number;
 
-        for (var i:Number = 1; i <= 3; i++) {
+        // 遍历刀口位置 1 ~ 3
+        for(i = 1; i <= 3; i++) {
             current = mc["刀口位置" + i];
-            if (current && current._x != undefined) {
-                bladeID += i.toString();
-                // 直接获取 current 在 map 坐标系下的矩形
+            if(current && current._x != undefined) {
+                validIndexes.push(i);
                 rect = current.getRect(map);
-                edge1 = { x: rect.xMin, y: rect.yMax };
-                edge2 = { x: rect.xMax, y: rect.yMin };
+                edge1 = new Vector(rect.xMin, rect.yMax);
+                edge2 = new Vector(rect.xMax, rect.yMin);
                 trail.push({ edge1: edge1, edge2: edge2 });
             }
         }
 
-        if (trail.length > 0) {
+        if(trail.length > 0) {
+            var bladeID:String = validIndexes.join("");
             var key:String = target._name + target.version + bladeID;
             var tr:TrailRenderer = TrailRenderer.getInstance();
             tr.addTrailData(key, trail, style);
