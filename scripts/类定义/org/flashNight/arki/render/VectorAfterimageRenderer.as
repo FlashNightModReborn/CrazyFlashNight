@@ -233,7 +233,9 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      */
     public function drawMixedShape(points:Array, fillColor:Number, lineColor:Number, 
                                     lineWidth:Number, fillAlpha:Number, lineAlpha:Number, closePath:Boolean, shadowCount:Number):Void {
-        if (points == undefined || points.length < 3) return;
+        var len:Number = points.length - 2;
+        
+        if (points == undefined || len < 1) return;
         if (shadowCount == undefined) shadowCount = _defaultShadowCount;
         // 若 closePath 参数未传入，则默认闭合路径
         if (closePath == undefined) closePath = true;
@@ -248,9 +250,8 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         // 先绘制前两点直线
 
         tempPoint = points[1];
-        canvas.lineTo(tempPoint.x, tempPoint.y);
+        canvas.lineTo(tempPoint.x, tempPoint.y);  
         
-        var len:Number = points.length - 2;
         var nextTempPoint:Vector;
         var cpx:Number;
         var cpy:Number;
