@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2035" itemID="6597607e-00000a84" lastModified="1733331682">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 2035" itemID="6597607e-00000a84" lastModified="1744812329">
   <timeline>
     <DOMTimeline name="Symbol 2035">
       <layers>
@@ -220,6 +220,14 @@ function 雇佣佣兵()
         			_root.可雇佣兵.splice(i, 1);
 					break;
     			}
+			}
+			if(this.佣兵数据[19].隐藏){
+				for (var i = 0; i <_root.隐藏的可雇佣兵.length; i++) {
+    				if (_root.隐藏的可雇佣兵[i][1] == this.佣兵数据[1] && _root.隐藏的可雇佣兵[i][2] == this.佣兵数据[2] ) {
+        				_root.隐藏的可雇佣兵.splice(i, 1);
+						break;
+    				}
+				}
 			}
 		}
 		//_root.gameworld.attachMovie("主角-" + this.佣兵数据[17],"同伴" + Number(_root.同伴数 - 1),_root.gameworld.getNextHighestDepth(),{_x:位置X,_y:位置Y,用户ID:this.佣兵数据[2],是否为敌人:false,身高:this.佣兵数据[3],名字:this.佣兵数据[1],等级:this.佣兵数据[0],脸型:this.佣兵数据[4],发型:this.佣兵数据[5],头部装备:this.佣兵数据[6],上装装备:this.佣兵数据[7],手部装备:this.佣兵数据[8],下装装备:this.佣兵数据[9],脚部装备:this.佣兵数据[10],颈部装备:this.佣兵数据[11],长枪:this.佣兵数据[12],手枪:this.佣兵数据[13],手枪2:this.佣兵数据[14],刀:this.佣兵数据[15],手雷:this.佣兵数据[16],性别:this.佣兵数据[17],是否为佣兵:true});   

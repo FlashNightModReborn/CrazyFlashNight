@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 923" itemID="6597607e-0000080e" lastModified="1737126520">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 923" itemID="6597607e-0000080e" lastModified="1744811819">
   <timeline>
     <DOMTimeline name="Symbol 923">
       <layers>
@@ -86,6 +86,23 @@ function 删除佣兵图标()
 		_loc2_ += 1;
 	}
 }
+function 读取佣兵列表信息(页数)
+{
+	总页数 = Math.ceil((_root.可雇佣兵.length - _root.隐藏的可雇佣兵.length) / 5);
+	可雇用佣兵列表数据 = [];
+	var i = 5 * Number(页数) - 5;
+	var j = 0;
+	var 隐藏佣兵数 = 0;
+	while (i < _root.可雇佣兵.length && j < 5)
+	{
+		if(!_root.可雇佣兵[i][19].隐藏){
+			可雇用佣兵列表数据[j] = _root.可雇佣兵[i];
+			j++;
+		}
+		i++;
+	}
+	排列可雇用佣兵图标(页数);
+}
 function 排列可雇用佣兵图标(页数值)
 {
 	gotoAndStop("查找佣兵");
@@ -116,6 +133,10 @@ function 排列可雇用佣兵图标(页数值)
 	{
 		if (可雇用佣兵列表数据[_loc4_][1] != undefined)
 		{
+			if(可雇用佣兵列表数据[_loc4_][19].隐藏){
+				_loc4_ += 1;
+				continue;
+			}
 			var 当前佣兵等级 = Number(可雇用佣兵列表数据[_loc4_][0]);
 
 			var 所需金币 = 可雇用佣兵列表数据[_loc4_][18] * 1.5;
@@ -235,21 +256,6 @@ _loc4_ += 1;
 }
 };
 }*/
-function 读取佣兵列表信息(页数)
-{
-
-	总页数 = Math.ceil(_root.可雇佣兵.length / 5);
-	可雇用佣兵列表数据 = [];
-	var i = 5 * Number(页数) - 5;
-	var j = 0;
-	while (i < _root.可雇佣兵.length && j < 5)
-	{
-		可雇用佣兵列表数据[j] = _root.可雇佣兵[i];
-		i += 1;
-		j++;
-	}
-	排列可雇用佣兵图标(页数);
-}
 function 佣兵报名()
 {
 	k点价格 = 10;
@@ -443,8 +449,8 @@ stop();
             </DOMFrame>
             <DOMFrame index="19" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[总页数 = Math.ceil(_root.可雇佣兵.length / 5);
-排列可雇用佣兵图标(1);
+                <script><![CDATA[//总页数 = Math.ceil(_root.可雇佣兵.length / 5);
+//排列可雇用佣兵图标(1);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -559,7 +565,7 @@ stop();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#96A7C2">
+        <DOMLayer name="Layer 5" color="#96A7C2" locked="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -586,7 +592,7 @@ stop();
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <elements>
-                <DOMStaticText fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
+                <DOMStaticText selected="true" fontRenderingMode="device" width="54.7" height="15.55" isSelectable="false">
                   <matrix>
                     <Matrix tx="93.05" ty="7"/>
                   </matrix>

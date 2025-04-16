@@ -54,6 +54,9 @@
       "手枪": 2,
       "手枪2": 2,
       "刀": 2
+    },
+    "passive":{
+      "口才":{"技能名":"口才", "等级":1, "启用":true}
     }
   },
   {
@@ -77,7 +80,8 @@
       "melee": null,
       "grenade": null
     },
-    "price": 0.3
+    "price": 0.3,
+    "hidden": true
   },
   {
     "level": 2,
@@ -4058,7 +4062,8 @@
       "melee": "虎彻",
       "grenade": null
     },
-    "price": 3.0
+    "price": 3.0,
+    "hidden": true
   },
   {
     "level": 70,
