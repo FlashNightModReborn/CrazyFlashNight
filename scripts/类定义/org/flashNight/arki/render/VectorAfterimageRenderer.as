@@ -1,6 +1,6 @@
 ﻿import flash.geom.*;
 import org.flashNight.neur.Event.*;
-import org.flashNight.sara.util.ObjectPool;
+import org.flashNight.sara.util.* ;
 
 /**
  * 矢量残影渲染器（极致复用版）
@@ -181,17 +181,22 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
      * @param shadowCount (可选) 残影数量配置，若未传入则采用默认值
      */
     public function drawShapes(shapes:Array, fillColor:Number, lineColor:Number, 
-                               lineWidth:Number, fillAlpha:Number, lineAlpha:Number, shadowCount:Number):Void {
-        if (shapes.length == 0) return;
+                            lineWidth:Number, fillAlpha:Number, lineAlpha:Number, shadowCount:Number):Void {
+        var len:Number = shapes.length;
+        if (len == 0) return;
         if (shadowCount == undefined) shadowCount = _defaultShadowCount;
         var canvas:MovieClip = getAvailableCanvas(shadowCount);
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
         
         // 合并所有形状的点集
         var mergedPoints:Array = [];
-        for (var i:Number = 0; i < shapes.length; i++) {
+        
+        var i:Number = 0;
+        do {
             mergedPoints = mergedPoints.concat(shapes[i]);
-        }
+            i++;
+        } while (i < len);
+        
         renderShape(canvas, mergedPoints, fillColor, fillAlpha);
     }
     
@@ -235,27 +240,39 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         if (closePath == undefined) closePath = true;
         var canvas:MovieClip = getAvailableCanvas(shadowCount);
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
+
+        var tempPoint:Vector = points[0];
         
         // 开始填充绘制
         canvas.beginFill(fillColor || 0, fillAlpha || 100);
-        canvas.moveTo(points[0].x, points[0].y);
+        canvas.moveTo(tempPoint.x, tempPoint.y);
         // 先绘制前两点直线
-        canvas.lineTo(points[1].x, points[1].y);
+
+        tempPoint = points[1];
+        canvas.lineTo(tempPoint.x, tempPoint.y);
         
-        var len:Number = points.length;
+        var len:Number = points.length - 2;
+        var nextTempPoint:Vector;
+        var cpx:Number;
+        var cpy:Number;
+
         // 对中间点采用曲线插值绘制
-        for (var i:Number = 1; i < len - 2; i++) {
-            var curr:Object = points[i];
-            var next:Object = points[i + 1];
-            var cpx:Number = (curr.x + next.x) / 2;
-            var cpy:Number = (curr.y + next.y) / 2;
-            canvas.curveTo(curr.x, curr.y, cpx, cpy);
+        for (var i:Number = 1; i < len; i++) {
+            tempPoint = points[i];
+            nextTempPoint = points[i + 1];
+            cpx = (tempPoint.x + nextTempPoint.x) / 2;
+            cpy = (tempPoint.y + nextTempPoint.y) / 2;
+
+            canvas.curveTo(tempPoint.x, tempPoint.y, cpx, cpy);
         }
         // 绘制最后一段直线
-        canvas.lineTo(points[len - 1].x, points[len - 1].y);
+        tempPoint = points[++len];
+        canvas.lineTo(tempPoint.x, tempPoint.y);
+
         // 根据 closePath 参数判断是否闭合路径
         if (closePath) {
-            canvas.lineTo(points[0].x, points[0].y);
+            tempPoint = points[0];
+            canvas.lineTo(tempPoint.x, tempPoint.y);
         }
         canvas.endFill();
     }
@@ -278,53 +295,51 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
     public function drawMixedShapes(shapes:Array, fillColor:Number, lineColor:Number, 
                                     lineWidth:Number, fillAlpha:Number, lineAlpha:Number, 
                                     closePath:Boolean, shadowCount:Number):Void {
-        // 如果 shapes 为空或无效，直接返回
         if (shapes == undefined || shapes.length == 0) return;
-    
-        // 如果 shadowCount 未传入，使用默认值
         if (shadowCount == undefined) shadowCount = _defaultShadowCount;
-    
-        // 如果 closePath 未传入，默认为 true
         if (closePath == undefined) closePath = true;
-    
-        // 从对象池获取或创建一个画布
+
+        // 声明所有可复用的局部变量
         var canvas:MovieClip = getAvailableCanvas(shadowCount);
-    
-        // 为所有形状统一设置线条样式，减少重复调用
         setupCanvasStyle(canvas, lineColor, lineWidth, lineAlpha);
-    
-        // 遍历每个形状进行绘制
-        for (var i:Number = 0; i < shapes.length; i++) {
-            var points:Array = shapes[i];
-            // 跳过无效或点数不足的形状
+        
+        var i:Number, j:Number, points:Array, len:Number;
+        var tempPoint:Vector, nextTempPoint:Vector, cpx:Number, cpy:Number;
+        var shapesLen:Number = shapes.length;
+
+        // 批量绘制循环
+        for (i = 0; i < shapesLen; i++) {
+            points = shapes[i];
             if (points == undefined || points.length < 3) continue;
-        
-            // 开始填充绘制
+
+            
+            
+
+            // 开始绘制当前形状
             canvas.beginFill(fillColor || 0, fillAlpha || 100);
-            canvas.moveTo(points[0].x, points[0].y);
-        
-            // 绘制首段直线
-            canvas.lineTo(points[1].x, points[1].y);
-        
-            // 对中间点使用曲线插值绘制
-            var len:Number = points.length;
-            for (var j:Number = 1; j < len - 2; j++) {
-                var curr:Object = points[j];
-                var next:Object = points[j + 1];
-                var cpx:Number = (curr.x + next.x) / 2; // 控制点 x 坐标
-                var cpy:Number = (curr.y + next.y) / 2; // 控制点 y 坐标
-                canvas.curveTo(curr.x, curr.y, cpx, cpy);
+            tempPoint = points[0];
+            canvas.moveTo(tempPoint.x, tempPoint.y);
+            tempPoint = points[1];
+            canvas.lineTo(tempPoint.x, tempPoint.y);
+            
+            len = points.length - 2;
+
+            // 曲线段绘制（复用变量）
+            for (j = 1; j < len; j++) {
+                tempPoint = points[j];
+                nextTempPoint = points[j + 1];
+                cpx = (tempPoint.x + nextTempPoint.x) * 0.5; // 用乘法替代除法优化
+                cpy = (tempPoint.y + nextTempPoint.y) * 0.5;
+                canvas.curveTo(tempPoint.x, tempPoint.y, cpx, cpy);
             }
-        
-            // 绘制最后一段直线
-            canvas.lineTo(points[len - 1].x, points[len - 1].y);
-        
-            // 根据 closePath 参数决定是否闭合路径
-            if (closePath) {
-                canvas.lineTo(points[0].x, points[0].y);
-            }
-        
-            // 结束填充
+
+            // 最后直线段
+            tempPoint = points[++len];
+            canvas.lineTo(tempPoint.x, tempPoint.y);
+
+            // 闭合路径
+            if (closePath) canvas.lineTo(tempPoint.x, tempPoint.y);
+            
             canvas.endFill();
         }
     }
@@ -489,11 +504,11 @@ class org.flashNight.arki.render.VectorAfterimageRenderer {
         if (len < 2) return;
         canvas.beginFill(fillColor || 0, fillAlpha || 100);
         var i:Number = 1;
-        var p0:Object = points[0];
-        canvas.moveTo(p0.x, p0.y);
+        var tempPoint:Vector = points[0];
+        canvas.moveTo(tempPoint.x, tempPoint.y);
         do {
-            var p:Object = points[i % len];
-            canvas.lineTo(p.x, p.y);
+            tempPoint = points[i % len];
+            canvas.lineTo(tempPoint.x, tempPoint.y);
             i++;
         } while (i <= len);
         canvas.endFill();
