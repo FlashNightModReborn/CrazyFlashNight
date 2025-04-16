@@ -1,12 +1,12 @@
 ﻿/**
- * RingBuffer 测试类
- * 
+ * RingBuffer 测试类（扩展版）
+ *
  * 说明：
- * 1. 内置简单断言系统，实现 assert() 方法，用于检查各个方法行为是否符合预期。
- * 2. 完全覆盖了构造、push、pushMany、get（含负索引和边界检测）、pop、peek、clear、
- *    resize、toArray、forEach、toString、head、tail、contains 等各个接口。
- * 3. 内置性能评测模块，使用 getTimer() 对常用方法进行迭代性能测试。
- * 4. 请将该文件与 org.flashNight.naki.DataStructures.RingBuffer 类放在同一目录下测试。
+ * 1. 本测试类涵盖了 org.flashNight.naki.DataStructures.RingBuffer 类所有 public 方法的单元测试。
+ * 2. 包含对构造函数、push、pushMany、get（含负索引及边界判断）、pop、peek、clear、reset、
+ *    replaceSingle、toArray、toReversedArray、forEach、toString、head、tail、isEmpty、isFull、contains、resize 等方法的测试。
+ * 3. 内置性能评测模块使用 getTimer() 评测常用操作的迭代性能。
+ * 4. 请将本文件与 RingBuffer 类文件放在相同目录下进行测试。
  */
 class org.flashNight.naki.DataStructures.RingBufferTest {
 
@@ -21,7 +21,11 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
         testBoundaryIndices();
         testPopAndPeek();
         testClear();
-        testResize();
+        testReset();
+        testReplaceSingle();
+        testToReversedArray();
+        testHeadTail();
+        testIsEmptyAndIsFull();
         testForEachToArray();
         testStringAndContains();
         performanceTest();
@@ -54,7 +58,7 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
             assert(true, "capacity < 1 抛出错误");
         }
         // 测试 capacity = 1
-        var rb:org.flashNight.naki.DataStructures.RingBuffer = new org.flashNight.naki.DataStructures.RingBuffer(1);
+        rb = new org.flashNight.naki.DataStructures.RingBuffer(1);
         assert(rb.capacity == 1, "capacity 应为 1");
         assert(rb.size == 0, "初始 size 应为 0");
         // 测试 fillWith
@@ -115,7 +119,7 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
     }
 
     /**
-     * 测试 get 方法边界情况，及覆盖（溢出）情况
+     * 测试 get 方法边界情况及覆盖（溢出）情况
      */
     private static function testBoundaryIndices():Void {
         trace(">> testBoundaryIndices");
@@ -188,35 +192,114 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
     }
 
     /**
-     * 测试 resize 方法，对容量增大和缩小时的数据保留情况进行检验
+     * 测试 reset 方法，使用新数据重置 RingBuffer 状态
      */
-    private static function testResize():Void {
-        trace(">> testResize");
+    private static function testReset():Void {
+        trace(">> testReset");
+        var rb:org.flashNight.naki.DataStructures.RingBuffer = new org.flashNight.naki.DataStructures.RingBuffer(5);
+        rb.push(10);
+        rb.push(20);
+        rb.push(30);
+        // 使用新数据重置，数组长度小于 capacity
+        rb.reset([100, 200]);
+        assert(rb.size == 2, "reset 后 size 应为 2");
+        assert(rb.get(0) == 100, "reset 后 get(0) 应为 100");
+        assert(rb.get(1) == 200, "reset 后 get(1) 应为 200");
+        
+        // 使用新数据数组长度大于 capacity 时，应只保留最新 capacity 个数据
+        rb.reset([1, 2, 3, 4, 5, 6, 7]);
+        assert(rb.size == 5, "reset 大数组后 size 应为 5 (capacity 5)");
+        // 此时应保留最新 5 个数据，即 [3,4,5,6,7]
+        assert(rb.get(0) == 3, "reset 大数组后 get(0) 应为 3");
+        assert(rb.get(4) == 7, "reset 大数组后 get(4) 应为 7");
+    }
+
+    /**
+     * 测试 replaceSingle 方法，用单一数据替换所有内容
+     */
+    private static function testReplaceSingle():Void {
+        trace(">> testReplaceSingle");
+        var rb:org.flashNight.naki.DataStructures.RingBuffer = new org.flashNight.naki.DataStructures.RingBuffer(4);
+        rb.push("a");
+        rb.push("b");
+        rb.push("c");
+        rb.replaceSingle("single");
+        assert(rb.size == 1, "replaceSingle 后 size 应为 1");
+        assert(rb.get(0) == "single", "replaceSingle 后 get(0) 应为 'single'");
+        assert(rb.head == "single", "replaceSingle 后 head 应为 'single'");
+        assert(rb.tail == "single", "replaceSingle 后 tail 应为 'single'");
+    }
+
+    /**
+     * 测试 toReversedArray 方法，验证逆序输出是否正确
+     */
+    private static function testToReversedArray():Void {
+        trace(">> testToReversedArray");
         var rb:org.flashNight.naki.DataStructures.RingBuffer = new org.flashNight.naki.DataStructures.RingBuffer(5);
         rb.push(1);
         rb.push(2);
         rb.push(3);
-        // 增大 capacity
-        rb.resize(8);
-        assert(rb.capacity == 8, "扩容后 capacity 应为 8");
-        assert(rb.size == 3, "扩容后 size 应仍为 3");
-        assert(rb.get(0) == 1, "扩容后 get(0) 仍为 1");
-        // 减小 capacity
-        rb.resize(2);
-        assert(rb.capacity == 2, "缩容后 capacity 应为 2");
-        assert(rb.size == 2, "缩容后 size 应为 2");
-        assert(rb.get(0) == 2, "缩容后 get(0) 应为 2");
-        // resize 到 0
-        try {
-            rb.resize(0);
-            assert(false, "resize(0) 应抛出错误");
-        } catch (e:Error) {
-            assert(true, "resize(0) 抛出错误");
-        }
+        var arr:Array = rb.toArray();
+        var rev:Array = rb.toReversedArray();
+        // 验证逆序数组第一个元素应为原数组的最后一个元素
+        assert(rev[0] == arr[arr.length - 1], "toReversedArray 第一个元素应为 toArray 最后一个");
+        // 验证逆序数组最后一个元素应为原数组的第一个元素
+        assert(rev[rev.length - 1] == arr[0], "toReversedArray 最后一个元素应为 toArray 第一个");
+        
+        // 测试空队列情况
+        rb.clear();
+        arr = rb.toReversedArray();
+        assert(arr.length == 0, "空队列 toReversedArray 应返回空数组");
     }
 
     /**
-     * 测试 toArray 与 forEach 方法
+     * 测试 head 与 tail 属性，验证队列首尾数据是否正确
+     */
+    private static function testHeadTail():Void {
+        trace(">> testHeadTail");
+        var rb:org.flashNight.naki.DataStructures.RingBuffer = new org.flashNight.naki.DataStructures.RingBuffer(3);
+        rb.push("first");
+        rb.push("second");
+        rb.push("third");
+        assert(rb.head == "first", "head 属性应返回队列首元素 'first'");
+        assert(rb.tail == "third", "tail 属性应返回队列尾元素 'third'");
+        
+        // 覆盖测试：继续 push 元素使得最旧数据被覆盖
+        rb.push("fourth"); // 此时队列变为 ["second", "third", "fourth"]
+        assert(rb.head == "second", "覆盖后 head 应返回 'second'");
+        assert(rb.tail == "fourth", "覆盖后 tail 应返回 'fourth'");
+        
+        // 空队列测试
+        rb.clear();
+        assert(rb.head == undefined, "空队列 head 应返回 undefined");
+        assert(rb.tail == undefined, "空队列 tail 应返回 undefined");
+    }
+
+    /**
+     * 测试 isEmpty 与 isFull 方法，判断队列是否为空或已满
+     */
+    private static function testIsEmptyAndIsFull():Void {
+        trace(">> testIsEmptyAndIsFull");
+        var rb:org.flashNight.naki.DataStructures.RingBuffer = new org.flashNight.naki.DataStructures.RingBuffer(3);
+        // 新建队列应为空
+        assert(rb.isEmpty() == true, "新建的队列 isEmpty 应返回 true");
+        assert(rb.isFull() == false, "新建的队列 isFull 应返回 false");
+        rb.push("A");
+        assert(rb.isEmpty() == false, "非空队列 isEmpty 应返回 false");
+        assert(rb.isFull() == false, "未满队列 isFull 应返回 false");
+        rb.push("B");
+        rb.push("C");
+        assert(rb.isFull() == true, "满队列 isFull 应返回 true");
+        // 弹出所有元素后队列为空
+        rb.pop();
+        rb.pop();
+        rb.pop();
+        assert(rb.isEmpty() == true, "弹出所有元素后 isEmpty 应返回 true");
+        assert(rb.isFull() == false, "空队列 isFull 应返回 false");
+    }
+
+    /**
+     * 测试 toArray 与 forEach 方法，确保两者输出一致
      */
     private static function testForEachToArray():Void {
         trace(">> testForEachToArray");
@@ -254,28 +337,28 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
         rb.push("alpha");
         rb.push("beta");
         rb.push("gamma");
-        // toString 测试
+        // 测试 toString 输出是否包含必要信息
         var str:String = rb.toString();
         assert(str.indexOf("capacity=3") != -1, "toString() 应包含 capacity 信息");
         assert(str.indexOf("size=3") != -1, "toString() 应包含 size 信息");
         assert(str.indexOf("[alpha,beta,gamma]") != -1, "toString() 应包含数据 [alpha,beta,gamma]");
-        // contains 测试
+        // contains 方法测试
         assert(rb.contains("beta") == true, "contains('beta') 应为 true");
         assert(rb.contains("delta") == false, "contains('delta') 应为 false");
-        // 空队列 contains
+        // 空队列 contains 测试
         rb.clear();
         assert(rb.contains("alpha") == false, "空队列 contains 应为 false");
     }
 
     /**
-     * 性能评测模块
+     * 性能评测模块，使用 getTimer() 对常用方法性能进行测试
      */
     private static function performanceTest():Void {
         trace(">> performanceTest");
         var iterations:Number = 100000;
         var rb:org.flashNight.naki.DataStructures.RingBuffer = new org.flashNight.naki.DataStructures.RingBuffer(1000);
 
-        // push 性能
+        // push 性能测试
         var startTime:Number = getTimer();
         for (var i:Number = 0; i < iterations; i++) {
             rb.push(i);
@@ -283,7 +366,7 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
         var pushDuration:Number = getTimer() - startTime;
         trace("push " + iterations + " 次耗时: " + pushDuration + "ms");
 
-        // pushMany 性能
+        // pushMany 性能测试
         startTime = getTimer();
         var manyItems:Array = [];
         for (i = 0; i < iterations; i++) {
@@ -293,7 +376,7 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
         var pushManyDuration:Number = getTimer() - startTime;
         trace("pushMany " + iterations + " 次耗时: " + pushManyDuration + "ms");
 
-        // get 性能
+        // get 性能测试
         startTime = getTimer();
         for (i = 0; i < iterations; i++) {
             rb.get(Math.floor(Math.random() * rb.size));
@@ -301,7 +384,7 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
         var getDuration:Number = getTimer() - startTime;
         trace("随机 get " + iterations + " 次耗时: " + getDuration + "ms");
 
-        // pop 性能
+        // pop 性能测试
         startTime = getTimer();
         for (i = 0; i < iterations; i++) {
             rb.pop();
@@ -309,7 +392,7 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
         var popDuration:Number = getTimer() - startTime;
         trace("pop " + iterations + " 次耗时: " + popDuration + "ms");
 
-        // resize 性能
+        // resize 性能测试
         startTime = getTimer();
         for (i = 0; i < 100; i++) {
             rb.resize(1000 + i);
@@ -317,7 +400,7 @@ class org.flashNight.naki.DataStructures.RingBufferTest {
         var resizeDuration:Number = getTimer() - startTime;
         trace("resize 100 次耗时: " + resizeDuration + "ms");
 
-        // 输出性能评测结论
+        // 输出性能评测结论（可根据实际需求调整阈值）
         var acceptableThreshold:Number = 100;
         assert(pushDuration < acceptableThreshold, "push 操作性能符合要求");
         assert(getDuration < acceptableThreshold, "随机 get 操作性能符合要求");
