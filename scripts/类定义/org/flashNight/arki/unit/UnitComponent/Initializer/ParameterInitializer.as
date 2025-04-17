@@ -1,4 +1,6 @@
 ﻿class org.flashNight.arki.unit.UnitComponent.Initializer.ParameterInitializer {
+    public static var versionCount:Number = 0;
+
     public static function initialize(target:MovieClip):Void {
         if (isNaN(target.重量)) target.重量 = 60;
         if (isNaN(target.韧性系数)) target.韧性系数 = 1;
@@ -18,9 +20,6 @@
         if (isNaN(target.icY)) target.icY = ic._y;
         if (target.状态 == "登场") ic._visible = false;
 
-        // 主角专用
-        if(target._name === _root.控制目标) {
-            if(isNaN(target.version)) target.version = 0; // 用于记录换装版本号
-        }
+        target.version = ++versionCount;
     }
 }
