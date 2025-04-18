@@ -59,7 +59,7 @@ class org.flashNight.naki.DataStructures.NakiSet extends Object {
         uidMap[uid] = key;
         
         // 在AS2中，可用 ASSetPropFlags 控制不可枚举
-        // _global.ASSetPropFlags(key, ["__setUID__"], 1, true);
+        // _global.ASSetPropFlags(key, ["__setUID__"], 1, false);
         
         return uid;
     }

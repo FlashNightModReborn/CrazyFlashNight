@@ -19,7 +19,7 @@
             var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
             obj[proxyDataKey] = proxyData; // 初始化代理数据存储
             // 将属性设置为不可枚举，以防止外部访问
-            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, false);
             // trace("[DEBUG] Assigned UID: " + uid + " to object.");
         } else {
             var uid:Number = obj[proxyUID];
@@ -38,7 +38,7 @@
             obj[internalPropName] = obj[propName];
 
             // 将内部属性设置为不可枚举
-            _global.ASSetPropFlags(obj, [internalPropName], 1, true);
+            _global.ASSetPropFlags(obj, [internalPropName], 1, false);
 
             // 创建自定义的 Getter 和 Setter
             var getter:Function = function() {
@@ -106,7 +106,7 @@
             obj[proxyUID] = uid;
             var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
             obj[proxyDataKey] = proxyData; // 初始化代理数据存储
-            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, false);
         } else {
             var proxyData:Object = obj[proxyDataKey];
         }
@@ -162,7 +162,7 @@
             var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
             obj[proxyDataKey] = proxyData; // 初始化代理数据存储
             // 将属性设置为不可枚举，以防止外部访问
-            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, false);
             // trace("[DEBUG] Assigned UID: " + uid + " to object.");
         } else {
             var uid:Number = obj[proxyUID];
@@ -181,7 +181,7 @@
             obj[internalPropName] = obj[propName];
 
             // 将内部属性设置为不可枚举
-            _global.ASSetPropFlags(obj, [internalPropName], 1, true);
+            _global.ASSetPropFlags(obj, [internalPropName], 1, false);
 
             // 创建自定义的 Getter 和 Setter
             var getter:Function = function() {
@@ -260,7 +260,7 @@
             var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
             obj[proxyDataKey] = proxyData; // 初始化代理数据存储
             // 将属性设置为不可枚举，以防止外部访问
-            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, false);
             // trace("[DEBUG] Assigned UID: " + uid + " to object.");
         } else {
             var uid:Number = obj[proxyUID];
@@ -316,7 +316,7 @@
             var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
             obj[proxyDataKey] = proxyData; // 初始化代理数据存储
             // 将属性设置为不可枚举，以防止外部访问
-            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, false);
             // trace("[DEBUG] Assigned UID: " + uid + " to object.");
         } else {
             var uid:Number = obj[proxyUID];
@@ -373,7 +373,7 @@
             var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
             obj[proxyDataKey] = proxyData; // 初始化代理数据存储
             // 将属性设置为不可枚举，以防止外部访问
-            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, false);
             // trace("[DEBUG] Assigned UID: " + uid + " to object.");
         } else {
             var uid:Number = obj[proxyUID];
@@ -407,7 +407,7 @@
 
             // 设置代理函数的 UID 并将其设为不可枚举
             proxyFunction.__proxyUID__ = uid;
-            _global.ASSetPropFlags(proxyFunction, ["__proxyUID__"], 1, true);
+            _global.ASSetPropFlags(proxyFunction, ["__proxyUID__"], 1, false);
 
             // 将原始函数替换为代理函数
             obj[funcName] = proxyFunction;
@@ -446,7 +446,7 @@
             var proxyData:Object = { propertyCallbacks: {}, functionCallbacks: {} };
             obj[proxyDataKey] = proxyData; // 初始化代理数据存储
             // 将属性设置为不可枚举，以防止外部访问
-            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, true);
+            _global.ASSetPropFlags(obj, [proxyUID, proxyDataKey], 1, false);
             // trace("[DEBUG] Assigned UID: " + uid + " to object.");
         } else {
             var uid:Number = obj[proxyUID];

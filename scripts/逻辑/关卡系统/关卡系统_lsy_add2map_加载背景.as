@@ -23,6 +23,21 @@ _root.add2map3 = function(tg, ln) {
 _root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
 _root.add2map3 = DeathEffectRenderer.renderRotatedCorpse;
 
+
+EventBus.getInstance().subscribe("SceneChanged", function() {
+	var arr:Array = ["效果", 
+					 "子弹区域", 
+					 "已更新天气",
+					 "动画",
+					 "背景",
+					 "地图",
+					 "出生地",
+					 "deadbody"
+					 ]
+	_global.ASSetPropFlags(_root.gameworld, arr, 1, false);
+}, null); // 地图变动时，将需要设置的部件设置成不可枚举以避免进入遍历范围
+
+
 _root.贴背景图 = function(){
 	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
 	var 游戏世界 = _root.gameworld;
@@ -44,7 +59,7 @@ _root.贴背景图 = function(){
 	}
 
 	游戏世界.已更新天气 = false;
-	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域", "已更新天气"], 1, true);
+	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域", "已更新天气"], 1, false);
 
 	//
 	var 地图 = 游戏世界.地图;
@@ -156,7 +171,7 @@ _root.配置场景环境信息 = function(){
 		天气系统.最大光照 = 9;
 		天气系统.最小光照 = 0;
 	}
-	_global.ASSetPropFlags(游戏世界, ["面积系数","出生点列表"], 1, true);
+	_global.ASSetPropFlags(游戏世界, ["面积系数","出生点列表"], 1, false);
 
 	//完成并贴背景图
 	游戏世界.背景.已更新环境配置 = true;
@@ -176,7 +191,7 @@ _root.加载场景背景 = function (动画名){
 		背景层.已更新环境配置 = true;
 	}
 	游戏世界.场景背景url = "flashswf/backgrounds/" + url;
-	_global.ASSetPropFlags(游戏世界, ["场景背景url"], 1, true);
+	_global.ASSetPropFlags(游戏世界, ["场景背景url"], 1, false);
 	loadMovie(游戏世界.场景背景url, 背景层.外部动画加载壳mc);
 	if(环境配置.背景元素){
 		for(var i = 0; i < 环境配置.背景元素.length; i++){

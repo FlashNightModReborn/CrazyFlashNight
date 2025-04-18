@@ -82,7 +82,7 @@ class org.flashNight.sara.util.ObjectPool {
 
         // 使用 _global.ASSetPropFlags 将 _pool 和 recycle 设置为不可枚举
         newObj._pool = this;
-        _global.ASSetPropFlags(newObj, ["_pool", "recycle"], 1, 0);  // 1表示不可枚举
+        _global.ASSetPropFlags(newObj, ["_pool", "recycle"], 1, false);  // 1表示不可枚举
 
         newObj.__isDestroyed = false;  // 初始化为未销毁
 
@@ -163,7 +163,7 @@ class org.flashNight.sara.util.ObjectPool {
         if (this.topIndex < this.maxPoolSize) {
             obj._pool = undefined;
             obj.recycle = undefined;
-            _global.ASSetPropFlags(obj, ["_pool", "recycle"], 1, 0);
+            _global.ASSetPropFlags(obj, ["_pool", "recycle"], 1, false);
 
             this.pool[this.topIndex] = obj;
             this.topIndex++;

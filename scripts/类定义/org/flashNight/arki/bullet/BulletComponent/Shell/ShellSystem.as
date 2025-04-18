@@ -99,7 +99,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
             游戏世界.可用弹壳池[弹壳种类] = pool;
         }
 
-        _global.ASSetPropFlags(游戏世界, ["可用弹壳池"], 1, true);
+        _global.ASSetPropFlags(游戏世界, ["可用弹壳池"], 1, false);
         initialized = true;
     }
 

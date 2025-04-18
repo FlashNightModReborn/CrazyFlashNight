@@ -118,7 +118,7 @@ _root.初始化出生点 = function(){
 		var 地图 = gameworld.地图;
 
         // 设置 `地图` 为不可枚举
-        _global.ASSetPropFlags(gameworld, ["地图"], 1, true);
+        _global.ASSetPropFlags(gameworld, ["地图"], 1, false);
 		
 		地图.beginFill(0x000000);
 		地图.moveTo(rect.xMin, rect.yMin);

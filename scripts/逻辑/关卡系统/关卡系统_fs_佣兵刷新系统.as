@@ -59,7 +59,7 @@ _root.初始化佣兵编号缓存 = function() {
         游戏世界.佣兵编号缓存 = {权重列表: [], 总权重: 0, 已初始化: false};
 
         // 设置 `佣兵编号缓存` 为不可枚举
-        _global.ASSetPropFlags(游戏世界, ["佣兵编号缓存"], 1, true);
+        _global.ASSetPropFlags(游戏世界, ["佣兵编号缓存"], 1, false);
     }
 };
 

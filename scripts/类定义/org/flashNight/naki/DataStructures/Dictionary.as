@@ -29,7 +29,7 @@
         if (uid === undefined) {
             uid = key.__dictUID = uidCounter++;
             uidMap[uid] = key;
-            _global.ASSetPropFlags(key, ["__dictUID"], 1, true); // 设置 __dictUID 不可枚举
+            _global.ASSetPropFlags(key, ["__dictUID"], 1, false); // 设置 __dictUID 不可枚举
         }
         return uid;
     }
@@ -44,7 +44,7 @@
         if (uid === undefined) {
             uid = key.__dictUID = uidCounter++;
             // uidMap[uid] = key;
-            _global.ASSetPropFlags(key, ["__dictUID"], 1, true); // 设置 __dictUID 不可枚举
+            _global.ASSetPropFlags(key, ["__dictUID"], 1, false); // 设置 __dictUID 不可枚举
         }
         return uid;
     }

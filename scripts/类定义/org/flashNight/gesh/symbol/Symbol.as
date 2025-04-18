@@ -11,7 +11,7 @@ class org.flashNight.gesh.symbol.Symbol {
 
     // 静态构造函数
     private static function __static_constructor__(): Void {
-        _global.ASSetPropFlags(_globalRegistry, null, 1, 0); // 设置为不可枚举
+        _global.ASSetPropFlags(_globalRegistry, null, 1, false); // 设置为不可枚举
     }
 
     private static var __static_init__ = __static_constructor__();

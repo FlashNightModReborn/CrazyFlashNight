@@ -41,7 +41,7 @@ _root.初始化打击伤害数字池 = function(池大小) {
     }
 
     // 设置 `可用数字池` 为不可枚举
-    _global.ASSetPropFlags(游戏世界, ["可用数字池"], 1, true);
+    _global.ASSetPropFlags(游戏世界, ["可用数字池"], 1, false);
 };
 
 // 获取或创建打击伤害数字（使用懒加载和原型模式）
@@ -50,7 +50,7 @@ _root.获取或创建打击伤害数字 = function(效果种类, 数字, myX, my
     if (!游戏世界.打击伤害数字原型) {
         // 如果没有创建过原型，使用懒加载创建原型
         游戏世界.打击伤害数字原型 = _root.创建打击伤害数字(效果种类, 数字, myX, myY);
-        _global.ASSetPropFlags(游戏世界, ["打击伤害数字原型"], 1, true);
+        _global.ASSetPropFlags(游戏世界, ["打击伤害数字原型"], 1, false);
         游戏世界.打击伤害数字原型._visible = false;
     }
 

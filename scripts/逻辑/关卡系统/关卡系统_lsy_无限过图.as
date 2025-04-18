@@ -87,7 +87,7 @@ _root.开启生存模式 = function(模式) {
     游戏世界.关卡结束 = false;
 
     // 将上述属性设置为不可枚举
-    _global.ASSetPropFlags(游戏世界, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin"], 1, true);
+    _global.ASSetPropFlags(游戏世界, ["背景", "背景长", "背景高", "门朝向", "允许通行", "关卡结束", "Xmax", "Xmin", "Ymax", "Ymin"], 1, false);
 
     // 添加动态尺寸的位图层
     var 尸体层 = 游戏世界.deadbody;
@@ -101,7 +101,7 @@ _root.开启生存模式 = function(模式) {
     尸体层.attachBitmap(尸体层.layers[2], 尸体层.getNextHighestDepth());
 
     // 将 'deadbody' 设置为不可枚举
-    _global.ASSetPropFlags(游戏世界, ["deadbody"], 1, true);
+    _global.ASSetPropFlags(游戏世界, ["deadbody"], 1, false);
 
     // 绘制地图碰撞箱
     var 地图碰撞箱数组 = 环境信息.地图碰撞箱;
@@ -127,7 +127,7 @@ _root.开启生存模式 = function(模式) {
     游戏世界地图._visible = false;
 
     // 将 '地图' 设置为不可枚举
-    _global.ASSetPropFlags(游戏世界, ["地图"], 1, true);
+    _global.ASSetPropFlags(游戏世界, ["地图"], 1, false);
 
     // 确定左右刷怪线
     if (环境信息.左侧出生线) {
@@ -171,7 +171,7 @@ _root.开启生存模式 = function(模式) {
     游戏世界.出生地.是否从门加载角色();
     
     // 将 '出生地' 设置为不可枚举
-    _global.ASSetPropFlags(游戏世界, ["出生地"], 1, true);
+    _global.ASSetPropFlags(游戏世界, ["出生地"], 1, false);
 
     // 放置地图元件
     var 实例列表 = _root.无限过图实例[_root.无限过图模式关卡计数];

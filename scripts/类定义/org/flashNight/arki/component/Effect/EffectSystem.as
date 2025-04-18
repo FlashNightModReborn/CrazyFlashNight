@@ -59,7 +59,7 @@ class org.flashNight.arki.component.Effect.EffectSystem
         currentScreenEffectCount = 0;
 
         // 设置 effectPools 为不可枚举，防止意外遍历和修改
-        _global.ASSetPropFlags(gameWorld, ["effectPools"], 1, true);
+        _global.ASSetPropFlags(gameWorld, ["effectPools"], 1, false);
         initialized = true;
     }
 

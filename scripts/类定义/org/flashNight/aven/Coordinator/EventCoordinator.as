@@ -93,7 +93,7 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             };
 
             // 让刚才挂载的这个属性变为“不可枚举”
-            _global.ASSetPropFlags(target, [eventName], 1, true);
+            _global.ASSetPropFlags(target, [eventName], 1, false);
 
             // 如果事件不是 "onUnload"，则设置自动清理逻辑
             if (eventName != "onUnload") {
@@ -260,8 +260,8 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             if (typeof userUnload == "function") {
                 userUnload.apply(this);
             }
-            
-            _global.ASSetPropFlags(target, ["onUnload"], 1, true);
+
+            _global.ASSetPropFlags(target, ["onUnload"], 1, false);
             trace("onUnload 已执行并清理所有事件监听器。");
         };
 
@@ -306,12 +306,12 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             // 使用 ASSetPropFlags 防止 __EC_uid__ 被枚举或删除，增强兼容性
             // 当前环境默认不需要考虑超低版本的flashplayer的支持
 
-            _global.ASSetPropFlags(target, ["__EC_uid__"], 1, true);
+            _global.ASSetPropFlags(target, ["__EC_uid__"], 1, false);
 
             /*
 
             if (_global.ASSetPropFlags) {
-                _global.ASSetPropFlags(target, ["__EC_uid__"], 1, true);
+                _global.ASSetPropFlags(target, ["__EC_uid__"], 1, false);
             }
 
             */
