@@ -617,7 +617,7 @@ _root.帧计时器.添加循环任务(BulletFactory.resetCount, 1000 * 60 * 5); 
 
 
 EventBus.getInstance().subscribe("SceneChanged", function() {
-	_root.服务器.发布服务器消息("准备清理地图信息")
+	// _root.服务器.发布服务器消息("准备清理地图信息")
 	_root.帧计时器.添加或更新任务(_root.gameworld, "ASSetPropFlags", function() {
 		var arr:Array = [   "效果", 
 							"子弹区域", 
