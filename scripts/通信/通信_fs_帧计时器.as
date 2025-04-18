@@ -614,3 +614,43 @@ var 检测在线奖励 = function(){
 _root.在线时间计数 = 0;
 _root.帧计时器.添加任务(检测在线奖励, 300000, 24); // 每5分钟检测一次，共24次
 _root.帧计时器.添加循环任务(BulletFactory.resetCount, 1000 * 60 * 5); // 每5分钟重置一次子弹深度计数
+
+
+EventBus.getInstance().subscribe("SceneChanged", function() {
+	_root.服务器.发布服务器消息("准备清理地图信息")
+	_root.帧计时器.添加或更新任务(_root.gameworld, "ASSetPropFlags", function() {
+		var arr:Array = [   "效果", 
+							"子弹区域", 
+							"已更新天气",
+							"动画",
+							"背景",
+							"地图",
+							"出生地",
+							"deadbody",
+							"允许通行"
+		]
+
+        /*
+		_root.服务器.发布服务器消息("开始清理地图信息")
+
+		for(var each in _root.gameworld) {
+			_root.服务器.发布服务器消息("key " + each)
+		}
+
+		for(var i:Number = 0; i < arr.length; i++) {
+			if(_root.gameworld[arr[i]]) {
+				_global.ASSetPropFlags(_root.gameworld, [arr[i]], 1, false);
+				_root.服务器.发布服务器消息("ASSetPropFlags " + arr[i])
+			}
+		}
+
+		for(var each in _root.gameworld) {
+			_root.服务器.发布服务器消息("key " + each)
+		}
+
+        _root.服务器.发布服务器消息("结束清理地图信息");
+
+        */
+        _global.ASSetPropFlags(_root.gameworld, arr, 1, false);
+	}, 5000)
+}, null); // 地图变动时，将需要设置的部件设置成不可枚举以避免进入遍历范围

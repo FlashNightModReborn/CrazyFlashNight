@@ -24,18 +24,6 @@ _root.add2map = _root.add2map2 = DeathEffectRenderer.renderCorpse;
 _root.add2map3 = DeathEffectRenderer.renderRotatedCorpse;
 
 
-EventBus.getInstance().subscribe("SceneChanged", function() {
-	var arr:Array = ["效果", 
-					 "子弹区域", 
-					 "已更新天气",
-					 "动画",
-					 "背景",
-					 "地图",
-					 "出生地",
-					 "deadbody"
-					 ]
-	_global.ASSetPropFlags(_root.gameworld, arr, 1, false);
-}, null); // 地图变动时，将需要设置的部件设置成不可枚举以避免进入遍历范围
 
 
 _root.贴背景图 = function(){
