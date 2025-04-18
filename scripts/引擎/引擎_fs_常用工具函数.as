@@ -1,4 +1,6 @@
-﻿// 确保_root上有常用工具函数对象
+﻿import org.flashNight.aven.Coordinator.*;
+
+// 确保_root上有常用工具函数对象
 if (_root.常用工具函数 == undefined)
 {
 	_root.常用工具函数 = new Object();
@@ -437,22 +439,10 @@ _root.常用工具函数.补零到宽度 = function(数字, 宽度):String
     return zeroes + str;
 };
 
-_root.常用工具函数.设置卸载回调 = function(对象, 动作函数) 
-{
-    // 检查是否已有原始卸载集合，如果没有则创建
-    if (!对象.原始卸载集合) {
-        对象.原始卸载集合 = [];
-        var 原始卸载函数 = 对象.onUnload;
-        对象.onUnload = function() 
-		{
-            for (var i = 0; i < this.原始卸载集合.length; i++) 
-			{
-                this.原始卸载集合[i].apply(this);
-            }
-            if (原始卸载函数) 原始卸载函数.apply(this);
-        };
-    }
-
-    // 添加动作函数到原始卸载集合
-    对象.原始卸载集合.push(动作函数);
+// 在全局工具对象中，用 EventCoordinator 包装设置卸载回调
+_root.常用工具函数.设置卸载回调 = function(对象:Object, 动作函数:Function):String {
+    // addUnloadCallback 是 EventCoordinator 动态生成的快捷方法，
+    // 它会在内部为 target.onUnload 注册一个监听并保证可多次触发，
+    // 同时自动管理原生 onUnload 的调用时机、清理逻辑等。
+    return EventCoordinator.addUnloadCallback(对象, 动作函数);
 };

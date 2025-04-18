@@ -44,7 +44,7 @@ _root.贴背景图 = function(){
 	}
 
 	游戏世界.已更新天气 = false;
-	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域"], 1, true);
+	_global.ASSetPropFlags(游戏世界, ["效果", "子弹区域", "已更新天气"], 1, true);
 
 	//
 	var 地图 = 游戏世界.地图;
@@ -176,6 +176,7 @@ _root.加载场景背景 = function (动画名){
 		背景层.已更新环境配置 = true;
 	}
 	游戏世界.场景背景url = "flashswf/backgrounds/" + url;
+	_global.ASSetPropFlags(游戏世界, ["场景背景url"], 1, true);
 	loadMovie(游戏世界.场景背景url, 背景层.外部动画加载壳mc);
 	if(环境配置.背景元素){
 		for(var i = 0; i < 环境配置.背景元素.length; i++){

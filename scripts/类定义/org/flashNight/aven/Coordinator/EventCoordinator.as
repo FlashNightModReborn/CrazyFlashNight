@@ -92,6 +92,9 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
                 }
             };
 
+            // 让刚才挂载的这个属性变为“不可枚举”
+            _global.ASSetPropFlags(target, [eventName], 1, true);
+
             // 如果事件不是 "onUnload"，则设置自动清理逻辑
             if (eventName != "onUnload") {
                 // 确保只为每个目标对象设置一次自动清理标记
@@ -257,7 +260,8 @@ class org.flashNight.aven.Coordinator.EventCoordinator {
             if (typeof userUnload == "function") {
                 userUnload.apply(this);
             }
-
+            
+            _global.ASSetPropFlags(target, ["onUnload"], 1, true);
             trace("onUnload 已执行并清理所有事件监听器。");
         };
 
