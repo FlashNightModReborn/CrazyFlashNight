@@ -239,16 +239,12 @@
         <lineOpacity>70</lineOpacity>
     </style>
     <style name="爪豪闪光">
-        <!-- 纯白核心，突出闪光感 -->
-        <color>0xFFFFFF</color>
-        <!-- 柔和淡蓝边缘，仅作轻微色调提升 -->
-        <lineColor>0xCCEEFF</lineColor>
-        <!-- 细一点的线宽，更像细碎火花 -->
-        <lineWidth>2</lineWidth>
-        <!-- 核心填充透明度低，仅留一丝雾状余晖 -->
-        <fillOpacity>20</fillOpacity>
-        <!-- 边缘高不透明度，强调火花轮廓 -->
-        <lineOpacity>100</lineOpacity>
+        <color>0xFFFF33</color>
+        <lineColor>0xFFD700</lineColor>
+        <lineWidth>4</lineWidth>
+        <fillOpacity>90</fillOpacity>
+        <lineOpacity>70</lineOpacity>
+        <shadowCount>40</shadowCount>
     </style>
     <style name="科技白蓝光">
         <color>0xFFFFFF</color>        <!-- 内部主色：能量核心白 -->
