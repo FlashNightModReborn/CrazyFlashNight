@@ -238,12 +238,24 @@
         <fillOpacity>50</fillOpacity>
         <lineOpacity>70</lineOpacity>
     </style>
+    <style name="爪豪闪光">
+        <!-- 纯白核心，突出闪光感 -->
+        <color>0xFFFFFF</color>
+        <!-- 柔和淡蓝边缘，仅作轻微色调提升 -->
+        <lineColor>0xCCEEFF</lineColor>
+        <!-- 细一点的线宽，更像细碎火花 -->
+        <lineWidth>2</lineWidth>
+        <!-- 核心填充透明度低，仅留一丝雾状余晖 -->
+        <fillOpacity>20</fillOpacity>
+        <!-- 边缘高不透明度，强调火花轮廓 -->
+        <lineOpacity>100</lineOpacity>
+    </style>
     <style name="科技白蓝光">
-        <color>0xFFFFFF</color>             <!-- 内部主色：能量核心白 -->
-        <lineColor>0x4EC9FF</lineColor>     <!-- 边缘发光色：偏电蓝/青蓝，和护手色呼应 -->
-        <lineWidth>3</lineWidth>            <!-- 略微粗一些，突出轮廓感 -->
-        <fillOpacity>80</fillOpacity>       <!-- 让能量感更明显 -->
-        <lineOpacity>70</lineOpacity>       <!-- 发光外轮廓稍弱，避免抢镜 -->
+        <color>0xFFFFFF</color>        <!-- 内部主色：能量核心白 -->
+        <lineColor>0x4EC9FF</lineColor>        <!-- 边缘发光色：偏电蓝/青蓝，和护手色呼应 -->
+        <lineWidth>3</lineWidth>        <!-- 略微粗一些，突出轮廓感 -->
+        <fillOpacity>80</fillOpacity>        <!-- 让能量感更明显 -->
+        <lineOpacity>70</lineOpacity>        <!-- 发光外轮廓稍弱，避免抢镜 -->
     </style>
 
 </trailStyles>

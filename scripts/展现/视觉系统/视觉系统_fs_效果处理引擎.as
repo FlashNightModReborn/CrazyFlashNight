@@ -502,9 +502,3 @@ _root.HSVtoRGB = function(h, s, v)
 	}
 	return (Math.round(r * 255) << 16) | (Math.round(g * 255) << 8) | Math.round(b * 255);
 }
-
-
-
-_root.绘制线框 = function(mc:MovieClip) {
-    ClipFrameRenderer.renderClipFrame(mc);
-};

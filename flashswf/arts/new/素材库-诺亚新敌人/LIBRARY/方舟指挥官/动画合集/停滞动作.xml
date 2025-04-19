@@ -362,11 +362,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="头" color="#FF800A" autoNamed="false">
+        <DOMLayer name="头" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="24" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/头" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/头" selected="true" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="-0.38629150390625" b="0.0288238525390625" c="0.0289764404296875" d="0.3857421875" tx="70.85" ty="9.25"/>
                   </matrix>
@@ -642,11 +642,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="刀炮" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="刀炮" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="24" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="方舟指挥官/素材合集/刀炮" symbolType="graphic" loop="loop">
                   <matrix>
                     <Matrix a="0.375808715820313" b="0.650772094726563" c="0.553482055664063" d="-0.319656372070313" tx="77.15" ty="64.25"/>
                   </matrix>

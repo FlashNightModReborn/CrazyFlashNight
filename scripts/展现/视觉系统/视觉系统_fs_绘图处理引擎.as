@@ -108,16 +108,15 @@ _root.绘图引擎.绘制形状 = function(影片剪辑:MovieClip, 点集:Array,
 };
 
 
-_root.绘图引擎.绘制线框 = function(影片剪辑:MovieClip) {
-    if (影片剪辑) {
-        var rect:Object = 影片剪辑.getRect(影片剪辑);
+_root.绘图引擎.渲染线框 = function(mc:MovieClip):Void {
+    // 参数 mc：要渲染边框的 MovieClip
+    // 调用 ClipFrameRenderer.renderClipFrame 实现
+    org.flashNight.arki.render.ClipFrameRenderer.renderClipFrame(mc);
+};
 
-        // 调用通用的绘制四边形函数
-        _root.绘图引擎.绘制四边形(
-            影片剪辑,
-            rect.xMin, rect.yMin,
-            rect.xMax, rect.yMax,
-            0xFF0000, 1, 100, true // 红色线条，1像素宽，100% 不透明度，清除现有内容
-        );
-    }
+// 2. 渲染动态残影
+_root.绘图引擎.渲染残影 = function(mc:MovieClip, style:String):Void {
+    // 参数 mc：要渲染残影的 MovieClip
+    //       style：传入给 TrailRenderer 的样式标识
+    org.flashNight.arki.render.ClipFrameRenderer.renderClipTrail(mc, style);
 };

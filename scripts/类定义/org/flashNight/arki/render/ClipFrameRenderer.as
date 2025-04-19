@@ -1,6 +1,7 @@
 ﻿import org.flashNight.sara.util.Vector;
 import org.flashNight.arki.render.VectorAfterimageRenderer;
 import org.flashNight.arki.render.TrailRenderer;
+import org.flashNight.naki.DataStructures.Dictionary;
 
 /**
  * ClipFrameRenderer 影片剪辑边框与残影渲染器
@@ -156,9 +157,8 @@ class org.flashNight.arki.render.ClipFrameRenderer {
         trail.push({ edge1: c.p3, edge2: c.p0 });
         trail.push({ edge1: c.p2, edge2: c.p1 });
 
-        var key:String = mc._name + (mc.version != undefined ? mc.version : "");
         var tr:TrailRenderer = TrailRenderer.getInstance();
-        tr.addTrailData(key, trail, style);
+        tr.addTrailData(String(Dictionary.getStaticUID(mc)), trail, style);
     }
 
     // ---------------------------
@@ -190,9 +190,8 @@ class org.flashNight.arki.render.ClipFrameRenderer {
         trail.push({ edge1: p1c, edge2: p2c });
         trail.push({ edge1: p2c, edge2: p3c });
 
-        var key:String = mc._name + (mc.version != undefined ? mc.version : "");
         var tr:TrailRenderer = TrailRenderer.getInstance();
-        tr.addTrailData(key, trail, style);
+        tr.addTrailData(String(Dictionary.getStaticUID(mc)), trail, style);
     }
 
     // ---------------------------
@@ -228,9 +227,8 @@ class org.flashNight.arki.render.ClipFrameRenderer {
         trail.push({ edge1: p0c,   edge2: p2c   });
         trail.push({ edge1: mid01, edge2: mid23 });
 
-        var key:String = mc._name + (mc.version != undefined ? mc.version : "");
         var tr:TrailRenderer = TrailRenderer.getInstance();
-        tr.addTrailData(key, trail, style);
+        tr.addTrailData(String(Dictionary.getStaticUID(mc)), trail, style);
     }
 
 }

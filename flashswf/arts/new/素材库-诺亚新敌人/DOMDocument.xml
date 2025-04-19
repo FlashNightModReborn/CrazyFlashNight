@@ -768,7 +768,7 @@
           <Include href="方舟指挥官/素材合集/上臂.xml" itemIcon="1" loadImmediate="false" itemID="65a3e0a6-0000020c" lastModified="1705238694"/>
           <Include href="方舟指挥官/素材合集/上挑刀光1.xml" loadImmediate="false" itemID="65a4e86c-00000a6f" lastModified="1705306220"/>
           <Include href="方舟指挥官/素材合集/踢风1.xml" loadImmediate="false" itemID="65a53387-00000e24" lastModified="1705325448"/>
-          <Include href="方舟指挥官/素材合集/头.xml" itemIcon="1" loadImmediate="false" itemID="65a3df63-000001fa" lastModified="1705500750"/>
+          <Include href="方舟指挥官/素材合集/头.xml" itemIcon="1" loadImmediate="false" itemID="65a3df63-000001fa" lastModified="1745067501"/>
           <Include href="方舟指挥官/素材合集/小腿.xml" itemIcon="1" loadImmediate="false" itemID="65a3e07f-00000204" lastModified="1705238655"/>
           <Include href="方舟指挥官/素材合集/鞋子.xml" itemIcon="1" loadImmediate="false" itemID="65a3e06a-00000200" lastModified="1705238634"/>
           <Include href="方舟指挥官/素材合集/胸口.xml" itemIcon="1" loadImmediate="false" itemID="65a3e09c-0000020a" lastModified="1705238684"/>
@@ -1005,6 +1005,7 @@
           <Include href="通用ai元件/行走ai载体 副本.xml" loadImmediate="false" itemID="673849ad-0000208b" lastModified="1705928955"/>
           <Include href="通用ai元件/逻辑ai详情元件.xml" loadImmediate="false" itemID="661d2b89-00000c4c" lastModified="1705929134"/>
           <Include href="通用ai元件/逻辑ai详情元件 副本.xml" loadImmediate="false" itemID="673849ad-0000208a" lastModified="1705929134"/>
+          <Include href="爪豪发光点.xml" loadImmediate="false" itemID="68039ded-0000390c" lastModified="1745068556"/>
      </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
@@ -1016,7 +1017,7 @@
                                         <script><![CDATA[stop();]]></script>
                                    </Actionscript>
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="素材库-诺亚新敌人" centerPoint3DX="83.5" centerPoint3DY="25.8">
+                                        <DOMSymbolInstance libraryItemName="素材库-诺亚新敌人" selected="true" centerPoint3DX="83.5" centerPoint3DY="25.8">
                                              <transformationPoint>
                                                   <Point x="2.4" y="1.5"/>
                                              </transformationPoint>
@@ -1369,6 +1370,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1566388" publishTime="1745068019"/>
           <PublishItem publishSize="1564247" publishTime="1740496350"/>
           <PublishItem publishSize="1565421" publishTime="1739350670"/>
           <PublishItem publishSize="1570873" publishTime="1739350342"/>
@@ -1388,6 +1390,5 @@
           <PublishItem publishSize="1682185" publishTime="1731827167"/>
           <PublishItem publishSize="1682189" publishTime="1731827112"/>
           <PublishItem publishSize="1682186" publishTime="1731826791"/>
-          <PublishItem publishSize="1682310" publishTime="1731826587"/>
      </publishHistory>
 </DOMDocument>

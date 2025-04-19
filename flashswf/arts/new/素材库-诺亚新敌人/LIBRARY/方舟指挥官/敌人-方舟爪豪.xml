@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="方舟指挥官/敌人-方舟爪豪" itemID="65aa1d34-00000748" linkageExportForAS="true" linkageIdentifier="敌人-方舟爪豪" lastModified="1739350163" lastUniqueIdentifier="27">
   <timeline>
-    <DOMTimeline name="敌人-方舟爪豪" currentFrame="63">
+    <DOMTimeline name="敌人-方舟爪豪">
       <layers>
         <DOMLayer name="label" color="#9933CC" locked="true" autoNamed="false">
           <frames>
@@ -43,7 +43,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="as" color="#FF800A" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -383,11 +383,11 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 1" color="#4FFF4F">
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="方舟指挥官/动画合集/停滞动作" centerPoint3DX="-4.55" centerPoint3DY="-84.85">
+                <DOMSymbolInstance libraryItemName="方舟指挥官/动画合集/停滞动作" selected="true" centerPoint3DX="-4.55" centerPoint3DY="-84.85">
                   <matrix>
                     <Matrix tx="-55.9" ty="-171.5"/>
                   </matrix>
