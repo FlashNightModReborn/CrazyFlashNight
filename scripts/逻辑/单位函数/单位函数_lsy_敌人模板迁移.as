@@ -153,7 +153,6 @@ _root.敌人函数.移动钝感硬直 = function(时间) {
 };
 
 _root.敌人函数.随机掉钱 = function(){
-	if(this.影子单位 || this.色彩单位) return;
 	if (!this.不掉钱 && random(_root.打怪掉钱机率) === 0){
 		var 金币时间倍率 = _root.天气系统.金币时间倍率;
 		//_root.发布消息("金币时间倍率" + 金币时间倍率);
@@ -223,7 +222,6 @@ _root.敌人函数.死亡检测 = function(){
 
 _root.敌人函数.掉落物判定 = function(){
 	if(!掉落物) return;
-	if(this.影子单位 || this.色彩单位) return;
 	if(掉落物.length > 0){
 		for(var i = 掉落物.length - 1; i > -1; i--){
 			掉落物品(掉落物[i]);
@@ -424,8 +422,12 @@ _root.初始化敌人模板 = function(){
 		this.影子倍率 = this.影子倍率? this.影子倍率 : 0;
 		this.透明倍率 =  this.透明倍率? this.透明倍率 : 0.7;
 		_root.设置色彩(this,this.影子倍率,this.影子倍率,this.影子倍率,NaN,NaN,NaN,this.透明倍率,0);
+		this.不掉钱 = true;
+		this.掉落物 = [];
 	}else if(this.色彩单位){
 		_root.设置色彩(this,this.红色乘数,this.绿色乘数,this.蓝色乘数,this.红色偏移,this.绿色偏移,this.蓝色偏移,this.透明乘数,this.透明偏移);
+		this.不掉钱 = true;
+		this.掉落物 = [];
 	}
 		
 	//初始化完毕
