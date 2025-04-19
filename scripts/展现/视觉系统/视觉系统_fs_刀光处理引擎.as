@@ -27,7 +27,8 @@ _root.刀光系统.清理内存 = function(forceCleanAll:Boolean, maxInactiveFra
 };
 
 var trailRenderer:TrailRenderer = TrailRenderer.getInstance();
-trailRenderer.initStyles();
 EventBus.getInstance().subscribe("SceneChanged", trailRenderer.cleanMemory, trailRenderer); 
 EventBus.getInstance().subscribe("SceneChanged", VectorAfterimageRenderer.instance.onSceneChanged
 , VectorAfterimageRenderer.instance); 
+var trailStyleManager:TrailStyleManager = TrailStyleManager.getInstance();
+trailStyleManager.loadStyles();
