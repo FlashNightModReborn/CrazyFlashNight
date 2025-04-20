@@ -723,9 +723,8 @@ _root.战宠进阶函数.涅槃重生 = {
 	},
 	单位进阶执行:function(){
 		if(this.宠物属性.涅槃重生){
-			this.空手攻击力 += 20 * _root.难度等级;
+			this.空手攻击力 += 10 * _root.难度等级;
 			this.hp满血值 *= 2;
-			this.hp = 1300;
 			this.称号 =  _root.战宠进阶函数.涅槃重生.称号;
 			this.已有称号 =  true;
 		}
