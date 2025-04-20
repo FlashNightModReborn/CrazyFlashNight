@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="素材/武器/排骨的podbyrin" itemID="6800f790-00001969" lastModified="1744893840" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="排骨的podbyrin">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="素材/武器/Podbyrin 9.2 mm" selected="true" centerPoint3DX="9.25" centerPoint3DY="19.5">
+                  <matrix>
+                    <Matrix a="0" b="0.297744750976563" c="-0.297744750976563" d="0" tx="18.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="63.15" y="31.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

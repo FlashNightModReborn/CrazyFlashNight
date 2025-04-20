@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1741946204" lastUniqueIdentifier="205">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="选关界面UI/选关界面 1024*576" itemID="663b46a2-000023af" linkageExportForAS="true" linkageIdentifier="选关界面" lastModified="1745166945" lastUniqueIdentifier="206">
   <timeline>
-    <DOMTimeline name="选关界面 1024*576">
+    <DOMTimeline name="选关界面 1024*576" currentFrame="25">
       <layers>
         <DOMLayer name="Labels Layer" color="#5E5DCA">
           <frames>
@@ -1208,7 +1208,7 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" selected="true" centerPoint3DX="483.45" centerPoint3DY="319.85">
+                <DOMSymbolInstance libraryItemName="选关界面UI/选关按钮" centerPoint3DX="483.45" centerPoint3DY="319.85">
                   <matrix>
                     <Matrix tx="232.45" ty="96.75"/>
                   </matrix>
@@ -1938,7 +1938,7 @@ on (release) {
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/桶10" name="桶10" selected="true" centerPoint3DX="346.05" centerPoint3DY="119.05">
+                <DOMSymbolInstance libraryItemName="选关界面UI/桶10" name="桶10" centerPoint3DX="346.05" centerPoint3DY="119.05">
                   <matrix>
                     <Matrix tx="300.45" ty="108.55"/>
                   </matrix>
@@ -2062,6 +2062,21 @@ on(rollOver){
 	_parent.凤凰16._visible = 0;
    this._visible = 0;
 }]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-同盟外交站" selected="true" centerPoint3DX="119.3" centerPoint3DY="349.95">
+                  <matrix>
+                    <Matrix tx="119.3" ty="220.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="129.3"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   this.配置关卡属性 = _root.配置关卡属性;
+   this.配置关卡属性("同盟卸货站");
+}
+]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
               </elements>
@@ -2260,7 +2275,7 @@ onClipEvent(load){
 ]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-军阀基地" selected="true" centerPoint3DX="512.45" centerPoint3DY="468.2">
+                <DOMSymbolInstance libraryItemName="选关界面UI/外交地图-军阀基地" centerPoint3DX="512.45" centerPoint3DY="468.2">
                   <matrix>
                     <Matrix tx="261.45" ty="245.1"/>
                   </matrix>

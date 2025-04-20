@@ -1,30 +1,33 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火炮炮弹" itemID="6655f64b-0000391e" linkageExportForAS="true" linkageIdentifier="火炮炮弹" lastModified="1739243661">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火炮炮弹" itemID="6655f64b-0000391e" linkageExportForAS="true" linkageIdentifier="火炮炮弹" lastModified="1745173461">
   <timeline>
     <DOMTimeline name="火炮炮弹">
       <layers>
         <DOMLayer name="Labels Layer" color="#DF08CC">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" duration="100" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="100" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" duration="9" name="消失" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#E777E2" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#E777E2">
           <frames>
-            <DOMFrame index="0" keyMode="9728">
+            <DOMFrame index="0" duration="100" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="1" keyMode="9728">
+            <DOMFrame index="100" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="9728">
+            <DOMFrame index="101" duration="9" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[声音 = "";
 霰弹值 = 1;
@@ -65,7 +68,7 @@ this.removeMovieClip();
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#E879EC">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 478" centerPoint3DY="-18">
                   <matrix>
@@ -77,16 +80,16 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" duration="9" keyMode="9728">
+            <DOMFrame index="101" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#D0F71D">
+        <DOMLayer name="Layer 4" color="#D0F71D" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 13" name="area">
+                <DOMSymbolInstance libraryItemName="Symbol 13" name="area" selected="true">
                   <matrix>
                     <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
                   </matrix>
@@ -126,14 +129,14 @@ this.removeMovieClip();
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" duration="9" keyMode="9728">
+            <DOMFrame index="101" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="图层 1" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" duration="2" keyMode="9728">
+            <DOMFrame index="0" duration="101" keyMode="9728">
               <elements>
                 <DOMGroup>
                   <members>
@@ -322,7 +325,7 @@ this.removeMovieClip();
                 </DOMGroup>
               </elements>
             </DOMFrame>
-            <DOMFrame index="2" duration="9" keyMode="9728">
+            <DOMFrame index="101" duration="9" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>

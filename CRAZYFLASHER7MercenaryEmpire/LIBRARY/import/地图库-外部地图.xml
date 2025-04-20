@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1742202801" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/地图库-外部地图" itemID="65c79a79-00000dc4" lastModified="1745165998" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="地图库-外部地图" currentFrame="15">
+    <DOMTimeline name="地图库-外部地图" currentFrame="16">
       <layers>
         <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
           <frames>
@@ -174,6 +174,18 @@
                   </matrix>
                   <transformationPoint>
                     <Point x="52" y="40.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="import/外部地图/地图-同盟卸货站" selected="true" centerPoint3DX="10.5" centerPoint3DY="4.95">
+                  <matrix>
+                    <Matrix tx="-150" ty="-27"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="160.5" y="31.95"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1742201276" lastUniqueIdentifier="42">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="地图-彩蛋地图" itemID="660112d4-00000ccf" linkageExportForAS="true" linkageIdentifier="地图-彩蛋地图" lastModified="1745164278" lastUniqueIdentifier="45">
   <timeline>
     <DOMTimeline name="地图-彩蛋地图">
       <layers>
-        <DOMLayer name="as" color="#FF800A" autoNamed="false">
+        <DOMLayer name="as" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -44,7 +44,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="PC" color="#FF800A" autoNamed="false">
+        <DOMLayer name="PC" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -66,20 +66,52 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="文天" color="#FF800A" autoNamed="false">
+        <DOMLayer name="文天" color="#FF800A" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="元件 1" centerPoint3DX="1193.2" centerPoint3DY="539.05">
+                <DOMSymbolInstance libraryItemName="面包机" selected="true" centerPoint3DX="1192.2" centerPoint3DY="536.05">
                   <matrix>
-                    <Matrix tx="1155.45" ty="458"/>
+                    <Matrix tx="1154.45" ty="455"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="37.75" y="77.95"/>
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	名字 = "文天";
+	名字 = "机哥";
+	身高 = 175;
+	性别 = "男";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="假兰博" selected="true" centerPoint3DX="1258.7" centerPoint3DY="461">
+                  <matrix>
+                    <Matrix tx="1256" ty="514"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.8" y="-53"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "阿波";
+	身高 = 175;
+	性别 = "男";
+	_root.初始化NPC(this);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="假州长" selected="true" centerPoint3DX="1108.7" centerPoint3DY="445.5">
+                  <matrix>
+                    <Matrix tx="1106" ty="498.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.8" y="-53"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+	名字 = "排骨";
 	身高 = 175;
 	性别 = "男";
 	_root.初始化NPC(this);
@@ -90,7 +122,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="诺艾尔" color="#9933CC" autoNamed="false">
+        <DOMLayer name="诺艾尔" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -117,7 +149,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="歌留多" color="#9933CC" autoNamed="false">
+        <DOMLayer name="歌留多" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -149,7 +181,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="士力架npc" color="#9933CC" autoNamed="false">
+        <DOMLayer name="士力架npc" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -173,7 +205,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="霜精奸商" color="#9933CC" autoNamed="false">
+        <DOMLayer name="霜精奸商" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -207,7 +239,7 @@ _root.配置场景环境信息();]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="门" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -232,7 +264,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="门提示" color="#9933CC" autoNamed="false">
+        <DOMLayer name="门提示" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -248,7 +280,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="出生点" color="#FF4FFF" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="出生点" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -273,7 +305,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="碰撞" color="#4FFFFF" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="碰撞" color="#4FFFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -289,7 +321,7 @@ onClipEvent(load){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="尸体层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="尸体层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>

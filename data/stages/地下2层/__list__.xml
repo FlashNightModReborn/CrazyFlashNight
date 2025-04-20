@@ -64,4 +64,12 @@
         <UnlockCondition>77</UnlockCondition>
         <Description>诺亚在A兵团附近建立了一个前线基地，看来所谋必大。</Description>
     </StageInfo>
+	    <StageInfo>
+        <Type>外交地图</Type>
+        <Name>同盟卸货站</Name>
+        <UnlockCondition>1</UnlockCondition>
+        <Description>前往节点同盟的外交枢纽。</Description>
+        <RootFadeTransitionFrame>地图-同盟卸货站</RootFadeTransitionFrame>
+        <Address>出生地</Address>
+    </StageInfo>
     </Stages>

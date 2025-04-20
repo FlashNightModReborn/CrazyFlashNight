@@ -37,7 +37,7 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC">
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
@@ -53,11 +53,11 @@ Z轴坐标 = this._y;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#16E0F5" current="true" isSelected="true">
+        <DOMLayer name="Layer 3" color="#16E0F5">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 2363" name="文字信息" selected="true" centerPoint3DX="65.4" centerPoint3DY="-516.15">
+                <DOMSymbolInstance libraryItemName="Symbol 2363" name="文字信息" centerPoint3DX="65.4" centerPoint3DY="-516.15">
                   <matrix>
                     <Matrix a="-3.60452270507813" d="3.62542724609375" tx="13.4" ty="-539.75"/>
                   </matrix>
