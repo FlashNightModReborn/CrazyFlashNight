@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1745151359" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1745157774" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-粉红头发御姐">
+    <DOMTimeline name="敌人-粉红头发御姐" currentFrame="71">
       <layers>
-        <DOMLayer name="Labels Layer" color="#77AB72" outline="true" useOutlineView="true">
+        <DOMLayer name="Script Layer" color="#77AB72" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -187,11 +187,11 @@ function Phoenix()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变身图层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="变身图层" color="#9933CC" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 17" name="变身控制块" selected="true" centerPoint3DX="65.55" centerPoint3DY="-1.65">
+                <DOMSymbolInstance libraryItemName="Symbol 17" name="变身控制块" centerPoint3DX="65.55" centerPoint3DY="-1.65">
                   <matrix>
                     <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-85.95" ty="-153.15"/>
                   </matrix>
@@ -775,56 +775,65 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.击倒呐喊();
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
+                    <script><![CDATA[onClipEvent (load) {
+	if (_parent.hp > 0 && _parent.宠物属性.涅槃重生)
+	{
+		_parent.状态改变("被击");
+	}
+	else
+	{
+		_parent.击倒呐喊();
+		_parent.浮空 = true;
+		gotoAndPlay(_parent.攻击模式);
+	}
 }
-onClipEvent(unload){
-   _parent.浮空 = false;
+onClipEvent (unload) {
+	_parent.浮空 = false;
 }
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
+onClipEvent (load) {
+	落地 = false;
+	垂直速度 = _parent.起跳速度;
+	起始Y = _parent._y;
+	this.onEnterFrame = function()
+	{
+		if (_parent.硬直中 == false)
+		{
+			_parent._y += 垂直速度;
+			垂直速度 += _root.重力加速度;
+			if (_parent._y >= _parent.Z轴坐标)
+			{
+				_parent._y = 起始Y;
+				落地 = true;
+				delete this.onEnterFrame;
+				_parent.状态改变("倒地");
+			}
+		}
+	};
 }
-onClipEvent(enterFrame){
-   if(_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
-   {
-      _parent.hp += 17;
-   }
-   else if(_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
-   {
-      if(_parent.变身阶段 == 1)
-      {
-         if(_parent.宠物属性.涅槃重生){
-			_parent.hp += 17;
-		 }else{
-		 	_parent.hp -= _parent.hp满血值 / 3600;
-		 }
-      }
-      else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
-      {
-         _parent.hp += 105;
-      }
-   }
-}
-]]></script>
+onClipEvent (enterFrame) {
+	if (_parent.已使用兴奋剂 != true and _parent.hp < _parent.hp满血值 and _parent.hp > 0 and _root.暂停 == false)
+	{
+		_parent.hp += 17;
+	}
+	else if (_parent.已使用兴奋剂 == true and _parent.hp > 0 and _root.暂停 == false)
+	{
+		if (_parent.变身阶段 == 1)
+		{
+			if (_parent.宠物属性.涅槃重生)
+			{
+				_parent.hp += 17;
+			}
+			else
+			{
+				_parent.hp -= _parent.hp满血值 / 3600;
+			}
+		}
+		else if (_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
+		{
+			_parent.hp += 105;
+		}
+	}
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>

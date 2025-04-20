@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-铠甲勇士" itemID="66bf53ea-00001781" linkageExportForAS="true" linkageIdentifier="敌人-铠甲勇士" lastModified="1743135110">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-铠甲勇士" itemID="66bf53ea-00001781" linkageExportForAS="true" linkageIdentifier="敌人-铠甲勇士" lastModified="1745157677">
   <timeline>
-    <DOMTimeline name="敌人-铠甲勇士">
+    <DOMTimeline name="敌人-铠甲勇士" currentFrame="98">
       <layers>
         <DOMLayer name="Labels Layer" color="#8748C2">
           <frames>
@@ -90,7 +90,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#E0CDDC">
+        <DOMLayer name="Script Layer" color="#E0CDDC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -152,7 +152,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#D870E8" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#D870E8" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="98" keyMode="9728">
               <elements>
@@ -453,7 +453,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="98" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 734" name="man" selected="true" centerPoint3DX="325.7" centerPoint3DY="-18">
+                <DOMSymbolInstance libraryItemName="Symbol 734" name="man" centerPoint3DX="325.7" centerPoint3DY="-18">
                   <matrix>
                     <Matrix a="-0.97003173828125" d="0.97003173828125" tx="84.65" ty="-166.9"/>
                   </matrix>

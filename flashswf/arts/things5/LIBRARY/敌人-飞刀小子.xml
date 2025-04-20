@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-飞刀小子" itemID="67e615ca-000008d7" linkageExportForAS="true" linkageIdentifier="敌人-飞刀小子" lastModified="1743135146" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-飞刀小子" itemID="67e615ca-000008d7" linkageExportForAS="true" linkageIdentifier="敌人-飞刀小子" lastModified="1745157800" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="敌人-飞刀小子">
+    <DOMTimeline name="敌人-飞刀小子" currentFrame="79">
       <layers>
         <DOMLayer name="Labels Layer" color="#E55466">
           <frames>
@@ -158,7 +158,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#B37C5A" current="true" isSelected="true">
+        <DOMLayer name="Layer 5" color="#B37C5A">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -381,7 +381,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 12" color="#FB7BB3">
+        <DOMLayer name="Layer 12" color="#FB7BB3" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
@@ -536,7 +536,7 @@ onClipEvent(unload){
             </DOMFrame>
             <DOMFrame index="79" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 608" name="man" centerPoint3DX="48.6" centerPoint3DY="83.05">
+                <DOMSymbolInstance libraryItemName="Symbol 608" name="man" selected="true" centerPoint3DX="48.6" centerPoint3DY="83.05">
                   <matrix>
                     <Matrix tx="0.4" ty="-1.55"/>
                   </matrix>
@@ -544,35 +544,41 @@ onClipEvent(unload){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.击倒呐喊();
-   _parent.浮空 = true;
-   gotoAndPlay(_parent.攻击模式);
+                    <script><![CDATA[onClipEvent (load) {
+	if (_parent.hp > 0 && _parent.宠物属性.影子刺客)
+	{
+		_parent.状态改变("被击");
+	}
+	else
+	{
+		_parent.击倒呐喊();
+		_parent.浮空 = true;
+		gotoAndPlay(_parent.攻击模式);
+	}
 }
-onClipEvent(unload){
-   _parent.浮空 = false;
+onClipEvent (unload) {
+	_parent.浮空 = false;
 }
-onClipEvent(load){
-   落地 = false;
-   垂直速度 = _parent.起跳速度;
-   起始Y = _parent._y;
-   this.onEnterFrame = function()
-   {
-      if(_parent.硬直中 == false)
-      {
-         _parent._y += 垂直速度;
-         垂直速度 += _root.重力加速度;
-         if(_parent._y >= _parent.Z轴坐标)
-         {
-            _parent._y = 起始Y;
-            落地 = true;
-            delete this.onEnterFrame;
-            _parent.状态改变("倒地");
-         }
-      }
-   };
-}
-]]></script>
+onClipEvent (load) {
+	落地 = false;
+	垂直速度 = _parent.起跳速度;
+	起始Y = _parent._y;
+	this.onEnterFrame = function()
+	{
+		if (_parent.硬直中 == false)
+		{
+			_parent._y += 垂直速度;
+			垂直速度 += _root.重力加速度;
+			if (_parent._y >= _parent.Z轴坐标)
+			{
+				_parent._y = 起始Y;
+				落地 = true;
+				delete this.onEnterFrame;
+				_parent.状态改变("倒地");
+			}
+		}
+	};
+}]]></script>
                   </Actionscript>
                   <filters>
                     <AdjustColorFilter/>

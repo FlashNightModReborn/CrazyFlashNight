@@ -416,6 +416,12 @@ _root.初始化敌人模板 = function(){
 		this.新版人物文字信息._x = 人物文字信息._x;
 		this.新版人物文字信息._y = 人物文字信息._y;
 	}
+		
+	//初始化完毕
+	StaticInitializer.initializeUnit(this);
+	根据等级初始数值(等级);
+	宠物属性初始化();
+	方向改变(方向);
 
 	//应用影子色彩
 	if(this.影子单位){
@@ -429,12 +435,7 @@ _root.初始化敌人模板 = function(){
 		this.不掉钱 = true;
 		this.掉落物 = [];
 	}
-		
-	//初始化完毕
-	StaticInitializer.initializeUnit(this);
-	根据等级初始数值(等级);
-	宠物属性初始化();
-	方向改变(方向);
+	
 	gotoAndStop(状态);
 }
 
