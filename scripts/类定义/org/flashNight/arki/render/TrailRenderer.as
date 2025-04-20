@@ -6,6 +6,7 @@ import org.flashNight.naki.DataStructures.RingBuffer;
 import org.flashNight.arki.render.VectorAfterimageRenderer;
 import org.flashNight.arki.render.TrailStyleManager;
 import org.flashNight.sara.util.*;
+import org.flashNight.naki.Smooth.SmoothingUtil;
 
 /**
  * TrailRenderer
@@ -16,6 +17,7 @@ import org.flashNight.sara.util.*;
  *   - 记录并渲染攻击刀口、子弹运动等动态残影轨迹；
  *   - 支持 4 档画质、历史帧长度限制、Catmull‑Rom 平滑、低画质采样；
  *   - 通过批量绘制接口减少 MovieClip 创建与 beginFill/endFill 频率；
+ *   - 平滑算法由 org.flashNight.naki.Smooth.SmoothingUtil 提供，实现渲染与算法解耦；
  *   - 内置内存清理接口，便于长时间运行下的资源回收。
  *
  * 改动亮点（相对旧版）：
@@ -28,8 +30,11 @@ import org.flashNight.sara.util.*;
  *    TrailStyleManager 支持外部 XML/JSON 加载与运行时 update，
  *    TrailRenderer 无需改动即可接受新样式。
  *
- * 3. **其他逻辑保持不变**  
- *    轨迹采样、阈值判断、RingBuffer 历史帧、平滑算法等性能优化策略原样保留。
+ * 3. **平滑解耦**  
+ *    将平滑相关算法提取到 SmoothingUtil，简化 Renderer，实现单一职责。
+ *
+ * 4. **其他逻辑保持不变**  
+ *    轨迹采样、阈值判断、RingBuffer 历史帧、性能优化策略原样保留。
  *
  * 使用步骤（示例）：
  * ------------------------------------------------------------
@@ -227,13 +232,13 @@ class org.flashNight.arki.render.TrailRenderer
             {
                 if (quality <= 1)
                 {
-                    _catmullRomSmooth(traj.edge1);
-                    _catmullRomSmooth(traj.edge2);
+                    SmoothingUtil.catmullRomSmooth(traj.edge1);
+                    SmoothingUtil.catmullRomSmooth(traj.edge2);
                 }
                 else
                 {
-                    _simpleSmooth(traj.edge1);
-                    _simpleSmooth(traj.edge2);
+                    SmoothingUtil.simpleSmooth(traj.edge1);
+                    SmoothingUtil.simpleSmooth(traj.edge2);
                 }
                 edge1 = traj.edge1.toArray();
                 edge2 = traj.edge2.toArray().reverse();
@@ -305,73 +310,8 @@ class org.flashNight.arki.render.TrailRenderer
     }
 
     // --------------------------
-    // 私有工具：平滑、采样等算法
+    // 私有工具：采样算法
     // --------------------------
-    private function _simpleSmooth(ring:RingBuffer):Void
-    {
-        var pts:Array = ring.toArray();
-        var n:Number  = pts.length;
-        if (n < 3) return;
-
-        for (var k:Number = 1; k < n - 1; k++)
-        {
-            var p0:Object = pts[k - 1], p:Object = pts[k], p1:Object = pts[k + 1];
-            p.x = (p0.x + p.x + p1.x) / 3;
-            p.y = (p0.y + p.y + p1.y) / 3;
-        }
-        ring.reset(pts);
-    }
-
-    private function _catmullRomSmooth(ring:RingBuffer, tension:Number):Void
-    {
-        if (tension == undefined) tension = 0.5;
-
-        var pts:Array = ring.toArray();
-        var n:Number  = pts.length;
-        if (n < 4) return;
-
-        // 带首尾环绕
-        var ptsWrap:Array = [];
-        ptsWrap.push(pts[n-1]);
-        for (var a:Number=0; a<n; a++) ptsWrap.push(pts[a]);
-        ptsWrap.push(pts[0]);
-
-        var newPts:Array   = [];
-        var stepList:Array = [0.25, 0.75];
-
-        for (var i:Number = 1; i < ptsWrap.length - 2; i++)
-        {
-            var p0:Object = ptsWrap[i-1], p1:Object = ptsWrap[i], p2:Object = ptsWrap[i+1], p3:Object = ptsWrap[i+2];
-            var d01:Number = _dist(p0,p1), d12:Number = _dist(p1,p2), d23:Number = _dist(p2,p3);
-            var t01:Number = Math.pow(d01,tension), t12:Number = Math.pow(d12,tension), t23:Number = Math.pow(d23,tension);
-
-            for (var s:Number = 0; s < stepList.length; s++)
-            {
-                var t:Number  = stepList[s], t2:Number = t*t, t3:Number = t2*t;
-                var h1:Number =  2*t3 - 3*t2 + 1;
-                var h2:Number = -2*t3 + 3*t2;
-                var h3:Number =      t3 - 2*t2 + t;
-                var h4:Number =      t3 -     t2;
-
-                var m1x:Number = (p2.x - p1.x) + t12*((p1.x - p0.x)/t01 - (p2.x - p0.x)/(t01 + t12));
-                var m2x:Number = (p2.x - p1.x) + t12*((p3.x - p2.x)/t23 - (p3.x - p1.x)/(t12 + t23));
-                var m1y:Number = (p2.y - p1.y) + t12*((p1.y - p0.y)/t01 - (p2.y - p0.y)/(t01 + t12));
-                var m2y:Number = (p2.y - p1.y) + t12*((p3.y - p2.y)/t23 - (p3.y - p1.y)/(t12 + t23));
-
-                var nx:Number = h1*p1.x + h2*p2.x + h3*m1x + h4*m2x;
-                var ny:Number = h1*p1.y + h2*p2.y + h3*m1y + h4*m2y;
-                newPts.push({x:nx, y:ny});
-            }
-        }
-        ring.reset(newPts);
-    }
-
-    private function _dist(a:Object,b:Object):Number
-    {
-        var dx:Number = a.x-b.x, dy:Number = a.y-b.y;
-        return Math.sqrt(dx*dx + dy*dy);
-    }
-
     private function _subsampleEdges(edges:Array, factor:Number):Array
     {
         var out:Array = [];
@@ -405,7 +345,8 @@ class org.flashNight.arki.render.TrailRenderer
     {
         var n:Number = 0;
         for (var id:String in _trackRecords) { delete _trackRecords[id]; n++; }
-        trace("[TrailRenderer] 已清理 "+n+" 个发射者轨迹数据");
+        trace("[TrailRenderer] 已清理 " + n + " 个发射者轨迹数据");
         return n;
     }
 }
+
