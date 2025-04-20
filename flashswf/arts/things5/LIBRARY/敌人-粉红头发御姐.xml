@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1743135141" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-粉红头发御姐" itemID="67e615c8-000008d6" linkageExportForAS="true" linkageIdentifier="敌人-粉红头发御姐" lastModified="1745151359" lastUniqueIdentifier="2">
   <timeline>
     <DOMTimeline name="敌人-粉红头发御姐">
       <layers>
@@ -187,11 +187,11 @@ function Phoenix()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变身图层" color="#9933CC" autoNamed="false">
+        <DOMLayer name="变身图层" color="#9933CC" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="127" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 17" name="变身控制块" centerPoint3DX="65.55" centerPoint3DY="-1.65">
+                <DOMSymbolInstance libraryItemName="Symbol 17" name="变身控制块" selected="true" centerPoint3DX="65.55" centerPoint3DY="-1.65">
                   <matrix>
                     <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-85.95" ty="-153.15"/>
                   </matrix>
@@ -202,26 +202,24 @@ function Phoenix()
                     <script><![CDATA[onClipEvent(enterFrame){
     if(_parent.已使用兴奋剂 != true)
    {
-      if(_parent.hp <= 1000 and ( _parent.状态!="击倒" and _parent.状态!="倒地" or _parent.hp > 0) and _parent.变身阶段 == 0)
+      if(_parent.hp <= 1500 and _parent.hp > 0 and _parent.变身阶段 == 0)
       {
          //_parent.无敌 = true;
          _root.效果("浴火重生",_parent._x,_parent._y,100);
          _root.效果("火回旋",_parent._x,_parent._y,100);
          _root.效果("火攻",_parent._x,_parent._y,100);
          _parent.hp = _parent.hp满血值;
-         _root.主角hp显示界面.刷新显示();
          _parent.空手攻击力 *= 0.7;
          _parent.行走X速度 *= 1.5;
          _parent.行走Y速度 *= 1.5;
          _parent.跑X速度 *= 1.5;
          _parent.跑Y速度 *= 1.5;
-         _parent.被击硬直度 /= 2;
          _root.发布消息("燎原烈火……");
          _parent.已使用兴奋剂 = true;
          _parent.变身阶段 = 1;
       }
    }
-   else if(_parent.hp <= 1000 and _parent.变身阶段 == 1)
+   else if(_parent.hp <= 1500 and _parent.hp > 0  and _parent.变身阶段 == 1)
    {
       //_parent.无敌 = true;
       _root.效果("熔炎裂渊",_parent._x,_parent._y,100);
@@ -229,7 +227,6 @@ function Phoenix()
       _root.效果("火攻",_parent._x,_parent._y,100);
       _parent.hp满血值 = 1500;
       _parent.hp = _parent.hp满血值;
-      _root.主角hp显示界面.刷新显示();
       _root.发布消息("涅槃重生……");
       _parent.已使用兴奋剂 = true;
       _parent.变身阶段 = 2;
@@ -279,7 +276,7 @@ function Phoenix()
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 5" color="#91F0D2" outline="true" current="true" isSelected="true" useOutlineView="true">
+        <DOMLayer name="Layer 5" color="#91F0D2" outline="true" useOutlineView="true">
           <frames>
             <DOMFrame index="0" duration="88" keyMode="9728">
               <elements>
@@ -480,7 +477,11 @@ onClipEvent(enterFrame){
    {
       if(_parent.变身阶段 == 1)
       {
-         _parent.hp -= _parent.hp满血值 / 3600;
+         if(_parent.宠物属性.涅槃重生){
+			  _parent.hp += 26;
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
       }
       else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
       {
@@ -515,7 +516,11 @@ onClipEvent(enterFrame){
    {
       if(_parent.变身阶段 == 1)
       {
-         _parent.hp -= _parent.hp满血值 / 3600;
+         if(_parent.宠物属性.涅槃重生){
+			_parent.hp += 22;
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
       }
       else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
       {
@@ -550,7 +555,11 @@ onClipEvent(enterFrame){
    {
       if(_parent.变身阶段 == 1)
       {
-         _parent.hp -= _parent.hp满血值 / 3600;
+         if(_parent.宠物属性.涅槃重生){
+			_parent.hp += 17;
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
       }
       else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
       {
@@ -595,7 +604,11 @@ onClipEvent(enterFrame){
    {
       if(_parent.变身阶段 == 1)
       {
-         _parent.hp -= _parent.hp满血值 / 1200;
+         if(_parent.宠物属性.涅槃重生){
+			_parent.hp += 39;
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 1200;
+		 }
       }
       else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
       {
@@ -637,7 +650,11 @@ onClipEvent(enterFrame){
    {
       if(_parent.变身阶段 == 1)
       {
-         _parent.hp -= _parent.hp满血值 / 1800;
+         if(_parent.宠物属性.涅槃重生){
+			_parent.hp += 7;
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 1800;
+		 }
       }
       else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
       {
@@ -682,7 +699,11 @@ onClipEvent(enterFrame){
    {
       if(_parent.变身阶段 == 1)
       {
-         _parent.hp -= _parent.hp满血值 / 3600;
+         if(_parent.宠物属性.涅槃重生){
+			_parent.hp += 15;
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
       }
       else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
       {
@@ -724,7 +745,11 @@ onClipEvent(enterFrame){
    {
       if(_parent.变身阶段 == 1)
       {
-         _parent.hp -= _parent.hp满血值 / 3600;
+         if(_parent.宠物属性.涅槃重生){
+			_parent.hp += 10;
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
       }
       else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
       {
@@ -787,7 +812,11 @@ onClipEvent(enterFrame){
    {
       if(_parent.变身阶段 == 1)
       {
-         _parent.hp -= _parent.hp满血值 / 3600;
+         if(_parent.宠物属性.涅槃重生){
+			_parent.hp += 17;
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
       }
       else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
       {
@@ -830,7 +859,11 @@ onClipEvent(enterFrame){
    {
       if(_parent.变身阶段 == 1)
       {
-         _parent.hp -= _parent.hp满血值 / 3600;
+         if(_parent.宠物属性.涅槃重生){
+			_parent.hp += 13;
+		 }else{
+		 	_parent.hp -= _parent.hp满血值 / 3600;
+		 }
       }
       else if(_parent.变身阶段 == 2 and _parent.hp < _parent.hp满血值)
       {
@@ -869,7 +902,7 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="104" duration="16" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 568" name="man" selected="true" centerPoint3DX="147" centerPoint3DY="137.8">
+                <DOMSymbolInstance libraryItemName="Symbol 568" name="man" centerPoint3DX="147" centerPoint3DY="137.8">
                   <matrix>
                     <Matrix d="1.00039672851563"/>
                   </matrix>
