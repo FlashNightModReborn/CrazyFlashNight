@@ -1,0 +1,35 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="import/外部地图/地图-同盟通路" itemID="68056075-00000405" linkageImportForRS="true" linkageExportInFirstFrame="false" linkageIdentifier="地图-同盟通路" linkageURL="flashswf\levels\地图-同盟通路.swf" lastModified="1745182837">
+  <timeline>
+    <DOMTimeline name="地图-同盟通路">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMStaticText selected="true" width="200.2" height="56.7" autoExpand="true" isSelectable="false">
+                  <matrix>
+                    <Matrix tx="2" ty="2"/>
+                  </matrix>
+                  <textRuns>
+                    <DOMTextRun>
+                      <characters>同盟通路</characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="50" bitmapSize="1000" face="FranklinGothic-Demi" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                    <DOMTextRun>
+                      <characters></characters>
+                      <textAttrs>
+                        <DOMTextAttrs aliasText="false" size="50" bitmapSize="1000" face="FranklinGothic-Demi" fillColor="#FFFFFF"/>
+                      </textAttrs>
+                    </DOMTextRun>
+                  </textRuns>
+                </DOMStaticText>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

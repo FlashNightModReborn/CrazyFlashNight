@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1742030023" lastUniqueIdentifier="185">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="对话框肖像" itemID="66790b62-000014d6" linkageExportForAS="true" linkageIdentifier="对话框肖像" lastModified="1745185015" lastUniqueIdentifier="185">
   <timeline>
-    <DOMTimeline name="对话框肖像" currentFrame="150">
+    <DOMTimeline name="对话框肖像" currentFrame="508">
       <layers>
-        <DOMLayer name="Labels Layer" color="#FC2986" current="true" isSelected="true">
+        <DOMLayer name="Labels Layer" color="#FC2986">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -241,11 +241,17 @@
             <DOMFrame index="500" duration="5" name="artist" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
+            <DOMFrame index="505" duration="5" name="PROPHET" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="510" duration="5" name="PROPHET2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#F7F5D9">
           <frames>
-            <DOMFrame index="0" duration="505" keyMode="9728">
+            <DOMFrame index="0" duration="515" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[stop();
 ]]></script>
@@ -256,7 +262,7 @@
         </DOMLayer>
         <DOMLayer name="Layer 3" color="#17EED4" outline="true" useOutlineView="true" layerType="mask">
           <frames>
-            <DOMFrame index="0" duration="505" keyMode="9728">
+            <DOMFrame index="0" duration="515" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -265,14 +271,14 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026!5804 -5026|5804 2159"/>
+                    <Edge fillStyle1="1" edges="!5804 -5026|5804 2159!5804 2159|-2700 2159!-2700 2159|-2700 -5146!-2700 -5146|5804 -5026"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2">
+        <DOMLayer name="Layer 155" color="#21D0E1" parentLayerIndex="2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -3038,6 +3044,30 @@ onClipEvent (enterFrame) {
                   </matrix>
                   <transformationPoint>
                     <Point x="153.25" y="323.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="505" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PROPHETA" centerPoint3DX="38.5" centerPoint3DY="242.75">
+                  <matrix>
+                    <Matrix a="2.18145751953125" d="2.18145751953125" tx="-149.1" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="86" y="176.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="510" duration="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="PROPHETB" selected="true" centerPoint3DX="38.5" centerPoint3DY="242.75">
+                  <matrix>
+                    <Matrix a="2.18145751953125" d="2.18145751953125" tx="-149.1" ty="-143.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="86" y="176.85"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

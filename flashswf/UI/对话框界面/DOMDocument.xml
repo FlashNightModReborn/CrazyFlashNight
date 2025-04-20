@@ -105,8 +105,8 @@
           <DOMFolderItem name="冷兵/钝器/棒球棒" itemID="67331ffe-00000753"/>
           <DOMFolderItem name="普通.svg_0" itemID="67bc27cb-00000fad"/>
           <DOMFolderItem name="普通.svg_0/Layer 1" itemID="67bc27cb-00000fae" isExpanded="true"/>
-          <DOMFolderItem name="失落.svg" itemID="67bc2b49-00001055"/>
-          <DOMFolderItem name="失落.svg/Layer 1" itemID="67bc2b49-00001056"/>
+          <DOMFolderItem name="失落.svg" itemID="67bc2b49-00001055" isExpanded="true"/>
+          <DOMFolderItem name="失落.svg/Layer 1" itemID="67bc2b49-00001056" isExpanded="true"/>
           <DOMFolderItem name="无AS链接" itemID="6690f257-00002761"/>
           <DOMFolderItem name="笑.svg" itemID="67bc28df-00000fe5"/>
           <DOMFolderItem name="笑.svg/Layer 1" itemID="67bc28df-00000fe6"/>
@@ -128,10 +128,10 @@
           <DOMFolderItem name="新地图素材/女仆黑/步枪/狙击步枪/Revision 4" itemID="6577c619-0000070b"/>
           <DOMFolderItem name="新地图素材/女仆黑/弹药" itemID="6577dc9d-00000575"/>
           <DOMFolderItem name="杂项" itemID="665b5cb2-00001fa1"/>
-          <DOMFolderItem name="治安官.svg" itemID="67dc4ca1-000009a1"/>
-          <DOMFolderItem name="治安官.svg/Layer 1" itemID="67dc4ca1-000009a2"/>
-          <DOMFolderItem name="主唱3.svg" itemID="67dc4ba0-00000973"/>
-          <DOMFolderItem name="主唱3.svg/Layer 1" itemID="67dc4ba0-00000974"/>
+          <DOMFolderItem name="治安官.svg" itemID="67dc4ca1-000009a1" isExpanded="true"/>
+          <DOMFolderItem name="治安官.svg/Layer 1" itemID="67dc4ca1-000009a2" isExpanded="true"/>
+          <DOMFolderItem name="主唱3.svg" itemID="67dc4ba0-00000973" isExpanded="true"/>
+          <DOMFolderItem name="主唱3.svg/Layer 1" itemID="67dc4ba0-00000974" isExpanded="true"/>
      </folders>
      <media>
           <DOMBitmapItem name="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" itemID="67812173-00000959" sourceExternalFilepath="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" sourceLastImported="1736515955" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="BMP_e08fcab1_dac5_484b_ac54_5a76f8396624.png" bitmapDataHRef="M 13 1741519841.dat" frameRight="4680" frameBottom="5160"/>
@@ -875,7 +875,7 @@
           <Include href="lochan/补间 14.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-0000065e" lastModified="1726068284"/>
           <Include href="lochan/补间 16.xml" itemIcon="1" loadImmediate="false" itemID="66e1b63c-00000662" lastModified="1726068284"/>
           <Include href="lochan/盘子.xml" loadImmediate="false" itemID="66e1b386-00000068" lastModified="1726067641"/>
-          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1742032743"/>
+          <Include href="NPC头像框.xml" itemID="67d3bcf4-000015e7" lastModified="1745184940"/>
           <Include href="Pig表情悲伤.xml" itemIcon="1" loadImmediate="false" itemID="67b3ebbe-00000d0d" lastModified="1739844542"/>
           <Include href="Pig表情愤怒.xml" itemIcon="1" loadImmediate="false" itemID="67b3ebae-00000d01" lastModified="1739844526"/>
           <Include href="Pig表情坏笑.xml" itemIcon="1" loadImmediate="false" itemID="67b3eb92-00000cf3" lastModified="1739844498"/>
@@ -913,6 +913,8 @@
           <Include href="Pig立绘表情笑(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="67b3e550-00000c7b" lastModified="1739842896"/>
           <Include href="Pig立绘表情笑(1).svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="67b3e550-00000c7c" lastModified="1739842896"/>
           <Include href="Pig身体.xml" itemIcon="1" loadImmediate="false" itemID="67b3eb2e-00000cae" lastModified="1739844398"/>
+          <Include href="PROPHETA.xml" loadImmediate="false" itemID="6805674b-00000a0d" lastModified="1745184587"/>
+          <Include href="PROPHETB.xml" loadImmediate="false" itemID="68056800-00000a44" lastModified="1745184830"/>
           <Include href="shape/bat脸.xml" itemIcon="1" loadImmediate="false" itemID="67331ff8-0000074a" lastModified="1731403768"/>
           <Include href="shape/Symbol 39.xml" itemIcon="1" loadImmediate="false" itemID="6577b699-00000974" lastModified="1720546154"/>
           <Include href="shape/Symbol 473.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000007a4" lastModified="1704196122"/>
@@ -1725,7 +1727,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1741929654"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1742030023"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1745185015"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc29fa-00001039" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc29fa-0000103a" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc29fa-0000103b" lastModified="1740384762"/>
