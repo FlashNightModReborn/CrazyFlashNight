@@ -60,10 +60,14 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
     {
         // ★ 若要附加通用尾焰等，可在此处写额外逻辑
         // beforeSuper(target);
-
-        // 核心运动 & FSM 切换逻辑 —— 由 BaseMissileMovement 处理
         super.updateMovement(target);
 
-        // afterSuper(target);
+        target._x += this.speed * Math.cos(this.rotationAngle * Math.PI / 180);
+        target._y += this.speed * Math.sin(this.rotationAngle * Math.PI / 180);
+        target._rotation = this.rotationAngle;
+        target.Z轴坐标 = target._y + target.yOffset;
+
+        // _root.服务器.发布服务器消息(target._x + " " + target._y + " " + target._rotation);
+
     }
 }
