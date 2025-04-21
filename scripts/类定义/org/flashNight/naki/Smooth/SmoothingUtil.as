@@ -19,8 +19,6 @@ import org.flashNight.sara.util.Vector;
  *   SmoothingUtil.simpleSmooth(ring);
  *   SmoothingUtil.catmullRomSmooth(ring, 0.5);
  *
- * @author flashNight (原始作者 Original Author)
- * @contributor AI Assistant (优化贡献者 Optimized Contributor)
  */
 class org.flashNight.naki.Smooth.SmoothingUtil
 {
