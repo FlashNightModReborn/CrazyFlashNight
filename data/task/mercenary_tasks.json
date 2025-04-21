@@ -197,7 +197,7 @@
       "challenge": {
         "difficulty":"地狱",
         "limitations": ["DisableCompanion"],
-        "rewards_disabled":[
+        "rewards":[
           "关于通缉令1#1"
         ]
       },
@@ -359,7 +359,10 @@
       "challenge": {
         "difficulty":"修罗",
         "description":"这些大家伙是从哪冒出来的？",
-        "recommended_level": "20-25"
+        "recommended_level": "20-25",
+        "rewards": [
+          "对前治安官的采访#1"
+        ]
       },
 
       "chain": "委托"
@@ -422,7 +425,10 @@
       "challenge": {
         "difficulty":"修罗",
         "description":"新的打手来到了会场。",
-        "recommended_level": "30-35"
+        "recommended_level": "30-35",
+        "rewards": [
+          "学校与摇滚敌对的缘由？#1"
+        ]
       },
 
       "chain": "委托"
@@ -456,7 +462,10 @@
         "difficulty":"修罗",
         "description":"但是，军阀强者不会眼睁睁看着你得手的。",
         "recommended_level": "30-40",
-        "rewards_text":"掉落的强化石数量大幅提升"
+        "rewards_text":"掉落的强化石数量大幅提升",
+        "rewards": [
+          "从宝石线人视角一窥新经济野望#1"
+        ]
       },
 
       "chain": "委托"
