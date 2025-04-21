@@ -34,7 +34,11 @@
     // AI相关参数
     public var xrange:Number; // x轴攻击范围
     public var zrange:Number; // z轴攻击范围
-	public var xdistance:Number; // x轴保持距离 
+	public var xdistance:Number; // x轴保持距离
+
+    public var idle_threshold:Number; // 由追击转入停止状态的临界动作次数
+    public var wander_threshold:Number; // 由追击转入随机移动状态的临界动作次数
+    public var think_threshold:Number // 返回思考的临界时长
 
     
     public function UnitAIData(_self:MovieClip){

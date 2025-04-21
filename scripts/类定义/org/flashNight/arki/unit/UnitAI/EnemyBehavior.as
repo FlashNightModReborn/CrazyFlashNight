@@ -8,11 +8,11 @@ import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
 class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
-    public static var IDLE_TIME:Number = 16; // 停止状态持续17次action（即68帧）。计划在ai进一步重构后废弃
-    public static var WANDER_TIME:Number = 50; // 随机移动状态持续50次action（即200帧）。计划在ai进一步重构后废弃
+    public static var IDLE_BASIC_TIME:Number = 8; // 停止状态持续8次action（即32帧）。计划在ai进一步重构后废弃
+    public static var WANDER_BASIC_TIME:Number = 15; // 随机移动状态持续15次action（即60帧）。计划在ai进一步重构后废弃
     public static var FOLLOW_TIME:Number = 5; // 跟随状态持续5次action（即20帧）
 
-    public static var CHASE_TIME:Number = 15; // 为了解决思考间隔变短导致的停止/随机移动几率大大上升，追击状态持续15次action（即60帧）后再开始判断停止或随机移动。计划在ai进一步重构后废弃
+    public static var CHASE_TIME:Number = 30; // 追击状态持续30次action（即120帧）后再开始判断停止或随机移动。计划在ai进一步重构后废弃
 
     public function EnemyBehavior(_data:UnitAIData){
         super(_data);
@@ -23,7 +23,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         // 思考状态，结算进入状态函数后一定会跳转至其他状态
         this.AddStatus("Thinking",new FSM_Status(null, this.think, null));
         // 追击状态
-        this.AddStatus("Chasing",new FSM_Status(this.chase, null, null));
+        this.AddStatus("Chasing",new FSM_Status(this.chase, this.chase_enter, null));
         // 跟随状态
         this.AddStatus("Following",new FSM_Status(null, this.follow_enter, null));
         // 空闲状态
@@ -33,16 +33,16 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
         //过渡线
         this.transitions.push("Chasing","Idle",function(){
-            return this.actionCount >= EnemyBehavior.CHASE_TIME && random(data.self.停止机率) == 0;
+            return this.actionCount >= data.idle_threshold;
         });
         this.transitions.push("Chasing","Wandering",function(){
-            return this.actionCount >= EnemyBehavior.CHASE_TIME && random(data.self.随机移动机率) == 0;
+            return this.actionCount >= data.wander_threshold;
         });
         this.transitions.push("Idle","Thinking",function(){
-            return this.actionCount >= EnemyBehavior.IDLE_TIME;
+            return this.actionCount >= data.think_threshold;
         });
         this.transitions.push("Wandering","Thinking",function(){
-            return this.actionCount >= EnemyBehavior.WANDER_TIME;
+            return this.actionCount >= data.think_threshold;
         });
         this.transitions.push("Following","Thinking",function(){
             return this.actionCount >= EnemyBehavior.FOLLOW_TIME;
@@ -86,6 +86,19 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
     }
 
     // 追击
+    public function chase_enter():Void{
+        var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
+        if(友军数量 <= 1){
+            // 若己方没有任何队友，则永远不会停止追击
+            data.idle_threshold = 999999;
+            data.wander_threshold = 999999;
+        }else{
+            // 根据停止机率和随机移动机率随机一个临界时间
+            var temp = 友军数量 <= 5 ? 3 : (友军数量 <= 15 ? 2 : 1);
+            data.idle_threshold = 友军数量 < 1 ? 999999 : EnemyBehavior.CHASE_TIME + random(temp * data.self.停止机率);
+            data.wander_threshold = 友军数量 < 1 ? 999999 : EnemyBehavior.CHASE_TIME + random(temp * data.self.随机移动机率);
+        }
+    }
     public function chase():Void{
         // 与攻击目标参数一致
         if(data.target._name != data.self.攻击目标){
@@ -163,6 +176,10 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         data.self.右行 = false;
         data.self.上行 = false;
         data.self.下行 = false;
+        // 根据友军数量计算随机时间
+        var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
+        var temp = 友军数量 <= 5 ? 0 : (友军数量 <= 10 ? 1 : 2);
+        data.think_threshold = EnemyBehavior.IDLE_BASIC_TIME + random(temp * EnemyBehavior.IDLE_BASIC_TIME);
     }
     // 随机移动
     public function wander_enter():Void{
@@ -176,5 +193,9 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         data.self.右行 = !data.self.左行;
         data.self.上行 = randy < data.z;
         data.self.下行 = randy > data.z;
+        // 根据友军数量计算随机时间
+        var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
+        var temp = 友军数量 <= 5 ? 0 : (友军数量 <= 10 ? 1 : 2);
+        data.think_threshold = EnemyBehavior.WANDER_BASIC_TIME + random(temp * EnemyBehavior.WANDER_BASIC_TIME);
     }
 }
