@@ -100,6 +100,8 @@
           <DOMFolderItem name="混沌系列素材包/世莉架头像素材" itemID="660ce468-00000ed4"/>
           <DOMFolderItem name="混沌系列素材包/尾上世莉架" itemID="6601614d-00000eaa" isExpanded="true"/>
           <DOMFolderItem name="混沌系列素材包/尾上世莉架/人物组件" itemID="6601614d-00000eab"/>
+          <DOMFolderItem name="吉他.svg" itemID="6805ed38-000009bd"/>
+          <DOMFolderItem name="吉他.svg/Layer 1" itemID="6805ed38-000009be"/>
           <DOMFolderItem name="冷兵" itemID="67331ffe-00000751"/>
           <DOMFolderItem name="冷兵/钝器" itemID="67331ffe-00000752"/>
           <DOMFolderItem name="冷兵/钝器/棒球棒" itemID="67331ffe-00000753"/>
@@ -1425,7 +1427,7 @@
           <Include href="对话框UI/对话-A兵团士兵.xml" itemIcon="1" loadImmediate="false" itemID="659fe1e7-00001eac" lastModified="1704976871"/>
           <Include href="对话框UI/对话-格格巫.xml" loadImmediate="false" itemID="659fe225-00001f11" lastModified="1723879047"/>
           <Include href="对话框UI/对话-黑铁会盗贼.xml" loadImmediate="false" itemID="65c4f611-00001c24" lastModified="1707407106"/>
-          <Include href="对话框UI/对话-吉他.xml" itemIcon="1" loadImmediate="false" itemID="659fe2f6-00002035" lastModified="1704977142"/>
+          <Include href="对话框UI/对话-吉他.xml" itemIcon="1" loadImmediate="false" itemID="659fe2f6-00002035" lastModified="1745218914"/>
           <Include href="对话框UI/对话-键盘.xml" itemIcon="1" loadImmediate="false" itemID="659fe2e4-00001feb" lastModified="1704977124"/>
           <Include href="对话框UI/对话-将军.xml" loadImmediate="false" itemID="659fe2a2-00001fc5" lastModified="1704977070"/>
           <Include href="对话框UI/对话-酒保.xml" itemIcon="1" loadImmediate="false" itemID="659fe237-00001f3a" lastModified="1704976951"/>
@@ -1727,7 +1729,7 @@
           <Include href="对话框UI/袁望surveyor/左下臂.xml" loadImmediate="false" itemID="658e931a-000001d0" lastModified="1703844296"/>
           <Include href="对话框副本.xml" loadImmediate="false" itemID="6652e559-00001434" lastModified="1716708734"/>
           <Include href="对话框界面.xml" itemID="6652e908-000026b6" lastModified="1741929654"/>
-          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1745185015"/>
+          <Include href="对话框肖像.xml" itemID="66790b62-000014d6" lastModified="1745218937"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="67bc29fa-00001039" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="67bc29fa-0000103a" lastModified="1740384762"/>
           <Include href="愤怒.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="67bc29fa-0000103b" lastModified="1740384762"/>
@@ -1796,6 +1798,15 @@
           <Include href="机械臂1.xml" loadImmediate="false" itemID="67683af3-000001b5" lastModified="1734884083"/>
           <Include href="机械爪背面.xml" loadImmediate="false" itemID="67683d4f-00000346" lastModified="1734884699"/>
           <Include href="机械爪正面.xml" loadImmediate="false" itemID="67683d69-0000034e" lastModified="1734884713"/>
+          <Include href="吉他.xml" itemIcon="1" loadImmediate="false" itemID="6805ed62-000009d3" lastModified="1745218914"/>
+          <Include href="吉他.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062.xml" loadImmediate="false" itemID="6805ed38-000009c8" lastModified="1745218872"/>
+          <Include href="吉他.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_0.xml" loadImmediate="false" itemID="6805ed38-000009c9" lastModified="1745218872"/>
+          <Include href="吉他.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_1.xml" loadImmediate="false" itemID="6805ed38-000009ca" lastModified="1745218872"/>
+          <Include href="吉他.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_2.xml" loadImmediate="false" itemID="6805ed38-000009cb" lastModified="1745218872"/>
+          <Include href="吉他.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_3.xml" loadImmediate="false" itemID="6805ed38-000009cc" lastModified="1745218872"/>
+          <Include href="吉他.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_4.xml" loadImmediate="false" itemID="6805ed38-000009cd" lastModified="1745218872"/>
+          <Include href="吉他.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_5.xml" loadImmediate="false" itemID="6805ed38-000009ce" lastModified="1745218872"/>
+          <Include href="吉他.svg/Layer 1/&amp;#038&amp;#035060Path&amp;#038&amp;#035062_6.xml" loadImmediate="false" itemID="6805ed38-000009cf" lastModified="1745218872"/>
           <Include href="砍刀.xml" loadImmediate="false" itemID="66099719-0000407b" lastModified="1717253609"/>
           <Include href="冷兵/钝器/棒球棒/棒球棒.xml" itemIcon="1" loadImmediate="false" itemID="660f7d90-000019bc" lastModified="1712291609"/>
           <Include href="冷兵/钝器/棒球棒/棒球棍末端.xml" loadImmediate="false" itemID="64b91170-00001168" lastModified="1690285773"/>
