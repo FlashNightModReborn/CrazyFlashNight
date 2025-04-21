@@ -438,11 +438,11 @@
     </data>
   </item>
   <item>
-    <id>20023</id>
-    <name>番茄</name>
-    <displayname>番茄</displayname>
-    <icon>番茄</icon>
-    <type>消耗品</type>
+      <id>20027</id>
+      <name>番茄</name>
+      <displayname>番茄</displayname>
+      <icon>番茄</icon>
+      <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>800</price>
@@ -455,11 +455,11 @@
     </data>
   </item>
   <item>
-    <id>20024</id>
-    <name>土豆</name>
-    <displayname>土豆</displayname>
-    <icon>土豆</icon>
-    <type>消耗品</type>
+      <id>20028</id>
+      <name>土豆</name>
+      <displayname>土豆</displayname>
+      <icon>土豆</icon>
+      <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>800</price>
@@ -472,11 +472,11 @@
     </data>
   </item>
   <item>
-    <id>20025</id>
-    <name>黄瓜</name>
-    <displayname>黄瓜</displayname>
-    <icon>黄瓜</icon>
-    <type>消耗品</type>
+      <id>20029</id>
+      <name>黄瓜</name>
+      <displayname>黄瓜</displayname>
+      <icon>黄瓜</icon>
+      <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>800</price>
@@ -489,11 +489,11 @@
     </data>
   </item>
   <item>
-    <id>20026</id>
-    <name>白菜</name>
-    <displayname>白菜</displayname>
-    <icon>白菜</icon>
-    <type>消耗品</type>
+      <id>20030</id>
+      <name>白菜</name>
+      <displayname>白菜</displayname>
+      <icon>白菜</icon>
+      <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>800</price>
@@ -505,12 +505,60 @@
       <affectmp>300</affectmp>
     </data>
   </item>
-  <item>
-    <id>20030</id>
-    <name>番茄炒蛋</name>
-    <displayname>番茄炒蛋</displayname>
-    <icon>番茄炒蛋</icon>
+    <item>
+    <id>20031</id>
+    <name>食用油</name>
+    <displayname>食用油</displayname>
+    <icon>食用油</icon>
     <type>消耗品</type>
+    <use>材料</use>
+    <weight>0</weight>
+    <price>1000</price>
+    <description>烹饪材料</description>
+    <level>1</level>
+  </item>
+    <item>
+    <id>20032</id>
+    <name>食盐</name>
+    <displayname>食盐</displayname>
+    <icon>食盐</icon>
+    <type>消耗品</type>
+    <use>材料</use>
+    <weight>0</weight>
+    <price>1000</price>
+    <description>烹饪材料</description>
+    <level>1</level>
+  </item>
+    <item>
+    <id>20033</id>
+    <name>猪肉</name>
+    <displayname>猪肉</displayname>
+    <icon>猪肉</icon>
+    <type>消耗品</type>
+    <use>材料</use>
+    <weight>0</weight>
+    <price>1000</price>
+    <description>烹饪材料</description>
+    <level>1</level>
+  </item>
+    <item>
+    <id>20034</id>
+    <name>鸡蛋</name>
+    <displayname>鸡蛋</displayname>
+    <icon>鸡蛋</icon>
+    <type>消耗品</type>
+    <use>材料</use>
+    <weight>0</weight>
+    <price>1000</price>
+    <description>烹饪材料</description>
+    <level>1</level>
+  </item>
+  <item>
+      <id>20035</id>
+      <name>番茄炒蛋</name>
+      <displayname>番茄炒蛋</displayname>
+      <icon>番茄炒蛋</icon>
+      <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>800</price>
@@ -523,11 +571,11 @@
     </data>
   </item>
   <item>
-    <id>20031</id>
-    <name>土豆炒肉丝</name>
-    <displayname>土豆炒肉丝</displayname>
-    <icon>土豆炒肉丝</icon>
-    <type>消耗品</type>
+      <id>20036</id>
+      <name>土豆炒肉丝</name>
+      <displayname>土豆炒肉丝</displayname>
+      <icon>土豆炒肉丝</icon>
+      <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>800</price>
@@ -540,11 +588,11 @@
     </data>
   </item>
   <item>
-    <id>20032</id>
-    <name>黄瓜炒肉片</name>
-    <displayname>黄瓜炒肉片</displayname>
-    <icon>黄瓜炒肉片</icon>
-    <type>消耗品</type>
+      <id>20037</id>
+      <name>黄瓜炒肉片</name>
+      <displayname>黄瓜炒肉片</displayname>
+      <icon>黄瓜炒肉片</icon>
+      <type>消耗品</type>
     <use>药剂</use>
     <weight>0</weight>
     <price>800</price>
