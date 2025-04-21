@@ -3,6 +3,9 @@
 class org.flashNight.arki.unit.UnitComponent.Initializer.UnitAIInitializer {
     public static function initialize(target:MovieClip):Void {
         if(target._name != _root.控制目标 && target.unitAI == null && target._parent === _root.gameworld) {
+            if(target.unitAIType == "None"){
+                return;
+            }
             if(target.unitAIType != null){
                 target.unitAI = new BaseUnitAI(target, target.unitAIType);
                 return;
