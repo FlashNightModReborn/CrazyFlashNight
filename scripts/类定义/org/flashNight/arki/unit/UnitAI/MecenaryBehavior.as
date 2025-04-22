@@ -43,6 +43,7 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
     public function think():Void{
         data.updateSelf(); // 更新自身坐标
         //search target
+        var newstate:String = null;
         if(data.target == null){
             var 出生点列表 = [];
             for (var 单位 in _root.gameworld){
@@ -52,12 +53,12 @@ class org.flashNight.arki.unit.UnitAI.MecenaryBehavior extends BaseUnitBehavior{
                 }
             }
             data.target = 出生点列表[random(出生点列表.length)];
+            data.updateTarget();
+            if(data.absdiff_x < 100 && data.absdiff_z < 50){
+                newstate = "Idle"; // 若离目标门太近则先进入Idle
+            }
         }
-        data.updateTarget();
-        var newstate:String;
-        if(data.absdiff_x < 100 && data.absdiff_z < 50){
-            newstate = "Idle"; // 若离目标门太近则先进入Idle
-        }else{
+        if(newstate == null){
             newstate = random(2) == 0 ? "Idle" : "Walking"; // 否则有1/2的几率进入Walking，1/2的几率进入Idle
         }
         this.superMachine.ChangeState(newstate);
