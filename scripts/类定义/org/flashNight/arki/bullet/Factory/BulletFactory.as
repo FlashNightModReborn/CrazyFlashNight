@@ -114,25 +114,24 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
                 bulletInstance.xmov = velocity * Math.cos(angleRadians);
                 bulletInstance.ymov = velocity * Math.sin(angleRadians);
-                
-                /*
-                var movement:IMovement;
-
-                // 构造 MissileMovement
-                var missileParams:Object = org.flashNight.arki.bullet.Util.DefaultMissileCallbacks.build(shooter);
-                missileParams.usePreLaunch = true;      // 启用预发射
-                movement = org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement.create(missileParams);
-
-                // 绑定目标 MovieClip
-                movement.targetObject = bulletInstance;
-                */
 
                 var movement:IMovement = LinearBulletMovement.create(
                     speedX, 
                     speedY, 
                     zyRatio
                 );
-       
+                /*
+                var movement:MissileMovement;
+
+                // 构造 MissileMovement
+                var missileParams:Object = DefaultMissileCallbacks.build(shooter, velocity, Obj._rotation);
+                missileParams.usePreLaunch = false;      // 启用预发射
+                movement = MissileMovement.create(missileParams);
+
+                // 绑定目标 MovieClip
+                movement.targetObject = bulletInstance;
+                */
+                
                 bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
                 bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
             }
