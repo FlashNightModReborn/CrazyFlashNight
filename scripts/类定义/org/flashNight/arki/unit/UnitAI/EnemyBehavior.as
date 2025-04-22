@@ -8,8 +8,8 @@ import org.flashNight.arki.unit.UnitAI.UnitAIData;
 
 class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
 
-    public static var IDLE_BASIC_TIME:Number = 8; // 停止状态持续8次action（即32帧）。计划在ai进一步重构后废弃
-    public static var WANDER_BASIC_TIME:Number = 15; // 随机移动状态持续15次action（即60帧）。计划在ai进一步重构后废弃
+    public static var IDLE_BASIC_TIME:Number = 5; // 停止状态最低持续5次action（即20帧）。计划在ai进一步重构后废弃
+    public static var WANDER_BASIC_TIME:Number = 10; // 随机移动状态最低持续10次action（即40帧）。计划在ai进一步重构后废弃
     public static var FOLLOW_TIME:Number = 5; // 跟随状态持续5次action（即20帧）
 
     public static var CHASE_TIME:Number = 30; // 追击状态持续30次action（即120帧）后再开始判断停止或随机移动。计划在ai进一步重构后废弃
@@ -85,7 +85,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         this.superMachine.ChangeState(newstate);
     }
 
-    // 追击
+    // 追击开始
     public function chase_enter():Void{
         var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
         if(友军数量 <= 1){
@@ -99,6 +99,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
             data.wander_threshold = 友军数量 < 1 ? 999999 : EnemyBehavior.CHASE_TIME + random(temp * data.self.随机移动机率);
         }
     }
+    // 追击
     public function chase():Void{
         // 与攻击目标参数一致
         if(data.target._name != data.self.攻击目标){
@@ -132,15 +133,16 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
                 self.右行 = data.x < data.tx - data.xdistance;
             }else if (data.state != self.攻击模式 + "跑"){
                 //每偶数次action判定是否起跑
-                if(data.absdiff_x > 120 & data.absdiff_z > 60 && random(3) == 0){
+                if(data.absdiff_x > data.run_threshold_x & data.absdiff_z > data.run_threshold_z){
                     self.状态改变(self.攻击模式 + "跑");
                 }
             }
         }
     }
-    // 丢失攻击目标
+    // 丢失攻击目标（未启用）
     // public function chase_exit():Void{
     // }
+
     // 跟随
     public function follow_enter():Void{
         data.updateSelf(); // 更新自身坐标
@@ -178,7 +180,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         data.self.下行 = false;
         // 根据友军数量计算随机时间
         var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
-        var temp = 友军数量 <= 5 ? 0 : (友军数量 <= 10 ? 1 : 2);
+        var temp = 友军数量 <= 5 ? 1 : (友军数量 <= 10 ? 2 : 3);
         data.think_threshold = EnemyBehavior.IDLE_BASIC_TIME + random(temp * EnemyBehavior.IDLE_BASIC_TIME);
     }
     // 随机移动
@@ -195,7 +197,7 @@ class org.flashNight.arki.unit.UnitAI.EnemyBehavior extends BaseUnitBehavior{
         data.self.下行 = randy > data.z;
         // 根据友军数量计算随机时间
         var 友军数量 = _root.帧计时器.获取友军缓存(data.self,5).length;
-        var temp = 友军数量 <= 5 ? 0 : (友军数量 <= 10 ? 1 : 2);
+        var temp = 友军数量 <= 5 ? 1 : (友军数量 <= 10 ? 2 : 3);
         data.think_threshold = EnemyBehavior.WANDER_BASIC_TIME + random(temp * EnemyBehavior.WANDER_BASIC_TIME);
     }
 }

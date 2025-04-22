@@ -409,7 +409,7 @@ _root.初始化敌人模板 = function(){
 	Z轴坐标 = this._y;
 	this.swapDepths(this._y + random(10));
 	
-	//应用新版人物文字信息
+	// 应用新版人物文字信息
 	if(this.人物文字信息){
 		this.人物文字信息.unloadMovie();
 		this.attachMovie("新版人物文字信息","新版人物文字信息",this.getNextHighestDepth());
@@ -417,13 +417,12 @@ _root.初始化敌人模板 = function(){
 		this.新版人物文字信息._y = 人物文字信息._y;
 	}
 		
-	//初始化完毕
-	StaticInitializer.initializeUnit(this);
+	// 应用初始器
 	根据等级初始数值(等级);
 	宠物属性初始化();
-	方向改变(方向);
+	StaticInitializer.initializeUnit(this);
 
-	//应用影子色彩
+	// 应用影子色彩
 	if(this.影子单位){
 		this.影子倍率 = this.影子倍率? this.影子倍率 : 0;
 		this.透明倍率 =  this.透明倍率? this.透明倍率 : 0.7;
@@ -436,6 +435,8 @@ _root.初始化敌人模板 = function(){
 		this.掉落物 = [];
 	}
 	
+	// 初始化完毕
+	方向改变(方向);
 	gotoAndStop(状态);
 }
 

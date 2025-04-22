@@ -30,6 +30,10 @@
     // 玩家引用
     public var player:MovieClip;
 
+    // 根据自身的奔跑xy速度计算起跑距离
+    public var run_threshold_x:Number;
+    public var run_threshold_z:Number;
+
     
     // AI相关参数
     public var xrange:Number; // x轴攻击范围
@@ -57,6 +61,9 @@
         this.xrange = self.x轴攻击范围;
         this.zrange = 10; // 这里暂时不使用设置的参数
         this.xdistance = self.x轴保持距离;
+        // 根据自身的奔跑xy速度计算起跑距离
+        this.run_threshold_x = self.跑X速度 * 8;
+        this.run_threshold_z = self.跑Y速度 * 8;
     }
 
     public function updateSelf():Void{
