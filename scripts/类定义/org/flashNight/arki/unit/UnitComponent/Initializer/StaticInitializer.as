@@ -18,6 +18,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
     }
 
     public static function initializeUnit(target:MovieClip):Void {
+        // 排除从非gameworld召唤出的单位
+        if(target._parent !== _root.gameworld) return;
+        
         ComponentInitializer.initialize(target);
         ParameterInitializer.initialize(target);
         EventInitializer.initialize(target);

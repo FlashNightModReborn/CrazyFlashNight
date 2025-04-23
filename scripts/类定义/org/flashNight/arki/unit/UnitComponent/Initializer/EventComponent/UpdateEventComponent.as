@@ -10,9 +10,6 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
      * @param target 目标单位( MovieClip )
      */
     public static function initialize(target:MovieClip):Void {
-        // 排除从非gameworld召唤出的单位
-        if(target._parent !== _root.gameworld) return;
-
         var dispatcher:EventDispatcher = target.dispatcher;
         // 订阅 UpdateEventComponent 事件到 onUpdate 逻辑
         dispatcher.subscribeSingle("UpdateEventComponent", UpdateEventComponent.onUpdate, target);
@@ -27,9 +24,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         }
         
         // 以4帧为间隔加入生命周期任务
-        target.updateEventComponentID = _root.帧计时器.添加生命周期任务(target, label, function (t:MovieClip)
+        target.updateEventComponentID = _root.帧计时器.添加生命周期任务(target, label, function ()
         {
-            this.dispatcher.publish("UpdateEventComponent", t);
+            this.dispatcher.publish("UpdateEventComponent", this);
         }, 130 , target)
     }
 
