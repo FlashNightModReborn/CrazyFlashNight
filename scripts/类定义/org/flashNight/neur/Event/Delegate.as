@@ -26,69 +26,102 @@ class org.flashNight.neur.Event.Delegate {
     }
 
     /**
-     * 创建一个委托函数，将指定方法绑定到给定的作用域。
-     * 该方法通过缓存机制优化委托函数的创建，避免重复生成相同的委托。
-     * 
-     * @param scope 作用域对象。如果为 `null`，则函数将在全局作用域中执行。
-     * @param method 需要绑定的函数。必须为非空的有效函数。
-     * @return 返回一个新函数，可以带参数调用，并在指定的作用域内执行。
-     * 
-     * 性能优化说明：
-     * 1. 使用 `Dictionary.getStaticUID` 为函数和作用域生成唯一的 UID，避免重复计算。
-     * 2. 缓存委托函数，当相同作用域和方法组合再次使用时，直接返回缓存中的委托函数。
-     * 3. 对于参数数量较少的场景，手动展开参数调用，避免使用 apply 调用带来的性能损耗。
+     * 创建一个函数委托，将方法绑定到指定的作用域 (scope)。
+     * 如果已为相同的作用域和方法创建过委托，则返回缓存中的委托函数，以提高性能。
+     *
+     * @param scope 函数执行时 this 指向的对象。如果为 null，则函数将在全局作用域执行。
+     * @param method 需要创建委托的方法。
+     * @return 绑定了指定作用域的委托函数。
+     * @throws Error 如果 method 为 null 或 undefined。
      */
     public static function create(scope:Object, method:Function):Function {
-        init();  // 确保缓存已初始化
+        // 确保类已初始化
+        init();
 
-        // 检查 method 是否为 null，防止无效的函数绑定
+        // 检查方法是否有效
         if (method == null) {
             throw new Error("The provided method is undefined or null");
         }
 
-        var cacheKey:String; 
-        var loccache = cacheCreate; // 本地化缓存对象，减少全局访问的开销
+        var cacheKey:String;
+        var loccache:Object = cacheCreate; // 使用局部变量引用缓存，可能略有性能提升
 
-        // 使用 Dictionary 静态方法生成 method 的唯一标识符 UID
-        var methodUID:String = String(Dictionary.getStaticUID(method));
+        // 获取方法的唯一标识符
+        var methodUID:String = String(Dictionary.getStaticUID(method)); // 假设 Dictionary.getStaticUID 返回 uint，转换为 String
 
-        // 如果作用域为 null，则函数将在全局作用域中执行
+        // --- 处理 scope == null 的情况 ---
         if (scope == null) {
-            cacheKey = methodUID;  
+            // 当 scope 为 null 时，表示希望函数在全局作用域执行。
+            // 缓存键只使用方法的 UID，因为作用域是固定的 null。
+            cacheKey = methodUID;
+
+            // 检查缓存中是否已存在对应的全局作用域委托函数
             var cachedFunction:Function = loccache[cacheKey];
             if (cachedFunction != undefined) {
+                // 缓存命中，直接返回缓存的委托函数
                 return cachedFunction;
             }
 
-            // 直接返回原函数，避免生成新包装
-            loccache[cacheKey] = method;
-            return method;
-        } else {
-            // 为作用域生成唯一的 UID，并与方法 UID 组合生成缓存键
-            var scopeUID:String = String(Dictionary.getStaticUID(scope));
-            cacheKey = String((scopeUID << 16) | methodUID);  // 将作用域和方法的 UID 组合成缓存键
-            //  ServerManager.getInstance().sendServerMessage("create "+ cacheKey + " " + ObjectUtil.toString(arguments));
-            //  trace(cacheKey)
-            // 尝试从缓存中获取已存在的委托函数
+            // 缓存未命中，创建一个新的委托函数
+            // 这个委托函数将显式地使用 method.call(null, ...) 或 method.apply(null, ...)
+            // 来确保方法在 null (全局) 作用域下执行。
+            var wrappedGlobalFunction:Function = function() {
+                 // 使用 call(null, ...) 或 apply(null, ...) 来将 'this' 绑定到 null (全局作用域)
+                 // 根据参数数量优化调用方式，避免不必要的数组创建
+                 var len:Number = arguments.length;
+                 if (len == 0) return method.call(null); // 无参数
+                 else if (len == 1) return method.call(null, arguments[0]); // 1 参数
+                 else if (len == 2) return method.call(null, arguments[0], arguments[1]); // 2 参数
+                 else if (len == 3) return method.call(null, arguments[0], arguments[1], arguments[2]); // 3 参数
+                 else if (len == 4) return method.call(null, arguments[0], arguments[1], arguments[2], arguments[3]); // 4 参数
+                 else if (len == 5) return method.call(null, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]); // 5 参数
+                 else return method.apply(null, arguments); // 5 个以上参数，使用 apply
+            };
+
+            // 将新创建的委托函数存入缓存
+            loccache[cacheKey] = wrappedGlobalFunction;
+
+            // 返回新创建的委托函数
+            return wrappedGlobalFunction;
+
+        }
+        // --- 处理 scope != null 的情况 (现有逻辑) ---
+        else {
+            // 当 scope 不为 null 时，表示希望函数绑定到特定的对象实例。
+            // 获取作用域对象的唯一标识符
+            var scopeUID:String = String(Dictionary.getStaticUID(scope)); // 假设 Dictionary.getStaticUID 返回 uint，转换为 String
+
+            // 生成缓存键：结合 scope 和 method 的 UID。
+            // 使用字符串连接通常比位运算更健壮，尤其当 UID 可能很大或为负数时。
+            cacheKey = scopeUID + "_" + methodUID;
+
+            // 检查缓存中是否已存在对应的特定作用域委托函数
             var cachedFunctionScope:Function = loccache[cacheKey];
             if (cachedFunctionScope != undefined) {
+                // 缓存命中，直接返回缓存的委托函数
                 return cachedFunctionScope;
             }
 
-            // 创建新的委托函数，绑定到指定的作用域并针对参数数量优化调用逻辑
+            // 缓存未命中，创建一个新的委托函数
+            // 这个委托函数将使用 method.call(scope, ...) 或 method.apply(scope, ...)
+            // 来确保方法在指定的 scope 作用域下执行。
             var wrappedFunctionScope:Function = function() {
+                // 使用 call(scope, ...) 或 apply(scope, ...) 将 'this' 绑定到指定的 scope
+                // 根据参数数量优化调用方式
                 var len:Number = arguments.length;
-                if (len == 0) return method.call(scope);
-                else if (len == 1) return method.call(scope, arguments[0]);
-                else if (len == 2) return method.call(scope, arguments[0], arguments[1]);
-                else if (len == 3) return method.call(scope, arguments[0], arguments[1], arguments[2]);
-                else if (len == 4) return method.call(scope, arguments[0], arguments[1], arguments[2], arguments[3]);
-                else if (len == 5) return method.call(scope, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]);
-                else return method.apply(scope, arguments);  // 对于超过5个参数的情况，使用 apply 调用
+                if (len == 0) return method.call(scope); // 无参数
+                else if (len == 1) return method.call(scope, arguments[0]); // 1 参数
+                else if (len == 2) return method.call(scope, arguments[0], arguments[1]); // 2 参数
+                else if (len == 3) return method.call(scope, arguments[0], arguments[1], arguments[2]); // 3 参数
+                else if (len == 4) return method.call(scope, arguments[0], arguments[1], arguments[2], arguments[3]); // 4 参数
+                else if (len == 5) return method.call(scope, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]); // 5 参数
+                else return method.apply(scope, arguments); // 5 个以上参数，使用 apply
             };
 
-            // 将新创建的委托函数缓存起来，供后续调用复用
+            // 将新创建的委托函数存入缓存
             loccache[cacheKey] = wrappedFunctionScope;
+
+            // 返回新创建的委托函数
             return wrappedFunctionScope;
         }
     }

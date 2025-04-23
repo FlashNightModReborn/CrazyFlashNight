@@ -487,7 +487,7 @@ Performance Test: Publishing event to 1000 subscribers took 10 ms.
 
 ```actionscript2
 
-var test:org.flashNight.neur.Event.EventDispatcherTest = new org.flashNight.neur.Event.EventDispatcherTest();
+var test:org.flashNight.neur.Event.EventDispatcherExtendedTest = new org.flashNight.neur.Event.EventDispatcherExtendedTest();
 test.runAllTests();
 
 ```
