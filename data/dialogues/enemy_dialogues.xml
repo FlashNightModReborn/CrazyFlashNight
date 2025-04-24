@@ -32,7 +32,7 @@
          <Text>我这儿有货，价格公道，南面公社那收来的。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>想搞点芙蓉公社的零嘴……但不如喝酒。</Text>
          <MinIntention>0</MinIntention>
@@ -42,7 +42,7 @@
          <Text>要找点乐子？那你来对地方了。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>老子会"子弹时间"：把手表塞进弹仓，开枪时敌人就会愣住看时间。另外这招不能对着僵尸用。</Text>
          <MinIntention>0</MinIntention>
@@ -127,17 +127,17 @@
          <Text>知道为啥下水道的耗子能长到狗那么大吗？听说黑铁会往地里倒的符水比辐射还带劲。</Text>
          <MinIntention>2</MinIntention>
          <MaxIntention>4</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>变异老鼠会偷硬币，现在黑市里流通的金币，一半都带着老鼠牙印。</Text>
          <MinIntention>2</MinIntention>
          <MaxIntention>4</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>东区垃圾场挖出个自动售货机，投币口卡着三颗眼球——猜猜最后吐出来的是汽水还是脑浆？</Text>
          <MinIntention>2</MinIntention>
          <MaxIntention>4</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>联合大学那帮书呆子最近在黑市悬赏活体僵尸，说是要搞什么"亡灵经济复兴计划"。</Text>
          <MinIntention>2</MinIntention>
@@ -157,7 +157,7 @@
          <Text>别跟面具佬办事，没好下场。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>听说过东街那戴防毒面具的傻子没？他以为捡到宝贝了，其实是火凤堂堂主的洗脚水。</Text>
          <MinIntention>0</MinIntention>
@@ -252,6 +252,16 @@
          <Text>有个穿兜帽的家伙来找人，给出的赏金很高……但我敢打赌，找到之后活不过一晚上。</Text>
          <MinIntention>1</MinIntention>
          <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>接着走你的。有些角落黑得很，你带的光不够……或者说，金币不够。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>轻轨那边出没一种刺猬，能吃会跑，还学会了拆火车头……你信不？</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
       </Dialogue>
    </Group>
    <!-- 填塞超多设定的黑铁会对话 -->
@@ -674,6 +684,26 @@
          <MinIntention>1</MinIntention>
          <MaxIntention>2</MaxIntention>
       </Dialogue>
+      <Dialogue>
+         <Text>祖训上写：“持铁为道，持心为义”，老子寻思着，拿铁也是铁，续命刚刚好。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>教主谕令“巩固根基”，可黑龙堂把好钢都留着了。俺们总不能用信仰和泥巴打地基？</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>疑虑只配蒙蔽弱者之心。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>我们脚下是土，手上是血。这血土之污，锈铸黑铁。</Text>
+         <MinIntention>1</Intention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
    </Group>
    <!-- 摇滚对话 -->
    <Group>
@@ -697,7 +727,7 @@
          <Text>不知道城市外面现在变成了什么样子。</Text>
          <MinIntention>2</MinIntention>
          <MaxIntention>4</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>郊区外的月光现在照着的，恐怕只剩断壁残垣了吧...真想带姐妹们去看看战前的灯光秀啊。</Text>
          <MinIntention>2</MinIntention>
@@ -777,12 +807,12 @@
          <Text>为什么狂野玫瑰发展这么快？因为末世里，人人都想要能让自己活下去的力量。</Text>
          <MinIntention>2</MinIntention>
          <MaxIntention>4</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>废墟里想摘朵玫瑰？当心被扎得满手鲜血。</Text>
          <MinIntention>2</MinIntention>
          <MaxIntention>4</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>小心，姐姐的鞭挞可不是开玩笑的哦~</Text>
          <MinIntention>2</MinIntention>
@@ -812,11 +842,19 @@
          <Text>塔罗显示你要遭遇桃花劫？别怕，姐姐们帮你把关——能接住十招的才有资格送花。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
-      </Dialogue>      
+      </Dialogue>
       <Dialogue>
          <Text>敢和姐姐比射击？目标是三百米外的口红盖子，赌注是...帮你画个战损妆。</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
       </Dialogue>
+      <Dialogue>
+         <Text>哎呀你看看你～那副安安静静的小眼神，连呼吸都像在给别人腾舞台灯光似的～姐姐瞧着啊，你天生就是那种在角落里弹贝斯的命～没人注意你，但一停大家都怪你～嘻嘻～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+
+
+
    </Group>
 </Dialogues>
