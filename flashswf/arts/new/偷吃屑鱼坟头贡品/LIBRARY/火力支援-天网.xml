@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-特殊组/火力支援-天网" itemID="680990de-00002ee7" linkageExportForAS="true" linkageIdentifier="火力支援-天网" lastModified="1745457619">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="火力支援-天网" itemID="680990de-00002ee7" linkageExportForAS="true" linkageIdentifier="火力支援-天网" lastModified="1745465853" lastUniqueIdentifier="9">
   <timeline>
-    <DOMTimeline name="火力支援-天网" currentFrame="65">
+    <DOMTimeline name="火力支援-天网" currentFrame="64">
       <layers>
         <DOMLayer name="Labels Layer" color="#F9F958" locked="true">
           <frames>
@@ -59,20 +59,12 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 3" color="#EE9E14">
+        <DOMLayer name="Layer 3" color="#EE9E14" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="19" duration="10" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017">
-              <tweens>
-                <CustomEase target="all">
-                  <Point/>
-                  <Point x="0.3333" y="0.3333"/>
-                  <Point x="0.6667" y="0.6667"/>
-                  <Point x="1" y="1"/>
-                </CustomEase>
-              </tweens>
+            <DOMFrame index="19" keyMode="15872">
               <elements>
                 <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="-273.3">
                   <matrix>
@@ -86,6 +78,168 @@ this.removeMovieClip();
                   </filters>
                   <color>
                     <Color alphaMultiplier="0.2109375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="-239.55">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-3.5" ty="-325.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.2890625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="-205.8">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-3.5" ty="-292.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.3671875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="-172.05">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-3.5" ty="-258.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.4453125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="-138.3">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-3.5" ty="-224.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5234375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="-104.55">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-3.5" ty="-190.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6015625"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="-70.8">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-3.5" ty="-157.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.6796875"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="-37.05">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-3.5" ty="-123.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.7578125"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="-3.3">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-3.5" ty="-89.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.83984375"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="15872">
+              <elements>
+                <DOMSymbolInstance libraryItemName="天网炮弹" centerPoint3DX="10" centerPoint3DY="30.45">
+                  <matrix>
+                    <Matrix a="0.999984741210938" d="0.999984741210938" tx="-3.5" ty="-55.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.91796875"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
@@ -110,7 +264,7 @@ this.removeMovieClip();
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" current="true" isSelected="true">
+        <DOMLayer name="图层 2" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
