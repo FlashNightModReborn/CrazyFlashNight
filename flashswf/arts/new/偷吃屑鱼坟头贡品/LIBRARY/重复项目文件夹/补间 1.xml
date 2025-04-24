@@ -1,0 +1,52 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="重复项目文件夹/补间 1" itemID="6807d87d-00002a32" symbolType="graphic" lastModified="1745340893">
+  <timeline>
+    <DOMTimeline name="补间 1">
+      <layers>
+        <DOMLayer name="图层 1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup selected="true">
+                  <members>
+                    <DOMSymbolInstance libraryItemName="重复项目文件夹/ARMS fingerB 副本" selected="true" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="-0.824951171875" b="-0.561553955078125" c="0.561630249023438" d="-0.825210571289063" tx="-3.9" ty="11.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="4.85" y="5.55"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="重复项目文件夹/ARMS fingerB 副本" selected="true" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="-0.824951171875" b="-0.561553955078125" c="0.561630249023438" d="-0.825210571289063" tx="0.25" ty="12.85"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="2.5" y="6.3"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                    <DOMSymbolInstance libraryItemName="重复项目文件夹/ARMS fingerB 副本" selected="true" symbolType="graphic" loop="loop">
+                      <matrix>
+                        <Matrix a="-0.824951171875" b="-0.561553955078125" c="0.561630249023438" d="-0.825210571289063" tx="-6.65" ty="10.4"/>
+                      </matrix>
+                      <transformationPoint>
+                        <Point x="3.4" y="5.95"/>
+                      </transformationPoint>
+                    </DOMSymbolInstance>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/ARMS handpartA2 副本" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.826614379882813" b="0.562332153320313" c="-0.562332153320313" d="0.826614379882813" tx="-0.45" ty="-12.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="7.45" y="7.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

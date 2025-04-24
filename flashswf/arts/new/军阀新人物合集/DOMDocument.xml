@@ -204,7 +204,7 @@
           <Include href="吴豫Itinerant/1.特效文件夹/Graphic/shape 2027.xml" itemIcon="1" loadImmediate="false" itemID="66a13766-000005a4" lastModified="1477651346"/>
           <Include href="吴豫Itinerant/cs6用动画/被击 复制.xml" loadImmediate="false" itemID="669a3add-00002bf9" lastModified="1722139659"/>
           <Include href="吴豫Itinerant/cs6用动画/呼吸待机 复制.xml" loadImmediate="false" itemID="669a3acd-00002b03" lastModified="1721842607"/>
-          <Include href="吴豫Itinerant/cs6用动画/技能 复制.xml" loadImmediate="false" itemID="669a3ad3-00002b8e" lastModified="1730041829"/>
+          <Include href="吴豫Itinerant/cs6用动画/技能 复制.xml" loadImmediate="false" itemID="669a3ad3-00002b8e" lastModified="1745448782"/>
           <Include href="吴豫Itinerant/cs6用动画/空手 复制.xml" loadImmediate="false" itemID="669a3ac8-00002acf" lastModified="1722244364"/>
           <Include href="吴豫Itinerant/cs6用动画/跑步 复制.xml" loadImmediate="false" itemID="669a3ad8-00002bc2" lastModified="1722244181"/>
           <Include href="吴豫Itinerant/cs6用动画/死亡 复制.xml" loadImmediate="false" itemID="669a3ae2-00002c42" lastModified="1722011900"/>
@@ -364,7 +364,7 @@
           <Include href="阎凝儿gazer/动画/刀光动画.xml" loadImmediate="false" itemID="665b57be-00000ccc" lastModified="1717262273"/>
           <Include href="阎凝儿gazer/动画合集/纯被击.xml" loadImmediate="false" itemID="665c3502-00002128" lastModified="1722241815"/>
           <Include href="阎凝儿gazer/动画合集/攻击动作.xml" loadImmediate="false" itemID="665b657b-000043b1" lastModified="1723207773"/>
-          <Include href="阎凝儿gazer/动画合集/击倒.xml" loadImmediate="false" itemID="665c3506-00002129" lastModified="1729775776"/>
+          <Include href="阎凝儿gazer/动画合集/击倒.xml" loadImmediate="false" itemID="665c3506-00002129" lastModified="1745346564"/>
           <Include href="阎凝儿gazer/动画合集/静止动作.xml" loadImmediate="false" itemID="665b6534-000043ad" lastModified="1717306282"/>
           <Include href="阎凝儿gazer/动画合集/跑步动作.xml" loadImmediate="false" itemID="665b6545-000043ae" lastModified="1717265733"/>
           <Include href="阎凝儿gazer/动画合集/普通攻击动作.xml" loadImmediate="false" itemID="665b6564-000043b0" lastModified="1722243372"/>
@@ -493,7 +493,7 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="敌人-Surveyor" selected="true" centerPoint3DX="584.9" centerPoint3DY="144.55">
+                                        <DOMSymbolInstance libraryItemName="敌人-Surveyor" centerPoint3DX="584.9" centerPoint3DY="144.55">
                                              <matrix>
                                                   <Matrix tx="260.3" ty="233.75"/>
                                              </matrix>
@@ -509,7 +509,7 @@
                                                   <Point x="324.55" y="-89.2"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMSymbolInstance libraryItemName="敌人-Itinerant" centerPoint3DX="679.9" centerPoint3DY="374.05">
+                                        <DOMSymbolInstance libraryItemName="敌人-Itinerant" selected="true" centerPoint3DX="679.9" centerPoint3DY="374.05">
                                              <matrix>
                                                   <Matrix tx="273.05" ty="463.25"/>
                                              </matrix>

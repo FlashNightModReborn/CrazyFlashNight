@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/cs6用动画/技能 复制" itemID="669a3ad3-00002b8e" lastModified="1730041829" lastUniqueIdentifier="1271">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="吴豫Itinerant/cs6用动画/技能 复制" itemID="669a3ad3-00002b8e" lastModified="1745448782" lastUniqueIdentifier="1271">
   <timeline>
-    <DOMTimeline name="技能 复制" currentFrame="299" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;413&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="技能 复制" currentFrame="39" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;413&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
         <DOMLayer name="图层_12" color="#FF4FFF">
           <frames>
@@ -801,7 +801,7 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 6" color="#808080">
+        <DOMLayer name="图层 6" color="#808080" outline="true" useOutlineView="true" visible="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>
@@ -2116,7 +2116,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="蓄积特效5" color="#FF800A" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="蓄积特效5" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="40" keyMode="9728">
               <elements/>
@@ -3114,7 +3114,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="46" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 1">
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 1" centerPoint3DX="561.55" centerPoint3DY="234.65">
                   <matrix>
                     <Matrix a="0" b="0.43487548828125" c="-0.43487548828125" d="0" tx="655.1" ty="154.6"/>
                   </matrix>
@@ -3129,7 +3129,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="47" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 2">
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 2" centerPoint3DX="564.85" centerPoint3DY="236.75">
                   <matrix>
                     <Matrix a="0" b="0.43487548828125" c="-0.43487548828125" d="0" tx="661.6" ty="156.7"/>
                   </matrix>
@@ -3144,7 +3144,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="48" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 3">
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 3" centerPoint3DX="522.7" centerPoint3DY="229.45">
                   <matrix>
                     <Matrix a="0" b="0.43487548828125" c="-0.43487548828125" d="0" tx="613.2" ty="95.2"/>
                   </matrix>
@@ -3167,14 +3167,14 @@ onClipEvent (enterFrame) {
                     <Point x="308.7" y="276.4"/>
                   </transformationPoint>
                   <color>
-                    <Color tintMultiplier="0.65" tintColor="#464646"/>
+                    <Color tintMultiplier="0.65" tintColor="#FF0000"/>
                   </color>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
             <DOMFrame index="50" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 4">
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 4" centerPoint3DX="427.65" centerPoint3DY="261.1">
                   <matrix>
                     <Matrix a="0" b="0.43487548828125" c="-0.43487548828125" d="0" tx="523.15" ty="102.75"/>
                   </matrix>
@@ -3189,7 +3189,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="52" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 5">
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 5" centerPoint3DX="432.2" centerPoint3DY="246.5">
                   <matrix>
                     <Matrix a="0" b="0.43487548828125" c="-0.43487548828125" d="0" tx="522.95" ty="81.2"/>
                   </matrix>
@@ -3204,7 +3204,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
             <DOMFrame index="54" duration="2" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 6">
+                <DOMSymbolInstance libraryItemName="吴豫Itinerant/人物素材/重复项目文件夹/元件 6" selected="true" centerPoint3DX="418.45" centerPoint3DY="233.9">
                   <matrix>
                     <Matrix a="0" b="0.43487548828125" c="-0.43487548828125" d="0" tx="480.45" ty="90.35"/>
                   </matrix>
@@ -45792,7 +45792,7 @@ onClipEvent (enterFrame) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="sound_layer" color="#9933CC" parentLayerIndex="20" autoNamed="false">
+        <DOMLayer name="sound_layer" color="#9933CC" parentLayerIndex="20" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="12" keyMode="9728">
               <elements/>

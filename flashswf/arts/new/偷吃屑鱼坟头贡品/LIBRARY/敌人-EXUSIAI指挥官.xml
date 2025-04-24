@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-EXUSIAI指挥官" itemID="66560b74-00000da6" linkageExportForAS="true" linkageIdentifier="敌人-EXUSIAI指挥官" lastModified="1744702988" lastUniqueIdentifier="47">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人-EXUSIAI指挥官" itemID="66560b74-00000da6" linkageExportForAS="true" linkageIdentifier="敌人-EXUSIAI指挥官" lastModified="1745459393" lastUniqueIdentifier="55">
   <timeline>
     <DOMTimeline name="敌人-EXUSIAI指挥官">
       <layers>
@@ -126,7 +126,7 @@ this.魔法抗性 = {基础: 10 + this.等级 *0.8, 热:0 ,冷:100, 冲:50, 蚀:
 //以下攻击范围在对应技能库启用时生效
 横向攻击Z轴范围 = 90;
 横向攻击X轴范围 = 220;
-
+/*
 近战技能库.push("近战连击");
 近战技能库.push("跑步后空翻踢");
 近战技能库.push("空中弹雨");
@@ -142,6 +142,16 @@ this.魔法抗性 = {基础: 10 + this.等级 *0.8, 热:0 ,冷:100, 冲:50, 蚀:
 超远程技能库.push("跑步火炮射击");
 超远程技能库.push("空中弹雨");
 超远程技能库.push("车祸现场");
+*/
+//测试新招
+近战技能库.push("进阶后空翻");
+中程技能库.push("超级车祸现场");
+中程技能库.push("进阶火炮射击");
+远程技能库.push("进阶火炮射击");
+远程技能库.push("超级车祸现场");
+远程技能库.push("破坏死光");
+超远程技能库.push("破坏死光");
+超远程技能库.push("火力全开");
 
 近战技能随机数 = 近战技能库.length;
 中程技能随机数 = 中程技能库.length;
@@ -462,11 +472,11 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="逻辑ai层" color="#B2728A" outline="true" useOutlineView="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="思考标签 短" selected="true" centerPoint3DX="-33.95" centerPoint3DY="17">
+                <DOMSymbolInstance libraryItemName="思考标签 短" centerPoint3DX="-33.95" centerPoint3DY="17">
                   <matrix>
                     <Matrix tx="-36.45" ty="14.5"/>
                   </matrix>
@@ -509,7 +519,7 @@ on(rollOut){
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="人物层" color="#EECCB6" autoNamed="false" heightLiteral="24">
+        <DOMLayer name="人物层" color="#EECCB6" current="true" isSelected="true" autoNamed="false" heightLiteral="24">
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>

@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="阎凝儿gazer/动画合集/击倒" itemID="665c3506-00002129" lastModified="1729775776" lastUniqueIdentifier="2420">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="阎凝儿gazer/动画合集/击倒" itemID="665c3506-00002129" lastModified="1745346564" lastUniqueIdentifier="2420">
   <timeline>
-    <DOMTimeline name="击倒" currentFrame="76" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;310&lt;/guideline&gt;&lt;guideline direction="v"&gt;61&lt;/guideline&gt;&lt;/guidelines&gt;'>
+    <DOMTimeline name="击倒" currentFrame="37" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;310&lt;/guideline&gt;&lt;guideline direction="v"&gt;61&lt;/guideline&gt;&lt;/guidelines&gt;'>
       <layers>
-        <DOMLayer name="Script Layer" color="#9933CC" locked="true" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="Script Layer" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" name="格挡" labelType="name" keyMode="9728">
               <elements/>
@@ -44,7 +44,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#4FFF4F" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
               <Actionscript>
@@ -105,14 +105,14 @@ _parent.浮空高度 = 0;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#9933CC" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#9933CC" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="38" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="追踪代码" color="#FF800A" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="追踪代码" color="#FF800A" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
               <elements/>
@@ -195,7 +195,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="位移层" color="#FF4FFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="位移层" color="#FF4FFF" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="7" keyMode="9728">
               <elements/>
@@ -246,7 +246,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_27" color="#FF800A" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_27" color="#FF800A" locked="true">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <elements/>
@@ -259,7 +259,7 @@ else
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 4" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 4" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -292,7 +292,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 7" color="#4F80FF" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 7" color="#4F80FF" locked="true">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <elements/>
@@ -302,7 +302,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 5" color="#4FFFFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 5" color="#4FFFFF">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -868,7 +868,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 6" color="#808080" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 6" color="#808080" locked="true">
           <frames>
             <DOMFrame index="0" duration="17" keyMode="9728">
               <elements/>
@@ -1318,7 +1318,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_32" color="#FF4F4F" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_32" color="#FF4F4F" locked="true">
           <frames>
             <DOMFrame index="0" duration="37" keyMode="9728">
               <elements/>
@@ -1367,7 +1367,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_31" color="#669900" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_31" color="#669900" locked="true">
           <frames>
             <DOMFrame index="0" duration="36" keyMode="9728">
               <elements/>
@@ -1416,7 +1416,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_30" color="#FF0000" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_30" color="#FF0000" locked="true">
           <frames>
             <DOMFrame index="0" duration="35" keyMode="9728">
               <elements/>
@@ -1450,7 +1450,7 @@ onClipEvent (unload) {
             </DOMFrame>
             <DOMFrame index="38" keyMode="9728">
               <elements>
-                <DOMBitmapInstance libraryItemName="阎凝儿gazer/特效/位图 21">
+                <DOMBitmapInstance selected="true" libraryItemName="阎凝儿gazer/特效/位图 21">
                   <matrix>
                     <Matrix tx="22.5" ty="-11.15"/>
                   </matrix>
@@ -1465,7 +1465,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_29" color="#009999" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_29" color="#009999">
           <frames>
             <DOMFrame index="0" duration="34" keyMode="9728">
               <elements/>
@@ -1555,7 +1555,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_28" color="#FF4FFF" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_28" color="#FF4FFF">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <elements/>
@@ -1642,7 +1642,7 @@ onClipEvent (unload) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#FF800A" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#FF800A" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <elements/>
@@ -1753,7 +1753,7 @@ _root.子弹区域shoot传递(子弹属性);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="代码层" color="#808080" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="代码层" color="#808080" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="33" keyMode="9728">
               <elements/>
@@ -1790,7 +1790,7 @@ _root.子弹区域shoot传递(子弹属性);]]></script>
             </DOMFrame>
             <DOMFrame index="35" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="透明控件" name="攻击点" selected="true" centerPoint3DX="44.15" centerPoint3DY="-2.65">
+                <DOMSymbolInstance libraryItemName="透明控件" name="攻击点" centerPoint3DX="44.15" centerPoint3DY="-2.65">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="31.65" ty="-15.15"/>
                   </matrix>
@@ -1820,7 +1820,7 @@ _root.子弹区域shoot传递(子弹属性);]]></script>
             </DOMFrame>
             <DOMFrame index="37" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="透明控件" name="攻击点" centerPoint3DX="-62.75" centerPoint3DY="-91.05">
+                <DOMSymbolInstance libraryItemName="透明控件" name="攻击点" selected="true" centerPoint3DX="-62.75" centerPoint3DY="-91.05">
                   <matrix>
                     <Matrix a="0.526702880859375" d="0.516220092773438" tx="-75.25" ty="-103.55"/>
                   </matrix>
@@ -1844,7 +1844,7 @@ _root.子弹区域shoot传递(子弹属性);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层_26" color="#9933CC" outline="true" useOutlineView="true">
+        <DOMLayer name="图层_26" color="#9933CC">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
@@ -2263,7 +2263,7 @@ _root.子弹区域shoot传递(子弹属性);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="MergedLayer_1" color="#00FFFF" locked="true" outline="true" useOutlineView="true" autoNamed="false">
+        <DOMLayer name="MergedLayer_1" color="#00FFFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -20955,7 +20955,7 @@ _root.子弹区域shoot传递(子弹属性);]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 2" color="#9933CC" locked="true" outline="true" useOutlineView="true">
+        <DOMLayer name="图层 2" color="#9933CC" locked="true">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
               <elements/>
