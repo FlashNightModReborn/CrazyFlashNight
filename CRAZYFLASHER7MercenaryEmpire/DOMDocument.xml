@@ -4,10 +4,10 @@
           <DOMFolderItem name="font" itemID="65977cd0-00001d33" isExpanded="true"/>
           <DOMFolderItem name="image" itemID="65976161-00000eac"/>
           <DOMFolderItem name="import" itemID="65977cdc-00001d38" isExpanded="true"/>
-          <DOMFolderItem name="import/arts" itemID="65981594-00000b2f" isExpanded="true"/>
+          <DOMFolderItem name="import/arts" itemID="65981594-00000b2f"/>
           <DOMFolderItem name="import/scripts" itemID="65996a47-00000b1c"/>
-          <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13" isExpanded="true"/>
-          <DOMFolderItem name="import/关卡地图" itemID="65c78d54-00000eac" isExpanded="true"/>
+          <DOMFolderItem name="import/UI组件" itemID="6700c220-00000b13"/>
+          <DOMFolderItem name="import/关卡地图" itemID="65c78d54-00000eac"/>
           <DOMFolderItem name="import/弃用关卡地图" itemID="664a1e04-00000cbd"/>
           <DOMFolderItem name="import/外部地图" itemID="65d313c5-00000b63" isExpanded="true"/>
           <DOMFolderItem name="shape" itemID="6597616a-00000eb3"/>
@@ -907,12 +907,12 @@
           <Include href="弹出公告UI/弹出公告界面.xml" loadImmediate="false" itemID="65bb977f-00000c80" lastModified="1706874282"/>
           <Include href="弹出公告UI/公告消息栏.xml" loadImmediate="false" itemID="65bb922d-000001f2" lastModified="1706795494"/>
           <Include href="弹出公告UI/任务开启栏.xml" loadImmediate="false" itemID="65bb9236-000001f5" lastModified="1706795449"/>
-          <Include href="地图-实验室.xml" itemID="67c167e0-00000bf4" lastModified="1740728289"/>
           <Include href="底部UI/底部UI按钮1.xml" itemIcon="0" loadImmediate="false" itemID="66365767-0000211f" lastModified="1740332184"/>
           <Include href="底部UI/底部UI按钮2.xml" itemIcon="0" loadImmediate="false" itemID="66365816-00002174" lastModified="1716478150"/>
           <Include href="底部UI/底部UI组.xml" loadImmediate="false" itemID="6636575b-0000211d" lastModified="1728102640"/>
           <Include href="底部UI/平板电脑.xml" loadImmediate="false" itemID="6700c0f0-00000a9f" lastModified="1728102640"/>
           <Include href="底部UI/原版4图标备份.xml" loadImmediate="false" itemID="664df9ac-00004b87" lastModified="1716386220"/>
+          <Include href="地图-实验室.xml" itemID="67c167e0-00000bf4" lastModified="1740728289"/>
           <Include href="全局音量mc.xml" loadImmediate="false" itemID="67ada6a8-00000794" lastModified="1740072967"/>
           <Include href="全屏UI层.xml" loadImmediate="false" itemID="67cea723-000006eb" lastModified="1741596473"/>
           <Include href="天空盒.xml" loadImmediate="false" itemID="6787e1ac-0000055e" lastModified="1736960730"/>
@@ -921,7 +921,7 @@
           <Include href="外部导入UI界面.xml" loadImmediate="false" itemID="67162590-0000093d" lastModified="1736954576"/>
      </symbols>
      <timelines>
-          <DOMTimeline name="Scene 1" currentFrame="40" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
+          <DOMTimeline name="Scene 1" currentFrame="6" guides='&lt;guidelines&gt;&lt;guideline direction="h"&gt;0&lt;/guideline&gt;&lt;guideline direction="h"&gt;575&lt;/guideline&gt;&lt;guideline direction="v"&gt;0&lt;/guideline&gt;&lt;guideline direction="v"&gt;1023&lt;/guideline&gt;&lt;guideline direction="h"&gt;397&lt;/guideline&gt;&lt;guideline direction="h"&gt;72&lt;/guideline&gt;&lt;guideline direction="h"&gt;30&lt;/guideline&gt;&lt;guideline direction="h"&gt;19&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>
                     <DOMLayer name="Labels Layer 1" color="#E88C68" autoNamed="false">
                          <frames>
@@ -1056,13 +1056,13 @@
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="as" color="#7B84C3" current="true" isSelected="true" autoNamed="false">
+                    <DOMLayer name="as" color="#7B84C3" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="5" keyMode="9728">
                                    <Actionscript>
                                         <script><![CDATA[_root.isSWF = true;
 _root.加载片头动画 = false;
-stop();
+
 /*
 function 解析(数据)
 {
@@ -1984,19 +1984,7 @@ _root.无限过图模式 = true;
                     <DOMLayer name="加载画面与控件" color="#9933CC" autoNamed="false" layerType="folder"/>
                     <DOMLayer name="asLoader" color="#E75895" parentLayerIndex="7" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="14" keyMode="9728">
-                                   <elements>
-                                        <DOMSymbolInstance libraryItemName="import/_check" name="_check" centerPoint3DX="12.5" centerPoint3DY="612.55">
-                                             <matrix>
-                                                  <Matrix ty="600.05"/>
-                                             </matrix>
-                                             <transformationPoint>
-                                                  <Point x="12.5" y="12.5"/>
-                                             </transformationPoint>
-                                        </DOMSymbolInstance>
-                                   </elements>
-                              </DOMFrame>
-                              <DOMFrame index="14" duration="19" keyMode="9728">
+                              <DOMFrame index="0" duration="33" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="33" keyMode="9728">
@@ -2018,7 +2006,10 @@ _root.无限过图模式 = true;
                     </DOMLayer>
                     <DOMLayer name="import assets" color="#FF800A" parentLayerIndex="7" autoNamed="false">
                          <frames>
-                              <DOMFrame index="0" duration="40" keyMode="9728">
+                              <DOMFrame index="0" duration="14" keyMode="9728">
+                                   <elements/>
+                              </DOMFrame>
+                              <DOMFrame index="14" duration="26" keyMode="9728">
                                    <elements/>
                               </DOMFrame>
                               <DOMFrame index="40" keyMode="9728">
@@ -2590,7 +2581,7 @@ onClipEvent (mouseMove) {
                               </DOMFrame>
                          </frames>
                     </DOMLayer>
-                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="7" autoNamed="false">
+                    <DOMLayer name="Layer 179" color="#417BFC" parentLayerIndex="7" current="true" isSelected="true" autoNamed="false">
                          <frames>
                               <DOMFrame index="0" duration="5" keyMode="9728">
                                    <elements/>
@@ -3024,7 +3015,7 @@ onClipEvent (mouseMove) {
                                                   </DOMTextRun>
                                              </textRuns>
                                         </DOMStaticText>
-                                        <DOMSymbolInstance libraryItemName="sprite/确认按钮" name="按钮" centerPoint3DX="508.35" centerPoint3DY="484.05">
+                                        <DOMSymbolInstance libraryItemName="sprite/确认按钮" name="按钮" selected="true" centerPoint3DX="508.35" centerPoint3DY="484.05">
                                              <matrix>
                                                   <Matrix tx="469.35" ty="471.55"/>
                                              </matrix>
@@ -3034,11 +3025,11 @@ onClipEvent (mouseMove) {
                                              <Actionscript>
                                                   <script><![CDATA[onClipEvent (load) {
 	stop();
-	if (!_root._check)
+	/*if (!_root._check)
 	{
 		_root.unloadMovie();
 		_root.loadMovie("flashswf/UI/验证失败界面.swf");
-	}
+	}*/
 }
 on (release) {
 	gotoAndStop(1);
@@ -3380,7 +3371,7 @@ on (rollOut) {
                                                   <Point/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
-                                        <DOMStaticText fontRenderingMode="standard" left="44" width="82.1" height="17.8" autoExpand="true" isSelectable="false">
+                                        <DOMStaticText fontRenderingMode="standard" left="44" width="110.2" height="16" autoExpand="true" isSelectable="false">
                                              <matrix>
                                                   <Matrix tx="248.35" ty="-289"/>
                                              </matrix>
@@ -5073,15 +5064,15 @@ on(rollOut){
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!11465 5270|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11452 5451!11452 5451|11162 5270!11162 5270|11465 5270!11465 5270|11175 5089!11175 5089|10885 4908!10885 4908|10582 4908!10582 4908|10872 5089!10872 5089|10569
- 5089!10569 5089|10859 5270!10859 5270|10555 5270!10555 5270|10845 5451!10845 5451|10542 5451!10542 5451|10252 5270!10252 5270|9949 5270!9949 5270|9659 5089!9659 5089|9355 5089!9355 5089|9065 4908!9065 4908|8762 4908!8762 4908|8472 4727
-!8472 4727|8182 4546!8182 4546|8485 4546!8485 4546|8775 4727!8775 4727|9079 4727!9079 4727|8789 4546!8789 4546|9092 4546!9092 4546|9382 4727!9382 4727|9685 4727!9685 4727|9395 4546!9395 4546|9699 4546!9699 4546|9989 4727!9989 4727|9685
- 4727!9685 4727|9975 4908!9975 4908|9672 4908!9672 4908|9962 5089!9962 5089|9659 5089!9659 5089|9369 4908!9369 4908|9065 4908!9065 4908|8775 4727!9079 4727|9382 4727!9382 4727|9672 4908!9672 4908|9369 4908!9395 4546|9092 4546!9369 4908
-|9079 4727!8472 4727|8775 4727!8789 4546|8485 4546!8762 4908|9052 5089!9052 5089|9342 5270!9342 5270|9633 5451!9633 5451|9935 5451!9935 5451|10239 5451!10239 5451|10542 5451!9342 5270|9645 5270!9645 5270|9949 5270!9355 5089|9052 5089
-!9355 5089|9645 5270!9645 5270|9935 5451!11769 5270|11479 5089!11479 5089|11189 4908!11189 4908|10899 4727!10899 4727|10609 4546!10609 4546|10305 4546!10305 4546|10002 4546!10002 4546|9699 4546!11465 5270|11755 5451!10899 4727|10595 4727
-!10595 4727|10885 4908!10885 4908|11189 4908!10002 4546|10292 4727!10292 4727|10582 4908!10582 4908|10279 4908!10279 4908|9989 4727!10279 4908|9975 4908!9975 4908|10265 5089!10265 5089|9962 5089!10292 4727|9989 4727!9962 5089|10252 5270
-!10239 5451|9949 5270!11452 5451|11149 5451!11149 5451|10859 5270!10859 5270|11162 5270!11479 5089|11175 5089!11175 5089|10872 5089!10872 5089|11162 5270!10845 5451|11149 5451!10555 5270|10252 5270!10555 5270|10265 5089!10265 5089|10569
- 5089!10569 5089|10279 4908!10305 4546|10595 4727!10595 4727|10292 4727"/>
+!10265 5089|9975 4908!9975 4908|10279 4908!10279 4908|9989 4727!9989 4727|9685 4727!9685 4727|9395 4546!9395 4546|9092 4546!9092 4546|9382 4727!9382 4727|9672 4908!9672 4908|9962 5089!9962 5089|10252 5270!10252 5270|9949 5270!9949 5270
+|10239 5451!10239 5451|10542 5451!10542 5451|10252 5270!10252 5270|10555 5270!10555 5270|10845 5451!10845 5451|11149 5451!11149 5451|10859 5270!10859 5270|10555 5270!10555 5270|10265 5089!10265 5089|9962 5089!9962 5089|9659 5089!9659
+ 5089|9355 5089!9355 5089|9645 5270!9645 5270|9949 5270!9949 5270|9659 5089!9659 5089|9369 4908!9369 4908|9079 4727!9079 4727|9382 4727!9382 4727|9685 4727!9685 4727|9975 4908!9395 4546|9699 4546!9699 4546|10002 4546!10002 4546|10305
+ 4546!10305 4546|10609 4546!10609 4546|10899 4727!10899 4727|11189 4908!11189 4908|11479 5089!11479 5089|11769 5270!11769 5270|12059 5451!12059 5451|11755 5451!11755 5451|11465 5270!11465 5270|11175 5089!11175 5089|10872 5089!10872 5089
+|10569 5089!10569 5089|10279 4908!9975 4908|9672 4908!9672 4908|9369 4908!9369 4908|9065 4908!9065 4908|8762 4908!8762 4908|9052 5089!9052 5089|9355 5089!9355 5089|9065 4908!9065 4908|8775 4727!8775 4727|9079 4727!9079 4727|8789 4546
+!8789 4546|8485 4546!8485 4546|8775 4727!8775 4727|8472 4727!8472 4727|8182 4546!8182 4546|8485 4546!8762 4908|8472 4727!9052 5089|9342 5270!9342 5270|9645 5270!9645 5270|9935 5451!9935 5451|10239 5451!9342 5270|9633 5451!9633 5451|9935
+ 5451!8789 4546|9092 4546!11755 5451|11452 5451!11452 5451|11149 5451!10265 5089|10569 5089!10569 5089|10859 5270!10859 5270|11162 5270!11162 5270|11465 5270!11465 5270|11769 5270!11479 5089|11175 5089!11175 5089|10885 4908!10885 4908
+|11189 4908!10305 4546|10595 4727!10595 4727|10885 4908!10885 4908|10582 4908!10582 4908|10279 4908!10899 4727|10595 4727!10595 4727|10292 4727!10292 4727|9989 4727!10002 4546|10292 4727!10845 5451|10542 5451!10292 4727|10582 4908!10582
+ 4908|10872 5089!10872 5089|11162 5270!11452 5451|11162 5270!9699 4546|9989 4727"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="865.35" centerPoint3DY="164.1">
@@ -5524,15 +5515,15 @@ on (rollOut) {
                                              </strokes>
                                              <edges>
                                                   <Edge strokeStyle="1" edges="
-!8752 4895|9042 5076!9042 5076|9345 5076!9345 5076|9055 4895!9055 4895|8752 4895!8752 4895|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!8475 4533|8765 4714!8765 4714|9069 4714!9069 4714|9372 4714!9372 4714|9082 4533!9082 4533|8779
- 4533!8779 4533|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9662 4895|9952 5076!9952 5076|9649 5076!9649 5076|9345 5076!9345 5076|9635 5257!9635 5257|9939 5257!9939 5257|9649 5076!9662 4895|9965 4895!9965 4895|9675 4714!9675 4714
-|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9385 4533|9675 4714!9675 4714|9372 4714!9372 4714|9662 4895!9649 5076|9359 4895!9359 4895|9055 4895!9055 4895|8765 4714!8765 4714|8462 4714!9385 4533|9082 4533!8779 4533|8475 4533!9042
- 5076|9332 5257!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|9635 5257!9332 5257|9635 5257!9965 4895|10269 4895!10269 4895|9979 4714!9979 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895!10875 4895|10585 4714!10585 4714
-|10295 4533!10295 4533|9992 4533!9992 4533|10282 4714!10282 4714|10585 4714!10585 4714|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!11759 5257|11455 5257!11455 5257|11745 5438!11745 5438|12049 5438!12049
- 5438|11759 5257!9925 5438|10229 5438!10229 5438|9939 5257!9939 5257|10242 5257!10242 5257|10532 5438!10532 5438|10835 5438!10835 5438|10545 5257!10545 5257|10242 5257!10242 5257|9952 5076!9952 5076|10255 5076!10255 5076|10559 5076!10559
- 5076|10862 5076!10862 5076|11152 5257!11152 5257|11442 5438!11442 5438|11745 5438!10889 4714|10599 4533!10599 4533|10295 4533!10862 5076|11165 5076!11165 5076|10875 4895!10875 4895|11179 4895!9965 4895|10255 5076!10255 5076|10545 5257
-!10545 5257|10849 5257!10849 5257|10559 5076!10559 5076|10269 4895!10269 4895|10572 4895!11469 5076|11165 5076!11165 5076|11455 5257!11455 5257|11152 5257!11152 5257|10849 5257!10849 5257|11139 5438!11139 5438|11442 5438!10835 5438|11139
- 5438!10862 5076|10572 4895!10532 5438|10229 5438!9992 4533|9689 4533"/>
+!9662 4895|9372 4714!9372 4714|9069 4714!9069 4714|9359 4895!9359 4895|9662 4895!9385 4533|9675 4714!9675 4714|9979 4714!9979 4714|9689 4533!9689 4533|9385 4533!9662 4895|9965 4895!9965 4895|9675 4714!9675 4714|9372 4714!9385 4533|9082
+ 4533!9082 4533|9372 4714!9055 4895|9345 5076!9345 5076|9649 5076!9649 5076|9359 4895!9359 4895|9055 4895!8475 4533|8765 4714!8765 4714|9069 4714!9069 4714|8779 4533!8779 4533|8475 4533!8462 4714|8752 4895!8752 4895|9055 4895!9055 4895
+|8765 4714!8765 4714|8462 4714!8462 4714|8172 4533!8172 4533|8475 4533!9635 5257|9345 5076!9345 5076|9042 5076!9042 5076|9332 5257!9332 5257|9635 5257!9332 5257|9623 5438!9623 5438|9925 5438!9925 5438|9635 5257!9082 4533|8779 4533!8752
+ 4895|9042 5076!11745 5438|11455 5257!11455 5257|11152 5257!11152 5257|11442 5438!11442 5438|11745 5438!11745 5438|12049 5438!12049 5438|11759 5257!11759 5257|11455 5257!9689 4533|9992 4533!9992 4533|10295 4533!10295 4533|10599 4533!10599
+ 4533|10889 4714!10889 4714|11179 4895!11179 4895|11469 5076!11469 5076|11759 5257!10889 4714|10585 4714!10585 4714|10875 4895!10875 4895|11179 4895!10585 4714|10282 4714!10282 4714|10572 4895!10572 4895|10875 4895!9992 4533|10282 4714
+!9979 4714|10282 4714!9965 4895|10269 4895!10269 4895|9979 4714!9662 4895|9952 5076!9952 5076|10255 5076!10255 5076|9965 4895!9952 5076|9649 5076!9649 5076|9939 5257!9939 5257|10242 5257!10242 5257|9952 5076!9925 5438|10229 5438!10229
+ 5438|9939 5257!9939 5257|9635 5257!10835 5438|10545 5257!10545 5257|10242 5257!10242 5257|10532 5438!10532 5438|10835 5438!10862 5076|10572 4895!10572 4895|10269 4895!10269 4895|10559 5076!10559 5076|10862 5076!10849 5257|10559 5076
+!10559 5076|10255 5076!10255 5076|10545 5257!10545 5257|10849 5257!10835 5438|11139 5438!11139 5438|10849 5257!11455 5257|11165 5076!11165 5076|10862 5076!10862 5076|11152 5257!11152 5257|10849 5257!10532 5438|10229 5438!11165 5076|10875
+ 4895!10585 4714|10295 4533!11139 5438|11442 5438!11469 5076|11165 5076"/>
                                              </edges>
                                         </DOMShape>
                                         <DOMSymbolInstance libraryItemName="sprite/Symbol 1055" name="界面-发型选择2" centerPoint3DX="864.85" centerPoint3DY="163.45">
@@ -8335,6 +8326,7 @@ onClipEvent (enterFrame) {
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="1077705" publishTime="1745485899"/>
           <PublishItem publishSize="1076443" publishTime="1744812336"/>
           <PublishItem publishSize="1071084" publishTime="1744812244"/>
           <PublishItem publishSize="1076201" publishTime="1744811901"/>
@@ -8354,6 +8346,5 @@ onClipEvent (enterFrame) {
           <PublishItem publishSize="1102865" publishTime="1740333052"/>
           <PublishItem publishSize="1102750" publishTime="1740332385"/>
           <PublishItem publishSize="1102813" publishTime="1740327500"/>
-          <PublishItem publishSize="1102743" publishTime="1740327212"/>
      </publishHistory>
 </DOMDocument>

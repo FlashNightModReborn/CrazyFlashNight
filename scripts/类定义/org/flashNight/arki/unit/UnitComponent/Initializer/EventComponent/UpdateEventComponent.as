@@ -27,7 +27,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEv
         target.updateEventComponentID = _root.帧计时器.添加生命周期任务(target, label, function ()
         {
             this.dispatcher.publish("UpdateEventComponent", this);
-        }, 130 , target)
+        }, 130)
     }
 
     public static function onUpdate(target:MovieClip):Void {
