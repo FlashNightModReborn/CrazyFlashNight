@@ -701,7 +701,7 @@
       </Dialogue>
       <Dialogue>
          <Text>我们脚下是土，手上是血。这血土之污，锈铸黑铁。</Text>
-         <MinIntention>1</Intention>
+         <MinIntention>1</MinIntention>
          <MaxIntention>3</MaxIntention>
       </Dialogue>
    </Group>
@@ -853,8 +853,5 @@
          <MinIntention>0</MinIntention>
          <MaxIntention>3</MaxIntention>
       </Dialogue>
-
-
-
    </Group>
 </Dialogues>
