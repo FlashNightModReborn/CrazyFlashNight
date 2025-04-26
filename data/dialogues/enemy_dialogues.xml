@@ -263,6 +263,26 @@
          <MinIntention>0</MinIntention>
          <MaxIntention>2</MaxIntention>
       </Dialogue>
+      <Dialogue>
+         <Text>听着，堕落城里要生存得记住三条：第一，见着发光的玩意儿别伸手；第二，开口求饶的肉别往嘴里塞；第三……算了，活着就笑嘻了，挑啥挑。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>别用那种眼神看我，我这身家伙可都是会计开过票的。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>老王从禁区背回一箱酒，喝了之后满嘴荧光……他娘的喝酒自带手电</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>听说军阀那边开始征收"呼吸税"了，关老子屁事。</Text>
+         <MinIntention>3</MinIntention>
+         <MaxIntention>5</MaxIntention>
+      </Dialogue>
    </Group>
    <!-- 填塞超多设定的黑铁会对话 -->
    <Group>
@@ -284,6 +304,11 @@
       </Dialogue>
       <Dialogue>
          <Text>堂主严令我等不得参与追捕通缉犯。难得的机会了结恩怨，真是怪哉……</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>坚守黑铁正朔，方能在这乱世立足！外界的歪理邪说，听都不要听！</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>1</MaxIntention>
       </Dialogue>
@@ -331,6 +356,41 @@
          <Text>堂主一发话，便弄得下面人急忙改弦易辙，好像几句话能改天命似的。</Text>
          <MinIntention>1</MinIntention>
          <MaxIntention>4</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>既说道法自然，何要背诵教义？自然者，不背即忘，背而自然。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>教主他老人家……深不可测啊。我们这些人，连见一面都难</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>前任铁枪堂主……唉，说是人早没了。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>堂主今儿板着脸，怕是水搅浑了。</Text>
+         <MinIntention>2</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>外面的势力想和我们谈合作？天高水深，淹死的都是不知死活的。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>1</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>堂主说话，教众流汗。散人喝酒，教众买单。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>那李教众贪了供品，昨日看教中执刑，用的是"持铁断脉"之古制。铁钳一落，左手齐腕而断，血溅祭坛……此古制诚不可轻犯。</Text>
+         <MinIntention>1</MinIntention>
+         <MaxIntention>3</MaxIntention>
       </Dialogue>
       <Dialogue>
          <Text>今天那伙子又在嘀咕要搞个“祖训重温”，老子只想贪几口黄汤，哪有闲心听那破劳什？</Text>
@@ -660,6 +720,11 @@
          <MaxIntention>4</MaxIntention>
       </Dialogue>
       <Dialogue>
+         <Text>听闻灵知派近来梦见祖训显灵，教我等如何酿酒。试饮之，如饮水沟。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
+      </Dialogue>
+      <Dialogue>
          <Text>宗族共举派的人最近在基层拉票，他们给教众发带符咒的压缩饼干，说吃了能辨忠奸——我怀疑是泻药。</Text>
          <MinIntention>1</MinIntention>
          <MaxIntention>2</MaxIntention>
@@ -703,6 +768,11 @@
          <Text>我们脚下是土，手上是血。这血土之污，锈铸黑铁。</Text>
          <MinIntention>1</MinIntention>
          <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>这酒吧老板也不是一般人，能在各方势力间保持中立，还让我们这些黑铁会的随便进出，定有背景。</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>2</MaxIntention>
       </Dialogue>
    </Group>
    <!-- 摇滚对话 -->
@@ -849,7 +919,52 @@
          <MaxIntention>1</MaxIntention>
       </Dialogue>
       <Dialogue>
+         <Text>哎呀～瞧你这自在模样～不像主唱总得顶在风口浪尖，举手投足都得掂量分寸呢～你这般闲情逸致，倒真是别人求都求不来的造化啊～嘻嘻～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>啧啧啧～瞧你这缩在角落的怂样，天生得是敲键盘的料呢～藏在灯影后边装深沉，按错和弦都没人听见～这种背景板的清闲差事，跟你真搭呢～呵呵～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>哟～瞧你这清高的小范样儿，倒真像个吉他手～台上摆pose装深沉，恨不得全场都看你～只是末世里装高冷可不管用，观众要掌声不要脸～嘻嘻～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
          <Text>哎呀你看看你～那副安安静静的小眼神，连呼吸都像在给别人腾舞台灯光似的～姐姐瞧着啊，你天生就是那种在角落里弹贝斯的命～没人注意你，但一停大家都怪你～嘻嘻～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>啧啧啧～看你这老实本分的样子，最该去打鼓～永远藏在最后，灯光都不舍得照你分毫～别人风光你伴奏，别人失误怪你节奏乱～这甘当绿叶的命数，还真配你～呵呵～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>哎～～～呀！瞧你这、这自在浪打的样儿～主唱可是要钉在十、十字架上当耶稣的～哪像你啊窝在酒杯里打着小圈儿～嗝～嘻嘻嘻～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>啧！滋滋滋～姐姐满耳朵都是你、你琴键的余音～黑键白键叮叮当当～嗝～弹错八个音符都没、没人在意呢～嗯呵呵～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>脸绷得跟、跟断弦前的吉他似的～高音区揉弦给、给鬼魂看呐～烟火绽放时～叮零当啷砸地上的还不是琴弦和瓶盖～嘻嘻～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>瞧、瞧你这眼神儿～低音弦呜呜呜叫得人骨头发酥～嗝～还不就是个、个剪影罢了嘛～舞台暗下谁、谁还记得你的模样～嘻嘻～</Text>
+         <MinIntention>0</MinIntention>
+         <MaxIntention>3</MaxIntention>
+      </Dialogue>
+      <Dialogue>
+         <Text>你这节奏就跟、跟喝断片儿的鼓点～咚、咚咚～嗝～躲墙角儿敲破鼓皮都没人赖你～呵嘿～这命可真、真安逸得很呐～</Text>
          <MinIntention>0</MinIntention>
          <MaxIntention>3</MaxIntention>
       </Dialogue>
