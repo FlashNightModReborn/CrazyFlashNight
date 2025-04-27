@@ -142,7 +142,7 @@ on (release) {
 		_parent.gotoAndStop("消失");
 		return;
 	}
-	if (org.flashNight.arki.item.ItemUtil.singleSubmit("复活币", 1))
+	if (_root.itemAcquire("复活币", 1))
 	{
 		_parent.使用复活币();
 	}
