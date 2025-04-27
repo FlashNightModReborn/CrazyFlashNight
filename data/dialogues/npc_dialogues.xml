@@ -817,6 +817,18 @@
                 <Char>酒保</Char>
                 <Text>嘛，毕竟点酒的目的也不完全是喝，而是搭话。</Text>
             </SubDialogue>
+            <SubDialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>你经常和别人说话吗？</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>是啊，毕竟这也是工作之一。客人点了酒之后闷头喝，那对我们经营来说也不是好事。想想看，你要是进酒吧一片安静，那也挺诡异的。</Text>
+            </SubDialogue>
         </Dialogue>
         <Dialogue id="1">
             <TaskRequirement>0</TaskRequirement>
@@ -830,13 +842,19 @@
                 <Name>酒保</Name>
                 <Title>前情报员</Title>
                 <Char>酒保</Char>
-                <Text>不过因为农产品资源不充足，这酒味道清淡如水是很常见的。当然，有时候农场那边的农作物丰收，这酒味道能好点。</Text>
+                <Text>不过因为农产品资源整体上来说不充足，这酒味道清淡如水是很常见的。当然，有时候农场那边的农作物丰收，这酒味道能好点。</Text>
             </SubDialogue>
             <SubDialogue id="2">
                 <Name>酒保</Name>
                 <Title>前情报员</Title>
                 <Char>酒保</Char>
                 <Text>至于安全性嘛···杀菌这块应该会尽量做。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>A兵团的粮食在内部主要作为口粮使用，也有向外销售。酿酒在这个时代看起来算是浪费，但是如果能维持住基本的士气，那也不算白干。</Text>
             </SubDialogue>
         </Dialogue>
         <Dialogue id="2">
@@ -845,13 +863,31 @@
                 <Name>酒保</Name>
                 <Title>前情报员</Title>
                 <Char>酒保</Char>
-                <Text>废城是很危险的，不仅仅是因为丧尸。实际上，被称为尘都东区的废城的前身可以视为3xf公司的自留地。他们在那里进行过很多实验，至今仍有不少“成果”遗留在如今的废城···</Text>
+                <Text>A兵团内部是有自酿酒的，不过嘛···质量总体来说很差，我这里都不卖的。</Text>
             </SubDialogue>
             <SubDialogue id="1">
                 <Name>酒保</Name>
                 <Title>前情报员</Title>
                 <Char>酒保</Char>
-                <Text>不过我对那个公司的了解仅限于传闻了。如果你能收集到更多相关资料，我也乐意和你交换些情报。</Text>
+                <Text>A兵团的基地是由监狱改造来的，审判日后A兵团吸纳了一部分监狱罪犯，这些人也把自酿酒风气延续下去了。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>监狱的酿酒可是很脏的，还有囚犯在马桶里酿酒呢。这种情况下，卫生问题影响不小。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>我在名义上是A兵团酒类营销负责人，但其实吧，我对酒类管理的权限和A兵团对于手下佣兵的管理权限差不多，都比较有名无实。</Text>
+            </SubDialogue>
+            <SubDialogue id="4">
+                <Name>酒保</Name>
+                <Title>前情报员</Title>
+                <Char>酒保</Char>
+                <Text>要想解决这个问题，恐怕得找囚犯那边的头子。虽然他们目前也不算囚犯了，但是坐牢的经历让他们在A兵团内部形成了一个组织中心。</Text>
             </SubDialogue>
         </Dialogue>
         <Dialogue id="3">
