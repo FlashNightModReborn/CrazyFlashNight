@@ -194,7 +194,6 @@ on(release){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[on (release) {
-	import org.flashNight.arki.item.ItemUtil;
 
 	是否刷新 = false;
 	if (_root.佣兵是否出战信息[_parent.同伴数据数组号] == 0)
