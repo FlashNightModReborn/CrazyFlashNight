@@ -12,8 +12,25 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
     public var initialSpeedRatio:Number = 0.5;
     /** 每帧最大旋转角度（度） */
     public var rotationSpeed:Number = 1;
-    /** 加速度，单位/帧 */
+    /**
+     * 加速度，单位/帧
+     * 推荐值计算公式：acceleration >= C * dragCoefficient * maxSpeed^3
+     * 其中：
+     * - C = 1.0-1.2 用于直线飞行为主的导弹
+     * - C = 1.5-2.0 用于一般机动性的导弹
+     * - C = 2.5-3.0 用于高机动转弯的导弹
+     * 
+     * 示例：
+     * maxSpeed=40, dragCoefficient=0.001 时
+     * - 直线飞行：acceleration >= 40^3 * 0.001 * 1.0 = 64
+     * - 一般机动：acceleration >= 40^3 * 0.001 * 1.5 = 96
+     * - 高机动性：acceleration >= 40^3 * 0.001 * 2.5 = 160
+     */
     public var acceleration:Number = 10;
+    
+    // 物理模拟参数
+    /** 空气阻力系数，与速度平方成正比 */
+    public var dragCoefficient:Number = 0.001;
     
     // 预发射动画参数
     /** 预发射动画帧数范围 */
@@ -62,13 +79,13 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
      * @return MissileConfig 配置实例
      */
     public static function createCustom(settings:Object):MissileConfig {
-        var config:MissileConfig = new MissileConfig();
+        var cfg:MissileConfig = new MissileConfig();
         for (var key:String in settings) {
-            if (config.hasOwnProperty(key)) {
-                config[key] = settings[key];
+            if (cfg.hasOwnProperty(key)) {
+                cfg[key] = settings[key];
             }
         }
-        return config;
+        return cfg;
     }
     
     // 预设配置：高速拦截导弹
@@ -79,7 +96,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
         preLaunchFrames: {min: 5, max: 8},
         preLaunchPeakHeight: {min: 10, max: 20},
         navigationRatio: 3,
-        angleCorrection: 0.15
+        angleCorrection: 0.15,
+        dragCoefficient: 0.0008  // 较低阻力，保持高速拦截性能
     });
     
     // 预设配置：巡航导弹
@@ -91,7 +109,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
         preLaunchPeakHeight: {min: 30, max: 80},
         navigationRatio: 5,
         angleCorrection: 0.05,
-        searchRange: 50
+        searchRange: 50,
+        dragCoefficient: 0.0012  // 较高阻力，模拟较长航程的能量损耗
     });
     
     // 预设配置：多管火箭
@@ -104,6 +123,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
         preLaunchHorizAmp: {min: 10, max: 20},
         navigationRatio: 2,
         angleCorrection: 0.2,
-        searchBatchSize: 4
+        searchBatchSize: 4,
+        dragCoefficient: 0.0015  // 最高阻力，模拟火箭的气动特性
     });
 }

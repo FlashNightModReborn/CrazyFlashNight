@@ -3,16 +3,15 @@ import org.flashNight.arki.unit.UnitUtil;
 import org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig;
 
 /**
- * 目标追踪回调生成器
- * 使用比例导引法实现导弹追踪，并根据配置调整追踪性能
- * 导弹角速度 = N × 视线角速度（N为可配置的导引比）
+ * 目标追踪回调生成器（向量化物理模型）
+ * 内部使用速度向量计算，同时保持与外部updateMovement的兼容性
  */
 class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallbacks {
     
     /**
      * 构造目标追踪回调函数
      * @param config 导弹配置对象
-     * @return Function 使用比例导引法追踪目标的回调函数
+     * @return Function 使用向量化物理模型的追踪回调函数
      */
     public static function create(config:MissileConfig):Function {
         return function():Void {
@@ -22,20 +21,27 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
                 this.target = null;
                 this.hasTarget = false;
                 this.previousLOSAngle = undefined;
+                this.vx = undefined;
+                this.vy = undefined;
                 return;
             }
             
             var targetObject:MovieClip = this.targetObject;
             var target:MovieClip = this.target;
             
+            // 初始化速度向量（如果还没有）
+            if (this.vx == undefined || this.vy == undefined) {
+                var rad:Number = this.rotationAngle * Math.PI / 180;
+                this.vx = this.speed * Math.cos(rad);
+                this.vy = this.speed * Math.sin(rad);
+            }
+            
             // 使用 UnitUtil 计算目标偏移
             var yOffset:Number = UnitUtil.calculateCenterOffset(target);
             
-            // 计算水平和垂直偏移
+            // 计算到目标的向量
             var dx:Number = target._x - targetObject._x;
             var dy:Number = target._y - targetObject._y - yOffset;
-            
-            // 计算到目标的距离
             var distance:Number = Math.sqrt(dx * dx + dy * dy);
             
             // 当前视线角度（度）
@@ -56,41 +62,76 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
                 losAngularVelocity += 360;
             }
             
-            // 比例导引法：使用配置中的导引比
+            // ========== 向量化物理计算开始 ==========
+            
+            // 1. 计算所需的导引力方向（比例导引）
             var requiredAngularVelocity:Number = config.navigationRatio * losAngularVelocity;
             
-            // 计算当前航向角与目标视线的角度差
-            var angleDifference:Number = currentLOSAngle - this.rotationAngle;
-            if (angleDifference > 180) {
-                angleDifference -= 360;
-            } else if (angleDifference < -180) {
-                angleDifference += 360;
+            // 2. 将角速度转换为加速度向量
+            var currentSpeed:Number = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+            var currentAngle:Number = Math.atan2(this.vy, this.vx);
+            
+            // 目标角度
+            var targetAngleRad:Number = (currentLOSAngle * Math.PI / 180);
+            var angleDiffRad:Number = targetAngleRad - currentAngle;
+            
+            // 归一化角度差
+            while (angleDiffRad > Math.PI) angleDiffRad -= 2 * Math.PI;
+            while (angleDiffRad < -Math.PI) angleDiffRad += 2 * Math.PI;
+            
+            // 3. 计算法向加速度（转向力）
+            var maxTurnRateRad:Number = this._rotationSpeed * Math.PI / 180;
+            var normalAccel:Number = maxTurnRateRad * currentSpeed; // 最大法向加速度
+            
+            // 限制转向力
+            var turnForce:Number = angleDiffRad * config.angleCorrection * currentSpeed;
+            turnForce = Math.max(Math.min(turnForce, normalAccel), -normalAccel);
+            
+            // 4. 计算法向力的方向
+            var normalDirX:Number = -Math.sin(currentAngle);
+            var normalDirY:Number = Math.cos(currentAngle);
+            
+            // 5. 计算推力（切向力）
+            var thrustX:Number = 0;
+            var thrustY:Number = 0;
+            if (currentSpeed < this.maxSpeed) {
+                var forwardDirX:Number = Math.cos(currentAngle);
+                var forwardDirY:Number = Math.sin(currentAngle);
+                thrustX = forwardDirX * this.acceleration;
+                thrustY = forwardDirY * this.acceleration;
             }
             
-            // 使用配置中的角度修正系数
-            var rotationStep:Number = requiredAngularVelocity + angleDifference * config.angleCorrection;
+            // 6. 计算阻力（与速度平方成正比）
+            var dragCoefficient:Number = config.dragCoefficient || 0.001;
+            var speedSquared:Number = currentSpeed * currentSpeed;
+            var dragX:Number = -this.vx * dragCoefficient * speedSquared;
+            var dragY:Number = -this.vy * dragCoefficient * speedSquared;
             
-            // 限制最大旋转步长
-            rotationStep = Math.min(
-                Math.max(rotationStep, -this._rotationSpeed),
-                this._rotationSpeed
-            );
+            // 7. 转弯产生的额外阻力（模拟攻角影响）
+            var turnAngle:Number = Math.abs(angleDiffRad);
+            var inducedDragFactor:Number = 1 + Math.sin(turnAngle) * 2; // 转弯时阻力增加
+            dragX *= inducedDragFactor;
+            dragY *= inducedDragFactor;
             
-            // 应用旋转
-            this.rotationAngle += rotationStep;
+            // 8. 更新速度向量
+            this.vx += thrustX + normalDirX * turnForce + dragX;
+            this.vy += thrustY + normalDirY * turnForce + dragY;
+            
+            // 9. 限制最大速度
+            var newSpeed:Number = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+            if (newSpeed > this.maxSpeed) {
+                var scale:Number = this.maxSpeed / newSpeed;
+                this.vx *= scale;
+                this.vy *= scale;
+                newSpeed = this.maxSpeed;
+            }
+            
+            // ========== 转换回标量形式（为了兼容 updateMovement）==========
+            this.speed = newSpeed;
+            this.rotationAngle = Math.atan2(this.vy, this.vx) * 180 / Math.PI;
+            
+            // 更新其他状态
             targetObject.yOffset = yOffset;
-            
-            // 物理化速度损失
-            var deltaRad:Number = Math.abs(rotationStep) * Math.PI / 180;
-            var speedLoss:Number = this.speed * deltaRad;
-            this.speed = Math.max(this.speed - speedLoss, 0);
-            
-            // 加速（如果未达最大速度）
-            if (this.speed < this.maxSpeed) {
-                this.speed += this.acceleration;
-            }
-            
-            // 更新视线角度记录
             this.previousLOSAngle = currentLOSAngle;
         };
     }
