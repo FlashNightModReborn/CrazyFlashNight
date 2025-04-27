@@ -1,129 +1,152 @@
 ﻿// 文件路径：org/flashNight/arki/bullet/BulletComponent/Movement/Util/MissileConfig.as
 
+import org.flashNight.gesh.xml.LoadXml.MissileConfigLoader;
+
 /**
- * 导弹配置类
- * 用于存储和管理导弹的各种性能参数配置
- * 通过预设配置和自定义参数，使导弹系统具有高度灵活性
+ * 导弹配置管理器（单例）
+ * =================
+ * 通过XML文件加载和管理导弹配置参数
+ * 
+ * 责任：
+ *   - 加载并缓存导弹配置数据
+ *   - 提供按名称查询配置的接口
+ *   - 支持运行时动态更新配置
+ *   - 提供默认配置作为后备方案
+ * 
+ * 典型用法：
+ *   var configMgr:MissileConfig = MissileConfig.getInstance();
+ *   configMgr.loadConfigs();  // 游戏初始化时调用一次
+ *   var config:Object = configMgr.getConfig("interceptor");  // 获取特定配置
  */
 class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
     
-    // 初始化参数
-    /** 初始速度与最大速度的比例，范围 0-1 */
-    public var initialSpeedRatio:Number = 0.5;
-    /** 每帧最大旋转角度（度） */
-    public var rotationSpeed:Number = 1;
-    /**
-     * 加速度，单位/帧
-     * 推荐值计算公式：acceleration >= C * dragCoefficient * maxSpeed^3
-     * 其中：
-     * - C = 1.0-1.2 用于直线飞行为主的导弹
-     * - C = 1.5-2.0 用于一般机动性的导弹
-     * - C = 2.5-3.0 用于高机动转弯的导弹
-     * 
-     * 示例：
-     * maxSpeed=40, dragCoefficient=0.001 时
-     * - 直线飞行：acceleration >= 40^3 * 0.001 * 1.0 = 64
-     * - 一般机动：acceleration >= 40^3 * 0.001 * 1.5 = 96
-     * - 高机动性：acceleration >= 40^3 * 0.001 * 2.5 = 160
-     */
-    public var acceleration:Number = 10;
-    
-    // 物理模拟参数
-    /** 空气阻力系数，与速度平方成正比 */
-    public var dragCoefficient:Number = 0.001;
-    
-    // 预发射动画参数
-    /** 预发射动画帧数范围 */
-    public var preLaunchFrames:Object = {min: 10, max: 15};
-    /** 预发射抛物线高度范围（单位） */
-    public var preLaunchPeakHeight:Object = {min: 20, max: 60};
-    /** 水平振幅范围（单位） */
-    public var preLaunchHorizAmp:Object = {min: 0, max: 8};
-    /** 振荡周期范围（次） */
-    public var preLaunchCycles:Object = {min: 1, max: 3};
-    /** 旋转抖动时间窗口（0-1之间的归一化时间） */
-    public var rotationShakeTime:Object = {start: 0.35, end: 0.45};
-    /** 旋转抖动幅度（弧度） */
-    public var rotationShakeAmplitude:Number = 0.4;
-    
-    // 搜索行为参数
-    /** 每帧处理的目标数量（性能优化参数） */
-    public var searchBatchSize:Number = 8;
-    /** 目标搜索范围（单位） */
-    public var searchRange:Number = 30;
-    
-    // 追踪行为参数
-    /** 比例导引系数（Proportional Navigation Ratio） */
-    public var navigationRatio:Number = 4;
-    /** 角度差修正系数（用于平滑转向） */
-    public var angleCorrection:Number = 0.1;
+    // --------------------------
+    // 单例实现
+    // --------------------------
+    private static var _instance:MissileConfig;
     
     /**
-     * 构造函数，允许创建自定义配置
+     * 获取配置管理器单例
+     * @return MissileConfig 管理器实例
      */
-    public function MissileConfig() {
-        // 默认构造函数，使用默认值
-    }
-    
-    /**
-     * 创建标准配置的实例
-     * @return MissileConfig 新的配置实例
-     */
-    public static function create():MissileConfig {
-        return new MissileConfig();
-    }
-    
-    /**
-     * 创建自定义配置
-     * @param settings 配置对象，包含要覆盖的参数
-     * @return MissileConfig 配置实例
-     */
-    public static function createCustom(settings:Object):MissileConfig {
-        var cfg:MissileConfig = new MissileConfig();
-        for (var key:String in settings) {
-            if (cfg.hasOwnProperty(key)) {
-                cfg[key] = settings[key];
-            }
+    public static function getInstance():MissileConfig {
+        if (_instance == null) {
+            _instance = new MissileConfig();
         }
-        return cfg;
+        return _instance;
     }
     
-    // 预设配置：高速拦截导弹
-    public static var INTERCEPTOR:MissileConfig = createCustom({
-        initialSpeedRatio: 0.8,
-        rotationSpeed: 2,
-        acceleration: 15,
-        preLaunchFrames: {min: 5, max: 8},
-        preLaunchPeakHeight: {min: 10, max: 20},
-        navigationRatio: 3,
-        angleCorrection: 0.15,
-        dragCoefficient: 0.0008  // 较低阻力，保持高速拦截性能
-    });
+    // --------------------------
+    // 成员变量
+    // --------------------------
+    /** 配置缓存表：{ configName:String -> configObject:Object } */
+    private var _configs:Object;
     
-    // 预设配置：巡航导弹
-    public static var CRUISE:MissileConfig = createCustom({
-        initialSpeedRatio: 0.3,
-        rotationSpeed: 0.5,
-        acceleration: 5,
-        preLaunchFrames: {min: 15, max: 20},
-        preLaunchPeakHeight: {min: 30, max: 80},
-        navigationRatio: 5,
-        angleCorrection: 0.05,
-        searchRange: 50,
-        dragCoefficient: 0.0012  // 较高阻力，模拟较长航程的能量损耗
-    });
+    /** 默认配置（备用） */
+    private var _defaultConfig:Object = {
+        initialSpeedRatio: 0.5,
+        rotationSpeed: 1,
+        acceleration: 10,
+        dragCoefficient: 0.001,
+        preLaunchFrames: {min: 10, max: 15},
+        preLaunchPeakHeight: {min: 20, max: 60},
+        preLaunchHorizAmp: {min: 0, max: 8},
+        preLaunchCycles: {min: 1, max: 3},
+        rotationShakeTime: {start: 0.35, end: 0.45},
+        rotationShakeAmplitude: 0.4,
+        searchBatchSize: 8,
+        searchRange: 30,
+        navigationRatio: 4,
+        angleCorrection: 0.1
+    };
     
-    // 预设配置：多管火箭
-    public static var ROCKET:MissileConfig = createCustom({
-        initialSpeedRatio: 0.6,
-        rotationSpeed: 1.5,
-        acceleration: 12,
-        preLaunchFrames: {min: 3, max: 5},
-        preLaunchPeakHeight: {min: 5, max: 15},
-        preLaunchHorizAmp: {min: 10, max: 20},
-        navigationRatio: 2,
-        angleCorrection: 0.2,
-        searchBatchSize: 4,
-        dragCoefficient: 0.0015  // 最高阻力，模拟火箭的气动特性
-    });
+    // --------------------------
+    // 构造函数
+    // --------------------------
+    /**
+     * 私有构造函数
+     * 请通过 getInstance() 访问
+     */
+    private function MissileConfig() {
+        _configs = { _default: _defaultConfig };
+    }
+    
+    // --------------------------
+    // 对外接口
+    // --------------------------
+    /**
+     * 异步加载外部配置文件
+     * @param onComplete 成功回调：function(configs:Object):Void
+     * @param onError 失败回调：function():Void
+     */
+    public function loadConfigs(onComplete:Function, onError:Function):Void {
+        var loader:MissileConfigLoader = MissileConfigLoader.getInstance();
+        var self:MissileConfig = this;
+        
+        loader.loadConfigs(
+            function(configs:Object):Void {
+                // 合并到内部缓存，允许外部文件覆盖默认值
+                for (var key:String in configs) {
+                    self._configs[key] = configs[key];
+                }
+                if (onComplete != undefined) onComplete(self._configs);
+            },
+            function():Void {
+                // 失败时保持默认配置可用
+
+                _root.服务器.发布服务器消息("MissileConfig: 配置加载失败，已回退到默认配置。");
+                if (onError != undefined) onError();
+            }
+        );
+    }
+    
+    /**
+     * 读取指定名称的配置
+     * @param configName 配置名称
+     * @return 配置对象（若不存在则返回默认配置）
+     */
+    public function getConfig(configName:String):Object {
+        return _configs[configName] != undefined ? _configs[configName] : _configs["_default"];
+    }
+    
+    /**
+     * 运行时动态更新或新增配置
+     * @param configName 配置名称
+     * @param configObject 配置对象
+     */
+    public function updateConfig(configName:String, configObject:Object):Void {
+        _configs[configName] = configObject;
+    }
+    
+    /**
+     * 获取所有配置（只读）
+     * @return 配置对象集合
+     */
+    public function getAllConfigs():Object {
+        return _configs;
+    }
+    
+    // --------------------------
+    // 快捷访问预设配置
+    // --------------------------
+    /**
+     * 获取拦截导弹配置
+     */
+    public function getInterceptorConfig():Object {
+        return getConfig("interceptor");
+    }
+    
+    /**
+     * 获取巡航导弹配置
+     */
+    public function getCruiseConfig():Object {
+        return getConfig("cruise");
+    }
+    
+    /**
+     * 获取火箭配置
+     */
+    public function getRocketConfig():Object {
+        return getConfig("rocket");
+    }
 }

@@ -1,10 +1,20 @@
 ﻿// 文件路径：org/flashNight/arki/bullet/BulletComponent/Movement/Util/TrackTargetCallbacks.as
 import org.flashNight.arki.unit.UnitUtil;
-import org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig;
 
 /**
  * 目标追踪回调生成器（向量化物理模型）
+ * ===============================
  * 内部使用速度向量计算，同时保持与外部updateMovement的兼容性
+ * 
+ * 职责：
+ *   - 实现比例导引算法
+ *   - 处理导弹物理特性（加速度、阻力、转向）
+ *   - 向量化计算以提高精度
+ * 
+ * 物理模型：
+ *   - 推力、阻力、法向力的独立计算
+ *   - 转弯产生的诱导阻力模拟
+ *   - 速度矢量实时更新
  */
 class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallbacks {
     
@@ -13,7 +23,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
      * @param config 导弹配置对象
      * @return Function 使用向量化物理模型的追踪回调函数
      */
-    public static function create(config:MissileConfig):Function {
+    public static function create(config:Object):Function {
         return function():Void {
             // 目标失效时回退到搜索状态
             if (!this.target || this.target.hp <= 0) {

@@ -1,9 +1,18 @@
 ﻿// 文件路径：org/flashNight/arki/bullet/BulletComponent/Movement/Util/SearchForTargetCallbacks.as
-import org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig;
 
 /**
  * 目标搜索回调生成器
+ * ================
  * 使用配置对象中的参数限定每帧处理的目标数量和搜索范围
+ * 
+ * 职责：
+ *   - 按帧批量搜索目标
+ *   - 处理目标优先级逻辑
+ *   - 维护搜索状态缓存
+ * 
+ * 性能优化：
+ *   - 使用分帧搜索避免单帧性能峰值
+ *   - 缓存搜索结果减少重复计算
  */
 class org.flashNight.arki.bullet.BulletComponent.Movement.Util.SearchForTargetCallbacks {
     /**
@@ -11,11 +20,12 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.SearchForTargetCa
      * @param config 导弹配置对象
      * @return Function 目标搜索回调，返回 Boolean 表示本帧是否锁定目标
      */
-    public static function create(config:MissileConfig):Function {
+    public static function create(config:Object):Function {
         return function():Boolean {
             var gw:MovieClip = _root.gameworld;
             var currentShooter:MovieClip = gw[this.shooter];
 
+            // 验证发射者状态
             if (!currentShooter || currentShooter.hp <= 0) {
                 this.target = null;
                 this.hasTarget = false;
