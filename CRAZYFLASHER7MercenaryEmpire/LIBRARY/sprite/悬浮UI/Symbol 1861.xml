@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1861" itemID="6597607e-00000a2d" lastModified="1739634063" lastUniqueIdentifier="3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1861" itemID="6597607e-00000a2d" lastModified="1745730394" lastUniqueIdentifier="3">
   <timeline>
-    <DOMTimeline name="Symbol 1861">
+    <DOMTimeline name="Symbol 1861" currentFrame="11">
       <layers>
         <DOMLayer name="as" color="#9933CC" autoNamed="false">
           <frames>
@@ -15,7 +15,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#5770CC" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#5770CC">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -68,7 +68,7 @@ this._visible = false;]]></script>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="图层 3" color="#FF800A">
+        <DOMLayer name="图层 3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="8" keyMode="9728">
               <elements/>
@@ -94,7 +94,7 @@ on (release) {
 		_parent.gotoAndStop("消失");
 		return;
 	}
-	if (org.flashNight.arki.item.ItemUtil.singleSubmit("复活币", 1))
+	if (_root.singleSubmit("复活币", 1))
 	{
 		_parent.使用复活币();
 	}

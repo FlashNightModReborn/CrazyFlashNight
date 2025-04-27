@@ -2,7 +2,7 @@
   <timeline>
     <DOMTimeline name="Symbol 2074">
       <layers>
-        <DOMLayer name="Script Layer" color="#8568FF">
+        <DOMLayer name="Script Layer" color="#8568FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -76,11 +76,11 @@ _root.全部翻译(this);
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#11C1D4" current="true" isSelected="true">
+        <DOMLayer name="Layer 2" color="#11C1D4">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/奖励物品-奖励物品显示块" selected="true" centerPoint3DX="110.95" centerPoint3DY="369.5">
+                <DOMSymbolInstance libraryItemName="sprite/奖励物品-奖励物品显示块" centerPoint3DX="110.95" centerPoint3DY="369.5">
                   <matrix>
                     <Matrix tx="-1" ty="353.5"/>
                   </matrix>

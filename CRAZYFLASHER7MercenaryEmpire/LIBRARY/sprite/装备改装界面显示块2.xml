@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/装备改装界面显示块2" itemID="67bb1f93-00000458" linkageExportForAS="true" linkageIdentifier="装备改装界面显示块2" lastModified="1740316928">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/装备改装界面显示块2" itemID="67bb1f93-00000458" linkageExportForAS="true" linkageIdentifier="装备改装界面显示块2" lastModified="1745730201">
   <timeline>
     <DOMTimeline name="装备改装界面显示块2">
       <layers>
@@ -6,7 +6,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[this.图标.itemIcon = new org.flashNight.arki.item.itemIcon.ItemIcon(this.图标, this.标题, 1);]]></script>
+                <script><![CDATA[this.图标.itemIcon = _root.createItemIcon(this.图标, this.标题, 1);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

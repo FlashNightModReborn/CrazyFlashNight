@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1742038195" lastUniqueIdentifier="2">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="UI重构/物品改装界面" itemID="67876ee2-00001c93" linkageExportForAS="true" linkageIdentifier="物品改装界面" lastModified="1745730593" lastUniqueIdentifier="2">
   <timeline>
-    <DOMTimeline name="物品改装界面" currentFrame="9">
+    <DOMTimeline name="物品改装界面" currentFrame="11">
       <layers>
         <DOMLayer name="Labels Layer" color="#F2BEC5">
           <frames>
@@ -22,9 +22,7 @@
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[import org.flashNight.arki.item.*;
-
-function 物品合成(素材数组)
+                <script><![CDATA[function 物品合成(素材数组)
 {
 	符合条件 = true;
 	var i = 0;
@@ -36,8 +34,8 @@ function 物品合成(素材数组)
 		_root.最上层发布文字提示("装备所需等级高于当前等级！");
 		return;
 	}
-	this.itemArray = ItemUtil.getRequirementFromTask(合成表);
-	if (ItemUtil.contain(itemArray) == null)
+	this.itemArray = _root.getRequirementFromTask(合成表);
+	if (_root.itemContain(itemArray) == null)
 	{
 		_root.发布消息("素材不足！");
 		return;
@@ -107,13 +105,13 @@ function 虚拟币支付(amount, 素材数组)
 	{
 		if (_root.虚拟币 >= amount)
 		{
-			var result = ItemUtil.submit(this.itemArray);
+			var result = _root.itemSubmit(this.itemArray);
 			if (!result)
 			{
 				_root.发布消息("素材不足！素材检索可能存在漏洞");
 				return;
 			}
-			ItemUtil.singleAcquire(素材数组.name,1);
+			_root.singleAcquire(素材数组.name,1);
 			_root.虚拟币 -= amount;
 			合成价格倍率 = 1;
 			if (_root.主角被动技能.铁匠 && _root.主角被动技能.铁匠.启用)
@@ -190,11 +188,9 @@ stop();
             </DOMFrame>
             <DOMFrame index="9" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[import org.flashNight.arki.item.*;
-
-function 排列材料块()
+                <script><![CDATA[function 排列材料块()
 {
-	var 材料列表 = ItemUtil.getRequirementFromTask(改装清单[准备合成的数组号].materials);
+	var 材料列表 = _root.getRequirementFromTask(改装清单[准备合成的数组号].materials);
 	for (var i = 0; i < 材料列表.length; i++)
 	{
 		var 材料信息 = 材料列表[i];

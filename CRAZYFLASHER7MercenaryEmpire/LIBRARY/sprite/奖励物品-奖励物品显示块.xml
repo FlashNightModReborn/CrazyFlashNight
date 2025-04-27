@@ -1,12 +1,12 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/奖励物品-奖励物品显示块" itemID="67bb1f9a-0000045a" linkageExportForAS="true" linkageIdentifier="奖励物品-奖励物品显示块" lastModified="1740316570">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/奖励物品-奖励物品显示块" itemID="67bb1f9a-0000045a" linkageExportForAS="true" linkageIdentifier="奖励物品-奖励物品显示块" lastModified="1745730739">
   <timeline>
     <DOMTimeline name="奖励物品-奖励物品显示块">
       <layers>
-        <DOMLayer name="Layer 1" color="#78FA63" current="true" isSelected="true">
+        <DOMLayer name="Layer 1" color="#78FA63">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="button/Symbol 2072" selected="true" symbolType="button">
+                <DOMSymbolInstance libraryItemName="button/Symbol 2072" symbolType="button">
                   <matrix>
                     <Matrix tx="11.5" ty="10.5"/>
                   </matrix>
@@ -38,11 +38,11 @@ on (rollOut) {
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 2" color="#0399EF">
+        <DOMLayer name="Layer 2" color="#0399EF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/通用按钮" centerPoint3DX="173.1" centerPoint3DY="12.75">
+                <DOMSymbolInstance libraryItemName="sprite/通用按钮" selected="true" centerPoint3DX="173.1" centerPoint3DY="12.75">
                   <matrix>
                     <Matrix tx="127.3" ty="1.55"/>
                   </matrix>
@@ -65,7 +65,7 @@ on (rollOut) {
 		_parent._parent.奖励品[_parent.数组id] = [];
 		_parent._parent.刷新();
 	}
-	else if (org.flashNight.arki.item.ItemUtil.acquire([{name:_parent.物品名, value:_parent.数量}]))
+	else if (_root.itemAcquire([{name:_parent.物品名, value:_parent.数量}]))
 	{
 		_root.发布消息("获得:" + _root.getItemData(_parent.物品名).displayname + " X " + _parent.数量 + "");
 		_root.播放音效("ammopickup1.wav");

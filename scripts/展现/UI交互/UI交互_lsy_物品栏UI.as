@@ -11,6 +11,11 @@ _root.物品UI函数.背包 = new Object();
 _root.物品UI函数.装备栏 = new Object();
 _root.物品UI函数.药剂栏 = new Object();
 
+//对ItemIcon相关函数的包装
+_root.createItemIcon = function(mc, name, value){
+	return new ItemIcon(mc, name, value);
+}
+
 EventBus.getInstance().subscribe("物品栏排序图标点击",function(methodName:String){
 	ItemSortUtil.sortInventory(_root.物品栏.背包, methodName, function(){
 		_root.物品UI函数.删除背包图标();

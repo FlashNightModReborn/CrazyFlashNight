@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1934" itemID="6597607e-00000a56" lastModified="1742901597">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 1934" itemID="6597607e-00000a56" lastModified="1745730365">
   <timeline>
     <DOMTimeline name="Symbol 1934">
       <layers>
@@ -34,9 +34,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[import org.flashNight.arki.item.ItemUtil;
-
-function 是否可强化检测()
+                <script><![CDATA[function 是否可强化检测()
 {
 	var icon = this.强化图标.itemIcon;
 	是否可强化 = false;
@@ -71,7 +69,7 @@ function 是否可强化检测()
 		}
 	}
 	//强化石需要个数 = Math.floor(强化石倍率 * (当前强化等级 - 1) * (当前强化等级 - 1) * (当前强化等级 - 1) + 1);
-	if (ItemUtil.singleContain(强化材料, 强化石需要个数))
+	if (_root.singleContain(强化材料, 强化石需要个数))
 	{
 		是否可强化 = true;
 		铁匠提示 = 强化石倍率 < 1 ? "，铁匠被动技能已节省" + 强化石节省个数 + "个" : "";
@@ -88,7 +86,7 @@ function 装备强化()
 	var icon = this.强化图标.itemIcon;
 	if (目标icon.item === icon.item)
 	{
-		if (ItemUtil.singleSubmit(强化材料, 强化石需要个数))
+		if (_root.singleSubmit(强化材料, 强化石需要个数))
 		{
 			目标icon.item.value.level = 下一强化等级;
 			目标icon.refreshValue();
@@ -5257,8 +5255,7 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	import org.flashNight.arki.item.itemIcon.ItemIcon;
-	this.itemIcon = new ItemIcon(this, null, null);
+	this.itemIcon = _root.createItemIcon(this, null, null);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -5741,8 +5738,7 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	import org.flashNight.arki.item.itemIcon.ItemIcon;
-	this.itemIcon = new ItemIcon(this, null, null);
+	this.itemIcon = _root.createItemIcon(this, null, null);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -5820,8 +5816,7 @@ onClipEvent(load){
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
-	import org.flashNight.arki.item.itemIcon.ItemIcon;
-	this.itemIcon = new ItemIcon(this, null, null);
+	this.itemIcon = _root.createItemIcon(this, null, null);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

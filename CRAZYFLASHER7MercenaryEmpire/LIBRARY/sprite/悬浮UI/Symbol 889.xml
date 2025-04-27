@@ -1,8 +1,8 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 889" itemID="6597607e-00000807" linkageExportForAS="true" linkageIdentifier="佣兵信息显示框" lastModified="1735727893">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="sprite/悬浮UI/Symbol 889" itemID="6597607e-00000807" linkageExportForAS="true" linkageIdentifier="佣兵信息显示框" lastModified="1745730773">
   <timeline>
     <DOMTimeline name="Symbol 889">
       <layers>
-        <DOMLayer name="Script Layer" color="#F29F48" current="true" isSelected="true">
+        <DOMLayer name="Script Layer" color="#F29F48">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -172,16 +172,16 @@ on(release){
                     </StrokeStyle>
                   </strokes>
                   <edges>
-                    <Edge strokeStyle="1" edges="!3967 600|3406 600!3406 600|3406 1162!3406 1162|3967 1162!3967 1162|3967 600!3967 600|4528 600!4528 600|5089 600!5089 600|5650 600!5650 600|5650 1162!5650 1162|6211 1162!6211 1162|6211 600!6211 600|5650 600!5650 1162|5089 1162!5089 1162
-|4528 1162!4528 1162|3967 1162!5089 1162|5089 600!4528 600|4528 1162!601 600|40 600!40 600|40 1162!40 1162|601 1162!601 1162|601 600!601 600|1162 600!1162 600|1723 600!1723 600|2284 600!2284 600|2284 1162!2284 1162|2845 1162!2845 1162
-|2845 600!2845 600|2284 600!2284 1162|1723 1162!1723 1162|1162 1162!1162 1162|601 1162!1723 1162|1723 600!1162 600|1162 1162!2845 600|3406 600!3406 1162|2845 1162"/>
+                    <Edge strokeStyle="1" edges="!5650 600|6211 600!6211 600|6211 1162!6211 1162|5650 1162!5650 1162|5089 1162!5089 1162|4528 1162!4528 1162|3967 1162!3967 1162|3406 1162!3406 1162|2845 1162!2845 1162|2284 1162!2284 1162|1723 1162!1723 1162|1162 1162!1162 1162|601 1162
+!601 1162|40 1162!40 1162|40 600!40 600|601 600!601 600|1162 600!1162 600|1723 600!1723 600|2284 600!2284 600|2845 600!2845 600|3406 600!3406 600|3967 600!3967 600|4528 600!4528 600|5089 600!5089 600|5650 600!5089 1162|5089 600!5650 600
+|5650 1162!4528 600|4528 1162!3967 1162|3967 600!3406 600|3406 1162!1723 1162|1723 600!2845 1162|2845 600!2284 600|2284 1162!1162 600|1162 1162!601 1162|601 600"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 7" color="#74CB8B">
+        <DOMLayer name="Layer 7" color="#74CB8B" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
@@ -213,7 +213,7 @@ on(release){
 	}
 	else if (_root.佣兵是否出战信息[_parent.同伴数据数组号] == -1)
 	{
-		if (ItemUtil.singleSubmit("复活币", 1))
+		if (_root.singleSubmit("复活币", 1))
 		{
 			显示文字 = _root.获得翻译("出战");
 			_parent.状态 = "<FONT COLOR=\'#66FF00\'>" + _root.获得翻译("出战中") + "</FONT>";

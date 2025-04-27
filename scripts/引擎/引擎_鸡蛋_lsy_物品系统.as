@@ -201,6 +201,9 @@ _root.仓库栏总数 = 1240;
 
 
 //对新物品提交与获取函数的引用
+_root.itemAcquire = function(itemArray):Boolean{
+	return org.flashNight.arki.item.ItemUtil.acquire(itemArray);
+}
 _root.itemContain = function(itemArray):Object{
 	return org.flashNight.arki.item.ItemUtil.contain(itemArray);
 }
@@ -211,6 +214,13 @@ _root.itemSubmit = function(itemArray):Boolean{
 _root.singleAcquire = function(name,value):Boolean{
 	return org.flashNight.arki.item.ItemUtil.singleAcquire(name,value);
 }
+_root.singleContain = function(name,value):Object{
+	return org.flashNight.arki.item.ItemUtil.singleContain(name,value);
+}
 _root.singleSubmit = function(name,value):Boolean{
 	return org.flashNight.arki.item.ItemUtil.singleSubmit(name,value);
+}
+
+_root.getRequirementFromTask = function(arr){
+    return org.flashNight.arki.item.ItemUtil.getRequirementFromTask(arr);
 }
