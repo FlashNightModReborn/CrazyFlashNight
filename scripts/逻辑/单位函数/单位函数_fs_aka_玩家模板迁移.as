@@ -2,6 +2,7 @@
 import org.flashNight.arki.unit.UnitComponent.Initializer.*;
 import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
 import org.flashNight.arki.spatial.move.*;
+import org.flashNight.arki.unit.*;
 
 _root.玩家与佣兵区分装扮刷新 = false;
 _root.超重惩罚 = 0.25;
@@ -2265,54 +2266,54 @@ _root.主角函数.刀口位置生成子弹 = function(子弹参数:Object){
 	}
 }
 
-
-//射击相关函数
+// 射击相关函数
 _root.主角函数.长枪射击 = function(枪口位置:MovieClip, 子弹属性:Object){
-	if (this.长枪射击次数[this.长枪] >= this.长枪弹匣容量) return false;
-	this.长枪射击次数[this.长枪]++;
-	this.刷新枪口位置(枪口位置, 子弹属性);
-	if(this.状态.indexOf('行走') > -1){
-		子弹属性.子弹散射度 = 子弹属性.移动子弹散射度;
-	}else{
-		子弹属性.子弹散射度 = 子弹属性.站立子弹散射度;
-	}
-	
-	if(this.自瞄中){
-		var 敌方目标 = _root.gameworld[this.攻击目标];
-		if(敌方目标.hp >0){
-			距离X = 敌方目标._x - 子弹属性.shootX;
-			高度比例 = 敌方目标.身高/175;
-			默认高度 = 敌方目标.中心高度 ? 敌方目标.中心高度 * 高度比例:敌方目标.状态 == "倒地"? 35 : 75;
-			if(敌方目标.浮空高度){
-				默认高度 += 敌方目标.浮空高度 * 高度比例;
-			}
-			距离Y = 敌方目标._y - 默认高度 - 子弹属性.shootY;
-			距离Z = 敌方目标.Z轴坐标 - 子弹属性.shootZ;
-			//速度X = 距离X / 5;
-			速度X = 距离X >= 0? 子弹属性.子弹速度: -子弹属性.子弹速度;
-			速度Y = 速度X * 距离Y / 距离X;
-			if(速度Y > 子弹属性.子弹速度 || 速度Y < -子弹属性.子弹速度){
-				速度Y = 速度Y >= 0? 子弹属性.子弹速度: -子弹属性.子弹速度;
-				速度X = 速度Y * 距离X /距离Y;
-			}
-			//速度Z = 速度X * 距离Z / 距离X;
-			子弹属性.速度X = 速度X;
-			子弹属性.速度Y = 速度Y;
-			子弹属性.ZY比例 = 敌方目标.Z轴坐标 / (敌方目标._y - 默认高度);
-		}else{
-			子弹属性.速度X = undefined;
-			子弹属性.速度Y = undefined;
-			子弹属性.ZY比例 = undefined;
-		}
-	}else{
-		子弹属性.速度X = undefined;
-		子弹属性.速度Y = undefined;
-		子弹属性.ZY比例 = undefined;
-	}
-	//_root.发布消息(子弹属性.移动子弹散射度 + "/" + 子弹属性.站立子弹散射度 +"/" +this.状态 +"/" + this.状态.indexOf('行走'));
-	_root.子弹区域shoot传递(子弹属性);
-	return true;
+    if (this.长枪射击次数[this.长枪] >= this.长枪弹匣容量) return false;
+    this.长枪射击次数[this.长枪]++;
+    this.刷新枪口位置(枪口位置, 子弹属性);
+    if(this.状态.indexOf('行走') > -1){
+        子弹属性.子弹散射度 = 子弹属性.移动子弹散射度;
+    }else{
+        子弹属性.子弹散射度 = 子弹属性.站立子弹散射度;
+    }
+    
+    if(this.自瞄中){
+        var 敌方目标 = _root.gameworld[this.攻击目标];
+        if(敌方目标.hp > 0){
+            距离X = 敌方目标._x - 子弹属性.shootX;
+            
+            // 使用 UnitUtil 计算中心偏移（包含浮空高度）
+            var 默认高度 = UnitUtil.calculateCenterOffset(敌方目标);
+            
+            距离Y = 敌方目标._y - 默认高度 - 子弹属性.shootY;
+            距离Z = 敌方目标.Z轴坐标 - 子弹属性.shootZ;
+            
+            速度X = 距离X >= 0 ? 子弹属性.子弹速度 : -子弹属性.子弹速度;
+            速度Y = 速度X * 距离Y / 距离X;
+            
+            if(速度Y > 子弹属性.子弹速度 || 速度Y < -子弹属性.子弹速度){
+                速度Y = 速度Y >= 0 ? 子弹属性.子弹速度 : -子弹属性.子弹速度;
+                速度X = 速度Y * 距离X / 距离Y;
+            }
+            
+            子弹属性.速度X = 速度X;
+            子弹属性.速度Y = 速度Y;
+            子弹属性.ZY比例 = 敌方目标.Z轴坐标 / (敌方目标._y - 默认高度);
+        }else{
+            子弹属性.速度X = undefined;
+            子弹属性.速度Y = undefined;
+            子弹属性.ZY比例 = undefined;
+        }
+    }else{
+        子弹属性.速度X = undefined;
+        子弹属性.速度Y = undefined;
+        子弹属性.ZY比例 = undefined;
+    }
+    
+    _root.子弹区域shoot传递(子弹属性);
+    return true;
 }
+
 _root.主角函数.手枪射击 = function(枪口位置:MovieClip, 子弹属性:Object){
 	if (this.手枪射击次数[this.手枪] >= this.手枪弹匣容量) return false;
 	this.手枪射击次数[this.手枪]++;

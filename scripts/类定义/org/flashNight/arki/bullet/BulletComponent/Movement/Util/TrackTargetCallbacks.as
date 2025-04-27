@@ -4,8 +4,9 @@
  * 使用比例导引法（Proportional Navigation）实现导弹追踪
  * 导弹角速度 = N × 视线角速度
  * 引入物理化转向损速：每帧速度损失 Δv = v * Δθ_rad
- * 
  */
+import org.flashNight.arki.unit.UnitUtil;
+
 class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallbacks {
     
     /** 默认导引比，通常取3-5之间 */
@@ -35,12 +36,11 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
             var targetObject:MovieClip = this.targetObject;
             var target:MovieClip = this.target;
             
+            // 使用 UnitUtil 计算目标偏移
+            var yOffset:Number = UnitUtil.calculateCenterOffset(target);
+            
             // 计算水平和垂直偏移
             var dx:Number = target._x - targetObject._x;
-            var coefficient:Number = target.身高 / 175;
-            var yOffset:Number = target.中心高度
-                               ? target.中心高度 * coefficient
-                               : (target.状态 == "倒地" ? 35 : 75);
             var dy:Number = target._y - targetObject._y - yOffset;
             
             // 计算到目标的距离
