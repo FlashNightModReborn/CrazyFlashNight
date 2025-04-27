@@ -1,32 +1,44 @@
 ﻿// 文件路径：org/flashNight/arki/bullet/BulletComponent/Movement/Util/PreLaunchMoveCallbacks.as
+import org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig;
 
 /**
  * 预发射移动回调生成器
- * 提供一个静态方法 create()
- * 返回一个函数用于导弹实例的蓄力抛物线动画（onPreLaunchMove）。
+ * 使用配置对象中的参数创建蓄力抛物线动画
  */
 class org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCallbacks {
     /**
-     * 构造预发射移动回调函数。
-     * @return Function 带随机化参数的抛物线/振荡动画函数，返回 Boolean（"isComplete" 时返回是否完成）。
+     * 构造预发射移动回调函数
+     * @param config 导弹配置对象
+     * @return Function 带随机化参数的抛物线/振荡动画函数
      */
-    public static function create():Function {
+    public static function create(config:MissileConfig):Function {
         return function(flag:String):Boolean {
             if (this._preFrame == undefined) {
                 this._preFrame   = 0;
-                this._preTotal   = 10 + Math.floor(Math.random() * 6);
+                // 使用配置中的帧数范围
+                this._preTotal   = config.preLaunchFrames.min + 
+                                  Math.floor(Math.random() * (config.preLaunchFrames.max - config.preLaunchFrames.min + 1));
                 this._launchX    = this.targetObject._x;
                 this._launchY    = this.targetObject._y;
-                this._peakHeight = 20 + Math.random() * 40;
-                this._horizAmp   = Math.random() * 8;
-                this._horizCycles= 1 + Math.random() * 2;
+                // 使用配置中的高度范围
+                this._peakHeight = config.preLaunchPeakHeight.min + 
+                                  Math.random() * (config.preLaunchPeakHeight.max - config.preLaunchPeakHeight.min);
+                // 使用配置中的水平振幅范围
+                this._horizAmp   = config.preLaunchHorizAmp.min +
+                                  Math.random() * (config.preLaunchHorizAmp.max - config.preLaunchHorizAmp.min);
+                // 使用配置中的振荡周期范围
+                this._horizCycles= config.preLaunchCycles.min +
+                                  Math.random() * (config.preLaunchCycles.max - config.preLaunchCycles.min);
             }
+            
             if (flag == "isComplete") {
                 return this._preFrame >= this._preTotal;
             }
+            
             this._preFrame++;
             var t:Number = this._preFrame / this._preTotal;
             var y:Number;
+            
             if (t < 0.4) {
                 var t1:Number = t / 0.4;
                 y = -this._peakHeight * (1 - Math.pow(1 - t1, 3));
@@ -34,11 +46,15 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCall
                 var t2:Number = (t - 0.4) / 0.6;
                 y = -this._peakHeight * (1 - Math.pow(t2, 3));
             }
+            
             var decay:Number = 1 - t;
             var x:Number = this._horizAmp * decay * Math.sin(2 * Math.PI * this._horizCycles * t);
-            if (t > 0.35 && t < 0.45) {
-                this.rotationAngle += (Math.random() - 0.5) * 0.4;
+            
+            // 使用配置中的旋转抖动参数
+            if (t > config.rotationShakeTime.start && t < config.rotationShakeTime.end) {
+                this.rotationAngle += (Math.random() - 0.5) * config.rotationShakeAmplitude;
             }
+            
             this.targetObject._x = this._launchX + x;
             this.targetObject._y = this._launchY + y;
             return false;

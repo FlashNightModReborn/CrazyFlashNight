@@ -1,34 +1,26 @@
 ﻿// 文件路径：org/flashNight/arki/bullet/BulletComponent/Movement/Util/TrackTargetCallbacks.as
+import org.flashNight.arki.unit.UnitUtil;
+import org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig;
+
 /**
  * 目标追踪回调生成器
- * 使用比例导引法（Proportional Navigation）实现导弹追踪
- * 导弹角速度 = N × 视线角速度
- * 引入物理化转向损速：每帧速度损失 Δv = v * Δθ_rad
+ * 使用比例导引法实现导弹追踪，并根据配置调整追踪性能
+ * 导弹角速度 = N × 视线角速度（N为可配置的导引比）
  */
-import org.flashNight.arki.unit.UnitUtil;
-
 class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallbacks {
-    
-    /** 默认导引比，通常取3-5之间 */
-    private static var DEFAULT_NAVIGATION_RATIO:Number = 4;
     
     /**
      * 构造目标追踪回调函数
-     * @param navigationRatio 导引比（可选，默认为4）
+     * @param config 导弹配置对象
      * @return Function 使用比例导引法追踪目标的回调函数
      */
-    public static function create(navigationRatio:Number):Function {
-        if (navigationRatio == undefined) {
-            navigationRatio = DEFAULT_NAVIGATION_RATIO;
-        }
-        
+    public static function create(config:MissileConfig):Function {
         return function():Void {
             // 目标失效时回退到搜索状态
             if (!this.target || this.target.hp <= 0) {
                 this.changeState("SearchTarget");
                 this.target = null;
                 this.hasTarget = false;
-                // 清除存储的视线角度
                 this.previousLOSAngle = undefined;
                 return;
             }
@@ -64,8 +56,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
                 losAngularVelocity += 360;
             }
             
-            // 比例导引法：计算需要的角速度
-            var requiredAngularVelocity:Number = navigationRatio * losAngularVelocity;
+            // 比例导引法：使用配置中的导引比
+            var requiredAngularVelocity:Number = config.navigationRatio * losAngularVelocity;
             
             // 计算当前航向角与目标视线的角度差
             var angleDifference:Number = currentLOSAngle - this.rotationAngle;
@@ -75,8 +67,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
                 angleDifference += 360;
             }
             
-            // 计算最终旋转步长
-            var rotationStep:Number = requiredAngularVelocity + angleDifference * 0.1;
+            // 使用配置中的角度修正系数
+            var rotationStep:Number = requiredAngularVelocity + angleDifference * config.angleCorrection;
             
             // 限制最大旋转步长
             rotationStep = Math.min(
@@ -98,7 +90,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
                 this.speed += this.acceleration;
             }
             
-            // 更新视线角度记录，为下一帧做准备
+            // 更新视线角度记录
             this.previousLOSAngle = currentLOSAngle;
         };
     }

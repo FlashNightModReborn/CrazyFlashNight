@@ -1,19 +1,17 @@
 ﻿// 文件路径：org/flashNight/arki/bullet/BulletComponent/Movement/Util/SearchForTargetCallbacks.as
+import org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig;
 
 /**
  * 目标搜索回调生成器
- * 提供一个静态方法 create()
- * 返回一个函数用于导弹实例的限帧目标搜索（onSearchForTarget）。
+ * 使用配置对象中的参数限定每帧处理的目标数量和搜索范围
  */
 class org.flashNight.arki.bullet.BulletComponent.Movement.Util.SearchForTargetCallbacks {
     /**
-     * 构造目标搜索回调函数。
-     * 内部使用 SEARCH_BATCH_SIZE 限定每帧处理的目标数量。
-     * @return Function 目标搜索回调，返回 Boolean 表示本帧是否锁定目标。
+     * 构造目标搜索回调函数
+     * @param config 导弹配置对象
+     * @return Function 目标搜索回调，返回 Boolean 表示本帧是否锁定目标
      */
-    public static function create():Function {
-        // 每帧搜索目标时处理的最大数量，用于限帧搜索
-        var SEARCH_BATCH_SIZE:Number = 8;
+    public static function create(config:MissileConfig):Function {
         return function():Boolean {
             var gw:MovieClip = _root.gameworld;
             var currentShooter:MovieClip = gw[this.shooter];
@@ -43,7 +41,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.SearchForTargetCa
 
             // 限帧搜索逻辑
             if (this._searchTargetCache == null) {
-                this._searchTargetCache = _root.帧计时器.获取敌人缓存(currentShooter, 30);
+                // 使用配置中的搜索范围
+                this._searchTargetCache = _root.帧计时器.获取敌人缓存(currentShooter, config.searchRange);
                 this._searchIndex = 0;
                 this._bestTargetSoFar = null;
                 this._minDistanceSoFar = Infinity;
@@ -54,7 +53,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.SearchForTargetCa
                 }
             }
 
-            var endIndex:Number = Math.min(this._searchIndex + SEARCH_BATCH_SIZE, this._searchTargetCache.length);
+            // 使用配置中的批处理大小
+            var endIndex:Number = Math.min(this._searchIndex + config.searchBatchSize, this._searchTargetCache.length);
             for (var i:Number = this._searchIndex; i < endIndex; i++) {
                 var potentialTarget:MovieClip = this._searchTargetCache[i];
                 if (potentialTarget && potentialTarget.hp > 0) {
