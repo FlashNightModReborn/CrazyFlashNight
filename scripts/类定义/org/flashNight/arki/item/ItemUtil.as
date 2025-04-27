@@ -1,5 +1,6 @@
 ﻿// import org.flashNight.arki.item.itemCollection.DictCollection;
-// import org.flashNight.neur.Server.ServerManager;
+import org.flashNight.neur.Server.ServerManager;
+import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.arki.item.itemCollection.*;
 /*
  * ItemUtil 静态类，存储物品数据与物品工具函数
@@ -14,59 +15,13 @@ class org.flashNight.arki.item.ItemUtil{
     public static var maxID:Number;
     public static var informationMaxValueDict:Object;
 
-    /**
-     * 内部克隆方法，专门用于克隆物品数据
-     * @param obj 要克隆的物品数据对象
-     * @return 克隆后的新对象
-     */
-    private static function cloneItemData(obj:Object):Object {
-        if (obj == null || typeof(obj) != "object") {
-            return obj;
-        }
-        
-        var copy:Object;
-        
-        // 处理数组
-        if (obj instanceof Array) {
-            copy = [];
-            for (var i:Number = 0; i < obj.length; i++) {
-                copy[i] = cloneItemData(obj[i]);
-            }
-            return copy;
-        }
-        
-        // 处理普通对象
-        copy = {};
-        for (var key:String in obj) {
-            // 跳过内部属性
-            if (key.indexOf("__") == 0) continue;
-            
-            var value = obj[key];
-            
-            // 根据物品数据结构的特点，处理常见的类型
-            if (typeof(value) == "object") {
-                // 特殊处理物品的 value 属性（可能是 {level: number}）
-                if (key == "value" && value.level != undefined) {
-                    copy[key] = {level: value.level};
-                } else {
-                    copy[key] = cloneItemData(value);
-                }
-            } else {
-                // 基本类型直接赋值
-                copy[key] = value;
-            }
-        }
-        
-        return copy;
-    }
-
 
     /*
      * 获取物品数据
      */
     public static function getItemData(index){
-        if (index.__proto__ == String.prototype) return ItemUtil.cloneItemData(ItemUtil.itemDataDict[index]);
-        if (index.__proto__ == Number.prototype) return ItemUtil.cloneItemData(ItemUtil.itemDataDict[itemNamesByID[index]]);
+        if (index.__proto__ == String.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[index]);
+        if (index.__proto__ == Number.prototype) return ObjectUtil.clone(ItemUtil.itemDataDict[itemNamesByID[index]]);
     }
 
     /*
@@ -245,7 +200,7 @@ class org.flashNight.arki.item.ItemUtil{
             list.背包[vacancyList[i]] = nonMergeableList[i];
         }
 
-        // ServerManager.getInstance().sendServerMessage(ItemUtil.toString(list));
+        // ServerManager.getInstance().sendServerMessage(ObjectUtil.toString(list));
         return list;
     }
 
