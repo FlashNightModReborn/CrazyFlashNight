@@ -1,6 +1,7 @@
 ﻿// 文件路径：org/flashNight/arki/bullet/BulletComponent/Movement/Util/MissileConfig.as
 
 import org.flashNight.gesh.xml.LoadXml.MissileConfigLoader;
+import org.flashNight.gesh.object.*;
 
 /**
  * 导弹配置管理器（单例）
@@ -86,6 +87,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
         loader.loadConfigs(
             function(configs:Object):Void {
                 // 合并到内部缓存，允许外部文件覆盖默认值
+                _root.服务器.发布服务器消息("MissileConfig: 配置加载成功。");
                 for (var key:String in configs) {
                     self._configs[key] = configs[key];
                 }
@@ -106,6 +108,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
      * @return 配置对象（若不存在则返回默认配置）
      */
     public function getConfig(configName:String):Object {
+        _root.服务器.发布服务器消息(configName + " " + (_configs[configName] != undefined));
         return _configs[configName] != undefined ? _configs[configName] : _configs["_default"];
     }
     
