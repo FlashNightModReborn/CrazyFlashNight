@@ -37,6 +37,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
     
     // 物理配置参数
     public var config:Object;
+    public var frame:Number = 0;
     
     // 配置默认值
     private static var DEFAULT_CONFIG:Object = {
@@ -99,11 +100,14 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         // 调用状态机更新逻辑（获取导引参数等）
         super.updateMovement(target);
         
-        // 初始化速度向量（如果还没有）
-        if (this.vx == undefined || this.vy == undefined) {
-            var rad:Number = this.rotationAngle * Math.PI / 180;
-            this.vx = this.speed * Math.cos(rad);
-            this.vy = this.speed * Math.sin(rad);
+        ++frame;
+
+        if(frame === 1) {
+            target.zOffset = target.Z轴坐标 - target._y;
+        } else if(frame >= 150) {
+            target.shouldDestroy = function() {
+                return true;
+            };
         }
         
         // ========== 向量化物理计算开始 ==========
@@ -169,9 +173,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement
         target._x += this.vx;
         target._y += this.vy;
         target._rotation = this.rotationAngle;
-        target.Z轴坐标 = target._y + target.yOffset;
-
-        // _root.发布消息("update")
+        target.Z轴坐标 = target._y + (target.yOffset || target.zOffset);
     }
 
     /**

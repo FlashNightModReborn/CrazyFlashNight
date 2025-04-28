@@ -108,7 +108,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
      * @return 配置对象（若不存在则返回默认配置）
      */
     public function getConfig(configName:String):Object {
-        _root.服务器.发布服务器消息(configName + " " + (_configs[configName] != undefined));
+        // _root.服务器.发布服务器消息(configName + " " + (_configs[configName] != undefined));
         return _configs[configName] != undefined ? _configs[configName] : _configs["_default"];
     }
     

@@ -57,13 +57,10 @@
             <pierceLimit>2</pierceLimit>
         </attribute>
         <movement>
-            <func>基础导弹</func>
+            <func>DefaultMissile</func>
             <param>
-                <usePreLaunch>true</usePreLaunch>
-                <onInitializeMissile>基础导弹初始化</onInitializeMissile>
-                <onSearchForTarget>基础导弹索敌</onSearchForTarget>
-                <onTrackTarget>基础导弹跟踪</onTrackTarget>
-                <onPreLaunchMove>基础预发射</onPreLaunchMove>
+                <missileConfig>predatorPlasma</missileConfig>
+                <usePreLaunch>false</usePreLaunch>
             </param>
         </movement>
     </bullet>
@@ -75,6 +72,16 @@
             <simulationMethod>标准</simulationMethod>
             <yOffset>0</yOffset>
         </shell>
+    </bullet>
+    <bullet>
+        <name>铁血飞弹</name>
+        <movement>
+            <func>DefaultMissile</func>
+            <param>
+                <missileConfig>predatorPlasma</missileConfig>
+                <usePreLaunch>false</usePreLaunch>
+            </param>
+        </movement>
     </bullet>
     <bullet>
         <name>横向联弹-穿刺子弹</name>

@@ -20,7 +20,6 @@ class org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader implemen
             // 读取穿刺限制配置，默认配额5
             attributeInfo.pierceLimit = (attributeNode.pierceLimit != undefined) ? Number(attributeNode.pierceLimit) : 5;
             // 如果以后还有更多属性，可以在这里继续解析并赋值
-
             return attributeInfo;
         }
         
