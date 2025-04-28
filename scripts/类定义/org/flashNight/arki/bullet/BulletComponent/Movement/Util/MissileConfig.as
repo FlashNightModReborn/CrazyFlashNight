@@ -125,28 +125,4 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig {
     public function getAllConfigs():Object {
         return _configs;
     }
-    
-    // --------------------------
-    // 快捷访问预设配置
-    // --------------------------
-    /**
-     * 获取拦截导弹配置
-     */
-    public function getInterceptorConfig():Object {
-        return getConfig("interceptor");
-    }
-    
-    /**
-     * 获取巡航导弹配置
-     */
-    public function getCruiseConfig():Object {
-        return getConfig("cruise");
-    }
-    
-    /**
-     * 获取火箭配置
-     */
-    public function getRocketConfig():Object {
-        return getConfig("rocket");
-    }
 }

@@ -18,13 +18,13 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.DefaultMissileCal
      * 构建并返回默认回调函数对象
      * @param shooter 发射此导弹的 MovieClip 实例
      * @param velocity 导弹的最大速度
-     * @param angleRadians 导弹初始的旋转角度（弧度）
+     * @param angleDegrees 导弹初始的旋转角度（度数）
      * @param config 导弹配置对象（可选，默认使用标准配置）
      * @return Object 包含导弹所有生命周期回调的对象
      */
     public static function build(shooter:MovieClip,
                                 velocity:Number,
-                                angleRadians:Number,
+                                angleDegrees:Number,
                                 config:Object):Object {
         // 如果未提供配置，使用默认配置
         if (config == undefined) {
@@ -32,7 +32,7 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.DefaultMissileCal
         }
         
         return {
-            onInitializeMissile: InitMissileCallbacks.create(shooter, velocity, angleRadians, config),
+            onInitializeMissile: InitMissileCallbacks.create(shooter, velocity, angleDegrees, config),
             onSearchForTarget: SearchForTargetCallbacks.create(config),
             onTrackTarget: TrackTargetCallbacks.create(config),
             onPreLaunchMove: PreLaunchMoveCallbacks.create(config)
@@ -43,16 +43,16 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.DefaultMissileCal
      * 使用配置名称构建回调函数对象
      * @param shooter 发射此导弹的 MovieClip 实例
      * @param velocity 导弹的最大速度
-     * @param angleRadians 导弹初始的旋转角度（弧度）
+     * @param angleDegrees 导弹初始的旋转角度（度数）
      * @param configName 配置名称
      * @return Object 包含导弹所有生命周期回调的对象
      */
     public static function buildWithConfigName(shooter:MovieClip,
                                              velocity:Number,
-                                             angleRadians:Number,
+                                             angleDegrees:Number,
                                              configName:String):Object {
         var configManager:MissileConfig = MissileConfig.getInstance();
         var config:Object = configManager.getConfig(configName || "default");
-        return build(shooter, velocity, angleRadians, config);
+        return build(shooter, velocity, angleDegrees, config);
     }
 }

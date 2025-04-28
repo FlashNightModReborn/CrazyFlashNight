@@ -2,26 +2,29 @@
 import org.flashNight.arki.unit.UnitUtil;
 
 /**
- * 目标追踪回调生成器（向量化物理模型）
+ * 目标追踪回调生成器（比例导引算法实现）
  * ===============================
- * 内部使用速度向量计算，同时保持与外部updateMovement的兼容性
+ * 专注于实现比例导引算法，计算所需的转向参数
  * 
  * 职责：
- *   - 实现比例导引算法
- *   - 处理导弹物理特性（加速度、阻力、转向）
- *   - 向量化计算以提高精度
+ * - 实现比例导引算法
+ * - 计算视线角速度
+ * - 计算期望的转向角速度
+ * - 处理目标失效情况
  * 
- * 物理模型：
- *   - 推力、阻力、法向力的独立计算
- *   - 转弯产生的诱导阻力模拟
- *   - 速度矢量实时更新
+ * 导引模型：
+ * - 使用比例导引算法
+ * - 计算视线角速度
+ * - 输出期望的转向角速度
  */
 class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallbacks {
     
     /**
      * 构造目标追踪回调函数
-     * @param config 导弹配置对象
-     * @return Function 使用向量化物理模型的追踪回调函数
+     * @param config 导弹配置对象，包含以下属性：
+     *               - navigationRatio: Number 比例导引系数
+     *               - angleCorrection: Number 角度修正系数
+     * @return Function 计算比例导引参数的回调函数
      */
     public static function create(config:Object):Function {
         return function():Void {
@@ -31,20 +34,12 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
                 this.target = null;
                 this.hasTarget = false;
                 this.previousLOSAngle = undefined;
-                this.vx = undefined;
-                this.vy = undefined;
+                this.setDesiredAngularVelocity(0);  // 清除导引指令
                 return;
             }
             
             var targetObject:MovieClip = this.targetObject;
             var target:MovieClip = this.target;
-            
-            // 初始化速度向量（如果还没有）
-            if (this.vx == undefined || this.vy == undefined) {
-                var rad:Number = this.rotationAngle * Math.PI / 180;
-                this.vx = this.speed * Math.cos(rad);
-                this.vy = this.speed * Math.sin(rad);
-            }
             
             // 使用 UnitUtil 计算目标偏移
             var yOffset:Number = UnitUtil.calculateCenterOffset(target);
@@ -60,6 +55,8 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
             // 获取或初始化上一帧的视线角度
             if (this.previousLOSAngle == undefined) {
                 this.previousLOSAngle = currentLOSAngle;
+                this.setDesiredAngularVelocity(0);
+                return;
             }
             
             // 计算视线角速度（度/帧）
@@ -72,77 +69,31 @@ class org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallba
                 losAngularVelocity += 360;
             }
             
-            // ========== 向量化物理计算开始 ==========
+            // ========== 比例导引计算 ==========
             
-            // 1. 计算所需的导引力方向（比例导引）
+            // 1. 计算所需的导引角速度（度/帧）
             var requiredAngularVelocity:Number = config.navigationRatio * losAngularVelocity;
             
-            // 2. 将角速度转换为加速度向量
-            var currentSpeed:Number = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-            var currentAngle:Number = Math.atan2(this.vy, this.vx);
-            
-            // 目标角度
-            var targetAngleRad:Number = (currentLOSAngle * Math.PI / 180);
-            var angleDiffRad:Number = targetAngleRad - currentAngle;
+            // 2. 计算角度差并应用修正
+            var currentAngle:Number = this.rotationAngle;
+            var angleDiff:Number = currentLOSAngle - currentAngle;
             
             // 归一化角度差
-            while (angleDiffRad > Math.PI) angleDiffRad -= 2 * Math.PI;
-            while (angleDiffRad < -Math.PI) angleDiffRad += 2 * Math.PI;
+            while (angleDiff > 180) angleDiff -= 360;
+            while (angleDiff < -180) angleDiff += 360;
             
-            // 3. 计算法向加速度（转向力）
-            var maxTurnRateRad:Number = this._rotationSpeed * Math.PI / 180;
-            var normalAccel:Number = maxTurnRateRad * currentSpeed; // 最大法向加速度
+            // 应用角度修正系数
+            var correctedAngularVelocity:Number = angleDiff * config.angleCorrection;
             
-            // 限制转向力
-            var turnForce:Number = angleDiffRad * config.angleCorrection * currentSpeed;
-            turnForce = Math.max(Math.min(turnForce, normalAccel), -normalAccel);
+            // 3. 合并导引指令和角度修正
+            var finalAngularVelocity:Number = (requiredAngularVelocity + correctedAngularVelocity) / 2;
             
-            // 4. 计算法向力的方向
-            var normalDirX:Number = -Math.sin(currentAngle);
-            var normalDirY:Number = Math.cos(currentAngle);
+            // 4. 转换为弧度/帧并设置到导弹组件
+            this.setDesiredAngularVelocity(finalAngularVelocity * Math.PI / 180);
             
-            // 5. 计算推力（切向力）
-            var thrustX:Number = 0;
-            var thrustY:Number = 0;
-            if (currentSpeed < this.maxSpeed) {
-                var forwardDirX:Number = Math.cos(currentAngle);
-                var forwardDirY:Number = Math.sin(currentAngle);
-                thrustX = forwardDirX * this.acceleration;
-                thrustY = forwardDirY * this.acceleration;
-            }
-            
-            // 6. 计算阻力（与速度平方成正比）
-            var dragCoefficient:Number = config.dragCoefficient || 0.001;
-            var speedSquared:Number = currentSpeed * currentSpeed;
-            var dragX:Number = -this.vx * dragCoefficient * speedSquared;
-            var dragY:Number = -this.vy * dragCoefficient * speedSquared;
-            
-            // 7. 转弯产生的额外阻力（模拟攻角影响）
-            var turnAngle:Number = Math.abs(angleDiffRad);
-            var inducedDragFactor:Number = 1 + Math.sin(turnAngle) * 2; // 转弯时阻力增加
-            dragX *= inducedDragFactor;
-            dragY *= inducedDragFactor;
-            
-            // 8. 更新速度向量
-            this.vx += thrustX + normalDirX * turnForce + dragX;
-            this.vy += thrustY + normalDirY * turnForce + dragY;
-            
-            // 9. 限制最大速度
-            var newSpeed:Number = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-            if (newSpeed > this.maxSpeed) {
-                var scale:Number = this.maxSpeed / newSpeed;
-                this.vx *= scale;
-                this.vy *= scale;
-                newSpeed = this.maxSpeed;
-            }
-            
-            // ========== 转换回标量形式（为了兼容 updateMovement）==========
-            this.speed = newSpeed;
-            this.rotationAngle = Math.atan2(this.vy, this.vx) * 180 / Math.PI;
-            
-            // 更新其他状态
-            targetObject.yOffset = yOffset;
+            // 更新状态
             this.previousLOSAngle = currentLOSAngle;
+            targetObject.yOffset = yOffset;
         };
     }
 }
