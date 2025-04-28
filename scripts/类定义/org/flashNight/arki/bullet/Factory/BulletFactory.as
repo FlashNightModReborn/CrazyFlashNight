@@ -115,22 +115,23 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
                 bulletInstance.xmov = velocity * Math.cos(angleRadians);
                 bulletInstance.ymov = velocity * Math.sin(angleRadians);
 
-                var movement:IMovement = LinearBulletMovement.create(
-                    speedX, 
-                    speedY, 
-                    zyRatio
-                );
-                /*
-                var movement:MissileMovement;
+                if(true) {
+                    var movement:IMovement = LinearBulletMovement.create(
+                        speedX, 
+                        speedY, 
+                        zyRatio
+                    );
+                } else {
+                    var movement:MissileMovement;
 
-                // 构造 MissileMovement
-                var missileParams:Object = DefaultMissileCallbacks.build(shooter, velocity, Obj._rotation);
-                missileParams.usePreLaunch = false;      // 启用预发射
-                movement = MissileMovement.create(missileParams);
+                    // 构造 MissileMovement
+                    var missileParams:Object = DefaultMissileCallbacks.build(shooter, velocity, Obj._rotation,
+                    MissileConfig.getInstance().getConfig("predatorPlasma"), bulletInstance);
+                    missileParams.usePreLaunch = false;      // 启用预发射
+                    movement = MissileMovement.create(missileParams);
+                }
 
-                // 绑定目标 MovieClip
-                movement.targetObject = bulletInstance;
-                */
+
                 
                 bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
                 bulletInstance.shouldDestroy = Delegate.create(lifecycle, lifecycle.shouldDestroy);
