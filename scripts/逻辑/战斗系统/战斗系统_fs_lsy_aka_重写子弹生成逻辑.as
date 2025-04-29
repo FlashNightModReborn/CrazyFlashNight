@@ -191,7 +191,7 @@ _root.子弹生命周期 = function()
         {
             continue;
         }
-        if (hitTarget.防止无限飞 != true || (hitTarget.hp <= 0 && !this.近战检测))
+        if (hitTarget.hp > 0 && hitTarget.防止无限飞 != true)
         {
             overlapRatio = 1;
 
