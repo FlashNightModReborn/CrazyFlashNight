@@ -75,7 +75,7 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager {
             cache = stateCache[requestType] = _createCacheEntry();
         // 内联_getCacheEntry逻辑结束
 
-        _root.服务器.发布服务器消息("updateTargetCache")
+        // _root.服务器.发布服务器消息("updateTargetCache")
 
         // 直接执行缓存更新，不再检查更新间隔
         TargetCacheUpdater.updateCache(_root.gameworld, frame, requestType, targetStatus == "true", // 如果目标是敌人，则为true

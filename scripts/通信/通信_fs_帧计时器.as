@@ -510,6 +510,7 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     this.性能评估优化();
     this.定期更新天气();
     this.键盘输入控制目标();
+    this.当前帧数 = this.server.currentFrame;
 }, _root.帧计时器);
 
 _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
@@ -525,9 +526,6 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
 
 }, _root.帧计时器);
 
-_root.帧计时器.eventBus.subscribe("frameUpdate", function() {
-    this.当前帧数 = this.server.currentFrame;
-}, _root.帧计时器);
 
 
 // ---------------------------------------------------
