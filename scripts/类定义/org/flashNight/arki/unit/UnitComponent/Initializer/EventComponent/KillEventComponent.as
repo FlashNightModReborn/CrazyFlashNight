@@ -17,6 +17,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEven
         target.状态改变("血腥死");
         target.aabbCollider.getFactory().releaseCollider(target.aabbCollider);
         target.aabbCollider = null;
+        // 设置"哨兵"碰撞箱，让它具有最大的left值
+        target.aabbCollider = {
+            left: Number.MAX_VALUE  // 极大值作为哨兵
+        };
         target.dispatcher.publish("death", target);
     }
 }
