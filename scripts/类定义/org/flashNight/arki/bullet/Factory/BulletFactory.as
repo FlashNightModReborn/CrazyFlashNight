@@ -115,22 +115,18 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
                 bulletInstance.xmov = velocity * Math.cos(angleRadians);
                 bulletInstance.ymov = velocity * Math.sin(angleRadians);
 
-                if(true) {
-                    var movement:IMovement = LinearBulletMovement.create(
-                        speedX, 
-                        speedY, 
-                        zyRatio
-                    );
-                } else {
-                    var movement:MissileMovement;
+                var movement:IMovement = MovementSystem.createMovementForBullet(
+                    Obj.子弹种类,      // Bullet type
+                    shooter,           // Shooter
+                    speedX,            // X speed
+                    speedY,            // Y speed
+                    zyRatio,           // ZY ratio
+                    velocity,          // Velocity
+                    Obj._rotation      // Rotation
+                );
 
-                    // 构造 MissileMovement
-                    var missileParams:Object = DefaultMissileCallbacks.build(shooter, velocity, Obj._rotation,
-                    MissileConfig.getInstance().getConfig("predatorPlasma"), bulletInstance);
-                    missileParams.usePreLaunch = false;      // 启用预发射
-                    movement = MissileMovement.create(missileParams);
-                }
-
+                // Then use the movement as before
+                bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);
 
                 
                 bulletInstance.updateMovement = Delegate.create(movement, movement.updateMovement);

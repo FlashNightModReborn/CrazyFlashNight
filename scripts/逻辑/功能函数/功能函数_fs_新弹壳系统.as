@@ -1,10 +1,11 @@
 ﻿import org.flashNight.arki.bullet.BulletComponent.Shell.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.bullet.BulletComponent.Movement.Util.*;
+import org.flashNight.arki.bullet.BulletComponent.Movement.*;
 
 // 初始化Shell系统
 ShellSystem.initialize();
-
+MovementSystem.initialize();
 // 初始化导弹配置
 var missileConfigManager:MissileConfig = MissileConfig.getInstance();
 missileConfigManager.loadConfigs(
