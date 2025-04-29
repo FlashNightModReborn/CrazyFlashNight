@@ -127,6 +127,8 @@ class org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater {
                 list[j + 1] = key;
             } while (++i < len);
         }
+
+        // _root.服务器.发布服务器消息("缓存更新成功！");
         
         // 根据排序后的列表构建并更新缓存数据结构
         //_rebuildCacheData(list, cacheEntry, currentFrame);
