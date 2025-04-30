@@ -1,0 +1,903 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手枪/诛神短枪/诛神短枪" itemID="666afd8c-0000623b" symbolType="graphic" lastModified="1718287756">
+  <timeline>
+    <DOMTimeline name="诛神短枪">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="长枪/诛神枪/bitmap3005.png" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="11.3827514648438" d="11.3827514648438" tx="-141.8" ty="-94.15"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2867 -84|-1333 -84!-1333 -84|-1333 -1854!-1333 -1854|2867 -1854!2867 -1854|2867 -84"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <BitmapFill bitmapPath="长枪/诛神枪/bitmap3005.png" bitmapIsClipped="false">
+                        <matrix>
+                          <Matrix a="20" d="20" tx="-101.4" ty="-110.1"/>
+                        </matrix>
+                      </BitmapFill>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!-128 -642|462 -642!462 -642|462 113!462 113|262 113!262 113|262 958!262 958|-708 958!-708 958|-708 763!-708 763|-428 763!-428 763|-428 663!-428 663|-378 663!-378 663|-378 543!-378 543|-338 543!-338 543|-338 -437!-338 -437|-128 -437!-128
+ -437|-128 -642"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0136871337890625" c="-0.00518798828125" d="0" tx="191.95" ty="-63.05"/>
+                        </matrix>
+                        <GradientEntry color="#2C3874" ratio="0"/>
+                        <GradientEntry color="#6982B8" ratio="0.517647058823529"/>
+                        <GradientEntry color="#2C3874" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0101165771484375" c="-0.045257568359375" d="0" tx="150.65" ty="-64"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0103302001953125" c="-0.012054443359375" d="0" tx="206.1" ty="-63.85"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!3725 -1115|2271 -1115!2271 -1115|2271 -1446!2271 -1446|2706 -1446"/>
+                    <Edge fillStyle1="2" strokeStyle="2" edges="
+!2706 -1446|3456 -1446"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!3456 -1446|3754 -1446"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!3754 -1446|3754 -1485!3754 -1485|3924 -1485!3924 -1485|3924 -1446"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="
+!3924 -1446|4283 -1446!4283 -1446[4355 -1277 4283 -1108!4283 -1108|3943 -1108"/>
+                    <Edge strokeStyle="1" edges="
+!3943 -1108|3924 -1093"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="
+!3924 -1093|3924 -1036!3924 -1036|3754 -1036!3754 -1036|3754 -1092"/>
+                    <Edge strokeStyle="1" edges="
+!3754 -1092|3725 -1115"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!3754 -1115|3754 -1092"/>
+                    <Edge fillStyle1="2" edges="
+!3754 -1115|3725 -1115"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="
+!3924 -1093|3924 -1108"/>
+                    <Edge fillStyle0="1" fillStyle1="3" strokeStyle="1" edges="
+!3924 -1108|3924 -1446"/>
+                    <Edge fillStyle0="3" edges="
+!3924 -1108|3943 -1108"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="
+!3754 -1446|3754 -1115"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#1E1F21"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#5C5C5C"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#1D1E20"/>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <SolidColor color="#5D5D5F"/>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <SolidColor color="#3D3D3F"/>
+                    </FillStyle>
+                    <FillStyle index="7">
+                      <SolidColor color="#1F1F1F"/>
+                    </FillStyle>
+                    <FillStyle index="8">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.01324462890625" c="-0.02117919921875" d="0" tx="68.6" ty="-35.15"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="9">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.009033203125" c="-0.0294189453125" d="0" tx="69.35" ty="9.2"/>
+                        </matrix>
+                        <GradientEntry color="#2C3874" ratio="0"/>
+                        <GradientEntry color="#6982B8" ratio="0.517647058823529"/>
+                        <GradientEntry color="#2C3874" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!659 -824|659 -920!659 -920|979 -920!979 -920|1025 -920!1025 -920|1025 -1044!1025 -1044|1081 -1044"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="
+!1081 -1044|1141 -1044"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!1141 -1044|1181 -1044"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!1181 -1044|1229 -1044!1229 -1044|1229 -920"/>
+                    <Edge fillStyle1="8" strokeStyle="1" edges="
+!1229 -920|1369 -920"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!1369 -920|1369 -966!1369 -966|1369 -1064!1369 -1064|1323 -1064!1323 -1064|1323 -1132!1323 -1132|1455 -1132"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="
+!1455 -1132|1612 -1132"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!1612 -1132|1769 -1132!1769 -1132|1769 -1064!1769 -1064|1719 -1064!1719 -1064|1719 -966!1719 -966|1719 -920!1719 -920|1973 -920!1973 -920|2023 -880!2023 -880|2023 -824"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!2023 -824|2023 -752"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="
+!2023 -752|2023 -688"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!2023 -688|2023 -620"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!2023 -620|2023 -500!2023 -500|1973 -438!1973 -438|1777 -438"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!1777 -438|1777 -394"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!1777 -394|1777 -298"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!1777 -298|1855 -298"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="
+!1855 -298|1855 -394!1855 -394|2163 -394"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!2163 -394|2327 -394!2327 -394|2325 -298!2325 -298|2291 -298!2291 -298|2291 -210!2291 -210|1869 -210"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!1869 -210|1869 36"/>
+                    <Edge fillStyle1="9" strokeStyle="1" edges="
+!1869 36|1869 332!1869 332|1747 332"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!1747 332|1699 332"/>
+                    <Edge fillStyle1="9" strokeStyle="1" edges="
+!1699 332|1587 332"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="
+!1587 332|1521 332"/>
+                    <Edge fillStyle1="9" strokeStyle="1" edges="
+!1521 332|1427 332"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!1427 332|1359 332"/>
+                    <Edge fillStyle1="9" strokeStyle="1" edges="
+!1359 332|1255 332"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!1255 332|1183 332"/>
+                    <Edge fillStyle1="9" strokeStyle="1" edges="
+!1183 332|1085 332"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!1085 332|1009 332"/>
+                    <Edge fillStyle1="9" strokeStyle="1" edges="
+!1009 332|905 332!905 332|905 36"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!905 36|905 -210"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!905 -210|447 -210!447 -210[431 -187 418 -156"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!418 -156[387 -81 377 38!377 38[313 -119 111 -156"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!111 -156|111 -210!111 -210|141 -210!141 -210|141 -298"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="
+!141 -298|113 -298!113 -298|113 -394!113 -394|343 -394"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!343 -394|439 -394!439 -394|439 -298!439 -298|503 -298"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="
+!503 -298|503 -394!503 -394|691 -394"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!691 -394|801 -394!801 -394|801 -438"/>
+                    <Edge fillStyle1="7" strokeStyle="1" edges="
+!801 -438|659 -438!659 -438|659 -620"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!659 -620|659 -688"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="
+!659 -688|659 -752"/>
+                    <Edge fillStyle1="6" strokeStyle="1" edges="
+!659 -752|659 -824"/>
+                    <Edge fillStyle0="7" fillStyle1="5" edges="
+!1612 -1132|1612 -1064"/>
+                    <Edge fillStyle0="7" fillStyle1="6" strokeStyle="1" edges="
+!1612 -1064|1615 -1064"/>
+                    <Edge fillStyle0="7" fillStyle1="7" strokeStyle="1" edges="
+!1615 -1064|1719 -1064"/>
+                    <Edge fillStyle0="5" fillStyle1="7" strokeStyle="1" edges="
+!1455 -1064|1465 -1064"/>
+                    <Edge fillStyle0="5" fillStyle1="6" strokeStyle="1" edges="
+!1465 -1064|1505 -1064"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="
+!1505 -1064|1558 -1064"/>
+                    <Edge fillStyle0="5" fillStyle1="6" strokeStyle="1" edges="
+!1558 -1064|1612 -1064"/>
+                    <Edge fillStyle0="5" fillStyle1="7" edges="
+!1455 -1132|1455 -1064"/>
+                    <Edge fillStyle0="7" fillStyle1="7" strokeStyle="1" edges="
+!1455 -1064|1369 -1064"/>
+                    <Edge fillStyle0="5" fillStyle1="6" edges="
+!343 -298[384 -353 343 -394"/>
+                    <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="
+!343 -298|141 -298"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!691 -394[723 -371 720 -344!720 -344[716 -322 691 -298"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="
+!691 -298|801 -298"/>
+                    <Edge fillStyle0="6" fillStyle1="7" strokeStyle="1" edges="
+!801 -298|801 -394"/>
+                    <Edge fillStyle0="7" fillStyle1="6" strokeStyle="1" edges="
+!801 -438|801 -486!801 -486|979 -486"/>
+                    <Edge fillStyle0="7" fillStyle1="7" strokeStyle="1" edges="
+!979 -486|979 -620"/>
+                    <Edge fillStyle0="7" fillStyle1="6" edges="
+!979 -620|659 -620"/>
+                    <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="
+!691 -298|503 -298"/>
+                    <Edge fillStyle0="7" fillStyle1="6" edges="
+!418 -156|111 -156"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="
+!141 -210|447 -210!439 -298|343 -298"/>
+                    <Edge fillStyle0="7" fillStyle1="5" strokeStyle="1" edges="
+!1558 -966|1505 -966"/>
+                    <Edge fillStyle0="7" fillStyle1="6" strokeStyle="1" edges="
+!1505 -966|1465 -966"/>
+                    <Edge fillStyle0="7" fillStyle1="7" strokeStyle="1" edges="
+!1465 -966|1369 -966"/>
+                    <Edge fillStyle0="7" fillStyle1="6" strokeStyle="1" edges="
+!1615 -966|1558 -966"/>
+                    <Edge fillStyle0="8" fillStyle1="5" strokeStyle="1" edges="
+!1141 -920|1081 -920"/>
+                    <Edge fillStyle0="8" fillStyle1="7" strokeStyle="1" edges="
+!1081 -920|1025 -920!1025 -920|1025 -824"/>
+                    <Edge fillStyle0="8" fillStyle1="6" strokeStyle="1" edges="
+!1025 -824|1025 -752"/>
+                    <Edge fillStyle0="8" fillStyle1="5" strokeStyle="1" edges="
+!1025 -752|1025 -688"/>
+                    <Edge fillStyle0="8" fillStyle1="6" strokeStyle="1" edges="
+!1025 -688|1025 -620"/>
+                    <Edge fillStyle0="8" fillStyle1="7" strokeStyle="1" edges="
+!1025 -620|1025 -486"/>
+                    <Edge fillStyle0="8" fillStyle1="6" strokeStyle="1" edges="
+!1025 -486|1719 -486"/>
+                    <Edge fillStyle0="8" fillStyle1="7" strokeStyle="1" edges="
+!1719 -486|1719 -620"/>
+                    <Edge fillStyle0="8" fillStyle1="6" strokeStyle="1" edges="
+!1719 -620|1719 -688"/>
+                    <Edge fillStyle0="8" fillStyle1="5" strokeStyle="1" edges="
+!1719 -688|1719 -752"/>
+                    <Edge fillStyle0="8" fillStyle1="6" strokeStyle="1" edges="
+!1719 -752|1719 -824"/>
+                    <Edge fillStyle0="8" fillStyle1="7" strokeStyle="1" edges="
+!1719 -824|1719 -920!1719 -920|1369 -920"/>
+                    <Edge fillStyle0="6" fillStyle1="8" strokeStyle="1" edges="
+!1141 -920|1181 -920"/>
+                    <Edge fillStyle0="6" fillStyle1="7" strokeStyle="1" edges="
+!1181 -920|1181 -1044"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="
+!979 -824|979 -752"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!979 -752|1025 -752"/>
+                    <Edge fillStyle0="7" fillStyle1="7" strokeStyle="1" edges="
+!979 -920|979 -824"/>
+                    <Edge fillStyle0="7" fillStyle1="6" edges="
+!979 -824|1025 -824"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="
+!979 -688|979 -620"/>
+                    <Edge fillStyle0="6" fillStyle1="7" edges="
+!979 -620|1025 -620"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="
+!979 -688|979 -752"/>
+                    <Edge fillStyle0="5" fillStyle1="6" edges="
+!979 -752|659 -752"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!1025 -688|979 -688"/>
+                    <Edge fillStyle0="1" fillStyle1="6" edges="
+!1708 -394|1710 -406!1710 -406|1707 -418!1707 -418|1700 -426!1700 -426|1695 -429!1695 -429|1450 -431!1450 -431|1206 -429!1206 -429[1196 -427 1196 -422!1196 -422[1190 -413 1190 -405!1190 -405[1190 -399 1193 -394"/>
+                    <Edge fillStyle0="1" fillStyle1="7" edges="
+!1193 -394[1197 -384 1212 -381!1212 -381|1688 -381!1688 -381[1702 -384 1708 -394"/>
+                    <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="
+!861 -394|861 -397!861 -397[861 -414 873 -426!873 -426[885 -438 902 -438!902 -438[919 -438 931 -426!931 -426[943 -414 943 -397!943 -397|943 -394"/>
+                    <Edge fillStyle0="6" fillStyle1="7" edges="
+!943 -394|1193 -394"/>
+                    <Edge fillStyle0="5" fillStyle1="7" strokeStyle="1" edges="
+!861 -394[862 -379 873 -368!873 -368[885 -356 902 -356!902 -356[919 -356 931 -368!931 -368[942 -379 943 -394"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!1058 -170[1075 -170 1087 -158!1087 -158[1099 -146 1099 -129!1099 -129[1099 -112 1087 -100!1087 -100[1075 -88 1058 -88!1058 -88[1041 -88 1029 -100!1029 -100[1017 -112 1017 -129!1017 -129[1017 -146 1029 -158!1029 -158[1041 -170 1058 -170"/>
+                    <Edge fillStyle0="6" fillStyle1="7" strokeStyle="1" edges="
+!1025 -486|979 -486"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!1405 -100[1393 -88 1376 -88!1376 -88[1359 -88 1347 -100!1347 -100[1335 -112 1335 -129!1335 -129[1335 -146 1347 -158!1347 -158[1359 -170 1376 -170!1376 -170[1393 -170 1405 -158!1405 -158[1417 -146 1417 -129!1417 -129[1417 -112 1405 -100"/>
+                    <Edge fillStyle0="8" fillStyle1="7" strokeStyle="1" edges="
+!1229 -920|1181 -920"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!1505 -966|1505 -1064"/>
+                    <Edge fillStyle0="7" fillStyle1="6" strokeStyle="1" edges="
+!1465 -966|1465 -1064"/>
+                    <Edge fillStyle0="6" fillStyle1="7" edges="
+!801 -394|861 -394!979 -824|659 -824"/>
+                    <Edge fillStyle0="5" fillStyle1="6" edges="
+!659 -688|979 -688!1558 -966|1558 -1064"/>
+                    <Edge fillStyle0="7" fillStyle1="6" strokeStyle="1" edges="
+!1615 -1064|1615 -966"/>
+                    <Edge fillStyle0="7" fillStyle1="7" strokeStyle="1" edges="
+!1615 -966|1719 -966"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!1141 -1044|1141 -920"/>
+                    <Edge fillStyle0="5" fillStyle1="7" edges="
+!1081 -1044|1081 -920"/>
+                    <Edge fillStyle0="7" fillStyle1="7" strokeStyle="1" edges="
+!1973 -824|1973 -920"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="
+!1973 -824|1973 -752"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!1973 -752|2023 -752"/>
+                    <Edge fillStyle0="7" fillStyle1="6" edges="
+!1973 -824|2023 -824"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="
+!1973 -620|1973 -688"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!1973 -688|1719 -688"/>
+                    <Edge fillStyle0="6" fillStyle1="7" edges="
+!1973 -620|2023 -620"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!2023 -688|1973 -688!1719 -752|1973 -752"/>
+                    <Edge fillStyle0="6" fillStyle1="7" edges="
+!1719 -620|1973 -620"/>
+                    <Edge fillStyle0="5" fillStyle1="5" strokeStyle="1" edges="
+!1973 -688|1973 -752"/>
+                    <Edge fillStyle0="7" fillStyle1="6" edges="
+!1719 -824|1973 -824"/>
+                    <Edge fillStyle0="6" fillStyle1="7" strokeStyle="1" edges="
+!1777 -438|1777 -486!1777 -486|1719 -486"/>
+                    <Edge fillStyle0="6" fillStyle1="7" edges="
+!1708 -394|1777 -394"/>
+                    <Edge fillStyle0="2" fillStyle1="3" strokeStyle="1" edges="
+!1672 -170[1689 -170 1701 -158!1701 -158[1713 -146 1713 -129!1713 -129[1713 -112 1701 -100!1701 -100[1689 -88 1672 -88!1672 -88[1655 -88 1643 -100!1643 -100[1631 -112 1631 -129!1631 -129[1631 -146 1643 -158!1643 -158[1655 -170 1672 -170"/>
+                    <Edge fillStyle0="6" fillStyle1="6" strokeStyle="1" edges="
+!2163 -298|2291 -298"/>
+                    <Edge fillStyle0="6" fillStyle1="5" edges="
+!2163 -394[2187 -378 2192 -360!2192 -360[2201 -331 2163 -298"/>
+                    <Edge fillStyle0="6" fillStyle1="5" strokeStyle="1" edges="
+!2163 -298|1855 -298"/>
+                    <Edge fillStyle0="7" fillStyle1="7" strokeStyle="1" edges="
+!1973 -620|1973 -438"/>
+                    <Edge fillStyle0="7" fillStyle1="6" strokeStyle="1" edges="
+!801 -298|1777 -298"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="
+!1869 -210|905 -210"/>
+                    <Edge fillStyle0="2" fillStyle1="9" strokeStyle="1" edges="
+!1747 332|1747 36!1747 36|1869 36!1587 248|1587 36!1587 36|1699 36!1699 36|1699 332!1427 332|1427 36!1427 36|1521 36!1521 36|1521 248"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="
+!1521 248|1587 248"/>
+                    <Edge fillStyle0="9" fillStyle1="2" strokeStyle="1" edges="
+!1359 332|1359 36!1359 36|1255 36!1255 36|1255 332"/>
+                    <Edge fillStyle0="4" fillStyle1="9" strokeStyle="1" edges="
+!1521 248|1521 332!1587 332|1587 248"/>
+                    <Edge fillStyle0="9" fillStyle1="2" strokeStyle="1" edges="
+!1183 332|1183 36!1183 36|1085 36!1085 36|1085 332!1009 332|1009 36!1009 36|905 36"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#4F4FFF">
+          <frames>
+            <DOMFrame index="0" motionTweenScale="false" keyMode="8192">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.02252197265625" c="-0.065704345703125" d="0" tx="59.75" ty="-73.25"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.004638671875" d="0.0135650634765625" tx="69.25" ty="-81.65"/>
+                        </matrix>
+                        <GradientEntry color="#333333" ratio="0"/>
+                        <GradientEntry color="#7B7B7B" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.013580322265625" c="-0.00616455078125" d="0" tx="60.5" ty="-81.6"/>
+                        </matrix>
+                        <GradientEntry color="#2C3874" ratio="0"/>
+                        <GradientEntry color="#6982B8" ratio="0.517647058823529"/>
+                        <GradientEntry color="#2C3874" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="5">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0056610107421875" d="0.0135650634765625" tx="87.9" ty="-81.65"/>
+                        </matrix>
+                        <GradientEntry color="#333333" ratio="0"/>
+                        <GradientEntry color="#7B7B7B" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="6">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.01080322265625" c="-0.00616455078125" d="0" tx="78.15" ty="-78.9"/>
+                        </matrix>
+                        <GradientEntry color="#1E2F22" ratio="0"/>
+                        <GradientEntry color="#232923" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="7">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0015411376953125" c="-0.002593994140625" d="0" tx="99.7" ty="-61.2"/>
+                        </matrix>
+                        <GradientEntry color="#888888" ratio="0"/>
+                        <GradientEntry color="#484848" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="8">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.009857177734375" c="-0.007904052734375" d="0" tx="98.75" ty="-78.55"/>
+                        </matrix>
+                        <GradientEntry color="#151515" ratio="0"/>
+                        <GradientEntry color="#484848" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="9">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.002593994140625" c="-0.002593994140625" d="0" tx="61.25" ty="-61.8"/>
+                        </matrix>
+                        <GradientEntry color="#888888" ratio="0"/>
+                        <GradientEntry color="#484848" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="10">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0012359619140625" d="0.010498046875" tx="89.25" ty="-46.25"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="11">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.01019287109375" d="0.010498046875" tx="74.85" ty="-46.25"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="12">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0015411376953125" d="0.010498046875" tx="94" ty="-46.25"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="13">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.017578125" c="-0.009063720703125" d="0" tx="121" ty="-72.25"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="14">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0012359619140625" d="0.010498046875" tx="99.9" ty="-46.25"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="15">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0070953369140625" d="0.010498046875" tx="104.65" ty="-46.25"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="16">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.00555419921875" d="0.0135650634765625" tx="50.9" ty="-81.65"/>
+                        </matrix>
+                        <GradientEntry color="#333333" ratio="0"/>
+                        <GradientEntry color="#7B7B7B" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="17">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.014495849609375" c="-0.00616455078125" d="0" tx="41.25" ty="-73.8"/>
+                        </matrix>
+                        <GradientEntry color="#1E2F22" ratio="0"/>
+                        <GradientEntry color="#232923" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="18">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.009552001953125" c="-0.0115966796875" d="0" tx="26.7" ty="-73.3"/>
+                        </matrix>
+                        <GradientEntry color="#151515" ratio="0"/>
+                        <GradientEntry color="#484848" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="19">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="-0.0182037353515625" d="-0.0215911865234375" tx="0.65" ty="-67.95"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="20">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.01019287109375" c="-0.003753662109375" d="0" tx="-11.8" ty="-48.5"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="21">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.00616455078125" c="-0.05291748046875" d="0" tx="27.75" ty="-45.75"/>
+                        </matrix>
+                        <GradientEntry color="#EEE2E6" ratio="0"/>
+                        <GradientEntry color="#5E565D" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="22">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="-0.0012359619140625" c="0.002593994140625" d="0" tx="-5.95" ty="-39.1"/>
+                        </matrix>
+                        <GradientEntry color="#D9D9D9" ratio="0"/>
+                        <GradientEntry color="#AEAEAE" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="23">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.0040130615234375" c="-0.0656890869140625" d="0" tx="59.75" ty="-61.2"/>
+                        </matrix>
+                        <GradientEntry color="#D9D9D9" ratio="0"/>
+                        <GradientEntry color="#AEAEAE" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="24">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.01080322265625" c="-0.009246826171875" d="0" tx="13.5" ty="-74.8"/>
+                        </matrix>
+                        <GradientEntry color="#D9D9D9" ratio="0"/>
+                        <GradientEntry color="#AEAEAE" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="25">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0.0012359619140625" b="-0.0012359619140625" c="0.002532958984375" d="0.002532958984375" tx="14.8" ty="-43.3"/>
+                        </matrix>
+                        <GradientEntry color="#D9D9D9" ratio="0"/>
+                        <GradientEntry color="#AEAEAE" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="26">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.002593994140625" c="-0.002593994140625" d="0" tx="21.45" ty="-61.8"/>
+                        </matrix>
+                        <GradientEntry color="#888888" ratio="0"/>
+                        <GradientEntry color="#484848" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="27">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.030181884765625" c="-0.030242919921875" d="0" tx="20.6" ty="-11.85"/>
+                        </matrix>
+                        <GradientEntry color="#772C40" ratio="0"/>
+                        <GradientEntry color="#20090C" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                    <FillStyle index="28">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.016326904296875" c="-0.044219970703125" d="0" tx="86.45" ty="-24.25"/>
+                        </matrix>
+                        <GradientEntry color="#772C40" ratio="0"/>
+                        <GradientEntry color="#20090C" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="6" strokeStyle="2" edges="
+!1462 -1632|1462 -1854!1462 -1854|1664 -1854"/>
+                    <Edge fillStyle1="5" strokeStyle="1" edges="
+!1664 -1854[1878 -1668 1846 -1409"/>
+                    <Edge fillStyle1="8" strokeStyle="1" edges="
+!1846 -1409|1947 -1723!1947 -1723|2105 -1733"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="
+!2105 -1733|2129 -1834!2129 -1834|2271 -1834!2271 -1834|2271 -1733"/>
+                    <Edge fillStyle1="13" strokeStyle="1" edges="
+!2271 -1733[2556 -1444 2568 -1157"/>
+                    <Edge strokeStyle="1" edges="
+!2568 -1157|2867 -1157"/>
+                    <Edge fillStyle0="3" strokeStyle="1" edges="
+!1462 -1632[1446 -1763 1311 -1854"/>
+                    <Edge fillStyle0="3" fillStyle1="4" strokeStyle="2" edges="
+!1311 -1854|1311 -1409"/>
+                    <Edge fillStyle0="3" fillStyle1="2" strokeStyle="1" edges="
+!1311 -1409|1462 -1409"/>
+                    <Edge fillStyle0="3" fillStyle1="6" strokeStyle="2" edges="
+!1462 -1409|1462 -1632"/>
+                    <Edge fillStyle0="4" strokeStyle="2" edges="
+!1311 -1854|1109 -1854!1109 -1854|1109 -1632"/>
+                    <Edge fillStyle0="4" fillStyle1="16" strokeStyle="2" edges="
+!1109 -1632|1109 -1409"/>
+                    <Edge fillStyle0="4" fillStyle1="2" strokeStyle="1" edges="
+!1109 -1409|1311 -1409"/>
+                    <Edge fillStyle0="16" strokeStyle="1" edges="
+!1109 -1632[1088 -1743 927 -1854"/>
+                    <Edge fillStyle0="16" fillStyle1="17" strokeStyle="2" edges="
+!927 -1854|927 -1409"/>
+                    <Edge fillStyle0="16" fillStyle1="2" strokeStyle="1" edges="
+!927 -1409|1109 -1409"/>
+                    <Edge fillStyle0="2" fillStyle1="9" edges="
+!1184 -1235[1183 -1254 1195 -1266!1195 -1266|1226 -1278!1226 -1278|1256 -1266!1256 -1266|1269 -1235!1269 -1235|1256 -1205!1256 -1205[1244 -1193 1226 -1193!1226 -1193[1207 -1193 1195 -1205!1195 -1205[1183 -1217 1184 -1235"/>
+                    <Edge fillStyle0="17" strokeStyle="2" edges="
+!927 -1854|725 -1854!725 -1854|725 -1735"/>
+                    <Edge fillStyle0="17" fillStyle1="18" strokeStyle="2" edges="
+!725 -1735|725 -1409"/>
+                    <Edge fillStyle0="17" fillStyle1="2" strokeStyle="1" edges="
+!725 -1409|927 -1409"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!345 -1735|320 -1834!320 -1834|118 -1834!118 -1834|118 -1712"/>
+                    <Edge fillStyle0="2" fillStyle1="19" strokeStyle="1" edges="
+!118 -1712|199 -1119"/>
+                    <Edge fillStyle0="2" fillStyle1="24" edges="
+!199 -1119|209 -1120"/>
+                    <Edge fillStyle0="2" fillStyle1="23" strokeStyle="1" edges="
+!209 -1120|310 -1167"/>
+                    <Edge fillStyle0="2" fillStyle1="21" strokeStyle="1" edges="
+!310 -1167|502 -1096!502 -1096|1129 -1096"/>
+                    <Edge fillStyle0="2" fillStyle1="11" strokeStyle="1" edges="
+!1129 -1096|1806 -1096"/>
+                    <Edge fillStyle0="2" fillStyle1="10" strokeStyle="1" edges="
+!1806 -1096|1907 -1096"/>
+                    <Edge fillStyle0="2" fillStyle1="12" strokeStyle="1" edges="
+!1907 -1096|2008 -1096"/>
+                    <Edge fillStyle0="2" fillStyle1="14" strokeStyle="1" edges="
+!2008 -1096|2109 -1096"/>
+                    <Edge fillStyle0="2" fillStyle1="15" strokeStyle="1" edges="
+!2109 -1096|2210 -1096"/>
+                    <Edge fillStyle0="2" strokeStyle="1" edges="
+!2210 -1096|2271 -1096!2271 -1096|2271 -1157"/>
+                    <Edge fillStyle0="2" fillStyle1="13" strokeStyle="1" edges="
+!2271 -1157|2271 -1733"/>
+                    <Edge fillStyle0="24" fillStyle1="21" strokeStyle="1" edges="
+!199 -1114|199 -1106"/>
+                    <Edge fillStyle0="24" fillStyle1="23" edges="
+!199 -1106|209 -1120"/>
+                    <Edge fillStyle0="24" fillStyle1="24" strokeStyle="1" edges="
+!209 -1120|199 -1114"/>
+                    <Edge fillStyle0="19" fillStyle1="24" strokeStyle="1" edges="
+!199 -1114|199 -1119"/>
+                    <Edge fillStyle0="2" fillStyle1="26" edges="
+!387 -1235|399 -1266!399 -1266[411 -1278 430 -1278!430 -1278|460 -1266!460 -1266[472 -1254 472 -1235!472 -1235[472 -1217 460 -1205!460 -1205[448 -1193 430 -1193!430 -1193[411 -1193 399 -1205!399 -1205[387 -1217 387 -1235"/>
+                    <Edge fillStyle0="23" fillStyle1="21" strokeStyle="1" edges="
+!199 -1106|310 -1167"/>
+                    <Edge fillStyle0="21" fillStyle1="1" edges="
+!440 -995|557 -995!557 -995|557 -950!557 -950|440 -950"/>
+                    <Edge fillStyle0="21" fillStyle1="25" edges="
+!440 -950|337 -842"/>
+                    <Edge fillStyle0="21" edges="
+!337 -842|335 -840"/>
+                    <Edge fillStyle0="21" fillStyle1="25" edges="
+!335 -840[332 -817 316 -803!316 -803[300 -785 276 -785!276 -785[252 -785 234 -803!234 -803[217 -819 217 -843!217 -843[217 -868 234 -886!234 -886|440 -995"/>
+                    <Edge fillStyle0="18" fillStyle1="2" strokeStyle="1" edges="
+!345 -1735|422 -1409!422 -1409|725 -1409"/>
+                    <Edge fillStyle0="18" strokeStyle="1" edges="
+!725 -1735|345 -1735"/>
+                    <Edge fillStyle1="27" strokeStyle="1" edges="
+!547 -642|440 -642!440 -642[363 -512 399 -385!399 -385|743 -385!743 -385|824 -642!824 -642|547 -642"/>
+                    <Edge strokeStyle="1" edges="
+!547 -642[510 -543 597 -465"/>
+                    <Edge fillStyle1="25" edges="
+!337 -842|335 -843!335 -843|335 -840"/>
+                    <Edge fillStyle0="27" strokeStyle="1" edges="
+!-84 -550|15 -403!15 -403|7 -290"/>
+                    <Edge fillStyle0="27" edges="
+!7 -290|396 -290"/>
+                    <Edge fillStyle0="27" strokeStyle="1" edges="
+!396 -290[403 -316 422 -338!422 -338|805 -358"/>
+                    <Edge fillStyle0="27" fillStyle1="21" strokeStyle="1" edges="
+!805 -358|907 -702!907 -702[65 -803 -84 -550"/>
+                    <Edge fillStyle0="28" strokeStyle="1" edges="
+!1007 -368|1004 -245!1004 -245[1064 -217 1143 -217!1143 -217[1228 -217 1252 -243!1252 -243|1297 -358!1297 -358|1301 -378!1301 -378|1311 -399!1311 -399|1382 -399!1382 -399|1396 -300!1396 -300[1411 -258 1492 -257!1492 -257[1547 -258 1559
+ -304!1559 -304[1577 -373 1594 -388!1594 -388|1614 -388!1614 -388[1618 -318 1675 -288!1675 -288|1756 -288!1756 -288|1806 -399!1806 -399|1841 -312!1841 -312[1849 -278 1903 -278!1903 -278[1957 -278 1970 -302!1970 -302|2018 -399!2018 -399
+[2040 -347 2111 -312!2111 -312[2180 -280 2231 -348!2231 -348|2265 -388!2265 -388|2265 -752!2265 -752|2079 -752"/>
+                    <Edge fillStyle0="28" fillStyle1="15" strokeStyle="1" edges="
+!2079 -752|1978 -752"/>
+                    <Edge fillStyle0="28" fillStyle1="14" strokeStyle="1" edges="
+!1978 -752|1877 -752"/>
+                    <Edge fillStyle0="28" fillStyle1="12" strokeStyle="1" edges="
+!1877 -752|1776 -752"/>
+                    <Edge fillStyle0="28" fillStyle1="10" strokeStyle="1" edges="
+!1776 -752|1675 -752"/>
+                    <Edge fillStyle0="28" fillStyle1="11" strokeStyle="1" edges="
+!1675 -752|1422 -752"/>
+                    <Edge fillStyle0="28" fillStyle1="21" strokeStyle="1" edges="
+!1422 -752|1007 -752!1007 -752|1007 -368"/>
+                    <Edge fillStyle0="21" fillStyle1="11" strokeStyle="1" edges="
+!1422 -752|1129 -935!1129 -935|1129 -1096"/>
+                    <Edge fillStyle0="25" fillStyle1="1" edges="
+!440 -950|440 -995"/>
+                    <Edge fillStyle0="21" strokeStyle="1" edges="
+!805 -358|1007 -368"/>
+                    <Edge fillStyle0="2" fillStyle1="7" edges="
+!2024 -1266|2036 -1235!2036 -1235|2024 -1205!2024 -1205[2012 -1193 1994 -1193!1994 -1193[1975 -1193 1964 -1205!1964 -1205[1951 -1217 1952 -1235!1952 -1235[1951 -1254 1964 -1266!1964 -1266|1994 -1278!1994 -1278|2024 -1266"/>
+                    <Edge fillStyle0="2" fillStyle1="5" strokeStyle="1" edges="
+!1846 -1409|1664 -1409"/>
+                    <Edge fillStyle0="2" fillStyle1="6" strokeStyle="1" edges="
+!1664 -1409|1462 -1409"/>
+                    <Edge fillStyle0="8" fillStyle1="2" strokeStyle="1" edges="
+!1846 -1409|2028 -1409!2028 -1409|2105 -1733"/>
+                    <Edge fillStyle0="5" fillStyle1="6" strokeStyle="2" edges="
+!1664 -1854|1664 -1409"/>
+                    <Edge fillStyle1="13" strokeStyle="1" edges="
+!2568 -1157|2271 -1157"/>
+                    <Edge fillStyle0="11" fillStyle1="10" strokeStyle="2" edges="
+!1675 -752|1806 -1096"/>
+                    <Edge fillStyle1="15" strokeStyle="2" edges="
+!2210 -1096|2079 -752"/>
+                    <Edge fillStyle0="14" fillStyle1="15" strokeStyle="2" edges="
+!1978 -752|2109 -1096"/>
+                    <Edge fillStyle0="10" fillStyle1="12" strokeStyle="2" edges="
+!1776 -752|1907 -1096"/>
+                    <Edge fillStyle0="14" fillStyle1="12" strokeStyle="2" edges="
+!2008 -1096|1877 -752"/>
+                    <Edge fillStyle0="20" fillStyle1="19" strokeStyle="1" edges="
+!-175 -1005|-175 -1137!-175 -1137|-286 -1135"/>
+                    <Edge fillStyle0="20" strokeStyle="1" edges="
+!-286 -1135|-298 -1135"/>
+                    <Edge fillStyle0="20" strokeStyle="2" edges="
+!-298 -1135|-298 -803"/>
+                    <Edge fillStyle0="20" fillStyle1="21" strokeStyle="1" edges="
+!-298 -803|-175 -874!-175 -874|-175 -1005"/>
+                    <Edge fillStyle0="19" fillStyle1="21" strokeStyle="1" edges="
+!-175 -1005|-43 -1005!-43 -1005|199 -1114"/>
+                    <Edge fillStyle0="19" strokeStyle="1" edges="
+!118 -1712[-48 -1707 -135 -1541!-135 -1541|-286 -1135"/>
+                    <Edge fillStyle0="21" fillStyle1="22" edges="
+!-118 -799[-100 -799 -88 -787!-88 -787[-76 -775 -76 -757!-76 -757[-76 -738 -88 -726!-88 -726[-100 -714 -118 -714!-118 -714[-137 -714 -148 -726!-148 -726|-161 -757!-161 -757[-161 -775 -148 -787!-148 -787[-137 -799 -118 -799"/>
+                    <Edge fillStyle0="21" edges="
+!-298 -803|-298 -779"/>
+                    <Edge fillStyle0="21" strokeStyle="2" edges="
+!-298 -779|-84 -550"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

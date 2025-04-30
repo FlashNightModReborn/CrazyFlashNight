@@ -1,0 +1,117 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/刀剑/上古青萍元气剑/刀-上古青萍元气剑" itemID="65f6cc45-00001cd0" linkageExportForAS="true" linkageIdentifier="刀-上古青萍元气剑" lastModified="1722687344" lastUniqueIdentifier="3">
+  <timeline>
+    <DOMTimeline name="刀-上古青萍元气剑">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A428B8" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="0.95" centerPoint3DY="368.2">
+                  <matrix>
+                    <Matrix d="4.47459411621094" tx="-11.55" ty="306.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="12.5" y="25.05"/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+	自机 = _root.获得父节点(this, 5);
+	if (自机.状态 == "兵器攻击")
+	{
+		if (random(10) == 0)
+		{
+			mp增加值 = 自机.mp满血值 / 10;
+			mp增加上限 = 自机.mp满血值 * 2;
+			if (自机.mp <= mp增加上限)
+			{
+				自机.mp += mp增加值;
+			}
+			else
+			{
+				自机.mp = mp增加上限;
+			}
+			_root.主角mp显示界面.刷新显示();
+			//_root.效果("药剂动画",自机._x,自机._y,100);//
+		}
+	}
+}
+
+/*
+onClipEvent(enterFrame){
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(random(10) == 0)
+      {
+         mp增加值 = 50;
+         if(mp增加值 + _parent._parent._parent._parent._parent.mp <= _parent._parent._parent._parent._parent.mp满血值)
+         {
+            _parent._parent._parent._parent._parent.mp += mp增加值;
+         }
+         else
+         {
+            _parent._parent._parent._parent._parent.mp = _parent._parent._parent._parent._parent.mp满血值;
+         }
+         _root.主角mp显示界面.刷新显示();
+         _root.效果("药剂动画",_parent._parent._parent._parent._parent._x,_parent._parent._parent._parent._parent._y,100);
+      }
+   }
+}
+*/]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#74E043" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置2" centerPoint3DX="0.95" centerPoint3DY="223.25">
+                  <matrix>
+                    <Matrix a="0.9412841796875" d="5.33587646484375" tx="-11.55" ty="173.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#FCA518" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="1.25" centerPoint3DY="-6.35">
+                  <matrix>
+                    <Matrix a="0.916000366210938" d="9.18426513671875" tx="-11.25" ty="-56.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#B964C2" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/刀剑/上古青萍元气剑/上古青萍元气剑" symbolType="graphic" centerPoint3DX="0.35" centerPoint3DY="180.7" loop="loop">
+                  <matrix>
+                    <Matrix a="1.07998657226563" d="1.07998657226563" ty="221.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.3" y="-37.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

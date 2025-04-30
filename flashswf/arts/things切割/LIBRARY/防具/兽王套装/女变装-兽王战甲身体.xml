@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/兽王套装/女变装-兽王战甲身体" itemID="668d4426-00001775" linkageExportForAS="true" linkageIdentifier="女变装-兽王战甲身体" lastModified="1720534054">
+  <timeline>
+    <DOMTimeline name="女变装-兽王战甲身体">
+      <layers>
+        <DOMLayer name="Layer 2" color="#EA86A5">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/兽王套装/组件/Symbol 3255" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#BF5DEA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/兽王套装/组件/Symbol 3231" selected="true" centerPoint3DX="-30.05" centerPoint3DY="184.65">
+                  <matrix>
+                    <Matrix a="-2.81071472167969" b="1.03958129882813" c="1.03958129882813" d="2.81071472167969" tx="-84" ty="124.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

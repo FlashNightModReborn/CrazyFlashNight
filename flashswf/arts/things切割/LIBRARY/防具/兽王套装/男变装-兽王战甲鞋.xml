@@ -1,0 +1,103 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/兽王套装/男变装-兽王战甲鞋" itemID="668d442e-00001779" linkageExportForAS="true" linkageIdentifier="男变装-兽王战甲鞋" lastModified="1720534062">
+  <timeline>
+    <DOMTimeline name="男变装-兽王战甲鞋">
+      <layers>
+        <DOMLayer name="Script Layer" color="#F93FEB" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[
+/*
+if(!_root.手套特效总计cd)
+{
+   _root.手套特效总计cd = 150;
+}
+
+自机.spinKick = function()
+{
+   自机.旋风腿持续帧++;
+   自机.man._xscale *= -1;
+   if(自机.旋风腿持续帧 > 90 || 自机.状态 != "空手跳")
+   {
+      if(自机.man._xscale < 0)
+      {
+         自机.man._xscale *= -1;
+      }
+      clearInterval(自机.旋风腿);
+   }
+};
+if(自机 == _root.gameworld[_root.控制目标])
+{
+   this.onEnterFrame = function()
+   {
+      自机 = _root.获得父节点(this,4);
+      if(_root.手套特效总计cd < 200)
+      {
+         _root.手套特效总计cd += 1;
+      }
+      if(_root.手套特效总计cd >= 30)
+      {
+         if(自机.攻击模式 == "空手" and Key.isDown(_root.武器技能键) == true and (自机.飞行浮空 != true or 自机.状态 == "空手跳"))
+         {
+            自机.状态改变("空手跳");
+            自机.旋风腿持续帧 = 0;
+            自机.旋风腿 = setInterval(自机.spinKick,33);
+            _root.手套特效总计cd = 0;
+         }
+      }
+   };
+}
+*/ ]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#249FFE">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#162334"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#6D5E59"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#333F4B"/>
+                    </FillStyle>
+                    <FillStyle index="4">
+                      <SolidColor color="#3E3530"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!65 -590|74 -554!74 -554[266 -286 404 8!404 8[643 235 760 482"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!760 482|783 506!783 506[796 578 742 604!742 604[560 711 64 657!64 657|-31 647"/>
+                    <Edge fillStyle1="4" strokeStyle="1" edges="!-31 647[-211 628 -247 570!-247 570[-376 349 -601 336!-601 336[-727 313 -725 245!-725 245|-734 -23!-734 -23[-740 -107 -705 -99"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!-705 -99|-701 -414"/>
+                    <Edge fillStyle1="1" edges="!-701 -414|-667 -477!-667 -477[-622 -560 -545 -600!-545 -600[-437 -655 -232 -655!-232 -655[-157 -655 65 -590"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!760 482[766 563 483 579!483 579[61 603 -127 507!-127 507|-161 488"/>
+                    <Edge fillStyle0="2" fillStyle1="4" edges="!-161 488[-201 532 -31 647"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!365 53[216 -291 8 -510!8 -510[-120 -467 -263 -528!-263 -528[-344 -507 -365 -247!-365 -247[-302 140 -94 409!-94 409[-24 498 454 513!454 513[751 524 707 462!707 462[617 227 365 53"/>
+                    <Edge fillStyle0="4" fillStyle1="1" strokeStyle="1" edges="!-161 488[-233 440 -257 348!-257 348[-293 232 -450 83!-450 83[-544 8 -612 -16!-612 -16[-695 -49 -705 -99"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

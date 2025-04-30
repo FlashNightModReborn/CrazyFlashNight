@@ -1,0 +1,136 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/钝器/拆迁铁锤/刀-拆迁铁锤" itemID="660d9b03-00001c3e" linkageExportForAS="true" linkageIdentifier="刀-拆迁铁锤" lastModified="1718619493">
+  <timeline>
+    <DOMTimeline name="刀-拆迁铁锤">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BBC466" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="0.25" centerPoint3DY="-108.15">
+                  <matrix>
+                    <Matrix d="18.2027740478516" tx="-12.25" ty="-120.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#B813DA" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置2" centerPoint3DX="33.2" centerPoint3DY="324.8">
+                  <matrix>
+                    <Matrix a="1.81150817871094" d="2.03501892089844" tx="0.45" ty="312.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#C15EA7" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="-32.5" centerPoint3DY="324.8">
+                  <matrix>
+                    <Matrix a="1.79888916015625" d="2.03070068359375" tx="-45" ty="312.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   冷却时间结束 = true;
+   冷却时间间隔 = 0.5;
+   耗蓝比例 = 1;
+   自机 = _root.获得父节点(this,5);
+   当前时间 = getTimer();
+   if(isNaN(自机.上次释放时间) or 当前时间 - 自机.上次释放时间 > 冷却时间间隔 * 1000)
+   {
+      缓存时间 = 自机.上次释放时间;
+      自机.上次释放时间 = 当前时间;
+   }
+   else
+   {
+      冷却时间结束 = false;
+   }
+   if(_root.兵器攻击检测(自机) and 冷却时间结束)
+   {
+      特效许可 = true;
+      switch(自机.getSmallState())
+      {
+         case "兵器一段中":
+         case "兵器四段中":
+            特效许可 = true;
+            break;
+         default:
+            特效许可 = _root.成功率(5);
+      }
+      if(特效许可)
+      {
+         自机.man.攻击时可改变移动方向(1);
+         耗蓝量 = Math.floor(自机.mp满血值 / 100 * 耗蓝比例);
+         if(自机.mp >= 耗蓝量)
+         {
+            var myPoint = {x:this._x,y:this._y};
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "碎石飞扬";
+            子弹威力 = 耗蓝量 * 12;
+            子弹速度 = 1;
+            击中地图效果 = "";
+            Z轴攻击范围 = 50;
+            击倒率 = 1;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = 自机._name;
+            子弹敌我属性值 = 自机.是否为敌人 == true ? false : true;
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = 自机._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+         else if(自机 == root.gameworld[_root.控制目标])
+         {
+            root.发布消息("气力不足，难以发挥装备的真正力量……");
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#6FF9F6" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/钝器/拆迁铁锤/拆迁铁锤" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

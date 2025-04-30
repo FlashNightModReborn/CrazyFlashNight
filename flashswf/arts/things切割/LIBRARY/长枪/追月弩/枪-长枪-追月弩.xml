@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/追月弩/枪-长枪-追月弩" itemID="65f698da-00001c4d" linkageExportForAS="true" linkageIdentifier="枪-长枪-追月弩" lastModified="1720537683" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="枪-长枪-追月弩">
+      <layers>
+        <DOMLayer name="枪口" color="#8A5F97" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="枪口位置" selected="true" centerPoint3DX="351.45" centerPoint3DY="-29.05">
+                  <matrix>
+                    <Matrix tx="338.95" ty="-41.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图像" color="#9933CC" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/追月弩/弩" centerPoint3DX="52.5" centerPoint3DY="-24.3">
+                  <matrix>
+                    <Matrix a="0.333328247070313" d="0.333328247070313" tx="-163.5" ty="-102.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

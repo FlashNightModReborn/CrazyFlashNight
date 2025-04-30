@@ -1,0 +1,867 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/异形女王毒刺/刀-异形女王毒刺" itemID="65f6eaa5-00001dc6" linkageExportForAS="true" linkageIdentifier="刀-异形女王毒刺" lastModified="1722688516">
+  <timeline>
+    <DOMTimeline name="刀-异形女王毒刺">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FE918B" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="58.5" centerPoint3DY="337.95">
+                  <matrix>
+                    <Matrix a="1.21337890625" d="3.76849365234375" tx="46" ty="325.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(random(15) == 0)
+      {
+         var myPoint = {x:this._x,y:this._y};
+         _parent.localToGlobal(myPoint);
+         _root.gameworld.globalToLocal(myPoint);
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "骷髅特效";
+         子弹威力 = 400;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 200;
+         击倒率 = 1;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#4BD5E5" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置2" centerPoint3DX="58.95" centerPoint3DY="206.1">
+                  <matrix>
+                    <Matrix a="1.21337890625" d="5.22203063964844" tx="46.45" ty="193.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#966BA7" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="-34.9" centerPoint3DY="51.15">
+                  <matrix>
+                    <Matrix a="6.883056640625" d="6.18339538574219" tx="-47.4" ty="38.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#F7913E">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3169" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0419921875" b="1.00286865234375" c="-1.00286865234375" d="-1.0419921875" tx="6.8" ty="396.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3169" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.300750732421875" b="1.412353515625" c="-1.412353515625" d="-0.300750732421875" tx="43.85" ty="394.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3169" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.101104736328125" b="1.439208984375" c="-1.439208984375" d="0.101104736328125" tx="84.45" ty="397.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3169" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.02975463867188" b="1.0072021484375" c="-1.0072021484375" d="1.02975463867188" tx="144.7" ty="388.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3169" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.101104736328125" b="1.439208984375" c="-1.439208984375" d="0.101104736328125" tx="84.45" ty="397.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3169" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.300750732421875" b="1.412353515625" c="-1.412353515625" d="-0.300750732421875" tx="43.85" ty="394.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3169" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-1.0419921875" b="1.00286865234375" c="-1.00286865234375" d="-1.0419921875" tx="6.8" ty="396.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#FEC1A7">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.617172241210938" b="0.345840454101563" c="-0.345840454101563" d="-0.617172241210938" tx="26.75" ty="390.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.411788940429688" b="0.57415771484375" c="-0.57415771484375" d="-0.411788940429688" tx="57.95" ty="380.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.273910522460938" b="0.650741577148438" c="-0.650741577148438" d="-0.273910522460938" tx="92.8" ty="382.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.091949462890625" b="0.699005126953125" c="-0.699005126953125" d="0.091949462890625" tx="145.6" ty="372.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.273910522460938" b="0.650741577148438" c="-0.650741577148438" d="-0.273910522460938" tx="92.8" ty="382.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.411788940429688" b="0.57415771484375" c="-0.57415771484375" d="-0.411788940429688" tx="57.95" ty="380.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.617172241210938" b="0.345840454101563" c="-0.345840454101563" d="-0.617172241210938" tx="26.75" ty="390.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#F2347D">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.699295043945313" b="0.5867919921875" c="-0.5867919921875" d="-0.699295043945313" tx="57.55" ty="357.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.558151245117188" b="0.721572875976563" c="-0.721572875976563" d="-0.558151245117188" tx="75.65" ty="350.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34344482421875" b="0.84423828125" c="-0.84423828125" d="-0.34344482421875" tx="102.5" ty="344.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.02630615234375" b="0.909942626953125" c="-0.909942626953125" d="0.02630615234375" tx="139" ty="336.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.34344482421875" b="0.84423828125" c="-0.84423828125" d="-0.34344482421875" tx="102.5" ty="344.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.558151245117188" b="0.721572875976563" c="-0.721572875976563" d="-0.558151245117188" tx="75.65" ty="350.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.699295043945313" b="0.5867919921875" c="-0.5867919921875" d="-0.699295043945313" tx="57.55" ty="357.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#83CF75">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.498809814453125" b="0.766326904296875" c="-0.766326904296875" d="-0.498809814453125" tx="73.65" ty="311.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3575439453125" b="0.840972900390625" c="-0.840972900390625" d="-0.3575439453125" tx="83.1" ty="306.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.1815185546875" b="0.895004272460938" c="-0.895004272460938" d="-0.1815185546875" tx="99.05" ty="301.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.046234130859375" b="0.911605834960938" c="-0.911605834960938" d="-0.046234130859375" tx="131.65" ty="303.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.1815185546875" b="0.895004272460938" c="-0.895004272460938" d="-0.1815185546875" tx="99.05" ty="301.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.3575439453125" b="0.840972900390625" c="-0.840972900390625" d="-0.3575439453125" tx="83.1" ty="306.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.498809814453125" b="0.766326904296875" c="-0.766326904296875" d="-0.498809814453125" tx="73.65" ty="311.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#05ABEC">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.563735961914063" b="0.890304565429688" c="-0.890304565429688" d="-0.563735961914063" tx="87.65" ty="276.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.487869262695313" b="0.933700561523438" c="-0.933700561523438" d="-0.487869262695313" tx="96.4" ty="273.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.25946044921875" b="1.02020263671875" c="-1.02020263671875" d="-0.25946044921875" tx="104.7" ty="266.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0238800048828125" b="1.05148315429688" c="-1.05148315429688" d="0.0238800048828125" tx="121.25" ty="257.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.25946044921875" b="1.02020263671875" c="-1.02020263671875" d="-0.25946044921875" tx="104.7" ty="266.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.487869262695313" b="0.933700561523438" c="-0.933700561523438" d="-0.487869262695313" tx="96.4" ty="273.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.563735961914063" b="0.890304565429688" c="-0.890304565429688" d="-0.563735961914063" tx="87.65" ty="276.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#C5A8F4">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.297149658203125" b="1.08340454101563" c="-1.08340454101563" d="-0.297149658203125" tx="91.5" ty="222.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.315780639648438" b="1.07696533203125" c="-1.07696533203125" d="-0.315780639648438" tx="96.75" ty="222.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.137435913085938" b="1.11325073242188" c="-1.11325073242188" d="-0.137435913085938" tx="97.8" ty="217.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.161422729492188" b="1.10906982421875" c="-1.10906982421875" d="0.161422729492188" tx="102.15" ty="210.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.137435913085938" b="1.11325073242188" c="-1.11325073242188" d="-0.137435913085938" tx="97.8" ty="217.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" duration="6" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.315780639648438" b="1.07696533203125" c="-1.07696533203125" d="-0.315780639648438" tx="96.75" ty="222.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.297149658203125" b="1.08340454101563" c="-1.08340454101563" d="-0.297149658203125" tx="91.5" ty="222.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#5BF093">
+          <frames>
+            <DOMFrame index="0" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.137527465820313" b="1.11740112304688" c="-1.11740112304688" d="-0.137527465820313" tx="86.25" ty="175"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="10" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.15289306640625" b="1.11444091796875" c="-1.11444091796875" d="-0.15289306640625" tx="86.65" ty="175.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.067840576171875" b="1.12210083007813" c="-1.12210083007813" d="0.067840576171875" tx="88.25" ty="170.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="11" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.15289306640625" b="1.11444091796875" c="-1.11444091796875" d="-0.15289306640625" tx="86.65" ty="175.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="50" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.137527465820313" b="1.11740112304688" c="-1.11740112304688" d="-0.137527465820313" tx="86.25" ty="175"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#67C658">
+          <frames>
+            <DOMFrame index="0" duration="14" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0652313232421875" b="1.19084167480469" c="-1.19084167480469" d="-0.0652313232421875" tx="77.4" ty="125.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.091644287109375" b="1.18858337402344" c="-1.18858337402344" d="0.091644287109375" tx="73.2" ty="121.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="61" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.0652313232421875" b="1.19084167480469" c="-1.19084167480469" d="-0.0652313232421875" tx="77.4" ty="125.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#AFB848">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 4235" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#89EB53">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.058624267578125" b="1.32426452636719" c="-1.32426452636719" d="0.058624267578125" tx="64.85" ty="72.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#53ABAB">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3168" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.057281494140625" b="1.45791625976563" c="-1.45791625976563" d="-0.057281494140625" tx="57.55" ty="26.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#9C6FB0">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3164" centerPoint3DX="57.6" centerPoint3DY="157.45">
+                  <matrix>
+                    <Matrix a="-0.337371826171875" b="0.853164672851563" c="-0.8531494140625" d="-0.337371826171875" tx="-15.15" ty="140.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 16" color="#885EB4">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3162" centerPoint3DX="161.8" centerPoint3DY="152.35">
+                  <matrix>
+                    <Matrix a="0.261611938476563" b="0.879440307617188" c="-0.879440307617188" d="0.261611938476563" tx="97.15" ty="114.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#7AEB78">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3160" centerPoint3DX="10.25" centerPoint3DY="157.45">
+                  <matrix>
+                    <Matrix a="-0.912948608398438" b="0.09674072265625" c="-0.09674072265625" d="-0.912948608398438" tx="-40.9" ty="102.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 18" color="#5FBAB7">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3158" centerPoint3DX="166" centerPoint3DY="70.2">
+                  <matrix>
+                    <Matrix a="0.869400024414063" b="0.266845703125" c="-0.266845703125" d="0.869400024414063" tx="95" ty="53.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 19" color="#7E4FD3">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3156" centerPoint3DX="157" centerPoint3DY="184.2">
+                  <matrix>
+                    <Matrix a="0.0357208251953125" b="0.90911865234375" c="-0.90911865234375" d="0.0357208251953125" tx="93.8" ty="147.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 20" color="#C3A9A2">
+          <frames>
+            <DOMFrame index="0" duration="80" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/异形女王毒刺/Symbol 3154" centerPoint3DX="52.45" centerPoint3DY="222.65">
+                  <matrix>
+                    <Matrix a="-0.69598388671875" b="0.585311889648438" c="-0.585311889648438" d="-0.69598388671875" tx="2.35" ty="169.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

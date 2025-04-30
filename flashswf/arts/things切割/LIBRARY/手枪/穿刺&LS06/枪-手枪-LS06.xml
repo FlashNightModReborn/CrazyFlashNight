@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手枪/穿刺&amp;LS06/枪-手枪-LS06" itemID="661b6777-00001491" linkageExportForAS="true" linkageIdentifier="枪-手枪-LS06" lastModified="1718028908">
+  <timeline>
+    <DOMTimeline name="枪-手枪-LS06">
+      <layers>
+        <DOMLayer name="Layer 2" color="#D18EBE" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="枪口位置" centerPoint3DX="143.05" centerPoint3DY="-19.6">
+                  <matrix>
+                    <Matrix a="1.26261901855469" d="1.26261901855469" tx="130.55" ty="-32.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手枪/穿刺&amp;LS06/LS06" symbolType="graphic" centerPoint3DX="40.9" centerPoint3DY="-17.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="-0.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="51.3" y="-22.05"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

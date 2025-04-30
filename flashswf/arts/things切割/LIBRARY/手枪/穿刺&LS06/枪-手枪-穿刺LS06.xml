@@ -1,0 +1,191 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手枪/穿刺&amp;LS06/枪-手枪-穿刺LS06" itemID="661b6772-0000148f" linkageExportForAS="true" linkageIdentifier="枪-手枪-穿刺LS06" lastModified="1718028908">
+  <timeline>
+    <DOMTimeline name="枪-手枪-穿刺LS06">
+      <layers>
+        <DOMLayer name="Layer 1" color="#53CEE6" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="枪口位置" centerPoint3DX="218.9" centerPoint3DY="-20.9">
+                  <matrix>
+                    <Matrix a="1.26261901855469" d="1.26261901855469" tx="206.4" ty="-33.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#89EA60">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂七杂八/Symbol 3750" centerPoint3DX="98.4" centerPoint3DY="-10.6">
+                  <matrix>
+                    <Matrix a="-0.44146728515625" d="0.44146728515625" tx="47.55" ty="-55.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#FD6D7E">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#3C3C3E"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#1E1F21"/>
+                    </FillStyle>
+                    <FillStyle index="3">
+                      <SolidColor color="#5B5B5D"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!2606 -591|2606 -613!2606 -613|2607 -613!2607 -613|2681 -653!2681 -653|2681 -663!2681 -663|2741 -663!2741 -663|2741 -648!2741 -648|2795 -648!2795 -648|2795 -668!2795 -668|4128 -668!4128 -668|4128 -642"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!4128 -642|4128 -617"/>
+                    <Edge fillStyle1="3" strokeStyle="1" edges="!4128 -617|4128 -578"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!4128 -578|4128 -534"/>
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!4128 -534|4128 -425!4128 -425|2795 -425!2795 -425|2795 -456!2795 -456|2741 -456!2741 -456|2741 -432!2741 -432|2681 -432!2681 -432|2681 -441!2681 -441|2606 -485!2606 -485|2606 -532"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!2606 -532|2606 -591"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!2768 -612|2768 -630!2768 -630|2741 -630"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!2741 -630|2741 -608"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!2741 -608|2768 -612"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!2741 -648|2741 -630!2681 -653|2681 -630"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!2681 -630|2741 -630"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!2662 -593|2681 -590"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!2681 -590|2681 -597"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!2681 -597|2662 -594"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!2662 -594|2655 -593!2655 -593|2662 -593"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!2681 -534|2681 -590"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!2662 -593|2662 -513!2662 -513|2606 -532"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!2795 -617|2795 -578"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!2795 -578|4128 -578"/>
+                    <Edge fillStyle0="3" fillStyle1="3" strokeStyle="1" edges="!2741 -608|2741 -582"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!2741 -582|2776 -578"/>
+                    <Edge fillStyle0="3" fillStyle1="2" edges="!2776 -578|2795 -578"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!2776 -578|2776 -534!2776 -534|2741 -534"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!2741 -534|2741 -456"/>
+                    <Edge fillStyle0="2" fillStyle1="3" edges="!2768 -612|2795 -617"/>
+                    <Edge fillStyle0="2" fillStyle1="1" strokeStyle="1" edges="!2795 -617|2795 -648!2795 -534|2795 -578"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!2741 -582|2741 -534"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!2606 -591|2662 -620!2662 -620|2662 -594!2741 -534|2681 -534"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!2681 -534|2681 -441"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!2681 -590|2741 -582"/>
+                    <Edge fillStyle0="1" fillStyle1="3" edges="!2681 -597|2741 -608"/>
+                    <Edge fillStyle0="1" fillStyle1="2" strokeStyle="1" edges="!2681 -630|2681 -597"/>
+                    <Edge fillStyle0="2" fillStyle1="2" strokeStyle="1" edges="!2795 -456|2795 -534"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!4128 -642|2795 -648"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!4128 -534|2795 -534"/>
+                    <Edge fillStyle0="3" fillStyle1="1" edges="!4128 -617|2795 -617"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#998AF8">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂七杂八/Symbol 3722" blendMode="add" centerPoint3DX="467.35" centerPoint3DY="-10.75">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="172.2" ty="-15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_parent._parent._parent._parent._parent.攻击模式 == "手枪" or _parent._parent._parent._parent._parent.攻击模式 == "手枪2" or _parent._parent._parent._parent._parent.攻击模式 == "双枪")
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <GlowFilter/>
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.5" redMultiplier="0" blueMultiplier="0" greenMultiplier="0" redOffset="-255" blueOffset="-255" greenOffset="255"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#8BEED1">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂七杂八/Symbol 4091" symbolType="graphic" centerPoint3DX="106.75" centerPoint3DY="-8.35" loop="loop">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="-0.05" ty="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#9AD33F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="杂七杂八/Symbol 4028" symbolType="graphic" centerPoint3DX="142.05" centerPoint3DY="-11.35" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.468002319335938" d="0.468002319335938" tx="136.85" ty="5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#F7C67A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手枪/穿刺&amp;LS06/LS06" selected="true" symbolType="graphic" centerPoint3DX="41" centerPoint3DY="-17.6" loop="loop">
+                  <matrix>
+                    <Matrix a="0.79998779296875" d="0.79998779296875" tx="-0.05" ty="0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

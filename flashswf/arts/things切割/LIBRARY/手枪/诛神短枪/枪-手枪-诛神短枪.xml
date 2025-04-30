@@ -1,0 +1,37 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手枪/诛神短枪/枪-手枪-诛神短枪" itemID="666afd89-00006239" linkageExportForAS="true" linkageIdentifier="枪-手枪-诛神短枪" lastModified="1718287753">
+  <timeline>
+    <DOMTimeline name="枪-手枪-诛神短枪">
+      <layers>
+        <DOMLayer name="Layer 1" color="#D47F79" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="枪口位置" centerPoint3DX="228.45" centerPoint3DY="-52.8">
+                  <matrix>
+                    <Matrix a="1.26261901855469" d="1.26261901855469" tx="215.95" ty="-65.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#CE9E23">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手枪/诛神短枪/诛神短枪" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

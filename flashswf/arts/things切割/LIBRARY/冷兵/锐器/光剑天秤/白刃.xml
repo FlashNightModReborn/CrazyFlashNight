@@ -1,0 +1,67 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/光剑天秤/白刃" itemID="662536ed-0000038d" lastModified="1713715362" lastUniqueIdentifier="5">
+  <timeline>
+    <DOMTimeline name="白刃" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;342&lt;/guideline&gt;&lt;/guidelines&gt;'>
+      <layers>
+        <DOMLayer name="Layer 1" color="#9A95D3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="100">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333"/>
+                  <Point x="0.666666666666667" y="0.333333333333333"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-刃" centerPoint3DX="171.15" centerPoint3DY="34.4">
+                  <matrix>
+                    <Matrix tx="0.4" ty="-8.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="170.75" y="43.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="motion" motionTweenSnap="true" hasCustomEase="true" keyMode="22017" acceleration="-100">
+              <tweens>
+                <CustomEase target="all">
+                  <Point/>
+                  <Point x="0.333333333333333" y="0.666666666666667"/>
+                  <Point x="0.666666666666667" y="1"/>
+                  <Point x="1" y="1"/>
+                </CustomEase>
+              </tweens>
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-刃" selected="true" centerPoint3DX="162.1" centerPoint3DY="34.4">
+                  <matrix>
+                    <Matrix a="1.04998779296875" d="1.04998779296875" tx="-17.2" ty="-10.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="170.75" y="43.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/光剑天秤/光剑天秤-刃" centerPoint3DX="171.15" centerPoint3DY="34.4">
+                  <matrix>
+                    <Matrix tx="0.4" ty="-8.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="170.75" y="43.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,45 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="长枪/战术巴雷特/枪-长枪-战术巴雷特" itemID="65f6b6c9-00001b1b" linkageExportForAS="true" linkageIdentifier="枪-长枪-战术巴雷特" lastModified="1746005659" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="枪-长枪-战术巴雷特">
+      <layers>
+        <DOMLayer name="Layer 1" color="#D5D37F" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="枪口位置" centerPoint3DX="415.15" centerPoint3DY="-27.7">
+                  <matrix>
+                    <Matrix tx="402.65" ty="-40.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="判定使用" name="瞄具光源" selected="true" centerPoint3DX="99.35" centerPoint3DY="-51.6">
+                  <matrix>
+                    <Matrix a="0.417999267578125" d="0.417999267578125" tx="86.85" ty="-64.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#91F51C" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="长枪/战术巴雷特/战术巴雷特" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

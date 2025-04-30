@@ -1,0 +1,24 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="防具/诛神胸甲/诛神胸甲" itemID="65fd7719-000012d2" symbolType="graphic" lastModified="1711110347">
+  <timeline>
+    <DOMTimeline name="诛神胸甲">
+      <layers>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="防具/诛神胸甲/诛神奇美拉/零件/诛神身体" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="0.85" ty="0.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-6.75" y="11.65"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

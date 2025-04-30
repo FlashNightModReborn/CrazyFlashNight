@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手枪/加强版MP7/枪-手枪-加强版MP7" itemID="661b6dab-0000153a" linkageExportForAS="true" linkageIdentifier="枪-手枪-加强版MP7" lastModified="1718028908">
+  <timeline>
+    <DOMTimeline name="枪-手枪-加强版MP7">
+      <layers>
+        <DOMLayer name="Layer 1" color="#85A95D" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="枪口位置" centerPoint3DX="183.95" centerPoint3DY="-19.95">
+                  <matrix>
+                    <Matrix a="1.35134887695313" d="1.35134887695313" tx="171.45" ty="-32.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#81DB35">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="手枪/加强版MP7/加强版MP7" symbolType="graphic" centerPoint3DX="53.55" centerPoint3DY="-6.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.849990844726563" d="0.849990844726563"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

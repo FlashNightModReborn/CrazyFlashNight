@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/钝器/棒球棒/刀-棒球棒" itemID="660f7d8e-000019ba" linkageExportForAS="true" linkageIdentifier="刀-棒球棒" lastModified="1718619551" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="刀-棒球棒">
+      <layers>
+        <DOMLayer name="Layer 1" color="#FFFF00" outline="true" current="true" isSelected="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置2" centerPoint3DX="-7.05" centerPoint3DY="215.4">
+                  <matrix>
+                    <Matrix a="0.713409423828125" d="2.73435974121094" tx="-19.55" ty="208.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="-1.15" centerPoint3DY="-46.25">
+                  <matrix>
+                    <Matrix d="10.7080688476563" tx="-13.65" ty="-58.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="10.8" centerPoint3DY="215.4">
+                  <matrix>
+                    <Matrix a="0.760589599609375" d="2.72750854492188" tx="-1.7" ty="208.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#DAD6FA" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/钝器/棒球棒/棒球棒" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

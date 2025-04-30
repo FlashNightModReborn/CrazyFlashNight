@@ -1,0 +1,76 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="手枪/UZI/枪-手枪-UZI" itemID="661b6092-0000147d" linkageExportForAS="true" linkageIdentifier="枪-手枪-UZI" lastModified="1744208370" lastUniqueIdentifier="1">
+  <timeline>
+    <DOMTimeline name="枪-手枪-UZI">
+      <layers>
+        <DOMLayer name="Layer 2" color="#899676" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="枪口位置" centerPoint3DX="92" centerPoint3DY="-16.65">
+                  <matrix>
+                    <Matrix a="1.29507446289063" d="1.29507446289063" tx="79.55" ty="-29.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="枪" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMGroup>
+                  <members>
+                    <DOMGroup selected="true">
+                      <members>
+                        <DOMGroup selected="true">
+                          <members>
+                            <DOMGroup selected="true">
+                              <members>
+                                <DOMShape selected="true" isDrawingObject="true">
+                                  <matrix>
+                                    <Matrix tx="-93.7" ty="-49.3"/>
+                                  </matrix>
+                                  <fills>
+                                    <FillStyle index="1">
+                                      <SolidColor color="#FF0000" alpha="0"/>
+                                    </FillStyle>
+                                  </fills>
+                                  <edges>
+                                    <Edge fillStyle1="1" edges="!4728 401|4728 1048!4728 1048|4081 1048!4081 1048|4081 401!4081 401|4728 401"/>
+                                    <Edge cubics="!4728 401(;4728,401 4728,1048 4728,1048q4728 401 4728 1048);"/>
+                                    <Edge cubics="!4728 1048(;4728,1048 4081,1048 4081,1048q4728 1048 4081 1048);"/>
+                                    <Edge cubics="!4081 1048(;4081,1048 4081,401 4081,401q4081 1048 4081 401);"/>
+                                    <Edge cubics="!4081 401(;4081,401 4728,401 4728,401q4081 401 4728 401);"/>
+                                  </edges>
+                                </DOMShape>
+                              </members>
+                            </DOMGroup>
+                          </members>
+                        </DOMGroup>
+                      </members>
+                    </DOMGroup>
+                  </members>
+                </DOMGroup>
+                <DOMSymbolInstance libraryItemName="real mini uzi" centerPoint3DX="11" centerPoint3DY="-4">
+                  <matrix>
+                    <Matrix tx="-57.65" ty="-47.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="68.65" y="43.3"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="0.1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

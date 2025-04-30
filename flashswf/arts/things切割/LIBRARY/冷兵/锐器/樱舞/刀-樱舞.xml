@@ -1,0 +1,225 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/樱舞/刀-樱舞" itemID="65f6ef8b-00001de4" linkageExportForAS="true" linkageIdentifier="刀-樱舞" lastModified="1722688521">
+  <timeline>
+    <DOMTimeline name="刀-樱舞">
+      <layers>
+        <DOMLayer name="Layer 1" color="#D05871" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="23.2" centerPoint3DY="277.1">
+                  <matrix>
+                    <Matrix a="0.586807250976563" d="4.89205932617188" tx="10.7" ty="264.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(_parent._parent._parent._parent._parent.getSmallState() == "兵器三段中")
+      {
+         if(random(1) == 0)
+         {
+            var range = 100;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "樱刺";
+            子弹威力 = 120;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 60;
+            击倒率 = 100;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = _parent._parent._parent._parent._parent._name;
+            if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+            {
+               子弹敌我属性值 = false;
+            }
+            else
+            {
+               子弹敌我属性值 = true;
+            }
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+      }
+      if(_parent._parent._parent._parent._parent.getSmallState() == "兵器四段中")
+      {
+         if(random(1) == 0)
+         {
+            var range = 400;
+            var xOffset = (Math.random() - 0.5) * 2 * range;
+            var yOffset = (Math.random() - 0.5) * 2 * range;
+            var shooter = _parent._parent._parent._parent._parent;
+            var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+            声音 = "";
+            霰弹值 = 1;
+            子弹散射度 = 0;
+            发射效果 = "";
+            子弹种类 = "樱爆";
+            子弹威力 = 300;
+            子弹速度 = 0;
+            击中地图效果 = "";
+            Z轴攻击范围 = 60;
+            击倒率 = 100;
+            击中后子弹的效果 = "";
+            子弹敌我属性 = true;
+            发射者名 = _parent._parent._parent._parent._parent._name;
+            if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+            {
+               子弹敌我属性值 = false;
+            }
+            else
+            {
+               子弹敌我属性值 = true;
+            }
+            shootX = myPoint.x;
+            Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+            _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+         }
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#C4C6D6" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置2" centerPoint3DX="14.4" centerPoint3DY="178">
+                  <matrix>
+                    <Matrix a="0.586807250976563" d="3.96417236328125" tx="1.9" ty="165.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(random(20) == 0)
+      {
+         var range = 100;
+         var xOffset = (Math.random() - 0.5) * 2 * range;
+         var yOffset = (Math.random() - 0.5) * 2 * range;
+         var shooter = _parent._parent._parent._parent._parent;
+         var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "落英缤纷";
+         子弹威力 = 50;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 100;
+         击倒率 = 100;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+   if(_parent._parent._parent._parent._parent.状态 == "兵器攻击")
+   {
+      if(random(10) == 0)
+      {
+         var range = 200;
+         var xOffset = (Math.random() - 0.5) * 2 * range;
+         var yOffset = (Math.random() - 0.5) * 2 * range;
+         var shooter = _parent._parent._parent._parent._parent;
+         var myPoint = {x:shooter._x + xOffset,y:shooter._y + yOffset};
+         声音 = "";
+         霰弹值 = 1;
+         子弹散射度 = 0;
+         发射效果 = "";
+         子弹种类 = "花瓣飘散";
+         子弹威力 = 30;
+         子弹速度 = 0;
+         击中地图效果 = "";
+         Z轴攻击范围 = 100;
+         击倒率 = 100;
+         击中后子弹的效果 = "";
+         子弹敌我属性 = true;
+         发射者名 = _parent._parent._parent._parent._parent._name;
+         if(_parent._parent._parent._parent._parent.是否为敌人 == true)
+         {
+            子弹敌我属性值 = false;
+         }
+         else
+         {
+            子弹敌我属性值 = true;
+         }
+         shootX = myPoint.x;
+         Z轴坐标 = shootY = _parent._parent._parent._parent._parent._y;
+         _root.子弹区域shoot(声音,霰弹值,子弹散射度,发射效果,子弹种类,子弹威力,子弹速度,Z轴攻击范围,击中地图效果,发射者名,shootX,shootY,Z轴坐标,子弹敌我属性值,击倒率,击中后子弹的效果);
+      }
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#EA5FCD" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="4.85" centerPoint3DY="53.2">
+                  <matrix>
+                    <Matrix a="0.586807250976563" d="4.991455078125" tx="-7.65" ty="40.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#3488F9">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/樱舞/樱舞" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.824386596679688" b="-0.0334014892578125" c="0.0283966064453125" d="0.969833374023438" tx="-0.15" ty="20.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

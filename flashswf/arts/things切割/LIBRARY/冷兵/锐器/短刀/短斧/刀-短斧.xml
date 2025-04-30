@@ -1,0 +1,53 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/短刀/短斧/刀-短斧" itemID="6609a05c-0000409e" linkageExportForAS="true" linkageIdentifier="刀-短斧" lastModified="1722687651" lastUniqueIdentifier="2">
+  <timeline>
+    <DOMTimeline name="刀-短斧">
+      <layers>
+        <DOMLayer name="Layer 1" color="#BCB034" outline="true" current="true" isSelected="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置2" centerPoint3DX="-43.6" centerPoint3DY="118.1">
+                  <matrix>
+                    <Matrix a="3.10198974609375" d="3.00399780273438" tx="-56.1" ty="105.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置3" centerPoint3DX="-43.6" centerPoint3DY="141.6">
+                  <matrix>
+                    <Matrix a="3.10198974609375" tx="-56.1" ty="129.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="判定使用" name="刀口位置1" centerPoint3DX="0.35" centerPoint3DY="-55.05">
+                  <matrix>
+                    <Matrix d="8.8642578125" tx="-12.15" ty="-67.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#23DBED" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="冷兵/锐器/短刀/短斧/短斧" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

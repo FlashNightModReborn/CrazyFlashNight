@@ -1,0 +1,84 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/刀剑/激光剑强化版/激光剑-剑刃-静态" itemID="66633fa0-000001b6" lastModified="1717782633">
+  <timeline>
+    <DOMTimeline name="激光剑-剑刃-静态">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix ty="-3"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.01239013671875" d="0.0147705078125" tx="11.35" ty="278.65"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.392156862745098"/>
+                        <GradientEntry color="#FF57BC" alpha="0.498039215686275" ratio="0.807843137254902"/>
+                        <GradientEntry color="#FF0099" alpha="0.149019607843137" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="2">
+                        <fill>
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0146484375" d="0.015869140625" tx="26.1" ty="288.85"/>
+                            </matrix>
+                            <GradientEntry color="#FFCCCC" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#FF0066" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!440 5525[440 5625 375 5694!375 5694[311 5765 220 5765!220 5765[128 5765 64 5694!64 5694[0 5625 0 5525!0 5525[0 5425 64 5354!64 5354[128 5285 220 5285!220 5285[311 5285 375 5354!375 5354[440 5425 440 5525"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00775146484375" d="0.168914794921875" tx="17.7" ty="141.9"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.282352941176471"/>
+                        <GradientEntry color="#FF57BC" alpha="0.498039215686275" ratio="0.733333333333333"/>
+                        <GradientEntry color="#FF0099" alpha="0" ratio="0.909803921568627"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="2">
+                        <fill>
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0223388671875" b="0.0059814453125" c="-0.0198516845703125" d="0.0740966796875" tx="7.15" ty="38.85"/>
+                            </matrix>
+                            <GradientEntry color="#FFCCCC" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#FF0066" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!0 5448|0 0!0 0|451 0!451 0|451 5448"/>
+                    <Edge fillStyle1="1" edges="!451 5448[226 5623 0 5448"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

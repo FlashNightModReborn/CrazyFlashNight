@@ -1,0 +1,634 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="冷兵/锐器/刀剑/激光剑强化版/激光剑-剑刃-动态" itemID="6663d702-00000269" lastModified="1717821389">
+  <timeline>
+    <DOMTimeline name="激光剑-剑刃-动态" currentFrame="55">
+      <layers>
+        <DOMLayer name="光轮动画" color="#FF0000" locked="true" autoNamed="false" open="false" layerType="folder"/>
+        <DOMLayer name="渐变5" color="#FF4FFF" parentLayerIndex="0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, -1.609375" startPointB="#FFFFFF.F5, #13.28" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#0.E2, -1.609375" anchorPointA="#1.C3, -1.609375" controlPointB="#0.D7, #13.28" anchorPointB="#1.B8, #13.28" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C3, #FFFFFF.59" anchorPointA="#1.C3, #0.4E" controlPointB="#1.B8, #15.71" anchorPointB="#1.B8, #17.B9" isLine="true"/>
+                    <MorphCurves controlPointA="#0.E2, #0.5E" anchorPointA="0, #0.4E" controlPointB="#0.D7, #17.DE" anchorPointB="#FFFFFF.F5, #17.B9"/>
+                    <MorphCurves controlPointA="0, #FFFFFF.59" anchorPointA="0, -1.609375" controlPointB="#FFFFFF.F5, #15.71" anchorPointB="#FFFFFF.F5, #13.28" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.089996337890625" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="138.35"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0186614990234375" d="0.16949462890625" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.214523315429688" tx="-0.55" ty="245.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="277.15"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0186614990234375" d="0.16949462890625" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="渐变4" color="#FF4FFF" parentLayerIndex="0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="24" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" duration="30" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, -1.609375" startPointB="#FFFFFF.F5, #13.28" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#0.E2, -1.609375" anchorPointA="#1.C3, -1.609375" controlPointB="#0.D7, #13.28" anchorPointB="#1.B8, #13.28" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C3, #FFFFFF.59" anchorPointA="#1.C3, #0.4E" controlPointB="#1.B8, #15.71" anchorPointB="#1.B8, #17.B9" isLine="true"/>
+                    <MorphCurves controlPointA="#0.E2, #0.5E" anchorPointA="0, #0.4E" controlPointB="#0.D7, #17.DE" anchorPointB="#FFFFFF.F5, #17.B9"/>
+                    <MorphCurves controlPointA="0, #FFFFFF.59" anchorPointA="0, -1.609375" controlPointB="#FFFFFF.F5, #15.71" anchorPointB="#FFFFFF.F5, #13.28" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.089996337890625" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="138.35"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0186614990234375" d="0.16949462890625" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.214523315429688" tx="-0.55" ty="245.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="277.15"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0186614990234375" d="0.16949462890625" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="55" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="渐变3" color="#FF4FFF" parentLayerIndex="0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="14" duration="30" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, -1.609375" startPointB="#FFFFFF.F5, #13.28" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#0.E2, -1.609375" anchorPointA="#1.C3, -1.609375" controlPointB="#0.D7, #13.28" anchorPointB="#1.B8, #13.28" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C3, #FFFFFF.59" anchorPointA="#1.C3, #0.4E" controlPointB="#1.B8, #15.71" anchorPointB="#1.B8, #17.B9" isLine="true"/>
+                    <MorphCurves controlPointA="#0.E2, #0.5E" anchorPointA="0, #0.4E" controlPointB="#0.D7, #17.DE" anchorPointB="#FFFFFF.F5, #17.B9"/>
+                    <MorphCurves controlPointA="0, #FFFFFF.59" anchorPointA="0, -1.609375" controlPointB="#FFFFFF.F5, #15.71" anchorPointB="#FFFFFF.F5, #13.28" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.089996337890625" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="138.35"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0186614990234375" d="0.16949462890625" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="44" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.214523315429688" tx="-0.55" ty="245.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="277.15"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0186614990234375" d="0.16949462890625" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="渐变2" color="#FF4FFF" parentLayerIndex="0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="30" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, -1.609375" startPointB="#FFFFFF.F5, #13.2" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#0.E2, -1.609375" anchorPointA="#1.C3, -1.609375" controlPointB="#0.D7, #13.2" anchorPointB="#1.B8, #13.2" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C3, #FFFFFF.59" anchorPointA="#1.C3, #0.4E" controlPointB="#1.B8, #15.93" anchorPointB="#1.B8, #18.05" isLine="true"/>
+                    <MorphCurves controlPointA="#0.E2, #0.5E" anchorPointA="0, #0.4E" controlPointB="#0.D7, #18.2D" anchorPointB="#FFFFFF.F5, #18.05"/>
+                    <MorphCurves controlPointA="0, #FFFFFF.59" anchorPointA="0, -1.609375" controlPointB="#FFFFFF.F5, #15.93" anchorPointB="#FFFFFF.F5, #13.2" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.089996337890625" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="138.35"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0186614990234375" d="0.16949462890625" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0S2|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.22991943359375" tx="-0.55" ty="244.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="138.95"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0186614990234375" d="0.16949462890625" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0S2|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="40" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="渐变" color="#FF4FFF" parentLayerIndex="0" locked="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, -1.609375" startPointB="#FFFFFF.F5, #12.A6" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
+                    <MorphCurves controlPointA="#0.E2, -1.609375" anchorPointA="#1.C3, -1.609375" controlPointB="#0.D7, #12.A6" anchorPointB="#1.B8, #12.A6" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C3, #FFFFFF.59" anchorPointA="#1.C3, #0.4E" controlPointB="#1.B8, #14.CF" anchorPointB="#1.B8, #16.F7" isLine="true"/>
+                    <MorphCurves controlPointA="#0.E2, #0.5E" anchorPointA="0, #0.4E" controlPointB="#0.D7, #17.1A" anchorPointB="#FFFFFF.F5, #16.F7"/>
+                    <MorphCurves controlPointA="0, #FFFFFF.59" anchorPointA="0, -1.609375" controlPointB="#FFFFFF.F5, #14.CF" anchorPointB="#FFFFFF.F5, #12.A6" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.089996337890625" ty="-20.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.25" y="138.35"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.0212554931640625" d="0.216232299804688" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <matrix>
+                    <Matrix d="0.202789306640625" tx="-0.55" ty="238.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="11.2" y="138.8"/>
+                  </transformationPoint>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.01702880859375" d="0.2093505859375" tx="11.25" ty="0.05"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" alpha="0" ratio="0.529411764705882"/>
+                        <GradientEntry color="#FFFFFF" alpha="0.247058823529412" ratio="0.843137254901961"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!451 0S2|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="30" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="边缘动画1" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, #15.48" startPointB="0, #15.48" strokeIndex1="0" strokeIndex2="1">
+                    <MorphCurves controlPointA="0, #A.A4" controlPointB="0, #A.A4" isLine="true"/>
+                    <MorphCurves controlPointA="#0.E2, 0" anchorPointA="#1.C3, 0" controlPointB="#0.E2, 0" anchorPointB="#1.C3, 0" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C3, #A.A4" anchorPointA="#1.C3, #15.48" controlPointB="#1.C3, #A.A4" anchorPointB="#1.C3, #15.48" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="2">
+                        <fill>
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0223388671875" b="0.0059814453125" c="-0.0198516845703125" d="0.0740966796875" tx="7.15" ty="38.85"/>
+                            </matrix>
+                            <GradientEntry color="#FFCCCC" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#FF0066" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!0 5448|0 0!0 0|451 0!451 0|451 5448"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="2">
+                        <fill>
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0223388671875" b="0.0059814453125" c="-0.0198516845703125" d="0.0740966796875" tx="22.55" ty="272.4"/>
+                            </matrix>
+                            <GradientEntry color="#FFCCCC" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#FF0066" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!0 5448|0 0!0 0|451 0!451 0|451 5448"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" duration="29" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="0, #15.48" startPointB="0, #15.48" strokeIndex1="0" strokeIndex2="1">
+                    <MorphCurves controlPointA="0, #A.A4" controlPointB="0, #A.A4" isLine="true"/>
+                    <MorphCurves controlPointA="#0.E2, 0" anchorPointA="#1.C3, 0" controlPointB="#0.E2, 0" anchorPointB="#1.C3, 0" isLine="true"/>
+                    <MorphCurves controlPointA="#1.C3, #A.A4" anchorPointA="#1.C3, #15.48" controlPointB="#1.C3, #A.A4" anchorPointB="#1.C3, #15.48" isLine="true"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="2">
+                        <fill>
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0223388671875" b="0.0059814453125" c="-0.0198516845703125" d="0.0740966796875" tx="7.15" ty="38.85"/>
+                            </matrix>
+                            <GradientEntry color="#FFCCCC" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#FF0066" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!0 5448|0 0!0 0|451 0!451 0|451 5448"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="2">
+                        <fill>
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0223388671875" b="0.0059814453125" c="-0.0198516845703125" d="0.0740966796875" tx="22.55" ty="272.4"/>
+                            </matrix>
+                            <GradientEntry color="#FFCCCC" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#FF0066" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!0 5448|0 0!0 0|451 0!451 0|451 5448"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="边缘动画2" color="#669900" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="29" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#0.03, #15.3" startPointB="#0.03, #15.3" strokeIndex1="0" strokeIndex2="1">
+                    <MorphCurves controlPointA="0, #15.44" anchorPointA="0, #15.59" controlPointB="0, #15.44" anchorPointB="0, #15.59"/>
+                    <MorphCurves controlPointA="0, #15.BD" anchorPointA="0.25, #16.02" controlPointB="0, #15.BD" anchorPointB="0.25, #16.02"/>
+                    <MorphCurves controlPointA="0.5, #16.49" anchorPointA="#0.DC, #16.49" controlPointB="0.5, #16.49" anchorPointB="#0.DC, #16.49"/>
+                    <MorphCurves controlPointA="#1.37, #16.49" anchorPointA="#1.77, #16.02" controlPointB="#1.37, #16.49" anchorPointB="#1.77, #16.02"/>
+                    <MorphCurves controlPointA="#1.B8, #15.BD" anchorPointA="#1.B8, #15.59" controlPointB="#1.B8, #15.BD" anchorPointB="#1.B8, #15.59"/>
+                    <MorphCurves controlPointA="#1.B8, #15.44" anchorPointA="#1.B2, #15.16" controlPointB="#1.B8, #15.44" anchorPointB="#1.B2, #15.16"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="2">
+                        <fill>
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0146484375" d="0.015869140625" tx="26.1" ty="285.85"/>
+                            </matrix>
+                            <GradientEntry color="#FFCCCC" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#FF0066" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!433.5 5397.5S4[#1B8.1E #1543.C7 440 5465!440 5465[440 5565 375 5634!375 5634[311 5705 220 5705!220 5705[128 5705 64 5634!64 5634[0 5565 0 5465!0 5465[0 #1543.DA 3 5424"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="30" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#0.03, #15.3" startPointB="#0.03, #15.3" strokeIndex1="0" strokeIndex2="1">
+                    <MorphCurves controlPointA="0, #15.44" anchorPointA="0, #15.59" controlPointB="0, #15.44" anchorPointB="0, #15.59"/>
+                    <MorphCurves controlPointA="0, #15.BD" anchorPointA="0.25, #16.02" controlPointB="0, #15.BD" anchorPointB="0.25, #16.02"/>
+                    <MorphCurves controlPointA="0.5, #16.49" anchorPointA="#0.DC, #16.49" controlPointB="0.5, #16.49" anchorPointB="#0.DC, #16.49"/>
+                    <MorphCurves controlPointA="#1.37, #16.49" anchorPointA="#1.77, #16.02" controlPointB="#1.37, #16.49" anchorPointB="#1.77, #16.02"/>
+                    <MorphCurves controlPointA="#1.B8, #15.BD" anchorPointA="#1.B8, #15.59" controlPointB="#1.B8, #15.BD" anchorPointB="#1.B8, #15.59"/>
+                    <MorphCurves controlPointA="#1.B8, #15.44" anchorPointA="#1.B2, #15.16" controlPointB="#1.B8, #15.44" anchorPointB="#1.B2, #15.16"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="2">
+                        <fill>
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0146484375" d="0.015869140625" ty="272.4"/>
+                            </matrix>
+                            <GradientEntry color="#FFCCCC" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#FF0066" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!433.5 5397.5S4[#1B8.1E #1543.C7 440 5465!440 5465[440 5565 375 5634!375 5634[311 5705 220 5705!220 5705[128 5705 64 5634!64 5634[0 5565 0 5465!0 5465[0 #1543.DA 3 5424"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" tweenType="shape" keyMode="17922">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" caps="none" weight="2">
+                        <fill>
+                          <RadialGradient spreadMethod="reflect">
+                            <matrix>
+                              <Matrix a="0.0146484375" d="0.015869140625" tx="26.1" ty="285.85"/>
+                            </matrix>
+                            <GradientEntry color="#FFCCCC" alpha="0.498039215686275" ratio="0"/>
+                            <GradientEntry color="#FF0066" alpha="0" ratio="1"/>
+                          </RadialGradient>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!433.5 5397.5S4[#1B8.1E #1543.C7 440 5465!440 5465[440 5565 375 5634!375 5634[311 5705 220 5705!220 5705[128 5705 64 5634!64 5634[0 5565 0 5465!0 5465[0 #1543.DA 3 5424"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" duration="60" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.01239013671875" d="0.0147705078125" tx="11.35" ty="275.65"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.392156862745098"/>
+                        <GradientEntry color="#FF57BC" alpha="0.498039215686275" ratio="0.807843137254902"/>
+                        <GradientEntry color="#FF0099" alpha="0.149019607843137" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!234.5 5406.5[#13B.7A #1522.3E 360.5 5434!360.5 5434[#195.BA #1551.BF 423 5451!423 5451[#1B8.2C #1544.0F 440 5465!440 5465[440 5565 375 5634!375 5634[311 5705 220 5705!220 5705[128 5705 64 5634!64 5634[0 5565 0 5465!0 5465[#0.06 #1543.E5
+ 33.5 5462.5!33.5 5462.5[#42.F6 #1568.F4 110 5442!110 5442[#99.53 #151A.F7 234.5 5406.5"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="reflect">
+                        <matrix>
+                          <Matrix a="0.00775146484375" d="0.168914794921875" tx="17.7" ty="141.9"/>
+                        </matrix>
+                        <GradientEntry color="#FFFFFF" ratio="0.282352941176471"/>
+                        <GradientEntry color="#FF57BC" alpha="0.498039215686275" ratio="0.733333333333333"/>
+                        <GradientEntry color="#FF0099" alpha="0" ratio="0.909803921568627"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="
+!451 0|451 5448!451 5448[226 5623 0 5448!0 5448|0 0!0 0|451 0"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
