@@ -162,16 +162,32 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             var weaponShotCountArray:String = weaponType + "射击次数";
             var weaponShotCountIndex:String = weaponType;
             var weaponMagCapacity:String = weaponType + "弹匣容量";
-            
-            if (parentRef[weaponShotCountArray][parentRef[weaponShotCountIndex]] >= parentRef[weaponMagCapacity]) {
-                // 其他手枪属性
-                var otherWeaponShotCountArray:String = otherWeaponType + "射击次数";
-                var otherWeaponShotCountIndex:String = otherWeaponType;
-                var otherWeaponMagCapacity:String = otherWeaponType + "弹匣容量";
-                
+
+            // 其他手枪属性
+            var otherWeaponShotCountArray:String = otherWeaponType + "射击次数";
+            var otherWeaponShotCountIndex:String = otherWeaponType;
+            var otherWeaponMagCapacity:String = otherWeaponType + "弹匣容量";
+
+            var mainNumber:Number = parentRef[weaponShotCountArray][parentRef[weaponShotCountIndex]];
+            var otherNumber:Number = parentRef[otherWeaponShotCountArray][parentRef[otherWeaponShotCountIndex]];
+
+            var mainIsEmpty:Boolean = mainNumber >= parentRef[weaponMagCapacity];
+            var otherIsEmpty:Boolean = otherNumber >= parentRef[otherWeaponMagCapacity];
+
+            var mainIsFull:Boolean = mainNumber == 0;
+            var otherIsFull:Boolean = otherNumber == 0;
+
+            var isSameWeapon:Boolean = (parentRef[weaponType] == parentRef[otherWeaponType])
+
+            var needReload:Boolean = (mainIsEmpty && otherIsEmpty);
+            needReload = needReload || (mainIsEmpty && otherIsFull);
+            needReload = needReload || (mainIsFull && otherIsEmpty);
+            // needReload = needReload || ((mainIsEmpty || otherIsEmpty) && !isSameWeapon);
+
+            if (needReload) {
+  
                 // 检查是否需要开始换弹
-                if ((parentRef[otherWeaponShotCountArray][parentRef[otherWeaponShotCountIndex]] >= 
-                    parentRef[otherWeaponMagCapacity] && that[remainingMagProp] > 0) 
+                if ((that[remainingMagProp] > 0) 
                     || _root.控制目标 != parentRef._name) {
                     that.开始换弹();
                 }
